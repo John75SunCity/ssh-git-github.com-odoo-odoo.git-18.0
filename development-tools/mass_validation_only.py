@@ -18,7 +18,10 @@ class MassViewFieldValidator:
 
         # Model field mappings
         self.model_fields = {}  # {model_name: {field_name: field_type}}
+        self.model_methods = {}  # {model_name: set of method names}
         self.field_errors = []  # List of field validation errors
+        self.accessibility_errors = []  # FontAwesome accessibility issues
+        self.method_errors = []  # Missing method errors
         self.manual_review = [] # Complex issues requiring manual review
 
         # Common inherited fields from base Odoo models
@@ -88,6 +91,15 @@ class MassViewFieldValidator:
                             for field_name in field_matches:
                                 self.model_fields[model_name].add(field_name)
 
+                            # Extract method definitions (for action validation)
+                            if model_name not in self.model_methods:
+                                self.model_methods[model_name] = set()
+
+                            # Find def method_name patterns
+                            method_matches = re.findall(r"def\s+(\w+)\s*\(", content)
+                            for method_name in method_matches:
+                                self.model_methods[model_name].add(method_name)
+
                     except Exception as e:
                         print(f"Error scanning {file_path}: {e}")
 
@@ -141,6 +153,61 @@ class MassViewFieldValidator:
             if field_name in self.system_fields or field_name == 'arch':
                 continue
             self._validate_field_reference(field_name, model_name, file_path)
+
+    def _check_fontawesome_accessibility(self, content, file_path):
+        """Check for FontAwesome icons missing title attributes"""
+        # Find all <i> tags with fa classes
+        fa_icon_pattern = r'<i[^>]*class="[^"]*fa\s+fa-[^"]*"[^>]*>'
+        fa_matches = re.finditer(fa_icon_pattern, content)
+
+        for match in fa_matches:
+            icon_tag = match.group(0)
+            # Check if it has title attribute or contains text
+            has_title = 'title=' in icon_tag
+            # Check if the tag has closing content (not self-closing)
+            is_self_closing = icon_tag.endswith('/>')
+
+            if not has_title and is_self_closing:
+                # Extract the fa class for better error reporting
+                fa_class_match = re.search(r'fa\s+fa-[\w-]+', icon_tag)
+                fa_class = fa_class_match.group(0) if fa_class_match else 'unknown'
+
+                self.accessibility_errors.append({
+                    'file': os.path.basename(file_path),
+                    'icon_class': fa_class,
+                    'icon_tag': icon_tag,
+                    'error': f'FontAwesome icon ({fa_class}) missing title attribute for accessibility',
+                    'type': 'accessibility_fa_title'
+                })
+
+    def _check_action_methods(self, content, file_path):
+        """Check for button actions that reference non-existent methods"""
+        # Find all button name references
+        action_pattern = r'<button[^>]*name="([^"]+)"[^>]*type="object"'
+        action_matches = re.finditer(action_pattern, content)
+
+        # Get model name from the file content
+        model_match = re.search(r'<field name="model">([^<]+)</field>', content)
+        if not model_match:
+            return
+
+        model_name = model_match.group(1)
+        model_methods = self.model_methods.get(model_name, set())
+
+        for match in action_matches:
+            action_name = match.group(1)
+            button_tag = match.group(0)
+
+            if action_name not in model_methods:
+                self.method_errors.append({
+                    'file': os.path.basename(file_path),
+                    'model': model_name,
+                    'action': action_name,
+                    'button_tag': button_tag,
+                    'error': f'Action method "{action_name}" not found in model {model_name}',
+                    'available_actions': [m for m in model_methods if m.startswith('action_')][:5],
+                    'type': 'missing_action_method'
+                })
 
     def _check_actions_and_menus(self, file_path):
         """Check for missing action and menu references"""
@@ -197,6 +264,12 @@ class MassViewFieldValidator:
                 # Check for other issues
                 self._check_actions_and_menus(file_path)
 
+                # NEW: Check FontAwesome accessibility
+                self._check_fontawesome_accessibility(content, file_path)
+
+                # NEW: Check action method references
+                self._check_action_methods(content, file_path)
+
             except ET.ParseError as e:
                 self.field_errors.append({
                     'file': os.path.basename(file_path),
@@ -216,17 +289,25 @@ class MassViewFieldValidator:
 
     def generate_report(self):
         """Generate comprehensive validation report"""
-        total_errors = len(self.field_errors)
+        total_field_errors = len(self.field_errors)
+        total_accessibility_errors = len(self.accessibility_errors)
+        total_method_errors = len(self.method_errors)
+        total_errors = total_field_errors + total_accessibility_errors + total_method_errors
         manual_reviews = len(self.manual_review)
 
         print(f"📊 Scan complete:")
-        print(f"   - Field errors found: {total_errors}")
+        print(f"   - Field errors found: {total_field_errors}")
+        print(f"   - FontAwesome accessibility errors: {total_accessibility_errors}")
+        print(f"   - Missing method errors: {total_method_errors}")
+        print(f"   - Total errors: {total_errors}")
         print(f"   - Manual review needed: {manual_reviews}")
-        print(f"   - AUTO-FIXES DISABLED - Validation only mode")
-
-        # Group errors by file for targeted fixes
+        print(f"   - AUTO-FIXES DISABLED - Validation only mode")        # Group errors by file for targeted fixes
         errors_by_file = defaultdict(list)
         for error in self.field_errors:
+            errors_by_file[error['file']].append(error)
+        for error in self.accessibility_errors:
+            errors_by_file[error['file']].append(error)
+        for error in self.method_errors:
             errors_by_file[error['file']].append(error)
 
         # Save detailed report
@@ -236,12 +317,15 @@ class MassViewFieldValidator:
             f.write("MASS VIEW FIELD VALIDATION REPORT - VALIDATION ONLY\n")
             f.write("=" * 80 + "\n")
             f.write(f"Models scanned: {len(self.model_fields)}\n")
-            f.write(f"Field errors found: {total_errors}\n")
+            f.write(f"Field errors found: {total_field_errors}\n")
+            f.write(f"FontAwesome accessibility errors: {total_accessibility_errors}\n")
+            f.write(f"Missing method errors: {total_method_errors}\n")
+            f.write(f"Total errors: {total_errors}\n")
             f.write(f"Manual review needed: {manual_reviews}\n")
             f.write(f"AUTO-FIXES: DISABLED (Pure validation mode)\n\n")
 
-            if self.field_errors:
-                f.write("FIELD VALIDATION ERRORS BY FILE:\n")
+            if errors_by_file:
+                f.write("VALIDATION ERRORS BY FILE:\n")
                 f.write("-" * 40 + "\n")
 
                 for file_name, file_errors in sorted(errors_by_file.items()):
@@ -255,14 +339,29 @@ class MassViewFieldValidator:
                     for error_type, errors in by_type.items():
                         f.write(f"  🔸 {error_type.upper().replace('_', ' ')} ({len(errors)} errors):\n")
                         for error in errors:
-                            f.write(f"    Model: {error['model']}\n")
-                            f.write(f"    Field: {error['field']}\n")
-                            f.write(f"    Error: {error['error']}\n")
+                            if error_type == 'missing_field':
+                                f.write(f"    Model: {error['model']}\n")
+                                f.write(f"    Field: {error['field']}\n")
+                                f.write(f"    Error: {error['error']}\n")
 
-                            if 'suggested_correction' in error and error['suggested_correction']:
-                                f.write(f"    💡 Suggested fix: {error['field']} → {error['suggested_correction']}\n")
-                            elif 'similar_fields' in error and error['similar_fields']:
-                                f.write(f"    Similar fields: {', '.join(error['similar_fields'])}\n")
+                                if 'suggested_correction' in error and error['suggested_correction']:
+                                    f.write(f"    💡 Suggested fix: {error['field']} → {error['suggested_correction']}\n")
+                                elif 'similar_fields' in error and error['similar_fields']:
+                                    f.write(f"    Similar fields: {', '.join(error['similar_fields'])}\n")
+
+                            elif error_type == 'accessibility_fa_title':
+                                f.write(f"    Icon: {error['icon_class']}\n")
+                                f.write(f"    Error: {error['error']}\n")
+                                f.write(f"    💡 Fix: Add title attribute like: <i class=\"{error['icon_class']}\" title=\"Description\"/>\n")
+
+                            elif error_type == 'missing_action_method':
+                                f.write(f"    Model: {error['model']}\n")
+                                f.write(f"    Action: {error['action']}\n")
+                                f.write(f"    Error: {error['error']}\n")
+                                if error['available_actions']:
+                                    f.write(f"    Available actions: {', '.join(error['available_actions'])}\n")
+                                f.write(f"    💡 Fix: Add method to {error['model']} or remove button\n")
+
                             f.write("\n")
 
             if self.manual_review:
@@ -273,16 +372,35 @@ class MassViewFieldValidator:
 
         print(f"\n📄 Full report saved to: {report_file}")
 
-        # Show top 20 errors for immediate action
-        if self.field_errors:
-            print(f"\n🎯 TOP 20 FIELD ERRORS FOR IMMEDIATE FIXING:")
+        # Show top errors for immediate action by category
+        if total_errors > 0:
+            print(f"\n🎯 TOP ERRORS FOR IMMEDIATE FIXING:")
             print("=" * 60)
-            for i, error in enumerate(self.field_errors[:20]):
-                print(f"{i+1}. {error['file']} - {error['model']}.{error['field']}")
+
+            error_count = 0
+
+            # Show field errors
+            for i, error in enumerate(self.field_errors[:10]):
+                error_count += 1
+                print(f"{error_count}. [FIELD] {error['file']} - {error['model']}.{error['field']}")
                 if 'suggested_correction' in error and error['suggested_correction']:
                     print(f"   💡 Fix: {error['field']} → {error['suggested_correction']}")
                 elif 'similar_fields' in error and error['similar_fields']:
                     print(f"   Similar: {', '.join(error['similar_fields'][:3])}")
+                print()
+
+            # Show accessibility errors
+            for i, error in enumerate(self.accessibility_errors[:5]):
+                error_count += 1
+                print(f"{error_count}. [ACCESSIBILITY] {error['file']} - {error['icon_class']}")
+                print(f"   💡 Fix: Add title attribute to FontAwesome icon")
+                print()
+
+            # Show method errors
+            for i, error in enumerate(self.method_errors[:5]):
+                error_count += 1
+                print(f"{error_count}. [METHOD] {error['file']} - {error['model']}.{error['action']}")
+                print(f"   💡 Fix: Add method to model or remove button")
                 print()
 
 def main():

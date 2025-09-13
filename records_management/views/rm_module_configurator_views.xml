@@ -32,14 +32,10 @@
     <field name="arch" type="xml">
         <form string="RM Module Configurator">
             <header>
-                <button name="action_activate_config" string="Activate" type="object" class="btn-primary" invisible="active == True"/>
-
-<button name="action_deactivate_config" string="Deactivate" type="object" class="btn-secondary" invisible="active == False"/>
-
-<button name="action_reset_to_default" string="Reset Default" type="object" class="btn-warning" confirm="Reset this configuration to default values?"/>
-
-<field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Inactive'}}"/>
-</header>
+                <!-- Removed non-existent action buttons: action_activate_config, action_deactivate_config, action_reset_to_default -->
+                <!-- These methods don't exist in rm.module.configurator model -->
+                <field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Inactive'}}"/>
+            </header>
 <sheet>
 <div class="oe_button_box" name="button_box">
     <button class="oe_stat_button" type="object" name="action_view_related_configurations" icon="fa-cogs">
@@ -206,7 +202,7 @@
                     <field name="name"/>
                 </strong>
                 <small class="o_kanban_record_subtitle text-muted">
-<i class="fa fa-key mr-1"/>
+<i class="fa fa-key mr-1" title="Configuration Key"/>
 <field name="config_key"/>
 
 </small>
@@ -217,11 +213,11 @@
         <div class="col-8">
             <span class="badge badge-pill" t-att-class="record.active.raw_value ? 'badge-success' : 'badge-secondary'">
                 <t t-if="record.active.raw_value">
-<i class="fa fa-check-circle"/>
+<i class="fa fa-check-circle" title="Active Status"/>
  Active
 </t>
 <t t-else="">
-<i class="fa fa-pause"/>
+<i class="fa fa-pause" title="Inactive Status"/>
  Inactive
 </t>
 </span>
@@ -246,7 +242,7 @@
 </div>
 <div class="oe_kanban_bottom_right">
 <div t-if="record.company_id.raw_value" groups="base.group_multi_company">
-<i class="fa fa-building mr-1"/>
+<i class="fa fa-building mr-1" title="Company"/>
 <field name="company_id"/>
 
 </div>
@@ -272,36 +268,36 @@
             }</field>
 <field name="help" type="html">
     <p class="o_view_nocontent_smiling_face">
-<i class="fa fa-cog"/>
+<i class="fa fa-cog" title="Configuration Settings"/>
  Welcome to the Records Management Configurator!
 </p>
 <p>
 <b>
-    <i class="fa fa-bullseye"/>
+    <i class="fa fa-bullseye" title="Target Configuration"/>
  Centralized Configuration Management:</b>
 <br/>
-                    •<i class="fa fa-wrench"/>
+                    •<i class="fa fa-wrench" title="Tools"/>
 <b>Feature Toggles:</b> Enable/disable optional functionality across the system<br/>
-                    •<i class="fa fa-paint-brush"/>
+                    •<i class="fa fa-paint-brush" title="Customization"/>
 <b>UI Customization:</b> Control field visibility and interface elements<br/>
-                    •<i class="fa fa-lock"/>
+                    •<i class="fa fa-lock" title="Security"/>
 <b>Security Settings:</b> Configure access controls and permissions<br/>
-                    •<i class="fa fa-money"/>
+                    •<i class="fa fa-money" title="Financial"/>
 <b>Billing Options:</b> Manage financial and billing configurations<br/>
-                    •<i class="fa fa-mobile"/>
+                    •<i class="fa fa-mobile" title="Mobile Features"/>
 <b>Mobile Features:</b> Control mobile app and FSM functionality<br/>
-                    •<i class="fa fa-bar-chart"/>
+                    •<i class="fa fa-bar-chart" title="Analytics"/>
 <b>Reporting:</b> Configure analytics and report generation<br/>
-                    •<i class="fa fa-link"/>
+                    •<i class="fa fa-link" title="External Connections"/>
 <b>Integrations:</b> Manage external system connections<br/>
-                    •<i class="fa fa-balance-scale"/>
+                    •<i class="fa fa-balance-scale" title="Compliance"/>
 <b>Compliance:</b> NAID and regulatory compliance controls<br/>
-                    •<i class="fa fa-building"/>
+                    •<i class="fa fa-building" title="Organization"/>
 <b>Department-Specific:</b> Multi-tenant configuration management
 </p>
 <p>
 <i>
-    <i class="fa fa-rocket"/>
+    <i class="fa fa-rocket" title="Launch"/>
  This centralized configurator ensures consistent system behavior and provides granular control over all Records Management features.</i>
 </p>
 </field>
