@@ -59,6 +59,8 @@ class DestructionCertificate(models.Model):
         string="Destruction Events",
         help="Individual destruction events that roll up into this certificate",
     )
+    # Computed counter used by stat button in form view (button_box)
+    event_count = fields.Integer(string="Events", compute="_compute_event_count", readonly=True)
 
     # ============================================================================
     # SERVICE TRACKING
@@ -127,6 +129,14 @@ class DestructionCertificate(models.Model):
     # COMPUTED FIELDS
     # ============================================================================
     company_id = fields.Many2one("res.company", related="partner_id.company_id", string="Company", store=True)
+
+    # -------------------------------------------------------------------------
+    # COMPUTE METHODS: SIMPLE COUNTS
+    # -------------------------------------------------------------------------
+    @api.depends("event_ids")
+    def _compute_event_count(self):
+        for rec in self:
+            rec.event_count = len(rec.event_ids)
 
     # ============================================================================
     # CONSTRAINTS & VALIDATIONS

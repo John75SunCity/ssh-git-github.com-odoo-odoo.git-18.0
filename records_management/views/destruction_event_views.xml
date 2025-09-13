@@ -56,4 +56,12 @@
         <field name="res_model">destruction.event</field>
 <field name="view_mode">list,form</field>
     </record>
+    <!-- Added missing action referenced by destruction certificate stat button -->
+    <record id="action_destruction_event" model="ir.actions.act_window">
+        <field name="name">Destruction Events</field>
+        <field name="res_model">destruction.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[("certificate_id", "=", active_id)]</field>
+        <field name="context">{"default_certificate_id": active_id}</field>
+    </record>
 </odoo>
