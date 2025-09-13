@@ -246,9 +246,9 @@ class ChainOfCustody(models.Model):
         self.write({"state": "completed"})
 
     def action_cancel(self):
-    self.ensure_one()
-    self.write({"state": "cancelled"})
+        self.ensure_one()
+        self.write({"state": "cancelled"})
 
     def action_reset_to_draft(self):
-    self.ensure_one()
-    self.write({"state": "draft"})
+        self.ensure_one()
+        self.write({"state": "draft"})
