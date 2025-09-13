@@ -143,15 +143,11 @@
                     <field name="model_id"/>
                     <field name="license_plate"/>
                     <field name="records_vehicle_type"/>
-                    <field name="current_pickup_route_id"/>
-                    <field name="vehicle_operational_status"/>
-                    <field name="naid_compliance_status"
-                           decoration-success="naid_compliance_status == 'certified'"
-                           decoration-warning="naid_compliance_status == 'pending'"
-                           decoration-danger="naid_compliance_status == 'non_compliant'"/>
-                    <field name="last_service_date"/>
-                    <field name="next_service_date"/>
+                    <field name="records_operational_status"/>
+                    <field name="naid_compliant" widget="boolean_toggle"/>
+                    <field name="max_container_capacity"/>
                     <field name="driver_id"/>
+                    <field name="pickup_route_ids" widget="many2many_tags"/>
                 </list>
             </field>
         </record>
