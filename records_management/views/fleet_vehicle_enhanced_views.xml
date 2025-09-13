@@ -7,10 +7,9 @@
             <field name="name">fleet.vehicle.view.form.inherit.records</field>
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
-            <field name="groups_id" eval="[(4, ref('records_management.group_records_user')), (4, ref('records_management.group_records_manager'))]"/>
             <field name="arch" type="xml">
                 <!-- Stat buttons: insert inside button_box -->
-                <xpath expr="//div[@name='button_box']" position="inside">
+                <xpath expr="//div[@name='button_box']" position="inside" groups="records_management.group_records_user,records_management.group_records_manager">
                     <button name="action_view_pickup_routes" type="object" class="oe_stat_button" icon="fa-route" string="Routes" attrs="{'invisible': [('pickup_route_ids','=',False)]}">
                         <field name="pickup_route_ids" widget="statinfo"/>
                     </button>
@@ -18,7 +17,7 @@
                 </xpath>
 
                 <!-- Add tab in existing notebook -->
-                <xpath expr="//sheet/notebook" position="inside">
+                <xpath expr="//sheet/notebook" position="inside" groups="records_management.group_records_user,records_management.group_records_manager">
                     <page string="Records Management" name="records_management">
                         <group>
                             <group string="Operations">
@@ -69,9 +68,8 @@
             <field name="name">fleet.vehicle.view.tree.inherit.records</field>
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>
-            <field name="groups_id" eval="[(4, ref('records_management.group_records_user')), (4, ref('records_management.group_records_manager'))]"/>
             <field name="arch" type="xml">
-                <xpath expr="//tree//field[@name='license_plate']" position="after">
+                <xpath expr="//tree//field[@name='license_plate']" position="after" groups="records_management.group_records_user,records_management.group_records_manager">
                     <field name="records_vehicle_type" optional="show"/>
                     <field name="records_operational_status" optional="show"/>
                     <field name="max_container_capacity" optional="hide"/>
@@ -85,10 +83,9 @@
             <field name="name">fleet.vehicle.view.kanban.inherit.records</field>
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_kanban"/>
-            <field name="groups_id" eval="[(4, ref('records_management.group_records_user')), (4, ref('records_management.group_records_manager'))]"/>
             <field name="arch" type="xml">
                 <!-- Insert badges in lower footer area -->
-                <xpath expr="//div[contains(@class,'oe_kanban_bottom_left')]" position="inside">
+                <xpath expr="//div[contains(@class,'oe_kanban_bottom_left')]" position="inside" groups="records_management.group_records_user,records_management.group_records_manager">
                     <span t-if="record.records_vehicle_type.raw_value" class="badge badge-info me-1">
                         <t t-esc="record.records_vehicle_type.value"/>
                     </span>
@@ -107,13 +104,12 @@
             <field name="name">fleet.vehicle.view.search.inherit.records</field>
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
-            <field name="groups_id" eval="[(4, ref('records_management.group_records_user')), (4, ref('records_management.group_records_manager'))]"/>
             <field name="arch" type="xml">
-                <xpath expr="//search/field[@name='driver_id']" position="after">
+                <xpath expr="//search/field[@name='driver_id']" position="after" groups="records_management.group_records_user,records_management.group_records_manager">
                     <field name="records_vehicle_type"/>
                     <field name="records_operational_status"/>
                 </xpath>
-                <xpath expr="//search/filter[@name='inactive']" position="after">
+                <xpath expr="//search/filter[@name='inactive']" position="after" groups="records_management.group_records_user,records_management.group_records_manager">
                     <separator/>
                     <filter string="Records Vehicles" name="records_vehicles" domain="[('records_vehicle_type','!=',False)]"/>
                     <filter string="Available for Routes" name="available_routes" domain="[('records_operational_status','=','available')]"/>
