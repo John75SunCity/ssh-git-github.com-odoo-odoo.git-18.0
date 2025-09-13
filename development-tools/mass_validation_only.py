@@ -49,6 +49,47 @@ class MassViewFieldValidator:
             'container_id': 'container_ids',  # Many2one vs Many2many pattern
         }
 
+    def _load_core_odoo_fields(self):
+        """Load essential core Odoo model fields that our module extends"""
+        core_fields = {
+            'res.config.settings': {
+                # Standard res.config.settings fields
+                'id', 'create_date', 'create_uid', 'write_date', 'write_uid',
+                'display_name', '__last_update',
+                # Configuration framework fields
+                'company_id', 'user_id', 'module_ids', 'config_parameter_ids',
+                # TransientModel specific fields
+                'active', 'sequence', 'name', 'state'
+            },
+            'res.partner': {
+                'id', 'name', 'display_name', 'email', 'phone', 'mobile',
+                'street', 'street2', 'city', 'zip', 'state_id', 'country_id',
+                'is_company', 'active', 'partner_type', 'company_id'
+            },
+            'maintenance.team': {
+                'id', 'name', 'display_name', 'active', 'company_id',
+                'member_ids', 'user_id', 'color', 'alias_id'
+            },
+            'project.task': {
+                'id', 'name', 'display_name', 'active', 'sequence', 'state',
+                'project_id', 'user_ids', 'tag_ids', 'priority', 'date_deadline',
+                'description', 'company_id'
+            },
+            'account.move': {
+                'id', 'name', 'display_name', 'state', 'move_type', 'partner_id',
+                'date', 'invoice_date', 'amount_total', 'company_id'
+            },
+            'product.template': {
+                'id', 'name', 'display_name', 'active', 'sequence', 'type',
+                'categ_id', 'list_price', 'standard_price', 'company_id'
+            },
+            'stock.location': {
+                'id', 'name', 'display_name', 'active', 'usage', 'location_id',
+                'company_id', 'barcode'
+            }
+        }
+        return core_fields
+
         # Load all model definitions and XML IDs
         self._scan_model_definitions()
         self._scan_xml_ids()
