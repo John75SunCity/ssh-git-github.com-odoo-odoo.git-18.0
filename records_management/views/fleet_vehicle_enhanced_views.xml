@@ -27,15 +27,7 @@
                                 <field name="naid_compliant"/>
                             </group>
                             <group string="Active Routes">
-                                <field name="pickup_route_ids" readonly="1" context="{'default_vehicle_id': active_id}">
-                                    <tree string="Pickup Routes" create="false" edit="false">
-                                        <field name="name"/>
-                                        <field name="route_date"/>
-                                        <field name="state"/>
-                                        <field name="total_stops"/>
-                                        <field name="completion_percentage" widget="progressbar"/>
-                                    </tree>
-                                </field>
+                                <field name="pickup_route_ids" readonly="1" context="{'default_vehicle_id': active_id}"/>
                             </group>
                         </group>
 
