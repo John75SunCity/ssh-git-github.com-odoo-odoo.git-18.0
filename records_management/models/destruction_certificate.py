@@ -471,6 +471,31 @@ class DestructionCertificate(models.Model):
         return True
 
     # -------------------------------------------------------------------------
+    # UI ACTIONS (Referenced by Views)
+    # -------------------------------------------------------------------------
+    def action_send_notification(self):  # referenced by kanban button/menu
+        """Simple placeholder notification action.
+
+        Posts a chatter message and triggers a client notification. Future
+        enhancement could open a wizard for composing a custom message or
+        selecting recipients.
+        """
+    self.ensure_one()
+    # Chatter log entry (use % interpolation per project policy)
+    # Simpler static message to satisfy translation lint rules
+    self.message_post(body=_("Notification sent for destruction certificate"))
+    return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Notification Sent"),
+                "message": _("A notification was recorded in the chatter."),
+                "sticky": False,
+                "type": "success",
+            },
+        }
+
+    # -------------------------------------------------------------------------
     # COMPUTE METHODS
     # -------------------------------------------------------------------------
     @api.depends("invoice_id.payment_state")
