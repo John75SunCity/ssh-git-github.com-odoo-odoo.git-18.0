@@ -153,7 +153,6 @@
         "views/paper_bale_line_views.xml",
         "views/paper_bale_movement_views.xml",
         "views/paper_bale_recycling_views.xml",
-        "views/paper_bale_source_document_views.xml",
         "views/paper_bale_views.xml",
         "views/paper_load_shipment_views.xml",
         "views/paper_model_bale_views.xml",
