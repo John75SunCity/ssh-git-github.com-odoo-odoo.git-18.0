@@ -40,7 +40,7 @@
                                         <div class="row">
                                             <div class="col-6">
                                                 <button name="action_view_containers" type="object" class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-cube" aria-hidden="true"/>
+                                                    <i class="fa fa-cube" aria-hidden="true" title="Container"/>
                                                     View Containers
                                                 </button>
                                             </div>
@@ -67,9 +67,9 @@
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-edit"/> Edit Location</a>
-                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class="fa fa-box"/> View Containers</a>
-                                <a role="menuitem" type="object" name="action_location_report" class="dropdown-item"><i class="fa fa-bar-chart"/> Location Report</a>
+                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-edit" title="Edit"/> Edit Location</a>
+                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class="fa fa-box" title="View Containers"/> View Containers</a>
+                                <a role="menuitem" type="object" name="action_location_report" class="dropdown-item"><i class="fa fa-bar-chart" title="Location Report"/> Location Report</a>
                                 <div class="dropdown-divider"/>
                                 <a role="menuitem" type="delete" class="dropdown-item"><i class="fa fa-trash"></i> Archive</a>
                             </div>
@@ -221,8 +221,8 @@
                 <p>
                     <b>Enterprise Storage Management:</b>
                     <br/>
-                    • <i class='fa fa-box'></i> Track box locations with visual kanban boards<br/>
-                    • <i class='fa fa-bar-chart'></i> Monitor capacity utilization in real-time<br/>
+                    • <i class='fa fa-box' title='Container Tracking'></i> Track box locations with visual kanban boards<br/>
+                    • <i class='fa fa-bar-chart' title='Capacity Monitoring'></i> Monitor capacity utilization in real-time<br/>
                     • <i class='fa fa-search'></i> Smart search with advanced filters<br/>
                     • <i class='fa fa-building'></i> Hierarchical location organization<br/>
                     • <i class='fa fa-mobile'></i> Mobile-optimized for facility operations

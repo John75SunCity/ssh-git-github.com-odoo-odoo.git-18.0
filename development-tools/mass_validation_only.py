@@ -34,6 +34,9 @@ class MassViewFieldValidator:
         # System fields that exist in all models
         self.system_fields = {'id', 'create_date', 'create_uid', 'write_date', 'write_uid', '__last_update', 'display_name'}
 
+        # Load core Odoo module fields from manifest dependencies
+        self.core_odoo_fields = self._load_core_odoo_fields()
+
         # Field patterns that commonly need correction (for suggestion purposes only)
         self.common_corrections = {
             'status': 'state',
@@ -43,6 +46,100 @@ class MassViewFieldValidator:
 
         # Load all model definitions
         self._scan_model_definitions()
+
+    def _load_core_odoo_fields(self):
+        """Load core Odoo module fields based on manifest dependencies"""
+        core_fields = {}
+
+        # Read manifest dependencies
+        manifest_path = os.path.join(self.base_path, '__manifest__.py')
+        if os.path.exists(manifest_path):
+            try:
+                with open(manifest_path, 'r', encoding='utf-8') as f:
+                    manifest_content = f.read()
+
+                # Extract dependencies from manifest
+                import ast
+                tree = ast.parse(manifest_content)
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.Dict):
+                        for key, value in zip(node.keys, node.values):
+                            if (isinstance(key, ast.Constant) and key.value == 'depends' and
+                                isinstance(value, ast.List)):
+                                # Found the depends list
+                                dependencies = [item.value for item in value.elts if isinstance(item, ast.Constant)]
+                                break
+
+                # Define core Odoo model fields based on common dependencies
+                for dep in dependencies:
+                    if dep == 'maintenance':
+                        core_fields['maintenance.team'] = {
+                            'name', 'member_ids', 'color', 'company_id', 'partner_id', 'equipment_ids',
+                            'request_ids', 'maintenance_count', 'equipment_count', 'active'
+                        }
+                        core_fields['maintenance.request'] = {
+                            'name', 'description', 'request_date', 'owner_user_id', 'category_id',
+                            'equipment_id', 'maintenance_type', 'user_id', 'technician_user_id',
+                            'stage_id', 'priority', 'color', 'close_date', 'kanban_state',
+                            'archive', 'maintenance_team_id', 'duration', 'company_id'
+                        }
+                    elif dep == 'stock':
+                        core_fields['stock.location'] = {
+                            'name', 'complete_name', 'active', 'usage', 'location_id', 'child_ids',
+                            'comment', 'posx', 'posy', 'posz', 'parent_path', 'company_id',
+                            'scrap_location', 'return_location', 'removal_strategy_id'
+                        }
+                        core_fields['stock.quant'] = {
+                            'product_id', 'location_id', 'lot_id', 'package_id', 'owner_id',
+                            'quantity', 'reserved_quantity', 'company_id', 'in_date'
+                        }
+                    elif dep == 'product':
+                        core_fields['product.product'] = {
+                            'name', 'display_name', 'product_tmpl_id', 'active', 'default_code',
+                            'barcode', 'price', 'lst_price', 'standard_price', 'volume',
+                            'weight', 'sale_ok', 'purchase_ok', 'categ_id', 'company_id'
+                        }
+                    elif dep == 'account':
+                        core_fields['account.move'] = {
+                            'name', 'ref', 'state', 'move_type', 'partner_id', 'commercial_partner_id',
+                            'invoice_date', 'date', 'amount_total', 'amount_untaxed', 'amount_tax',
+                            'company_id', 'currency_id', 'invoice_line_ids', 'line_ids'
+                        }
+                    elif dep == 'sale':
+                        core_fields['sale.order'] = {
+                            'name', 'state', 'date_order', 'validity_date', 'partner_id',
+                            'partner_invoice_id', 'partner_shipping_id', 'amount_untaxed',
+                            'amount_tax', 'amount_total', 'currency_id', 'company_id',
+                            'order_line', 'user_id', 'team_id'
+                        }
+                    elif dep == 'hr':
+                        core_fields['hr.employee'] = {
+                            'name', 'active', 'company_id', 'user_id', 'resource_id',
+                            'job_id', 'job_title', 'department_id', 'manager_id', 'coach_id',
+                            'work_email', 'work_phone', 'mobile_phone', 'employee_type'
+                        }
+                    elif dep == 'project':
+                        core_fields['project.project'] = {
+                            'name', 'active', 'sequence', 'partner_id', 'user_id', 'date_start',
+                            'date', 'company_id', 'currency_id', 'task_count', 'task_ids',
+                            'color', 'favorite_user_ids', 'description'
+                        }
+                        core_fields['project.task'] = {
+                            'name', 'description', 'active', 'project_id', 'user_ids',
+                            'partner_id', 'stage_id', 'kanban_state', 'priority', 'sequence',
+                            'date_deadline', 'company_id', 'color', 'displayed_image_id'
+                        }
+                    elif dep == 'fleet':
+                        core_fields['fleet.vehicle'] = {
+                            'name', 'active', 'company_id', 'license_plate', 'vin_sn',
+                            'driver_id', 'model_id', 'brand_id', 'model_year', 'color',
+                            'state_id', 'location', 'seats', 'doors', 'fuel_type',
+                            'transmission', 'odometer', 'odometer_unit'
+                        }
+            except Exception as e:
+                print(f"Warning: Could not parse manifest dependencies: {e}")
+
+        return core_fields
 
     def _scan_model_definitions(self):
         """Scan all Python model files to extract field definitions"""
@@ -107,15 +204,25 @@ class MassViewFieldValidator:
 
     def _validate_field_reference(self, field_name, model_name, file_path):
         """Validate a single field reference"""
-        if model_name not in self.model_fields:
-            self.field_errors.append({
-                'file': os.path.basename(file_path),
-                'model': model_name,
-                'field': field_name,
-                'error': f'Model {model_name} not found in scanned models',
-                'type': 'missing_model'
-            })
+        # First check if it's a system field that exists in all models
+        if field_name in self.system_fields:
             return
+
+        # Check if the model exists in our scanned models
+        if model_name not in self.model_fields:
+            # Check if it's a core Odoo model that we should know about
+            if model_name in self.core_odoo_fields:
+                # Add core Odoo model fields to our known models
+                self.model_fields[model_name] = self.core_odoo_fields[model_name]
+            else:
+                self.field_errors.append({
+                    'file': os.path.basename(file_path),
+                    'model': model_name,
+                    'field': field_name,
+                    'error': f'Model {model_name} not found in scanned models or core Odoo modules',
+                    'type': 'missing_model'
+                })
+                return
 
         model_fields = self.model_fields[model_name]
 

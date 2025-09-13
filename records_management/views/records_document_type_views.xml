@@ -210,9 +210,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 </div>
                                 <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-<i class="fa fa-ellipsis-v" role="img" aria-label="More options"/>
-
-
+<i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
                                     </a>
                                 </div>
                             </div>
@@ -222,8 +220,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                         <div class="text-center">
                                             <span class="badge badge-primary">
 <field name="document_count"/>
-<i class="fa fa-file-o"/>
-
+<i class="fa fa-file-o" title="Documents"/>
                                             </span>
                                         </div>
                                     </div>
@@ -231,8 +228,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                         <div class="text-center">
                                             <span class="badge badge-info">
 <field name="container_count"/>
-<i class="fa fa-box"/>
-
+<i class="fa fa-box" title="Containers"/>
                                             </span>
                                         </div>
                                     </div>
@@ -240,9 +236,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 <div class="row mt-2">
                                     <div class="col-12">
                                         <small class="text-muted">
-<i class="fa fa-shield" aria-hidden="true"/>
-
-
+<i class="fa fa-shield" aria-hidden="true" title="Security Level"/>
                                             <field name="confidentiality_level"/>
                                         </small>
                                     </div>
@@ -250,9 +244,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 <div class="row mt-1">
                                     <div class="col-12">
                                         <small class="text-muted">
-<i class="fa fa-clock" aria-hidden="true"/>
-
-
+<i class="fa fa-clock" aria-hidden="true" title="Retention Period"/>
                                             <field name="effective_retention_years"/> years
                                         </small>
                                     </div>
@@ -260,16 +252,16 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
 <a role="menuitem" type="edit" class="dropdown-item">
-    <i class="fa fa-edit"/>
+    <i class="fa fa-edit" title="Edit"/>
  Edit Type</a>
 <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">
-    <i class="fa fa-file-o"/>
+    <i class="fa fa-file-o" title="View Documents"/>
  View Documents</a>
 <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">
-    <i class="fa fa-check-circle text-success"/>
+    <i class="fa fa-check-circle text-success" title="Activate"/>
  Activate</a>
 <a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" invisible="state != 'active'">
-    <i class="fa fa-warning"/>
+    <i class="fa fa-warning" title="Deprecate"/>
  Deprecate</a>
                                 <div class="dropdown-divider"/>
 <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state in ('draft', 'deprecated')">📁 Archive</a>

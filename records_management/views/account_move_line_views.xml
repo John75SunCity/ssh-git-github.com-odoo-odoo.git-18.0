@@ -113,7 +113,7 @@ invisible="records_service_type == False"/>
                 <div class="o_kanban_tags_section"
                      t-if="record.records_related.raw_value">
                     <span class="badge badge-info">
-                        <i class="fa fa-archive"/> Records Management
+                        <i class="fa fa-archive" title="Records Management"/> Records Management
                     </span>
                     <span t-if="record.records_service_type.raw_value"
                           class="badge badge-secondary">

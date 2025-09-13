@@ -167,7 +167,7 @@
 <t t-name="card">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.state.raw_value=='full' ? 'border-danger' : record.current_fill_level.raw_value >= 75 ? 'border-warning' : record.state.raw_value=='in_service' ? 'border-success' : record.state.raw_value=='deployed' ? 'border-info' : record.state.raw_value=='maintenance' ? 'border-dark' : 'border-secondary'}">
                             <div class="o_kanban_image">
-                                <i t-attf-class="fa fa-trash fa-2x" t-attf-style="color: #{record.state.raw_value=='full' ? '#dc3545' : record.current_fill_level.raw_value >= 75 ? '#ffc107' : record.state.raw_value=='in_service' ? '#28a745' : record.state.raw_value=='deployed' ? '#007bff' : record.state.raw_value=='maintenance' ? '#6f42c1' : record.state.raw_value=='collecting' ? '#fd7e14' : '#6c757d'};"/>
+                                <i t-attf-class="fa fa-trash fa-2x" title="Shred Bin Status" t-attf-style="color: #{record.state.raw_value=='full' ? '#dc3545' : record.current_fill_level.raw_value >= 75 ? '#ffc107' : record.state.raw_value=='in_service' ? '#28a745' : record.state.raw_value=='deployed' ? '#007bff' : record.state.raw_value=='maintenance' ? '#6f42c1' : record.state.raw_value=='collecting' ? '#fd7e14' : '#6c757d'};"/>
                             </div>
 
                             <div class="oe_kanban_details">
@@ -216,13 +216,13 @@
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
                                         <small t-if="record.service_count.raw_value &gt; 0">
-                                            <i class="fa fa-scissors text-muted"/>
+                                            <i class="fa fa-scissors text-muted" title="Shredding Services"/>
                                             <field name="service_count"/> services
                                         </small>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <span t-if="record.needs_collection.raw_value" class="badge badge-danger">
-                                            <i class="fa fa-exclamation-triangle"/>
+                                            <i class="fa fa-exclamation-triangle" title="Collection Required"/>
                                             Collection Due
                                         </span>
                                     </div>
