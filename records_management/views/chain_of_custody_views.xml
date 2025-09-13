@@ -9,9 +9,9 @@
                 <list decoration-success="state == 'completed'" decoration-warning="state == 'in_progress'" decoration-danger="state == 'cancelled'">
                     <field name="name"/>
                     <field name="partner_id"/>
-                    <field name="transfer_type"/>
-                    <field name="document_ids" widget="many2many_tags" optional="hide"/>
-                    <field name="container_ids" widget="many2many_tags" optional="hide"/>
+                    <field name="transfer_date"/>
+                    <field name="document_id" widget="many2many_tags" optional="hide"/>
+                    <field name="container_id" widget="many2many_tags" optional="hide"/>
                     <field name="from_custodian_id" optional="hide"/>
                     <field name="to_custodian_id"/>
                     <field name="transfer_date"/>
@@ -40,7 +40,7 @@
                         <group>
                             <group string="Transfer Information">
                                 <field name="name"/>
-                                <field name="transfer_type"/>
+                                <field name="transfer_date"/>
                                 <field name="transfer_date"/>
                                 <field name="department_id"/>
                                 <field name="partner_id" readonly="1"/>
@@ -57,8 +57,8 @@
                                 <field name="to_location_id"/>
                             </group>
                             <group string="Items">
-                                <field name="document_ids" widget="many2many_tags" options="{'no_create': True}"/>
-                                <field name="container_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                <field name="document_id" widget="many2many_tags" options="{'no_create': True}"/>
+                                <field name="container_id" widget="many2many_tags" options="{'no_create': True}"/>
                             </group>
                         </group>
                         <notebook>
@@ -88,22 +88,22 @@
                 <kanban default_group_by="state">
                     <field name="name"/>
                     <field name="partner_id"/>
-                    <field name="transfer_type"/>
+                    <field name="transfer_date"/>
                     <field name="from_custodian_id"/>
                     <field name="to_custodian_id"/>
                     <field name="transfer_date"/>
                     <field name="state"/>
-                    <field name="document_ids"/>
-                    <field name="container_ids"/>
+                    <field name="document_id"/>
+                    <field name="container_id"/>
                     <templates>
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <strong><field name="name"/></strong>
-                                <div><field name="partner_id"/> - <field name="transfer_type"/></div>
+                                <div><field name="partner_id"/> - <field name="transfer_date"/></div>
                                 <div><field name="from_custodian_id"/> → <field name="to_custodian_id"/></div>
                                 <div><field name="transfer_date"/></div>
-                                <div t-if="record.document_ids.raw_value and record.document_ids.raw_value.length">Docs: <field name="document_ids"/></div>
-                                <div t-if="record.container_ids.raw_value and record.container_ids.raw_value.length">Containers: <field name="container_ids"/></div>
+                                <div t-if="record.document_ids.raw_value and record.document_ids.raw_value.length">Docs: <field name="document_id"/></div>
+                                <div t-if="record.container_ids.raw_value and record.container_ids.raw_value.length">Containers: <field name="container_id"/></div>
                                 <div class="mt-1"><span class="badge" t-esc="record.state.raw_value"/></div>
                                 <div class="mt-2">
                                     <button type="object" name="action_start" class="btn btn-primary btn-sm" t-if="record.state.raw_value == 'draft'">Start</button>
@@ -127,9 +127,9 @@
                     <field name="partner_id"/>
                     <field name="from_custodian_id"/>
                     <field name="to_custodian_id"/>
-                    <field name="transfer_type"/>
-                    <field name="document_ids"/>
-                    <field name="container_ids"/>
+                    <field name="transfer_date"/>
+                    <field name="document_id"/>
+                    <field name="container_id"/>
                     <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
                     <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
                     <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>

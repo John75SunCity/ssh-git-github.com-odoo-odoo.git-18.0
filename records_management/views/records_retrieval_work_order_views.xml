@@ -11,7 +11,7 @@
                 <list>
                     <field name="name"/>
                     <field name="equipment_id"/>
-                    <field name="status"/>
+                    <field name="state"/>
                     <field name="requested_by"/>
                     <field name="date_requested"/>
                 </list>
@@ -30,7 +30,7 @@
                         <group>
                             <field name="name"/>
                             <field name="equipment_id"/>
-                            <field name="status"/>
+                            <field name="state"/>
                             <field name="requested_by"/>
                             <field name="date_requested"/>
                             <field name="notes"/>

@@ -12,7 +12,7 @@
                 <field name="partner_id"/>
                 <field name="total_containers"/>
                 <field name="total_documents"/>
-                <field name="status"/>
+                <field name="state"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
@@ -20,7 +20,7 @@
                                 <strong><i class="fa fa-bar-chart"/>                                    <field name="partner_id"/>
                                 </strong>
                                 <span class="float-end">
-                                    <field name="status" widget="label_selection"/>
+                                    <field name="state" widget="label_selection"/>
                                 </span>
                             </div>
 <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
@@ -48,7 +48,7 @@
                 <field name="partner_id"/>
                 <field name="total_containers"/>
                 <field name="total_documents"/>
-                <field name="status" widget="badge"/>
+                <field name="state" widget="badge"/>
                 <field name="last_updated" widget="date"/>
             </list>
         </field>
@@ -69,7 +69,7 @@
                     <group>
                         <field name="total_containers"/>
                         <field name="total_documents"/>
-                        <field name="status"/>
+                        <field name="state"/>
                         <field name="last_updated"/>
                     </group>
                 </sheet>

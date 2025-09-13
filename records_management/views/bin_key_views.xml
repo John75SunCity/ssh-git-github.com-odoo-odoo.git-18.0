@@ -11,7 +11,7 @@
                 <field name="name"/>
 <field name="key_type"/>
 <field name="bin_location"/>
-<field name="status" widget="badge" decoration-success="status == 'available'" decoration-warning="status == 'assigned'" decoration-danger="status == 'lost'" decoration-muted="status == 'retired'"/>
+<field name="state" widget="badge" decoration-success="status == 'available'" decoration-warning="status == 'assigned'" decoration-danger="status == 'lost'" decoration-muted="status == 'retired'"/>
 <field name="current_holder"/>
 <field name="last_maintenance_date"/>
 <field name="assigned_date"/>
@@ -40,7 +40,7 @@
 
 <button name="action_reactivate_key" string="Reactivate" type="object" class="btn-success" invisible="status != 'retired'"/>
 
-    <field name="status" widget="statusbar" statusbar_visible="available,assigned,returned,lost,retired"/>
+    <field name="state" widget="statusbar" statusbar_visible="available,assigned,returned,lost,retired"/>
 </header>
 
                 <sheet>
@@ -117,7 +117,7 @@
             <list>
                 <field name="key_number"/>
                 <field name="partner_id"/>
-                <field name="status"/>
+                <field name="state"/>
                 <field name="issue_date"/>
                 <field name="return_date"/>
             </list>
@@ -161,7 +161,7 @@
             <field name="name"/>
             <field name="key_type"/>
             <field name="bin_location"/>
-            <field name="status"/>
+            <field name="state"/>
             <field name="current_holder"/>
             <field name="assigned_date"/>
             <templates>

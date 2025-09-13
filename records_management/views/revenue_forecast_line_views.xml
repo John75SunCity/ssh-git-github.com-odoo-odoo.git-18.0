@@ -19,7 +19,7 @@
                 <field name="variance_amount" sum="Total Variance"/>
                 <field name="variance_percentage" widget="percentage"/>
                 <field name="confidence_level"/>
-                <field name="status"/>
+                <field name="state"/>
                 <field name="currency_id" invisible="1"/>
             </list>
         </field>
@@ -44,7 +44,7 @@ invisible="status != 'in_progress'"/>
                     <button name="action_mark_missed" type="object"
                             string="Mark Missed"
 invisible="status != 'in_progress'"/>
-                    <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,achieved"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,achieved"/>
                 </header>
                 <sheet>
                     <group>
@@ -97,7 +97,7 @@ invisible="status != 'in_progress'"/>
             <search string="Search Forecast Lines">
                 <field name="customer_id"/>
                 <field name="service_type"/>
-                <field name="status"/>
+                <field name="state"/>
                 <field name="forecast_id"/>
 
                 <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
