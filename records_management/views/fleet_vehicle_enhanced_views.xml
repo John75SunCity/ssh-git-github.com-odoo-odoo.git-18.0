@@ -27,12 +27,12 @@
                                 <field name="naid_compliant"/>
                             </group>
                             <group string="Active Routes">
-                                <field name="pickup_route_ids" readonly="1" context="{'default_vehicle_id': active_id}"/>
+                                <field name="pickup_route_ids" readonly="1" context="{'default_vehicle_id': id}"/>
                             </group>
                         </group>
 
                         <separator string="Vehicle Guidance"/>
-                        <div class="alert alert-info" role="note">
+                        <div class="alert alert-info" role="status">
                             <strong><i class="fa fa-truck"/> Records Vehicle Types</strong>
                             <ul class="mt8">
                                 <li><b>Standard Pickup:</b> Regular document pickup &amp; delivery</li>
