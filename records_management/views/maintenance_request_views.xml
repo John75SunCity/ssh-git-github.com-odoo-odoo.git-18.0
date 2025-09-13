@@ -1,89 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <data>
-<!-- View maintenance.request form -->
-    <record id="maintenance_request_view_form" model="ir.ui.view">
-        <field name="name">maintenance.request.view.form.inherit.records_management</field>
-        <field name="model">maintenance.request</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
-            </xpath>
-        </field>
-    </record>
+        <!--
+            MAINTENANCE REQUEST VIEWS - Records Management Integration
 
+            This file provides integration views for maintenance requests in the Records Management module.
+            Currently contains placeholder views for future maintenance functionality.
 
-<!-- View maintenance.request tree -->
-<record id="maintenance_request_view_tree" model="ir.ui.view">
-    <field name="name">maintenance.request.view.tree.inherit.records_management</field>
-        <field name="model">maintenance.request</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
-            </xpath>
-        </field>
-    </record>
+            Note: These views are currently disabled as they require proper inheritance setup
+            and specific maintenance module integration requirements.
+        -->
 
+        <!-- Placeholder for future maintenance request integration -->
+        <!-- These views will be implemented when maintenance module requirements are defined -->
 
-    <!-- View maintenance.request search -->
-    <record id="maintenance_request_view_search" model="ir.ui.view">
-        <field name="name">maintenance.request.view.search.inherit.records_management</field>
-        <field name="model">maintenance.request</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
-            </xpath>
-        </field>
-    </record>
-
-
-    <!-- View maintenance.request kanban -->
-    <record id="maintenance_request_view_kanban" model="ir.ui.view">
-        <field name="name">maintenance.request.view.kanban.inherit.records_management</field>
-        <field name="model">maintenance.request</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
-            </xpath>
-        </field>
-    </record>
-
-
-    <!-- View maintenance.request graph -->
-    <record id="maintenance_request_view_graph" model="ir.ui.view">
-        <field name="name">maintenance.request.view.graph.inherit.records_management</field>
-        <field name="model">maintenance.request</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
-            </xpath>
-        </field>
-    </record>
-
-
-    <!-- View maintenance.request pivot -->
-    <record id="maintenance_request_view_pivot" model="ir.ui.view">
-        <field name="name">maintenance.request.view.pivot.inherit.records_management</field>
-        <field name="model">maintenance.request</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
-            </xpath>
-        </field>
-    </record>
-
-
-    <!-- View maintenance.request calendar -->
-    <record id="maintenance_request_view_calendar" model="ir.ui.view">
-        <field name="name">maintenance.request.view.calendar.inherit.records_management</field>
-        <field name="model">maintenance.request</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='']" position="after">
-            </xpath>
-        </field>
-    </record>
-</data>
-
+    </data>
 </odoo>
