@@ -16,13 +16,10 @@ def apply_field_fixes():
         # Status to state is already handled
         'arch': None,  # Skip arch field issues - these are view structure issues
 
-        # Chain of custody specific fixes
-        'transfer_type': 'transfer_date',  # If transfer_type missing, might be transfer_date
-        'document_ids': 'document_id',     # Many2many vs Many2one
-        'container_ids': 'container_id',   # Many2many vs Many2one
-    }
-
-    # Files to process (high priority ones)
+        # NOTE: Removed incorrect many2many mappings that were breaking the chain_of_custody model
+        # document_ids and container_ids are CORRECT Many2many field names in chain.of.custody
+        # DO NOT change them to document_id/container_id
+    }    # Files to process (high priority ones)
     priority_files = [
         'records_management/views/chain_of_custody_views.xml',
         'records_management/views/customer_inventory_views.xml',
