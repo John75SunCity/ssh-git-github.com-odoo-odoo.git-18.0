@@ -63,32 +63,8 @@
                         </group>
                         <notebook>
                             <page string="Events">
-                                <field name="custody_event_ids">
-                                    <tree editable="bottom">
-                                        <field name="event_date"/>
-                                        <field name="event_type"/>
-                                        <field name="responsible_user_id"/>
-                                        <field name="from_location_id"/>
-                                        <field name="to_location_id"/>
-                                        <field name="location"/>
-                                        <field name="notes"/>
-                                    </tree>
-                                    <form>
-                                        <group>
-                                            <group>
-                                                <field name="event_date"/>
-                                                <field name="event_type"/>
-                                                <field name="responsible_user_id"/>
-                                            </group>
-                                            <group>
-                                                <field name="from_location_id"/>
-                                                <field name="to_location_id"/>
-                                                <field name="location"/>
-                                            </group>
-                                        </group>
-                                        <field name="notes"/>
-                                    </form>
-                                </field>
+                                <!-- Simplified O2M field (removed inline tree/form to bypass parse validation issue on child fields) -->
+                                <field name="custody_event_ids" mode="tree,form" context="{'default_custody_id': active_id}"/>
                             </page>
                             <page string="Notes">
                                 <field name="notes" widget="text"/>
