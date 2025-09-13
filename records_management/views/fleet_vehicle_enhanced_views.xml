@@ -56,17 +56,18 @@
         </record>
 
         <!-- Tree View Inheritance -->
+                <!-- Tree View Inheritance -->
         <record id="fleet_vehicle_view_tree_inherit_records_management" model="ir.ui.view">
             <field name="name">fleet.vehicle.view.tree.inherit.records</field>
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>
             <field name="arch" type="xml">
-                <xpath expr="//tree//field[@name='license_plate']" position="after" groups="records_management.group_records_user,records_management.group_records_manager">
+                <tree position="inside" groups="records_management.group_records_user,records_management.group_records_manager">
                     <field name="records_vehicle_type" optional="show"/>
                     <field name="records_operational_status" optional="show"/>
                     <field name="max_container_capacity" optional="hide"/>
                     <field name="naid_compliant" optional="hide"/>
-                </xpath>
+                </tree>
             </field>
         </record>
 
@@ -76,8 +77,63 @@
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_kanban"/>
             <field name="arch" type="xml">
-                <!-- Insert badges in lower footer area -->
-                <xpath expr="//div[contains(@class,'oe_kanban_bottom_left')]" position="inside" groups="records_management.group_records_user,records_management.group_records_manager">
+                <kanban position="inside" groups="records_management.group_records_user,records_management.group_records_manager">
+                    <field name="records_vehicle_type"/>
+                    <field name="naid_compliant"/>
+                    <field name="max_container_capacity"/>
+                </kanban>
+                <!-- Add badges to the kanban card template -->
+                <templates position="inside">
+                    <t t-name="kanban-box" t-extend="fleet.fleet_vehicle_view_kanban">
+                        <t t-jquery="div.oe_kanban_details" t-operation="append">
+                            <div class="mt8" groups="records_management.group_records_user,records_management.group_records_manager">
+                                <span t-if="record.records_vehicle_type.raw_value" class="badge badge-info me-1">
+                                    <t t-esc="record.records_vehicle_type.value"/>
+                                </span>
+                                <span t-if="record.naid_compliant.raw_value" class="badge badge-success me-1">
+                                    <i class="fa fa-lock"/> NAID
+                                </span>
+                                <span t-if="record.max_container_capacity.raw_value" class="badge badge-secondary">
+                                    <i class="fa fa-box"/> <t t-esc="record.max_container_capacity.value"/> ctrs
+                                </span>
+                            </div>
+                        </t>
+                    </t>
+                </templates>
+            </field>
+        </record>
+
+        <!-- Search View Inheritance -->
+        <record id="fleet_vehicle_view_search_inherit_records_management" model="ir.ui.view">
+            <field name="name">fleet.vehicle.view.search.inherit.records</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
+            <field name="arch" type="xml">
+                <search position="inside" groups="records_management.group_records_user,records_management.group_records_manager">
+                    <field name="records_vehicle_type"/>
+                    <field name="records_operational_status"/>
+                    <filter string="Records Vehicles" name="records_vehicles" domain="[('records_vehicle_type','!=',False)]"/>
+                    <filter string="Available for Routes" name="available_routes" domain="[('records_operational_status','=','available')]"/>
+                    <filter string="Currently on Route" name="on_route" domain="[('records_operational_status','=','on_route')]"/>
+                    <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant','=',True)]"/>
+                    <filter string="Secure Transport" name="secure_transport" domain="[('records_vehicle_type','=','secure_transport')]"/>
+                    <filter string="Shredding Trucks" name="shredding_trucks" domain="[('records_vehicle_type','=','shredding_truck')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Records Vehicle Type" name="group_records_type" context="{'group_by':'records_vehicle_type'}"/>
+                        <filter string="Records Status" name="group_records_status" context="{'group_by':'records_operational_status'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Kanban View Inheritance -->
+        <record id="fleet_vehicle_view_kanban_inherit_records_management" model="ir.ui.view">
+            <field name="name">fleet.vehicle.view.kanban.inherit.records</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_kanban"/>
+            <field name="arch" type="xml">
+                <!-- Insert badges in kanban card footer -->
+                <xpath expr="//div[@class='oe_kanban_bottom_left']" position="inside" groups="records_management.group_records_user,records_management.group_records_manager">
                     <span t-if="record.records_vehicle_type.raw_value" class="badge badge-info me-1">
                         <t t-esc="record.records_vehicle_type.value"/>
                     </span>
@@ -97,11 +153,9 @@
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
             <field name="arch" type="xml">
-                <xpath expr="//search/field[@name='driver_id']" position="after" groups="records_management.group_records_user,records_management.group_records_manager">
+                <xpath expr="//search" position="inside" groups="records_management.group_records_user,records_management.group_records_manager">
                     <field name="records_vehicle_type"/>
                     <field name="records_operational_status"/>
-                </xpath>
-                <xpath expr="//search/filter[@name='inactive']" position="after" groups="records_management.group_records_user,records_management.group_records_manager">
                     <separator/>
                     <filter string="Records Vehicles" name="records_vehicles" domain="[('records_vehicle_type','!=',False)]"/>
                     <filter string="Available for Routes" name="available_routes" domain="[('records_operational_status','=','available')]"/>
@@ -109,8 +163,7 @@
                     <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant','=',True)]"/>
                     <filter string="Secure Transport" name="secure_transport" domain="[('records_vehicle_type','=','secure_transport')]"/>
                     <filter string="Shredding Trucks" name="shredding_trucks" domain="[('records_vehicle_type','=','shredding_truck')]"/>
-                </xpath>
-                <xpath expr="//search/filter[@name='group_location']" position="after">
+                    <separator/>
                     <filter string="Records Vehicle Type" name="group_records_type" context="{'group_by':'records_vehicle_type'}"/>
                     <filter string="Records Status" name="group_records_status" context="{'group_by':'records_operational_status'}"/>
                 </xpath>
