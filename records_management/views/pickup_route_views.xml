@@ -9,7 +9,7 @@
                 <kanban default_group_by="state" class="o_kanban_pickup_route">
                     <field name="name"/>
                     <field name="route_date"/>
-                    <field name="driver_id"/>
+                    <field name="user_id"/>
                     <field name="vehicle_id"/>
                     <field name="state"/>
                     <field name="priority"/>
@@ -20,10 +20,9 @@
                     <field name="efficiency_score"/>
                     <field name="request_count"/>
                     <field name="fsm_state"/>
-                    <field name="color"/>
                     <templates>
                         <t t-name="card">
-                            <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.color.raw_value ? 'oe_kanban_color_' + record.color.raw_value : ''}">
+                            <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_card_header">
                                     <strong><i class="fa fa-truck"/>
                                         <field name="name"/>
@@ -175,11 +174,11 @@
                                     <list editable="bottom">
                                         <field name="sequence" widget="handle"/>
                                         <field name="pickup_request_id"/>
-                                        <field name="location"/>
+                                        <field name="partner_id"/>
                                         <field name="distance"/>
-                                        <field name="estimated_arrival"/>
+                                        <field name="planned_arrival"/>
                                         <field name="actual_arrival"/>
-                                        <field name="status"/>
+                                        <field name="completion_status"/>
                                     </list>
                                 </field>
                             </page>
