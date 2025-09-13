@@ -41,23 +41,19 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div>
-<i class="fa fa-folder" aria-hidden="true"/>
-
+<i class="fa fa-folder" title="Document Type" aria-hidden="true"/>
                                             <field name="document_type_id"/>
                                         </div>
                                         <div>
-<i class="fa fa-cube" aria-hidden="true"/>
-
+<i class="fa fa-cube" title="Container" aria-hidden="true"/>
                                             <field name="container_id"/>
                                         </div>
                                         <div t-if="record.destruction_eligible_date.raw_value">
-<i class="fa fa-calendar-times" aria-hidden="true"/>
-
+<i class="fa fa-calendar-times" title="Destruction Date" aria-hidden="true"/>
                                             <field name="destruction_eligible_date"/>
                                         </div>
                                         <div t-if="record.total_scan_size_kb.raw_value and record.total_scan_size_visible.raw_value">
-<i class="fa fa-file" aria-hidden="true"/>
-
+<i class="fa fa-file" title="File Size" aria-hidden="true"/>
                                             <field name="total_scan_size_kb"/> KB
                                         </div>
                                     </div>
@@ -255,7 +251,7 @@
                                     <field name="resolution"/>
                                     <field name="file_size"/>
                                     <field name="storage_location"/>
-                                    <button name="action_download" type="object" string="Download" icon="fas fa-download" class="btn-link"/>
+                                    <!-- action_download method not implemented -->
                                 </list>
                             </field>
                         </page>
