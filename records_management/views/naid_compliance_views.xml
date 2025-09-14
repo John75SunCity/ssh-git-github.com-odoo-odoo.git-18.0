@@ -207,13 +207,11 @@
                         <page string="Audit History" name="audits">
                             <field name="audit_history_ids" mode="list">
                                 <list>
-                                    <field name="audit_date"/>
-                                    <field name="auditor_name"/>
-                                    <field name="audit_type"/>
-                                    <field name="audit_scope"/>
-                                    <field name="findings_count"/>
-                                    <field name="compliance_score"/>
-                                    <field name="audit_result"/>
+                                    <field name="timestamp"/>
+                                    <field name="user_id"/>
+                                    <field name="action_type"/>
+                                    <field name="description"/>
+                                    <field name="location_id"/>
                                     <button name="action_view_audit_details" type="object" string="Details" icon="fa-eye" class="btn-link"/>
                                 </list>
                             </field>
@@ -247,12 +245,11 @@
                         <page string="Compliance Checklist" name="checklist">
                             <field name="compliance_checklist_ids" mode="list">
                                 <list editable="bottom">
-                                    <field name="requirement_name"/>
-                                    <field name="requirement_type"/>
-                                    <field name="compliance_status"/>
-                                    <field name="last_verified"/>
-                                    <field name="verification_method"/>
-                                    <field name="responsible_person"/>
+                                    <field name="sequence"/>
+                                    <field name="name"/>
+                                    <field name="is_checked"/>
+                                    <field name="is_required"/>
+                                    <field name="description"/>
                                     <field name="notes"/>
                                 </list>
                             </field>
@@ -274,12 +271,12 @@
                             </group>
                             <field name="performance_history_ids" mode="list">
                                 <list>
-                                    <field name="measurement_date"/>
-                                    <field name="metric_type"/>
-                                    <field name="score"/>
-                                    <field name="benchmark"/>
-                                    <field name="variance"/>
-                                    <field name="trend"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="certificates_issued_count"/>
+                                    <field name="destruction_weight_total"/>
+                                    <field name="compliance_alerts_triggered"/>
+                                    <field name="state"/>
                                 </list>
                             </field>
                         </page>
