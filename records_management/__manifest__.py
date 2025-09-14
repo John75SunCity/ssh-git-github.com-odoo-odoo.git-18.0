@@ -223,7 +223,7 @@
         "views/stock_lot_views.xml",
         "views/survey_feedback_theme_views.xml",
         "views/survey_improvement_action_views.xml",
-        "views/survey_user_input_enhanced_views.xml",
+
         "views/temp_inventory_views.xml",
         "views/work_order_coordinator_views.xml",
         "views/workflow_visualization_manager_views.xml",
