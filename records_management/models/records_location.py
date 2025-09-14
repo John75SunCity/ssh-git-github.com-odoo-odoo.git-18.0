@@ -282,3 +282,20 @@ class RecordsLocation(models.Model):
         if self.active or self.state != 'inactive':
             self.write({'active': False, 'state': 'inactive'})
             self.message_post(body=_("Location deactivated."))
+
+    def action_location_report(self):
+        """
+        Open the location report wizard with current location pre-selected.
+        """
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Location Report'),
+            'res_model': 'location.report.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_location_id': self.id,
+                'default_include_child_locations': True,
+            }
+        }
