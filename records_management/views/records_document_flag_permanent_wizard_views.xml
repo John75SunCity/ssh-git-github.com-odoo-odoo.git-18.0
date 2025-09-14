@@ -3,7 +3,7 @@
 
     <!-- Flag Document as Permanent Wizard Form View -->
     <record id="records_document_flag_permanent_wizard_view_form" model="ir.ui.view">
-<field name="name">records.document.flag.permanent.wizard.view.form</field>
+        <field name="name">records.document.flag.permanent.wizard.view.form</field>
         <field name="model">records.document.flag.permanent.wizard</field>
     <field name="arch" type="xml">
             <form string="Flag Document as Permanent">
@@ -14,7 +14,7 @@
 
                 <group>
                     <group string="Document Information">
-<field name="document_id" invisible="document_id != False"/>
+        <field name="document_id" invisible="document_id != False"/>
 
 
                         <field name="document_name" readonly="1"/>

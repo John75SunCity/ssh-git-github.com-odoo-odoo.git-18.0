@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<record id="mobile_dashboard_widget_view_tree" model="ir.ui.view">
+    <record id="mobile_dashboard_widget_view_tree" model="ir.ui.view">
         <field name="name">mobile.dashboard.widget.view.list</field>
         <field name="model">mobile.dashboard.widget</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
-                <field name="widget_type"/>
-                <field name="category_id"/>
-                <field name="is_active"/>
+        <field name="name"/>
+        <field name="widget_type"/>
+        <field name="category_id"/>
+        <field name="is_active"/>
             </list>
         </field>
     </record>
@@ -20,10 +20,10 @@
             <form>
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="widget_type"/>
-                        <field name="category_id"/>
-                        <field name="is_active"/>
+        <field name="name"/>
+        <field name="widget_type"/>
+        <field name="category_id"/>
+        <field name="is_active"/>
                     </group>
                 </sheet>
             </form>
@@ -35,9 +35,9 @@
         <field name="model">mobile.dashboard.widget</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name"/>
-                <field name="widget_type"/>
-                <field name="category_id"/>
+        <field name="name"/>
+        <field name="widget_type"/>
+        <field name="category_id"/>
             </search>
         </field>
     </record>
@@ -47,9 +47,9 @@
         <field name="model">mobile.dashboard.widget</field>
         <field name="arch" type="xml">
             <kanban>
-                <field name="name"/>
-                <field name="widget_type"/>
-                <field name="is_active"/>
+        <field name="name"/>
+        <field name="widget_type"/>
+        <field name="is_active"/>
                 <templates>
 <t t-name="card">
                         <div class="oe_kanban_card">

@@ -2,31 +2,31 @@
 <odoo>
 
 <!-- Form view for paper bale weigh wizard -->
-<record id="paper_bale_weigh_wizard_view_form" model="ir.ui.view">
-<field name="name">paper.bale.weigh.wizard.view.form</field>
-<field name="model">paper.bale.weigh.wizard</field>
-<field name="arch" type="xml">
-<form string="Weigh Paper Bale">
-<sheet>
+    <record id="paper_bale_weigh_wizard_view_form" model="ir.ui.view">
+        <field name="name">paper.bale.weigh.wizard.view.form</field>
+        <field name="model">paper.bale.weigh.wizard</field>
+        <field name="arch" type="xml">
+        <form string="Weigh Paper Bale">
+        <sheet>
     <div class="oe_title">
-<h1>
+        <h1>
 <span>Weigh Bale: </span>
-<field name="bale_number" readonly="1" class="oe_inline"/>
+        <field name="bale_number" readonly="1" class="oe_inline"/>
 </h1>
 </div>
-<group>
-<group>
-<field name="bale_id" invisible="bale_id != False"/>
+        <group>
+        <group>
+        <field name="bale_id" invisible="bale_id != False"/>
 
-    <field name="current_weight" readonly="1"/>
-    <field name="new_weight" required="1"/>
+        <field name="current_weight" readonly="1"/>
+        <field name="new_weight" required="1"/>
 </group>
-<group>
-    <field name="weigh_date"/>
+        <group>
+        <field name="weigh_date"/>
 </group>
 </group>
-<group>
-<field name="notes" placeholder="Optional notes about the weighing..." help="Add any relevant comments or observations about this weighing."/>
+        <group>
+        <field name="notes" placeholder="Optional notes about the weighing..." help="Add any relevant comments or observations about this weighing."/>
 </group>
 </sheet>
 <footer>
@@ -35,15 +35,15 @@
 </footer>
 </form>
 </field>
-</record>
+    </record>
 
 <!-- Action for paper bale weigh wizard -->
-<record id="action_paper_bale_weigh_wizard" model="ir.actions.act_window">
-<field name="name">Weigh Paper Bale</field>
-<field name="res_model">paper.bale.weigh.wizard</field>
-<field name="view_mode">form</field>
-<field name="target">new</field>
-<field name="context">{'default_bale_id': context.get('active_id', False)}</field>
-</record>
+    <record id="action_paper_bale_weigh_wizard" model="ir.actions.act_window">
+        <field name="name">Weigh Paper Bale</field>
+        <field name="res_model">paper.bale.weigh.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_bale_id': context.get('active_id', False)}</field>
+    </record>
 
 </odoo>

@@ -8,13 +8,13 @@
         <field name="model">records.document</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_document_dashboard">
-                <field name="name"/>
-                <field name="document_type_id"/>
-                <field name="partner_id"/>
-                <field name="container_id"/>
-                <field name="state"/>
-                <field name="retention_policy_id"/>
-                <field name="destruction_eligible_date"/>
+        <field name="name"/>
+        <field name="document_type_id"/>
+        <field name="partner_id"/>
+        <field name="container_id"/>
+        <field name="state"/>
+        <field name="retention_policy_id"/>
+        <field name="destruction_eligible_date"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
@@ -22,11 +22,11 @@
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
                                         <i class="fa fa-file-text-o" title="Document"/>
-                                        <field name="name"/>
+        <field name="name"/>
                                     </div>
                                     <div class="o_secondary">
                                         <i class="fa fa-user" title="Customer"/>
-                                        <field name="partner_id"/>
+        <field name="partner_id"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
@@ -36,29 +36,29 @@
                                     </a>
                                 </div>
                             </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                 <div class="row">
                                     <div class="col-8">
                                         <div>
 <i class="fa fa-folder" title="Document Type" aria-hidden="true"/>
-                                            <field name="document_type_id"/>
+        <field name="document_type_id"/>
                                         </div>
                                         <div>
 <i class="fa fa-cube" title="Container" aria-hidden="true"/>
-                                            <field name="container_id"/>
+        <field name="container_id"/>
                                         </div>
                                         <div t-if="record.destruction_eligible_date.raw_value">
 <i class="fa fa-calendar-times" title="Destruction Date" aria-hidden="true"/>
-                                            <field name="destruction_eligible_date"/>
+        <field name="destruction_eligible_date"/>
                                         </div>
                                         <div t-if="record.total_scan_size_kb.raw_value and record.total_scan_size_visible.raw_value">
 <i class="fa fa-file" title="File Size" aria-hidden="true"/>
-                                            <field name="total_scan_size_kb"/> KB
+        <field name="total_scan_size_kb"/> KB
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <span class="badge" t-att-class="record.state.raw_value === 'active' ? 'badge-success' : record.state.raw_value === 'pending_destruction' ? 'badge-warning' : record.state.raw_value === 'destroyed' ? 'badge-danger' : 'badge-secondary'">
-                                            <field name="state"/>
+        <field name="state"/>
                                         </span>
                                     </div>
                                 </div>
@@ -110,14 +110,14 @@
         <field name="model">records.document</field>
         <field name="arch" type="xml">
             <list decoration-danger="destruction_eligible_date &lt;= context_today" decoration-warning="destruction_eligible_date &lt;= (context_today + relativedelta(days=30))" decoration-success="is_permanent == True">
-                <field name="name" string="Document"/>
-                <field name="document_type_id" string="Type"/>
-                <field name="partner_id" string="Customer"/>
-                <field name="container_id" string="Container"/>
-                <field name="is_permanent" string="Permanent" widget="boolean"/>
-                <field name="retention_policy_id" string="Retention Policy"/>
-                <field name="destruction_eligible_date" string="Destruction Date"/>
-                <field name="state" string="Status" widget="badge"/>
+        <field name="name" string="Document"/>
+        <field name="document_type_id" string="Type"/>
+        <field name="partner_id" string="Customer"/>
+        <field name="container_id" string="Container"/>
+        <field name="is_permanent" string="Permanent" widget="boolean"/>
+        <field name="retention_policy_id" string="Retention Policy"/>
+        <field name="destruction_eligible_date" string="Destruction Date"/>
+        <field name="state" string="Status" widget="badge"/>
                 <button name="action_view_chain_of_custody" type="object" string="Chain" icon="fas fa-link" class="btn-link"/>
                 <button name="action_generate_document_barcode" type="object" string="Barcode" icon="fas fa-barcode" class="btn-link"/>
                 <button name="action_generate_document_qr" type="object" string="QR" icon="fas fa-qrcode" class="btn-link"/>
@@ -143,20 +143,20 @@
                     <button name="action_mark_permanent" type="object" string="Mark as Permanent" class="btn-success" invisible="is_permanent" groups="records_management.group_records_user"/>
                     <button name="action_unmark_permanent" type="object" string="Remove Permanent Flag" class="btn-warning" invisible="not is_permanent" groups="base.group_system"/>
                     <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-warning" invisible="not destruction_eligible_date or is_permanent"/>
-                    <field name="state" widget="statusbar" statusbar_visible="active,pending_destruction,destroyed"/>
+        <field name="state" widget="statusbar" statusbar_visible="active,pending_destruction,destroyed"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_chain_of_custody" icon="fas fa-link">
-                            <field name="chain_of_custody_count" string="Chain Events" widget="statinfo"/>
+        <field name="chain_of_custody_count" string="Chain Events" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_audit_trail" icon="fas fa-history">
-                            <field name="audit_log_count" string="Audit Events" widget="statinfo"/>
+        <field name="audit_log_count" string="Audit Events" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fas fa-calendar-times" invisible="not destruction_eligible_date">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
-                                    <field name="days_until_destruction"/>
+        <field name="days_until_destruction"/>
                                 </span>
                                 <span class="o_stat_text">Days to Destroy</span>
                             </div>
@@ -165,19 +165,19 @@
 
                     <group>
                         <group string="Document Information">
-                            <field name="name" placeholder="e.g., Invoice-2024-001"/>
-                            <field name="document_type_id"/>
-                            <field name="partner_id"/>
-                            <field name="department_id"/>
-                            <field name="container_id"/>
+        <field name="name" placeholder="e.g., Invoice-2024-001"/>
+        <field name="document_type_id"/>
+        <field name="partner_id"/>
+        <field name="department_id"/>
+        <field name="container_id"/>
                         </group>
                         <group string="Security &amp; Compliance">
-                            <field name="is_permanent" widget="boolean_toggle"/>
-                            <field name="permanent_user_id" readonly="1" invisible="not is_permanent"/>
-                            <field name="permanent_date" readonly="1" invisible="not is_permanent"/>
-                            <field name="retention_policy_id"/>
-                            <field name="destruction_eligible_date"/>
-                            <field name="state"/>
+        <field name="is_permanent" widget="boolean_toggle"/>
+        <field name="permanent_user_id" readonly="1" invisible="not is_permanent"/>
+        <field name="permanent_date" readonly="1" invisible="not is_permanent"/>
+        <field name="retention_policy_id"/>
+        <field name="destruction_eligible_date"/>
+        <field name="state"/>
                             <div colspan="2" style="font-weight: bold; color: #28a745; padding: 5px;"><i class="fas fa-certificate" title="NAID AAA Certified"/> NAID AAA Certified Facility</div>
                         </group>
                     </group>
@@ -186,70 +186,70 @@
                         <page string="Document Details" name="details">
                             <group>
                                 <group string="Dates &amp; Timeline">
-                                    <field name="created_date"/>
-                                    <field name="received_date"/>
-                                    <field name="storage_date"/>
-                                    <field name="last_access_date"/>
+        <field name="created_date"/>
+        <field name="received_date"/>
+        <field name="storage_date"/>
+        <field name="last_access_date"/>
                                 </group>
                                 <group string="Classification">
-                                    <field name="document_category"/>
-                                    <field name="media_type"/>
-                                    <field name="original_format"/>
-                                    <field name="digitized"/>
-                                    <field name="scan_count" readonly="1"/>
-<field name="total_scan_size_kb" readonly="1" widget="integer" invisible="(scan_count == 0) or (total_scan_size_visible == False)"/>
+        <field name="document_category"/>
+        <field name="media_type"/>
+        <field name="original_format"/>
+        <field name="digitized"/>
+        <field name="scan_count" readonly="1"/>
+        <field name="total_scan_size_kb" readonly="1" widget="integer" invisible="(scan_count == 0) or (total_scan_size_visible == False)"/>
 
                                 </group>
                             </group>
-                            <field name="description" placeholder="Document description, contents, and special handling notes..."/>
+        <field name="description" placeholder="Document description, contents, and special handling notes..."/>
                         </page>
                         <page string="Chain of Custody" name="custody_chain">
-                            <field name="chain_of_custody_ids" mode="list">
+        <field name="chain_of_custody_ids" mode="list">
                                 <list>
-                                    <field name="event_date"/>
-                                    <field name="event_type"/>
-                                    <field name="responsible_person"/>
-                                    <field name="location"/>
-                                    <field name="signature_verified"/>
-                                    <field name="notes"/>
+        <field name="event_date"/>
+        <field name="event_type"/>
+        <field name="responsible_person"/>
+        <field name="location"/>
+        <field name="signature_verified"/>
+        <field name="notes"/>
                                 </list>
                             </field>
                         </page>
                         <page string="Audit Trail" name="audit">
-                            <field name="audit_trail_ids" mode="list">
+        <field name="audit_trail_ids" mode="list">
                                 <list>
-                                    <field name="timestamp"/>
-                                    <field name="action_type"/>
-                                    <field name="user_id"/>
-                                    <field name="description"/>
-                                    <field name="compliance_verified"/>
+        <field name="timestamp"/>
+        <field name="action_type"/>
+        <field name="user_id"/>
+        <field name="description"/>
+        <field name="compliance_verified"/>
                                 </list>
                             </field>
                         </page>
                         <page string="Destruction Record" name="destruction" invisible="state != 'destroyed'">
                             <group>
                                 <group string="Destruction Details">
-                                    <field name="destruction_date"/>
-                                    <field name="destruction_method"/>
-                                    <field name="destruction_certificate_id"/>
-                                    <field name="naid_destruction_verified"/>
+        <field name="destruction_date"/>
+        <field name="destruction_method"/>
+        <field name="destruction_certificate_id"/>
+        <field name="naid_destruction_verified"/>
                                 </group>
                                 <group string="Authorized Personnel">
-                                    <field name="destruction_authorized_by"/>
-                                    <field name="destruction_witness"/>
-                                    <field name="destruction_facility"/>
+        <field name="destruction_authorized_by"/>
+        <field name="destruction_witness"/>
+        <field name="destruction_facility"/>
                                 </group>
                             </group>
-                            <field name="destruction_notes" placeholder="Destruction process notes and compliance verification..."/>
+        <field name="destruction_notes" placeholder="Destruction process notes and compliance verification..."/>
                         </page>
-<page string="Digital Scans" name="digital" invisible="digital_scanning_enabled == False">
-                            <field name="digital_scan_ids" mode="list">
+        <page string="Digital Scans" name="digital" invisible="digital_scanning_enabled == False">
+        <field name="digital_scan_ids" mode="list">
                                 <list>
-                                    <field name="scan_date"/>
-                                    <field name="file_format"/>
-                                    <field name="resolution"/>
-                                    <field name="file_size"/>
-                                    <field name="storage_location"/>
+        <field name="scan_date"/>
+        <field name="file_format"/>
+        <field name="resolution"/>
+        <field name="file_size"/>
+        <field name="storage_location"/>
                                     <!-- action_download method not implemented -->
                                 </list>
                             </field>
@@ -257,9 +257,9 @@
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
                 </div>
             </form>
         </field>
@@ -271,9 +271,9 @@
         <field name="model">records.document</field>
         <field name="arch" type="xml">
             <calendar string="Document Destruction Schedule" date_start="destruction_eligible_date" color="state">
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="state"/>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="state"/>
             </calendar>
         </field>
     </record>
@@ -284,10 +284,10 @@
         <field name="model">records.document</field>
         <field name="arch" type="xml">
             <search>
-                <field name="name" string="Document" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
-                <field name="partner_id"/>
-                <field name="document_type_id"/>
-                <field name="container_id"/>
+        <field name="name" string="Document" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
+        <field name="partner_id"/>
+        <field name="document_type_id"/>
+        <field name="container_id"/>
 
                 <filter string="Active Documents" name="active" domain="[('state', '=', 'active')]"/>
                 <filter string="Pending Destruction" name="pending_destruction" domain="[('state', '=', 'pending_destruction')]"/>
@@ -340,5 +340,5 @@
                 • Mobile access for field operations
 </p>
 </field>
-</record>
+    </record>
 </odoo>

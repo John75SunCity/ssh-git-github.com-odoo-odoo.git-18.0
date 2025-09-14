@@ -5,16 +5,16 @@
     <record id="file_retrieval_view_tree" model="ir.ui.view">
         <field name="name">file.retrieval.view.tree</field>
         <field name="model">file.retrieval</field>
-    <field name="arch" type="xml">
+        <field name="arch" type="xml">
             <list string="File Retrieval" decoration-warning="status == 'searching'" decoration-info="status == 'located'" decoration-success="status == 'delivered'">
-                <field name="name"/>
-                <field name="requested_file_name"/>
-                <field name="partner_id"/>
-                <field name="status"/>
-                <field name="priority"/>
-                <field name="user_id"/>
-                <field name="discovery_date"/>
-                <field name="containers_accessed_count"/>
+        <field name="name"/>
+        <field name="requested_file_name"/>
+        <field name="partner_id"/>
+        <field name="status"/>
+        <field name="priority"/>
+        <field name="user_id"/>
+        <field name="discovery_date"/>
+        <field name="containers_accessed_count"/>
             </list>
         </field>
     </record>
@@ -23,7 +23,7 @@
     <record id="file_retrieval_view_form" model="ir.ui.view">
         <field name="name">file.retrieval.view.form</field>
         <field name="model">file.retrieval</field>
-    <field name="arch" type="xml">
+        <field name="arch" type="xml">
             <form string="File Retrieval">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -33,51 +33,51 @@ invisible="status != 'pending'"
                     </div>
                     <div class="oe_title">
                         <h1>
-                            <field name="display_name" readonly="1"/>
+        <field name="display_name" readonly="1"/>
                         </h1>
                     </div>
                     <group>
                         <group name="main_info">
-                            <field name="name"/>
-                            <field name="requested_file_name"/>
-                            <field name="partner_id"/>
-                            <field name="user_id"/>
-                            <field name="status"/>
-                            <field name="priority"/>
+        <field name="name"/>
+        <field name="requested_file_name"/>
+        <field name="partner_id"/>
+        <field name="user_id"/>
+        <field name="status"/>
+        <field name="priority"/>
                         </group>
                         <group name="details">
-                            <field name="document_id"/>
-                            <field name="container_id"/>
-                            <field name="barcode"/>
-                            <field name="company_id"/>
-                            <field name="active"/>
+        <field name="document_id"/>
+        <field name="container_id"/>
+        <field name="barcode"/>
+        <field name="company_id"/>
+        <field name="active"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Search Details" name="search">
                             <group>
                                 <group name="discovery">
-                                    <field name="file_discovered"/>
-<field name="discovery_date" invisible="file_discovered == False"/>
+        <field name="file_discovered"/>
+        <field name="discovery_date" invisible="file_discovered == False"/>
 
-<field name="discovery_container_id" invisible="file_discovered == False"/>
+        <field name="discovery_container_id" invisible="file_discovered == False"/>
 
                                 </group>
                                 <group name="condition">
-                                    <field name="condition_before"/>
-                                    <field name="condition_after"/>
+        <field name="condition_before"/>
+        <field name="condition_after"/>
                                 </group>
                             </group>
                             <separator string="Searched Containers"/>
-                            <field name="searched_container_ids" nolabel="1"/>
+        <field name="searched_container_ids" nolabel="1"/>
                         </page>
                         <page string="Search Attempts" name="attempts">
-                            <field name="search_attempt_ids" nolabel="1"/>
+        <field name="search_attempt_ids" nolabel="1"/>
                         </page>
-<page string="Not Found" name="not_found" invisible="status != 'not_found'">
+        <page string="Not Found" name="not_found" invisible="status != 'not_found'">
                             <group>
-                                <field name="not_found_reason"/>
-                                <field name="not_found_notes"/>
+        <field name="not_found_reason"/>
+        <field name="not_found_notes"/>
                             </group>
                         </page>
                     </notebook>
@@ -90,15 +90,15 @@ invisible="status != 'pending'"
     <record id="file_retrieval_view_search" model="ir.ui.view">
         <field name="name">file.retrieval.view.search</field>
         <field name="model">file.retrieval</field>
-    <field name="arch" type="xml">
+        <field name="arch" type="xml">
             <search string="Search File Retrieval">
-                <field name="name"/>
-                <field name="requested_file_name"/>
-                <field name="partner_id"/>
-                <field name="user_id"/>
-                <field name="container_id"/>
-                <field name="status"/>
-                <field name="priority"/>
+        <field name="name"/>
+        <field name="requested_file_name"/>
+        <field name="partner_id"/>
+        <field name="user_id"/>
+        <field name="container_id"/>
+        <field name="status"/>
+        <field name="priority"/>
                 <filter string="Pending" name="pending" domain="[('status', '=', 'pending')]"/>
                 <filter string="Searching" name="searching" domain="[('status', '=', 'searching')]"/>
                 <filter string="Located" name="located" domain="[('status', '=', 'located')]"/>

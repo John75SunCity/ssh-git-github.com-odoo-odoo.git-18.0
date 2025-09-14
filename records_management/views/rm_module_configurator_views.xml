@@ -2,34 +2,34 @@
 <odoo>
 
 <!-- Enhanced List View with Status Indicators -->
-<record id="rm_module_configurator_view_tree" model="ir.ui.view">
+    <record id="rm_module_configurator_view_tree" model="ir.ui.view">
     <field name="name">rm.module.configurator.view.tree</field>
     <field name="model">rm.module.configurator</field>
     <field name="arch" type="xml">
 <tree decoration-info="active == True" decoration-muted="active == False" decoration-success="value_boolean == True" decoration-danger="value_boolean == False">
-<field name="name" string="Configuration Name"/>
+        <field name="name" string="Configuration Name"/>
 
-<field name="category" widget="badge"/>
-<field name="config_key" string="Key"/>
-<field name="description" string="Description"/>
-<field name="value_boolean" widget="boolean_toggle" string="Enabled"/>
-<field name="value_text" string="Value" optional="hide"/>
+        <field name="category" widget="badge"/>
+        <field name="config_key" string="Key"/>
+        <field name="description" string="Description"/>
+        <field name="value_boolean" widget="boolean_toggle" string="Enabled"/>
+        <field name="value_text" string="Value" optional="hide"/>
 
-<field name="sequence" widget="priority"/>
-<field name="active" widget="boolean_toggle"/>
-<field name="company_id" groups="base.group_multi_company" optional="hide"/>
-<field name="modified_by_id" widget="many2one_avatar_user" string="Owner" optional="hide"/>
-<field name="last_modified" string="Modified" optional="hide"/>
+        <field name="sequence" widget="priority"/>
+        <field name="active" widget="boolean_toggle"/>
+        <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+        <field name="modified_by_id" widget="many2one_avatar_user" string="Owner" optional="hide"/>
+        <field name="last_modified" string="Modified" optional="hide"/>
 
 </tree>
 </field>
 </record>
 
 <!-- Comprehensive Form View with Categorized Sections -->
-<record id="rm_module_configurator_view_form" model="ir.ui.view">
-<field name="name">rm.module.configurator.view.form</field>
-<field name="model">rm.module.configurator</field>
-<field name="arch" type="xml">
+    <record id="rm_module_configurator_view_form" model="ir.ui.view">
+        <field name="name">rm.module.configurator.view.form</field>
+        <field name="model">rm.module.configurator</field>
+        <field name="arch" type="xml">
     <form string="RM Module Configurator">
         <header>
             <!-- Removed non-existent action buttons: action_activate_config, action_deactivate_config, action_reset_to_default -->
@@ -48,25 +48,25 @@
 <label for="name" class="oe_edit_only" string="Configuration Name"/>
 
 <h1>
-<field name="name" placeholder="e.g., Enable Advanced Portal Features"/>
+        <field name="name" placeholder="e.g., Enable Advanced Portal Features"/>
 
 </h1>
 <label for="description" class="oe_edit_only" string="Description"/>
 <h3>
-<field name="description" placeholder="Detailed description of this configuration option"/>
+        <field name="description" placeholder="Detailed description of this configuration option"/>
 </h3>
 </div>
 <group>
 <group string="Basic Configuration">
-<field name="config_key" string="Configuration Key"/>
-<field name="category" string="Category" widget="selection"/>
-<field name="sequence" widget="priority" string="Priority"/>
-<field name="config_type" string="Type" widget="selection"/>
+        <field name="config_key" string="Configuration Key"/>
+        <field name="category" string="Category" widget="selection"/>
+        <field name="sequence" widget="priority" string="Priority"/>
+        <field name="config_type" string="Type" widget="selection"/>
 
 </group>
 <group string="Ownership &amp; Access">
-<field name="company_id" groups="base.group_multi_company"/>
-<field name="modified_by_id" string="Configuration Owner"/>
+        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="modified_by_id" string="Configuration Owner"/>
 
 </group>
 </group>
@@ -80,12 +80,12 @@
             <field name="value_text" string="Configuration Value"/>
         </group>
 <group string="Numeric Configuration" invisible="config_type != 'parameter'">
-<field name="value_number" string="Numeric Value"/>
+        <field name="value_number" string="Numeric Value"/>
 </group>
 </group>
 </page>
 <page string="Selection Options" name="selection" invisible="config_type != 'parameter'">
-<field name="value_selection" string="Selected Value"/>
+        <field name="value_selection" string="Selected Value"/>
 </page>
 <page string="Documentation" name="documentation">
 <group>
@@ -102,35 +102,35 @@
 </page>
 <page string="Field Service" name="fsm_features">
 <group string="FSM Feature Toggles">
-<field name="enable_fsm_features"/>
-<field name="bin_inventory_enabled"/>
+        <field name="enable_fsm_features"/>
+        <field name="bin_inventory_enabled"/>
 
 </group>
 </page>
 </notebook>
 </sheet>
 <div class="oe_chatter">
-<field name="message_follower_ids"/>
-<field name="activity_ids"/>
-<field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
 </div>
 </form>
 </field>
 </record>
 
 <!-- Advanced Search View with Dashboard Capabilities -->
-<record id="rm_module_configurator_view_search" model="ir.ui.view">
-<field name="name">rm.module.configurator.view.search</field>
-<field name="model">rm.module.configurator</field>
-<field name="arch" type="xml">
+    <record id="rm_module_configurator_view_search" model="ir.ui.view">
+        <field name="name">rm.module.configurator.view.search</field>
+        <field name="model">rm.module.configurator</field>
+        <field name="arch" type="xml">
     <search string="Configuration Search">
         <field name="name" string="Name" filter_domain="[('name', 'ilike', self)]"/>
         <field name="config_key" string="Key" filter_domain="[('config_key', 'ilike', self)]"/>
         <field name="category" string="Category"/>
         <field name="description" string="Description" filter_domain="[('description', 'ilike', self)]"/>
 
-<field name="company_id" groups="base.group_multi_company"/>
-<field name="modified_by_id" string="Owner"/>
+        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="modified_by_id" string="Owner"/>
 
 <separator/>
 
@@ -180,10 +180,10 @@
 </record>
 
 <!-- Kanban View for Dashboard -->
-<record id="rm_module_configurator_view_kanban" model="ir.ui.view">
-<field name="name">rm.module.configurator.view.kanban</field>
-<field name="model">rm.module.configurator</field>
-<field name="arch" type="xml">
+    <record id="rm_module_configurator_view_kanban" model="ir.ui.view">
+        <field name="name">rm.module.configurator.view.kanban</field>
+        <field name="model">rm.module.configurator</field>
+        <field name="arch" type="xml">
     <kanban default_group_by="category" class="o_kanban_dashboard">
         <field name="name"/>
         <field name="category"/>
@@ -203,7 +203,7 @@
             </strong>
             <small class="o_kanban_record_subtitle text-muted">
 <i class="fa fa-key mr-1" title="Configuration Key"/>
-<field name="config_key"/>
+        <field name="config_key"/>
 
 </small>
 </div>
@@ -237,13 +237,13 @@
 <div class="o_kanban_record_bottom">
 <div class="oe_kanban_bottom_left">
     <div t-if="record.modified_by_id.raw_value">
-<field name="modified_by_id" widget="many2one_avatar_user"/>
+        <field name="modified_by_id" widget="many2one_avatar_user"/>
 </div>
 </div>
 <div class="oe_kanban_bottom_right">
 <div t-if="record.company_id.raw_value" groups="base.group_multi_company">
 <i class="fa fa-building mr-1" title="Company"/>
-<field name="company_id"/>
+        <field name="company_id"/>
 
 </div>
 </div>
@@ -256,17 +256,17 @@
 </record>
 
 <!-- Enhanced Action Window -->
-<record id="action_rm_module_configurator" model="ir.actions.act_window">
-<field name="name">Records Management Configurator</field>
-<field name="res_model">rm.module.configurator</field>
+    <record id="action_rm_module_configurator" model="ir.actions.act_window">
+        <field name="name">Records Management Configurator</field>
+        <field name="res_model">rm.module.configurator</field>
         <field name="view_mode">kanban,list,form</field>
-<field name="search_view_id" ref="rm_module_configurator_view_search"/>
-<field name="domain">[]</field>
-<field name="context">{
+        <field name="search_view_id" ref="rm_module_configurator_view_search"/>
+        <field name="domain">[]</field>
+        <field name="context">{
             'search_default_filter_active': 1,
             'search_default_group_by_category': 1
         }</field>
-<field name="help" type="html">
+        <field name="help" type="html">
 <p class="o_view_nocontent_smiling_face">
 <i class="fa fa-cog" title="Configuration Settings"/>
  Welcome to the Records Management Configurator!
@@ -304,13 +304,13 @@
 </record>
 
 <!-- Dashboard Action -->
-<record id="action_rm_module_configurator_dashboard" model="ir.actions.act_window">
-<field name="name">Configuration Dashboard</field>
-<field name="res_model">rm.module.configurator</field>
-<field name="view_mode">kanban</field>
-<field name="view_id" ref="rm_module_configurator_view_kanban"/>
-<field name="search_view_id" ref="rm_module_configurator_view_search"/>
-<field name="context">{
+    <record id="action_rm_module_configurator_dashboard" model="ir.actions.act_window">
+        <field name="name">Configuration Dashboard</field>
+        <field name="res_model">rm.module.configurator</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="rm_module_configurator_view_kanban"/>
+        <field name="search_view_id" ref="rm_module_configurator_view_search"/>
+        <field name="context">{
             'search_default_filter_active': 1,
             'search_default_group_by_category': 1
         }</field>

@@ -2,7 +2,7 @@
 <odoo>
 
     <!-- Inherited view to add smart button for Field Label Helper Wizard on Container form -->
-<record id="records_container_view_form_inherit" model="ir.ui.view">
+    <record id="records_container_view_form_inherit" model="ir.ui.view">
         <field name="name">records.container.view.form.inherit.field_label_helper</field>
         <field name="model">records.container</field>
         <field name="inherit_id" ref="records_management.records_container_view_form"/>

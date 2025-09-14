@@ -16,18 +16,18 @@
 <odoo>
 
 <!-- Account Move Line Form View Extension for Records Management -->
-<record id="account_move_line_view_form" model="ir.ui.view">
-    <field name="name">account.move.line.form.inherit.records</field>
-    <field name="model">account.move.line</field>
-    <field name="inherit_id" ref="account.view_move_line_form"/>
-    <field name="arch" type="xml">
+    <record id="account_move_line_view_form" model="ir.ui.view">
+        <field name="name">account.move.line.form.inherit.records</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_form"/>
+        <field name="arch" type="xml">
         <!-- Add Records Management integration fields -->
         <xpath expr="//field[@name='partner_id']" position="after">
-            <field name="records_service_type"
+        <field name="records_service_type"
 invisible="records_related == False"/>
-            <field name="container_count" string="Containers"
+        <field name="container_count" string="Containers"
 invisible="records_service_type == False"/>
-            <field name="shredding_weight_lbs" string="Weight (lbs)"
+        <field name="shredding_weight_lbs" string="Weight (lbs)"
 invisible="records_service_type != 'shredding'"/>
         </xpath>
 
@@ -36,44 +36,44 @@ invisible="records_service_type != 'shredding'"/>
             <group string="Records Management" col="2"
 invisible="records_related == False">
                 <!-- Field kept for technical reasons (e.g., domain, context, or automation); already hidden by group invisibility -->
-                <field name="records_related" invisible="1"/>
-                <field name="pickup_request_id"/>
-                <field name="destruction_service_id"/>
-                <field name="storage_location_id"/>
-                <field name="naid_audit_required" widget="boolean_toggle"/>
+        <field name="records_related" invisible="1"/>
+        <field name="pickup_request_id"/>
+        <field name="destruction_service_id"/>
+        <field name="storage_location_id"/>
+        <field name="naid_audit_required" widget="boolean_toggle"/>
             </group>
         </xpath>
     </field>
-</record>
+    </record>
 
 <!-- Account Move Line List View Extension for Records Management -->
-<record id="account_move_line_view_tree" model="ir.ui.view">
-    <field name="name">account.move.line.tree.inherit.records</field>
-    <field name="model">account.move.line</field>
-    <field name="inherit_id" ref="account.view_move_line_tree"/>
-    <field name="arch" type="xml">
+    <record id="account_move_line_view_tree" model="ir.ui.view">
+        <field name="name">account.move.line.tree.inherit.records</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_tree"/>
+        <field name="arch" type="xml">
         <!-- Add Records Management columns -->
         <xpath expr="//field[@name='account_id']" position="after">
-            <field name="records_service_type" optional="hide"/>
-            <field name="container_count" optional="hide"
+        <field name="records_service_type" optional="hide"/>
+        <field name="container_count" optional="hide"
 invisible="records_service_type == False"/>
-            <field name="pickup_request_id" optional="hide"/>
-            <field name="naid_audit_required" widget="boolean_toggle" optional="hide"/>
+        <field name="pickup_request_id" optional="hide"/>
+        <field name="naid_audit_required" widget="boolean_toggle" optional="hide"/>
         </xpath>
     </field>
-</record>
+    </record>
 
 <!-- Account Move Line Search View Extension for Records Management -->
-<record id="account_move_line_view_search" model="ir.ui.view">
-    <field name="name">account.move.line.search.inherit.records</field>
-    <field name="model">account.move.line</field>
-    <field name="inherit_id" ref="account.view_account_move_line_filter"/>
-    <field name="arch" type="xml">
+    <record id="account_move_line_view_search" model="ir.ui.view">
+        <field name="name">account.move.line.search.inherit.records</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_account_move_line_filter"/>
+        <field name="arch" type="xml">
         <!-- Add Records Management search fields -->
         <xpath expr="//field[@name='partner_id']" position="after">
-            <field name="records_service_type" string="Service Type"/>
-            <field name="pickup_request_id" string="Pickup Request"/>
-            <field name="destruction_service_id" string="Destruction Service"/>
+        <field name="records_service_type" string="Service Type"/>
+        <field name="pickup_request_id" string="Pickup Request"/>
+        <field name="destruction_service_id" string="Destruction Service"/>
         </xpath>
 
         <!-- Add Records Management filters -->
@@ -99,14 +99,14 @@ invisible="records_service_type == False"/>
                     context="{'group_by': 'storage_location_id'}"/>
         </xpath>
     </field>
-</record>
+    </record>
 
 <!-- Account Move Line Kanban View Extension for Records Management -->
-<record id="account_move_line_view_kanban" model="ir.ui.view">
-    <field name="name">account.move.line.kanban.inherit.records</field>
-    <field name="model">account.move.line</field>
-    <field name="inherit_id" ref="account.view_move_line_kanban"/>
-    <field name="arch" type="xml">
+    <record id="account_move_line_view_kanban" model="ir.ui.view">
+        <field name="name">account.move.line.kanban.inherit.records</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_kanban"/>
+        <field name="arch" type="xml">
         <!-- Add Records Management indicators -->
         <xpath expr="//div[hasclass('oe_kanban_details')]" position="inside">
             <div class="o_kanban_tags_section"
@@ -116,7 +116,7 @@ invisible="records_service_type == False"/>
                 </span>
                 <span t-if="record.records_service_type.raw_value"
                       class="badge badge-secondary">
-                    <field name="records_service_type"/>
+        <field name="records_service_type"/>
                 </span>
                 <span t-if="record.naid_audit_required.raw_value"
                       class="badge badge-warning">
@@ -125,54 +125,54 @@ invisible="records_service_type == False"/>
             </div>
         </xpath>
     </field>
-</record>
+    </record>
 
 <!-- Account Move Line Graph View Extension for Records Management -->
-<record id="account_move_line_view_graph" model="ir.ui.view">
-    <field name="name">account.move.line.graph.inherit.records</field>
-    <field name="model">account.move.line</field>
-    <field name="inherit_id" ref="account.view_move_line_graph"/>
-    <field name="arch" type="xml">
+    <record id="account_move_line_view_graph" model="ir.ui.view">
+        <field name="name">account.move.line.graph.inherit.records</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_graph"/>
+        <field name="arch" type="xml">
         <!-- Add Records Management dimensions -->
         <xpath expr="//graph" position="attributes">
             <attribute name="sample">1</attribute>
         </xpath>
         <xpath expr="//field[@name='account_id']" position="after">
-            <field name="records_service_type" type="row"/>
+        <field name="records_service_type" type="row"/>
         </xpath>
     </field>
-</record>
+    </record>
 
 <!-- Account Move Line Pivot View Extension for Records Management -->
-<record id="account_move_line_view_pivot" model="ir.ui.view">
-    <field name="name">account.move.line.pivot.inherit.records</field>
-    <field name="model">account.move.line</field>
-    <field name="inherit_id" ref="account.view_move_line_pivot"/>
-    <field name="arch" type="xml">
+    <record id="account_move_line_view_pivot" model="ir.ui.view">
+        <field name="name">account.move.line.pivot.inherit.records</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_pivot"/>
+        <field name="arch" type="xml">
         <!-- Add Records Management pivot dimensions -->
         <xpath expr="//pivot" position="attributes">
             <attribute name="sample">1</attribute>
         </xpath>
         <xpath expr="//field[@name='account_id']" position="after">
-            <field name="records_service_type" type="row"/>
-            <field name="container_count" type="measure"/>
-            <field name="shredding_weight_lbs" type="measure"/>
+        <field name="records_service_type" type="row"/>
+        <field name="container_count" type="measure"/>
+        <field name="shredding_weight_lbs" type="measure"/>
         </xpath>
     </field>
-</record>
+    </record>
 
 <!-- Account Move Line Calendar View Extension for Records Management -->
-<record id="account_move_line_view_calendar" model="ir.ui.view">
-    <field name="name">account.move.line.calendar.inherit.records</field>
-    <field name="model">account.move.line</field>
-    <field name="inherit_id" ref="account.view_move_line_calendar"/>
-    <field name="arch" type="xml">
+    <record id="account_move_line_view_calendar" model="ir.ui.view">
+        <field name="name">account.move.line.calendar.inherit.records</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_calendar"/>
+        <field name="arch" type="xml">
         <!-- Enhance calendar with Records Management information -->
         <xpath expr="//calendar" position="attributes">
             <attribute name="color">records_service_type</attribute>
         </xpath>
     </field>
-</record>
+    </record>
 
 <!-- No changes required in this file. Ensure 'account' is in your manifest and installed. -->
 

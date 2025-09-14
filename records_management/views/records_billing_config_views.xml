@@ -2,76 +2,76 @@
 <odoo>
 
 <!-- List view for base.rate -->
-<record id="records_billing_config_view_tree" model="ir.ui.view">
-    <field name="name">records.billing.config.view.tree</field>
-    <field name="model">records.billing.config</field>
-    <field name="arch" type="xml">
+    <record id="records_billing_config_view_tree" model="ir.ui.view">
+        <field name="name">records.billing.config.view.tree</field>
+        <field name="model">records.billing.config</field>
+        <field name="arch" type="xml">
         <list>
-            <field name="name"/>
+        <field name="name"/>
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Form view for base.rate -->
-<record id="records_billing_config_view_form" model="ir.ui.view">
-    <field name="name">records.billing.config.view.form</field>
-    <field name="model">records.billing.config</field>
-    <field name="arch" type="xml">
+    <record id="records_billing_config_view_form" model="ir.ui.view">
+        <field name="name">records.billing.config.view.form</field>
+        <field name="model">records.billing.config</field>
+        <field name="arch" type="xml">
         <form string="Records Billing Config">
             <sheet>
                 <div class="oe_title">
                     <label for="name"/>
                     <h1>
-                        <field name="name" placeholder="Name..."/>
+        <field name="name" placeholder="Name..."/>
                     </h1>
                 </div>
             </sheet>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Search view for base.rate -->
-<record id="records_billing_config_view_search" model="ir.ui.view">
-    <field name="name">records.billing.config.view.search</field>
-    <field name="model">records.billing.config</field>
-    <field name="arch" type="xml">
+    <record id="records_billing_config_view_search" model="ir.ui.view">
+        <field name="name">records.billing.config.view.search</field>
+        <field name="model">records.billing.config</field>
+        <field name="arch" type="xml">
         <search>
             <group expand="1" string="Group By">
                 <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- List view for Action -->
-<record id="action_records_billing_config" model="ir.actions.act_window">
-    <field name="name">Records Billing Config</field>
-    <field name="res_model">records.billing.config</field>
-    <field name="view_mode">list,form</field>
-    <field name="domain">[]</field>
-    <field name="context">{}</field>
-    <field name="help" type="html">
+    <record id="action_records_billing_config" model="ir.actions.act_window">
+        <field name="name">Records Billing Config</field>
+        <field name="res_model">records.billing.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
         <p class="oe_view_nocontent_create">
             There is no examples click here to add new Records Billing Config.
         </p>
     </field>
-</record>
+    </record>
 
 <!-- List view for ENTERPRISE -->
 
 <!-- Kanban view for Billing -->
-<record id="records_billing_config_view_kanban" model="ir.ui.view">
-    <field name="name">records.billing.config.view.kanban</field>
-    <field name="model">records.billing.config</field>
-    <field name="arch" type="xml">
+    <record id="records_billing_config_view_kanban" model="ir.ui.view">
+        <field name="name">records.billing.config.view.kanban</field>
+        <field name="model">records.billing.config</field>
+        <field name="arch" type="xml">
         <kanban default_group_by="billing_model" class="o_kanban_billing_config_dashboard">
-            <field name="name"/>
-            <field name="billing_model"/>
-            <field name="active"/>
-            <field name="partner_id"/>
-            <field name="base_rate"/>
-            <field name="auto_billing"/>
-            <field name="payment_terms"/>
+        <field name="name"/>
+        <field name="billing_model"/>
+        <field name="active"/>
+        <field name="partner_id"/>
+        <field name="base_rate"/>
+        <field name="auto_billing"/>
+        <field name="payment_terms"/>
             <templates>
                 <t t-name="card">
                     <div class="oe_kanban_card oe_kanban_global_click">
@@ -90,18 +90,18 @@
 </a>
                             </div>
                         </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                             <div class="row">
                                 <div class="col-8">
-<div>
+        <div>
 <i class='fa fa-credit-card' aria-hidden="true"/>
  Model: <field name="billing_model"/>
 </div>
-<div>
+        <div>
 <i class='fa fa-money' aria-hidden="true"/>
  Rate: $<field name="base_rate"/>
 </div>
-<div>
+        <div>
 <i class='fa fa-calendar' aria-hidden="true"/>
  Terms: <field name="payment_terms"/>
 </div>
@@ -142,38 +142,38 @@
             </templates>
         </kanban>
     </field>
-</record>
+    </record>
 
 <!-- List view for Enhanced -->
-<record id="records_billing_config_view_tree" model="ir.ui.view">
-    <field name="name">records.billing.config.view.tree</field>
-    <field name="model">records.billing.config</field>
-    <field name="arch" type="xml">
+    <record id="records_billing_config_view_tree" model="ir.ui.view">
+        <field name="name">records.billing.config.view.tree</field>
+        <field name="model">records.billing.config</field>
+        <field name="arch" type="xml">
         <list decoration-success="active == True and auto_billing == True"
               decoration-warning="billing_model == 'custom'"
               decoration-info="payment_terms == 'net_30'">
-            <field name="name" string="Configuration Name"/>
-            <field name="partner_id" string="Customer"/>
-            <field name="billing_model" string="Billing Model" widget="badge"/>
-            <field name="base_rate" string="Base Rate"/>
-            <field name="billing_frequency" string="Frequency"/>
-            <field name="payment_terms" string="Payment Terms"/>
-            <field name="auto_billing" string="Auto Billing" widget="boolean_toggle"/>
-            <field name="active" string="Status" widget="boolean_toggle"/>
-            <field name="last_invoice_date" string="Last Invoice"/>
+        <field name="name" string="Configuration Name"/>
+        <field name="partner_id" string="Customer"/>
+        <field name="billing_model" string="Billing Model" widget="badge"/>
+        <field name="base_rate" string="Base Rate"/>
+        <field name="billing_frequency" string="Frequency"/>
+        <field name="payment_terms" string="Payment Terms"/>
+        <field name="auto_billing" string="Auto Billing" widget="boolean_toggle"/>
+        <field name="active" string="Status" widget="boolean_toggle"/>
+        <field name="last_invoice_date" string="Last Invoice"/>
             <button name="action_generate_invoice" type="object" string="Invoice"
                     icon="fa-file-text" class="btn-link"/>
             <button name="action_view_analytics" type="object" string="Analytics"
                     icon="fa-bar-chart" class="btn-link"/>
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Form view for Enhanced -->
-<record id="records_billing_config_view_form" model="ir.ui.view">
-    <field name="name">records.billing.config.view.form</field>
-    <field name="model">records.billing.config</field>
-    <field name="arch" type="xml">
+    <record id="records_billing_config_view_form" model="ir.ui.view">
+        <field name="name">records.billing.config.view.form</field>
+        <field name="model">records.billing.config</field>
+        <field name="arch" type="xml">
         <form>
             <header>
                 <button name="action_generate_invoice" type="object" string="Generate Invoice" class="btn-primary"/>
@@ -186,13 +186,13 @@
             <sheet>
                 <div class="oe_button_box" name="button_box">
                     <button class="oe_stat_button" type="object" name="action_view_invoices" icon="fa-file-text">
-                        <field name="invoice_count" string="Invoices Generated" widget="statinfo"/>
+        <field name="invoice_count" string="Invoices Generated" widget="statinfo"/>
                     </button>
                     <button class="oe_stat_button" type="object" name="action_view_billing_history" icon="fa-history">
-                        <field name="billing_history_count" string="Billing History" widget="statinfo"/>
+        <field name="billing_history_count" string="Billing History" widget="statinfo"/>
                     </button>
                     <button class="oe_stat_button" type="object" name="action_view_revenue" icon="fa-money">
-                        <field name="total_revenue" string="Total Revenue" widget="statinfo"/>
+        <field name="total_revenue" string="Total Revenue" widget="statinfo"/>
                     </button>
                     <button class="oe_stat_button" icon="fa-check-circle"
                             invisible="not auto_billing">
@@ -205,213 +205,213 @@
 
                 <group>
                     <group string="Billing Configuration">
-                        <field name="name" placeholder="e.g., Standard Storage Billing"/>
-                        <field name="partner_id"/>
-                        <field name="billing_model"/>
-                        <field name="service_category"/>
+        <field name="name" placeholder="e.g., Standard Storage Billing"/>
+        <field name="partner_id"/>
+        <field name="billing_model"/>
+        <field name="service_category"/>
                     </group>
                     <group string="Pricing Structure">
-                        <field name="base_rate"/>
-                        <field name="currency_id"/>
-                        <field name="rate_unit"/>
-                        <field name="minimum_charge"/>
+        <field name="base_rate"/>
+        <field name="currency_id"/>
+        <field name="rate_unit"/>
+        <field name="minimum_charge"/>
                     </group>
                 </group>
 
                 <group>
                     <group string="Billing Schedule">
-                        <field name="billing_frequency"/>
-                        <field name="billing_cycle_start"/>
-                        <field name="next_billing_date"/>
-                        <field name="auto_billing"/>
+        <field name="billing_frequency"/>
+        <field name="billing_cycle_start"/>
+        <field name="next_billing_date"/>
+        <field name="auto_billing"/>
                     </group>
                     <group string="Payment Terms">
-                        <field name="payment_terms"/>
-                        <field name="payment_method"/>
-                        <field name="late_fee_percentage"/>
-                        <field name="grace_period_days"/>
+        <field name="payment_terms"/>
+        <field name="payment_method"/>
+        <field name="late_fee_percentage"/>
+        <field name="grace_period_days"/>
                     </group>
                 </group>
 
                 <notebook>
                     <page string="Rate Structure" name="rates">
-                        <field name="billing_rate_ids" mode="list">
+        <field name="billing_rate_ids" mode="list">
                             <list editable="bottom">
-                                <field name="service_type"/>
-                                <field name="rate_type"/>
-                                <field name="base_rate"/>
-                                <field name="unit_of_measure"/>
-                                <field name="tier_threshold"/>
-                                <field name="discount_percentage"/>
-                                <field name="effective_date"/>
-                                <field name="active"/>
+        <field name="service_type"/>
+        <field name="rate_type"/>
+        <field name="base_rate"/>
+        <field name="unit_of_measure"/>
+        <field name="tier_threshold"/>
+        <field name="discount_percentage"/>
+        <field name="effective_date"/>
+        <field name="active"/>
                             </list>
                         </field>
                     </page>
                     <page string="Usage Tracking" name="usage">
                         <group>
                             <group string="Storage Metrics">
-                                <field name="track_box_storage"/>
-                                <field name="track_document_count"/>
-                                <field name="track_access_frequency"/>
-                                <field name="track_special_handling"/>
+        <field name="track_box_storage"/>
+        <field name="track_document_count"/>
+        <field name="track_access_frequency"/>
+        <field name="track_special_handling"/>
                             </group>
                             <group string="Service Metrics">
-                                <field name="track_pickup_delivery"/>
-                                <field name="track_retrieval_requests"/>
-                                <field name="track_destruction_services"/>
-                                <field name="track_digital_services"/>
+        <field name="track_pickup_delivery"/>
+        <field name="track_retrieval_requests"/>
+        <field name="track_destruction_services"/>
+        <field name="track_digital_services"/>
                             </group>
                         </group>
-                        <field name="usage_tracking_ids" mode="list">
+        <field name="usage_tracking_ids" mode="list">
                             <list>
-                                <field name="tracking_date"/>
-                                <field name="service_type"/>
-                                <field name="quantity"/>
-                                <field name="unit_rate"/>
-                                <field name="total_cost"/>
-                                <field name="billable"/>
-                                <field name="invoice_status"/>
+        <field name="tracking_date"/>
+        <field name="service_type"/>
+        <field name="quantity"/>
+        <field name="unit_rate"/>
+        <field name="total_cost"/>
+        <field name="billable"/>
+        <field name="invoice_status"/>
                             </list>
                         </field>
                     </page>
                     <page string="Invoice Generation" name="invoicing">
                         <group>
                             <group string="Invoice Settings">
-                                <field name="invoice_template_id"/>
-                                <field name="consolidate_charges"/>
-                                <field name="prorate_monthly"/>
-                                <field name="include_usage_details"/>
+        <field name="invoice_template_id"/>
+        <field name="consolidate_charges"/>
+        <field name="prorate_monthly"/>
+        <field name="include_usage_details"/>
                             </group>
                             <group string="Delivery Settings">
-                                <field name="send_invoice_email"/>
-                                <field name="invoice_email_template_id"/>
-                                <field name="cc_accounting"/>
-                                <field name="reminder_schedule"/>
+        <field name="send_invoice_email"/>
+        <field name="invoice_email_template_id"/>
+        <field name="cc_accounting"/>
+        <field name="reminder_schedule"/>
                             </group>
                         </group>
-                        <field name="invoice_generation_log_ids" mode="list">
+        <field name="invoice_generation_log_ids" mode="list">
                             <list>
-                                <field name="generation_date"/>
-                                <field name="invoice_number"/>
-                                <field name="period_start"/>
-                                <field name="period_end"/>
-                                <field name="amount"/>
-                                <field name="status"/>
+        <field name="generation_date"/>
+        <field name="invoice_number"/>
+        <field name="period_start"/>
+        <field name="period_end"/>
+        <field name="amount"/>
+        <field name="status"/>
                                 <button name="action_view_invoice" type="object" string="View" icon="fa-eye" class="btn-link"/>
                             </list>
                         </field>
                     </page>
                     <page string="Discounts &amp; Promotions" name="discounts">
-                        <field name="discount_rule_ids" mode="list">
+        <field name="discount_rule_ids" mode="list">
                             <list editable="bottom">
-                                <field name="rule_name"/>
-                                <field name="discount_type"/>
-                                <field name="discount_value"/>
-                                <field name="minimum_threshold"/>
-                                <field name="valid_from"/>
-                                <field name="valid_until"/>
-                                <field name="auto_apply"/>
-                                <field name="active"/>
+        <field name="rule_name"/>
+        <field name="discount_type"/>
+        <field name="discount_value"/>
+        <field name="minimum_threshold"/>
+        <field name="valid_from"/>
+        <field name="valid_until"/>
+        <field name="auto_apply"/>
+        <field name="active"/>
                             </list>
                         </field>
                     </page>
                     <page string="Revenue Analytics" name="analytics">
                         <group>
                             <group string="Revenue Metrics">
-                                <field name="monthly_revenue" readonly="1"/>
-                                <field name="quarterly_revenue" readonly="1"/>
-                                <field name="annual_revenue" readonly="1"/>
-                                <field name="average_monthly_billing" readonly="1"/>
+        <field name="monthly_revenue" readonly="1"/>
+        <field name="quarterly_revenue" readonly="1"/>
+        <field name="annual_revenue" readonly="1"/>
+        <field name="average_monthly_billing" readonly="1"/>
                             </group>
                             <group string="Performance Indicators">
-                                <field name="billing_accuracy_rate" readonly="1"/>
-                                <field name="collection_rate" readonly="1"/>
-                                <field name="payment_delay_average" readonly="1"/>
-                                <field name="customer_satisfaction_score" readonly="1"/>
+        <field name="billing_accuracy_rate" readonly="1"/>
+        <field name="collection_rate" readonly="1"/>
+        <field name="payment_delay_average" readonly="1"/>
+        <field name="customer_satisfaction_score" readonly="1"/>
                             </group>
                         </group>
-                        <field name="revenue_analytics_ids" mode="list">
+        <field name="revenue_analytics_ids" mode="list">
                             <list>
-                                <field name="period"/>
-                                <field name="service_category"/>
-                                <field name="revenue_amount"/>
-                                <field name="cost_amount"/>
-                                <field name="profit_margin"/>
-                                <field name="customer_count"/>
+        <field name="period"/>
+        <field name="service_category"/>
+        <field name="revenue_amount"/>
+        <field name="cost_amount"/>
+        <field name="profit_margin"/>
+        <field name="customer_count"/>
                             </list>
                         </field>
                     </page>
                     <page string="Notifications &amp; Alerts" name="notifications">
                         <group>
                             <group string="Alert Settings">
-                                <field name="billing_failure_alerts"/>
-                                <field name="payment_overdue_alerts"/>
-                                <field name="usage_threshold_alerts"/>
-                                <field name="revenue_variance_alerts"/>
+        <field name="billing_failure_alerts"/>
+        <field name="payment_overdue_alerts"/>
+        <field name="usage_threshold_alerts"/>
+        <field name="revenue_variance_alerts"/>
                             </group>
                             <group string="Recipients">
-                                <field name="finance_team_notifications"/>
-                                <field name="manager_notifications"/>
-                                <field name="customer_notifications"/>
-                                <field name="escalation_notifications"/>
+        <field name="finance_team_notifications"/>
+        <field name="manager_notifications"/>
+        <field name="customer_notifications"/>
+        <field name="escalation_notifications"/>
                             </group>
                         </group>
                     </page>
                     <page string="Advanced Configuration" name="advanced">
                         <group>
                             <group string="Integration Settings">
-                                <field name="accounting_system_sync"/>
-                                <field name="payment_gateway_integration"/>
-                                <field name="tax_calculation_method"/>
-                                <field name="multi_currency_support"/>
+        <field name="accounting_system_sync"/>
+        <field name="payment_gateway_integration"/>
+        <field name="tax_calculation_method"/>
+        <field name="multi_currency_support"/>
                             </group>
                             <group string="Security &amp; Compliance">
-                                <field name="audit_trail_enabled"/>
-                                <field name="data_retention_period"/>
-                                <field name="encryption_enabled"/>
-                                <field name="compliance_reporting"/>
+        <field name="audit_trail_enabled"/>
+        <field name="data_retention_period"/>
+        <field name="encryption_enabled"/>
+        <field name="compliance_reporting"/>
                             </group>
                         </group>
                     </page>
                 </notebook>
             </sheet>
             <div class="oe_chatter">
-                <field name="message_follower_ids"/>
-                <field name="activity_ids"/>
-                <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
             </div>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- List view for Calendar -->
-<record id="records_billing_config_view_calendar" model="ir.ui.view">
-    <field name="name">records.billing.config.view.calendar</field>
-    <field name="model">records.billing.config</field>
-    <field name="arch" type="xml">
+    <record id="records_billing_config_view_calendar" model="ir.ui.view">
+        <field name="name">records.billing.config.view.calendar</field>
+        <field name="model">records.billing.config</field>
+        <field name="arch" type="xml">
         <calendar string="Billing Schedule"
                   date_start="next_billing_date"
                   color="billing_model">
-            <field name="name"/>
-            <field name="partner_id"/>
-            <field name="billing_frequency"/>
-            <field name="base_rate"/>
-            <field name="auto_billing"/>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="billing_frequency"/>
+        <field name="base_rate"/>
+        <field name="auto_billing"/>
         </calendar>
     </field>
-</record>
+    </record>
 
 <!-- Search view for Enhanced -->
-<record id="records_billing_config_view_search" model="ir.ui.view">
-    <field name="name">records.billing.config.view.search</field>
-    <field name="model">records.billing.config</field>
-    <field name="arch" type="xml">
+    <record id="records_billing_config_view_search" model="ir.ui.view">
+        <field name="name">records.billing.config.view.search</field>
+        <field name="model">records.billing.config</field>
+        <field name="arch" type="xml">
         <search>
-            <field name="name" string="Configuration"/>
-            <field name="partner_id"/>
-            <field name="billing_model"/>
-            <field name="service_category"/>
+        <field name="name" string="Configuration"/>
+        <field name="partner_id"/>
+        <field name="billing_model"/>
+        <field name="service_category"/>
 
             <filter string="Active" name="active" domain="[('active', '=', True)]"/>
             <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
@@ -439,18 +439,18 @@
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- List view for ENTERPRISE -->
-<record id="action_billing_config" model="ir.actions.act_window">
-    <field name="name">Billing Configuration</field>
-    <field name="res_model">records.billing.config</field>
-    <field name="view_mode">kanban,list,form,calendar</field>
-    <field name="search_view_id" ref="records_billing_config_view_search"/>
-    <field name="context">{
+    <record id="action_billing_config" model="ir.actions.act_window">
+        <field name="name">Billing Configuration</field>
+        <field name="res_model">records.billing.config</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="search_view_id" ref="records_billing_config_view_search"/>
+        <field name="context">{
         'search_default_active': 1
     }</field>
-    <field name="help" type="html">
+        <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
             <i class="fa fa-credit-card"></i> Create your first billing configuration!
         </p>
@@ -467,6 +467,6 @@
             • <i class='fa fa-line-chart'/> Comprehensive revenue analytics and reporting
         </p>
     </field>
-</record>
+    </record>
 
 </odoo>

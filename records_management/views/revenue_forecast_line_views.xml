@@ -2,33 +2,33 @@
 <odoo>
 
 <!-- Revenue Forecast Line List View -->
-<record id="revenue_forecast_line_view_tree" model="ir.ui.view">
-    <field name="name">revenue.forecast.line.view.tree</field>
-    <field name="model">revenue.forecast.line</field>
-    <field name="arch" type="xml">
+    <record id="revenue_forecast_line_view_tree" model="ir.ui.view">
+        <field name="name">revenue.forecast.line.view.tree</field>
+        <field name="model">revenue.forecast.line</field>
+        <field name="arch" type="xml">
         <list string="Revenue Forecast Lines"
               decoration-success="status=='achieved'"
               decoration-warning="status=='in_progress'"
               decoration-danger="status=='missed'">
-            <field name="customer_id"/>
-            <field name="service_type"/>
-            <field name="period_type"/>
-            <field name="forecasted_amount" sum="Total Forecasted"/>
-            <field name="actual_amount" sum="Total Actual"/>
-            <field name="variance_amount" sum="Total Variance"/>
-            <field name="variance_percentage" widget="percentage"/>
-            <field name="confidence_level"/>
-            <field name="state"/>
-            <field name="currency_id" invisible="1"/>
+        <field name="customer_id"/>
+        <field name="service_type"/>
+        <field name="period_type"/>
+        <field name="forecasted_amount" sum="Total Forecasted"/>
+        <field name="actual_amount" sum="Total Actual"/>
+        <field name="variance_amount" sum="Total Variance"/>
+        <field name="variance_percentage" widget="percentage"/>
+        <field name="confidence_level"/>
+        <field name="state"/>
+        <field name="currency_id" invisible="1"/>
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Revenue Forecast Line Form View -->
-<record id="revenue_forecast_line_view_form" model="ir.ui.view">
-    <field name="name">revenue.forecast.line.view.form</field>
-    <field name="model">revenue.forecast.line</field>
-    <field name="arch" type="xml">
+    <record id="revenue_forecast_line_view_form" model="ir.ui.view">
+        <field name="name">revenue.forecast.line.view.form</field>
+        <field name="model">revenue.forecast.line</field>
+        <field name="arch" type="xml">
         <form string="Revenue Forecast Line">
             <header>
                 <button name="action_confirm_forecast" type="object"
@@ -43,61 +43,61 @@ invisible="status != 'in_progress'"/>
                 <button name="action_mark_missed" type="object"
                         string="Mark Missed"
 invisible="status != 'in_progress'"/>
-                <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,achieved"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,achieved"/>
             </header>
             <sheet>
                 <group>
                     <group name="main_info">
-                        <field name="forecast_id"/>
-                        <field name="customer_id"/>
-                        <field name="service_type"/>
-                        <field name="period_type"/>
+        <field name="forecast_id"/>
+        <field name="customer_id"/>
+        <field name="service_type"/>
+        <field name="period_type"/>
                     </group>
                     <group name="financial">
-                        <field name="currency_id" invisible="1"/>
-                        <field name="forecasted_amount"/>
-                        <field name="actual_amount"/>
-                        <field name="variance_amount"/>
-                        <field name="variance_percentage" widget="percentage"/>
+        <field name="currency_id" invisible="1"/>
+        <field name="forecasted_amount"/>
+        <field name="actual_amount"/>
+        <field name="variance_amount"/>
+        <field name="variance_percentage" widget="percentage"/>
                     </group>
                 </group>
                 <group>
                     <group name="volume_metrics">
-                        <field name="forecasted_volume"/>
-                        <field name="actual_volume"/>
-                        <field name="forecasted_containers"/>
-                        <field name="actual_containers"/>
+        <field name="forecasted_volume"/>
+        <field name="actual_volume"/>
+        <field name="forecasted_containers"/>
+        <field name="actual_containers"/>
                     </group>
                     <group name="confidence">
-                        <field name="confidence_level"/>
-                        <field name="probability_percentage" widget="percentage"/>
+        <field name="confidence_level"/>
+        <field name="probability_percentage" widget="percentage"/>
                     </group>
                 </group>
                 <notebook>
                     <page string="Notes">
-                        <field name="notes"/>
+        <field name="notes"/>
                     </page>
                 </notebook>
             </sheet>
             <div class="oe_chatter">
-                <field name="message_follower_ids"/>
-                <field name="activity_ids"/>
-                <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
             </div>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Revenue Forecast Line Search View -->
-<record id="revenue_forecast_line_view_search" model="ir.ui.view">
-    <field name="name">revenue.forecast.line.view.search</field>
-    <field name="model">revenue.forecast.line</field>
-    <field name="arch" type="xml">
+    <record id="revenue_forecast_line_view_search" model="ir.ui.view">
+        <field name="name">revenue.forecast.line.view.search</field>
+        <field name="model">revenue.forecast.line</field>
+        <field name="arch" type="xml">
         <search string="Search Forecast Lines">
-            <field name="customer_id"/>
-            <field name="service_type"/>
-            <field name="state"/>
-            <field name="forecast_id"/>
+        <field name="customer_id"/>
+        <field name="service_type"/>
+        <field name="state"/>
+        <field name="forecast_id"/>
 
             <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
             <filter string="Confirmed" name="confirmed" domain="[('status', '=', 'confirmed')]"/>
@@ -121,15 +121,15 @@ invisible="status != 'in_progress'"/>
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- Action -->
-<record id="action_revenue_forecast_line" model="ir.actions.act_window">
-    <field name="name">Revenue Forecast Lines</field>
-    <field name="res_model">revenue.forecast.line</field>
-    <field name="view_mode">list,form</field>
-    <field name="context">{}</field>
-    <field name="help" type="html">
+    <record id="action_revenue_forecast_line" model="ir.actions.act_window">
+        <field name="name">Revenue Forecast Lines</field>
+        <field name="res_model">revenue.forecast.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
             Create your first revenue forecast line!
         </p>
@@ -137,83 +137,83 @@ invisible="status != 'in_progress'"/>
             Track detailed revenue forecasts by customer and service type to improve planning accuracy.
         </p>
     </field>
-</record>
+    </record>
 
 <!-- Sub-Model Menu Items and Actions -->
 
 <!-- Revenue Forecasting Menu -->
-<menuitem id="menu_revenue_forecasting"
+    <menuitem id="menu_revenue_forecasting"
           name="Revenue Forecasting"
           parent="records_management.menu_records_billing"
           sequence="30"/>
 
-<menuitem id="menu_revenue_forecast_lines"
+    <menuitem id="menu_revenue_forecast_lines"
           name="Forecast Lines"
           parent="menu_revenue_forecasting"
           action="action_revenue_forecast_line"
           sequence="10"/>
 
 <!-- Billing Configuration Menu -->
-<menuitem id="menu_billing_configuration"
+    <menuitem id="menu_billing_configuration"
           name="Billing Configuration"
           parent="records_management.menu_records_billing"
           sequence="40"/>
 
-<menuitem id="menu_billing_config_lines"
+    <menuitem id="menu_billing_config_lines"
           name="Configuration Lines"
           parent="menu_billing_configuration"
           action="action_records_billing_config_line"
           sequence="10"/>
 
-<menuitem id="menu_billing_config_audit"
+    <menuitem id="menu_billing_config_audit"
           name="Configuration Audit"
           parent="menu_billing_configuration"
           action="action_records_billing_config_audit"
           sequence="20"/>
 
 <!-- FSM Service Management Menu -->
-<menuitem id="menu_fsm_service_management"
+    <menuitem id="menu_fsm_service_management"
           name="FSM Services"
           parent="records_management.menu_fsm"
           sequence="50"/>
 
-<menuitem id="menu_fsm_service_lines"
+    <menuitem id="menu_fsm_service_lines"
           name="Service Lines"
           parent="menu_fsm_service_management"
           action="action_fsm_task_service_line"
           sequence="10"/>
 
 <!-- Performance Analytics Menu -->
-<menuitem id="menu_performance_analytics"
+    <menuitem id="menu_performance_analytics"
           name="Performance Analytics"
 parent="menu_records_reporting"
           sequence="60"/>
 
-<menuitem id="menu_document_retrieval_metrics"
+    <menuitem id="menu_document_retrieval_metrics"
           name="Retrieval Metrics"
           parent="menu_performance_analytics"
           action="action_document_retrieval_metrics"
           sequence="10"/>
 
 <!-- Payment Management Menu -->
-<menuitem id="menu_payment_management"
+    <menuitem id="menu_payment_management"
           name="Payment Management"
           parent="records_management.menu_records_billing"
           sequence="50"/>
 
-<menuitem id="menu_payment_split_lines"
+    <menuitem id="menu_payment_split_lines"
           name="Payment Splits"
           parent="menu_payment_management"
           action="action_payment_split_line"
           sequence="10"/>
 
 <!-- Shredding Documentation Menu -->
-<menuitem id="menu_shredding_documentation"
+    <menuitem id="menu_shredding_documentation"
           name="Shredding Documentation"
           parent="records_management.menu_shredding"
           sequence="70"/>
 
-<menuitem id="menu_shredding_service_photos"
+    <menuitem id="menu_shredding_service_photos"
           name="Service Photos"
           parent="menu_shredding_documentation"
           action="action_shredding_service_photo"
@@ -222,13 +222,13 @@ parent="menu_records_reporting"
 <!-- Additional Window Actions for Integration -->
 
 <!-- Revenue Forecast Line Action (if not already defined) -->
-<record id="action_revenue_forecast_line" model="ir.actions.act_window">
-    <field name="name">Revenue Forecast Lines</field>
-    <field name="res_model">revenue.forecast.line</field>
-    <field name="view_mode">list,form</field>
-    <field name="context">{}</field>
-    <field name="domain">[]</field>
-    <field name="help" type="html">
+    <record id="action_revenue_forecast_line" model="ir.actions.act_window">
+        <field name="name">Revenue Forecast Lines</field>
+        <field name="res_model">revenue.forecast.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
             No forecast lines found!
         </p>
@@ -236,31 +236,31 @@ parent="menu_records_reporting"
             Revenue forecast lines track individual customer and service forecasts with variance analysis.
         </p>
     </field>
-</record>
+    </record>
 
 <!-- Server Actions for Batch Operations -->
 
 <!-- Batch Approve Billing Config Audits -->
-<record id="action_batch_approve_billing_audit" model="ir.actions.server">
-    <field name="name">Batch Approve Audits</field>
-    <field name="model_id" ref="records_management.model_records_billing_config_audit"/>
-    <field name="binding_model_id" ref="records_management.model_records_billing_config_audit"/>
-    <field name="state">code</field>
-    <field name="code">
+    <record id="action_batch_approve_billing_audit" model="ir.actions.server">
+        <field name="name">Batch Approve Audits</field>
+        <field name="model_id" ref="records_management.model_records_billing_config_audit"/>
+        <field name="binding_model_id" ref="records_management.model_records_billing_config_audit"/>
+        <field name="state">code</field>
+        <field name="code">
         for record in records:
             if record.approval_status == 'pending':
                 record.action_approve()
     </field>
-    <field name="groups_id" eval="[(4, ref('records_management.group_records_manager'))]"/>
-</record>
+        <field name="groups_id" eval="[(4, ref('records_management.group_records_manager'))]"/>
+    </record>
 
 <!-- Generate Performance Report -->
-<record id="action_generate_performance_report" model="ir.actions.server">
-    <field name="name">Generate Performance Report</field>
-    <field name="model_id" ref="records_management.model_document_retrieval_metrics"/>
-    <field name="binding_model_id" ref="records_management.model_document_retrieval_metrics"/>
-    <field name="state">code</field>
-    <field name="code">
+    <record id="action_generate_performance_report" model="ir.actions.server">
+        <field name="name">Generate Performance Report</field>
+        <field name="model_id" ref="records_management.model_document_retrieval_metrics"/>
+        <field name="binding_model_id" ref="records_management.model_document_retrieval_metrics"/>
+        <field name="state">code</field>
+        <field name="code">
         # Generate performance summary report
         action = {
             'type': 'ir.actions.act_window',
@@ -271,6 +271,6 @@ parent="menu_records_reporting"
             'context': {'group_by': ['performance_rating', 'metric_type']},
         }
     </field>
-</record>
+    </record>
 
 </odoo>

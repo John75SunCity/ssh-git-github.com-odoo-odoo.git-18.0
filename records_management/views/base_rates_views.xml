@@ -3,42 +3,42 @@
 
     <!-- Base Rates Form View -->
     <record id="base_rates_view_form" model="ir.ui.view">
-<field name="name">base.rates.view.form</field>
+        <field name="name">base.rates.view.form</field>
         <field name="model">base.rates</field>
-    <field name="arch" type="xml">
+        <field name="arch" type="xml">
             <form string="Base Rate">
                 <header>
-                    <field name="active" widget="boolean_toggle"/>
+        <field name="active" widget="boolean_toggle"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="rate_type"/>
-                            <field name="company_id"/>
+        <field name="name"/>
+        <field name="rate_type"/>
+        <field name="company_id"/>
                         </group>
                         <group>
-                            <field name="base_rate"/>
-                            <field name="currency_id"/>
-                            <field name="unit_type"/>
+        <field name="base_rate"/>
+        <field name="currency_id"/>
+        <field name="unit_type"/>
                         </group>
                     </group>
                     <group string="Validity Period">
                         <group>
-                            <field name="effective_date"/>
-                            <field name="expiry_date"/>
+        <field name="effective_date"/>
+        <field name="expiry_date"/>
                         </group>
                         <group>
-                            <field name="minimum_charge"/>
-                            <field name="maximum_charge"/>
+        <field name="minimum_charge"/>
+        <field name="maximum_charge"/>
                         </group>
                     </group>
-                    <field name="description" placeholder="Additional details about this rate..."/>
+        <field name="description" placeholder="Additional details about this rate..."/>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
                 </div>
             </form>
         </field>
@@ -46,31 +46,31 @@
 
     <!-- Base Rates List View -->
     <record id="base_rates_view_tree" model="ir.ui.view">
-<field name="name">base.rates.view.tree</field>
+        <field name="name">base.rates.view.tree</field>
         <field name="model">base.rates</field>
-    <field name="arch" type="xml">
+        <field name="arch" type="xml">
             <list string="Base Rates">
-                <field name="name"/>
-                <field name="rate_type"/>
-                <field name="base_rate"/>
-                <field name="currency_id"/>
-                <field name="unit_type"/>
-                <field name="effective_date"/>
-                <field name="expiry_date"/>
-                <field name="active"/>
+        <field name="name"/>
+        <field name="rate_type"/>
+        <field name="base_rate"/>
+        <field name="currency_id"/>
+        <field name="unit_type"/>
+        <field name="effective_date"/>
+        <field name="expiry_date"/>
+        <field name="active"/>
             </list>
         </field>
     </record>
 
     <!-- Base Rates Search View -->
     <record id="base_rates_view_search" model="ir.ui.view">
-<field name="name">base.rates.view.search</field>
+        <field name="name">base.rates.view.search</field>
         <field name="model">base.rates</field>
-    <field name="arch" type="xml">
+        <field name="arch" type="xml">
             <search string="Search Base Rates">
-                <field name="name"/>
-                <field name="rate_type"/>
-                <field name="company_id"/>
+        <field name="name"/>
+        <field name="rate_type"/>
+        <field name="company_id"/>
                 <filter string="Active" name="active" domain="[('active', '=', True)]"/>
                 <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
                 <filter string="Current" name="current" domain="[('effective_date', '&lt;=', context_today.strftime('%Y-%m-%d')), '|', ('expiry_date', '=', False), ('expiry_date', '&gt;=', context_today.strftime('%Y-%m-%d'))]"/>

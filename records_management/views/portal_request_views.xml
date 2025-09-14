@@ -2,34 +2,34 @@
 <odoo>
 
 <!-- Enhanced Kanban view for Portal Requests -->
-<record id="portal_request_view_kanban" model="ir.ui.view">
-    <field name="name">portal.request.view.kanban</field>
-    <field name="model">portal.request</field>
-    <field name="arch" type="xml">
+    <record id="portal_request_view_kanban" model="ir.ui.view">
+        <field name="name">portal.request.view.kanban</field>
+        <field name="model">portal.request</field>
+        <field name="arch" type="xml">
         <kanban default_group_by="state" class="o_kanban_portal_request">
-            <field name="name"/>
-            <field name="request_type"/>
-            <field name="partner_id"/>
-            <field name="state"/>
-            <field name="priority"/>
-            <field name="requested_date"/>
-            <field name="user_id"/>
-            <field name="active"/>
-            <field name="deadline"/>
-            <field name="estimated_cost"/>
-            <field name="billing_status"/>
-            <field name="requires_naid_compliance"/>
+        <field name="name"/>
+        <field name="request_type"/>
+        <field name="partner_id"/>
+        <field name="state"/>
+        <field name="priority"/>
+        <field name="requested_date"/>
+        <field name="user_id"/>
+        <field name="active"/>
+        <field name="deadline"/>
+        <field name="estimated_cost"/>
+        <field name="billing_status"/>
+        <field name="requires_naid_compliance"/>
             <templates>
 <t t-name="card">
                     <div class="oe_kanban_card oe_kanban_global_click">
                         <div class="o_kanban_card_header">
                             <strong><i class='fa fa-clipboard'/> <field name="name"/></strong>
                             <span class="float-end">
-                                <field name="priority" widget="priority"/>
+        <field name="priority" widget="priority"/>
                             </span>
                             <div class="text-muted"><i class='fa fa-user'/> <field name="partner_id"/></div>
                         </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                             <div class="mb-2">
                                 <strong>Type:</strong> <field name="request_type"/><br/>
                                 <strong>Requested:</strong> <field name="requested_date" widget="date"/><br/>
@@ -58,30 +58,30 @@
             </templates>
         </kanban>
     </field>
-</record>
+    </record>
 
 <!-- Enhanced List view for Portal Requests -->
-<record id="portal_request_view_tree" model="ir.ui.view">
-    <field name="name">portal.request.view.tree</field>
-    <field name="model">portal.request</field>
-    <field name="arch" type="xml">
+    <record id="portal_request_view_tree" model="ir.ui.view">
+        <field name="name">portal.request.view.tree</field>
+        <field name="model">portal.request</field>
+        <field name="arch" type="xml">
         <list string="Portal Requests" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
-            <field name="name"/>
-            <field name="request_type"/>
-            <field name="partner_id"/>
-            <field name="create_date"/>
-            <field name="priority"/>
-            <field name="state"/>
-            <field name="assigned_to_id"/>
+        <field name="name"/>
+        <field name="request_type"/>
+        <field name="partner_id"/>
+        <field name="create_date"/>
+        <field name="priority"/>
+        <field name="state"/>
+        <field name="assigned_to_id"/>
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Enhanced Form view for Portal Requests -->
-<record id="portal_request_view_form" model="ir.ui.view">
-    <field name="name">portal.request.view.form</field>
-    <field name="model">portal.request</field>
-    <field name="arch" type="xml">
+    <record id="portal_request_view_form" model="ir.ui.view">
+        <field name="name">portal.request.view.form</field>
+        <field name="model">portal.request</field>
+        <field name="arch" type="xml">
         <form>
             <header>
 <button name="action_submit" string="Submit Request" type="object" class="oe_highlight" invisible="state != 'draft'"/>
@@ -98,13 +98,13 @@
 
 <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state in ['draft', 'approved']" groups="records_management.group_records_manager"/>
 
-                <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,in_progress,completed"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,in_progress,completed"/>
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
                     <button class="oe_stat_button" type="object" name="action_view_attachments" icon="fa-paperclip">
                         <div class="o_stat_info">
-                            <field name="attachment_count" class="o_stat_value"/>
+        <field name="attachment_count" class="o_stat_value"/>
                             <span class="o_stat_text">Attachments</span>
                         </div>
                     </button>
@@ -119,28 +119,28 @@
                 <div class="oe_title">
                     <label for="name"/>
                     <h1>
-                        <field name="name" placeholder="Portal Request Title..."/>
+        <field name="name" placeholder="Portal Request Title..."/>
                     </h1>
                 </div>
 
                 <group>
                     <group string="Request Information">
-                        <field name="partner_id" options="{'no_create': True, 'no_create_edit': True}"/>
-                        <field name="request_type"/>
-                        <field name="priority" widget="priority"/>
-                        <field name="requires_naid_compliance"/>
-                        <field name="shredding_service_id"/>
+        <field name="partner_id" options="{'no_create': True, 'no_create_edit': True}"/>
+        <field name="request_type"/>
+        <field name="priority" widget="priority"/>
+        <field name="requires_naid_compliance"/>
+        <field name="shredding_service_id"/>
                     </group>
                     <group string="Assignment &amp; Timeline">
-                        <field name="user_id" options="{'no_create': True, 'no_create_edit': True}"/>
-                        <field name="requested_date"/>
-                        <field name="deadline"/>
-<field name="completion_date" invisible="state != 'completed'"/>
+        <field name="user_id" options="{'no_create': True, 'no_create_edit': True}"/>
+        <field name="requested_date"/>
+        <field name="deadline"/>
+        <field name="completion_date" invisible="state != 'completed'"/>
 
-<field name="is_overdue" invisible="is_overdue == False"/>
+        <field name="is_overdue" invisible="is_overdue == False"/>
 
-                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
-                        <field name="active"/>
+        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+        <field name="active"/>
                     </group>
                 </group>
 
@@ -148,44 +148,44 @@
                     <page string=" Request Details">
                         <group>
                             <group string="Description">
-                                <field name="description" placeholder="Detailed description of the request..." nolabel="1"/>
+        <field name="description" placeholder="Detailed description of the request..." nolabel="1"/>
                             </group>
                             <group string="Time &amp; Cost Estimation">
-                                <field name="estimated_hours"/>
-<field name="actual_hours" invisible="state not in ['completed']"/>
+        <field name="estimated_hours"/>
+        <field name="actual_hours" invisible="state not in ['completed']"/>
 
-                                <field name="estimated_cost"/>
-<field name="actual_cost" invisible="state not in ['completed']"/>
+        <field name="estimated_cost"/>
+        <field name="actual_cost" invisible="state not in ['completed']"/>
 
-                                <field name="billing_status"/>
+        <field name="billing_status"/>
                             </group>
                         </group>
                     </page>
                     <page string=" Compliance &amp; Signatures">
                         <group>
                             <group string="Customer Signature">
-                                <field name="customer_signature" widget="signature"/>
-<field name="customer_signature_date" invisible="customer_signature == False"/>
+        <field name="customer_signature" widget="signature"/>
+        <field name="customer_signature_date" invisible="customer_signature == False"/>
 
                             </group>
                             <group string="Technician Signature">
-                                <field name="technician_signature" widget="signature"/>
-<field name="technician_signature_date" invisible="technician_signature == False"/>
+        <field name="technician_signature" widget="signature"/>
+        <field name="technician_signature_date" invisible="technician_signature == False"/>
 
                             </group>
                         </group>
                         <group>
                             <group string="Compliance Tracking">
-<field name="certificate_of_destruction_id" invisible="certificate_of_destruction_id == False"/>
+        <field name="certificate_of_destruction_id" invisible="certificate_of_destruction_id == False"/>
 
-<field name="work_order_id" invisible="work_order_id == False"/>
+        <field name="work_order_id" invisible="work_order_id == False"/>
 
                             </group>
                             <group string="Audit Information">
-                                <field name="create_date" readonly="1"/>
-                                <field name="write_date" readonly="1"/>
-                                <field name="create_uid" readonly="1"/>
-                                <field name="write_uid" readonly="1"/>
+        <field name="create_date" readonly="1"/>
+        <field name="write_date" readonly="1"/>
+        <field name="create_uid" readonly="1"/>
+        <field name="write_uid" readonly="1"/>
                             </group>
                         </group>
                     </page>
@@ -193,25 +193,25 @@
             </sheet>
             <!-- Mail Thread Integration -->
             <div class="oe_chatter">
-                <field name="message_follower_ids"/>
-                <field name="activity_ids"/>
-                <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
             </div>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Enhanced Search view for Portal Requests -->
-<record id="portal_request_view_search" model="ir.ui.view">
-    <field name="name">portal.request.view.search</field>
-    <field name="model">portal.request</field>
-    <field name="arch" type="xml">
+    <record id="portal_request_view_search" model="ir.ui.view">
+        <field name="name">portal.request.view.search</field>
+        <field name="model">portal.request</field>
+        <field name="arch" type="xml">
         <search>
-            <field name="name"/>
-            <field name="partner_id"/>
-            <field name="request_type"/>
-            <field name="user_id"/>
-            <field name="description"/>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="request_type"/>
+        <field name="user_id"/>
+        <field name="description"/>
             <separator/>
             <filter string="Active" name="active" domain="[('active', '=', True)]"/>
             <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
@@ -248,20 +248,20 @@
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- Enhanced Action for Portal Requests -->
-<record id="action_portal_request" model="ir.actions.act_window">
-    <field name="name">Portal Requests</field>
-    <field name="res_model">portal.request</field>
-<field name="view_mode">kanban,list,form</field>
-    <field name="domain">[]</field>
-    <field name="context">{
+    <record id="action_portal_request" model="ir.actions.act_window">
+        <field name="name">Portal Requests</field>
+        <field name="res_model">portal.request</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{
         'default_user_id': uid,
         'search_default_active': 1,
         'search_default_my_requests': 1
     }</field>
-    <field name="help" type="html">
+        <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
             <i class='fa fa-globe'/> Create your first Portal Request!
         </p>
@@ -279,10 +279,10 @@
             • <i class='fa fa-mobile'/> Mobile-friendly portal access and management
         </p>
     </field>
-</record>
+    </record>
 
 <!-- Enhanced Menu Structure -->
-<menuitem id="portal_request_menu"
+    <menuitem id="portal_request_menu"
           name="Portal Requests"
           parent="records_management.menu_records_management_root"
           action="action_portal_request"
@@ -290,7 +290,7 @@
           groups="records_management.group_records_manager"/>
 
 <!-- Additional Menu Items for Better Navigation -->
-<menuitem id="portal_request_draft_menu" name="Draft Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="1" groups="records_management.group_records_user"/>
-<menuitem id="portal_request_submitted_menu" name="Submitted Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="2" groups="records_management.group_records_manager"/>
+    <menuitem id="portal_request_draft_menu" name="Draft Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="1" groups="records_management.group_records_user"/>
+    <menuitem id="portal_request_submitted_menu" name="Submitted Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="2" groups="records_management.group_records_manager"/>
 
 </odoo>
