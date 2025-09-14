@@ -8,7 +8,7 @@
         <field name="name">records.digital.scan.view.tree</field>
         <field name="model">records.digital.scan</field>
         <field name="arch" type="xml">
-        <tree string="Digital Scans">
+        <list string="Digital Scans">
         <field name="name"/>
         <field name="document_ids"/>
         <field name="scan_date"/>
@@ -18,7 +18,7 @@
         <field name="scanned_by_id"/>
 
         <field name="state"/>
-        </tree>
+        </list>
     </field>
     </record>
 

@@ -8,7 +8,7 @@
             <field name="name">records.department.billing.contact.view.tree</field>
             <field name="model">records.department.billing.contact</field>
             <field name="arch" type="xml">
-                <tree decoration-danger="budget_utilization &gt; 90" decoration-warning="budget_utilization &gt; 75" decoration-success="budget_utilization &lt;= 50">
+                <list decoration-danger="budget_utilization &gt; 90" decoration-warning="budget_utilization &gt; 75" decoration-success="budget_utilization &lt;= 50">
                     <field name="contact_name" string="Contact"/>
                     <field name="department_id" string="Department"/>
                     <field name="billing_role" string="Role"/>
@@ -20,7 +20,7 @@
                     <field name="approval_authority" string="Approver" widget="boolean_toggle"/>
                     <field name="active" string="Active" widget="boolean_toggle"/>
                     <button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link" title="Generate Budget Report"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -70,13 +70,13 @@
                         <notebook>
                             <page string="Approval History" name="approvals">
                                 <field name="approval_history_ids" mode="tree">
-                                    <tree>
+                                    <list>
                                         <field name="approval_date"/>
                                         <field name="charge_amount"/>
                                         <field name="service_description"/>
                                         <field name="vendor"/>
                                         <field name="approval_notes"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Budget Analysis" name="budget">
