@@ -183,7 +183,10 @@ class ComprehensiveValidator:
                 'label_special_handling', 'label_weight_estimate',
                 # Additional fields from various views
                 'total_records_containers', 'key_restriction_status', 'key_issuance_allowed',
-                'key_restriction_reason'
+                'key_restriction_reason', 'key_restriction_date', 'key_restriction_approved_by_id',
+                'restricted_unlock_count', 'key_restriction_notes', 'key_restriction_history_ids',
+                'key_restriction_history_count', 'approved_by',
+                'action', 'reason'  # Generic fields that might be in res.partner context
             }
         }
 

@@ -234,6 +234,41 @@ class ResPartner(models.Model):
         help="Reason for key restriction if applicable"
     )
 
+    # Additional key restriction fields from bin_unlock_service_views.xml
+    key_restriction_date = fields.Date(
+        string="Key Restriction Date",
+        help="Date when key restriction was imposed"
+    )
+    key_restriction_approved_by_id = fields.Many2one(
+        'res.users',
+        string="Key Restriction Approved By",
+        help="User who approved the key restriction"
+    )
+    restricted_unlock_count = fields.Integer(
+        string="Restricted Unlock Count",
+        compute='_compute_unlock_service_stats',
+        help="Number of unlocks performed while under restriction"
+    )
+    key_restriction_notes = fields.Text(
+        string="Key Restriction Notes",
+        help="Additional notes about the key restriction"
+    )
+    key_restriction_history_ids = fields.One2many(
+        'key.restriction.history',
+        'partner_id',
+        string="Key Restriction History",
+        help="History of key restrictions for this partner"
+    )
+    key_restriction_history_count = fields.Integer(
+        string="Key Restriction History Count",
+        compute='_compute_key_restriction_stats',
+        help="Number of key restriction history records"
+    )
+    approved_by = fields.Char(
+        string="Approved By",
+        help="Name or identifier of approver"
+    )
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
@@ -433,6 +468,11 @@ class ResPartner(models.Model):
                     if current_value and current_value != default_value:
                         customized_count += 1
             partner.customized_label_count = customized_count
+
+    def _compute_key_restriction_stats(self):
+        """Compute key restriction statistics"""
+        for partner in self:
+            partner.key_restriction_history_count = len(partner.key_restriction_history_ids)
 
     # ============================================================================
     # ACTION METHODS

@@ -18,7 +18,7 @@
                         <group name="key_restriction_details" invisible="key_issuance_allowed == True">
                             <field name="key_restriction_reason" required="key_issuance_allowed == False"/>
                             <field name="key_restriction_date"/>
-                            <field name="key_restriction_approved_by"/>
+                            <field name="key_restriction_approved_by_id"/>
                             <field name="restricted_unlock_count"/>
                         </group>
                     </group>
@@ -305,7 +305,7 @@
             </xpath>
             <xpath expr="//field[@name='service_number']" position="after">
                 <field name="key_restriction_reason" string="Restriction Reason" optional="hide"/>
-                <field name="key_restriction_approved_by" string="Approved By" optional="hide"/>
+                <field name="key_restriction_approved_by_id" string="Approved By" optional="hide"/>
             </xpath>
         </field>
     </record>
@@ -324,7 +324,7 @@
             </xpath>
             <xpath expr="//field[@name='name']" position="after">
                 <field name="key_restriction_reason" string="Restriction Reason"/>
-                <field name="key_restriction_approved_by" string="Approved By"/>
+                <field name="key_restriction_approved_by_id" string="Approved By"/>
             </xpath>
             <xpath expr="//group[@expand='0']" position="inside">
                 <filter string="Key Status" name="group_key_status" context="{'group_by': 'key_restriction_status'}"/>
