@@ -244,12 +244,16 @@
         <page string="Digital Scans" name="digital" invisible="digital_scanning_enabled == False">
         <field name="digital_scan_ids" mode="list">
                                 <list>
-        <field name="scan_date" />
-        <field name="file_format" />
-        <field name="resolution" />
-        <field name="file_size" />
-        <field name="scan_quality" />
-
+                                    <field name="name"/>
+                                    <field name="final_container_id"/>
+                                    <field name="final_location_id"/>
+                                    <field name="final_series_id"/>
+                                    <field name="scan_date"/>
+                                    <field name="file_format"/>
+                                    <field name="resolution"/>
+                                    <field name="file_size"/>
+                                    <field name="scan_quality"/>
+                                    <field name="state"/>
                                 </list>
                             </field>
                         </page>
