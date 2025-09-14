@@ -152,6 +152,8 @@ class RecordsDocument(models.Model):
         compute="_compute_total_scan_size",
         help="Total size of all digital scans for this document in kilobytes",
     )
+    total_scan_size_visible = fields.Boolean("Total Scan Size Visible", default=True,
+                                            help="Control visibility of total scan size field")
     audit_log_ids = fields.One2many('naid.audit.log', 'document_id', string="Audit Logs")
     audit_log_count = fields.Integer(string="Audit Log Count", compute='_compute_audit_log_count', store=True)
     chain_of_custody_ids = fields.One2many('naid.custody', 'document_id', string="Chain of Custody")
