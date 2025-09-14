@@ -16,9 +16,9 @@
                 <field name="to_custodian_id"/>
                 <field name="transfer_date"/>
                 <field name="state" widget="badge"/>
-                <button name="action_start" type="object" string="Start" class="btn-link" icon="fa-play" invisible="state != 'draft'/>
-                <button name="action_complete" type="object" string="Complete" class="btn-link" icon="fa-check" invisible="state != 'in_progress'/>
-                <button name="action_cancel" type="object" string="Cancel" class="btn-link" icon="fa-times" invisible="state in ['completed','cancelled']/>
+                <button name="action_start" type="object" string="Start" class="btn-link" icon="fa-play" invisible="state != 'draft'"/>
+                <button name="action_complete" type="object" string="Complete" class="btn-link" icon="fa-check" invisible="state != 'in_progress'"/>
+                <button name="action_cancel" type="object" string="Cancel" class="btn-link" icon="fa-times" invisible="state in ['completed','cancelled']"/>
             </list>
         </field>
     </record>
@@ -30,10 +30,10 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_start" type="object" string="Start" class="btn-primary" invisible="state != 'draft'/>
-                    <button name="action_complete" type="object" string="Complete" class="btn-success" invisible="state != 'in_progress'/>
-                    <button name="action_cancel" type="object" string="Cancel" class="btn-danger" invisible="state in ['completed','cancelled']/>
-                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-secondary" invisible="state == 'draft'/>
+                    <button name="action_start" type="object" string="Start" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_complete" type="object" string="Complete" class="btn-success" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="btn-danger" invisible="state in ['completed','cancelled']"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-secondary" invisible="state == 'draft'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed,cancelled"/>
                 </header>
                 <sheet>
@@ -104,11 +104,11 @@
                             <div><field name="transfer_date"/></div>
                             <div t-if="record.document_ids.raw_value and record.document_ids.raw_value.length">Docs: <field name="document_ids"/></div>
                             <div t-if="record.container_ids.raw_value and record.container_ids.raw_value.length">Containers: <field name="container_ids"/></div>
-                            <div class="mt-1"><span class="badge" t-esc="record.state.raw_value/></div>
+                            <div class="mt-1"><span class="badge" t-esc="record.state.raw_value"/></div>
                             <div class="mt-2">
-                                <button type="object" name="action_start" class="btn btn-primary btn-sm" t-if="record.state.raw_value == 'draft'>Start</button>
-                                <button type="object" name="action_complete" class="btn btn-success btn-sm" t-if="record.state.raw_value == 'in_progress'>Complete</button>
-                                <button type="object" name="action_cancel" class="btn btn-danger btn-sm" t-if="record.state.raw_value not in ['completed','cancelled']>Cancel</button>
+                                <button type="object" name="action_start" class="btn btn-primary btn-sm" t-if="record.state.raw_value == 'draft'">Start</button>
+                                <button type="object" name="action_complete" class="btn btn-success btn-sm" t-if="record.state.raw_value == 'in_progress'">Complete</button>
+                                <button type="object" name="action_cancel" class="btn btn-danger btn-sm" t-if="record.state.raw_value not in ['completed','cancelled']">Cancel</button>
                             </div>
                         </div>
                     </t>
