@@ -62,7 +62,7 @@
                                         </div>
                                     </div>
                                     <div class="progress mt-2" style="height: 8px;">
-                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + ((record.utilization_percentage && record.utilization_percentage.raw_value != null) ? record.utilization_percentage.raw_value : 0) + '%'"/>
+                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + ((record.utilization_percentage &amp;&amp; record.utilization_percentage.raw_value != null) ? record.utilization_percentage.raw_value : 0) + '%'"/>
                                     </div>
                                 </div>
                             </div>
