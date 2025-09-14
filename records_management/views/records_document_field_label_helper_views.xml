@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
         <!-- Inherited view to add Field Labels smart button on Document form -->
         <record id="records_document_view_form_inherit" model="ir.ui.view">
             <field name="name">records.document.view.form.inherit.field_label_helper</field>
@@ -18,5 +17,4 @@
                 </xpath>
             </field>
         </record>
-    </data>
 </odoo>

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <data>
 <!-- List view for records.location.inspection.line -->
     <record id="records_location_inspection_line_view_tree" model="ir.ui.view">
         <field name="name">records.location.inspection.line.view.tree</field>
@@ -57,6 +55,5 @@
             </p>
         </field>
     </record>
-</data>
 
 </odoo>

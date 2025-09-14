@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <data>
-<!-- List view for base.rate -->
+    <!-- List view for base.rate -->
     <record id="records_management_bale_view_tree" model="ir.ui.view">
         <field name="name">records_management.bale.view.tree</field>
         <field name="model">records_management.bale</field>
@@ -57,6 +55,4 @@
             </p>
         </field>
     </record>
-</data>
-
 </odoo>
