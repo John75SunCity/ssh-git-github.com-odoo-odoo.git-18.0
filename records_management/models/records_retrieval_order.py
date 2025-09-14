@@ -119,6 +119,22 @@ class RecordsRetrievalOrder(models.Model):
     access_coordination_needed = fields.Boolean(string='Access Coordination Required')
     notes = fields.Text(string='Internal Notes')
 
+    # Additional fields referenced in views
+    item_type = fields.Selection([
+        ('document', 'Document'),
+        ('container', 'Container'),
+        ('file', 'File'),
+        ('folder', 'Folder')
+    ], string='Item Type', default='document')
+    container_ids = fields.Many2many('records.container', string='Containers')
+    location_id = fields.Many2one('records.location', string='Location')
+    assigned_user_id = fields.Many2one('res.users', string='Assigned User')
+    retrieved_by_id = fields.Many2one('res.users', string='Retrieved By')
+    date_retrieved = fields.Datetime(string='Date Retrieved')
+    date_delivered = fields.Datetime(string='Date Delivered')
+    file_description = fields.Text(string='File Description')
+    barcode = fields.Char(string='Barcode')
+
     # Computes
     @api.depends('name', 'partner_id', 'item_count')
     def _compute_display_name(self):
