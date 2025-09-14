@@ -23,6 +23,7 @@ class MassViewFieldValidator:
         self.accessibility_errors = []  # FontAwesome accessibility issues
         self.method_errors = []  # Missing method errors
         self.xmlid_errors = []  # Missing XML ID reference errors
+        self.xml_syntax_errors = []  # XML syntax errors (NEW)
         self.manual_review = [] # Complex issues requiring manual review
 
         # XML ID mappings
@@ -48,6 +49,10 @@ class MassViewFieldValidator:
             'document_id': 'document_ids',  # Many2one vs Many2many pattern
             'container_id': 'container_ids',  # Many2one vs Many2many pattern
         }
+
+        # Load all model definitions and XML IDs
+        self._scan_model_definitions()
+        self._scan_xml_ids()
 
     def _load_core_odoo_fields(self):
         """Load essential core Odoo model fields that our module extends"""
@@ -89,10 +94,6 @@ class MassViewFieldValidator:
             }
         }
         return core_fields
-
-        # Load all model definitions and XML IDs
-        self._scan_model_definitions()
-        self._scan_xml_ids()
 
     def _scan_xml_ids(self):
         """Scan all XML files to build a database of available XML IDs"""
@@ -529,6 +530,63 @@ class MassViewFieldValidator:
         except Exception as e:
             pass  # Skip files that can't be processed
 
+    def _check_xml_syntax(self, file_path):
+        """Check XML syntax and report detailed errors with line numbers"""
+        try:
+            tree = ET.parse(file_path)
+            return []  # No syntax errors
+        except ET.ParseError as e:
+            # Extract line number and column from the error message
+            error_line = getattr(e, 'lineno', 0)
+            error_col = getattr(e, 'offset', 0)
+
+            # Try to read the problematic line for context
+            context_line = ""
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    lines = f.readlines()
+                    if error_line > 0 and error_line <= len(lines):
+                        context_line = lines[error_line - 1].strip()
+            except:
+                pass
+
+            return [{
+                'type': 'xml_syntax_error',
+                'file': os.path.basename(file_path),
+                'line': error_line,
+                'column': error_col,
+                'error': str(e),
+                'context': context_line,
+                'fix_suggestion': self._suggest_xml_fix(str(e))
+            }]
+        except Exception as e:
+            return [{
+                'type': 'xml_file_error',
+                'file': os.path.basename(file_path),
+                'line': 0,
+                'column': 0,
+                'error': f"Could not read XML file: {e}",
+                'context': "",
+                'fix_suggestion': "Check file encoding and permissions"
+            }]
+
+    def _suggest_xml_fix(self, error_message):
+        """Suggest fixes for common XML syntax errors"""
+        error_lower = error_message.lower()
+
+        if "opening and ending tag mismatch" in error_lower:
+            return "Check for missing closing tags or extra closing tags. Ensure all XML tags are properly paired."
+        elif "expected" in error_lower and ">" in error_lower:
+            return "Check for missing '>' character or malformed tag attributes."
+        elif "not well-formed" in error_lower:
+            return "Check for unescaped special characters (&, <, >) or malformed XML structure."
+        elif "unexpected end of file" in error_lower:
+            return "File may be truncated or missing closing tags."
+        elif "attribute" in error_lower:
+            return "Check attribute syntax - ensure quotes around values and proper spacing."
+        else:
+            return "Review XML structure and ensure proper formatting."
+
     def scan_all_views(self):
         """Scan all XML view files for field validation issues"""
         print("🔍 Scanning all XML view files for field references...")
@@ -542,6 +600,12 @@ class MassViewFieldValidator:
         print(f"📊 Found {len(view_files)} XML files to validate")
 
         for file_path in view_files:
+            # NEW: Check XML syntax FIRST before parsing
+            xml_syntax_errors = self._check_xml_syntax(file_path)
+            if xml_syntax_errors:
+                self.xml_syntax_errors.extend(xml_syntax_errors)
+                continue  # Skip further validation if XML is malformed
+
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
@@ -596,7 +660,8 @@ class MassViewFieldValidator:
         total_accessibility_errors = len(self.accessibility_errors)
         total_method_errors = len(self.method_errors)
         total_xmlid_errors = len(self.xmlid_errors)
-        total_errors = total_field_errors + total_accessibility_errors + total_method_errors + total_xmlid_errors
+        total_xml_syntax_errors = len(self.xml_syntax_errors)  # NEW
+        total_errors = total_field_errors + total_accessibility_errors + total_method_errors + total_xmlid_errors + total_xml_syntax_errors
         manual_reviews = len(self.manual_review)
 
         print(f"📊 Scan complete:")
@@ -604,6 +669,7 @@ class MassViewFieldValidator:
         print(f"   - FontAwesome accessibility errors: {total_accessibility_errors}")
         print(f"   - Missing method errors: {total_method_errors}")
         print(f"   - XML ID reference errors: {total_xmlid_errors}")
+        print(f"   - XML syntax errors: {total_xml_syntax_errors}")  # NEW
         print(f"   - Total errors: {total_errors}")
         print(f"   - Manual review needed: {manual_reviews}")
         print(f"   - AUTO-FIXES DISABLED - Validation only mode")        # Group errors by file for targeted fixes
@@ -615,6 +681,8 @@ class MassViewFieldValidator:
         for error in self.method_errors:
             errors_by_file[error['file']].append(error)
         for error in self.xmlid_errors:
+            errors_by_file[error['file']].append(error)
+        for error in self.xml_syntax_errors:
             errors_by_file[error['file']].append(error)
 
         # Save detailed report
@@ -628,6 +696,7 @@ class MassViewFieldValidator:
             f.write(f"FontAwesome accessibility errors: {total_accessibility_errors}\n")
             f.write(f"Missing method errors: {total_method_errors}\n")
             f.write(f"XML ID reference errors: {total_xmlid_errors}\n")
+            f.write(f"XML syntax errors: {total_xml_syntax_errors}\n")  # NEW
             f.write(f"Total errors: {total_errors}\n")
             f.write(f"Manual review needed: {manual_reviews}\n")
             f.write(f"AUTO-FIXES: DISABLED (Pure validation mode)\n\n")
@@ -675,6 +744,12 @@ class MassViewFieldValidator:
                                 f.write(f"    Error: {error['error']}\n")
                                 f.write(f"    Context: {error['context']}\n")
                                 f.write(f"    💡 Fix: Create missing XML ID or correct reference\n")
+
+                            elif error_type == 'xml_syntax_error':
+                                f.write(f"    Line: {error['line']}, Column: {error['column']}\n")
+                                f.write(f"    Error: {error['error']}\n")
+                                f.write(f"    Context: {error['context']}\n")
+                                f.write(f"    💡 Fix: {error['fix_suggestion']}\n")
 
                             f.write("\n")
 
@@ -728,6 +803,15 @@ class MassViewFieldValidator:
                 error_count += 1
                 print(f"{error_count}. [XML_ID] {error['file']} - {error['error']}")
                 print(f"   💡 Fix: Create missing XML ID or fix reference")
+                print()
+
+            # Show XML syntax errors - HIGHEST PRIORITY (deployment blockers)
+            for i, error in enumerate(self.xml_syntax_errors[:5]):
+                error_count += 1
+                print(f"{error_count}. [XML_SYNTAX] {error['file']}:{error['line']}:{error['column']}")
+                print(f"   🚨 DEPLOYMENT BLOCKER: {error['error']}")
+                print(f"   Context: {error['context']}")
+                print(f"   💡 Fix: {error['fix_suggestion']}")
                 print()
 
 def main():

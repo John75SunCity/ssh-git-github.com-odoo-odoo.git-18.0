@@ -65,9 +65,8 @@
             <field name="name">Bulk User Import</field>
             <field name="res_model">records.bulk.user.import</field>
             <field name="view_mode">list,form</field>
-<field name="view_id" ref="records_bulk_user_import_view_tree"/>
-
-            <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
+            <field name="view_id" ref="records_bulk_user_import_view_tree"/>
+            <field name="groups_id" eval="[(4, ref('records_management.group_records_manager'))]"/>
         </record>
 
         <!-- Menu Item -->
