@@ -61,7 +61,7 @@
         <field name="name">visitor.pos.wizard.view.tree</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
-            <tree string="Visitor POS Processing History">
+            <list string="Visitor POS Processing History">
                 <field name="visitor_id" string="Visitor"/>
                 <field name="product_id" string="Product/Service"/>
                 <field name="quantity" string="Quantity"/>
@@ -69,7 +69,7 @@
                 <field name="pos_config_id" string="POS Terminal"/>
                 <field name="partner_id" string="Customer"/>
                 <field name="create_new_customer" string="New Customer" widget="boolean_toggle"/>
-            </tree>
+            </list>
         </field>
     </record>
 

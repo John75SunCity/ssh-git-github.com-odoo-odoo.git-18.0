@@ -6,9 +6,9 @@
         <field name="name">barcode.storage.box.view.tree</field>
         <field name="model">barcode.storage.box</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

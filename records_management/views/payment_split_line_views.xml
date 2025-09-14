@@ -8,7 +8,7 @@
         <field name="name">payment.split.line.view.tree</field>
         <field name="model">payment.split.line</field>
         <field name="arch" type="xml">
-        <tree string="Payment Split Lines" default_order="split_id, sequence">
+        <list string="Payment Split Lines" default_order="split_id, sequence">
         <field name="sequence" widget="handle"/>
         <field name="split_id"/>
         <field name="name"/>
@@ -17,7 +17,7 @@
         <field name="invoice_id"/>
         <field name="processed" widget="boolean_toggle"/>
         <field name="currency_id" invisible="1"/>
-        </tree>
+        </list>
     </field>
     </record>
 

@@ -6,9 +6,9 @@
         <field name="name">shredding.hard_drive.view.tree</field>
         <field name="model">shredding.hard_drive</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 
@@ -98,9 +98,9 @@
 
 <separator string="Scanned Hard Drives"/>
         <field name="scan_line_ids">
-        <tree editable="bottom">
+        <list editable="bottom">
         <field name="serial_number"/>
-</tree>
+</list>
 </field>
             </sheet>
         </form>
@@ -112,7 +112,7 @@
         <field name="name">shredding.hard_drive.view.tree</field>
         <field name="model">shredding.hard_drive</field>
         <field name="arch" type="xml">
-        <tree string="Hard Drives for Shredding" decoration-success="destroyed"
+        <list string="Hard Drives for Shredding" decoration-success="destroyed"
                 decoration-warning="verified_before_destruction and not destroyed"
                 decoration-info="scanned_at_customer and not verified_before_destruction">
         <field name="serial_number"/>
@@ -126,7 +126,7 @@
         <field name="destruction_date"/>
         <field name="destruction_method"/>
         <field name="included_in_certificate" widget="boolean_toggle"/>
-        </tree>
+        </list>
     </field>
     </record>
 

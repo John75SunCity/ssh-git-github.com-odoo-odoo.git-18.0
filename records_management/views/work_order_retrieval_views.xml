@@ -6,7 +6,7 @@
         <field name="name">work.order.retrieval.view.tree</field>
         <field name="model">work.order.retrieval</field>
         <field name="arch" type="xml">
-        <tree string="Work Order Retrievals" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
+        <list string="Work Order Retrievals" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
         <field name="name"/>
 
         <field name="work_order_id"/>
@@ -19,7 +19,7 @@
         <field name="total_boxes"/>
         <field name="completed_boxes"/>
         <field name="activity_ids" widget="list_activity"/>
-</tree>
+</list>
 </field>
     </record>
 
@@ -90,23 +90,23 @@
 </page>
         <page string="Items to Retrieve" name="items">
         <field name="retrieval_item_ids">
-        <tree editable="bottom">
+        <list editable="bottom">
         <field name="box_id" domain="[('location_id', '=', parent.location_id)]"/>
         <field name="item_description"/>
         <field name="retrieved" widget="boolean_toggle"/>
         <field name="retrieval_time"/>
         <field name="notes"/>
-        </tree>
+        </list>
     </field>
 </page>
         <page string="Audit Trail" name="audit">
         <field name="audit_log_ids" readonly="1">
-        <tree>
+        <list>
         <field name="timestamp"/>
         <field name="user_id"/>
         <field name="action"/>
         <field name="details"/>
-        </tree>
+        </list>
     </field>
 </page>
         <page string="Documents" name="documents">

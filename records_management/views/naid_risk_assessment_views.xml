@@ -6,9 +6,9 @@
         <field name="name">naid.risk.assessment.view.tree</field>
         <field name="model">naid.risk.assessment</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

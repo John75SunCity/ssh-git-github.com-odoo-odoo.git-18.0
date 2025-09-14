@@ -5,7 +5,7 @@
         <field name="name">records.department.view.tree</field>
         <field name="model">records.department</field>
         <field name="arch" type="xml">
-            <tree decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
                 <field name="display_name" string="Department"/>
                 <field name="partner_id" string="Customer"/>
                 <field name="code" string="🔢 Code"/>
@@ -15,7 +15,7 @@
                 <field name="user_id" string="👨‍ Responsible"/>
                 <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
                 <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -79,32 +79,32 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                         </page>
                         <page string="Billing Contacts" name="billing">
                             <field name="billing_contact_ids">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="email"/>
                                     <field name="phone"/>
                                     <field name="is_primary"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Recent Containers" name="containers">
                             <field name="container_ids" mode="list" limit="10">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="state"/>
                                     <field name="storage_start_date"/>
                                     <field name="location_id"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Recent Documents" name="documents">
                             <field name="document_ids" mode="list" limit="10">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="reference"/>
                                     <field name="state"/>
                                     <field name="received_date"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>

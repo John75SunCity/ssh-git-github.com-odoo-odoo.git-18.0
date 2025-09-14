@@ -6,9 +6,9 @@
         <field name="name">naid.compliance.action.plan.view.tree</field>
         <field name="model">naid.compliance.action.plan</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

@@ -6,7 +6,7 @@
             <field name="name">records.center.location.view.tree</field>
             <field name="model">records.center.location</field>
             <field name="arch" type="xml">
-                <tree string="Records Center Location">
+                <list string="Records Center Location">
                     <field name="name"/>
                     <field name="code"/>
                     <field name="company_id"/>
@@ -17,7 +17,7 @@
                     <field name="country_id"/>
                     <field name="manager_id"/>
                     <field name="capacity_cubic_feet"/>
-                </tree>
+                </list>
             </field>
         </record>
 

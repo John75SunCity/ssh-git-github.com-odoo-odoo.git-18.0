@@ -6,14 +6,14 @@
         <field name="name">inventory.item.type.view.tree</field>
         <field name="model">inventory.item.type</field>
     <field name="arch" type="xml">
-            <tree string="Inventory Item Type">
+            <list string="Inventory Item Type">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="category"/>
                 <field name="description"/>
                 <field name="active"/>
                 <field name="company_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 

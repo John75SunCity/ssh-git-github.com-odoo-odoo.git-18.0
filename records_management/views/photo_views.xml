@@ -6,12 +6,12 @@
         <field name="name">photo.view.tree</field>
         <field name="model">photo</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="state"/>
                 <field name="company_id"/>
                 <field name="user_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 

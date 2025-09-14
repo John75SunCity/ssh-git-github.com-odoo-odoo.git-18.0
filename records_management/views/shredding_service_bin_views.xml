@@ -10,7 +10,7 @@
         <field name="name">shredding.service.bin.view.tree</field>
         <field name="model">shredding.service.bin</field>
         <field name="arch" type="xml">
-        <tree string="Shredding Service Bins" decoration-success="status == 'active'"
+        <list string="Shredding Service Bins" decoration-success="status == 'active'"
                 decoration-warning="status == 'maintenance'" decoration-danger="status == 'retired'">
         <field name="barcode"/>
         <field name="bin_size" widget="badge"/>
@@ -22,7 +22,7 @@
         <field name="total_weight" sum="Total Weight" widget="float"/>
         <field name="estimated_monthly_revenue" sum="Monthly Revenue" widget="monetary"/>
         <field name="last_scan_date" widget="datetime"/>
-</tree>
+</list>
     </field>
     </record>
 
@@ -121,37 +121,37 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
 
                     <page string="Location History" name="location_history">
         <field name="location_history_ids" readonly="1">
-                            <tree string="Location History">
+                            <list string="Location History">
         <field name="timestamp" widget="datetime"/>
         <field name="location"/>
         <field name="scan_type"/>
         <field name="user_id"/>
         <field name="notes"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
 
                     <page string="Service History" name="service_history">
         <field name="service_history_ids" readonly="1">
-                            <tree string="Service History">
+                            <list string="Service History">
         <field name="service_date" widget="date"/>
         <field name="service_type"/>
         <field name="weight_collected" widget="float"/>
         <field name="technician_id"/>
         <field name="notes"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
 
                     <page string="Work Orders" name="work_orders">
         <field name="work_order_ids" readonly="1">
-                            <tree string="Work Orders">
+                            <list string="Work Orders">
         <field name="name"/>
         <field name="stage_id"/>
         <field name="user_ids" widget="many2many_tags"/>
         <field name="date_deadline" widget="date"/>
         <field name="priority" widget="priority"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
 

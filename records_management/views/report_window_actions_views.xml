@@ -6,7 +6,7 @@
         <field name="name">records.container.view.list.storage</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-        <tree string="Containers" create="false" edit="false" delete="false">
+        <list string="Containers" create="false" edit="false" delete="false">
         <field name="name"/>
         <field name="state"/>
         <field name="location_id"/>
@@ -15,7 +15,7 @@
 
         <field name="partner_id"/>
 
-</tree>
+</list>
         </field>
     </record>
 
@@ -57,13 +57,13 @@
         <field name="name">naid.compliance.policy.view.list.report</field>
         <field name="model">naid.compliance.policy</field>
         <field name="arch" type="xml">
-        <tree string="Compliance Policies" create="false" edit="false" delete="false">
+        <list string="Compliance Policies" create="false" edit="false" delete="false">
         <field name="name"/>
         <field name="state"/>
         <field name="responsible_id"/>
         <field name="last_review_date"/>
         <field name="next_review_date"/>
-</tree>
+</list>
         </field>
     </record>
 
@@ -100,14 +100,14 @@
         <field name="name">res.partner.view.list</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-        <tree string="Customer Inventory" create="false" edit="false" delete="false">
+        <list string="Customer Inventory" create="false" edit="false" delete="false">
         <field name="name"/>
         <field name="company_type"/>
         <field name="parent_id"/>
         <field name="user_id"/>
         <field name="phone"/>
         <field name="email"/>
-</tree>
+</list>
         </field>
     </record>
 

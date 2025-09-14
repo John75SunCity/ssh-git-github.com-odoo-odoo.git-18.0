@@ -6,13 +6,13 @@
         <field name="name">container.access.document.view.tree</field>
         <field name="model">container.access.document</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
         <field name="name"/>
         <field name="activity_id"/>
         <field name="attachment_id"/>
         <field name="description"/>
         <field name="company_id" groups="base.group_multi_company"/>
-            </tree>
+            </list>
         </field>
     </record>
 

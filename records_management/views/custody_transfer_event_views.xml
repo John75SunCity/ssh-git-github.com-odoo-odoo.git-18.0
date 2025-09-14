@@ -6,7 +6,7 @@
         <field name="name">custody.transfer.event.view.tree</field>
         <field name="model">custody.transfer.event</field>
     <field name="arch" type="xml">
-            <tree string="Custody Transfer Event">
+            <list string="Custody Transfer Event">
                 <field name="name"/>
                 <field name="company_id"/>
                 <field name="custody_record_id"/>
@@ -15,7 +15,7 @@
                 <field name="from_party_id"/>
                 <field name="to_party_id"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 

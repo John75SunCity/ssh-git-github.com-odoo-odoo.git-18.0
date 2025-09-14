@@ -6,9 +6,9 @@
         <field name="name">route.optimizer.view.tree</field>
         <field name="model">route.optimizer</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

@@ -6,9 +6,9 @@
         <field name="name">naid.destruction.record.view.tree</field>
         <field name="model">naid.destruction.record</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

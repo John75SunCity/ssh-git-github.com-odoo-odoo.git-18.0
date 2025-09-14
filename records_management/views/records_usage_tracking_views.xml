@@ -6,9 +6,9 @@
         <field name="name">records.usage.tracking.view.tree</field>
         <field name="model">records.usage.tracking</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

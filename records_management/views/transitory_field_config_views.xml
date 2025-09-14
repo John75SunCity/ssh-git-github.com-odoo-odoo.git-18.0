@@ -5,9 +5,9 @@
         <field name="name">transitory.field.config.view.tree</field>
         <field name="model">transitory.field.config</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -166,7 +166,7 @@
         <field name="name">field.label.customization.view.tree</field>
         <field name="model">field.label.customization</field>
         <field name="arch" type="xml">
-            <tree string="Field Label Customizations">
+            <list string="Field Label Customizations">
                 <field name="name"/>
                 <field name="scope_display"/>
                 <field name="partner_id"/>
@@ -174,7 +174,7 @@
                 <field name="priority"/>
                 <field name="customized_label_count"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 

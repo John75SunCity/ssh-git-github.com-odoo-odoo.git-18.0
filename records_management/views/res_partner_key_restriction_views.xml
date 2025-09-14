@@ -6,9 +6,9 @@
         <field name="name">res.partner.key.restriction.view.tree</field>
         <field name="model">res.partner.key.restriction</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

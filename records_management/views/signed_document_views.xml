@@ -6,9 +6,9 @@
         <field name="name">signed.document.view.tree</field>
         <field name="model">signed.document</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

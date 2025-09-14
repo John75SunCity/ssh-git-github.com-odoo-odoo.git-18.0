@@ -6,7 +6,7 @@
         <field name="name">key.inventory.view.tree</field>
         <field name="model">key.inventory</field>
     <field name="arch" type="xml">
-            <tree string="Key Inventory">
+            <list string="Key Inventory">
                 <field name="name"/>
                 <field name="serial_number"/>
                 <field name="location_id"/>
@@ -14,7 +14,7 @@
                 <field name="state"/>
                 <field name="active"/>
                 <field name="company_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 

@@ -6,9 +6,9 @@
         <field name="name">barcode.models.enhanced.view.tree</field>
         <field name="model">barcode.models.enhanced</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

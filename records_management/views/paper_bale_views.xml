@@ -55,14 +55,14 @@
         <field name="name">paper.bale.view.tree</field>
         <field name="model">paper.bale</field>
         <field name="arch" type="xml">
-            <tree string="Paper Bales" decoration-success="state=='shipped'" decoration-info="state=='weighed'" decoration-warning="state=='in_stock'" decoration-muted="state=='cancelled'">
+            <list string="Paper Bales" decoration-success="state=='shipped'" decoration-info="state=='weighed'" decoration-warning="state=='in_stock'" decoration-muted="state=='cancelled'">
                 <field name="name"/>
                 <field name="bale_number"/>
                 <field name="paper_grade"/>
                 <field name="weight" sum="Total Weight (kg)"/>
                 <field name="source_date"/>
                 <field name="state" widget="badge" decoration-success="state == 'shipped'" decoration-info="state == 'weighed'"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -116,25 +116,25 @@
                     <notebook>
                         <page string="Inspections" name="inspections">
                             <field name="inspection_ids" nolabel="1">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="inspection_date"/>
                                     <field name="inspector_id"/>
                                     <field name="inspection_type"/>
                                     <field name="passed"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Movements" name="movements">
                             <field name="movement_ids" nolabel="1">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="movement_date"/>
                                     <field name="source_location_id"/>
                                     <field name="destination_location_id"/>
                                     <field name="responsible_user_id"/>
                                     <field name="state"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Notes" name="notes">

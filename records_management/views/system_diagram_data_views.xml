@@ -7,7 +7,7 @@
         <field name="name">system.diagram.data.view.tree</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-            <tree string="System Diagrams" decoration-info="search_type=='user'" decoration-success="search_type=='model'" decoration-warning="search_type=='company'">
+            <list string="System Diagrams" decoration-info="search_type=='user'" decoration-success="search_type=='model'" decoration-warning="search_type=='company'">
                 <field name="name"/>
                 <field name="search_type" widget="badge"/>
                 <field name="search_query"/>
@@ -17,7 +17,7 @@
                 <field name="create_date" string="Created"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <button name="action_generate_diagram" type="object" string="Generate" class="btn-primary" icon="fa-refresh"/>
-            </tree>
+            </list>
         </field>
     </record>
 

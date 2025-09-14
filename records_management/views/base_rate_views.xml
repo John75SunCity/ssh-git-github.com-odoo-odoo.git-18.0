@@ -6,9 +6,9 @@
         <field name="name">base.rate.view.tree</field>
         <field name="model">base.rate</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
         <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -63,7 +63,7 @@
         <field name="name">base.rate.view.tree</field>
         <field name="model">base.rate</field>
         <field name="arch" type="xml">
-                <tree decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-warning="state == 'confirmed'" decoration-muted="state in ['superseded', 'expired', 'cancelled']">
+                <list decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-warning="state == 'confirmed'" decoration-muted="state in ['superseded', 'expired', 'cancelled']">
         <field name="name"/>
         <field name="version"/>
         <field name="is_current" widget="boolean_toggle"/>
@@ -75,7 +75,7 @@
         <field name="negotiated_rate_count" string="Negotiated Users"/>
         <field name="average_service_rate" widget="monetary" string="Avg. Rate"/>
         <field name="company_id" optional="hide"/>
-                </tree>
+                </list>
             </field>
     </record>
 
@@ -364,7 +364,7 @@
 <notebook invisible="analysis_complete == False">
                             <page string="Customer Impact Analysis">
         <field name="forecast_line_ids" readonly="1">
-                                    <tree decoration-success="revenue_change &amp;lt; 0" decoration-danger="revenue_change &amp;gt; 0">
+                                    <list decoration-success="revenue_change &amp;lt; 0" decoration-danger="revenue_change &amp;gt; 0">
         <field name="partner_id"/>
         <field name="customer_segment"/>
         <field name="container_count"/>
@@ -373,7 +373,7 @@
         <field name="revenue_change"/>
         <field name="revenue_change_percentage"/>
         <field name="risk_level" widget="badge"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>

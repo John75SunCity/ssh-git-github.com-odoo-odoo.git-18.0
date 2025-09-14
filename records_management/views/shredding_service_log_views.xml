@@ -6,9 +6,9 @@
         <field name="name">shredding.service.log.view.tree</field>
         <field name="model">shredding.service.log</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

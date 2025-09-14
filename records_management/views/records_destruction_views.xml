@@ -5,9 +5,9 @@
         <field name="name">records.destruction.view.tree</field>
         <field name="model">records.destruction</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 

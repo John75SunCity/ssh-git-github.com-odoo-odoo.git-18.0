@@ -6,9 +6,9 @@
         <field name="name">view.naid.compliance.policy.list</field>
         <field name="model">naid.compliance.policy</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

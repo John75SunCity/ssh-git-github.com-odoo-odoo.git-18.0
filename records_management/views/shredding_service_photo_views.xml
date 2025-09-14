@@ -8,14 +8,14 @@
         <field name="name">shredding.service.photo.view.tree</field>
         <field name="model">shredding.service.photo</field>
         <field name="arch" type="xml">
-        <tree string="Shredding Service Photos" default_order="shredding_service_id, sequence">
+        <list string="Shredding Service Photos" default_order="shredding_service_id, sequence">
         <field name="sequence" widget="handle"/>
         <field name="name"/>
         <field name="photo_type"/>
         <field name="photo_date"/>
         <field name="witness_name"/>
         <field name="photo_data" widget="image" width="64" height="64"/>
-        </tree>
+        </list>
     </field>
     </record>
 

@@ -57,7 +57,7 @@
         <field name="name">shredding.service.view.tree</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="provider_id"/>
                 <field name="service_type"/>
@@ -67,7 +67,7 @@
                 <field name="chain_of_custody" widget="boolean_toggle"/>
                 <field name="witness_destruction" widget="boolean_toggle"/>
                 <field name="base_price"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -126,13 +126,13 @@
                     <notebook>
                         <page string="Destruction Items">
                             <field name="destruction_item_ids" mode="list">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="item_description"/>
                                     <field name="quantity"/>
                                     <field name="weight"/>
                                     <field name="container_type"/>
                                     <field name="destruction_status"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Service Details">
@@ -151,12 +151,12 @@
                             <group>
                                 <field name="certificate_id" readonly="1"/>
                                 <field name="naid_audit_log_ids" mode="list">
-                                    <tree>
+                                    <list>
                                         <field name="event_type"/>
                                         <field name="event_date"/>
                                         <field name="user_id"/>
                                         <field name="location"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </group>
                         </page>

@@ -6,14 +6,14 @@
         <field name="name">customer.feedback.view.tree</field>
         <field name="model">customer.feedback</field>
         <field name="arch" type="xml">
-        <tree string="Customer Feedback" default_order="create_date desc">
+        <list string="Customer Feedback" default_order="create_date desc">
         <field name="name"/>
         <field name="state"/>
         <field name="user_id"/>
         <field name="company_id" optional="show"/>
         <field name="write_date" widget="relative" optional="show"/>
         <field name="active" invisible="1"/>
-</tree>
+</list>
 </field>
     </record>
 

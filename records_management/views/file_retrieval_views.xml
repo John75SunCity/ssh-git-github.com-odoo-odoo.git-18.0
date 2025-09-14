@@ -6,7 +6,7 @@
         <field name="name">file.retrieval.view.tree</field>
         <field name="model">file.retrieval</field>
         <field name="arch" type="xml">
-            <tree string="File Retrieval" decoration-warning="status == 'searching'" decoration-info="status == 'located'" decoration-success="status == 'delivered'">
+            <list string="File Retrieval" decoration-warning="status == 'searching'" decoration-info="status == 'located'" decoration-success="status == 'delivered'">
         <field name="name"/>
         <field name="requested_file_name"/>
         <field name="partner_id"/>
@@ -15,7 +15,7 @@
         <field name="user_id"/>
         <field name="discovery_date"/>
         <field name="containers_accessed_count"/>
-            </tree>
+            </list>
         </field>
     </record>
 

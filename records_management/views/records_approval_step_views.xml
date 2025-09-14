@@ -6,9 +6,9 @@
         <field name="name">records.approval.step.view.tree</field>
         <field name="model">records.approval.step</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

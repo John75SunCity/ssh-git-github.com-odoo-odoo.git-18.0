@@ -18,7 +18,7 @@
         <field name="name">container.access.activity.view.tree</field>
         <field name="model">container.access.activity</field>
     <field name="arch" type="xml">
-            <tree string="Container Access Activity" decoration-info="status == 'in_progress'" decoration-success="status == 'completed'">
+            <list string="Container Access Activity" decoration-info="status == 'in_progress'" decoration-success="status == 'completed'">
                 <field name="name"/>
                 <field name="visitor_id"/>
                 <field name="container_ids"/>
@@ -27,7 +27,7 @@
                 <field name="description"/>
                 <field name="state"/>
                 <field name="authorized_by_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 

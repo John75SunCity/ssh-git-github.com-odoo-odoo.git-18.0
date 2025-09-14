@@ -6,9 +6,9 @@
         <field name="name">portal.feedback.communication.view.tree</field>
         <field name="model">portal.feedback.communication</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

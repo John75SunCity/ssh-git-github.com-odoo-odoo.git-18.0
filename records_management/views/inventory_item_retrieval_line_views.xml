@@ -6,7 +6,7 @@
         <field name="name">inventory.item.retrieval.line.tree</field>
         <field name="model">inventory.item.retrieval.line</field>
     <field name="arch" type="xml">
-            <tree decoration-info="state=='pending'"
+            <list decoration-info="state=='pending'"
                     decoration-success="state=='retrieved'"
                     decoration-muted="state=='not_found'"
                     editable="bottom">
@@ -19,7 +19,7 @@
                 <field name="retrieval_date"/>
                 <field name="responsible_id"/>
                 <field name="notes"/>
-            </tree>
+            </list>
         </field>
     </record>
 

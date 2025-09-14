@@ -6,12 +6,12 @@
         <field name="name">discount.rule.view.tree</field>
         <field name="model">discount.rule</field>
     <field name="arch" type="xml">
-            <tree string="Discount Rule">
+            <list string="Discount Rule">
                 <field name="name"/>
                 <field name="config_id"/>
                 <field name="priority"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 

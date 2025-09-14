@@ -6,7 +6,7 @@
         <field name="name">bin.key.view.tree</field>
         <field name="model">bin.key</field>
         <field name="arch" type="xml">
-        <tree string="Bin Keys" decoration-success="status == 'available'" decoration-warning="status == 'assigned'" decoration-danger="status == 'lost'" decoration-muted="status == 'retired'">
+        <list string="Bin Keys" decoration-success="status == 'available'" decoration-warning="status == 'assigned'" decoration-danger="status == 'lost'" decoration-muted="status == 'retired'">
         <field name="name"/>
         <field name="key_type"/>
         <field name="bin_location"/>
@@ -18,7 +18,7 @@
         <field name="company_id" optional="hide"/>
         <field name="active" optional="hide"/>
 
-        </tree>
+        </list>
     </field>
     </record>
 
@@ -102,35 +102,35 @@
 <notebook>
         <page string="Assignment History">
         <field name="key_history_ids" readonly="1">
-        <tree>
+        <list>
         <field name="assigned_to"/>
         <field name="assignment_date"/>
         <field name="return_date"/>
         <field name="assignment_reason"/>
         <field name="duration_days"/>
-        </tree>
+        </list>
     </field>
 </page>
         <page string="Management Records" invisible="management_record_count == 0">
         <field name="management_record_ids" readonly="1">
-        <tree>
+        <list>
         <field name="key_number"/>
         <field name="partner_id"/>
         <field name="state"/>
         <field name="issue_date"/>
         <field name="return_date"/>
-        </tree>
+        </list>
     </field>
 </page>
         <page string="Unlock Services" invisible="unlock_service_count == 0">
         <field name="unlock_service_ids" readonly="1">
-        <tree>
+        <list>
         <field name="service_date"/>
         <field name="service_type"/>
         <field name="customer_id"/>
         <field name="bin_location"/>
         <field name="charge_amount"/>
-        </tree>
+        </list>
     </field>
 </page>
         <page string="Notes &amp; Details">

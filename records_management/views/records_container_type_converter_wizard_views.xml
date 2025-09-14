@@ -6,9 +6,9 @@
         <field name="name">records.container.type.converter.wizard.view.tree</field>
         <field name="model">records.container.type.converter.wizard</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

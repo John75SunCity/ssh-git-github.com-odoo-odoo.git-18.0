@@ -19,7 +19,7 @@
         <field name="name">inventory.item.location.transfer.view.tree</field>
         <field name="model">inventory.item.location.transfer</field>
     <field name="arch" type="xml">
-            <tree string="Inventory Item Location Transfer">
+            <list string="Inventory Item Location Transfer">
                 <field name="name"/>
                 <field name="item_id"/>
                 <field name="from_location_id"/>
@@ -29,7 +29,7 @@
                 <field name="notes"/>
                 <field name="active"/>
                 <field name="company_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 

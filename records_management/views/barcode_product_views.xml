@@ -88,7 +88,7 @@
         <field name="name">barcode.product.view.tree</field>
         <field name="model">barcode.product</field>
         <field name="arch" type="xml">
-            <tree string="Barcode Product Management" decoration-success="active==True" decoration-muted="active==False" multi_edit="1" sample="1">
+            <list string="Barcode Product Management" decoration-success="active==True" decoration-muted="active==False" multi_edit="1" sample="1">
                 <header>
                     <button name="action_activate" type="object" string="Activate"/>
                     <button name="action_deactivate" type="object" string="Deactivate"/>
@@ -106,7 +106,7 @@
                 <field name="monthly_volume" string="Monthly Volume" sum="Total Volume"/>
                 <field name="active" string="Active" widget="boolean_toggle"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
-            </tree>
+            </list>
         </field>
     </record>
     <!-- FORM VIEW: Detailed Barcode Product Configuration -->

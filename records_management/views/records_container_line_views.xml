@@ -6,7 +6,7 @@
             <field name="name">records.container.line.view.tree</field>
             <field name="model">records.container.line</field>
         <field name="arch" type="xml">
-                <tree string="Records Container Line">
+                <list string="Records Container Line">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="container_ids"/>
@@ -16,7 +16,7 @@
                     <field name="state"/>
                     <field name="date_added"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
+                </list>
             </field>
         </record>
 

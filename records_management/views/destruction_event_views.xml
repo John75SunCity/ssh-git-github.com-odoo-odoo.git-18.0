@@ -4,14 +4,14 @@
         <field name="name">destruction.event.view.tree</field>
         <field name="model">destruction.event</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
         <field name="date"/>
         <field name="technician_id"/>
         <field name="location_type"/>
         <field name="quantity"/>
         <field name="unit_of_measure"/>
-</tree>
+</list>
         </field>
     </record>
 

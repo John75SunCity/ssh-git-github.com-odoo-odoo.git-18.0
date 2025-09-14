@@ -6,9 +6,9 @@
         <field name="name">records.tag.category.view.tree</field>
         <field name="model">records.tag.category</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

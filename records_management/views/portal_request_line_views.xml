@@ -6,7 +6,7 @@
         <field name="name">portal.request.line.view.tree</field>
         <field name="model">portal.request.line</field>
     <field name="arch" type="xml">
-            <tree string="Portal Request Line">
+            <list string="Portal Request Line">
                 <field name="request_id"/>
                 <field name="item_type"/>
                 <field name="description"/>
@@ -16,7 +16,7 @@
                 <field name="notes"/>
                 <field name="company_id"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 

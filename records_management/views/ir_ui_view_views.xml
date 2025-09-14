@@ -19,13 +19,13 @@ These definitions allow administrators to manage Odoo view records directly from
         <field name="name">ir.ui.view.view.tree</field>
         <field name="model">ir.ui.view</field>
     <field name="arch" type="xml">
-            <tree string="View">
+            <list string="View">
                 <field name="name"/>
                 <field name="model"/>
                 <field name="priority"/>
                 <field name="active"/>
                 <field name="type"/>
-            </tree>
+            </list>
         </field>
     </record>
 

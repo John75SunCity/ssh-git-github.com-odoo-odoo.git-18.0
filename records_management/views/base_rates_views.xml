@@ -49,7 +49,7 @@
         <field name="name">base.rates.view.tree</field>
         <field name="model">base.rates</field>
         <field name="arch" type="xml">
-            <tree string="Base Rates">
+            <list string="Base Rates">
         <field name="name"/>
         <field name="rate_type"/>
         <field name="base_rate"/>
@@ -58,7 +58,7 @@
         <field name="effective_date"/>
         <field name="expiry_date"/>
         <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 

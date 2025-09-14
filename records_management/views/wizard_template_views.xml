@@ -6,11 +6,11 @@
         <field name="name">wizard.template.view.tree</field>
         <field name="model">wizard.template</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="reason"/>
         <field name="confirm_action"/>
 
-        </tree>
+        </list>
     </field>
     </record>
 

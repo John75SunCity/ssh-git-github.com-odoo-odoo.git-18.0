@@ -6,13 +6,13 @@
         <field name="name">feedback.improvement.area.view.tree</field>
         <field name="model">feedback.improvement.area</field>
     <field name="arch" type="xml">
-            <tree string="Feedback Improvement Area" decoration-info="state == 'under_review'" decoration-success="state == 'closed'">
+            <list string="Feedback Improvement Area" decoration-info="state == 'under_review'" decoration-success="state == 'closed'">
                 <field name="name"/>
                 <field name="description"/>
                 <field name="state"/>
                 <field name="feedback_count"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -49,13 +49,13 @@
                         </page>
                         <page string="Related Feedback" name="feedback">
                             <field name="feedback_ids" nolabel="1">
-                                <tree string="Feedback">
+                                <list string="Feedback">
                                     <field name="name"/>
                                     <field name="rating"/>
                                     <field name="sentiment_category"/>
                                     <field name="priority"/>
                                     <field name="state"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
