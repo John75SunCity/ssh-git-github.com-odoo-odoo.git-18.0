@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <data noupdate="0">
-    <!-- Root and level-1 menus isolated early to satisfy parent references in later-loaded views -->
-    <menuitem id="menu_records_management_root" name="Records Management" sequence="50" web_icon="records_management,static/description/icon.png"/>
-    <menuitem id="menu_records_operations" name="Operations" parent="menu_records_management_root" sequence="10" groups="records_management.group_records_user"/>
-    <menuitem id="menu_records_portal" name="Customer Portal" parent="menu_records_management_root" sequence="15" groups="records_management.group_records_user"/>
-    <menuitem id="menu_records_inventory" name="Inventory" parent="menu_records_management_root" sequence="20" groups="records_management.group_records_user"/>
-    <menuitem id="menu_records_compliance" name="NAID Compliance" parent="menu_records_management_root" sequence="25" groups="records_management.group_records_user"/>
-    <menuitem id="menu_records_billing" name="Billing &amp; Finance" parent="menu_records_management_root" sequence="30" groups="records_management.group_records_manager"/>
-    <menuitem id="menu_records_reporting" name="Reports" parent="menu_records_management_root" sequence="40" groups="records_management.group_records_user"/>
-    <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="90" groups="records_management.group_records_manager"/>
-  </data>
+  <!-- Root and level-1 menus isolated early to satisfy parent references in later-loaded views -->
+  <menuitem id="menu_records_management_root" name="Records Management" sequence="50" web_icon="records_management,static/description/icon.png"/>
+  <menuitem id="menu_records_operations" name="Operations" parent="menu_records_management_root" sequence="10" groups="records_management.group_records_user"/>
+  <menuitem id="menu_records_portal" name="Customer Portal" parent="menu_records_management_root" sequence="15" groups="records_management.group_records_user"/>
+  <menuitem id="menu_records_inventory" name="Inventory" parent="menu_records_management_root" sequence="20" groups="records_management.group_records_user"/>
+  <menuitem id="menu_records_compliance" name="NAID Compliance" parent="menu_records_management_root" sequence="25" groups="records_management.group_records_user"/>
+  <menuitem id="menu_records_billing" name="Billing &amp; Finance" parent="menu_records_management_root" sequence="30" groups="records_management.group_records_manager"/>
+  <menuitem id="menu_records_reporting" name="Reports" parent="menu_records_management_root" sequence="40" groups="records_management.group_records_user"/>
+  <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="90" groups="records_management.group_records_manager"/>
 </odoo>
