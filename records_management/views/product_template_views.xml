@@ -26,16 +26,16 @@
                                         <strong><i class='fa fa-briefcase'/> <field name="name"/></strong>
                                     </div>
                                     <div class="o_secondary">
-                                        <i class='fa fa-tag'/> <field name="default_code"/>
+                                        <i class="fa fa-tag"/> <field name="default_code"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#>
+                                    <a class="o_kanban_manage_toggle_button" href="#">
                                         <i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
                                     </a>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group>
+                            <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                 <div class="row">
                                     <div class="col-8">
                                         <div>
@@ -47,38 +47,38 @@
                                             Type: <field name="type"/>
                                         </div>
                                         <div class="mt-1">
-                                            <span class="badge badge-success" t-if="record.sale_ok.raw_value>
+                                            <span class="badge badge-success" t-if="record.sale_ok.raw_value">
                                                 <i class='fa fa-money'/> Sellable
                                             </span>
-                                            <span class="badge badge-info" t-if="record.purchase_ok.raw_value>
-                                                <i class='fa fa-shopping-cart'></i> Purchasable
+                                            <span class="badge badge-info" t-if="record.purchase_ok.raw_value">
+                                                <i class="fa fa-shopping-cart"></i> Purchasable
                                             </span>
                                         </div>
                                     </div>
                                     <div class="col-4 text-right">
                                         <div class="text-primary font-weight-bold">
-                                            <i class='fa fa-dollar-sign'></i> $ <field name="list_price"/>
+                                            <i class="fa fa-dollar-sign"></i> $ <field name="list_price"/>
                                         </div>
-                                        <span class="badge" t-att-class="record.active.raw_value ? 'badge-success' : 'badge-secondary'>
-                                            <t t-if="record.active.raw_value"><i class='fa fa-circle text-success'></i> Active</t>
+                                        <span class="badge" t-att-class="record.active.raw_value ? 'badge-success' : 'badge-secondary'">
+                                            <t t-if="record.active.raw_value"><i class="fa fa-circle text-success"></i> Active</t>
                                             <t t-else="">Inactive</t>
                                         </span>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-6">
-                                        <button class="btn btn-primary btn-sm" type="object" name="action_view_sales>
+                                        <button class="btn btn-primary btn-sm" type="object" name="action_view_sales">
                                             <i class='fa fa-bar-chart'/> Sales
                                         </button>
                                     </div>
                                     <div class="col-6">
-                                        <button class="btn btn-success btn-sm" type="object" name="action_configure_pricing>
+                                        <button class="btn btn-success btn-sm" type="object" name="action_configure_pricing">
                                             <i class='fa fa-money'/> Pricing
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu>
+                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Product</a>
                                 <a role="menuitem" type="object" name="action_view_sales" class="dropdown-item"><i class='fa fa-bar-chart'/> View Sales</a>
                                 <a role="menuitem" type="object" name="action_configure_variants" class="dropdown-item"><i class='fa fa-bullseye'/> Configure Variants</a>
@@ -136,17 +136,17 @@
                         </h1>
                     </div>
 
-                    <div class="oe_button_box" name="button_box>
-                        <button class="oe_stat_button" type="object" name="action_view_sales" icon="fa-line-chart>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_sales" icon="fa-line-chart">
                             <field name="sales_count" string="Sales Orders" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" type="object" name="action_view_variants" icon="fa-th>
+                        <button class="oe_stat_button" type="object" name="action_view_variants" icon="fa-th">
                             <field name="product_variant_count" string="Variants" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" type="object" name="action_view_pricing_history" icon="fa-money>
+                        <button class="oe_stat_button" type="object" name="action_view_pricing_history" icon="fa-money">
                             <field name="price_history_count" string="Price Changes" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-star" invisible="not is_featured_service>
+                        <button class="oe_stat_button" icon="fa-star" invisible="not is_featured_service">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value"><i class='fa fa-star'/></span>
                                 <span class="o_stat_text">Featured</span>

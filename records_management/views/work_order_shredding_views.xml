@@ -38,11 +38,11 @@
         <form string="Shredding Work Order">
 <header>
 <!-- Converted legacy states to invisible expressions -->
-<button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'/>
-<button name="action_start" string="Start Shredding" type="object" class="btn-warning" invisible="state != 'confirmed'/>
-<button name="action_pause" string="Pause" type="object" class="btn-secondary" invisible="state != 'in_progress'/>
-<button name="action_resume" string="Resume" type="object" class="btn-warning" invisible="state != 'paused'/>
-<button name="action_complete" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'/>
+<button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+<button name="action_start" string="Start Shredding" type="object" class="btn-warning" invisible="state != 'confirmed'"/>
+<button name="action_pause" string="Pause" type="object" class="btn-secondary" invisible="state != 'in_progress'"/>
+<button name="action_resume" string="Resume" type="object" class="btn-warning" invisible="state != 'paused'"/>
+<button name="action_complete" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'"/>
 <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['draft','confirmed']"/>
 <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'"/>
 
@@ -50,17 +50,17 @@
 </header>
 
             <sheet>
-        <div class="oe_button_box" name="button_box>
-<button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-archive>
+        <div class="oe_button_box" name="button_box">
+<button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-archive">
         <field name="container_count" string="Containers" widget="statinfo"/>
 </button>
-<button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o>
+<button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o">
         <field name="document_count" string="Documents" widget="statinfo"/>
 </button>
-<button class="oe_stat_button" type="object" name="action_view_certificates" icon="fa-certificate>
+<button class="oe_stat_button" type="object" name="action_view_certificates" icon="fa-certificate">
         <field name="certificate_count" string="Certificates" widget="statinfo"/>
 </button>
-<button class="oe_stat_button" type="object" name="action_view_audit_logs" icon="fa-history>
+<button class="oe_stat_button" type="object" name="action_view_audit_logs" icon="fa-history">
         <field name="audit_log_count" string="Audit Logs" widget="statinfo"/>
 </button>
 </div>
@@ -75,7 +75,7 @@
         <field name="name" placeholder="Work Order Number..."/>
 
                     </h1>
-        <div class="o_row" name="priority_row>
+        <div class="o_row" name="priority_row">
         <field name="priority" widget="priority" class="mr16"/>
         <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
 
@@ -252,7 +252,7 @@
                                 </div>
                             </div>
                             <div class="progress mt8">
-                                <div class="progress-bar" role="progressbar" t-attf-style="width: #{record.completion_percentage.raw_value}%/>
+                                <div class="progress-bar" role="progressbar" t-attf-style="width: #{record.completion_percentage.raw_value}%"/>
                             </div>
                             <small>
         <field name="completion_percentage"/>
@@ -262,11 +262,11 @@
                             <div class="oe_kanban_bottom_left">
                                 <span class="badge badge-secondary">
         <field name="container_count"/>
-containers
+ containers
                                 </span>
                                 <span class="badge badge-info">
         <field name="total_weight"/>
-lbs
+ lbs
                                 </span>
                             </div>
                             <div class="oe_kanban_bottom_right">

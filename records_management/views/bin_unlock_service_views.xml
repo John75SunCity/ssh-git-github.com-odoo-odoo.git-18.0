@@ -26,10 +26,10 @@
                         <field name="key_restriction_notes" nolabel="1" placeholder="Additional notes about key restrictions..."/>
                     </group>
                     <group name="key_restriction_buttons" invisible="key_issuance_allowed == True">
-                        <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt" title="View Unlock Services/>
+                        <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt" title="View Unlock Services"/>
                     </group>
-                    <div class="oe_button_box" name="key_restriction_buttons>
-                        <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt" title="View Unlock Services/>
+                    <div class="oe_button_box" name="key_restriction_buttons">
+                        <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt" title="View Unlock Services"/>
                         <field name="restricted_unlock_count" widget="statinfo" string="Unlock Services"/>
                     </div>
                     <!-- History -->
@@ -46,8 +46,8 @@
             </xpath>
             <!-- Warning banner -->
             <xpath expr="//sheet" position="before">
-                <div class="alert alert-warning" role="alert" invisible="key_issuance_allowed == True or id == False>
-                    <strong><i class='fa fa-exclamation-triangle text-danger'></i> Key Restriction Warning:</strong>
+                <div class="alert alert-warning" role="alert" invisible="key_issuance_allowed == True or id == False">
+                    <strong><i class="fa fa-exclamation-triangle text-danger"></i> Key Restriction Warning:</strong>
                     This customer is restricted from receiving bin keys. Use bin unlock service instead.
                     <br/>
                     <field name="key_restriction_reason" readonly="1" nolabel="1"/>
@@ -55,16 +55,16 @@
             </xpath>
             <!-- Button box additions -->
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="action_restrict_key_issuance" type="object" class="oe_stat_button" icon="fa-ban" invisible="key_issuance_allowed == True" groups="records_management.group_records_manager" title="Restrict Key Issuance>
+                <button name="action_restrict_key_issuance" type="object" class="oe_stat_button" icon="fa-ban" invisible="key_issuance_allowed == True" groups="records_management.group_records_manager" title="Restrict Key Issuance">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_text">Restrict</span>
                         <span class="o_stat_text">Keys</span>
                     </div>
                 </button>
-                <button name="action_view_key_history" type="object" class="oe_stat_button" icon="fa-history" invisible="key_restriction_history_count == 0" title="View Key History>
+                <button name="action_view_key_history" type="object" class="oe_stat_button" icon="fa-history" invisible="key_restriction_history_count == 0" title="View Key History">
                     <field name="key_restriction_history_count" widget="statinfo" string="Key History"/>
                 </button>
-                <button name="action_allow_key_issuance" type="object" class="oe_stat_button" icon="fa-key" invisible="key_issuance_allowed == True" groups="records_management.group_records_manager" title="Allow Key Issuance>
+                <button name="action_allow_key_issuance" type="object" class="oe_stat_button" icon="fa-key" invisible="key_issuance_allowed == True" groups="records_management.group_records_manager" title="Allow Key Issuance">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_text">Allow</span>
                         <span class="o_stat_text">Keys</span>
@@ -138,7 +138,7 @@
                 </sheet>
                 <footer>
                     <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
@@ -203,8 +203,8 @@
         <field name="arch" type="xml">
             <form string="Bin Unlock Service">
                 <header>
-                    <button name="action_create_invoice" string="Create Invoice" type="object" class="btn-primary" invisible="billable == False or invoice_created == True/>
-                    <button name="action_mark_completed" string="Mark Completed" type="object" class="btn-success" invisible="completed == True/>
+                    <button name="action_create_invoice" string="Create Invoice" type="object" class="btn-primary" invisible="billable == False or invoice_created == True"/>
+                    <button name="action_mark_completed" string="Mark Completed" type="object" class="btn-success" invisible="completed == True"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -272,7 +272,7 @@
         <field name="inherit_id" ref="bin_unlock_service_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="before">
-                <div class="alert alert-info" role="status" invisible="customer_key_restricted == False>
+                <div class="alert alert-info" role="status" invisible="customer_key_restricted == False">
                     <strong>
                         <i class='fa fa-key'></i> Key Restricted Customer:</strong>
                     This customer is not allowed to receive bin keys.

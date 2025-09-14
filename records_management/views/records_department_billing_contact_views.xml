@@ -18,7 +18,7 @@
                     <field name="budget_utilization" string="Utilization %" widget="percentage"/>
                     <field name="approval_authority" string="Approver" widget="boolean_toggle"/>
                     <field name="active" string="Active" widget="boolean_toggle"/>
-                    <button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link" title="Generate Budget Report/>
+                    <button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link" title="Generate Budget Report"/>
                 </list>
             </field>
         </record>
@@ -30,16 +30,16 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_budget_report" type="object" string="Generate Budget Report" class="btn-primary" icon="fa-file-pdf-o" title="Generate Budget Report/>
-                        <button name="action_send_bill_notification" type="object" string="Send Bill Notification" class="btn-secondary" icon="fa-envelope" title="Send Bill Notification/>
+                        <button name="action_budget_report" type="object" string="Generate Budget Report" class="btn-primary" icon="fa-file-pdf-o" title="Generate Budget Report"/>
+                        <button name="action_send_bill_notification" type="object" string="Send Bill Notification" class="btn-secondary" icon="fa-envelope" title="Send Bill Notification"/>
                         <field name="active" widget="boolean_toggle"/>
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box>
-                            <button class="oe_stat_button" type="object" name="action_view_approvals" icon="fa-check-circle" title="View Approvals>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_approvals" icon="fa-check-circle" title="View Approvals">
                                 <field name="approval_count" string="Approvals" widget="statinfo"/>
                             </button>
-                            <button class="oe_stat_button" icon="fa-percent" title="Budget Utilization>
+                            <button class="oe_stat_button" icon="fa-percent" title="Budget Utilization">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="budget_utilization"/>%

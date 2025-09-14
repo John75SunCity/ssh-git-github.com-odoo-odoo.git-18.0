@@ -29,7 +29,7 @@
                             </span>
                             <div class="text-muted"><i class='fa fa-user'/> <field name="partner_id"/></div>
                         </div>
-        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group>
+        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                             <div class="mb-2">
                                 <strong>Type:</strong> <field name="request_type"/><br/>
                                 <strong>Requested:</strong> <field name="requested_date" widget="date"/><br/>
@@ -84,9 +84,9 @@
         <field name="arch" type="xml">
         <form>
             <header>
-<button name="action_submit" string="Submit Request" type="object" class="oe_highlight" invisible="state != 'draft'/>
+<button name="action_submit" string="Submit Request" type="object" class="oe_highlight" invisible="state != 'draft'"/>
 
-<button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state != 'submitted'" groups="records_management.group_records_manager/>
+<button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state != 'submitted'" groups="records_management.group_records_manager"/>
 
 <button name="action_reject" string="Reject" type="object" invisible="state != 'submitted'" groups="records_management.group_records_manager"/>
 
@@ -101,14 +101,14 @@
         <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,in_progress,completed"/>
             </header>
             <sheet>
-                <div class="oe_button_box" name="button_box>
-                    <button class="oe_stat_button" type="object" name="action_view_attachments" icon="fa-paperclip>
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" type="object" name="action_view_attachments" icon="fa-paperclip">
                         <div class="o_stat_info">
         <field name="attachment_count" class="o_stat_value"/>
                             <span class="o_stat_text">Attachments</span>
                         </div>
                     </button>
-<button class="oe_stat_button" type="object" name="action_view_work_order" icon="fa-tasks" invisible="work_order_id == False>
+<button class="oe_stat_button" type="object" name="action_view_work_order" icon="fa-tasks" invisible="work_order_id == False">
                         <div class="o_stat_info">
                             <span class="o_stat_value">FSM</span>
                             <span class="o_stat_text">Work Order</span>
@@ -283,11 +283,11 @@
 
 <!-- Enhanced Menu Structure -->
     <menuitem id="portal_request_menu"
-            name="Portal Requests"
-            parent="records_management.menu_records_management_root"
-            action="action_portal_request"
-            sequence="10"
-            groups="records_management.group_records_manager"/>
+          name="Portal Requests"
+          parent="records_management.menu_records_management_root"
+          action="action_portal_request"
+          sequence="10"
+          groups="records_management.group_records_manager"/>
 
 <!-- Additional Menu Items for Better Navigation -->
     <menuitem id="portal_request_draft_menu" name="Draft Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="1" groups="records_management.group_records_user"/>

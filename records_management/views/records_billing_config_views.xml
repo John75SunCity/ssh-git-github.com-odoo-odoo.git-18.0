@@ -78,39 +78,39 @@
                         <div class="o_kanban_card_header">
                             <div class="o_kanban_card_header_title">
                                 <div class="o_primary">
-                                    <strong><i class='fa fa-credit-card'></i> <field name="name"/></strong>
+                                    <strong><i class="fa fa-credit-card"></i> <field name="name"/></strong>
                                 </div>
                                 <div class="o_secondary">
                                     <i class='fa fa-user'/> <field name="partner_id"/>
                                 </div>
                             </div>
                             <div class="o_kanban_manage_button_section">
-<a class="o_kanban_manage_toggle_button" href="#>
+<a class="o_kanban_manage_toggle_button" href="#">
 <i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
 </a>
                             </div>
                         </div>
-        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group>
+        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                             <div class="row">
                                 <div class="col-8">
         <div>
 <i class='fa fa-credit-card' aria-hidden="true"/>
-Model: <field name="billing_model"/>
+ Model: <field name="billing_model"/>
 </div>
         <div>
 <i class='fa fa-money' aria-hidden="true"/>
-Rate: $<field name="base_rate"/>
+ Rate: $<field name="base_rate"/>
 </div>
         <div>
 <i class='fa fa-calendar' aria-hidden="true"/>
-Terms: <field name="payment_terms"/>
+ Terms: <field name="payment_terms"/>
 </div>
                                 </div>
                                 <div class="col-4">
-                                    <span class="badge badge-success" t-if="record.auto_billing.raw_value>
+                                    <span class="badge badge-success" t-if="record.auto_billing.raw_value">
                                         Auto
                                     </span>
-                                    <span class="badge" t-att-class="record.active.raw_value ? 'badge-primary' : 'badge-secondary'>
+                                    <span class="badge" t-att-class="record.active.raw_value ? 'badge-primary' : 'badge-secondary'">
                                         <t t-if="record.active.raw_value">Active</t>
                                         <t t-else="">Inactive</t>
                                     </span>
@@ -118,22 +118,22 @@ Terms: <field name="payment_terms"/>
                             </div>
                             <div class="row mt-2">
                                 <div class="col-6">
-                                    <button class="btn btn-primary btn-sm" type="object" name="action_generate_invoice>
+                                    <button class="btn btn-primary btn-sm" type="object" name="action_generate_invoice">
                                         Invoice
                                     </button>
                                 </div>
                                 <div class="col-6">
-                                    <button class="btn btn-success btn-sm" type="object" name="action_view_analytics>
+                                    <button class="btn btn-success btn-sm" type="object" name="action_view_analytics">
                                         Analytics
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="o_kanban_card_manage_pane dropdown-menu" role="menu>
+                        <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                             <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Config</a>
                             <a role="menuitem" type="object" name="action_view_billing_history" class="dropdown-item"><i class='fa fa-clipboard'/> Billing History</a>
                             <a role="menuitem" type="object" name="action_configure_rates" class="dropdown-item"><i class='fa fa-money'/> Configure Rates</a>
-                            <a role="menuitem" type="object" name="action_test_billing" class="dropdown-item"><i class='fa fa-flask'></i> Test Billing</a>
+                            <a role="menuitem" type="object" name="action_test_billing" class="dropdown-item"><i class="fa fa-flask"></i> Test Billing</a>
                             <div class="dropdown-divider"/>
                             <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item"><i class='fa fa-clipboard'/> Duplicate</a>
                         </div>
@@ -150,8 +150,8 @@ Terms: <field name="payment_terms"/>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
         <list decoration-success="active == True and auto_billing == True"
-                decoration-warning="billing_model == 'custom'"
-                decoration-info="payment_terms == 'net_30'">
+              decoration-warning="billing_model == 'custom'"
+              decoration-info="payment_terms == 'net_30'">
         <field name="name" string="Configuration Name"/>
         <field name="partner_id" string="Customer"/>
         <field name="billing_model" string="Billing Model" widget="badge"/>
@@ -184,20 +184,20 @@ Terms: <field name="payment_terms"/>
                 <button name="action_view_billing_history" type="object" string="View Billing History" class="btn-secondary"/>
             </header>
             <sheet>
-                <div class="oe_button_box" name="button_box>
-                    <button class="oe_stat_button" type="object" name="action_view_invoices" icon="fa-file-text>
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" type="object" name="action_view_invoices" icon="fa-file-text">
         <field name="invoice_count" string="Invoices Generated" widget="statinfo"/>
                     </button>
-                    <button class="oe_stat_button" type="object" name="action_view_billing_history" icon="fa-history>
+                    <button class="oe_stat_button" type="object" name="action_view_billing_history" icon="fa-history">
         <field name="billing_history_count" string="Billing History" widget="statinfo"/>
                     </button>
-                    <button class="oe_stat_button" type="object" name="action_view_revenue" icon="fa-money>
+                    <button class="oe_stat_button" type="object" name="action_view_revenue" icon="fa-money">
         <field name="total_revenue" string="Total Revenue" widget="statinfo"/>
                     </button>
                     <button class="oe_stat_button" icon="fa-check-circle"
-                            invisible="not auto_billing>
+                            invisible="not auto_billing">
                         <div class="o_field_widget o_stat_info">
-                            <span class="o_stat_value"><i class='fa fa-robot'></i></span>
+                            <span class="o_stat_value"><i class="fa fa-robot"></i></span>
                             <span class="o_stat_text">Automated</span>
                         </div>
                     </button>
@@ -297,7 +297,7 @@ Terms: <field name="payment_terms"/>
         <field name="period_start"/>
         <field name="period_end"/>
         <field name="amount"/>
-        <field name="state"/>
+        <field name="status"/>
                                 <button name="action_view_invoice" type="object" string="View" icon="fa-eye" class="btn-link"/>
                             </list>
                         </field>
@@ -391,8 +391,8 @@ Terms: <field name="payment_terms"/>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
         <calendar string="Billing Schedule"
-                    date_start="next_billing_date"
-                    color="billing_model">
+                  date_start="next_billing_date"
+                  color="billing_model">
         <field name="name"/>
         <field name="partner_id"/>
         <field name="billing_frequency"/>
@@ -452,16 +452,16 @@ Terms: <field name="payment_terms"/>
     }</field>
         <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
-            <i class='fa fa-credit-card'></i> Create your first billing configuration!
+            <i class="fa fa-credit-card"></i> Create your first billing configuration!
         </p>
         <p>
             <b>Enterprise Billing Management System:</b><br/>
             • <i class='fa fa-money'/> Flexible multi-tier rate structures<br/>
-            • <i class='fa fa-robot'></i> Automated billing and invoice generation<br/>
+            • <i class="fa fa-robot"></i> Automated billing and invoice generation<br/>
             • <i class='fa fa-bar-chart'/> Real-time usage tracking and analytics<br/>
             • <i class='fa fa-bullseye'/> Advanced discount and promotion management<br/>
             • <i class='fa fa-calendar'/> Flexible billing cycles and schedules<br/>
-            • <i class='fa fa-credit-card'></i> Multiple payment method support<br/>
+            • <i class="fa fa-credit-card"></i> Multiple payment method support<br/>
             • <i class='fa fa-envelope'/> Automated notifications and reminders<br/>
             • <i class='fa fa-link'/> Seamless accounting system integration<br/>
             • <i class='fa fa-line-chart'/> Comprehensive revenue analytics and reporting

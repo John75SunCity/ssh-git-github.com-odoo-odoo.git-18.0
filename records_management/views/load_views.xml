@@ -101,16 +101,16 @@
         <field name="arch" type="xml">
         <form string="Paper Bale Load Management">
             <header>
-                <button name="action_prepare_load" string="Prepare Load" type="object" class="btn-primary" invisible="state != 'draft'/>
-                <button name="action_start_loading" string="Start Loading" type="object" class="btn-primary" invisible="state != 'ready'/>
-                <button name="action_ship_load" string="Ship Load" type="object" class="btn-success" invisible="state != 'loading'/>
-                <button name="action_mark_sold" string="Mark Sold" type="object" class="btn-success" invisible="state != 'shipped'/>
+                <button name="action_prepare_load" string="Prepare Load" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                <button name="action_start_loading" string="Start Loading" type="object" class="btn-primary" invisible="state != 'ready'"/>
+                <button name="action_ship_load" string="Ship Load" type="object" class="btn-success" invisible="state != 'loading'"/>
+                <button name="action_mark_sold" string="Mark Sold" type="object" class="btn-success" invisible="state != 'shipped'"/>
                 <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['draft', 'ready', 'loading']"/>
         <field name="state" widget="statusbar" statusbar_visible="draft,ready,loading,shipped,sold"/>
             </header>
             <sheet>
-                <div class="oe_button_box" name="button_box>
-                    <button name="action_view_bales" type="object" class="oe_stat_button" icon="fa-cubes" title="View Paper Bales>
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_bales" type="object" class="oe_stat_button" icon="fa-cubes" title="View Paper Bales">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_value">
         <field name="bale_count"/>
@@ -118,7 +118,7 @@
                             <span class="o_stat_text">Paper Bales</span>
                         </div>
                     </button>
-                    <button name="action_view_revenue_report" type="object" class="oe_stat_button" icon="fa-dollar" title="View Revenue Report>
+                    <button name="action_view_revenue_report" type="object" class="oe_stat_button" icon="fa-dollar" title="View Revenue Report">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_value">
         <field name="estimated_revenue" widget="monetary"/>
@@ -126,7 +126,7 @@
                             <span class="o_stat_text">Revenue</span>
                         </div>
                     </button>
-                    <button name="action_view_weight_tickets" type="object" class="oe_stat_button" icon="fa-balance-scale" title="View Weight Tickets>
+                    <button name="action_view_weight_tickets" type="object" class="oe_stat_button" icon="fa-balance-scale" title="View Weight Tickets">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_value">
         <field name="weight_ticket_count"/>
