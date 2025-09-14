@@ -100,6 +100,10 @@ class RecordsLocation(models.Model):
     available_spaces = fields.Integer(string="Available Spaces", compute='_compute_available_spaces', store=True)
     is_at_capacity = fields.Boolean(string="Is At Capacity", compute='_compute_is_at_capacity', store=True)
 
+    # Missing fields from view validation
+    current_utilization = fields.Float(string="Current Utilization", related='utilization_percentage', store=True, help="Current percentage of location capacity being used")
+    access_instructions = fields.Text(string="Access Instructions", help="Special instructions for accessing this location")
+
     # ============================================================================
     # STATUS & LIFECYCLE
     # ============================================================================
@@ -238,4 +242,3 @@ class RecordsLocation(models.Model):
     def action_deactivate(self):
         self.write({'active': False, 'state': 'inactive'})
         self.message_post(body=_("Location deactivated."))
-
