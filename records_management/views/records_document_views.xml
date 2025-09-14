@@ -222,7 +222,6 @@
         <field name="action_type" />
         <field name="user_id" />
         <field name="description" />
-        <field name="compliance_verified" />
                                 </list>
                             </field>
                         </page>
