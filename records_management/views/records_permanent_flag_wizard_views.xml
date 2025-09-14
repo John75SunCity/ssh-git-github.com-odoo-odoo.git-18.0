@@ -2,33 +2,33 @@
 <odoo>
 
 <!-- List view for records.permanent.flag.wizard -->
-<record id="records_permanent_flag_wizard_view_tree" model="ir.ui.view">
-    <field name="name">records.permanent.flag.wizard.view.tree</field>
-    <field name="model">records.permanent.flag.wizard</field>
-    <field name="arch" type="xml">
+    <record id="records_permanent_flag_wizard_view_tree" model="ir.ui.view">
+        <field name="name">records.permanent.flag.wizard.view.tree</field>
+        <field name="model">records.permanent.flag.wizard</field>
+        <field name="arch" type="xml">
         <list>
-<field name="operation_type"/>
-<field name="document_count"/>
-<field name="state"/>
+        <field name="operation_type"/>
+        <field name="document_count"/>
+        <field name="state"/>
 
 
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Form view for records.permanent.flag.wizard -->
-<record id="records_permanent_flag_wizard_view_form" model="ir.ui.view">
-    <field name="name">records.permanent.flag.wizard.view.form</field>
-    <field name="model">records.permanent.flag.wizard</field>
-    <field name="arch" type="xml">
-<form string="Permanent Flag Action">
+    <record id="records_permanent_flag_wizard_view_form" model="ir.ui.view">
+        <field name="name">records.permanent.flag.wizard.view.form</field>
+        <field name="model">records.permanent.flag.wizard</field>
+        <field name="arch" type="xml">
+        <form string="Permanent Flag Action">
             <sheet>
-<group>
-<field name="operation_type"/>
-<field name="container_ids" widget="many2many_tags"/>
-<field name="document_ids" widget="many2many_tags"/>
-<field name="reason"/>
-<field name="confirm"/>
+        <group>
+        <field name="operation_type"/>
+        <field name="container_ids" widget="many2many_tags"/>
+        <field name="document_ids" widget="many2many_tags"/>
+        <field name="reason"/>
+        <field name="confirm"/>
 
 </group>
 </sheet>
@@ -40,16 +40,16 @@
 </footer>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Search view for records.permanent.flag.wizard -->
-<record id="records_permanent_flag_wizard_view_search" model="ir.ui.view">
-    <field name="name">records.permanent.flag.wizard.view.search</field>
-    <field name="model">records.permanent.flag.wizard</field>
-    <field name="arch" type="xml">
+    <record id="records_permanent_flag_wizard_view_search" model="ir.ui.view">
+        <field name="name">records.permanent.flag.wizard.view.search</field>
+        <field name="model">records.permanent.flag.wizard</field>
+        <field name="arch" type="xml">
         <search>
-<field name="operation_type"/>
-<field name="state"/>
+        <field name="operation_type"/>
+        <field name="state"/>
 
             <group expand="1" string="Group By">
 <filter string="Operation Type" name="operation_type" domain="[]" context="{'group_by':'operation_type'}"/>
@@ -58,19 +58,19 @@
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- List view for Action -->
-<record id="action_records_permanent_flag_wizard" model="ir.actions.act_window">
-    <field name="name">Records Permanent Flag Wizard</field>
-    <field name="res_model">records.permanent.flag.wizard</field>
+    <record id="action_records_permanent_flag_wizard" model="ir.actions.act_window">
+        <field name="name">Records Permanent Flag Wizard</field>
+        <field name="res_model">records.permanent.flag.wizard</field>
         <field name="view_mode">list,form</field>
-<field name="domain">[]</field>
-    <field name="help" type="html">
+        <field name="domain">[]</field>
+        <field name="help" type="html">
         <p class="oe_view_nocontent_create">
 There are no examples. Click here to add a new Records Permanent Flag Wizard.
         </p>
     </field>
-</record>
+    </record>
 
 </odoo>

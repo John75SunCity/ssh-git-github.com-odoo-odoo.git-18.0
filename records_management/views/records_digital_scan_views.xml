@@ -4,84 +4,84 @@
 <!-- List view for Digital -->
 
 <!-- List view for base.rate -->
-<record id="records_digital_scan_view_tree" model="ir.ui.view">
-    <field name="name">records.digital.scan.view.tree</field>
-    <field name="model">records.digital.scan</field>
-    <field name="arch" type="xml">
+    <record id="records_digital_scan_view_tree" model="ir.ui.view">
+        <field name="name">records.digital.scan.view.tree</field>
+        <field name="model">records.digital.scan</field>
+        <field name="arch" type="xml">
         <list string="Digital Scans">
-            <field name="name"/>
-            <field name="document_id"/>
-            <field name="scan_date"/>
-            <field name="file_format"/>
-            <field name="resolution"/>
-            <field name="scan_quality"/>
-<field name="scanned_by_id"/>
+        <field name="name"/>
+        <field name="document_id"/>
+        <field name="scan_date"/>
+        <field name="file_format"/>
+        <field name="resolution"/>
+        <field name="scan_quality"/>
+        <field name="scanned_by_id"/>
 
-            <field name="state"/>
+        <field name="state"/>
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Form view for base.rate -->
-<record id="records_digital_scan_view_form" model="ir.ui.view">
-    <field name="name">records.digital.scan.view.form</field>
-    <field name="model">records.digital.scan</field>
-    <field name="arch" type="xml">
+    <record id="records_digital_scan_view_form" model="ir.ui.view">
+        <field name="name">records.digital.scan.view.form</field>
+        <field name="model">records.digital.scan</field>
+        <field name="arch" type="xml">
         <form string="Digital Scan">
             <header>
 <button name="action_confirm" string="Confirm Scan" type="object" class="oe_highlight" invisible="state != 'draft'"/>
 <button name="action_done" string="Mark Complete" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
 
-                <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
             </header>
             <sheet>
                 <div class="oe_title">
                     <h1>
-                        <field name="name" placeholder="Digital Scan Name..."/>
+        <field name="name" placeholder="Digital Scan Name..."/>
                     </h1>
                 </div>
                 <group>
                     <group>
-                        <field name="document_id"/>
-                        <field name="scan_date"/>
-<field name="scanned_by_id"/>
+        <field name="document_id"/>
+        <field name="scan_date"/>
+        <field name="scanned_by_id"/>
 
                     </group>
                     <group>
-                        <field name="file_format"/>
-                        <field name="resolution"/>
-                        <field name="scan_quality"/>
-                        <field name="file_size"/>
-                        <field name="scanner_id"/>
+        <field name="file_format"/>
+        <field name="resolution"/>
+        <field name="scan_quality"/>
+        <field name="file_size"/>
+        <field name="scanner_id"/>
                     </group>
                 </group>
                 <notebook>
                     <page string="Description" name="description">
-                        <field name="description" placeholder="Description of the digital scan..."/>
+        <field name="description" placeholder="Description of the digital scan..."/>
                     </page>
                     <page string="Notes" name="notes">
-                        <field name="notes" placeholder="Additional notes..."/>
+        <field name="notes" placeholder="Additional notes..."/>
                     </page>
                 </notebook>
             </sheet>
             <div class="oe_chatter">
-                <field name="message_follower_ids"/>
-                <field name="activity_ids"/>
-                <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
             </div>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Search view for base.rate -->
-<record id="records_digital_scan_view_search" model="ir.ui.view">
-    <field name="name">records.digital.scan.view.search</field>
-    <field name="model">records.digital.scan</field>
-    <field name="arch" type="xml">
+    <record id="records_digital_scan_view_search" model="ir.ui.view">
+        <field name="name">records.digital.scan.view.search</field>
+        <field name="model">records.digital.scan</field>
+        <field name="arch" type="xml">
         <search string="Digital Scans">
-            <field name="name"/>
-            <field name="document_id"/>
-<field name="scanned_by_id"/>
+        <field name="name"/>
+        <field name="document_id"/>
+        <field name="scanned_by_id"/>
 
             <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
             <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
@@ -98,17 +98,17 @@
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- List view for Action -->
-<record id="action_records_digital_scan" model="ir.actions.act_window">
-    <field name="name">Digital Scans</field>
-    <field name="res_model">records.digital.scan</field>
-    <field name="view_mode">list,form</field>
+    <record id="action_records_digital_scan" model="ir.actions.act_window">
+        <field name="name">Digital Scans</field>
+        <field name="res_model">records.digital.scan</field>
+        <field name="view_mode">list,form</field>
 <!-- Corrected search view reference -->
-<field name="search_view_id" ref="records_digital_scan_view_search"/>
+        <field name="search_view_id" ref="records_digital_scan_view_search"/>
 
-    <field name="help" type="html">
+        <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
             Create your first digital scan!
         </p>
@@ -116,7 +116,7 @@
             Digital scans allow you to track electronic copies of your physical documents.
         </p>
     </field>
-</record>
+    </record>
 
 <!-- List view for Menu -->
 <!-- Menu removed: moved to central menus file (records_management_menus.xml) to keep top-level menu definitions unified -->

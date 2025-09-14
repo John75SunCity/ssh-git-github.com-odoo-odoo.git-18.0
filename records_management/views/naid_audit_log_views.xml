@@ -2,35 +2,35 @@
 <odoo>
 
 <!-- List view for naid.audit.log -->
-<record id="naid_audit_log_view_tree" model="ir.ui.view">
-    <field name="name">naid.audit.log.view.tree</field>
-    <field name="model">naid.audit.log</field>
-    <field name="arch" type="xml">
+    <record id="naid_audit_log_view_tree" model="ir.ui.view">
+        <field name="name">naid.audit.log.view.tree</field>
+        <field name="model">naid.audit.log</field>
+        <field name="arch" type="xml">
         <list decoration-success="naid_compliant == True" decoration-danger="naid_compliant == False" decoration-info="action_type == 'security'" decoration-warning="action_type in ('login_failure', 'unlink')">
-            <field name="create_date" string="Timestamp" widget="datetime"/>
-            <field name="name" string="Reference"/>
-            <field name="user_id" string="User"/>
-            <field name="action_type" string="Action" widget="badge"/>
-            <field name="res_name" string="Related Record"/>
-            <field name="res_model" string="Model" optional="hide"/>
-            <field name="naid_compliant" string="NAID Compliant" widget="boolean_toggle"/>
-            <field name="ip_address" string="IP Address" optional="hide"/>
-            <field name="company_id" string="Company" optional="hide" groups="base.group_multi_company"/>
+        <field name="create_date" string="Timestamp" widget="datetime"/>
+        <field name="name" string="Reference"/>
+        <field name="user_id" string="User"/>
+        <field name="action_type" string="Action" widget="badge"/>
+        <field name="res_name" string="Related Record"/>
+        <field name="res_model" string="Model" optional="hide"/>
+        <field name="naid_compliant" string="NAID Compliant" widget="boolean_toggle"/>
+        <field name="ip_address" string="IP Address" optional="hide"/>
+        <field name="company_id" string="Company" optional="hide" groups="base.group_multi_company"/>
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Form view for naid.audit.log -->
-<record id="naid_audit_log_view_form" model="ir.ui.view">
-    <field name="name">naid.audit.log.view.form</field>
-    <field name="model">naid.audit.log</field>
-    <field name="arch" type="xml">
+    <record id="naid_audit_log_view_form" model="ir.ui.view">
+        <field name="name">naid.audit.log.view.form</field>
+        <field name="model">naid.audit.log</field>
+        <field name="arch" type="xml">
         <form string="NAID Audit Log Entry" create="false" edit="false" delete="false">
             <sheet>
                 <div class="oe_title">
                     <label for="name" class="oe_edit_only"/>
                     <h1>
-                        <field name="name" readonly="1"/>
+        <field name="name" readonly="1"/>
                     </h1>
                     <div class="oe_title">
 <span class="badge badge-success" invisible="naid_compliant == False">NAID AAA Compliant</span>
@@ -40,59 +40,59 @@
 
                 <group>
                     <group string="Basic Information">
-                        <field name="create_date" readonly="1"/>
-                        <field name="user_id" readonly="1"/>
-                        <field name="action_type" readonly="1" widget="badge"/>
-                        <field name="naid_compliant" readonly="1" widget="boolean_toggle"/>
+        <field name="create_date" readonly="1"/>
+        <field name="user_id" readonly="1"/>
+        <field name="action_type" readonly="1" widget="badge"/>
+        <field name="naid_compliant" readonly="1" widget="boolean_toggle"/>
                     </group>
                     <group string="Related Records">
-                        <field name="res_name" readonly="1"/>
-                        <field name="res_model" readonly="1"/>
-                        <field name="res_id" readonly="1"/>
-                        <field name="document_id" readonly="1"/>
-                        <field name="custody_id" readonly="1"/>
-                        <field name="task_id" readonly="1"/>
+        <field name="res_name" readonly="1"/>
+        <field name="res_model" readonly="1"/>
+        <field name="res_id" readonly="1"/>
+        <field name="document_id" readonly="1"/>
+        <field name="custody_id" readonly="1"/>
+        <field name="task_id" readonly="1"/>
                     </group>
                 </group>
 
                 <group>
                     <group string="Network Information">
-                        <field name="ip_address" readonly="1"/>
-                        <field name="company_id" readonly="1" groups="base.group_multi_company"/>
+        <field name="ip_address" readonly="1"/>
+        <field name="company_id" readonly="1" groups="base.group_multi_company"/>
                     </group>
                     <group string="Audit Details">
-<div class="alert alert-info" role="status">
+        <div class="alert alert-info" role="status">
                             <strong>Security Note:</strong> This audit log entry is immutable and cannot be modified or deleted to maintain NAID AAA compliance.
                         </div>
                     </group>
                 </group>
 
                 <group string="Action Description">
-                    <field name="description" nolabel="1" readonly="1" widget="text"/>
+        <field name="description" nolabel="1" readonly="1" widget="text"/>
                 </group>
             </sheet>
             <div class="oe_chatter">
-                <field name="message_follower_ids"/>
-                <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="message_ids"/>
             </div>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Kanban view for naid.audit.log -->
-<record id="naid_audit_log_view_kanban" model="ir.ui.view">
-    <field name="name">naid.audit.log.view.kanban</field>
-    <field name="model">naid.audit.log</field>
-    <field name="arch" type="xml">
+    <record id="naid_audit_log_view_kanban" model="ir.ui.view">
+        <field name="name">naid.audit.log.view.kanban</field>
+        <field name="model">naid.audit.log</field>
+        <field name="arch" type="xml">
         <kanban default_group_by="action_type" class="o_kanban_audit_log">
-            <field name="name"/>
-            <field name="create_date"/>
-            <field name="user_id"/>
-            <field name="action_type"/>
-            <field name="res_name"/>
-            <field name="naid_compliant"/>
-            <field name="ip_address"/>
-            <field name="res_model"/>
+        <field name="name"/>
+        <field name="create_date"/>
+        <field name="user_id"/>
+        <field name="action_type"/>
+        <field name="res_name"/>
+        <field name="naid_compliant"/>
+        <field name="ip_address"/>
+        <field name="res_model"/>
             <templates>
                 <t t-name="card">
                     <div class="oe_kanban_card oe_kanban_global_click">
@@ -100,20 +100,20 @@
                             <div class="oe_kanban_card_header_title">
                                 <div class="o_primary">
                                     <strong>
-                                        <field name="name"/>
+        <field name="name"/>
                                     </strong>
                                 </div>
                                 <div class="o_secondary">
-                                    <field name="create_date" widget="datetime"/>
+        <field name="create_date" widget="datetime"/>
                                 </div>
                             </div>
                         </div>
-<div class="oe_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+        <div class="oe_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                             <div class="row">
                                 <div class="col-6">
                                     <div class="text-center">
                                         <span class="badge badge-primary">
-                                            <field name="action_type"/>
+        <field name="action_type"/>
                                         </span>
                                     </div>
                                 </div>
@@ -132,7 +132,7 @@
                                 <div class="col-12">
                                     <small class="text-muted">
                                         <i class="fa fa-user"/>
-                                        <field name="user_id"/>
+        <field name="user_id"/>
                                     </small>
                                 </div>
                             </div>
@@ -140,7 +140,7 @@
                                 <div class="col-12">
                                     <small class="text-muted">
                                         <i class="fa fa-link"/>
-                                        <field name="res_name"/>
+        <field name="res_name"/>
                                     </small>
                                 </div>
                             </div>
@@ -148,7 +148,7 @@
                                 <div class="col-12">
                                     <small class="text-muted">
                                         <i class="fa fa-globe"/>
-                                        <field name="ip_address"/>
+        <field name="ip_address"/>
                                     </small>
                                 </div>
                             </div>
@@ -158,22 +158,22 @@
             </templates>
         </kanban>
     </field>
-</record>
+    </record>
 
 <!-- Search view for naid.audit.log -->
-<record id="naid_audit_log_view_search" model="ir.ui.view">
-    <field name="name">naid.audit.log.view.search</field>
-    <field name="model">naid.audit.log</field>
-    <field name="arch" type="xml">
+    <record id="naid_audit_log_view_search" model="ir.ui.view">
+        <field name="name">naid.audit.log.view.search</field>
+        <field name="model">naid.audit.log</field>
+        <field name="arch" type="xml">
         <search string="Search NAID Audit Logs">
-            <field name="name" string="Reference or Description" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
-            <field name="user_id"/>
-            <field name="res_name"/>
-            <field name="res_model"/>
-            <field name="ip_address"/>
-            <field name="document_id"/>
-            <field name="custody_id"/>
-            <field name="task_id"/>
+        <field name="name" string="Reference or Description" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
+        <field name="user_id"/>
+        <field name="res_name"/>
+        <field name="res_model"/>
+        <field name="ip_address"/>
+        <field name="document_id"/>
+        <field name="custody_id"/>
+        <field name="task_id"/>
 
             <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
             <filter string="Non-Compliant" name="naid_non_compliant" domain="[('naid_compliant', '=', False)]"/>
@@ -215,16 +215,16 @@
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- Action for naid.audit.log -->
-<record id="action_naid_audit_log" model="ir.actions.act_window">
-    <field name="name">NAID Audit Logs</field>
-    <field name="res_model">naid.audit.log</field>
-    <field name="view_mode">kanban,list,form</field>
-    <field name="search_view_id" ref="naid_audit_log_view_search"/>
-    <field name="context">{'search_default_filter_today': 1, 'search_default_naid_compliant': 1}</field>
-    <field name="help" type="html">
+    <record id="action_naid_audit_log" model="ir.actions.act_window">
+        <field name="name">NAID Audit Logs</field>
+        <field name="res_model">naid.audit.log</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="naid_audit_log_view_search"/>
+        <field name="context">{'search_default_filter_today': 1, 'search_default_naid_compliant': 1}</field>
+        <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
             No audit logs found.
         </p>
@@ -239,6 +239,6 @@
             • Immutable audit trail ensuring data integrity
         </p>
     </field>
-</record>
+    </record>
 
 </odoo>

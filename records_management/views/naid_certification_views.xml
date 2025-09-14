@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- NAID Operator Certification Views -->
-<record id="naid_operator_certification_view_tree" model="ir.ui.view">
-    <field name="name">naid.operator.certification.view.tree</field>
+    <record id="naid_operator_certification_view_tree" model="ir.ui.view">
+        <field name="name">naid.operator.certification.view.tree</field>
         <field name="model">naid.operator.certification</field>
         <field name="arch" type="xml">
-<list string="NAID Operator Certifications">
-                <field name="certification_number"/>
-                <field name="name"/>
-                <field name="status"/>
-                <field name="certification_date"/>
-                <field name="expiry_date"/>
-                <field name="training_progress"/>
-                <field name="refresher_overdue"/>
-                <field name="company_id"/>
+        <list string="NAID Operator Certifications">
+        <field name="certification_number"/>
+        <field name="name"/>
+        <field name="status"/>
+        <field name="certification_date"/>
+        <field name="expiry_date"/>
+        <field name="training_progress"/>
+        <field name="refresher_overdue"/>
+        <field name="company_id"/>
 </list>
         </field>
     </record>
@@ -28,73 +28,73 @@
 <button name="action_issue_certification" string="Issue Certification" type="object" class="btn-success" invisible="not training_verified"/>
 <button name="action_schedule_refresher" string="Schedule Refresher" type="object" class="btn-warning" invisible="not refresher_training_required"/>
 
-                    <field name="status" widget="statusbar"/>
+        <field name="status" widget="statusbar"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="certification_number" readonly="1"/>
+        <field name="certification_number" readonly="1"/>
                         </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="certification_date"/>
-                            <field name="expiry_date"/>
-                            <field name="training_verified"/>
-                            <field name="training_progress" widget="progressbar"/>
+        <field name="name"/>
+        <field name="certification_date"/>
+        <field name="expiry_date"/>
+        <field name="training_verified"/>
+        <field name="training_progress" widget="progressbar"/>
                         </group>
                         <group>
-                            <field name="verified_by_id"/>
-                            <field name="verification_date"/>
-                            <field name="company_id"/>
-                            <field name="portal_visible"/>
+        <field name="verified_by_id"/>
+        <field name="verification_date"/>
+        <field name="company_id"/>
+        <field name="portal_visible"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Training Requirements">
                             <group>
-                                <field name="required_trainings_ids" widget="many2many_tags"/>
-                                <field name="completed_trainings_ids" widget="many2many_tags"/>
+        <field name="required_trainings_ids" widget="many2many_tags"/>
+        <field name="completed_trainings_ids" widget="many2many_tags"/>
                             </group>
                         </page>
                         <page string="Refresher Training">
                             <group>
-                                <field name="refresher_training_required"/>
-                                <field name="refresher_interval_months"/>
-                                <field name="last_refresher_date"/>
-                                <field name="next_refresher_date"/>
-                                <field name="refresher_overdue"/>
+        <field name="refresher_training_required"/>
+        <field name="refresher_interval_months"/>
+        <field name="last_refresher_date"/>
+        <field name="next_refresher_date"/>
+        <field name="refresher_overdue"/>
                             </group>
                         </page>
                         <page string="Training Schedule">
-                            <field name="training_schedule_ids">
-<list>
-                                    <field name="training_id"/>
-                                    <field name="scheduled_date"/>
-                                    <field name="status"/>
-                                    <field name="completed_date"/>
-                                    <field name="instructor_id"/>
+        <field name="training_schedule_ids">
+        <list>
+        <field name="training_id"/>
+        <field name="scheduled_date"/>
+        <field name="status"/>
+        <field name="completed_date"/>
+        <field name="instructor_id"/>
 </list>
                             </field>
                         </page>
                         <page string="Related Records">
                             <group>
-                                <field name="destruction_certificate_ids"/>
-                                <field name="fsm_order_ids"/>
-                                <field name="service_request_ids"/>
+        <field name="destruction_certificate_ids"/>
+        <field name="fsm_order_ids"/>
+        <field name="service_request_ids"/>
                             </group>
                         </page>
                         <page string="Notes &amp; Documents">
-                            <field name="notes"/>
-                            <field name="attachment_ids" widget="many2many_binary"/>
+        <field name="notes"/>
+        <field name="attachment_ids" widget="many2many_binary"/>
                         </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="activity_ids" widget="mail_activity"/>
-                    <field name="message_ids" widget="mail_thread"/>
+        <field name="message_follower_ids" widget="mail_followers"/>
+        <field name="activity_ids" widget="mail_activity"/>
+        <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>
@@ -105,10 +105,10 @@
         <field name="model">naid.operator.certification</field>
         <field name="arch" type="xml">
             <search string="NAID Operator Certifications">
-                <field name="name"/>
-                <field name="certification_number"/>
-                <field name="status"/>
-                <field name="company_id"/>
+        <field name="name"/>
+        <field name="certification_number"/>
+        <field name="status"/>
+        <field name="company_id"/>
                 <filter string="Certified" name="certified" domain="[('status', '=', 'certified')]"/>
                 <filter string="Expired" name="expired" domain="[('status', '=', 'expired')]"/>
                 <filter string="Refresher Overdue" name="refresher_overdue" domain="[('refresher_overdue', '=', True)]"/>
@@ -122,17 +122,17 @@
     </record>
 
     <!-- Training Schedule Views -->
-<record id="naid_training_schedule_view_tree" model="ir.ui.view">
-    <field name="name">naid.training.schedule.view.tree</field>
+    <record id="naid_training_schedule_view_tree" model="ir.ui.view">
+        <field name="name">naid.training.schedule.view.tree</field>
         <field name="model">naid.training.schedule</field>
         <field name="arch" type="xml">
-<list string="Training Schedule">
-                <field name="certification_id"/>
-                <field name="training_id"/>
-                <field name="scheduled_date"/>
-                <field name="status"/>
-                <field name="completed_date"/>
-                <field name="instructor_id"/>
+        <list string="Training Schedule">
+        <field name="certification_id"/>
+        <field name="training_id"/>
+        <field name="scheduled_date"/>
+        <field name="status"/>
+        <field name="completed_date"/>
+        <field name="instructor_id"/>
 </list>
         </field>
     </record>
@@ -149,17 +149,17 @@
                 </header>
                 <sheet>
                     <group>
-                        <field name="certification_id"/>
-                        <field name="training_id"/>
-                        <field name="scheduled_date"/>
-                        <field name="status"/>
-                        <field name="completed_date"/>
-                        <field name="instructor_id"/>
-                        <field name="location"/>
-                        <field name="duration_hours"/>
-                        <field name="reminder_sent"/>
+        <field name="certification_id"/>
+        <field name="training_id"/>
+        <field name="scheduled_date"/>
+        <field name="status"/>
+        <field name="completed_date"/>
+        <field name="instructor_id"/>
+        <field name="location"/>
+        <field name="duration_hours"/>
+        <field name="reminder_sent"/>
                     </group>
-                    <field name="notes"/>
+        <field name="notes"/>
                 </sheet>
             </form>
         </field>
@@ -169,20 +169,20 @@
     <record id="naid_operator_certification_action" model="ir.actions.act_window">
         <field name="name">NAID Operator Certifications</field>
         <field name="res_model">naid.operator.certification</field>
-<field name="view_mode">list,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help">Manage NAID operator certifications and training requirements</field>
     </record>
 
     <record id="naid_training_schedule_action" model="ir.actions.act_window">
         <field name="name">Training Schedule</field>
         <field name="res_model">naid.training.schedule</field>
-<field name="view_mode">list,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help">Manage training schedules for NAID certifications</field>
     </record>
 
     <!-- Menu Items -->
 <!-- Updated parent from missing records_management.menu_records_root to existing menu_records_management_root -->
-<menuitem id="naid_certification_menu" name="NAID Certification" parent="menu_records_management_root" sequence="50"/>
+    <menuitem id="naid_certification_menu" name="NAID Certification" parent="menu_records_management_root" sequence="50"/>
 
     <menuitem id="naid_operator_certification_menu" name="Operator Certifications" parent="naid_certification_menu"
               action="naid_operator_certification_action" sequence="10"/>

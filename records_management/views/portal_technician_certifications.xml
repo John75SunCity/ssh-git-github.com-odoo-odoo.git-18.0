@@ -59,7 +59,7 @@
                 </div>
             </t>
             <t t-else="">
-<div class="alert alert-info" role="status">
+        <div class="alert alert-info" role="status">
 <p>No certified technicians are currently assigned to your account.</p>
 <p class="mb-0">Contact us if you need to schedule service with NAID certified personnel.</p>
                 </div>
@@ -69,7 +69,7 @@
 
     <!-- Portal menu item -->
     <record id="portal_my_certifications_menu" model="website.menu">
-<field name="name">Technician Certifications</field>
+        <field name="name">Technician Certifications</field>
         <field name="url">/my/certifications</field>
         <field name="parent_id" ref="portal.portal_my_home"/>
         <field name="sequence">20</field>

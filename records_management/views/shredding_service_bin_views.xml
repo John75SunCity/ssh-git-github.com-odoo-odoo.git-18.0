@@ -6,31 +6,31 @@
 <!-- ============================================================================ -->
 
 <!-- List View -->
-<record id="shredding_service_bin_view_tree" model="ir.ui.view">
-<field name="name">shredding.service.bin.view.tree</field>
-    <field name="model">shredding.service.bin</field>
-    <field name="arch" type="xml">
-<list string="Shredding Service Bins" decoration-success="status == 'active'"
+    <record id="shredding_service_bin_view_tree" model="ir.ui.view">
+        <field name="name">shredding.service.bin.view.tree</field>
+        <field name="model">shredding.service.bin</field>
+        <field name="arch" type="xml">
+        <list string="Shredding Service Bins" decoration-success="status == 'active'"
               decoration-warning="status == 'maintenance'" decoration-danger="status == 'retired'">
-            <field name="barcode"/>
-            <field name="bin_size" widget="badge"/>
-            <field name="status" widget="badge"/>
-            <field name="current_customer_id"/>
-            <field name="current_location"/>
-            <field name="last_service_date" widget="date"/>
-            <field name="fill_count"/>
-            <field name="total_weight" sum="Total Weight" widget="float"/>
-            <field name="estimated_monthly_revenue" sum="Monthly Revenue" widget="monetary"/>
-            <field name="last_scan_date" widget="datetime"/>
+        <field name="barcode"/>
+        <field name="bin_size" widget="badge"/>
+        <field name="status" widget="badge"/>
+        <field name="current_customer_id"/>
+        <field name="current_location"/>
+        <field name="last_service_date" widget="date"/>
+        <field name="fill_count"/>
+        <field name="total_weight" sum="Total Weight" widget="float"/>
+        <field name="estimated_monthly_revenue" sum="Monthly Revenue" widget="monetary"/>
+        <field name="last_scan_date" widget="datetime"/>
 </list>
     </field>
-</record>
+    </record>
 
 <!-- Form View -->
-<record id="shredding_service_bin_view_form" model="ir.ui.view">
-    <field name="name">shredding.service.bin.view.form</field>
-    <field name="model">shredding.service.bin</field>
-    <field name="arch" type="xml">
+    <record id="shredding_service_bin_view_form" model="ir.ui.view">
+        <field name="name">shredding.service.bin.view.form</field>
+        <field name="model">shredding.service.bin</field>
+        <field name="arch" type="xml">
         <form string="Shredding Service Bin">
             <header>
                 <button name="action_report_bin_issue" string="Report Issue" type="object"
@@ -47,7 +47,7 @@ class="btn-primary" icon="fa-map-marker" title="Place at Customer"
                 <button name="action_recall_bin" string="Recall Bin" type="object"
 class="btn-secondary" icon="fa-undo" title="Recall Bin"
                         invisible="not current_customer_id"/>
-                <field name="status" widget="statusbar"
+        <field name="status" widget="statusbar"
                        statusbar_visible="available,active,maintenance,retired"/>
             </header>
 
@@ -69,29 +69,29 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
 
                 <div class="oe_title">
                     <h1>
-                        <field name="barcode" readonly="1"/>
+        <field name="barcode" readonly="1"/>
                     </h1>
                     <h2>
-                        <field name="bin_size" widget="selection_badge" readonly="1"/>
+        <field name="bin_size" widget="selection_badge" readonly="1"/>
                     </h2>
                 </div>
 
                 <group>
                     <group name="basic_info" string="Bin Information">
-                        <field name="name"/>
-                        <field name="bin_specifications" readonly="1"/>
-                        <field name="purchase_date"/>
-                        <field name="installation_date"/>
-                        <field name="estimated_weight" widget="float"/>
-                        <field name="weight_percentage"/>
+        <field name="name"/>
+        <field name="bin_specifications" readonly="1"/>
+        <field name="purchase_date"/>
+        <field name="installation_date"/>
+        <field name="estimated_weight" widget="float"/>
+        <field name="weight_percentage"/>
                     </group>
 
                     <group name="current_status" string="Current Status">
-                        <field name="current_customer_id" options="{'no_create': True}"/>
-                        <field name="current_location"/>
-                        <field name="placement_date"/>
-                        <field name="last_scan_location_id"/>
-                        <field name="last_scan_date"/>
+        <field name="current_customer_id" options="{'no_create': True}"/>
+        <field name="current_location"/>
+        <field name="placement_date"/>
+        <field name="last_scan_location_id"/>
+        <field name="last_scan_date"/>
                     </group>
                 </group>
 
@@ -99,58 +99,58 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
                     <page string="Service Information" name="service_info">
                         <group>
                             <group name="service_tracking" string="Service Tracking">
-                                <field name="last_service_date"/>
-                                <field name="next_scheduled_service"/>
-                                <field name="service_frequency"/>
-                                <field name="fill_count"/>
-                                <field name="total_weight" widget="float"/>
+        <field name="last_service_date"/>
+        <field name="next_scheduled_service"/>
+        <field name="service_frequency"/>
+        <field name="fill_count"/>
+        <field name="total_weight" widget="float"/>
                             </group>
 
                             <group name="billing_info" string="Billing Information">
-                                <field name="base_monthly_rate" widget="monetary"/>
-                                <field name="per_service_rate" widget="monetary"/>
-                                <field name="estimated_monthly_revenue" widget="monetary"/>
-                                <field name="currency_id" invisible="1"/>
+        <field name="base_monthly_rate" widget="monetary"/>
+        <field name="per_service_rate" widget="monetary"/>
+        <field name="estimated_monthly_revenue" widget="monetary"/>
+        <field name="currency_id" invisible="1"/>
                             </group>
                         </group>
 
                         <group name="service_notes" string="Service Notes">
-                            <field name="service_notes" nolabel="1" placeholder="Add service notes..."/>
+        <field name="service_notes" nolabel="1" placeholder="Add service notes..."/>
                         </group>
                     </page>
 
                     <page string="Location History" name="location_history">
-                        <field name="location_history_ids" readonly="1">
+        <field name="location_history_ids" readonly="1">
                             <list string="Location History">
-                                <field name="timestamp" widget="datetime"/>
-                                <field name="location"/>
-                                <field name="scan_type"/>
-                                <field name="user_id"/>
-                                <field name="notes"/>
+        <field name="timestamp" widget="datetime"/>
+        <field name="location"/>
+        <field name="scan_type"/>
+        <field name="user_id"/>
+        <field name="notes"/>
                             </list>
                         </field>
                     </page>
 
                     <page string="Service History" name="service_history">
-                        <field name="service_history_ids" readonly="1">
+        <field name="service_history_ids" readonly="1">
                             <list string="Service History">
-                                <field name="service_date" widget="date"/>
-                                <field name="service_type"/>
-                                <field name="weight_collected" widget="float"/>
-                                <field name="technician_id"/>
-                                <field name="notes"/>
+        <field name="service_date" widget="date"/>
+        <field name="service_type"/>
+        <field name="weight_collected" widget="float"/>
+        <field name="technician_id"/>
+        <field name="notes"/>
                             </list>
                         </field>
                     </page>
 
                     <page string="Work Orders" name="work_orders">
-                        <field name="work_order_ids" readonly="1">
+        <field name="work_order_ids" readonly="1">
                             <list string="Work Orders">
-                                <field name="name"/>
-                                <field name="stage_id"/>
-                                <field name="user_ids" widget="many2many_tags"/>
-                                <field name="date_deadline" widget="date"/>
-                                <field name="priority" widget="priority"/>
+        <field name="name"/>
+        <field name="stage_id"/>
+        <field name="user_ids" widget="many2many_tags"/>
+        <field name="date_deadline" widget="date"/>
+        <field name="priority" widget="priority"/>
                             </list>
                         </field>
                     </page>
@@ -158,15 +158,15 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
                     <page string="Technical Details" name="technical">
                         <group>
                             <group name="barcode_info" string="Barcode Information">
-                                <field name="barcode_product_id"/>
-                                <field name="bin_category"/>
-                                <field name="manufacturing_date"/>
+        <field name="barcode_product_id"/>
+        <field name="bin_category"/>
+        <field name="manufacturing_date"/>
                             </group>
 
                             <group name="maintenance" string="Maintenance">
-                                <field name="last_maintenance_date"/>
-                                <field name="next_maintenance_date"/>
-                                <field name="maintenance_notes"/>
+        <field name="last_maintenance_date"/>
+        <field name="next_maintenance_date"/>
+        <field name="maintenance_notes"/>
                             </group>
                         </group>
                     </page>
@@ -174,24 +174,24 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
             </sheet>
 
             <div class="oe_chatter">
-                <field name="message_follower_ids"/>
-                <field name="activity_ids"/>
-                <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
             </div>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Search View -->
-<record id="shredding_service_bin_view_search" model="ir.ui.view">
-    <field name="name">shredding.service.bin.view.search</field>
-    <field name="model">shredding.service.bin</field>
-    <field name="arch" type="xml">
+    <record id="shredding_service_bin_view_search" model="ir.ui.view">
+        <field name="name">shredding.service.bin.view.search</field>
+        <field name="model">shredding.service.bin</field>
+        <field name="arch" type="xml">
         <search string="Search Shredding Bins">
-            <field name="barcode" string="Barcode" filter_domain="[('barcode', 'ilike', self)]"/>
-            <field name="current_customer_id" string="Customer"/>
-            <field name="current_location" string="Location"/>
-            <field name="bin_size"/>
+        <field name="barcode" string="Barcode" filter_domain="[('barcode', 'ilike', self)]"/>
+        <field name="current_customer_id" string="Customer"/>
+        <field name="current_location" string="Location"/>
+        <field name="bin_size"/>
 
             <filter name="filter_active" string="Active" domain="[('status', '=', 'active')]"/>
             <filter name="filter_available" string="Available" domain="[('status', '=', 'available')]"/>
@@ -214,22 +214,22 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- Kanban View -->
-<record id="shredding_service_bin_view_kanban" model="ir.ui.view">
-    <field name="name">shredding.service.bin.view.kanban</field>
-    <field name="model">shredding.service.bin</field>
-    <field name="arch" type="xml">
+    <record id="shredding_service_bin_view_kanban" model="ir.ui.view">
+        <field name="name">shredding.service.bin.view.kanban</field>
+        <field name="model">shredding.service.bin</field>
+        <field name="arch" type="xml">
         <kanban default_group_by="status" class="o_kanban_small_column">
-            <field name="barcode"/>
-            <field name="bin_size"/>
-            <field name="status"/>
-            <field name="current_customer_id"/>
-            <field name="current_location"/>
-            <field name="fill_count"/>
-            <field name="estimated_monthly_revenue"/>
-            <field name="last_service_date"/>
+        <field name="barcode"/>
+        <field name="bin_size"/>
+        <field name="status"/>
+        <field name="current_customer_id"/>
+        <field name="current_location"/>
+        <field name="fill_count"/>
+        <field name="estimated_monthly_revenue"/>
+        <field name="last_service_date"/>
 
             <templates>
 <t t-name="card">
@@ -238,7 +238,7 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
                             <div class="oe_kanban_header">
                                 <strong><field name="barcode"/></strong>
                                 <span class="badge badge-pill badge-info">
-                                    <field name="bin_size"/>
+        <field name="bin_size"/>
                                 </span>
                             </div>
 
@@ -258,13 +258,13 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
 
                                 <div class="oe_kanban_row" t-if="record.estimated_monthly_revenue.raw_value > 0">
                                     <i class="fa fa-dollar"/>
-                                    <field name="estimated_monthly_revenue" widget="monetary"/>
+        <field name="estimated_monthly_revenue" widget="monetary"/>
                                 </div>
                             </div>
 
                             <div class="oe_kanban_footer">
                                 <div class="oe_kanban_footer_left">
-                                    <field name="last_service_date" widget="date"/>
+        <field name="last_service_date" widget="date"/>
                                 </div>
                                 <div class="oe_kanban_footer_right">
                                     <button name="action_report_bin_issue" type="object"
@@ -279,21 +279,21 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
             </templates>
         </kanban>
     </field>
-</record>
+    </record>
 
 <!-- ============================================================================ -->
 <!-- ACTIONS -->
 <!-- ============================================================================ -->
 
 <!-- Main Shredding Service Bin Action -->
-<record id="action_shredding_service_bin" model="ir.actions.act_window">
-    <field name="name">Shredding Service Bins</field>
-    <field name="res_model">shredding.service.bin</field>
-    <field name="view_mode">kanban,list,form</field>
-    <field name="context">{
+    <record id="action_shredding_service_bin" model="ir.actions.act_window">
+        <field name="name">Shredding Service Bins</field>
+        <field name="res_model">shredding.service.bin</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{
         'search_default_filter_active': 1,
     }</field>
-    <field name="help" type="html">
+        <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
             No shredding service bins found!
         </p>
@@ -303,16 +303,16 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
             and automated billing integration.
         </p>
     </field>
-</record>
+    </record>
 
 <!-- Available Bins Action -->
-<record id="action_shredding_service_bin_available" model="ir.actions.act_window">
-    <field name="name">Available Bins</field>
-    <field name="res_model">shredding.service.bin</field>
-    <field name="view_mode">kanban,list,form</field>
-    <field name="domain">[('status', '=', 'available')]</field>
-    <field name="context">{}</field>
-    <field name="help" type="html">
+    <record id="action_shredding_service_bin_available" model="ir.actions.act_window">
+        <field name="name">Available Bins</field>
+        <field name="res_model">shredding.service.bin</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('status', '=', 'available')]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
             No available bins found!
         </p>
@@ -320,16 +320,16 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
             Available bins are ready for deployment to customer locations.
         </p>
     </field>
-</record>
+    </record>
 
 <!-- Maintenance Bins Action -->
-<record id="action_shredding_service_bin_maintenance" model="ir.actions.act_window">
-    <field name="name">Bins in Maintenance</field>
-    <field name="res_model">shredding.service.bin</field>
-    <field name="view_mode">list,form</field>
-    <field name="domain">[('status', '=', 'maintenance')]</field>
-    <field name="context">{}</field>
-    <field name="help" type="html">
+    <record id="action_shredding_service_bin_maintenance" model="ir.actions.act_window">
+        <field name="name">Bins in Maintenance</field>
+        <field name="res_model">shredding.service.bin</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('status', '=', 'maintenance')]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
             No bins in maintenance!
         </p>
@@ -337,6 +337,6 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
             Bins requiring maintenance, repair, or replacement will appear here.
         </p>
     </field>
-</record>
+    </record>
 
 </odoo>

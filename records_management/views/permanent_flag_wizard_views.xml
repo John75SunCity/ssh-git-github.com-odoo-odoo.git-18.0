@@ -2,10 +2,10 @@
 <odoo>
 
 <!-- Form view for Permanent Flag Wizard -->
-<record id="records_permanent_flag_wizard_view_form" model="ir.ui.view">
-<field name="name">records.permanent.flag.wizard.manager.view.form</field>
-<field name="model">records.permanent.flag.wizard.manager</field>
-<field name="arch" type="xml">
+    <record id="records_permanent_flag_wizard_view_form" model="ir.ui.view">
+        <field name="name">records.permanent.flag.wizard.manager.view.form</field>
+        <field name="model">records.permanent.flag.wizard.manager</field>
+        <field name="arch" type="xml">
     <form>
         <header>
             <h1>
@@ -18,7 +18,7 @@ Remove PERMANENT Flag (Admin Only)
             </h1>
         </header>
         <sheet>
-<div class="alert alert-info" role="status" invisible="operation_type != 'set'">
+        <div class="alert alert-info" role="status" invisible="operation_type != 'set'">
 <strong>
     PERMANENT RECORD PROTECTION</strong>
 <br />
@@ -27,7 +27,7 @@ Remove PERMANENT Flag (Admin Only)
                         and shredding rotations. This action requires password verification for security.
             </div>
 
-<div class="alert alert-warning" role="alert" invisible="operation_type != 'remove'">
+        <div class="alert alert-warning" role="alert" invisible="operation_type != 'remove'">
 <strong>
      ADMINISTRATOR SECURITY WARNING</strong>
 <br />
@@ -36,16 +36,16 @@ Remove PERMANENT Flag (Admin Only)
                         This will allow them to be included in destruction schedules again.
 </div>
 
-<group>
-<group string="Documents to Process">
-    <field name="document_count" string="Number of Documents"/>
-<field name="operation_type" readonly="1"/>
+        <group>
+        <group string="Documents to Process">
+        <field name="document_count" string="Number of Documents"/>
+        <field name="operation_type" readonly="1"/>
 
-    <field name="document_ids" widget="many2many_tags" readonly="1" options="{'no_create': True, 'no_edit': True}"/>
+        <field name="document_ids" widget="many2many_tags" readonly="1" options="{'no_create': True, 'no_edit': True}"/>
 </group>
 
-<group string="Security Verification">
-<div class="alert alert-secondary" role="status">
+        <group string="Security Verification">
+        <div class="alert alert-secondary" role="status">
 <i class='fa fa-shield' title="Security Protection" />
 
 
@@ -54,23 +54,23 @@ Remove PERMANENT Flag (Admin Only)
 
                                 Enter your user password to confirm this security-sensitive action.
 </div>
-<field name="user_password" password="True" placeholder="Enter your password"/>
+        <field name="user_password" password="True" placeholder="Enter your password"/>
 </group>
 </group>
 
-<div class="mt-3">
+        <div class="mt-3">
 <h4><i class='fa fa-clipboard'/> Selected Documents:</h4>
-<field name="document_ids" mode="list" nolabel="1">
-<list decoration-success="is_permanent == True" decoration-muted="is_permanent == False">
-<field name="name"/>
-<field name="partner_id"/>
-<field name="storage_box_id"/>
+        <field name="document_ids" mode="list" nolabel="1">
+        <list decoration-success="is_permanent == True" decoration-muted="is_permanent == False">
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="storage_box_id"/>
 
 
-<field name="is_permanent" string="Currently Permanent" widget="boolean"/>
+        <field name="is_permanent" string="Currently Permanent" widget="boolean"/>
 
-<field name="permanent_user_id" string="Set By" invisible="not is_permanent"/>
-<field name="permanent_date" string="Set Date" invisible="not is_permanent"/>
+        <field name="permanent_user_id" string="Set By" invisible="not is_permanent"/>
+        <field name="permanent_date" string="Set Date" invisible="not is_permanent"/>
 </list>
 </field>
 </div>
@@ -84,13 +84,13 @@ Remove PERMANENT Flag (Admin Only)
 </footer>
 </form>
 </field>
-</record>
+    </record>
 <!-- Action for Permanent Flag Wizard -->
-<record id="action_records_permanent_flag_wizard" model="ir.actions.act_window">
-<field name="name">Permanent Flag Management</field>
-<field name="res_model">records.permanent.flag.wizard.manager</field>
-<field name="view_mode">form</field>
-<field name="target">new</field>
-</record>
+    <record id="action_records_permanent_flag_wizard" model="ir.actions.act_window">
+        <field name="name">Permanent Flag Management</field>
+        <field name="res_model">records.permanent.flag.wizard.manager</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
 
 </odoo>

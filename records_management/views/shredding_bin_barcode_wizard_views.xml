@@ -2,42 +2,42 @@
 <odoo>
 
 <!-- View shredding.bin.barcode.wizard View List -->
-<record id="shredding_bin_barcode_wizard_view_tree" model="ir.ui.view">
-<field name="name">shredding.bin.barcode.wizard.view.tree</field>
-    <field name="model">shredding.bin.barcode.wizard</field>
-    <field name="arch" type="xml">
-<list>
-<field name="bin_id"/>
-<field name="current_barcode"/>
-<field name="scan_issue"/>
-<field name="new_barcode"/>
+    <record id="shredding_bin_barcode_wizard_view_tree" model="ir.ui.view">
+        <field name="name">shredding.bin.barcode.wizard.view.tree</field>
+        <field name="model">shredding.bin.barcode.wizard</field>
+        <field name="arch" type="xml">
+        <list>
+        <field name="bin_id"/>
+        <field name="current_barcode"/>
+        <field name="scan_issue"/>
+        <field name="new_barcode"/>
 
 </list>
     </field>
-</record>
+    </record>
 
 <!-- View shredding.bin.barcode.wizard form -->
-<record id="shredding_bin_barcode_wizard_view_form" model="ir.ui.view">
-    <field name="name">shredding.bin.barcode.wizard.view.form</field>
-    <field name="model">shredding.bin.barcode.wizard</field>
-    <field name="arch" type="xml">
-<form string="Fix Shredding Bin Barcode">
+    <record id="shredding_bin_barcode_wizard_view_form" model="ir.ui.view">
+        <field name="name">shredding.bin.barcode.wizard.view.form</field>
+        <field name="model">shredding.bin.barcode.wizard</field>
+        <field name="arch" type="xml">
+        <form string="Fix Shredding Bin Barcode">
             <sheet>
-<group>
-<group>
-    <field name="bin_id"/>
-    <field name="current_barcode"/>
-    <field name="scan_issue"/>
+        <group>
+        <group>
+        <field name="bin_id"/>
+        <field name="current_barcode"/>
+        <field name="scan_issue"/>
 </group>
-<group>
-    <field name="use_manual_override"/>
-<field name="manual_bin_size" invisible="[['use_manual_override','=',False]]" required="[['use_manual_override','=',True]]"/>
+        <group>
+        <field name="use_manual_override"/>
+        <field name="manual_bin_size" invisible="[['use_manual_override','=',False]]" required="[['use_manual_override','=',True]]"/>
 <!--
 The 'new_barcode' field is invisible when 'use_manual_override' is True,
 and required when 'use_manual_override' is False.
 This ensures users only enter a new barcode when not using manual override.
 -->
-<field name="new_barcode" invisible="use_manual_override == True" required="use_manual_override == False"/>
+        <field name="new_barcode" invisible="use_manual_override == True" required="use_manual_override == False"/>
 
 
 
@@ -50,17 +50,17 @@ This ensures users only enter a new barcode when not using manual override.
             </sheet>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- View shredding.bin.barcode.wizard search -->
-<record id="shredding_bin_barcode_wizard_view_search" model="ir.ui.view">
-    <field name="name">shredding.bin.barcode.wizard.view.search</field>
-    <field name="model">shredding.bin.barcode.wizard</field>
-    <field name="arch" type="xml">
+    <record id="shredding_bin_barcode_wizard_view_search" model="ir.ui.view">
+        <field name="name">shredding.bin.barcode.wizard.view.search</field>
+        <field name="model">shredding.bin.barcode.wizard</field>
+        <field name="arch" type="xml">
         <search>
-<field name="bin_id"/>
-<field name="current_barcode"/>
-<field name="scan_issue"/>
+        <field name="bin_id"/>
+        <field name="current_barcode"/>
+        <field name="scan_issue"/>
 
             <group expand="1" string="Group By">
 <filter string="Bin" name="bin_id" domain="[]" context="{'group_by':'bin_id'}"/>
@@ -70,18 +70,18 @@ This ensures users only enter a new barcode when not using manual override.
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- Action shredding.bin.barcode.wizard -->
-<record id="shredding_bin_barcode_wizard_action" model="ir.actions.act_window">
-    <field name="name">Shredding Bin Barcode Wizard</field>
-    <field name="res_model">shredding.bin.barcode.wizard</field>
-<field name="view_mode">list,form</field>
-    <field name="help" type="html">
+    <record id="shredding_bin_barcode_wizard_action" model="ir.actions.act_window">
+        <field name="name">Shredding Bin Barcode Wizard</field>
+        <field name="res_model">shredding.bin.barcode.wizard</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
         <p class="oe_view_nocontent_create">
 There are no examples. Click here to add a new Shredding Bin Barcode Wizard.
         </p>
     </field>
-</record>
+    </record>
 
 </odoo>

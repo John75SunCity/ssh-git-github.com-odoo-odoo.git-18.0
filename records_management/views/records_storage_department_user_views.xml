@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 <!-- List view for Records Storage Department User -->
-<record id="records_storage_department_user_view_tree" model="ir.ui.view">
-<field name="name">records.storage.department.user.view.tree</field>
-<field name="model">records.storage.department.user</field>
-<field name="arch" type="xml">
+    <record id="records_storage_department_user_view_tree" model="ir.ui.view">
+        <field name="name">records.storage.department.user.view.tree</field>
+        <field name="model">records.storage.department.user</field>
+        <field name="arch" type="xml">
     <list decoration-success="state=='active'" decoration-muted="state=='inactive'">
         <field name="display_name"/>
         <field name="user_id"/>
@@ -16,18 +16,18 @@
         <field name="company_id" groups="base.group_multi_company"/>
     </list>
 </field>
-</record>
+    </record>
 
 <!-- Form view for Records Storage Department User -->
-<record id="records_storage_department_user_view_form" model="ir.ui.view">
-<field name="name">records.storage.department.user.view.form</field>
-<field name="model">records.storage.department.user</field>
-<field name="arch" type="xml">
+    <record id="records_storage_department_user_view_form" model="ir.ui.view">
+        <field name="name">records.storage.department.user.view.form</field>
+        <field name="model">records.storage.department.user</field>
+        <field name="arch" type="xml">
     <form string="Records Storage Department User">
         <header>
             <button name="action_activate" type="object" string="Activate" class="oe_highlight" invisible="state != 'inactive'"/>
             <button name="action_deactivate" type="object" string="Deactivate" invisible="state != 'active'"/>
-            <field name="state" widget="statusbar" statusbar_visible="active,inactive"/>
+        <field name="state" widget="statusbar" statusbar_visible="active,inactive"/>
         </header>
         <sheet>
             <div class="oe_button_box" name="button_box">
@@ -39,41 +39,41 @@
             <div class="oe_title">
                 <label for="display_name" class="oe_edit_only"/>
                 <h1>
-                    <field name="display_name" placeholder="Department User Assignment"/>
+        <field name="display_name" placeholder="Department User Assignment"/>
                 </h1>
             </div>
 
             <group>
                 <group name="basic_info" string="Basic Information">
-                    <field name="user_id" required="1"/>
-                    <field name="department_id" required="1"/>
-                    <field name="role" required="1"/>
-                    <field name="active"/>
+        <field name="user_id" required="1"/>
+        <field name="department_id" required="1"/>
+        <field name="role" required="1"/>
+        <field name="active"/>
                 </group>
                 <group name="assignment_info" string="Assignment Details">
-                    <field name="start_date"/>
-                    <field name="end_date"/>
+        <field name="start_date"/>
+        <field name="end_date"/>
                 </group>
             </group>
 
             <group name="company_info" string="Company Information">
-                <field name="company_id" groups="base.group_multi_company"/>
+        <field name="company_id" groups="base.group_multi_company"/>
             </group>
         </sheet>
         <div class="oe_chatter">
-            <field name="message_follower_ids"/>
-            <field name="activity_ids"/>
-            <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
         </div>
     </form>
 </field>
-</record>
+    </record>
 
 <!-- Search view for Records Storage Department User -->
-<record id="records_storage_department_user_view_search" model="ir.ui.view">
-<field name="name">records.storage.department.user.view.search</field>
-<field name="model">records.storage.department.user</field>
-<field name="arch" type="xml">
+    <record id="records_storage_department_user_view_search" model="ir.ui.view">
+        <field name="name">records.storage.department.user.view.search</field>
+        <field name="model">records.storage.department.user</field>
+        <field name="arch" type="xml">
     <search>
         <field name="display_name" string="Name" filter_domain="[('display_name', 'ilike', self)]"/>
         <field name="user_id" string="User"/>
@@ -103,22 +103,22 @@
         </group>
     </search>
 </field>
-</record>
+    </record>
 
 <!-- Action for Records Storage Department User -->
-<record id="action_records_storage_department_user" model="ir.actions.act_window">
-<field name="name">Department User Assignments</field>
-<field name="res_model">records.storage.department.user</field>
-<field name="view_mode">list,form</field>
-<field name="view_ids" eval="[(5, 0, 0),
+    <record id="action_records_storage_department_user" model="ir.actions.act_window">
+        <field name="name">Department User Assignments</field>
+        <field name="res_model">records.storage.department.user</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'list', 'view_id': ref('records_storage_department_user_view_tree')}),
         (0, 0, {'view_mode': 'form', 'view_id': ref('records_storage_department_user_view_form')})]"/>
-<field name="domain">[]</field>
-<field name="context">{
+        <field name="domain">[]</field>
+        <field name="context">{
         'search_default_active': 1,
         'search_default_state_active': 1
     }</field>
-<field name="help" type="html">
+        <field name="help" type="html">
     <p class="oe_view_nocontent_create">
             Click to create a new department user assignment.
     </p>
@@ -128,9 +128,9 @@
             data separation for multi-tenant scenarios.
         </p>
 </field>
-</record>
+    </record>
 
 <!-- Menu item -->
-<menuitem id="menu_records_storage_department_user" name="Department Users" parent="records_management.menu_records_configuration" action="action_records_storage_department_user" sequence="30" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_records_storage_department_user" name="Department Users" parent="records_management.menu_records_configuration" action="action_records_storage_department_user" sequence="30" groups="records_management.group_records_manager"/>
 
 </odoo>

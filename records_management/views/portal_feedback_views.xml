@@ -4,20 +4,20 @@
 <!-- List view for PORTAL -->
 
 <!-- Kanban view for Kanban -->
-<record id="portal_feedback_view_kanban" model="ir.ui.view">
-    <field name="name">portal.feedback.view.kanban</field>
-    <field name="model">portal.feedback</field>
-    <field name="arch" type="xml">
+    <record id="portal_feedback_view_kanban" model="ir.ui.view">
+        <field name="name">portal.feedback.view.kanban</field>
+        <field name="model">portal.feedback</field>
+        <field name="arch" type="xml">
         <kanban default_group_by="state" quick_create="false" class="o_kanban_small_column">
-            <field name="name"/>
-            <field name="state"/>
-            <field name="partner_id"/>
-            <field name="feedback_type"/>
-            <field name="rating"/>
-            <field name="sentiment_category"/>
-            <field name="priority"/>
-            <field name="assigned_to_id"/>
-            <field name="activity_state"/>
+        <field name="name"/>
+        <field name="state"/>
+        <field name="partner_id"/>
+        <field name="feedback_type"/>
+        <field name="rating"/>
+        <field name="sentiment_category"/>
+        <field name="priority"/>
+        <field name="assigned_to_id"/>
+        <field name="activity_state"/>
             <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
             <templates>
                 <t t-name="card">
@@ -25,7 +25,7 @@
                         <div class="o_kanban_record_top">
                             <strong><field name="name"/></strong>
                             <span class="float-end">
-                                <field name="state" widget="label_selection" options="{'classes': {'new': 'primary', 'in_progress': 'info', 'resolved': 'success', 'closed': 'secondary'}}"/>
+        <field name="state" widget="label_selection" options="{'classes': {'new': 'primary', 'in_progress': 'info', 'resolved': 'success', 'closed': 'secondary'}}"/>
                             </span>
                             <div class="text-muted">
                                 <i class="fa fa-user" title="Customer"/> <field name="partner_id"/> | <field name="feedback_type"/>
@@ -43,14 +43,14 @@
                             <div t-if="record.priority.raw_value == 'high'" class="mt-2">
                                 <span class="badge badge-danger">&lt;i class="fa fa-fire"&gt; High Priority</span>
                             </div>
-                            <field name="activity_ids" widget="kanban_activity"/>
+        <field name="activity_ids" widget="kanban_activity"/>
                         </div>
                         <div class="o_kanban_record_bottom">
                             <span class="badge badge-pill badge-info"><i class="fa fa-calendar" title="Created"/> <field name="create_date" widget="date"/></span>
                             <div class="oe_kanban_bottom_right">
 <img t-att-src="kanban_image('res.users', 'avatar_128', record.assigned_to_id.raw_value)" t-att-title="record.assigned_to_id.value" class="oe_kanban_avatar o_image_24_cover" t-if="record.assigned_to_id.raw_value" alt="Assigned User"/>
 
-                                <field name="activity_state" widget="kanban_activity"/>
+        <field name="activity_state" widget="kanban_activity"/>
                             </div>
                         </div>
                     </div>
@@ -58,34 +58,34 @@
             </templates>
         </kanban>
     </field>
-</record>
+    </record>
 
 <!-- List view for List -->
-<record id="portal_feedback_view_tree" model="ir.ui.view">
-    <field name="name">portal.feedback.view.tree</field>
-    <field name="model">portal.feedback</field>
-    <field name="arch" type="xml">
+    <record id="portal_feedback_view_tree" model="ir.ui.view">
+        <field name="name">portal.feedback.view.tree</field>
+        <field name="model">portal.feedback</field>
+        <field name="arch" type="xml">
         <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="state=='resolved'" decoration-muted="state=='closed'" multi_edit="1">
-            <field name="name"/>
-            <field name="create_date" widget="date"/>
-            <field name="partner_id"/>
-            <field name="feedback_type"/>
-            <field name="rating" widget="priority"/>
-            <field name="sentiment_category"/>
-            <field name="sentiment_score"/>
-            <field name="priority" widget="priority"/>
-            <field name="state" widget="badge"/>
-            <field name="assigned_to_id" widget="many2one_avatar_user"/>
-            <field name="activity_exception_decoration" widget="activity_exception"/>
+        <field name="name"/>
+        <field name="create_date" widget="date"/>
+        <field name="partner_id"/>
+        <field name="feedback_type"/>
+        <field name="rating" widget="priority"/>
+        <field name="sentiment_category"/>
+        <field name="sentiment_score"/>
+        <field name="priority" widget="priority"/>
+        <field name="state" widget="badge"/>
+        <field name="assigned_to_id" widget="many2one_avatar_user"/>
+        <field name="activity_exception_decoration" widget="activity_exception"/>
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Form view for base.rate -->
-<record id="portal_feedback_view_form" model="ir.ui.view">
-    <field name="name">portal.feedback.view.form</field>
-    <field name="model">portal.feedback</field>
-    <field name="arch" type="xml">
+    <record id="portal_feedback_view_form" model="ir.ui.view">
+        <field name="name">portal.feedback.view.form</field>
+        <field name="model">portal.feedback</field>
+        <field name="arch" type="xml">
         <form>
             <header>
 <!-- Fixed: Removed non-existent action methods that were causing deployment failures -->
@@ -94,7 +94,7 @@
 <button name="action_resolve" type="object" string="Resolve" class="btn-success" invisible="state not in ['new','in_progress']"/>
 <button name="action_close" type="object" string="Close" class="btn-secondary" invisible="state != 'resolved'"/>
 
-                <field name="state" widget="statusbar" statusbar_visible="new,in_progress,resolved,closed"/>
+        <field name="state" widget="statusbar" statusbar_visible="new,in_progress,resolved,closed"/>
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
@@ -111,63 +111,63 @@
 
                 <group>
                     <group>
-                        <field name="partner_id"/>
-                        <field name="feedback_type"/>
-                        <field name="subject"/>
-                        <field name="priority"/>
-                        <field name="assigned_to_id"/>
+        <field name="partner_id"/>
+        <field name="feedback_type"/>
+        <field name="subject"/>
+        <field name="priority"/>
+        <field name="assigned_to_id"/>
                     </group>
                     <group>
-                        <field name="rating" widget="priority"/>
-                        <field name="sentiment_category"/>
-                        <field name="sentiment_score"/>
-                        <field name="active"/>
-                        <field name="company_id"/>
+        <field name="rating" widget="priority"/>
+        <field name="sentiment_category"/>
+        <field name="sentiment_score"/>
+        <field name="active"/>
+        <field name="company_id"/>
                     </group>
                 </group>
                 <notebook>
                     <page string="Feedback Details">
                         <group>
-                            <field name="description" nolabel="1" placeholder="Customer feedback details..."/>
+        <field name="description" nolabel="1" placeholder="Customer feedback details..."/>
                         </group>
                     </page>
                     <page string="Analysis">
                         <group>
-                            <field name="sentiment_score"/>
-                            <field name="sentiment_category"/>
-                            <field name="resolution_date"/>
-                            <field name="first_response_date"/>
-                            <field name="interaction_count"/>
+        <field name="sentiment_score"/>
+        <field name="sentiment_category"/>
+        <field name="resolution_date"/>
+        <field name="first_response_date"/>
+        <field name="interaction_count"/>
                         </group>
                     </page>
                     <page string="Relations">
                         <group>
-                            <field name="resolution_ids"/>
-                            <field name="communication_ids"/>
-                            <field name="escalation_ids"/>
+        <field name="resolution_ids"/>
+        <field name="communication_ids"/>
+        <field name="escalation_ids"/>
                         </group>
                     </page>
                 </notebook>
             </sheet>
             <div class="oe_chatter">
-                <field name="message_follower_ids"/>
-                <field name="activity_ids"/>
-                <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
             </div>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Search view for base.rate -->
-<record id="portal_feedback_view_search" model="ir.ui.view">
-    <field name="name">portal.feedback.view.search</field>
-    <field name="model">portal.feedback</field>
-    <field name="arch" type="xml">
+    <record id="portal_feedback_view_search" model="ir.ui.view">
+        <field name="name">portal.feedback.view.search</field>
+        <field name="model">portal.feedback</field>
+        <field name="arch" type="xml">
         <search>
-            <field name="name"/>
-            <field name="partner_id"/>
-            <field name="feedback_type"/>
-            <field name="assigned_to_id"/>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="feedback_type"/>
+        <field name="assigned_to_id"/>
 
             <filter string="New" name="new" domain="[('state', '=', 'new')]"/>
             <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
@@ -186,25 +186,25 @@
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- List view for Action -->
-<record id="action_portal_feedback" model="ir.actions.act_window">
-    <field name="name">Customer Feedback</field>
-    <field name="res_model">portal.feedback</field>
-    <field name="view_mode">kanban,list,form</field>
-    <field name="search_view_id" ref="portal_feedback_view_search"/>
-    <field name="context">{'search_default_needs_response': 1}</field>
-    <field name="help" type="html">
+    <record id="action_portal_feedback" model="ir.actions.act_window">
+        <field name="name">Customer Feedback</field>
+        <field name="res_model">portal.feedback</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="portal_feedback_view_search"/>
+        <field name="context">{'search_default_needs_response': 1}</field>
+        <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
             <i class="fa fa-pencil"/> No customer feedback yet!
         </p>
         <p>Customer feedback will appear here when submitted through the portal.</p>
     </field>
-</record>
+    </record>
 
 <!-- List view for Menu -->
-<menuitem id="menu_portal_feedback"
+    <menuitem id="menu_portal_feedback"
           name="Customer Feedback"
           parent="records_management.menu_records_portal"
           action="action_portal_feedback"

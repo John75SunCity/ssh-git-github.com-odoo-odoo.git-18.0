@@ -2,31 +2,31 @@
 <odoo>
 
 <!-- List view for bin.key -->
-<record id="bin_key_view_tree" model="ir.ui.view">
-    <field name="name">bin.key.view.tree</field>
-    <field name="model">bin.key</field>
-    <field name="arch" type="xml">
-<list string="Bin Keys" decoration-success="status == 'available'" decoration-warning="status == 'assigned'" decoration-danger="status == 'lost'" decoration-muted="status == 'retired'">
-            <field name="name"/>
-<field name="key_type"/>
-<field name="bin_location"/>
-<field name="state" widget="badge" decoration-success="status == 'available'" decoration-warning="status == 'assigned'" decoration-danger="status == 'lost'" decoration-muted="status == 'retired'"/>
-<field name="current_holder"/>
-<field name="last_maintenance_date"/>
-<field name="assigned_date"/>
-<field name="return_date"/>
-<field name="company_id" optional="hide"/>
-<field name="active" optional="hide"/>
+    <record id="bin_key_view_tree" model="ir.ui.view">
+        <field name="name">bin.key.view.tree</field>
+        <field name="model">bin.key</field>
+        <field name="arch" type="xml">
+        <list string="Bin Keys" decoration-success="status == 'available'" decoration-warning="status == 'assigned'" decoration-danger="status == 'lost'" decoration-muted="status == 'retired'">
+        <field name="name"/>
+        <field name="key_type"/>
+        <field name="bin_location"/>
+        <field name="state" widget="badge" decoration-success="status == 'available'" decoration-warning="status == 'assigned'" decoration-danger="status == 'lost'" decoration-muted="status == 'retired'"/>
+        <field name="current_holder"/>
+        <field name="last_maintenance_date"/>
+        <field name="assigned_date"/>
+        <field name="return_date"/>
+        <field name="company_id" optional="hide"/>
+        <field name="active" optional="hide"/>
 
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Form view for bin.key -->
-<record id="bin_key_view_form" model="ir.ui.view">
-    <field name="name">bin.key.view.form</field>
-    <field name="model">bin.key</field>
-    <field name="arch" type="xml">
+    <record id="bin_key_view_form" model="ir.ui.view">
+        <field name="name">bin.key.view.form</field>
+        <field name="model">bin.key</field>
+        <field name="arch" type="xml">
         <form string="Bin Key">
 <header>
 <button name="action_assign_key" string="Assign Key" type="object" class="btn-primary" invisible="status != 'available'"/>
@@ -39,16 +39,16 @@
 
 <button name="action_reactivate_key" string="Reactivate" type="object" class="btn-success" invisible="status != 'retired'"/>
 
-<field name="state" widget="statusbar" statusbar_visible="available,assigned,returned,lost,retired"/>
+        <field name="state" widget="statusbar" statusbar_visible="available,assigned,returned,lost,retired"/>
 </header>
 
             <sheet>
-<div class="oe_button_box" name="button_box">
+        <div class="oe_button_box" name="button_box">
 <button name="action_view_management_records" type="object" class="oe_stat_button" icon="fa-key" title="View Management Records">
-    <field name="management_record_count" widget="statbutton" string="Management Records"/>
+        <field name="management_record_count" widget="statbutton" string="Management Records"/>
 </button>
 <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt" title="View Unlock Services">
-    <field name="unlock_service_count" widget="statbutton" string="Unlock Services"/>
+        <field name="unlock_service_count" widget="statbutton" string="Unlock Services"/>
 </button>
 </div>
 
@@ -58,82 +58,82 @@
 
 
                 <div class="oe_title">
-<label for="name" class="oe_edit_only"/>
+        <label for="name" class="oe_edit_only"/>
 
                     <h1>
-<field name="name" placeholder="Key Identifier (e.g., BK-001)"/>
+        <field name="name" placeholder="Key Identifier (e.g., BK-001)"/>
 
                     </h1>
 <h2>
-<field name="bin_location" placeholder="Bin Location"/>
+        <field name="bin_location" placeholder="Bin Location"/>
 </h2>
                 </div>
-<group>
-<group string="Key Information">
-    <field name="key_type"/>
-    <field name="physical_key_id"/>
-    <field name="bin_rack"/>
-    <field name="bin_shelf"/>
-    <field name="bin_position"/>
+        <group>
+        <group string="Key Information">
+        <field name="key_type"/>
+        <field name="physical_key_id"/>
+        <field name="bin_rack"/>
+        <field name="bin_shelf"/>
+        <field name="bin_position"/>
 </group>
-<group string="Current Assignment">
-    <field name="current_holder" options="{'no_create_edit': True}"/>
-    <field name="assigned_date" readonly="1"/>
-    <field name="return_date" readonly="1"/>
-    <field name="expected_return_date"/>
+        <group string="Current Assignment">
+        <field name="current_holder" options="{'no_create_edit': True}"/>
+        <field name="assigned_date" readonly="1"/>
+        <field name="return_date" readonly="1"/>
+        <field name="expected_return_date"/>
 </group>
 </group>
 
-<group>
-<group string="Security &amp; Access">
-    <field name="access_level"/>
-    <field name="security_deposit_required"/>
-<field name="security_deposit_amount" invisible="security_deposit_required == False"/>
+        <group>
+        <group string="Security &amp; Access">
+        <field name="access_level"/>
+        <field name="security_deposit_required"/>
+        <field name="security_deposit_amount" invisible="security_deposit_required == False"/>
 
-    <field name="emergency_access"/>
+        <field name="emergency_access"/>
 </group>
-<group string="Maintenance">
-    <field name="last_maintenance_date"/>
-    <field name="next_maintenance_due"/>
-    <field name="maintenance_notes" widget="text"/>
+        <group string="Maintenance">
+        <field name="last_maintenance_date"/>
+        <field name="next_maintenance_due"/>
+        <field name="maintenance_notes" widget="text"/>
 </group>
 </group>
 
 <notebook>
-<page string="Assignment History">
-    <field name="key_history_ids" readonly="1">
+        <page string="Assignment History">
+        <field name="key_history_ids" readonly="1">
         <list>
-            <field name="assigned_to"/>
-            <field name="assignment_date"/>
-            <field name="return_date"/>
-            <field name="assignment_reason"/>
-            <field name="duration_days"/>
+        <field name="assigned_to"/>
+        <field name="assignment_date"/>
+        <field name="return_date"/>
+        <field name="assignment_reason"/>
+        <field name="duration_days"/>
         </list>
     </field>
 </page>
-<page string="Management Records" invisible="management_record_count == 0">
-    <field name="management_record_ids" readonly="1">
+        <page string="Management Records" invisible="management_record_count == 0">
+        <field name="management_record_ids" readonly="1">
         <list>
-            <field name="key_number"/>
-            <field name="partner_id"/>
-            <field name="state"/>
-            <field name="issue_date"/>
-            <field name="return_date"/>
+        <field name="key_number"/>
+        <field name="partner_id"/>
+        <field name="state"/>
+        <field name="issue_date"/>
+        <field name="return_date"/>
         </list>
     </field>
 </page>
-<page string="Unlock Services" invisible="unlock_service_count == 0">
-    <field name="unlock_service_ids" readonly="1">
+        <page string="Unlock Services" invisible="unlock_service_count == 0">
+        <field name="unlock_service_ids" readonly="1">
         <list>
-            <field name="service_date"/>
-            <field name="service_type"/>
-            <field name="customer_id"/>
-            <field name="bin_location"/>
-            <field name="charge_amount"/>
+        <field name="service_date"/>
+        <field name="service_type"/>
+        <field name="customer_id"/>
+        <field name="bin_location"/>
+        <field name="charge_amount"/>
         </list>
     </field>
 </page>
-<page string="Notes &amp; Details">
+        <page string="Notes &amp; Details">
     <group>
         <field name="description" widget="text" placeholder="Key description and purpose..."/>
         <field name="special_instructions" widget="text" placeholder="Special handling instructions..."/>
@@ -142,20 +142,20 @@
 </page>
 </notebook>
             </sheet>
-<div class="oe_chatter">
-<field name="message_follower_ids"/>
-<field name="activity_ids"/>
-<field name="message_ids"/>
+        <div class="oe_chatter">
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
 </div>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Kanban view for bin.key -->
-<record id="bin_key_view_kanban" model="ir.ui.view">
-<field name="name">bin.key.view.kanban</field>
-<field name="model">bin.key</field>
-    <field name="arch" type="xml">
+    <record id="bin_key_view_kanban" model="ir.ui.view">
+        <field name="name">bin.key.view.kanban</field>
+        <field name="model">bin.key</field>
+        <field name="arch" type="xml">
     <kanban default_group_by="status" class="o_kanban_small_column">
         <field name="name"/>
         <field name="key_type"/>
@@ -171,23 +171,23 @@
                     </div>
                     <div class="oe_kanban_details">
                         <strong class="o_kanban_record_title">
-                            <field name="name"/>
+        <field name="name"/>
                         </strong>
                         <div class="o_kanban_record_body">
-                            <field name="bin_location"/>
+        <field name="bin_location"/>
                             <div t-if="record.current_holder.raw_value">
                                 <strong>Holder:</strong>
-                                <field name="current_holder"/>
+        <field name="current_holder"/>
                             </div>
                             <div t-if="record.assigned_date.raw_value">
                                 <strong>Since:</strong>
-                                <field name="assigned_date"/>
+        <field name="assigned_date"/>
                             </div>
                         </div>
                         <div class="oe_kanban_record_bottom">
                             <div class="oe_kanban_bottom_left">
                                 <span class="badge" t-att-class="record.key_type.raw_value == 'master' and 'badge-primary' or record.key_type.raw_value == 'standard' and 'badge-secondary' or 'badge-info'">
-                                    <field name="key_type"/>
+        <field name="key_type"/>
                                 </span>
                             </div>
                         </div>
@@ -197,18 +197,18 @@
         </templates>
     </kanban>
 </field>
-</record>
+    </record>
 
 <!-- Search view for bin.key -->
-<record id="bin_key_view_search" model="ir.ui.view">
-    <field name="name">bin.key.view.search</field>
-    <field name="model">bin.key</field>
-    <field name="arch" type="xml">
-<search string="Search Bin Keys">
-<field name="name" string="Key Name/ID" filter_domain="[('name', 'ilike', self)]"/>
-<field name="bin_location" string="Location" filter_domain="[('bin_location', 'ilike', self)]"/>
-<field name="current_holder" string="Current Holder"/>
-<field name="key_type"/>
+    <record id="bin_key_view_search" model="ir.ui.view">
+        <field name="name">bin.key.view.search</field>
+        <field name="model">bin.key</field>
+        <field name="arch" type="xml">
+        <search string="Search Bin Keys">
+        <field name="name" string="Key Name/ID" filter_domain="[('name', 'ilike', self)]"/>
+        <field name="bin_location" string="Location" filter_domain="[('bin_location', 'ilike', self)]"/>
+        <field name="current_holder" string="Current Holder"/>
+        <field name="key_type"/>
 
 <separator/>
 
@@ -243,16 +243,16 @@
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- Action for bin.key -->
-<record id="action_bin_key" model="ir.actions.act_window">
-<field name="name">Bin Keys</field>
-    <field name="res_model">bin.key</field>
-<field name="view_mode">list,kanban,form</field>
-    <field name="domain">[]</field>
-<field name="context">{'search_default_available': 1}</field>
-    <field name="help" type="html">
+    <record id="action_bin_key" model="ir.actions.act_window">
+        <field name="name">Bin Keys</field>
+        <field name="res_model">bin.key</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_available': 1}</field>
+        <field name="help" type="html">
         <p class="oe_view_nocontent_create">
 Click to create a new bin key.
 </p>
@@ -261,7 +261,7 @@ Click to create a new bin key.
             monitor returns, and maintain audit trails for compliance.
         </p>
     </field>
-</record>
+    </record>
 
 </odoo>
 

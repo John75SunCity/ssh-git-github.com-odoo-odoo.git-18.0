@@ -4,20 +4,20 @@
 <!-- ========================================== -->
 <!-- RECORDS CONTAINER VIEWS -->
 <!-- ========================================== -->
-<record id="records_container_view_kanban" model="ir.ui.view">
-    <field name="name">records.container.view.kanban</field>
-    <field name="model">records.container</field>
-    <field name="arch" type="xml">
+    <record id="records_container_view_kanban" model="ir.ui.view">
+        <field name="name">records.container.view.kanban</field>
+        <field name="model">records.container</field>
+        <field name="arch" type="xml">
         <kanban default_group_by="state" class="o_kanban_container_dashboard">
-            <field name="name"/>
-            <field name="partner_id"/>
-            <field name="location_id"/>
-            <field name="state"/>
-            <field name="create_date"/>
-            <field name="destruction_date"/>
-            <field name="container_type_id"/>
-            <field name="document_count"/>
-            <field name="is_full"/>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="location_id"/>
+        <field name="state"/>
+        <field name="create_date"/>
+        <field name="destruction_date"/>
+        <field name="container_type_id"/>
+        <field name="document_count"/>
+        <field name="is_full"/>
             <templates>
                 <t t-name="card">
                     <div class="oe_kanban_card oe_kanban_global_click">
@@ -27,12 +27,12 @@
 <i class="fa fa-cube" title="Container" aria-hidden="true"/>
 
 
-                                    <field name="name"/>
+        <field name="name"/>
                                 </div>
                                 <div class="o_secondary">
 <i class="fa fa-user" title="Customer" aria-hidden="true"/>
 
-                                    <field name="partner_id"/>
+        <field name="partner_id"/>
                                 </div>
                             </div>
                             <div class="o_kanban_manage_button_section">
@@ -42,34 +42,34 @@
                                 </a>
                             </div>
                         </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                             <div class="row">
                                 <div class="col-8">
                                     <div>
 <i class="fa fa-cube" title="Container Type" aria-label="Container Type" role="img"/>
 
-                                        <field name="container_type_id"/>
+        <field name="container_type_id"/>
                                     </div>
                                     <div>
 <i class="fa fa-weight" title="Weight" aria-label="Weight" role="img"/>
 
-                                        <field name="weight"/>
+        <field name="weight"/>
  lbs
                                     </div>
                                     <div>
 <i class="fa fa-map-marker" title="Storage Location" aria-label="Storage Location" role="img"/>
 
-                                        <field name="location_id"/>
+        <field name="location_id"/>
                                     </div>
                                     <div>
 <i class="fa fa-calendar" title="Creation Date" aria-label="Creation Date" role="img"/>
 
-                                        <field name="create_date"/>
+        <field name="create_date"/>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <span class="badge" t-att-class="record.state.raw_value === 'stored' ? 'badge-success' : record.state.raw_value === 'indexed' ? 'badge-info' : record.state.raw_value === 'retrieved' ? 'badge-warning' : record.state.raw_value === 'destroyed' ? 'badge-danger' : 'badge-secondary'">
-                                        <field name="state"/>
+        <field name="state"/>
                                     </span>
                                 </div>
                             </div>
@@ -122,44 +122,44 @@
             </templates>
         </kanban>
     </field>
-</record>
+    </record>
 
 <!-- List view for Enhanced -->
-<record id="records_container_view_tree" model="ir.ui.view">
-    <field name="name">records.container.view.tree</field>
-    <field name="model">records.container</field>
-    <field name="arch" type="xml">
+    <record id="records_container_view_tree" model="ir.ui.view">
+        <field name="name">records.container.view.tree</field>
+        <field name="model">records.container</field>
+        <field name="arch" type="xml">
         <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
             <header>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
             </header>
-            <field name="name" string="Container ID"/>
-            <field name="barcode" string="Barcode"/>
-            <field name="container_type_id" string="Container Type"/>
-            <field name="weight" string="Weight"/>
-            <field name="partner_id" string="Customer"/>
-            <field name="department_id" string="Department"/>
-            <field name="location_id" string="Location"/>
-            <field name="state" string="Status" widget="badge"/>
-            <field name="document_count" string="Documents" sum="Total Documents"/>
-            <field name="storage_start_date" string="Storage Start"/>
-            <field name="destruction_due_date" string="Due Date"/>
-            <field name="is_due_for_destruction" string="Due" widget="boolean_toggle"/>
-            <field name="security_level" string="Security"/>
-            <field name="active" string="Active" widget="boolean_toggle"/>
+        <field name="name" string="Container ID"/>
+        <field name="barcode" string="Barcode"/>
+        <field name="container_type_id" string="Container Type"/>
+        <field name="weight" string="Weight"/>
+        <field name="partner_id" string="Customer"/>
+        <field name="department_id" string="Department"/>
+        <field name="location_id" string="Location"/>
+        <field name="state" string="Status" widget="badge"/>
+        <field name="document_count" string="Documents" sum="Total Documents"/>
+        <field name="storage_start_date" string="Storage Start"/>
+        <field name="destruction_due_date" string="Due Date"/>
+        <field name="is_due_for_destruction" string="Due" widget="boolean_toggle"/>
+        <field name="security_level" string="Security"/>
+        <field name="active" string="Active" widget="boolean_toggle"/>
             <button name="action_view_documents" type="object" string="View Docs" icon="fas fa-file-text-o" class="btn-link"/>
             <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fas fa-barcode" class="btn-link"/>
             <button name="action_generate_qr_code" type="object" string="QR Code" icon="fas fa-qrcode" class="btn-link"/>
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Form view for Enhanced -->
-<record id="records_container_view_form" model="ir.ui.view">
-    <field name="name">records.container.view.form</field>
-    <field name="model">records.container</field>
-    <field name="arch" type="xml">
+    <record id="records_container_view_form" model="ir.ui.view">
+        <field name="name">records.container.view.form</field>
+        <field name="model">records.container</field>
+        <field name="arch" type="xml">
         <form>
             <header>
                 <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/>
@@ -169,141 +169,141 @@
                 <button name="action_destroy" type="object" string="Destroy Container" class="btn-danger" invisible="state != 'pending_destruction'"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
                 <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
-                <field name="state" widget="statusbar" statusbar_visible="draft,active,stored,retrieved,pending_destruction,destroyed"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,active,stored,retrieved,pending_destruction,destroyed"/>
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
 <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o" title="View Documents">
-                        <field name="document_count" string="Documents" widget="statinfo"/>
+        <field name="document_count" string="Documents" widget="statinfo"/>
                     </button>
                 </div>
 
                 <group>
                     <group string="Container Information">
-                        <field name="name" placeholder="e.g., CONT-2024-001"/>
-                        <field name="barcode" placeholder="Auto-generated on save"/>
-                        <field name="container_type_id" required="1"/>
-                        <field name="weight"/>
-                        <field name="cubic_feet" readonly="1"/>
-                        <field name="is_full"/>
+        <field name="name" placeholder="e.g., CONT-2024-001"/>
+        <field name="barcode" placeholder="Auto-generated on save"/>
+        <field name="container_type_id" required="1"/>
+        <field name="weight"/>
+        <field name="cubic_feet" readonly="1"/>
+        <field name="is_full"/>
                     </group>
                     <group string="Customer &amp; Location">
-                        <field name="partner_id" required="1"/>
-                        <field name="department_id"/>
-                        <field name="location_id"/>
-                        <field name="user_id"/>
+        <field name="partner_id" required="1"/>
+        <field name="department_id"/>
+        <field name="location_id"/>
+        <field name="user_id"/>
                     </group>
                 </group>
 
                 <group>
                     <group string="Retention &amp; Security">
-                        <field name="retention_policy_id"/>
-                        <field name="document_type_id"/>
-                        <field name="security_level"/>
-                        <field name="permanent_retention"/>
+        <field name="retention_policy_id"/>
+        <field name="document_type_id"/>
+        <field name="security_level"/>
+        <field name="permanent_retention"/>
                     </group>
                     <group string="Important Dates">
-                        <field name="storage_start_date"/>
-                        <field name="last_access_date" readonly="1"/>
-                        <field name="destruction_due_date" readonly="1"/>
-                        <field name="destruction_date" readonly="1"/>
-                        <field name="is_due_for_destruction" readonly="1"/>
+        <field name="storage_start_date"/>
+        <field name="last_access_date" readonly="1"/>
+        <field name="destruction_due_date" readonly="1"/>
+        <field name="destruction_date" readonly="1"/>
+        <field name="is_due_for_destruction" readonly="1"/>
                     </group>
                 </group>
 
                 <group>
                     <group string="Content &amp; Description">
-                        <field name="description" placeholder="Container contents, special instructions, or notes..."/>
-                        <field name="content_description"/>
-                        <field name="access_restrictions"/>
+        <field name="description" placeholder="Container contents, special instructions, or notes..."/>
+        <field name="content_description"/>
+        <field name="access_restrictions"/>
                     </group>
                     <group string="Additional Info">
-                        <field name="temp_inventory_id"/>
-                        <field name="active"/>
-                        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="temp_inventory_id"/>
+        <field name="active"/>
+        <field name="company_id" groups="base.group_multi_company"/>
                     </group>
                 </group>
 
                 <notebook>
                     <page string="Documents" name="documents">
-                        <field name="document_ids" mode="tree,form" context="{'default_container_id': id}">
+        <field name="document_ids" mode="tree,form" context="{'default_container_id': id}">
                             <list string="Documents">
-                                <field name="name"/>
-                                <field name="document_type_id"/>
-                                <field name="state"/>
-                                <field name="create_date"/>
+        <field name="name"/>
+        <field name="document_type_id"/>
+        <field name="state"/>
+        <field name="create_date"/>
                             </list>
                             <form string="Document">
                                 <group>
-                                    <field name="name"/>
-                                    <field name="document_type_id"/>
-                                    <field name="state"/>
-                                    <field name="description"/>
+        <field name="name"/>
+        <field name="document_type_id"/>
+        <field name="state"/>
+        <field name="description"/>
                                 </group>
                             </form>
                         </field>
                     </page>
                     <page string="Movement History" name="movements">
-                        <field name="movement_ids" mode="tree"/>
+        <field name="movement_ids" mode="tree"/>
                     </page>
                 </notebook>
             </sheet>
             <div class="oe_chatter">
-                <field name="message_follower_ids"/>
-                <field name="activity_ids"/>
-                <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
             </div>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- List view for Calendar -->
-<record id="records_container_view_calendar" model="ir.ui.view">
-    <field name="name">records.container.view.calendar</field>
-    <field name="model">records.container</field>
-    <field name="arch" type="xml">
+    <record id="records_container_view_calendar" model="ir.ui.view">
+        <field name="name">records.container.view.calendar</field>
+        <field name="model">records.container</field>
+        <field name="arch" type="xml">
         <calendar string="Container Storage Calendar" date_start="storage_start_date" date_stop="destruction_due_date" color="partner_id">
-            <field name="name"/>
-            <field name="partner_id"/>
-            <field name="location_id"/>
-            <field name="state"/>
-            <field name="container_type_id"/>
-            <field name="document_count"/>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="location_id"/>
+        <field name="state"/>
+        <field name="container_type_id"/>
+        <field name="document_count"/>
         </calendar>
     </field>
-</record>
+    </record>
 
 <!-- List view for Graph -->
-<record id="records_container_view_graph" model="ir.ui.view">
-    <field name="name">records.container.view.graph</field>
-    <field name="model">records.container</field>
-    <field name="arch" type="xml">
+    <record id="records_container_view_graph" model="ir.ui.view">
+        <field name="name">records.container.view.graph</field>
+        <field name="model">records.container</field>
+        <field name="arch" type="xml">
         <graph string="Container Analytics">
-            <field name="partner_id" type="row"/>
-            <field name="state" type="col"/>
-            <field name="document_count" type="measure"/>
+        <field name="partner_id" type="row"/>
+        <field name="state" type="col"/>
+        <field name="document_count" type="measure"/>
         </graph>
     </field>
-</record>
+    </record>
 
 <!-- Search view for Enhanced -->
-<record id="records_container_view_search" model="ir.ui.view">
-    <field name="name">records.container.view.search</field>
-    <field name="model">records.container</field>
-    <field name="arch" type="xml">
+    <record id="records_container_view_search" model="ir.ui.view">
+        <field name="name">records.container.view.search</field>
+        <field name="model">records.container</field>
+        <field name="arch" type="xml">
         <search>
-            <field name="name" string="Container" filter_domain="['|', ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
-            <field name="partner_id"/>
-            <field name="department_id"/>
-            <field name="location_id"/>
-            <field name="container_type_id"/>
-            <field name="retention_policy_id"/>
-            <field name="document_type_id"/>
-            <field name="state"/>
-            <field name="security_level"/>
-            <field name="is_due_for_destruction"/>
-            <field name="permanent_retention"/>
-            <field name="active"/>
+        <field name="name" string="Container" filter_domain="['|', ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
+        <field name="partner_id"/>
+        <field name="department_id"/>
+        <field name="location_id"/>
+        <field name="container_type_id"/>
+        <field name="retention_policy_id"/>
+        <field name="document_type_id"/>
+        <field name="state"/>
+        <field name="security_level"/>
+        <field name="is_due_for_destruction"/>
+        <field name="permanent_retention"/>
+        <field name="active"/>
 
             <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
             <filter string="Active" name="active_state" domain="[('state', '=', 'active')]"/>
@@ -336,6 +336,6 @@
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 </odoo>

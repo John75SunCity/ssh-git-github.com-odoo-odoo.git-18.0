@@ -2,59 +2,59 @@
 <odoo>
 
 <!-- List view for scan.digital.asset -->
-<record id="scan_digital_asset_view_tree" model="ir.ui.view">
-    <field name="name">scan.digital.asset.view.tree</field>
-    <field name="model">scan.digital.asset</field>
-    <field name="arch" type="xml">
+    <record id="scan_digital_asset_view_tree" model="ir.ui.view">
+        <field name="name">scan.digital.asset.view.tree</field>
+        <field name="model">scan.digital.asset</field>
+        <field name="arch" type="xml">
         <list>
-            <field name="name"/>
+        <field name="name"/>
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Form view for scan.digital.asset -->
-<record id="scan_digital_asset_view_form" model="ir.ui.view">
-    <field name="name">scan.digital.asset.view.form</field>
-    <field name="model">scan.digital.asset</field>
-    <field name="arch" type="xml">
+    <record id="scan_digital_asset_view_form" model="ir.ui.view">
+        <field name="name">scan.digital.asset.view.form</field>
+        <field name="model">scan.digital.asset</field>
+        <field name="arch" type="xml">
         <form string="Scan.Digital.Asset">
             <sheet>
                 <div class="oe_title">
                     <label for="name"/>
                     <h1>
-                        <field name="name" placeholder="Name..."/>
+        <field name="name" placeholder="Name..."/>
                     </h1>
                 </div>
             </sheet>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Search view for scan.digital.asset -->
-<record id="scan_digital_asset_view_search" model="ir.ui.view">
-    <field name="name">scan.digital.asset.view.search</field>
-    <field name="model">scan.digital.asset</field>
-    <field name="arch" type="xml">
+    <record id="scan_digital_asset_view_search" model="ir.ui.view">
+        <field name="name">scan.digital.asset.view.search</field>
+        <field name="model">scan.digital.asset</field>
+        <field name="arch" type="xml">
         <search>
             <group expand="1" string="Group By">
                 <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- Action for scan.digital.asset -->
-<record id="action_scan_digital_asset" model="ir.actions.act_window">
-    <field name="name">Scan.Digital.Asset</field>
-    <field name="res_model">scan.digital.asset</field>
-    <field name="view_mode">list,form</field>
-    <field name="domain">[]</field>
-    <field name="context">{}</field>
-    <field name="help" type="html">
+    <record id="action_scan_digital_asset" model="ir.actions.act_window">
+        <field name="name">Scan.Digital.Asset</field>
+        <field name="res_model">scan.digital.asset</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
         <p class="oe_view_nocontent_create">
             Click to add a new scan.digital.asset.
         </p>
     </field>
-</record>
+    </record>
 
 </odoo>

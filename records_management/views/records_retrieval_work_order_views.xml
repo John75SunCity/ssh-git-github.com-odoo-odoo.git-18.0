@@ -9,11 +9,11 @@
         <field name="model">records.retrieval.work.order</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
-                <field name="equipment_id"/>
-                <field name="state"/>
-                <field name="requested_by"/>
-                <field name="date_requested"/>
+        <field name="name"/>
+        <field name="equipment_id"/>
+        <field name="state"/>
+        <field name="requested_by"/>
+        <field name="date_requested"/>
             </list>
         </field>
     </record>
@@ -28,33 +28,33 @@
             <form>
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="equipment_id"/>
-                        <field name="state"/>
-                        <field name="requested_by"/>
-                        <field name="date_requested"/>
-                        <field name="notes"/>
+        <field name="name"/>
+        <field name="equipment_id"/>
+        <field name="state"/>
+        <field name="requested_by"/>
+        <field name="date_requested"/>
+        <field name="notes"/>
                     </group>
                     <notebook>
                         <page name="details" string=" Details">
                             <group>
                                 <group name="dates" string=" Scheduling">
-<field name="completion_date" readonly="state != 'in_progress'"/>
+        <field name="completion_date" readonly="state != 'in_progress'"/>
 
                                 </group>
                                 <group name="financials" string=" Financial Information">
-                                    <field name="currency_id" invisible="1"/>
+        <field name="currency_id" invisible="1"/>
                                     <!-- Future: Add cost/billing fields -->
                                 </group>
                             </group>
                             <separator string=" Retrieval Instructions"/>
-                            <field name="message_ids" widget="mail_thread"/>
+        <field name="message_ids" widget="mail_thread"/>
                         </page>
                         <page name="tracking" string=" Tracking &amp; History">
                             <group>
                                 <group name="timestamps" string="Timestamps">
-                                    <field name="create_date" readonly="1"/>
-                                    <field name="write_date" readonly="1"/>
+        <field name="create_date" readonly="1"/>
+        <field name="write_date" readonly="1"/>
                                 </group>
                             </group>
                         </page>
@@ -62,9 +62,9 @@
                 </sheet>
                 <!-- Chatter for communication history -->
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
                 </div>
             </form>
         </field>
@@ -78,13 +78,13 @@
         <field name="model">records.retrieval.work.order</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_small_column">
-                <field name="id"/>
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="user_id"/>
-                <field name="state"/>
-                <field name="delivery_method"/>
-                <field name="completion_date"/>
+        <field name="id"/>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="user_id"/>
+        <field name="state"/>
+        <field name="delivery_method"/>
+        <field name="completion_date"/>
                 <templates>
 <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
@@ -92,10 +92,10 @@
                                 <div class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
                                         <strong class="o_kanban_record_title">
-                                            <field name="name"/>
+        <field name="name"/>
                                         </strong>
                                         <div class="o_kanban_record_subtitle">
-                                            <field name="partner_id"/>
+        <field name="partner_id"/>
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
@@ -110,17 +110,17 @@
                                         <div class="oe_kanban_bottom_left">
                                             <div>
 <i class='fa fa-user' aria-hidden="true"/>
-<field name="user_id"/>
+        <field name="user_id"/>
 
                                             </div>
                                             <div>
 <i class='fa fa-truck' aria-hidden="true"/>
-<field name="delivery_method"/>
+        <field name="delivery_method"/>
 
                                             </div>
                                         </div>
                                         <div class="oe_kanban_bottom_right">
-                                            <field name="completion_date" widget="date"/>
+        <field name="completion_date" widget="date"/>
                                         </div>
                                     </div>
                                 </div>
@@ -141,10 +141,10 @@
         <field name="arch" type="xml">
             <search string="Search Records Retrieval Work Orders">
                 <!-- Search Fields -->
-                <field name="name" string="Work Order" filter_domain="[('name', 'ilike', self)]"/>
-                <field name="partner_id" string="Customer"/>
-                <field name="user_id" string="Assigned To"/>
-                <field name="retrieval_team_id" string="Team"/>
+        <field name="name" string="Work Order" filter_domain="[('name', 'ilike', self)]"/>
+        <field name="partner_id" string="Customer"/>
+        <field name="user_id" string="Assigned To"/>
+        <field name="retrieval_team_id" string="Team"/>
                 <!-- Filters -->
                 <separator/>
                 <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>

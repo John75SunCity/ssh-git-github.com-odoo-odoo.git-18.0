@@ -4,72 +4,72 @@
 <!-- Payment Split Line Views -->
 
 <!-- List View -->
-<record id="payment_split_line_view_tree" model="ir.ui.view">
-    <field name="name">payment.split.line.view.tree</field>
-    <field name="model">payment.split.line</field>
-    <field name="arch" type="xml">
+    <record id="payment_split_line_view_tree" model="ir.ui.view">
+        <field name="name">payment.split.line.view.tree</field>
+        <field name="model">payment.split.line</field>
+        <field name="arch" type="xml">
         <list string="Payment Split Lines" default_order="split_id, sequence">
-            <field name="sequence" widget="handle"/>
-            <field name="split_id"/>
-            <field name="name"/>
-            <field name="amount" sum="Total Amount"/>
-            <field name="partner_id"/>
-            <field name="invoice_id"/>
-            <field name="processed" widget="boolean_toggle"/>
-            <field name="currency_id" invisible="1"/>
+        <field name="sequence" widget="handle"/>
+        <field name="split_id"/>
+        <field name="name"/>
+        <field name="amount" sum="Total Amount"/>
+        <field name="partner_id"/>
+        <field name="invoice_id"/>
+        <field name="processed" widget="boolean_toggle"/>
+        <field name="currency_id" invisible="1"/>
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Form View -->
-<record id="payment_split_line_view_form" model="ir.ui.view">
-    <field name="name">payment.split.line.view.form</field>
-    <field name="model">payment.split.line</field>
-    <field name="arch" type="xml">
+    <record id="payment_split_line_view_form" model="ir.ui.view">
+        <field name="name">payment.split.line.view.form</field>
+        <field name="model">payment.split.line</field>
+        <field name="arch" type="xml">
         <form string="Payment Split Line">
             <sheet>
                 <div class="oe_title">
                     <h1>
-                        <field name="name" placeholder="Split Description"/>
+        <field name="name" placeholder="Split Description"/>
                     </h1>
                 </div>
                 <group>
                     <group>
-                        <field name="split_id" required="1"/>
-                        <field name="sequence"/>
-                        <field name="amount" widget="monetary"/>
-                        <field name="currency_id" invisible="1"/>
+        <field name="split_id" required="1"/>
+        <field name="sequence"/>
+        <field name="amount" widget="monetary"/>
+        <field name="currency_id" invisible="1"/>
                     </group>
                     <group>
-                        <field name="partner_id"/>
-                        <field name="invoice_id"/>
-                        <field name="processed" readonly="1"/>
-                        <field name="processing_date" invisible="not processed"/>
+        <field name="partner_id"/>
+        <field name="invoice_id"/>
+        <field name="processed" readonly="1"/>
+        <field name="processing_date" invisible="not processed"/>
                     </group>
                 </group>
 
                 <separator string="Notes"/>
-                <field name="notes" widget="text" placeholder="Additional notes about this payment split..."/>
+        <field name="notes" widget="text" placeholder="Additional notes about this payment split..."/>
             </sheet>
             <div class="oe_chatter">
-                <field name="message_follower_ids"/>
-                <field name="activity_ids"/>
-                <field name="message_ids"/>
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
             </div>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Search View -->
-<record id="payment_split_line_view_search" model="ir.ui.view">
-    <field name="name">payment.split.line.view.search</field>
-    <field name="model">payment.split.line</field>
-    <field name="arch" type="xml">
+    <record id="payment_split_line_view_search" model="ir.ui.view">
+        <field name="name">payment.split.line.view.search</field>
+        <field name="model">payment.split.line</field>
+        <field name="arch" type="xml">
         <search string="Search Payment Split Lines">
-            <field name="name"/>
-            <field name="split_id"/>
-            <field name="partner_id"/>
-            <field name="invoice_id"/>
+        <field name="name"/>
+        <field name="split_id"/>
+        <field name="partner_id"/>
+        <field name="invoice_id"/>
             <separator/>
             <filter name="filter_processed" string="Processed" domain="[('processed', '=', True)]"/>
             <filter name="filter_pending" string="Pending" domain="[('processed', '=', False)]"/>
@@ -82,15 +82,15 @@
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- Action -->
-<record id="action_payment_split_line" model="ir.actions.act_window">
-    <field name="name">Payment Split Lines</field>
-    <field name="res_model">payment.split.line</field>
-    <field name="view_mode">list,form</field>
-    <field name="context">{}</field>
-    <field name="help" type="html">
+    <record id="action_payment_split_line" model="ir.actions.act_window">
+        <field name="name">Payment Split Lines</field>
+        <field name="res_model">payment.split.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
             No payment split lines found!
         </p>
@@ -98,6 +98,6 @@
             Split lines track how payments are allocated across different services and billing periods.
         </p>
     </field>
-</record>
+    </record>
 
 </odoo>

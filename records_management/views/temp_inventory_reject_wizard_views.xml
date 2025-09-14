@@ -2,29 +2,29 @@
 <odoo>
 
 <!-- List view for temp.inventory.reject.wizard -->
-<record id="temp_inventory_reject_wizard_view_tree" model="ir.ui.view">
-    <field name="name">temp.inventory.reject.wizard.view.tree</field>
-    <field name="model">temp.inventory.reject.wizard</field>
-    <field name="arch" type="xml">
+    <record id="temp_inventory_reject_wizard_view_tree" model="ir.ui.view">
+        <field name="name">temp.inventory.reject.wizard.view.tree</field>
+        <field name="model">temp.inventory.reject.wizard</field>
+        <field name="arch" type="xml">
         <list>
-<field name="inventory_id"/>
-<field name="rejection_reason"/>
+        <field name="inventory_id"/>
+        <field name="rejection_reason"/>
 
         </list>
     </field>
-</record>
+    </record>
 
 <!-- Form view for temp.inventory.reject.wizard -->
-<record id="temp_inventory_reject_wizard_view_form" model="ir.ui.view">
-    <field name="name">temp.inventory.reject.wizard.view.form</field>
-    <field name="model">temp.inventory.reject.wizard</field>
-    <field name="arch" type="xml">
-<form string="Reject Temporary Inventory">
+    <record id="temp_inventory_reject_wizard_view_form" model="ir.ui.view">
+        <field name="name">temp.inventory.reject.wizard.view.form</field>
+        <field name="model">temp.inventory.reject.wizard</field>
+        <field name="arch" type="xml">
+        <form string="Reject Temporary Inventory">
             <sheet>
-<group>
-<field name="inventory_id" readonly="true"/>
+        <group>
+        <field name="inventory_id" readonly="true"/>
 
-<field name="rejection_reason" placeholder="Enter rejection reason..."/>
+        <field name="rejection_reason" placeholder="Enter rejection reason..."/>
 </group>
 <footer>
 <button name="action_confirm_rejection" string="Confirm Rejection" type="object" class="btn-primary"/>
@@ -33,16 +33,16 @@
             </sheet>
         </form>
     </field>
-</record>
+    </record>
 
 <!-- Search view for temp.inventory.reject.wizard -->
-<record id="temp_inventory_reject_wizard_view_search" model="ir.ui.view">
-    <field name="name">temp.inventory.reject.wizard.view.search</field>
-    <field name="model">temp.inventory.reject.wizard</field>
-    <field name="arch" type="xml">
+    <record id="temp_inventory_reject_wizard_view_search" model="ir.ui.view">
+        <field name="name">temp.inventory.reject.wizard.view.search</field>
+        <field name="model">temp.inventory.reject.wizard</field>
+        <field name="arch" type="xml">
         <search>
-<field name="inventory_id"/>
-<field name="rejection_reason"/>
+        <field name="inventory_id"/>
+        <field name="rejection_reason"/>
 
             <group expand="1" string="Group By">
 <filter string="Inventory Movement" name="inventory_id" context="{'group_by':'inventory_id'}"/>
@@ -51,18 +51,18 @@
             </group>
         </search>
     </field>
-</record>
+    </record>
 
 <!-- Action for temp.inventory.reject.wizard -->
-<record id="action_temp_inventory_reject_wizard" model="ir.actions.act_window">
-    <field name="name">Temp.Inventory.Reject.Wizard</field>
-    <field name="res_model">temp.inventory.reject.wizard</field>
-<field name="view_mode">list,form</field>
-    <field name="help" type="html">
+    <record id="action_temp_inventory_reject_wizard" model="ir.actions.act_window">
+        <field name="name">Temp.Inventory.Reject.Wizard</field>
+        <field name="res_model">temp.inventory.reject.wizard</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
         <p class="oe_view_nocontent_create">
             Click to add a new temp.inventory.reject.wizard.
         </p>
     </field>
-</record>
+    </record>
 
 </odoo>

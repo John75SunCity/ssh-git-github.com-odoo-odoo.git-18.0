@@ -4,19 +4,19 @@
     <record id="customer_inventory_line_view_tree" model="ir.ui.view">
         <field name="name">customer.inventory.line.view.tree</field>
         <field name="model">customer.inventory.line</field>
-    <field name="arch" type="xml">
+        <field name="arch" type="xml">
             <list string="Customer Inventory Line">
-<field name="container_id"/>
-<field name="location_id"/>
-<field name="file_count"/>
-<field name="expected_file_count"/>
-<field name="previous_file_count"/>
-<field name="verified"/>
-<field name="verification_date"/>
-<field name="verified_by_id"/>
-<field name="has_variance"/>
-<field name="variance_amount"/>
-<field name="variance_percentage"/>
+        <field name="container_id"/>
+        <field name="location_id"/>
+        <field name="file_count"/>
+        <field name="expected_file_count"/>
+        <field name="previous_file_count"/>
+        <field name="verified"/>
+        <field name="verification_date"/>
+        <field name="verified_by_id"/>
+        <field name="has_variance"/>
+        <field name="variance_amount"/>
+        <field name="variance_percentage"/>
 
             </list>
         </field>
@@ -25,27 +25,27 @@
     <record id="customer_inventory_line_view_form" model="ir.ui.view">
         <field name="name">customer.inventory.line.view.form</field>
         <field name="model">customer.inventory.line</field>
-    <field name="arch" type="xml">
+        <field name="arch" type="xml">
             <form string="Customer Inventory Line">
                 <sheet>
                     <group>
-<field name="inventory_id"/>
-<field name="container_id"/>
-<field name="location_id"/>
-<field name="file_count"/>
-<field name="expected_file_count"/>
-<field name="previous_file_count"/>
-<field name="verified"/>
-<field name="verification_date"/>
-<field name="verified_by_id"/>
-<field name="notes"/>
-<field name="has_variance"/>
-<field name="variance_amount"/>
-<field name="variance_percentage"/>
-<field name="variance_reason"/>
-<field name="variance_notes"/>
-<field name="container_type_id"/>
-<field name="department_id"/>
+        <field name="inventory_id"/>
+        <field name="container_id"/>
+        <field name="location_id"/>
+        <field name="file_count"/>
+        <field name="expected_file_count"/>
+        <field name="previous_file_count"/>
+        <field name="verified"/>
+        <field name="verification_date"/>
+        <field name="verified_by_id"/>
+        <field name="notes"/>
+        <field name="has_variance"/>
+        <field name="variance_amount"/>
+        <field name="variance_percentage"/>
+        <field name="variance_reason"/>
+        <field name="variance_notes"/>
+        <field name="container_type_id"/>
+        <field name="department_id"/>
 
                     </group>
                 </sheet>
