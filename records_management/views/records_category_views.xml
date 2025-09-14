@@ -6,12 +6,12 @@
         <field name="name">records.category.view.tree</field>
         <field name="model">records.category</field>
         <field name="arch" type="xml">
-            <tree string="Records Categories">
+            <list string="Records Categories">
                 <field name="name"/>
                 <field name="complete_name"/>
                 <field name="parent_id"/>
                 <field name="document_count"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -30,11 +30,11 @@
                     <notebook>
                         <page string="Document Types">
                             <field name="document_type_ids">
-                                <tree string="Document Types">
+                                <list string="Document Types">
                                     <field name="name"/>
                                     <field name="code"/>
                                     <field name="state"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -59,7 +59,7 @@
     <record id="action_records_category" model="ir.actions.act_window">
         <field name="name">Categories</field>
         <field name="res_model">records.category</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- Records Category Menu -->
