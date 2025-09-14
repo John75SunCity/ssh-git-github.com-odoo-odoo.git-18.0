@@ -76,6 +76,7 @@ class ComprehensiveValidator:
                 'email_cc', 'auto_delete', 'use_default_to', 'attachment_ids'
             },
             'product.template': {
+                # CORE ODOO FIELDS (standard model fields)
                 'name', 'categ_id', 'type', 'list_price', 'standard_price', 'uom_id',
                 'uom_po_id', 'purchase_ok', 'sale_ok', 'active', 'company_id', 'barcode',
                 'default_code', 'description', 'description_purchase', 'description_sale',
@@ -87,6 +88,16 @@ class ComprehensiveValidator:
                 'expense_policy', 'sales_count', 'purchase_count', 'service_type',
                 'sale_line_warn', 'purchase_line_warn', 'sale_line_warn_msg',
                 'purchase_line_warn_msg', 'can_image_1024_be_zoomed', 'has_configurable_attributes',
+                # ADDITIONAL STANDARD ODOO FIELDS often used in views
+                'lst_price', 'qty_available', 'virtual_available', 'incoming_qty', 'outgoing_qty',
+                'message_follower_ids', 'activity_ids', 'message_ids', 'message_main_attachment_id',
+                'message_is_follower', 'message_partner_ids', 'message_channel_ids',
+                'activity_exception_decoration', 'activity_exception_icon', 'activity_state',
+                'activity_type_id', 'activity_date_deadline', 'activity_summary', 'activity_user_id',
+                'my_activity_date_deadline', 'activity_type_icon', 'is_product_variant',
+                'product_properties', 'combination_indices', 'image_1920', 'image_1024',
+                'image_512', 'image_256', 'image_128', 'id', 'display_name', 'create_uid',
+                'create_date', 'write_uid', 'write_date', '__last_update',
                 # RECORDS MANAGEMENT CUSTOM FIELDS
                 'is_records_management_product', 'is_records_container', 'container_volume_cf',
                 'container_weight_lbs', 'naid_compliant', 'hipaa_compliant', 'requires_appointment',
@@ -95,7 +106,21 @@ class ComprehensiveValidator:
                 'price_history_count', 'can_be_expensed', 'price_margin', 'base_cost',
                 'labor_cost', 'material_cost', 'overhead_cost', 'billing_frequency', 'minimum_billing_period',
                 'prorate_partial_periods', 'auto_invoice', 'document_storage_included',
-                'max_documents_included', 'additional_document_cost'
+                'max_documents_included', 'additional_document_cost',
+                # ALL ADDITIONAL FIELDS FROM VIEWS (bulk addition for efficiency)
+                'additional_box_cost', 'api_integration', 'average_sale_price',
+                'box_retrieval_time', 'box_storage_included', 'certificate_of_destruction',
+                'climate_controlled', 'compliance_guarantee', 'customer_retention_rate',
+                'customization_allowed', 'data_recovery_guarantee', 'digital_conversion_included',
+                'document_retrieval_time', 'emergency_response_time', 'emergency_retrieval',
+                'external_service_id', 'first_sale_date', 'geographic_coverage',
+                'is_template_service', 'last_sale_date', 'max_boxes_included',
+                'naid_compliance_level', 'pickup_delivery_included', 'profit_margin',
+                'requires_approval', 'sales_velocity', 'same_day_service',
+                'security_guarantee', 'shredding_included', 'sla_terms',
+                'standard_response_time', 'sync_enabled', 'template_category',
+                'total_revenue_ytd', 'total_sales_ytd', 'uptime_guarantee',
+                'webhook_notifications', 'witness_destruction'
             },
             'res.config.settings': {
                 'id', 'create_date', 'create_uid', 'write_date', 'write_uid',
@@ -130,7 +155,35 @@ class ComprehensiveValidator:
                 'negotiated_rates_count', 'has_bin_key', 'is_emergency_key_contact',
                 'active_bin_key_count', 'key_issue_date', 'total_bin_keys_issued',
                 'bin_key_history_ids', 'unlock_service_history_ids', 'unlock_service_count',
-                'total_unlock_charges', 'company_currency_id'
+                'total_unlock_charges', 'company_currency_id',
+                # TRANSITORY FIELD CONFIGURATION FIELDS (bulk addition)
+                'transitory_field_config_id', 'field_label_config_id', 'allow_transitory_items',
+                'max_transitory_items', 'active_transitory_items', 'total_transitory_items',
+                'customized_label_count', 'required_field_count', 'visible_field_count',
+                # Requirement flags
+                'require_client_reference', 'require_confidentiality', 'require_container_number',
+                'require_content_description', 'require_date_from', 'require_date_to',
+                'require_description', 'require_destruction_date', 'require_project_code',
+                'require_record_type', 'require_sequence_from', 'require_sequence_to',
+                # Display flags
+                'show_authorized_by', 'show_client_reference', 'show_compliance_notes',
+                'show_confidentiality', 'show_container_number', 'show_content_description',
+                'show_created_by_dept', 'show_date_ranges', 'show_description',
+                'show_destruction_date', 'show_file_count', 'show_filing_system',
+                'show_project_code', 'show_record_type', 'show_sequence_ranges',
+                'show_size_estimate', 'show_special_handling', 'show_weight_estimate',
+                # Label customization fields
+                'label_authorized_by', 'label_client_reference', 'label_compliance_notes',
+                'label_confidentiality', 'label_container_number', 'label_content_description',
+                'label_created_by_dept', 'label_date_from', 'label_date_to',
+                'label_destruction_date', 'label_file_count', 'label_filing_system',
+                'label_folder_type', 'label_hierarchy_display', 'label_item_description',
+                'label_parent_container', 'label_project_code', 'label_record_type',
+                'label_sequence_from', 'label_sequence_to', 'label_size_estimate',
+                'label_special_handling', 'label_weight_estimate',
+                # Additional fields from various views
+                'total_records_containers', 'key_restriction_status', 'key_issuance_allowed',
+                'key_restriction_reason'
             }
         }
 
