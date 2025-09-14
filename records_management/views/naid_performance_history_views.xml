@@ -6,9 +6,9 @@
         <field name="name">naid.performance.history.view.tree</field>
         <field name="model">naid.performance.history</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 

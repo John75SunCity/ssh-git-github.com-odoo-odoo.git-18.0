@@ -6,7 +6,7 @@
         <field name="name">records.survey.user.input.view.list</field>
         <field name="model">records.survey.user.input</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
         <field name="records_partner_id"/>
         <field name="records_service_type"/>
@@ -15,7 +15,7 @@
         <field name="state"/>
         <field name="response_date"/>
         <field name="requires_followup"/>
-        </list>
+        </tree>
     </field>
     </record>
 

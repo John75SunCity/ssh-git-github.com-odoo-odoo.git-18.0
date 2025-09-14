@@ -6,16 +6,16 @@
             <field name="name">records.container.log.view.tree</field>
             <field name="model">records.container.log</field>
         <field name="arch" type="xml">
-                <list string="Records Container Log">
+                <tree string="Records Container Log">
                     <field name="name"/>
                     <field name="display_name"/>
                     <field name="company_id"/>
                     <field name="active"/>
-                    <field name="container_id"/>
+                    <field name="container_ids"/>
                     <field name="event_type"/>
                     <field name="date"/>
                     <field name="user_id"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -31,7 +31,7 @@
                             <field name="display_name"/>
                             <field name="company_id"/>
                             <field name="active"/>
-                            <field name="container_id"/>
+                            <field name="container_ids"/>
                             <field name="event_type"/>
                             <field name="date"/>
                             <field name="user_id"/>

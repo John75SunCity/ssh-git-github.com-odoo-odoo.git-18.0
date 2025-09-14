@@ -6,15 +6,15 @@
             <field name="name">records.destruction.line.view.tree</field>
             <field name="model">records.destruction.line</field>
         <field name="arch" type="xml">
-                <list string="Records Destruction Line">
+                <tree string="Records Destruction Line">
                     <field name="job_id"/>
                     <field name="box_id"/>
-                    <field name="container_id"/>
+                    <field name="container_ids"/>
                     <field name="destruction_date"/>
                     <field name="state"/>
                     <field name="user_id"/>
                     <field name="company_id"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -28,7 +28,7 @@
                         <group>
                             <field name="job_id"/>
                             <field name="box_id"/>
-                            <field name="container_id"/>
+                            <field name="container_ids"/>
                             <field name="destruction_date"/>
                             <field name="state"/>
                             <field name="user_id"/>
@@ -47,7 +47,7 @@
                 <search string="Search Records Destruction Line">
                     <field name="job_id"/>
                     <field name="box_id"/>
-                    <field name="container_id"/>
+                    <field name="container_ids"/>
                     <field name="state"/>
                 </search>
             </field>

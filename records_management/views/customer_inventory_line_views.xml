@@ -5,8 +5,8 @@
         <field name="name">customer.inventory.line.view.tree</field>
         <field name="model">customer.inventory.line</field>
         <field name="arch" type="xml">
-            <list string="Customer Inventory Line">
-        <field name="container_id"/>
+            <tree string="Customer Inventory Line">
+        <field name="container_ids"/>
         <field name="location_id"/>
         <field name="file_count"/>
         <field name="expected_file_count"/>
@@ -18,7 +18,7 @@
         <field name="variance_amount"/>
         <field name="variance_percentage"/>
 
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -30,7 +30,7 @@
                 <sheet>
                     <group>
         <field name="inventory_id"/>
-        <field name="container_id"/>
+        <field name="container_ids"/>
         <field name="location_id"/>
         <field name="file_count"/>
         <field name="expected_file_count"/>

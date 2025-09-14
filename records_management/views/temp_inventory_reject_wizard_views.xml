@@ -6,11 +6,11 @@
         <field name="name">temp.inventory.reject.wizard.view.tree</field>
         <field name="model">temp.inventory.reject.wizard</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="inventory_id"/>
         <field name="rejection_reason"/>
 
-        </list>
+        </tree>
     </field>
     </record>
 

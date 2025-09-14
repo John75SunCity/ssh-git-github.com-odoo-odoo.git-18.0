@@ -42,14 +42,14 @@
         <field name="name">stock.move.sms.validation.view.tree</field>
         <field name="model">stock.move.sms.validation</field>
         <field name="arch" type="xml">
-        <list string="SMS Validations" decoration-success="is_validated == True" decoration-warning="is_validated == False">
+        <tree string="SMS Validations" decoration-success="is_validated == True" decoration-warning="is_validated == False">
         <field name="name"/>
         <field name="picking_id"/>
         <field name="user_id"/>
         <field name="is_validated" widget="boolean_toggle"/>
         <field name="validation_date"/>
         <field name="company_id" groups="base.group_multi_company"/>
-</list>
+</tree>
 </field>
     </record>
 

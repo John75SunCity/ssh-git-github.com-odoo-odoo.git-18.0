@@ -5,7 +5,7 @@
         <field name="name">records.storage.department.user.view.tree</field>
         <field name="model">records.storage.department.user</field>
         <field name="arch" type="xml">
-    <list decoration-success="state=='active'" decoration-muted="state=='inactive'">
+    <tree decoration-success="state=='active'" decoration-muted="state=='inactive'">
         <field name="display_name"/>
         <field name="user_id"/>
         <field name="department_id"/>
@@ -14,7 +14,7 @@
         <field name="end_date"/>
         <field name="state" widget="badge" decoration-success="state=='active'" decoration-muted="state=='inactive'"/>
         <field name="company_id" groups="base.group_multi_company"/>
-    </list>
+    </tree>
 </field>
     </record>
 

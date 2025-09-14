@@ -5,14 +5,14 @@
         <field name="name">certificate.template.data.view.tree</field>
         <field name="model">certificate.template.data</field>
     <field name="arch" type="xml">
-            <list string="Certificate Template Data">
+            <tree string="Certificate Template Data">
                 <field name="name"/>
                 <field name="template_type"/>
                 <field name="template_format"/>
                 <field name="certification_authority"/>
                 <field name="company_id"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 

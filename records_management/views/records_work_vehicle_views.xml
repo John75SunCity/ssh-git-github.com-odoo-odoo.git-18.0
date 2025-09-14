@@ -137,7 +137,7 @@
         <field name="name">fleet.vehicle.list.records.work</field>
         <field name="model">fleet.vehicle</field>
         <field name="arch" type="xml">
-            <list string="Records Work Vehicles" create="true" edit="true" delete="true">
+            <tree string="Records Work Vehicles" create="true" edit="true" delete="true">
                 <field name="name"/>
                 <field name="model_id"/>
                 <field name="license_plate"/>
@@ -147,7 +147,7 @@
                 <field name="max_container_capacity"/>
                 <field name="driver_id"/>
                 <field name="pickup_route_ids" widget="many2many_tags"/>
-            </list>
+            </tree>
         </field>
     </record>
 

@@ -6,17 +6,17 @@
         <field name="name">document.retrieval.item.view.tree</field>
         <field name="model">document.retrieval.item</field>
         <field name="arch" type="xml">
-        <list decoration-danger="priority=='3'" decoration-warning="priority=='2'" decoration-muted="status=='not_found'">
+        <tree decoration-danger="priority=='3'" decoration-warning="priority=='2'" decoration-muted="status=='not_found'">
         <field name="priority" widget="priority" optional="show"/>
         <field name="name"/>
         <field name="item_type"/>
-        <field name="status" decoration-success="status=='delivered'" decoration-info="status=='retrieved'"/>
+        <field name="state" decoration-success="status=='delivered'" decoration-info="status=='retrieved'"/>
         <field name="partner_id" optional="hide"/>
         <field name="work_order_id" optional="hide"/>
         <field name="retrieval_cost" optional="show" sum="Total Cost"/>
         <field name="effective_priority" invisible="1"/>
         <field name="sequence" invisible="1"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -28,7 +28,7 @@
         <form>
             <header>
         <field name="priority" widget="priority" class="oe_read_only"/>
-        <field name="status" widget="statusbar" statusbar_visible="pending,searching,located,retrieved,packaged,delivered"/>
+        <field name="state" widget="statusbar" statusbar_visible="pending,searching,located,retrieved,packaged,delivered"/>
 <button name="action_locate_item" string="Locate Item" type="object" class="btn-primary"
 invisible="status != 'pending'"/>
                 <button name="action_retrieve_item" string="Retrieve Item" type="object" class="btn-primary"
@@ -78,7 +78,7 @@ invisible="status != 'retrieved'"/>
         <field name="name"/>
         <field name="partner_id"/>
         <field name="work_order_id"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="priority"/>
             <separator/>
 <filter name="high_priority" string="High Priority"
@@ -109,7 +109,7 @@ invisible="status != 'retrieved'"/>
         <field name="priority"/>
         <field name="name"/>
         <field name="partner_id"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="effective_priority"/>
             <templates>
 <t t-name="card">

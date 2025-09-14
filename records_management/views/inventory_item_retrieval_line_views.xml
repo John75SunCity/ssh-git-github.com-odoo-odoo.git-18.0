@@ -6,10 +6,10 @@
         <field name="name">inventory.item.retrieval.line.tree</field>
         <field name="model">inventory.item.retrieval.line</field>
     <field name="arch" type="xml">
-            <list decoration-info="state=='pending'"
-                  decoration-success="state=='retrieved'"
-                  decoration-muted="state=='not_found'"
-                  editable="bottom">
+            <tree decoration-info="state=='pending'"
+                    decoration-success="state=='retrieved'"
+                    decoration-muted="state=='not_found'"
+                    editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="retrieval_id"/>
                 <field name="item_id"/>
@@ -19,7 +19,7 @@
                 <field name="retrieval_date"/>
                 <field name="responsible_id"/>
                 <field name="notes"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -99,9 +99,9 @@
 
     <!-- Menu Item -->
     <menuitem id="menu_inventory_item_retrieval_line"
-              name="Retrieval Lines"
-              parent="records_management.menu_inventory"
-              action="inventory_item_retrieval_line_action"
-              sequence="25"/>
+                name="Retrieval Lines"
+                parent="records_management.menu_inventory"
+                action="inventory_item_retrieval_line_action"
+                sequence="25"/>
 
 </odoo>

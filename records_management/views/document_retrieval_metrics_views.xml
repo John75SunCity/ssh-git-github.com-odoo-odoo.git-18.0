@@ -8,7 +8,7 @@
         <field name="name">document.retrieval.metrics.view.tree</field>
         <field name="model">document.retrieval.metrics</field>
         <field name="arch" type="xml">
-        <list string="Retrieval Metrics" default_order="retrieval_date desc">
+        <tree string="Retrieval Metrics" default_order="retrieval_date desc">
         <field name="name"/>
         <field name="metric_type"/>
         <field name="metric_value"/>
@@ -16,7 +16,7 @@
         <field name="performance_rating"/>
         <field name="quality_score"/>
         <field name="retrieval_date"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -58,7 +58,7 @@
                     <page string="Context">
                         <group>
         <field name="employee_id"/>
-        <field name="container_id"/>
+        <field name="container_ids"/>
         <field name="location_id"/>
         <field name="complexity_level"/>
                         </group>

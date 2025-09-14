@@ -6,11 +6,11 @@
         <field name="name">processing.log.resolution.wizard.view.tree</field>
         <field name="model">processing.log.resolution.wizard</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="log_id"/>
         <field name="resolution_notes"/>
 
-</list>
+</tree>
     </field>
     </record>
 

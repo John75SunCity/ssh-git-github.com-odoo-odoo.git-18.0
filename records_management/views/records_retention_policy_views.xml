@@ -5,7 +5,7 @@
         <field name="name">records.retention.policy.view.tree</field>
         <field name="model">records.retention.policy</field>
         <field name="arch" type="xml">
-        <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="is_expired == True" decoration-info="state == 'draft'">
+        <tree decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="is_expired == True" decoration-info="state == 'draft'">
         <field name="sequence" widget="handle"/>
         <field name="name" string="Policy Name"/>
         <field name="code" string="🔢 Code"/>
@@ -18,7 +18,7 @@
         <field name="rule_count" string="Rules" widget="integer"/>
         <field name="active" string="Active"/>
             <button name="action_view_rules" type="object" string="View Rules" icon="fa-list" class="btn-link"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -128,45 +128,45 @@ invisible="state != 'archived'" groups="records_management.group_records_manager
                 <notebook>
                     <page string="Retention Rules" name="rules">
         <field name="rule_ids" mode="list" limit="20">
-                            <list>
+                            <tree>
         <field name="name"/>
         <field name="retention_years"/>
         <field name="destruction_trigger"/>
         <field name="active"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
                     <page string="Documents" name="documents">
         <field name="document_ids" mode="list" limit="20">
-                            <list>
+                            <tree>
         <field name="name"/>
         <field name="reference"/>
         <field name="state"/>
         <field name="received_date"/>
         <field name="destruction_eligible_date"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
                     <page string="Child Policies" name="children">
         <field name="child_policy_ids" mode="list">
-                            <list>
+                            <tree>
         <field name="name"/>
         <field name="code"/>
         <field name="state"/>
         <field name="retention_years"/>
         <field name="document_count"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
                     <page string="Policy Versions" name="versions">
         <field name="version_ids" mode="list">
-                            <list>
+                            <tree>
         <field name="name"/>
         <field name="version"/>
         <field name="state"/>
         <field name="effective_date"/>
         <field name="created_date"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
                     <page string="Tags &amp; Approvers" name="tags">
@@ -185,12 +185,12 @@ invisible="state != 'archived'" groups="records_management.group_records_manager
                             </group>
                             <group string="Audit Log">
         <field name="audit_log_ids" mode="list" limit="10">
-                                    <list>
+                                    <tree>
         <field name="action"/>
         <field name="action_date"/>
         <field name="user_id"/>
         <field name="notes"/>
-                                    </list>
+                                    </tree>
                                 </field>
                             </group>
                         </group>
@@ -327,7 +327,7 @@ invisible="state != 'archived'" groups="records_management.group_records_manager
                                 <div class="col-12">
                                     <span class="badge badge-danger">
 <i class='fa fa-gavel' aria-hidden="true"/>
- Legal Hold
+Legal Hold
                                     </span>
                                 </div>
                             </div>
@@ -335,7 +335,7 @@ invisible="state != 'archived'" groups="records_management.group_records_manager
                                 <div class="col-12">
                                     <span class="badge badge-warning">
 <i class='fa fa-exclamation-triangle' aria-hidden="true"/>
- Expired
+Expired
                                     </span>
                                 </div>
                             </div>

@@ -6,13 +6,13 @@
         <field name="name">inventory.item.view.tree</field>
         <field name="model">inventory.item</field>
     <field name="arch" type="xml">
-            <list string="Inventory Item">
+            <tree string="Inventory Item">
                 <field name="name"/>
                 <field name="product_id"/>
                 <field name="serial_number"/>
                 <field name="location_id"/>
-                <field name="status"/>
-            </list>
+                <field name="state"/>
+            </tree>
         </field>
     </record>
 
@@ -28,7 +28,7 @@
                         <field name="product_id"/>
                         <field name="serial_number"/>
                         <field name="location_id"/>
-                        <field name="status"/>
+                        <field name="state"/>
                         <field name="acquisition_date"/>
                         <field name="notes"/>
                         <field name="active"/>
@@ -46,7 +46,7 @@
     <field name="arch" type="xml">
             <search string="Search Inventory Item">
                 <field name="name"/>
-                <field name="status"/>
+                <field name="state"/>
                 <field name="location_id"/>
             </search>
         </field>

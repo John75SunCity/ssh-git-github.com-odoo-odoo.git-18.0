@@ -6,9 +6,9 @@
         <field name="name">survey.user.input.enhanced.view.tree</field>
         <field name="model">survey.user.input.enhanced</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 

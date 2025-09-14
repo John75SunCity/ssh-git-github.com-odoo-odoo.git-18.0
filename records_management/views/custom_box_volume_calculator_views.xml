@@ -125,7 +125,7 @@
         <field name="name">custom.box.volume.calculator.view.tree</field>
         <field name="model">custom.box.volume.calculator</field>
         <field name="arch" type="xml">
-        <list string="Volume Calculations">
+        <tree string="Volume Calculations">
         <field name="name"/>
         <field name="user_id"/>
         <field name="calculation_date"/>
@@ -135,7 +135,7 @@
         <field name="recommended_container_type"/>
         <field name="custom_box_price"/>
         <field name="fsm_task_id"/>
-</list>
+</tree>
 </field>
     </record>
 
@@ -158,7 +158,7 @@
         <filter string="FSM Quotes" name="fsm_quotes" domain="[('calculation_purpose', '=', 'fsm_quote')]"/>
         <filter string="Customer Quotes" name="customer_quotes" domain="[('calculation_purpose', '=', 'customer_quote')]"/>
         <filter string="Today" name="today" domain="[('calculation_date', '&gt;=', context_today.strftime('%Y-%m-%d 00:00:00')),
-                                     ('calculation_date', '&lt;', context_today.strftime('%Y-%m-%d 23:59:59'))]"/>
+                                    ('calculation_date', '&lt;', context_today.strftime('%Y-%m-%d 23:59:59'))]"/>
         <group expand="0" string="Group By">
             <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
             <filter string="Purpose" name="group_purpose" context="{'group_by': 'calculation_purpose'}"/>

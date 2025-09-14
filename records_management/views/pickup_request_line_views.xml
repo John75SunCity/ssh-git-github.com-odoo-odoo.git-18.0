@@ -6,7 +6,7 @@
         <field name="name">pickup.request.line.view.tree</field>
         <field name="model">pickup.request.line</field>
     <field name="arch" type="xml">
-            <list string="Pickup Request Line">
+            <tree string="Pickup Request Line">
                 request_id
                 container_id
                 item_description
@@ -15,7 +15,7 @@
                 notes
                 company_id
                 active
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -48,7 +48,7 @@
     <field name="arch" type="xml">
             <search string="Search Pickup Request Line">
                 <field name="item_description"/>
-                <field name="container_id"/>
+                <field name="container_ids"/>
                 <field name="request_id"/>
             </search>
         </field>

@@ -6,17 +6,17 @@
         <field name="name">portal.request.line.view.tree</field>
         <field name="model">portal.request.line</field>
     <field name="arch" type="xml">
-            <list string="Portal Request Line">
+            <tree string="Portal Request Line">
                 <field name="request_id"/>
                 <field name="item_type"/>
                 <field name="description"/>
                 <field name="quantity"/>
-                <field name="status"/>
+                <field name="state"/>
                 <field name="sequence"/>
                 <field name="notes"/>
                 <field name="company_id"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -32,7 +32,7 @@
                         <field name="item_type"/>
                         <field name="description"/>
                         <field name="quantity"/>
-                        <field name="status"/>
+                        <field name="state"/>
                         <field name="sequence"/>
                         <field name="notes"/>
                         <field name="company_id"/>
@@ -52,7 +52,7 @@
                 <field name="description"/>
                 <field name="request_id"/>
                 <field name="item_type"/>
-                <field name="status"/>
+                <field name="state"/>
             </search>
         </field>
     </record>

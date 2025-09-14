@@ -6,13 +6,13 @@
         <field name="name">records.permanent.flag.wizard.view.tree</field>
         <field name="model">records.permanent.flag.wizard</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="operation_type"/>
         <field name="document_count"/>
         <field name="state"/>
 
 
-        </list>
+        </tree>
     </field>
     </record>
 

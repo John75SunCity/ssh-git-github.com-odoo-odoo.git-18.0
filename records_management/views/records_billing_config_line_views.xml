@@ -8,7 +8,7 @@
         <field name="name">records.billing.config.line.view.tree</field>
         <field name="model">records.billing.config.line</field>
         <field name="arch" type="xml">
-        <list string="Billing Config Lines" default_order="billing_config_id, service_type">
+        <tree string="Billing Config Lines" default_order="billing_config_id, service_type">
         <field name="name"/>
         <field name="service_type"/>
         <field name="container_type"/>
@@ -17,7 +17,7 @@
         <field name="effective_rate" sum="Total Rate"/>
         <field name="quantity_parameter"/>
         <field name="currency_id" invisible="1"/>
-        </list>
+        </tree>
     </field>
     </record>
 

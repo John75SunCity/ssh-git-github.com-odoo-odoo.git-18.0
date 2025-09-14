@@ -5,7 +5,7 @@
         <field name="name">advanced.billing.contact.view.tree</field>
         <field name="model">advanced.billing.contact</field>
         <field name="arch" type="xml">
-            <list string="Billing Contacts" default_order="sequence">
+            <tree string="Billing Contacts" default_order="sequence">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="email"/>
@@ -14,7 +14,7 @@
                 <field name="primary_contact"/>
                 <field name="preferred_communication"/>
                 <field name="active" invisible="1"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -116,8 +116,8 @@
 
     <!-- Menu item for advanced.billing.contact -->
     <menuitem id="advanced_billing_contact_menu"
-              name="Billing Contacts"
-              parent="records_management.menu_records_billing"
-              action="advanced_billing_contact_action"
-              sequence="25"/>
+                name="Billing Contacts"
+                parent="records_management.menu_records_billing"
+                action="advanced_billing_contact_action"
+                sequence="25"/>
 </odoo>

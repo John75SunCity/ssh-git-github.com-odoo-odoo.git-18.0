@@ -6,12 +6,12 @@
         <field name="name">records.audit.log.view.tree</field>
         <field name="model">records.audit.log</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="description"/>
         <field name="timestamp"/>
         <field name="user_id"/>
         <field name="event_type"/>
-        </list>
+        </tree>
     </field>
     </record>
 

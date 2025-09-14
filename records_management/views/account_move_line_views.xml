@@ -110,16 +110,16 @@ invisible="records_service_type == False"/>
         <!-- Add Records Management indicators -->
         <xpath expr="//div[hasclass('oe_kanban_details')]" position="inside">
             <div class="o_kanban_tags_section"
-                 t-if="record.records_related.raw_value">
+                t-if="record.records_related.raw_value">
                 <span class="badge badge-info">
                     <i class="fa fa-archive" title="Records Management"/> Records Management
                 </span>
                 <span t-if="record.records_service_type.raw_value"
-                      class="badge badge-secondary">
+                        class="badge badge-secondary">
         <field name="records_service_type"/>
                 </span>
                 <span t-if="record.naid_audit_required.raw_value"
-                      class="badge badge-warning">
+                        class="badge badge-warning">
                     <i class="fa fa-certificate"/> NAID Audit
                 </span>
             </div>

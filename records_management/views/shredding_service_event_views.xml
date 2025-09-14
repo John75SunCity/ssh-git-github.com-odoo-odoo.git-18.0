@@ -6,9 +6,9 @@
         <field name="name">shredding.service.event.view.list</field>
         <field name="model">shredding.service.event</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 

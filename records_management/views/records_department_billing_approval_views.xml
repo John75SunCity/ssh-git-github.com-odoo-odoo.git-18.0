@@ -5,7 +5,7 @@
         <field name="name">records.department.billing.approval.view.tree</field>
         <field name="model">records.department.billing.approval</field>
         <field name="arch" type="xml">
-                <list>
+                <tree>
         <field name="billing_contact_id"/>
         <field name="approval_date"/>
         <field name="service_description"/>
@@ -13,7 +13,7 @@
         <field name="charge_amount" widget="monetary"/>
         <field name="currency_id" invisible="1"/>
         <field name="approval_notes"/>
-                </list>
+                </tree>
             </field>
     </record>
 
@@ -165,9 +165,9 @@
 
         <!-- Menu Item -->
     <menuitem id="menu_records_department_billing_approval"
-                  name="Billing Approvals"
-                  parent="records_management.menu_billing"
-                  action="records_department_billing_approval_action"
-                  sequence="20"/>
+                    name="Billing Approvals"
+                    parent="records_management.menu_billing"
+                    action="records_department_billing_approval_action"
+                    sequence="20"/>
 
 </odoo>

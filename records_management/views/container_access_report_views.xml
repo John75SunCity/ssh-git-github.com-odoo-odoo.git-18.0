@@ -6,12 +6,12 @@
         <field name="name">container.access.report.tree</field>
         <field name="model">container.access.report</field>
     <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
                 <field name="activity_id"/>
                 <field name="attachment_id"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -86,9 +86,9 @@
 
     <!-- Menu Item -->
     <menuitem id="menu_container_access_report"
-              name="Access Reports"
-              parent="records_management.menu_container_access"
-              action="container_access_report_action"
-              sequence="20"/>
+                name="Access Reports"
+                parent="records_management.menu_container_access"
+                action="container_access_report_action"
+                sequence="20"/>
 
 </odoo>

@@ -6,15 +6,15 @@
         <field name="name">naid.custody.view.list</field>
         <field name="model">naid.custody</field>
         <field name="arch" type="xml">
-            <list decoration-success="event_type == 'creation'" decoration-info="event_type == 'pickup'" decoration-warning="event_type == 'transfer'" decoration-danger="event_type == 'destruction'">
+            <tree decoration-success="event_type == 'creation'" decoration-info="event_type == 'pickup'" decoration-warning="event_type == 'transfer'" decoration-danger="event_type == 'destruction'">
                 <field name="event_date" widget="datetime"/>
-                <field name="document_id"/>
+                <field name="document_ids"/>
                 <field name="event_type" widget="badge"/>
                 <field name="user_id"/>
                 <field name="location_id" optional="hide"/>
                 <field name="partner_id" optional="hide"/>
                 <field name="notes" optional="show"/>  <!-- Changed from 'description' to 'notes' for consistency with form view -->
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -34,7 +34,7 @@
                         <group string="Event Details">
                             <field name="event_date"/>
                             <field name="event_type"/>
-                            <field name="document_id"/>
+                            <field name="document_ids"/>
                             <field name="user_id"/>
                         </group>
                         <group string="Location &amp; Verification">
@@ -68,7 +68,7 @@
             <kanban default_group_by="event_type" class="o_kanban_custody">
                 <field name="event_date"/>
                 <field name="event_type"/>
-                <field name="document_id"/>
+                <field name="document_ids"/>
                 <field name="user_id"/>
                 <field name="location_id"/>
                 <field name="signature_verified"/>
@@ -85,7 +85,7 @@
                             </div>
                             <div class="o_kanban_card_content" role="group">
                                 <div>
-                                    <i class="fa fa-file-o" title="Document"></i> <field name="document_id"/>
+                                    <i class="fa fa-file-o" title="Document"></i> <field name="document_ids"/>
                                 </div>
                                 <div>
                                     <i class="fa fa-user" title="User"></i> <field name="user_id"/>
@@ -111,7 +111,7 @@
         <field name="arch" type="xml">
             <search string="Search Chain of Custody Events">
                 <field name="notes" string="Event Description"/>  <!-- Changed from 'description' to 'notes' for consistency -->
-                <field name="document_id"/>
+                <field name="document_ids"/>
                 <field name="user_id"/>
                 <field name="location_id"/>
                 <field name="partner_id"/>

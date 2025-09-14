@@ -65,7 +65,7 @@
         <field name="name">portal.request.view.tree</field>
         <field name="model">portal.request</field>
         <field name="arch" type="xml">
-        <list string="Portal Requests" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
+        <tree string="Portal Requests" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
         <field name="name"/>
         <field name="request_type"/>
         <field name="partner_id"/>
@@ -73,7 +73,7 @@
         <field name="priority"/>
         <field name="state"/>
         <field name="assigned_to_id"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -283,11 +283,11 @@
 
 <!-- Enhanced Menu Structure -->
     <menuitem id="portal_request_menu"
-          name="Portal Requests"
-          parent="records_management.menu_records_management_root"
-          action="action_portal_request"
-          sequence="10"
-          groups="records_management.group_records_manager"/>
+            name="Portal Requests"
+            parent="records_management.menu_records_management_root"
+            action="action_portal_request"
+            sequence="10"
+            groups="records_management.group_records_manager"/>
 
 <!-- Additional Menu Items for Better Navigation -->
     <menuitem id="portal_request_draft_menu" name="Draft Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="1" groups="records_management.group_records_user"/>

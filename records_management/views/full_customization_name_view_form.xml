@@ -43,13 +43,13 @@
         <field name="name">full.customization.name.tree</field>
         <field name="model">full.customization.name</field>
         <field name="arch" type="xml">
-        <list string="Customization Configurations">
+        <tree string="Customization Configurations">
         <field name="name"/>
         <field name="user_id"/>
         <field name="company_id"/>
         <field name="create_date"/>
         <field name="active"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -93,9 +93,9 @@
 
 <!-- Menu Item -->
     <menuitem id="full_customization_name_menu"
-          name="Customization Configurations"
-          parent="records_management.menu_records_configuration"
-          action="full_customization_name_action"
-          sequence="50"/>
+            name="Customization Configurations"
+            parent="records_management.menu_records_configuration"
+            action="full_customization_name_action"
+            sequence="50"/>
 
 </odoo>

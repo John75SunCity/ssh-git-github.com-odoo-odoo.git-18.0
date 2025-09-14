@@ -5,16 +5,16 @@
         <field name="name">naid.operator.certification.view.tree</field>
         <field name="model">naid.operator.certification</field>
         <field name="arch" type="xml">
-        <list string="NAID Operator Certifications">
+        <tree string="NAID Operator Certifications">
         <field name="certification_number"/>
         <field name="name"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="certification_date"/>
         <field name="expiry_date"/>
         <field name="training_progress"/>
         <field name="refresher_overdue"/>
         <field name="company_id"/>
-</list>
+</tree>
         </field>
     </record>
 
@@ -28,7 +28,7 @@
 <button name="action_issue_certification" string="Issue Certification" type="object" class="btn-success" invisible="not training_verified"/>
 <button name="action_schedule_refresher" string="Schedule Refresher" type="object" class="btn-warning" invisible="not refresher_training_required"/>
 
-        <field name="status" widget="statusbar"/>
+        <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -69,13 +69,13 @@
                         </page>
                         <page string="Training Schedule">
         <field name="training_schedule_ids">
-        <list>
+        <tree>
         <field name="training_id"/>
         <field name="scheduled_date"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="completed_date"/>
         <field name="instructor_id"/>
-</list>
+</tree>
                             </field>
                         </page>
                         <page string="Related Records">
@@ -107,7 +107,7 @@
             <search string="NAID Operator Certifications">
         <field name="name"/>
         <field name="certification_number"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="company_id"/>
                 <filter string="Certified" name="certified" domain="[('status', '=', 'certified')]"/>
                 <filter string="Expired" name="expired" domain="[('status', '=', 'expired')]"/>
@@ -126,14 +126,14 @@
         <field name="name">naid.training.schedule.view.tree</field>
         <field name="model">naid.training.schedule</field>
         <field name="arch" type="xml">
-        <list string="Training Schedule">
+        <tree string="Training Schedule">
         <field name="certification_id"/>
         <field name="training_id"/>
         <field name="scheduled_date"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="completed_date"/>
         <field name="instructor_id"/>
-</list>
+</tree>
         </field>
     </record>
 
@@ -152,7 +152,7 @@
         <field name="certification_id"/>
         <field name="training_id"/>
         <field name="scheduled_date"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="completed_date"/>
         <field name="instructor_id"/>
         <field name="location"/>
@@ -185,7 +185,7 @@
     <menuitem id="naid_certification_menu" name="NAID Certification" parent="menu_records_management_root" sequence="50"/>
 
     <menuitem id="naid_operator_certification_menu" name="Operator Certifications" parent="naid_certification_menu"
-              action="naid_operator_certification_action" sequence="10"/>
+                action="naid_operator_certification_action" sequence="10"/>
     <menuitem id="naid_training_schedule_menu" name="Training Schedule" parent="naid_certification_menu"
-              action="naid_training_schedule_action" sequence="20"/>
+                action="naid_training_schedule_action" sequence="20"/>
 </odoo>

@@ -6,12 +6,12 @@
         <field name="name">advanced.billing.profile.view.tree</field>
         <field name="model">advanced.billing.profile</field>
         <field name="arch" type="xml">
-            <list string="Billing Profiles">
+            <tree string="Billing Profiles">
         <field name="name"/>
         <field name="partner_id"/>
         <field name="billing_frequency"/>
         <field name="state"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -56,21 +56,21 @@
                         </page>
                         <page string="Contacts">
         <field name="contact_ids">
-                                <list>
+                                <tree>
         <field name="name"/>
         <field name="email"/>
         <field name="phone"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
         <page string="Services">
         <field name="billing_line_ids">
-    <list>
+    <tree>
         <field name="name"/>
         <field name="type"/>
         <field name="amount"/>
         <field name="quantity"/>
-    </list>
+    </tree>
 </field>
                         </page>
                     </notebook>
@@ -84,10 +84,10 @@
         <field name="name">advanced.billing.profile.view.tree</field>
         <field name="model">advanced.billing.profile</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
         <field name="primary_contact_id"/>
-</list>
+</tree>
         </field>
     </record>
 
@@ -115,9 +115,9 @@
 
     <!-- Menu item for advanced.billing.profile -->
     <menuitem id="advanced_billing_profile_menu"
-              name="Billing Profiles"
-              parent="records_management.menu_records_billing"
-              action="advanced_billing_profile_action"
-              sequence="21"/>
+                name="Billing Profiles"
+                parent="records_management.menu_records_billing"
+                action="advanced_billing_profile_action"
+                sequence="21"/>
 
 </odoo>

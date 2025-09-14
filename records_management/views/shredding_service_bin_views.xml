@@ -10,11 +10,11 @@
         <field name="name">shredding.service.bin.view.tree</field>
         <field name="model">shredding.service.bin</field>
         <field name="arch" type="xml">
-        <list string="Shredding Service Bins" decoration-success="status == 'active'"
-              decoration-warning="status == 'maintenance'" decoration-danger="status == 'retired'">
+        <tree string="Shredding Service Bins" decoration-success="status == 'active'"
+                decoration-warning="status == 'maintenance'" decoration-danger="status == 'retired'">
         <field name="barcode"/>
         <field name="bin_size" widget="badge"/>
-        <field name="status" widget="badge"/>
+        <field name="state" widget="badge"/>
         <field name="current_customer_id"/>
         <field name="current_location"/>
         <field name="last_service_date" widget="date"/>
@@ -22,7 +22,7 @@
         <field name="total_weight" sum="Total Weight" widget="float"/>
         <field name="estimated_monthly_revenue" sum="Monthly Revenue" widget="monetary"/>
         <field name="last_scan_date" widget="datetime"/>
-</list>
+</tree>
     </field>
     </record>
 
@@ -47,8 +47,8 @@ class="btn-primary" icon="fa-map-marker" title="Place at Customer"
                 <button name="action_recall_bin" string="Recall Bin" type="object"
 class="btn-secondary" icon="fa-undo" title="Recall Bin"
                         invisible="not current_customer_id"/>
-        <field name="status" widget="statusbar"
-                       statusbar_visible="available,active,maintenance,retired"/>
+        <field name="state" widget="statusbar"
+                        statusbar_visible="available,active,maintenance,retired"/>
             </header>
 
             <sheet>
@@ -121,37 +121,37 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
 
                     <page string="Location History" name="location_history">
         <field name="location_history_ids" readonly="1">
-                            <list string="Location History">
+                            <tree string="Location History">
         <field name="timestamp" widget="datetime"/>
         <field name="location"/>
         <field name="scan_type"/>
         <field name="user_id"/>
         <field name="notes"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
 
                     <page string="Service History" name="service_history">
         <field name="service_history_ids" readonly="1">
-                            <list string="Service History">
+                            <tree string="Service History">
         <field name="service_date" widget="date"/>
         <field name="service_type"/>
         <field name="weight_collected" widget="float"/>
         <field name="technician_id"/>
         <field name="notes"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
 
                     <page string="Work Orders" name="work_orders">
         <field name="work_order_ids" readonly="1">
-                            <list string="Work Orders">
+                            <tree string="Work Orders">
         <field name="name"/>
         <field name="stage_id"/>
         <field name="user_ids" widget="many2many_tags"/>
         <field name="date_deadline" widget="date"/>
         <field name="priority" widget="priority"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
 
@@ -224,7 +224,7 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
         <kanban default_group_by="status" class="o_kanban_small_column">
         <field name="barcode"/>
         <field name="bin_size"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="current_customer_id"/>
         <field name="current_location"/>
         <field name="fill_count"/>

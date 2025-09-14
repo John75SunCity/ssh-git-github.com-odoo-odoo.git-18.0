@@ -8,13 +8,13 @@
         <field name="name">workflow.visualization.manager.view.tree</field>
         <field name="model">workflow.visualization.manager</field>
     <field name="arch" type="xml">
-            <list string="Workflow Visualizations">
+            <tree string="Workflow Visualizations">
                 <field name="name"/>
                 <field name="visualization_type"/>
                 <field name="target_model"/>
                 <field name="active"/>
                 <field name="last_generated"/>
-            </list>
+            </tree>
         </field>
     </record>
 

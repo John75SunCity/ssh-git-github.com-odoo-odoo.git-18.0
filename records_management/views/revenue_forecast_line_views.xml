@@ -6,10 +6,10 @@
         <field name="name">revenue.forecast.line.view.tree</field>
         <field name="model">revenue.forecast.line</field>
         <field name="arch" type="xml">
-        <list string="Revenue Forecast Lines"
-              decoration-success="status=='achieved'"
-              decoration-warning="status=='in_progress'"
-              decoration-danger="status=='missed'">
+        <tree string="Revenue Forecast Lines"
+                decoration-success="status=='achieved'"
+                decoration-warning="status=='in_progress'"
+                decoration-danger="status=='missed'">
         <field name="customer_id"/>
         <field name="service_type"/>
         <field name="period_type"/>
@@ -20,7 +20,7 @@
         <field name="confidence_level"/>
         <field name="state"/>
         <field name="currency_id" invisible="1"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -143,81 +143,81 @@ invisible="status != 'in_progress'"/>
 
 <!-- Revenue Forecasting Menu -->
     <menuitem id="menu_revenue_forecasting"
-          name="Revenue Forecasting"
-          parent="records_management.menu_records_billing"
-          sequence="30"/>
+            name="Revenue Forecasting"
+            parent="records_management.menu_records_billing"
+            sequence="30"/>
 
     <menuitem id="menu_revenue_forecast_lines"
-          name="Forecast Lines"
-          parent="menu_revenue_forecasting"
-          action="action_revenue_forecast_line"
-          sequence="10"/>
+            name="Forecast Lines"
+            parent="menu_revenue_forecasting"
+            action="action_revenue_forecast_line"
+            sequence="10"/>
 
 <!-- Billing Configuration Menu -->
     <menuitem id="menu_billing_configuration"
-          name="Billing Configuration"
-          parent="records_management.menu_records_billing"
-          sequence="40"/>
+            name="Billing Configuration"
+            parent="records_management.menu_records_billing"
+            sequence="40"/>
 
     <menuitem id="menu_billing_config_lines"
-          name="Configuration Lines"
-          parent="menu_billing_configuration"
-          action="action_records_billing_config_line"
-          sequence="10"/>
+            name="Configuration Lines"
+            parent="menu_billing_configuration"
+            action="action_records_billing_config_line"
+            sequence="10"/>
 
     <menuitem id="menu_billing_config_audit"
-          name="Configuration Audit"
-          parent="menu_billing_configuration"
-          action="action_records_billing_config_audit"
-          sequence="20"/>
+            name="Configuration Audit"
+            parent="menu_billing_configuration"
+            action="action_records_billing_config_audit"
+            sequence="20"/>
 
 <!-- FSM Service Management Menu -->
     <menuitem id="menu_fsm_service_management"
-          name="FSM Services"
-          parent="records_management.menu_fsm"
-          sequence="50"/>
+            name="FSM Services"
+            parent="records_management.menu_fsm"
+            sequence="50"/>
 
     <menuitem id="menu_fsm_service_lines"
-          name="Service Lines"
-          parent="menu_fsm_service_management"
-          action="action_fsm_task_service_line"
-          sequence="10"/>
+            name="Service Lines"
+            parent="menu_fsm_service_management"
+            action="action_fsm_task_service_line"
+            sequence="10"/>
 
 <!-- Performance Analytics Menu -->
     <menuitem id="menu_performance_analytics"
-          name="Performance Analytics"
+            name="Performance Analytics"
 parent="menu_records_reporting"
-          sequence="60"/>
+            sequence="60"/>
 
     <menuitem id="menu_document_retrieval_metrics"
-          name="Retrieval Metrics"
-          parent="menu_performance_analytics"
-          action="action_document_retrieval_metrics"
-          sequence="10"/>
+            name="Retrieval Metrics"
+            parent="menu_performance_analytics"
+            action="action_document_retrieval_metrics"
+            sequence="10"/>
 
 <!-- Payment Management Menu -->
     <menuitem id="menu_payment_management"
-          name="Payment Management"
-          parent="records_management.menu_records_billing"
-          sequence="50"/>
+            name="Payment Management"
+            parent="records_management.menu_records_billing"
+            sequence="50"/>
 
     <menuitem id="menu_payment_split_lines"
-          name="Payment Splits"
-          parent="menu_payment_management"
-          action="action_payment_split_line"
-          sequence="10"/>
+            name="Payment Splits"
+            parent="menu_payment_management"
+            action="action_payment_split_line"
+            sequence="10"/>
 
 <!-- Shredding Documentation Menu -->
     <menuitem id="menu_shredding_documentation"
-          name="Shredding Documentation"
-          parent="records_management.menu_shredding"
-          sequence="70"/>
+            name="Shredding Documentation"
+            parent="records_management.menu_shredding"
+            sequence="70"/>
 
     <menuitem id="menu_shredding_service_photos"
-          name="Service Photos"
-          parent="menu_shredding_documentation"
-          action="action_shredding_service_photo"
-          sequence="10"/>
+            name="Service Photos"
+            parent="menu_shredding_documentation"
+            action="action_shredding_service_photo"
+            sequence="10"/>
 
 <!-- Additional Window Actions for Integration -->
 

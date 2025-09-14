@@ -6,9 +6,9 @@
             <field name="name">container.content.view.tree</field>
             <field name="model">container.content</field>
         <field name="arch" type="xml">
-                <list string="Container Content">
+                <tree string="Container Content">
                     <field name="name"/>
-                    <field name="container_id"/>
+                    <field name="container_ids"/>
                     <field name="document_type_id"/>
                     <field name="content_type"/>
                     <field name="state"/>
@@ -16,7 +16,7 @@
                     <field name="document_count"/>
                     <field name="retention_until"/>
                     <field name="is_overdue"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -29,7 +29,7 @@
                     <sheet>
                         <group>
                             <field name="name"/>
-                            <field name="container_id"/>
+                            <field name="container_ids"/>
                             <field name="document_type_id"/>
                             <field name="content_type"/>
                             <field name="state"/>
@@ -56,7 +56,7 @@
         <field name="arch" type="xml">
                 <search string="Search Container Content">
                     <field name="name"/>
-                    <field name="container_id"/>
+                    <field name="container_ids"/>
                     <field name="document_type_id"/>
                     <field name="content_type"/>
                     <field name="state"/>

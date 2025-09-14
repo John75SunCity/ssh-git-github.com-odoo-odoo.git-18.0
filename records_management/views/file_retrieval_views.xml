@@ -6,16 +6,16 @@
         <field name="name">file.retrieval.view.tree</field>
         <field name="model">file.retrieval</field>
         <field name="arch" type="xml">
-            <list string="File Retrieval" decoration-warning="status == 'searching'" decoration-info="status == 'located'" decoration-success="status == 'delivered'">
+            <tree string="File Retrieval" decoration-warning="status == 'searching'" decoration-info="status == 'located'" decoration-success="status == 'delivered'">
         <field name="name"/>
         <field name="requested_file_name"/>
         <field name="partner_id"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="priority"/>
         <field name="user_id"/>
         <field name="discovery_date"/>
         <field name="containers_accessed_count"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -42,12 +42,12 @@ invisible="status != 'pending'"
         <field name="requested_file_name"/>
         <field name="partner_id"/>
         <field name="user_id"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="priority"/>
                         </group>
                         <group name="details">
-        <field name="document_id"/>
-        <field name="container_id"/>
+        <field name="document_ids"/>
+        <field name="container_ids"/>
         <field name="barcode"/>
         <field name="company_id"/>
         <field name="active"/>
@@ -96,8 +96,8 @@ invisible="status != 'pending'"
         <field name="requested_file_name"/>
         <field name="partner_id"/>
         <field name="user_id"/>
-        <field name="container_id"/>
-        <field name="status"/>
+        <field name="container_ids"/>
+        <field name="state"/>
         <field name="priority"/>
                 <filter string="Pending" name="pending" domain="[('status', '=', 'pending')]"/>
                 <filter string="Searching" name="searching" domain="[('status', '=', 'searching')]"/>

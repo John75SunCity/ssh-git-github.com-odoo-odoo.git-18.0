@@ -6,9 +6,9 @@
         <field name="name">required.document.view.tree</field>
         <field name="model">required.document</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 

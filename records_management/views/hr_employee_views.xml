@@ -79,7 +79,7 @@
 </span>
 <span t-if="record.naid_certified.raw_value" class="badge badge-success">
     <i class="fa fa-certificate"/>
- NAID Certified
+NAID Certified
 </span>
 <span t-if="record.records_access_level.raw_value and record.records_access_level.raw_value != 'none'" class="badge badge-primary">
                     Access: <field name="records_access_level"/>

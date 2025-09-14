@@ -6,7 +6,7 @@
         <field name="name">records.billing.rate.view.tree</field>
         <field name="model">records.billing.rate</field>
         <field name="arch" type="xml">
-            <list string="Billing Rates" editable="bottom">
+            <tree string="Billing Rates" editable="bottom">
                 <field name="service_type"/>
                 <field name="rate_type"/>
                 <field name="base_rate"/>
@@ -15,7 +15,7 @@
                 <field name="discount_percentage"/>
                 <field name="effective_date"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 

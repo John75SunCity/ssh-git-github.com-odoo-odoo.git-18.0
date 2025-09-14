@@ -60,7 +60,7 @@
         <field name="name">work.order.dashboard.view.tree</field>
         <field name="model">project.task</field>
         <field name="arch" type="xml">
-        <list string="All Work Orders" create="false" edit="false" decoration-info="stage_id.name=='Draft'" decoration-warning="stage_id.name=='In Progress'" decoration-success="stage_id.name=='Completed'">
+        <tree string="All Work Orders" create="false" edit="false" decoration-info="stage_id.name=='Draft'" decoration-warning="stage_id.name=='In Progress'" decoration-success="stage_id.name=='Completed'">
         <field name="name" string="Work Order"/>
         <field name="project_id" string="Type"/>
         <field name="partner_id" string="Customer"/>
@@ -69,7 +69,7 @@
         <field name="date_deadline" string="Due Date"/>
         <field name="priority" widget="priority"/>
         <field name="company_id" groups="base.group_multi_company"/>
-        </list>
+        </tree>
     </field>
     </record>
 

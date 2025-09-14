@@ -35,11 +35,11 @@
                     <!-- History -->
                     <group string="Restriction History" invisible="key_issuance_allowed == True">
                         <field name="key_restriction_history_ids" nolabel="1" mode="tree">
-                            <list>
+                            <tree>
                                 <field name="action"/>
                                 <field name="reason"/>
                                 <field name="approved_by"/>
-                            </list>
+                            </tree>
                         </field>
                     </group>
                 </page>
@@ -181,7 +181,7 @@
         <field name="name">bin.unlock.service.view.tree</field>
         <field name="model">bin.unlock.service</field>
         <field name="arch" type="xml">
-            <list string="Bin Unlock Services" decoration-success="billable == True and invoice_created == True" decoration-warning="billable == False" decoration-info="completed == True">
+            <tree string="Bin Unlock Services" decoration-success="billable == True and invoice_created == True" decoration-warning="billable == False" decoration-info="completed == True">
                 <field name="service_number"/>
                 <field name="partner_id"/>
                 <field name="service_date"/>
@@ -192,7 +192,7 @@
                 <field name="completed" widget="boolean_toggle"/>
                 <field name="technician_id"/>
                 <field name="invoice_created" widget="boolean_toggle"/>
-            </list>
+            </tree>
         </field>
     </record>
 

@@ -7,18 +7,18 @@
         <field name="name">naid.audit.requirement.view.tree</field>
         <field name="model">naid.audit.requirement</field>
         <field name="arch" type="xml">
-        <list decoration-danger="status == 'overdue'" decoration-warning="status == 'scheduled'" decoration-success="status == 'completed'">
+        <tree decoration-danger="status == 'overdue'" decoration-warning="status == 'scheduled'" decoration-success="status == 'completed'">
         <field name="name"/>
         <field name="audit_type"/>
         <field name="checklist_category"/>
         <field name="frequency_months"/>
         <field name="last_audit_date"/>
         <field name="next_audit_date"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="compliance_score"/>
         <field name="critical_item"/>
         <field name="active"/>
-</list>
+</tree>
         </field>
     </record>
 
@@ -35,7 +35,7 @@
 <button name="action_mark_verified" string="Mark Verified" type="object" class="btn-success" invisible="status == 'completed'"/>
 <button name="create_default_naid_checklist" string="Create Default Checklist" type="object" class="btn-warning" invisible="id"/>
 
-        <field name="status" widget="statusbar"/>
+        <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -99,45 +99,45 @@
                         </page>
                         <page string="Audit History">
         <field name="related_audit_ids">
-                                <list>
+                                <tree>
         <field name="audit_date"/>
         <field name="auditor_id"/>
         <field name="result"/>
         <field name="notes"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Tasks &amp; Events">
                             <group>
                                 <group string="Project Tasks">
         <field name="task_ids">
-                                        <list>
+                                        <tree>
         <field name="name"/>
         <field name="user_ids"/>
         <field name="date_deadline"/>
         <field name="stage_id"/>
-                                        </list>
+                                        </tree>
                                     </field>
                                 </group>
                                 <group string="Calendar Events">
         <field name="calendar_event_ids">
-                                        <list>
+                                        <tree>
         <field name="name"/>
         <field name="start"/>
         <field name="stop"/>
         <field name="partner_ids"/>
-                                        </list>
+                                        </tree>
                                     </field>
                                 </group>
                             </group>
                         </page>
                         <page string="Signature Requests">
         <field name="sign_request_ids">
-                                <list>
+                                <tree>
         <field name="reference"/>
         <field name="request_item_ids"/>
         <field name="state"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                     </notebook>
@@ -160,7 +160,7 @@
         <field name="name"/>
         <field name="audit_type"/>
         <field name="checklist_category"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="critical_item"/>
                 <filter string="Overdue" name="overdue" domain="[('status', '=', 'overdue')]"/>
                 <filter string="Scheduled" name="scheduled" domain="[('status', '=', 'scheduled')]"/>
@@ -185,7 +185,7 @@
             <kanban class="o_kanban_mobile">
         <field name="name"/>
         <field name="audit_type"/>
-        <field name="status"/>
+        <field name="state"/>
         <field name="next_audit_date"/>
         <field name="compliance_score"/>
         <field name="critical_item"/>
@@ -202,7 +202,7 @@
                                     <div class="o_kanban_record_bottom">
                                         <div class="oe_kanban_bottom_left">
                                             <span class="badge" t-attf-class="badge-{{ record.status.raw_value == 'overdue' and 'danger' or record.status.raw_value == 'scheduled' and 'warning' or 'success' }}">
-        <field name="status"/>
+        <field name="state"/>
                                             </span>
         <field name="audit_type"/>
                                         </div>
@@ -210,7 +210,7 @@
         <field name="next_audit_date"/>
                                             <div class="progress" style="width: 60px; height: 8px;">
                                                 <div t-attf-class="progress-bar bg-{{ record.compliance_score.raw_value >= 80 and 'success' or record.compliance_score.raw_value >= 60 and 'warning' or 'danger' }}"
-                                                     t-attf-style="width: {{ record.compliance_score.raw_value }}%">
+                                                    t-attf-style="width: {{ record.compliance_score.raw_value }}%">
                                                 </div>
                                             </div>
                                         </div>

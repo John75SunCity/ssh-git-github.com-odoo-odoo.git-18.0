@@ -43,7 +43,7 @@
                                                     <td>
                                                         <div class="progress" style="width: 100px;">
                                                             <div t-attf-class="progress-bar bg-{{ 'success' if cert.training_progress >= 100 else 'warning' }}"
-                                                                 t-attf-style="width: {{ cert.training_progress }}%">
+                                                                t-attf-style="width: {{ cert.training_progress }}%">
                                                                 <t t-esc="cert.training_progress"/>%
                                                             </div>
                                                         </div>

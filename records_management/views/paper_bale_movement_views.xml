@@ -6,9 +6,9 @@
         <field name="name">paper.bale.movement.view.tree</field>
         <field name="model">paper.bale.movement</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 

@@ -6,13 +6,13 @@
         <field name="name">ir.model.view.tree</field>
         <field name="model">ir.model</field>
     <field name="arch" type="xml">
-            <list string="Model">
+            <tree string="Model">
                 name
                 model
                 state
                 info
                 field_id
-            </list>
+            </tree>
         </field>
     </record>
 

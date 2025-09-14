@@ -6,14 +6,14 @@
         <field name="name">paper.bale.recycling.view.tree</field>
         <field name="model">paper.bale.recycling</field>
         <field name="arch" type="xml">
-            <list string="Paper Bale Recycling" decoration-success="state=='processed'" decoration-info="state=='pending'" decoration-muted="state=='cancelled'">
+            <tree string="Paper Bale Recycling" decoration-success="state=='processed'" decoration-info="state=='pending'" decoration-muted="state=='cancelled'">
                 <field name="name"/>
                 <field name="bale_id"/>
                 <field name="processing_date"/>
                 <field name="bale_weight" sum="Total Weight (kg)"/>
                 <field name="recycling_facility_id"/>
                 <field name="state" widget="badge" decoration-success="state == 'processed'" decoration-info="state == 'pending'"/>
-            </list>
+            </tree>
         </field>
     </record>
 

@@ -6,13 +6,13 @@
         <field name="name">location.group.view.tree</field>
         <field name="model">location.group</field>
         <field name="arch" type="xml">
-            <list string="Location Group">
+            <tree string="Location Group">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="manager_id"/>
                 <field name="company_id"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 

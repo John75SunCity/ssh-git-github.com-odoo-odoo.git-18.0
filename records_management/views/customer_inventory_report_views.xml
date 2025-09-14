@@ -6,7 +6,7 @@
         <field name="name">customer.inventory.report.view.list</field>
         <field name="model">customer.inventory.report</field>
         <field name="arch" type="xml">
-            <list decoration-bf="active==True">
+            <tree decoration-bf="active==True">
         <field name="name"/>
         <field name="partner_id"/>
         <field name="department_id"/>
@@ -16,7 +16,7 @@
         <field name="user_id"/>
         <field name="active" invisible="1"/>
         <field name="company_id" groups="base.group_multi_company"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -56,14 +56,14 @@
                     <notebook>
                         <page string="Report Lines" name="lines">
         <field name="line_ids" mode="tree,form">
-                                <list editable="bottom">
-        <field name="container_id"/>
+                                <tree editable="bottom">
+        <field name="container_ids"/>
         <field name="document_count"/>
         <field name="monthly_storage_cost" widget="monetary"/>
         <field name="line_status"/>
         <field name="billing_status"/>
         <field name="notes"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                     </notebook>
@@ -186,7 +186,7 @@
     <!-- Menu Item -->
     <menuitem id="menu_customer_inventory_report"
 name="Customer Inventory Reports" parent="menu_records_reporting"
-              action="customer_inventory_report_action"
-              sequence="10"/>
+                action="customer_inventory_report_action"
+                sequence="10"/>
 
 </odoo>

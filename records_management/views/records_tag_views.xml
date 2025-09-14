@@ -8,10 +8,10 @@
         <field name="name">records.tag.view.tree</field>
         <field name="model">records.tag</field>
         <field name="arch" type="xml">
-        <list string="Records Tags">
+        <tree string="Records Tags">
         <field name="name"/>
         <field name="color"/>
-        </list>
+        </tree>
     </field>
     </record>
 

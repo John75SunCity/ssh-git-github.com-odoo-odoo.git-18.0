@@ -5,13 +5,13 @@
         <field name="name">description.view.tree</field>
         <field name="model">description</field>
     <field name="arch" type="xml">
-            <list string="Description">
+            <tree string="Description">
                 <field name="name"/>
                 <field name="category"/>
                 <field name="description"/>
                 <field name="active"/>
                 <field name="company_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 

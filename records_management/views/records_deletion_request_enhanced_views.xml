@@ -6,9 +6,9 @@
         <field name="name">records.deletion.request.enhanced.view.tree</field>
         <field name="model">records.deletion.request.enhanced</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="name"/>
-            </list>
+            </tree>
         </field>
     </record>
 

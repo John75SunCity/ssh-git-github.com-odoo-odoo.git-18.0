@@ -76,7 +76,7 @@
         <field name="name">pickup.route.view.tree</field>
         <field name="model">pickup.route</field>
         <field name="arch" type="xml">
-            <list decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'" decoration-danger="priority == 'urgent'">
+            <tree decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'" decoration-danger="priority == 'urgent'">
                 <field name="name"/>
                 <field name="route_date"/>
                 <field name="user_id"/>
@@ -90,7 +90,7 @@
                 <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'"/>
                 <field name="priority" widget="priority"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -159,19 +159,19 @@
                     <notebook>
                         <page string="Pickup Requests" name="pickup_requests">
                             <field name="pickup_request_ids">
-                                <list decoration-info="state == 'confirmed'" decoration-success="state == 'completed'" decoration-warning="priority == 'high'">
+                                <tree decoration-info="state == 'confirmed'" decoration-success="state == 'completed'" decoration-warning="priority == 'high'">
                                     <field name="name"/>
                                     <field name="partner_id"/>
                                     <field name="pickup_address"/>
                                     <field name="container_count"/>
                                     <field name="priority" widget="priority"/>
                                     <field name="state" widget="badge"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Route Stops" name="route_stops">
                             <field name="route_stop_ids">
-                                <list editable="bottom">
+                                <tree editable="bottom">
                                     <field name="sequence" widget="handle"/>
                                     <field name="pickup_request_id"/>
                                     <field name="partner_id"/>
@@ -179,7 +179,7 @@
                                     <field name="planned_arrival"/>
                                     <field name="actual_arrival"/>
                                     <field name="completion_status"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Performance &amp; Analytics" name="analytics">

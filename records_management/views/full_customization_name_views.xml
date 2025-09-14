@@ -4,11 +4,11 @@
 
     This XML file defines the user interface for the "Customization Configurations" feature in the Records Management module.
     It includes:
-      - List view for listing customization records
-      - Form view for editing/creating a customization
-      - Search view with filters and group by options
-      - Window action for launching the UI
-      - Menu item integration under the Records Management configuration menu
+        - List view for listing customization records
+        - Form view for editing/creating a customization
+        - Search view with filters and group by options
+        - Window action for launching the UI
+        - Menu item integration under the Records Management configuration menu
 
     All fields referenced here must exist in the full.customization.name model.
 -->
@@ -19,13 +19,13 @@
         <field name="name">full.customization.name.tree</field>
         <field name="model">full.customization.name</field>
     <field name="arch" type="xml">
-            <list string="Customization Configurations">
+            <tree string="Customization Configurations">
                 <field name="name"/>
                 <field name="user_id"/>
                 <field name="company_id"/>
                 <field name="create_date"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -106,9 +106,9 @@
 
     <!-- Menu Item -->
     <menuitem id="full_customization_name_menu"
-              name="Customization Configurations"
-              parent="records_management.menu_records_configuration"
-              action="full_customization_name_action"
-              sequence="50"/>
+                name="Customization Configurations"
+                parent="records_management.menu_records_configuration"
+                action="full_customization_name_action"
+                sequence="50"/>
 
 </odoo>

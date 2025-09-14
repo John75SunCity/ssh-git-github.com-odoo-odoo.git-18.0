@@ -6,13 +6,13 @@
         <field name="name">container.access.document.view.tree</field>
         <field name="model">container.access.document</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
         <field name="name"/>
         <field name="activity_id"/>
         <field name="attachment_id"/>
         <field name="description"/>
         <field name="company_id" groups="base.group_multi_company"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -135,9 +135,9 @@
 
     <!-- Menu Item -->
     <menuitem id="menu_container_access_document"
-              name="Access Documents"
-              parent="records_management.menu_container_access"
-              action="container_access_document_action"
-              sequence="15"/>
+                name="Access Documents"
+                parent="records_management.menu_container_access"
+                action="container_access_document_action"
+                sequence="15"/>
 
 </odoo>

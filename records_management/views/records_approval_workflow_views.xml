@@ -6,9 +6,9 @@
         <field name="name">records.approval.workflow.view.tree</field>
         <field name="model">records.approval.workflow</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 

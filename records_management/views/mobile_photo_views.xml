@@ -6,9 +6,9 @@
         <field name="name">mobile.photo.view.tree</field>
         <field name="model">mobile.photo</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-</list>
+</tree>
     </field>
     </record>
 

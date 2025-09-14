@@ -6,9 +6,9 @@
         <field name="name">visitor.view.tree</field>
         <field name="model">visitor</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 

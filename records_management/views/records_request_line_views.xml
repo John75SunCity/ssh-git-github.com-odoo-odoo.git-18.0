@@ -5,19 +5,19 @@
         <field name="name">records.request.line.view.tree</field>
         <field name="model">records.request.line</field>
         <field name="arch" type="xml">
-        <list decoration-info="state=='draft'"
-              decoration-warning="state=='in_progress'"
-              decoration-success="state=='done'"
-              decoration-muted="state=='cancelled'">
+        <tree decoration-info="state=='draft'"
+                decoration-warning="state=='in_progress'"
+                decoration-success="state=='done'"
+                decoration-muted="state=='cancelled'">
         <field name="request_id"/>
         <field name="partner_id"/>
-        <field name="document_id"/>
+        <field name="document_ids"/>
         <field name="box_id"/>
-        <field name="container_id"/>
+        <field name="container_ids"/>
         <field name="request_type_id"/>
         <field name="state" widget="badge"/>
         <field name="company_id" groups="base.group_multi_company"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -36,9 +36,9 @@
         <field name="state"/>
                     </group>
                     <group name="item_info">
-        <field name="document_id"/>
+        <field name="document_ids"/>
         <field name="box_id"/>
-        <field name="container_id"/>
+        <field name="container_ids"/>
         <field name="company_id" groups="base.group_multi_company"/>
                     </group>
                 </group>
@@ -59,8 +59,8 @@
         <search>
         <field name="request_id"/>
         <field name="partner_id"/>
-        <field name="document_id"/>
-        <field name="container_id"/>
+        <field name="document_ids"/>
+        <field name="container_ids"/>
         <field name="box_id"/>
 
             <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
@@ -97,8 +97,8 @@
 
 <!-- Menu Item -->
     <menuitem id="menu_records_request_line"
-          name="Request Lines"
-          parent="records_management.menu_records_main"
-          action="records_request_line_action"
-          sequence="25"/>
+            name="Request Lines"
+            parent="records_management.menu_records_main"
+            action="records_request_line_action"
+            sequence="25"/>
 </odoo>

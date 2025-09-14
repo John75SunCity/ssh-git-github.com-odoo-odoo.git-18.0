@@ -6,7 +6,7 @@
         <field name="name">records.billing.view.tree</field>
         <field name="model">records.billing</field>
         <field name="arch" type="xml">
-            <list string="Billing Records" default_order="date desc">
+            <tree string="Billing Records" default_order="date desc">
                 <field name="name"/>
                 <field name="date"/>
                 <field name="partner_id"/>
@@ -14,7 +14,7 @@
                 <field name="currency_id"/>
                 <field name="state"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -56,12 +56,12 @@ class="btn-danger" invisible="state in ['paid', 'cancelled']"/>
                     <notebook>
                         <page string="Billing Lines">
                             <field name="billing_line_ids">
-                                <list>
+                                <tree>
                                     <field name="name"/>
                                     <field name="amount"/>
                                     <field name="currency_id"/>
                                     <field name="billing_profile_id"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Invoice">
@@ -121,9 +121,9 @@ class="btn-danger" invisible="state in ['paid', 'cancelled']"/>
 
     <!-- Menu item for records.billing -->
     <menuitem id="records_billing_menu"
-              name="Billing Records"
-              parent="records_management.menu_records_billing"
-              action="records_billing_action"
-              sequence="10"/>
+                name="Billing Records"
+                parent="records_management.menu_records_billing"
+                action="records_billing_action"
+                sequence="10"/>
 
 </odoo>

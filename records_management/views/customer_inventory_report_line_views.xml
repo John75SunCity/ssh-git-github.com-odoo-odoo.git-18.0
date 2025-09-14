@@ -5,9 +5,9 @@
         <field name="name">customer.inventory.report.line.view.tree</field>
         <field name="model">customer.inventory.report.line</field>
     <field name="arch" type="xml">
-            <list string="Customer Inventory Report Line">
+            <tree string="Customer Inventory Report Line">
                 <field name="name"/>
-                <field name="container_id"/>
+                <field name="container_ids"/>
                 <field name="container_type"/>
                 <field name="container_barcode"/>
                 <field name="container_volume_cf"/>
@@ -20,7 +20,7 @@
                 <field name="report_date"/>
                 <field name="retention_date"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -32,7 +32,7 @@
                 <sheet>
                     <group>
                         <field name="name"/>
-                        <field name="container_id"/>
+                        <field name="container_ids"/>
                         <field name="container_type"/>
                         <field name="container_barcode"/>
                         <field name="container_volume_cf"/>

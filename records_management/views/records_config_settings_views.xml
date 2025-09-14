@@ -9,9 +9,9 @@
                     <header>
                         <!-- Action buttons removed - methods don't exist in res.config.settings model -->
                         <!-- TODO: Implement these methods if needed:
-                             - action_test_notification_settings
-                             - action_run_compliance_audit
-                             - action_reset_all_settings -->
+                            - action_test_notification_settings
+                            - action_run_compliance_audit
+                            - action_reset_all_settings -->
                     </header>
 
                     <sheet>
@@ -626,10 +626,10 @@
 
         <!-- Menu for Records Configuration -->
         <menuitem id="menu_records_config_settings"
-                  name="Settings"
-                  parent="menu_records_configuration"
-                  action="action_records_config_settings"
-                  sequence="1"
-                  groups="records_management.group_records_manager"/>
+                    name="Settings"
+                    parent="menu_records_configuration"
+                    action="action_records_config_settings"
+                    sequence="1"
+                    groups="records_management.group_records_manager"/>
 
 </odoo>

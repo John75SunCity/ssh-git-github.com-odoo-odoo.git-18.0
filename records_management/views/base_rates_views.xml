@@ -49,7 +49,7 @@
         <field name="name">base.rates.view.tree</field>
         <field name="model">base.rates</field>
         <field name="arch" type="xml">
-            <list string="Base Rates">
+            <tree string="Base Rates">
         <field name="name"/>
         <field name="rate_type"/>
         <field name="base_rate"/>
@@ -58,7 +58,7 @@
         <field name="effective_date"/>
         <field name="expiry_date"/>
         <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -101,9 +101,9 @@
 
     <!-- Menu Item -->
     <menuitem id="base_rates_menu"
-              name="Base Rates"
-              parent="records_management.menu_records_configuration"
-              action="base_rates_action"
-              sequence="30"/>
+                name="Base Rates"
+                parent="records_management.menu_records_configuration"
+                action="base_rates_action"
+                sequence="30"/>
 
 </odoo>

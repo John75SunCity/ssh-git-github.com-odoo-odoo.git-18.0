@@ -5,13 +5,13 @@
         <field name="name">records.storage.box.view.tree</field>
         <field name="model">records.storage.box</field>
         <field name="arch" type="xml">
-            <list string="Storage Boxes">
+            <tree string="Storage Boxes">
                 <field name="name"/>
                 <field name="box_size"/>
                 <field name="location_id"/>
                 <field name="state"/>
                 <field name="document_count"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -87,9 +87,9 @@
 
     <!-- Menu -->
     <menuitem id="records_storage_box_menu"
-              name="Storage Boxes"
-              parent="records_management.menu_records_inventory"
-              action="records_storage_box_action"
-              sequence="20"/>
+                name="Storage Boxes"
+                parent="records_management.menu_records_inventory"
+                action="records_storage_box_action"
+                sequence="20"/>
 
 </odoo>

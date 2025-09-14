@@ -6,15 +6,15 @@
         <field name="name">key.inventory.view.tree</field>
         <field name="model">key.inventory</field>
     <field name="arch" type="xml">
-            <list string="Key Inventory">
+            <tree string="Key Inventory">
                 <field name="name"/>
                 <field name="serial_number"/>
                 <field name="location_id"/>
                 <field name="assigned_to_id"/>
-                <field name="status"/>
+                <field name="state"/>
                 <field name="active"/>
                 <field name="company_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -30,7 +30,7 @@
                         <field name="serial_number"/>
                         <field name="location_id"/>
                         <field name="assigned_to_id"/>
-                        <field name="status"/>
+                        <field name="state"/>
                         <field name="active"/>
                         <field name="company_id"/>
                         <field name="notes"/>
@@ -48,7 +48,7 @@
             <search string="Search Key Inventory">
                 <field name="name"/>
                 <field name="serial_number"/>
-                <field name="status"/>
+                <field name="state"/>
             </search>
         </field>
     </record>

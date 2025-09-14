@@ -3,11 +3,11 @@
 
     This XML file defines the Odoo views and actions for the `inventory.item.location.transfer` model
     in the Records Management module. It includes:
-      - List view for listing transfers
-      - Form view for editing/creating transfers
-      - Search view for filtering transfers
-      - Window action for accessing the model
-      - (Commented) menu item for navigation
+        - List view for listing transfers
+        - Form view for editing/creating transfers
+        - Search view for filtering transfers
+        - Window action for accessing the model
+        - (Commented) menu item for navigation
 
     All fields referenced in the views must exist in the corresponding model.
     Follows Odoo view and action definition standards.
@@ -19,7 +19,7 @@
         <field name="name">inventory.item.location.transfer.view.tree</field>
         <field name="model">inventory.item.location.transfer</field>
     <field name="arch" type="xml">
-            <list string="Inventory Item Location Transfer">
+            <tree string="Inventory Item Location Transfer">
                 <field name="name"/>
                 <field name="item_id"/>
                 <field name="from_location_id"/>
@@ -29,7 +29,7 @@
                 <field name="notes"/>
                 <field name="active"/>
                 <field name="company_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -89,10 +89,10 @@
 
     <!-- Menu (optional - provide a real parent ID when enabling)
     <menuitem id="menu_inventory_item_location_transfer"
-              name="Inventory Item Location Transfer"
-              parent="REPLACE_WITH_PARENT_MENU_ID"
-              action="action_inventory_item_location_transfer"
-              sequence="10"/>
+                name="Inventory Item Location Transfer"
+                parent="REPLACE_WITH_PARENT_MENU_ID"
+                action="action_inventory_item_location_transfer"
+                sequence="10"/>
     -->
 
 </odoo>

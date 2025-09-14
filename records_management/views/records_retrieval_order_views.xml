@@ -7,7 +7,7 @@
         <field name="name">records.retrieval.order.view.tree</field>
         <field name="model">records.retrieval.order</field>
         <field name="arch" type="xml">
-        <list string="Retrieval Orders" decoration-warning="sla_elapsed_pct &gt;= 80 and state not in ['completed','cancelled']" decoration-danger="sla_breached and state not in ['completed','cancelled']" decoration-success="state == 'completed'">
+        <tree string="Retrieval Orders" decoration-warning="sla_elapsed_pct &gt;= 80 and state not in ['completed','cancelled']" decoration-danger="sla_breached and state not in ['completed','cancelled']" decoration-success="state == 'completed'">
         <field name="name"/>
         <field name="partner_id"/>
         <field name="priority" widget="badge"/>
@@ -21,7 +21,7 @@
         <field name="scheduled_date" optional="show"/>
         <field name="estimated_completion_date" optional="show"/>
         <field name="user_id" optional="show"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -94,11 +94,11 @@
                 <notebook>
                     <page string="Lines" name="lines">
         <field name="line_ids" context="{'default_order_id': active_id}" mode="tree,form" colspan="4">
-                            <list editable="bottom" decoration-success="status in ['delivered','completed']" decoration-danger="status == 'not_found'" decoration-warning="status == 'pending'">
+                            <tree editable="bottom" decoration-success="status in ['delivered','completed']" decoration-danger="status == 'not_found'" decoration-warning="status == 'pending'">
         <field name="name"/>
         <field name="item_type"/>
         <field name="file_name"/>
-        <field name="container_id" optional="show"/>
+        <field name="container_ids" optional="show"/>
         <field name="location_id" optional="show"/>
         <field name="state" widget="badge"/>
         <field name="priority" widget="badge" optional="show"/>
@@ -107,14 +107,14 @@
         <field name="retrieved_by_id" optional="show"/>
         <field name="date_retrieved" optional="show"/>
         <field name="date_delivered" optional="show"/>
-                            </list>
+                            </tree>
                             <form string="Retrieval Line">
                                 <group>
         <field name="name"/>
         <field name="item_type"/>
         <field name="file_name"/>
         <field name="file_description" optional="show"/>
-        <field name="container_id" optional="show"/>
+        <field name="container_ids" optional="show"/>
         <field name="location_id" readonly="1" optional="show"/>
         <field name="barcode" optional="show"/>
         <field name="estimated_pages" optional="show"/>

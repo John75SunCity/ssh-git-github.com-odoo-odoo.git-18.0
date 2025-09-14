@@ -54,7 +54,7 @@
 <i class="fa fa-weight" title="Weight" aria-label="Weight" role="img"/>
 
         <field name="weight"/>
- lbs
+lbs
                                     </div>
                                     <div>
 <i class="fa fa-map-marker" title="Storage Location" aria-label="Storage Location" role="img"/>
@@ -77,13 +77,13 @@
                                 <div class="col-6">
                                     <button class="btn btn-primary btn-sm" type="object" name="action_view_documents">
 <i class="fas fa-file-text-o" title="View Documents" aria-hidden="true"/>
- Documents
+Documents
                                     </button>
                                 </div>
                                 <div class="col-6">
                                     <button class="btn btn-info btn-sm" type="object" name="action_generate_barcode">
 <i class="fas fa-barcode" title="Generate Barcode" aria-hidden="true"/>
- Barcode
+Barcode
                                     </button>
                                 </div>
                             </div>
@@ -91,7 +91,7 @@
                                 <div class="col-12">
                                     <button class="btn btn-success btn-sm" type="object" name="action_generate_qr_code">
 <i class="fas fa-qrcode" title="Generate QR Code" aria-hidden="true"/>
- QR Code
+QR Code
                                     </button>
                                 </div>
                             </div>
@@ -99,23 +99,23 @@
                         <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
 <a role="menuitem" type="edit" class="dropdown-item">
 <i class="fas fa-edit" title="Edit Container" aria-hidden="true"/>
- Edit Container</a>
+Edit Container</a>
 <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">
 <i class="fas fa-file-text-o" title="View Documents" aria-hidden="true"/>
- View Documents</a>
+View Documents</a>
 <a role="menuitem" type="object" name="action_retrieve_container" class="dropdown-item">
 <i class="fas fa-map-marker" title="Retrieve Container" aria-hidden="true"/>
- Retrieve Container</a>
+Retrieve Container</a>
 <a role="menuitem" type="object" name="action_generate_barcode" class="dropdown-item">
 <i class="fas fa-barcode" title="Print Barcode" aria-hidden="true"/>
- Print Barcode</a>
+Print Barcode</a>
 <a role="menuitem" type="object" name="action_generate_qr_code" class="dropdown-item">
 <i class="fas fa-qrcode" title="Generate QR Code" aria-hidden="true"/>
- Generate QR Code</a>
+Generate QR Code</a>
                             <div class="dropdown-divider"/>
 <a role="menuitem" type="object" name="action_destroy" class="dropdown-item">
 <i class="fas fa-trash" title="Destroy Container"/>
- Destroy Container</a>
+Destroy Container</a>
                         </div>
                     </div>
                 </t>
@@ -129,7 +129,7 @@
         <field name="name">records.container.view.tree</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-        <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
+        <tree decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
             <header>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
@@ -151,7 +151,7 @@
             <button name="action_view_documents" type="object" string="View Docs" icon="fas fa-file-text-o" class="btn-link"/>
             <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fas fa-barcode" class="btn-link"/>
             <button name="action_generate_qr_code" type="object" string="QR Code" icon="fas fa-qrcode" class="btn-link"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -227,12 +227,12 @@
                 <notebook>
                     <page string="Documents" name="documents">
         <field name="document_ids" mode="tree,form" context="{'default_container_id': id}">
-                            <list string="Documents">
+                            <tree string="Documents">
         <field name="name"/>
         <field name="document_type_id"/>
         <field name="state"/>
         <field name="create_date"/>
-                            </list>
+                            </tree>
                             <form string="Document">
                                 <group>
         <field name="name"/>

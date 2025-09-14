@@ -6,15 +6,15 @@
         <field name="name">shredding.inventory.item.view.tree</field>
         <field name="model">shredding.inventory.item</field>
     <field name="arch" type="xml">
-            <list string="Shredding Inventory Items">
+            <tree string="Shredding Inventory Items">
                 <field name="display_name"/>
-                <field name="container_id"/>
-                <field name="document_id"/>
+                <field name="container_ids"/>
+                <field name="document_ids"/>
                 <field name="current_location_id"/>
-                <field name="status"/>
+                <field name="state"/>
                 <field name="total_cost"/>
                 <field name="work_order_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -27,15 +27,15 @@
                     <button name="action_approve_item" type="object" string="Approve for Destruction" class="oe_highlight" invisible="status != 'draft'"/>
                     <button name="action_mark_retrieved" type="object" string="Mark Retrieved" invisible="status != 'pending_pickup'"/>
                     <button name="action_mark_destroyed" type="object" string="Mark Destroyed" invisible="status != 'retrieved'"/>
-                    <field name="status" widget="statusbar"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="work_order_id"/>
                             <field name="sequence"/>
-                            <field name="container_id" invisible="document_id"/>
-                            <field name="document_id" invisible="container_id"/>
+                            <field name="container_ids" invisible="document_id"/>
+                            <field name="document_ids" invisible="container_id"/>
                         </group>
                         <group>
                             <field name="current_location_id"/>
@@ -96,18 +96,18 @@
         <field name="name">shredding.picklist.item.view.tree</field>
         <field name="model">shredding.picklist.item</field>
     <field name="arch" type="xml">
-            <list string="Picklist Items" editable="bottom">
+            <tree string="Picklist Items" editable="bottom">
                 <field name="display_name"/>
-                <field name="container_id"/>
-                <field name="document_id"/>
+                <field name="container_ids"/>
+                <field name="document_ids"/>
                 <field name="location_id"/>
-                <field name="status"/>
+                <field name="state"/>
                 <field name="picked_by"/>
                 <field name="picked_date"/>
                 <field name="notes"/>
                 <button name="action_mark_picked" type="object" string="Mark Picked" icon="fa-check" invisible="status != 'pending_pickup'"/>
                 <button name="action_mark_not_found" type="object" string="Not Found" icon="fa-exclamation-triangle" invisible="status != 'pending_pickup'"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -119,15 +119,15 @@
                 <header>
                     <button name="action_mark_picked" type="object" string="Mark Picked" class="oe_highlight" invisible="status != 'pending_pickup'"/>
                     <button name="action_mark_not_found" type="object" string="Mark Not Found" invisible="status != 'pending_pickup'"/>
-                    <field name="status" widget="statusbar"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="work_order_id"/>
                             <field name="sequence"/>
-                            <field name="container_id" invisible="document_id"/>
-                            <field name="document_id" invisible="container_id"/>
+                            <field name="container_ids" invisible="document_id"/>
+                            <field name="document_ids" invisible="container_id"/>
                             <field name="location_id"/>
                         </group>
                         <group>

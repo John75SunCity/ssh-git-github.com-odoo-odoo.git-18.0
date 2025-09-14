@@ -3,11 +3,11 @@
 
     This XML file defines the Odoo views for the `container.access.activity` model in the Records Management module.
     It includes:
-      - List view for listing container access activities
-      - Form view for detailed activity entry and editing
-      - Search view for filtering and searching activities
-      - Window action for launching the model views
-      - (Commented) menu item for navigation integration
+        - List view for listing container access activities
+        - Form view for detailed activity entry and editing
+        - Search view for filtering and searching activities
+        - Window action for launching the model views
+        - (Commented) menu item for navigation integration
 
     Fields covered include visitor, container, work order, authorization, timing, location, barcode, description, and issue tracking.
 -->
@@ -18,16 +18,16 @@
         <field name="name">container.access.activity.view.tree</field>
         <field name="model">container.access.activity</field>
     <field name="arch" type="xml">
-            <list string="Container Access Activity" decoration-info="status == 'in_progress'" decoration-success="status == 'completed'">
+            <tree string="Container Access Activity" decoration-info="status == 'in_progress'" decoration-success="status == 'completed'">
                 <field name="name"/>
                 <field name="visitor_id"/>
-                <field name="container_id"/>
+                <field name="container_ids"/>
                 <field name="partner_id"/>
                 <field name="activity_time"/>
                 <field name="description"/>
-                <field name="status"/>
+                <field name="state"/>
                 <field name="authorized_by_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -47,9 +47,9 @@
                         <group name="basic_info">
                             <field name="name"/>
                             <field name="visitor_id"/>
-                            <field name="container_id"/>
+                            <field name="container_ids"/>
                             <field name="work_order_id"/>
-                            <field name="status"/>
+                            <field name="state"/>
                         </group>
                         <group name="authorization">
                             <field name="authorized_by_id"/>

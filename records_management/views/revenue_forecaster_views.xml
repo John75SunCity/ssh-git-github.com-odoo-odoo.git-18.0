@@ -6,9 +6,9 @@
         <field name="name">revenue.forecaster.view.tree</field>
         <field name="model">revenue.forecaster</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 

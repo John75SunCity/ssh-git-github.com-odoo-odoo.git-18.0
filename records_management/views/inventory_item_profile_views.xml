@@ -6,14 +6,14 @@
         <field name="name">inventory.item.profile.view.tree</field>
         <field name="model">inventory.item.profile</field>
     <field name="arch" type="xml">
-            <list string="Inventory Item Profile">
+            <tree string="Inventory Item Profile">
                 <field name="name"/>
                 <field name="item_type"/>
                 <field name="default_location_id"/>
                 <field name="retention_period"/>
                 <field name="active"/>
                 <field name="company_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 

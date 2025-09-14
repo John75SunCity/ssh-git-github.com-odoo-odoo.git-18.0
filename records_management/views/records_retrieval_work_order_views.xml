@@ -8,13 +8,13 @@
         <field name="name">records.retrieval.work.order.view.tree</field>
         <field name="model">records.retrieval.work.order</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
         <field name="name"/>
         <field name="equipment_id"/>
         <field name="state"/>
         <field name="requested_by"/>
         <field name="date_requested"/>
-            </list>
+            </tree>
         </field>
     </record>
 

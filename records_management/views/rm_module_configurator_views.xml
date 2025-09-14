@@ -214,11 +214,11 @@
         <span class="badge badge-pill" t-att-class="record.active.raw_value ? 'badge-success' : 'badge-secondary'">
             <t t-if="record.active.raw_value">
 <i class="fa fa-check-circle" title="Active Status"/>
- Active
+Active
 </t>
 <t t-else="">
 <i class="fa fa-pause" title="Inactive Status"/>
- Inactive
+Inactive
 </t>
 </span>
 <span class="badge badge-pill badge-info" t-if="record.value_boolean.raw_value">Enabled</span>
@@ -269,12 +269,12 @@
         <field name="help" type="html">
 <p class="o_view_nocontent_smiling_face">
 <i class="fa fa-cog" title="Configuration Settings"/>
- Welcome to the Records Management Configurator!
+Welcome to the Records Management Configurator!
 </p>
 <p>
 <b>
 <i class="fa fa-bullseye" title="Target Configuration"/>
- Centralized Configuration Management:</b>
+Centralized Configuration Management:</b>
 <br/>
                 •<i class="fa fa-wrench" title="Tools"/>
 <b>Feature Toggles:</b> Enable/disable optional functionality across the system<br/>
@@ -298,7 +298,7 @@
 <p>
 <i>
 <i class="fa fa-rocket" title="Launch"/>
- This centralized configurator ensures consistent system behavior and provides granular control over all Records Management features.</i>
+This centralized configurator ensures consistent system behavior and provides granular control over all Records Management features.</i>
 </p>
 </field>
 </record>

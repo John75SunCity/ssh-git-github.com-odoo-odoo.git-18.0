@@ -6,12 +6,12 @@
         <field name="name">pickup.schedule.wizard.view.tree</field>
         <field name="model">pickup.schedule.wizard</field>
         <field name="arch" type="xml">
-    <list>
+    <tree>
         <field name="partner_id"/>
         <field name="scheduled_date"/>
         <field name="technician_id"/>
 
-</list>
+</tree>
 </field>
     </record>
 

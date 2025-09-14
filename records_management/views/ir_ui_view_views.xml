@@ -4,11 +4,11 @@ ir_ui_view_views.xml
 
 This file defines the Odoo views for the ir.ui.view model within the Records Management module.
 It includes:
-  - List view for listing views
-  - Form view for editing individual views
-  - Search view for filtering views
-  - Window action for accessing the views
-  - (Commented) menu item for integration into the module's menu structure
+    - List view for listing views
+    - Form view for editing individual views
+    - Search view for filtering views
+    - Window action for accessing the views
+    - (Commented) menu item for integration into the module's menu structure
 
 These definitions allow administrators to manage Odoo view records directly from the UI.
 -->
@@ -19,13 +19,13 @@ These definitions allow administrators to manage Odoo view records directly from
         <field name="name">ir.ui.view.view.tree</field>
         <field name="model">ir.ui.view</field>
     <field name="arch" type="xml">
-            <list string="View">
+            <tree string="View">
                 <field name="name"/>
                 <field name="model"/>
                 <field name="priority"/>
                 <field name="active"/>
                 <field name="type"/>
-            </list>
+            </tree>
         </field>
     </record>
 

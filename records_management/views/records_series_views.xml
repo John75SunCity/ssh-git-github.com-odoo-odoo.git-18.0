@@ -5,13 +5,13 @@
         <field name="name">records.series.view.tree</field>
         <field name="model">records.series</field>
         <field name="arch" type="xml">
-        <list string="Records Series">
+        <tree string="Records Series">
         <field name="name"/>
         <field name="code"/>
         <field name="retention_policy_id"/>
         <field name="document_count"/>
         <field name="active"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -88,9 +88,9 @@
 
 <!-- Menu -->
     <menuitem id="menu_records_series"
-          name="Series"
-          parent="records_management.menu_records_configuration"
-          action="action_records_series"
-          sequence="20"/>
+            name="Series"
+            parent="records_management.menu_records_configuration"
+            action="action_records_series"
+            sequence="20"/>
 
 </odoo>

@@ -6,13 +6,13 @@
         <field name="name">naid.compliance.checklist.view.tree</field>
         <field name="model">naid.compliance.checklist</field>
         <field name="arch" type="xml">
-        <list decoration-muted="active == False">
+        <tree decoration-muted="active == False">
         <field name="name"/>
         <field name="category"/>
         <field name="active" widget="boolean_toggle"/>
         <field name="company_id" groups="base.group_multi_company"/>
 
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -49,12 +49,12 @@
 <notebook>
         <page string="Checklist Items" name="checklist_items">
         <field name="checklist_item_ids">
-        <list editable="bottom">
+        <tree editable="bottom">
         <field name="sequence" widget="handle"/>
         <field name="name"/>
         <field name="description"/>
         <field name="is_required"/>
-        </list>
+        </tree>
     </field>
 </page>
 </notebook>

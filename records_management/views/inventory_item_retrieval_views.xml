@@ -3,11 +3,11 @@ inventory_item_retrieval_views.xml
 
 This file defines the Odoo views for the inventory.item.retrieval model within the Records Management module.
 It includes:
-  - List view for listing inventory item retrieval records
-  - Form view for editing individual retrievals
-  - Search view for filtering retrievals
-  - Window action for accessing the retrieval records
-  - (Commented) menu item for integration into the module's menu structure
+    - List view for listing inventory item retrieval records
+    - Form view for editing individual retrievals
+    - Search view for filtering retrievals
+    - Window action for accessing the retrieval records
+    - (Commented) menu item for integration into the module's menu structure
 
 These definitions allow users to manage inventory item retrieval operations directly from the Odoo UI.
 -->
@@ -18,12 +18,12 @@ These definitions allow users to manage inventory item retrieval operations dire
         <field name="name">inventory.item.retrieval.view.tree</field>
         <field name="model">inventory.item.retrieval</field>
     <field name="arch" type="xml">
-            <list string="Inventory Item Retrieval">
+            <tree string="Inventory Item Retrieval">
                 <field name="name"/>
                 <field name="retrieval_date"/>
                 <field name="responsible_id"/>
                 <field name="state"/>
-            </list>
+            </tree>
         </field>
     </record>
 

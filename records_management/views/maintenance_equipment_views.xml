@@ -39,12 +39,12 @@
     <notebook>
         <page string="Destruction History" invisible="equipment_category != 'shredding'">
         <field name="destruction_service_ids" mode="tree">
-                            <list>
+                            <tree>
         <field name="service_date"/>
         <field name="total_weight"/>
         <field name="certificate_number"/>
         <field name="state"/>
-                            </list>
+                            </tree>
                     </field>
             </page>
     </notebook>
@@ -119,15 +119,15 @@
     <div class="o_kanban_tags_section">
 <span t-if="record.naid_compliant.raw_value" class="badge badge-success">
     <i class="fa fa-certificate"/>
- NAID Compliant
+NAID Compliant
 </span>
 <span t-if="record.destruction_certificate_required.raw_value" class="badge badge-warning">
     <i class="fa fa-shield"/>
- Destruction Cert Required
+Destruction Cert Required
 </span>
 <span t-if="record.equipment_category.raw_value == 'shredding'" class="badge badge-info">
     <i class="fa fa-cogs"/>
- Shredding Equipment
+Shredding Equipment
 </span>
 </div>
 
@@ -135,7 +135,7 @@
         <div t-if="record.equipment_category.raw_value == 'shredding'" class="o_kanban_record_subtitle">
 <i class="fa fa-tachometer"/>
         <field name="shredding_capacity_per_hour"/>
- lbs/hour capacity
+lbs/hour capacity
 </div>
         </xpath>
     </field>

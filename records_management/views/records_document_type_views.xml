@@ -5,7 +5,7 @@
         <field name="name">records.document.type.view.tree</field>
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
-            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="state == 'deprecated'" decoration-info="state == 'draft'">
+            <tree decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="state == 'deprecated'" decoration-info="state == 'draft'">
         <field name="sequence" widget="handle"/>
         <field name="name" string="Document Type"/>
         <field name="code" string="Code"/>
@@ -19,7 +19,7 @@
         <field name="active" string="Active"/>
 <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link" title="View Documents"/>
 
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -119,44 +119,44 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                         </page>
                         <page string="Documents" name="documents">
         <field name="document_ids" mode="list" limit="20">
-                                <list>
+                                <tree>
         <field name="name"/>
         <field name="reference"/>
         <field name="state"/>
         <field name="received_date"/>
         <field name="destruction_eligible_date"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Containers" name="containers">
         <field name="container_ids" mode="list" limit="20">
-                                <list>
+                                <tree>
         <field name="name"/>
         <field name="state"/>
         <field name="storage_start_date"/>
         <field name="location_id"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Child Types" name="children">
         <field name="child_type_ids" mode="list">
-                                <list>
+                                <tree>
         <field name="name"/>
         <field name="code"/>
         <field name="category"/>
         <field name="state"/>
         <field name="document_count"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Retention Rules" name="retention">
         <field name="retention_rule_ids" mode="list">
-                                <list>
+                                <tree>
         <field name="name"/>
         <field name="retention_years"/>
         <field name="destruction_trigger"/>
         <field name="active"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                     </notebook>
@@ -252,16 +252,16 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
 <a role="menuitem" type="edit" class="dropdown-item">
     <i class="fa fa-edit" title="Edit"/>
- Edit Type</a>
+Edit Type</a>
 <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">
     <i class="fa fa-file-o" title="View Documents"/>
- View Documents</a>
+View Documents</a>
 <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">
     <i class="fa fa-check-circle text-success" title="Activate"/>
- Activate</a>
+Activate</a>
 <a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" invisible="state != 'active'">
     <i class="fa fa-warning" title="Deprecate"/>
- Deprecate</a>
+Deprecate</a>
                                 <div class="dropdown-divider"/>
 <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state in ('draft', 'deprecated')">📁 Archive</a>
                             </div>

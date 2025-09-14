@@ -8,7 +8,7 @@
         <field name="name">bin.key.unlock.service.view.tree</field>
         <field name="model">bin.key.unlock.service</field>
         <field name="arch" type="xml">
-        <list string="Bin Key Unlock Services" sample="1">
+        <tree string="Bin Key Unlock Services" sample="1">
         <field name="name"/>
         <field name="partner_id"/>
         <field name="bin_key_id"/>
@@ -19,7 +19,7 @@
         <field name="priority" widget="priority"/>
         <field name="total_cost" widget="monetary" optional="show"/>
         <field name="company_id" groups="base.group_multi_company"/>
-        </list>
+        </tree>
     </field>
     </record>
 

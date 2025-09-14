@@ -6,11 +6,11 @@
         <field name="name">paper.bale.inspection.wizard.view.tree</field>
         <field name="model">paper.bale.inspection.wizard</field>
         <field name="arch" type="xml">
-    <list>
+    <tree>
         <field name="bale_id"/>
         <field name="inspection_type"/>
         <field name="passed"/>
-</list>
+</tree>
 </field>
     </record>
 

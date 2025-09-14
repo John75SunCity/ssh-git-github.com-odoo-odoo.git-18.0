@@ -6,9 +6,9 @@
         <field name="name">partner.bin.key.view.tree</field>
         <field name="model">partner.bin.key</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 

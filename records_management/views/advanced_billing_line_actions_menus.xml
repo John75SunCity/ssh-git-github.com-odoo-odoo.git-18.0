@@ -26,9 +26,9 @@
 
     <!-- Menu structure for billing lines -->
     <menuitem id="advanced_billing_line_menu_root"
-              name="Billing Lines"
-              parent="records_management.menu_records_billing"
-              sequence="23"/>
+                name="Billing Lines"
+                parent="records_management.menu_records_billing"
+                sequence="23"/>
     <menuitem id="advanced_billing_line_menu_simple" name="Simple View" parent="advanced_billing_line_menu_root" action="advanced_billing_line_action_simple" sequence="1"/>
     <menuitem id="advanced_billing_line_menu_detailed" name="Detailed View" parent="advanced_billing_line_menu_root" action="advanced_billing_line_action_detailed" sequence="2"/>
 

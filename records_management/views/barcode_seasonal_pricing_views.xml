@@ -4,7 +4,7 @@
         <field name="name">barcode.seasonal.pricing.view.tree</field>
         <field name="model">barcode.seasonal.pricing</field>
         <field name="arch" type="xml">
-            <list string="Seasonal Pricing" create="true" edit="true">
+            <tree string="Seasonal Pricing" create="true" edit="true">
                 <field name="name"/>
                 <field name="season_name"/>
                 <field name="product_id"/>
@@ -13,7 +13,7 @@
                 <field name="price_multiplier"/>
                 <field name="state"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 

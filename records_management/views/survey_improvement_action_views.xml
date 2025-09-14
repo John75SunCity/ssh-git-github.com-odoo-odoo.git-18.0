@@ -6,9 +6,9 @@
         <field name="name">survey.improvement.action.view.tree</field>
         <field name="model">survey.improvement.action</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 

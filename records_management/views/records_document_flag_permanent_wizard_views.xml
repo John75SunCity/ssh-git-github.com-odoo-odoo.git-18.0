@@ -14,7 +14,7 @@
 
                 <group>
                     <group string="Document Information">
-        <field name="document_id" invisible="document_id != False"/>
+        <field name="document_ids" invisible="document_id != False"/>
 
 
                         <field name="document_name" readonly="1"/>
@@ -26,14 +26,14 @@
                 <group string="Permanent Flag Details">
                     <field name="permanent_reason"
 placeholder="State the reason (e.g., legal, historical, business value)"
-                           required="1"/>
+                            required="1"/>
                 </group>
 
                 <group>
                     <field name="confirm_action"
-                           string="I confirm this document should be flagged as permanent"
+                            string="I confirm this document should be flagged as permanent"
 widget="boolean_toggle"
-                           required="1"/>
+                            required="1"/>
                 </group>
 
                 <footer>

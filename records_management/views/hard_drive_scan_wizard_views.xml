@@ -19,9 +19,9 @@
                 <notebook>
                     <page string="Scanned Serials" name="scanned_serials">
                         <field name="scan_line_ids" nolabel="1">
-                            <list editable="bottom">
+                            <tree editable="bottom">
                                 <field name="serial_number"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
                 </notebook>

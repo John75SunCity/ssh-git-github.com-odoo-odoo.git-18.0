@@ -6,9 +6,9 @@
         <field name="name">report.records_management.report_customer_inventory.view.tree</field>
         <field name="model">report.records_management.report_customer_inventory</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 

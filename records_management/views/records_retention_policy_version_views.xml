@@ -6,7 +6,7 @@
         <field name="name">records.retention.policy.version.view.tree</field>
         <field name="model">records.retention.policy.version</field>
         <field name="arch" type="xml">
-        <list string="Retention Policy Versions" decoration-success="is_active==True" decoration-muted="is_active==False">
+        <tree string="Retention Policy Versions" decoration-success="is_active==True" decoration-muted="is_active==False">
         <field name="policy_id"/>
         <field name="version_number"/>
         <field name="effective_date"/>
@@ -14,7 +14,7 @@
         <field name="created_by"/>
         <field name="approval_status"/>
         <field name="create_date" string="Created"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -33,7 +33,7 @@
                         invisible="approval_status != 'pending'"/>
 
         <field name="approval_status" widget="statusbar"
-                       statusbar_visible="draft,pending,approved,rejected"/>
+                        statusbar_visible="draft,pending,approved,rejected"/>
             </header>
 
             <sheet>
@@ -82,18 +82,18 @@
 
                         <separator string="Policy Description"/>
         <field name="policy_description" widget="html"
-                               placeholder="Detailed description of retention policy requirements..."/>
+                                placeholder="Detailed description of retention policy requirements..."/>
 
                         <separator string="Changes from Previous Version"/>
         <field name="change_summary" widget="html"
-                               placeholder="Summary of changes made in this version..."/>
+                                placeholder="Summary of changes made in this version..."/>
                     </page>
 
                     <page string="Document Types" name="document_types">
         <field name="applicable_document_types" widget="many2many_tags"/>
                         <separator string="Special Handling"/>
         <field name="special_handling_notes" widget="text"
-                               placeholder="Special handling requirements for specific document types..."/>
+                                placeholder="Special handling requirements for specific document types..."/>
                     </page>
 
                     <page string="Compliance" name="compliance">
@@ -117,13 +117,13 @@
 
                     <page string="Version History" name="history">
         <field name="previous_versions" readonly="1">
-                            <list>
+                            <tree>
         <field name="version_number"/>
         <field name="effective_date"/>
         <field name="expiration_date"/>
         <field name="created_by"/>
         <field name="approval_status"/>
-                            </list>
+                            </tree>
                         </field>
                     </page>
                 </notebook>
@@ -160,8 +160,8 @@
             <separator/>
             <filter string="Current" name="current"
                     domain="[('effective_date', '&lt;=', datetime.date.today()),
-                             '|', ('expiration_date', '&gt;=', datetime.date.today()),
-                                  ('expiration_date', '=', False)]"/>
+                            '|', ('expiration_date', '&gt;=', datetime.date.today()),
+                                    ('expiration_date', '=', False)]"/>
             <filter string="Future" name="future"
                     domain="[('effective_date', '&gt;', datetime.date.today())]"/>
             <filter string="Expired" name="expired"
@@ -197,9 +197,9 @@
 
 <!-- Menu item for records.retention.policy.version -->
     <menuitem id="menu_retention_policy_versions"
-          name="Policy Versions"
-          parent="menu_compliance_management"
-          action="action_records_retention_policy_version"
-          sequence="15"/>
+            name="Policy Versions"
+            parent="menu_compliance_management"
+            action="action_records_retention_policy_version"
+            sequence="15"/>
 
 </odoo>

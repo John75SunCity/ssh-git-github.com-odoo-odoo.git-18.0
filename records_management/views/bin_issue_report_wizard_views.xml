@@ -49,7 +49,7 @@
         <field name="gps_latitude" groups="base.group_no_one"/>
         <field name="gps_longitude" groups="base.group_no_one"/>
                         <div class="alert alert-warning" role="alert"
-                             invisible="not require_photos or photo_count > 0">
+                            invisible="not require_photos or photo_count > 0">
                             <strong>Photos Required!</strong> This issue type requires photo documentation.
                         </div>
                     </group>
@@ -61,19 +61,19 @@
                             <group name="fault_determination" string="Fault Determination">
         <field name="customer_fault_confirmed"/>
         <field name="fault_evidence"
-                                       invisible="not customer_fault_confirmed"
-                                       placeholder="Document evidence supporting customer fault determination..."/>
+                                        invisible="not customer_fault_confirmed"
+                                        placeholder="Document evidence supporting customer fault determination..."/>
                             </group>
 
                             <group name="billing_info" string="Billing Information">
         <field name="bill_customer" readonly="1"/>
         <field name="billing_rate_id"
-                                       invisible="not bill_customer"
-                                       options="{'no_create': True}"/>
+                                        invisible="not bill_customer"
+                                        options="{'no_create': True}"/>
         <field name="estimated_replacement_cost"
-                                       invisible="not bill_customer or billing_rate_id"/>
+                                        invisible="not bill_customer or billing_rate_id"/>
         <field name="billing_amount" readonly="1"
-                                       invisible="not bill_customer"/>
+                                        invisible="not bill_customer"/>
         <field name="currency_id" invisible="1"/>
                             </group>
                         </group>
@@ -89,11 +89,11 @@
                             <group name="work_order_details" string="Work Order Details">
         <field name="create_work_order"/>
         <field name="work_order_priority" readonly="1"
-                                       invisible="not create_work_order"/>
+                                        invisible="not create_work_order"/>
         <field name="scheduled_date" invisible="not create_work_order"/>
         <field name="assigned_technician_id"
-                                       invisible="not create_work_order"
-                                       options="{'no_create': True}"/>
+                                        invisible="not create_work_order"
+                                        options="{'no_create': True}"/>
                             </group>
                         </group>
                     </page>
@@ -102,8 +102,8 @@
                         <group>
         <field name="notify_customer"/>
         <field name="customer_message"
-                                   invisible="not notify_customer"
-                                   placeholder="Message to send to customer about this issue..."/>
+                                    invisible="not notify_customer"
+                                    placeholder="Message to send to customer about this issue..."/>
                         </group>
 
         <div class="alert alert-info" role="status" invisible="not notify_customer">
@@ -160,9 +160,9 @@
         <field name="name">bin.issue.record.view.list</field>
         <field name="model">bin.issue.record</field>
         <field name="arch" type="xml">
-        <list string="Bin Issue Records" decoration-danger="resolution_status == 'reported'"
-              decoration-warning="resolution_status in ('assigned', 'in_progress')"
-              decoration-success="resolution_status == 'resolved'">
+        <tree string="Bin Issue Records" decoration-danger="resolution_status == 'reported'"
+                decoration-warning="resolution_status in ('assigned', 'in_progress')"
+                decoration-success="resolution_status == 'resolved'">
         <field name="name"/>
         <field name="bin_id"/>
         <field name="issue_type" widget="badge"/>
@@ -175,7 +175,7 @@
         <field name="billing_amount" sum="Total Billing" widget="monetary"/>
         <field name="billed" widget="boolean_toggle"/>
         <field name="payment_received" widget="boolean_toggle"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -201,7 +201,7 @@
                         class="btn-success" icon="fa-credit-card"
                         invisible="not billed or payment_received"/>
         <field name="resolution_status" widget="statusbar"
-                       statusbar_visible="reported,assigned,in_progress,resolved"/>
+                        statusbar_visible="reported,assigned,in_progress,resolved"/>
             </header>
 
             <sheet>
@@ -241,7 +241,7 @@
                     </group>
 
                     <group name="location_data" string="Location Data"
-                           groups="base.group_no_one">
+                            groups="base.group_no_one">
         <field name="gps_latitude" readonly="1"/>
         <field name="gps_longitude" readonly="1"/>
                     </group>
@@ -358,7 +358,7 @@
                             <div class="oe_kanban_body">
                                 <div class="oe_kanban_row">
                                     <span class="badge badge-pill"
-                                          t-attf-class="badge-#{record.issue_severity.raw_value}">
+                                            t-attf-class="badge-#{record.issue_severity.raw_value}">
         <field name="issue_severity"/>
                                     </span>
                                     <span class="badge badge-pill badge-info">
@@ -443,18 +443,18 @@
 
 <!-- Add bin issues to shredding services menu -->
     <menuitem id="menu_bin_issues"
-          name="Bin Issues"
-          parent="records_management.menu_records_operations"
-          action="bin_issue_record_action"
-          sequence="42"
-          groups="records_management.group_records_user"/>
+            name="Bin Issues"
+            parent="records_management.menu_records_operations"
+            action="bin_issue_record_action"
+            sequence="42"
+            groups="records_management.group_records_user"/>
 
 <!-- Add billing submenu to billing section -->
     <menuitem id="menu_bin_issue_billing"
-          name="Bin Issue Billing"
-          parent="records_management.menu_records_billing"
-          action="bin_issue_billing_action"
-          sequence="50"
-          groups="records_management.group_records_manager"/>
+            name="Bin Issue Billing"
+            parent="records_management.menu_records_billing"
+            action="bin_issue_billing_action"
+            sequence="50"
+            groups="records_management.group_records_manager"/>
 
 </odoo>

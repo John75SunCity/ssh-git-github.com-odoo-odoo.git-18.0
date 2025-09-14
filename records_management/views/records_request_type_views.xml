@@ -5,11 +5,11 @@
         <field name="name">records.request.type.tree</field>
         <field name="model">records.request.type</field>
         <field name="arch" type="xml">
-        <list string="Request Types">
+        <tree string="Request Types">
         <field name="name"/>
         <field name="code"/>
         <field name="active"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -57,8 +57,8 @@
 
 <!-- Menu -->
     <menuitem id="menu_records_request_type"
-          name="Request Types"
-          parent="records_management.menu_records_configuration"
-          action="action_records_request_type"
-          sequence="30"/>
+            name="Request Types"
+            parent="records_management.menu_records_configuration"
+            action="action_records_request_type"
+            sequence="30"/>
 </odoo>

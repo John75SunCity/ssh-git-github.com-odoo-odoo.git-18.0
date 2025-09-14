@@ -6,15 +6,15 @@
         <field name="name">document.search.attempt.view.search</field>
         <field name="model">document.search.attempt</field>
     <field name="arch" type="xml">
-            <list string="Document Search Attempts">
+            <tree string="Document Search Attempts">
                 <field name="search_date"/>
                 <field name="retrieval_item_id"/>
                 <field name="requested_file_name"/>
-                <field name="container_id"/>
+                <field name="container_ids"/>
                 <field name="searched_by_id"/>
                 <field name="found"/>
                 <field name="customer_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -29,7 +29,7 @@
                         <group>
                             <field name="retrieval_item_id"/>
                             <field name="requested_file_name"/>
-                            <field name="container_id"/>
+                            <field name="container_ids"/>
                             <field name="customer_id"/>
                         </group>
                         <group>
@@ -55,7 +55,7 @@
     <field name="arch" type="xml">
             <search string="Search Document Search Attempts">
                 <field name="requested_file_name"/>
-                <field name="container_id"/>
+                <field name="container_ids"/>
                 <field name="searched_by_id"/>
                 <field name="customer_id"/>
                 <filter string="Found" name="found" domain="[('found', '=', True)]"/>

@@ -6,9 +6,9 @@
         <field name="name">product.container.type.view.tree</field>
         <field name="model">product.container.type</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 
