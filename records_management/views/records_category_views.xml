@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- List View -->
     <record id="records_category_view_tree" model="ir.ui.view">
         <field name="name">records.category.view.tree</field>
         <field name="model">records.category</field>
@@ -14,6 +15,7 @@
         </field>
     </record>
 
+    <!-- Form View -->
     <record id="records_category_view_form" model="ir.ui.view">
         <field name="name">records.category.view.form</field>
         <field name="model">records.category</field>
@@ -41,6 +43,7 @@
         </field>
     </record>
 
+    <!-- Search View -->
     <record id="records_category_view_search" model="ir.ui.view">
         <field name="name">records.category.view.search</field>
         <field name="model">records.category</field>
@@ -52,6 +55,7 @@
         </field>
     </record>
 
+    <!-- Menu and Action -->
     <menuitem id="menu_records_category_root" name="Categories" parent="records_management.menu_records_management_root" sequence="30"/>
     <act_window id="action_records_category" name="Categories" res_model="records.category" view_mode="list,form" menu_id="menu_records_category_root"/>
 
