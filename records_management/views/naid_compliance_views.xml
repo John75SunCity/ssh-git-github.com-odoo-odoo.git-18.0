@@ -23,16 +23,16 @@
                                         <strong><i class='fa fa-trophy'/> <field name="name"/></strong>
                                     </div>
                                     <div class="o_secondary">
-                                        <i class="fa fa-certificate" aria-hidden="true"></i> NAID <field name="naid_level"/>
+                                        <i class='fa fa-certificate' aria-hidden="true></i> NAID <field name="naid_level"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#">
+                                    <a class="o_kanban_manage_toggle_button" href="#>
                                         <i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
                                     </a>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                            <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group>
                                 <div class="row">
                                     <div class="col-8">
                                         <div>
@@ -45,32 +45,32 @@
                                         </div>
                                     </div>
                                     <div class="col-4">
-                                        <span class="badge" t-att-class="record.certificate_valid.raw_value ? 'badge-success' : 'badge-danger'">
+                                        <span class="badge" t-att-class="record.certificate_valid.raw_value ? 'badge-success' : 'badge-danger'>
                                             <t t-if="record.certificate_valid.raw_value"><i class='fa fa-check-circle text-success'/> Valid</t>
                                             <t t-else=""><i class='fa fa-times-circle text-danger'/> Invalid</t>
                                         </span>
-                                        <span class="badge badge-warning" t-if="record.audit_required.raw_value">
+                                        <span class="badge badge-warning" t-if="record.audit_required.raw_value>
                                             Audit Due
                                         </span>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-6">
-                                        <button class="btn btn-primary btn-sm" type="object" name="action_conduct_audit">
+                                        <button class="btn btn-primary btn-sm" type="object" name="action_conduct_audit>
                                             Audit
                                         </button>
                                     </div>
                                     <div class="col-6">
-                                        <button class="btn btn-success btn-sm" type="object" name="action_renew_certificate">
+                                        <button class="btn btn-success btn-sm" type="object" name="action_renew_certificate>
                                             Renew
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu>
                                 <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Compliance</a>
                                 <a role="menuitem" type="object" name="action_view_audit_history" class="dropdown-item"><i class='fa fa-clipboard'/> Audit History</a>
-                                <a role="menuitem" type="object" name="action_generate_certificate" class="dropdown-item"><i class="fa fa-certificate"></i> Generate Certificate</a>
+                                <a role="menuitem" type="object" name="action_generate_certificate" class="dropdown-item"><i class='fa fa-certificate'></i> Generate Certificate</a>
                                 <a role="menuitem" type="object" name="action_compliance_report" class="dropdown-item"><i class='fa fa-bar-chart'/> Compliance Report</a>
                                 <div class="dropdown-divider"/>
                                 <a role="menuitem" type="object" name="action_schedule_audit" class="dropdown-item"><i class='fa fa-calendar'/> Schedule Audit</a>
@@ -102,7 +102,7 @@
                 <field name="last_audit_date" string="Last Audit"/>
                 <button name="action_conduct_audit" type="object" string="Audit"
                         icon="fa-search" class="btn-link"
-                        invisible="not audit_required"/>
+                        invisible="not audit_required/>
                 <button name="action_renew_certificate" type="object" string="Renew"
                         icon="fa-refresh" class="btn-link"/>
             </list>
@@ -117,25 +117,25 @@
             <form>
                 <header>
                     <button name="action_conduct_audit" type="object" string="Conduct Audit"
-                            class="btn-primary" invisible="not audit_required"/>
+                            class="btn-primary" invisible="not audit_required/>
                     <button name="action_generate_certificate" type="object" string="&lt;i class=&quot;fa fa-certificate&quot;&gt;&lt;/i&gt; Generate Certificate" class="btn-secondary"/>
                     <button name="action_renew_certificate" type="object" string="Renew Certificate" class="btn-info"/>
                     <button name="action_compliance_report" type="object" string="Compliance Report" class="btn-success"/>
                     <field name="compliance_status" widget="statusbar" statusbar_visible="draft,pending_audit,certified,non_compliant,expired"/>
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_audit_history" icon="fa-history">
+                    <div class="oe_button_box" name="button_box>
+                        <button class="oe_stat_button" type="object" name="action_view_audit_history" icon="fa-history>
                             <field name="audit_count" string="Audit History" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" type="object" name="action_view_certificates" icon="fa-certificate">
+                        <button class="oe_stat_button" type="object" name="action_view_certificates" icon="fa-certificate>
                             <field name="certificate_count" string="Certificates" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" type="object" name="action_view_destruction_records" icon="fa-shredder">
+                        <button class="oe_stat_button" type="object" name="action_view_destruction_records" icon="fa-shredder>
                             <field name="destruction_count" string="Destructions" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-shield"
-                                invisible="naid_level != 'AAA'">
+                                invisible="naid_level != 'AAA'>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value"><i class='fa fa-trophy'/></span>
                                 <span class="o_stat_text">NAID AAA</span>
@@ -387,10 +387,10 @@
             </p>
             <p>
                 <b>Enterprise NAID AAA Compliance Management:</b><br/>
-                • <i class="fa fa-certificate" aria-hidden="true"></i> Complete NAID AAA/AA/A certification tracking<br/>
+                • <i class='fa fa-certificate' aria-hidden="true></i> Complete NAID AAA/AA/A certification tracking<br/>
                 • <i class='fa fa-search'/> Automated audit scheduling and management<br/>
-                • <i class="fa fa-certificate"></i> Digital certificate generation and tracking<br/>
-                • <i class="fa fa-shield" aria-hidden="true"></i> Comprehensive security standards compliance<br/>
+                • <i class='fa fa-certificate'></i> Digital certificate generation and tracking<br/>
+                • <i class='fa fa-shield' aria-hidden="true></i> Comprehensive security standards compliance<br/>
                 • <i class='fa fa-users'/> Multi-level personnel security verification<br/>
                 • <i class='fa fa-bar-chart'/> Real-time performance metrics and analytics<br/>
                 • <i class='fa fa-bell'/> Proactive expiry and renewal notifications<br/>

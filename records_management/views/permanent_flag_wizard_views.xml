@@ -18,7 +18,7 @@ Remove PERMANENT Flag (Admin Only)
             </h1>
         </header>
         <sheet>
-        <div class="alert alert-info" role="status" invisible="operation_type != 'set'">
+        <div class="alert alert-info" role="status" invisible="operation_type != 'set'>
 <strong>
     PERMANENT RECORD PROTECTION</strong>
 <br />
@@ -27,7 +27,7 @@ Remove PERMANENT Flag (Admin Only)
                         and shredding rotations. This action requires password verification for security.
             </div>
 
-        <div class="alert alert-warning" role="alert" invisible="operation_type != 'remove'">
+        <div class="alert alert-warning" role="alert" invisible="operation_type != 'remove'>
 <strong>
     ADMINISTRATOR SECURITY WARNING</strong>
 <br />
@@ -45,7 +45,7 @@ Remove PERMANENT Flag (Admin Only)
 </group>
 
         <group string="Security Verification">
-        <div class="alert alert-secondary" role="status">
+        <div class="alert alert-secondary" role="status>
 <i class='fa fa-shield' title="Security Protection" />
 
 
@@ -76,11 +76,11 @@ Remove PERMANENT Flag (Admin Only)
 </div>
 </sheet>
 <footer>
-<button name="action_apply_changes" type="object" string="Confirm Permanent Flag" class="btn-primary" invisible="operation_type != 'set'"/>
+<button name="action_apply_changes" type="object" string="Confirm Permanent Flag" class="btn-primary" invisible="operation_type != 'set'/>
 
-<button name="action_apply_changes" type="object" string="Remove Permanent Flag" class="btn-warning" invisible="operation_type != 'remove'"/>
+<button name="action_apply_changes" type="object" string="Remove Permanent Flag" class="btn-warning" invisible="operation_type != 'remove'/>
 
-<button string="Cancel" class="btn-secondary" special="cancel"/>
+<button string="Cancel" class="btn-secondary" special="cancel/>
 </footer>
 </form>
 </field>

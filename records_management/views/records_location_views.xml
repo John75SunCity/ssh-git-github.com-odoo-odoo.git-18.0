@@ -24,22 +24,22 @@
                                             </strong>
                                         </div>
                                         <div class="o_secondary">
-                                            <i class="fa fa-building-o" title="Location Type"/>
+                                            <i class='fa fa-building-o' title="Location Type/>
                                             <field name="location_type"/>
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
-                                        <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-                                            <i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
+                                        <a class="o_kanban_manage_toggle_button" href="#" title="More options>
+                                            <i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options/>
                                         </a>
                                     </div>
                                 </div>
-                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group>
                                     <div class="o_kanban_primary_left">
                                         <div class="row">
                                             <div class="col-6">
                                                 <button name="action_view_containers" type="object" class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-cube" aria-hidden="true" title="Container"/>
+                                                    <i class='fa fa-cube' aria-hidden="true" title="Container/>
                                                     View Containers
                                                 </button>
                                             </div>
@@ -60,17 +60,17 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="progress mt-2" style="height: 8px;">
-                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + (record.utilization_percentage.raw_value or 0) + '%'"/>
+                                    <div class="progress mt-2" style="height: 8px;>
+                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + (record.utilization_percentage.raw_value or 0) + '%'/>
                                     </div>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-edit" title="Edit"/> Edit Location</a>
-                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class="fa fa-box" title="View Containers"/> View Containers</a>
-                                <a role="menuitem" type="object" name="action_location_report" class="dropdown-item"><i class="fa fa-bar-chart" title="Location Report"/> Location Report</a>
+                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu>
+                                <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit' title="Edit/> Edit Location</a>
+                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class='fa fa-box' title="View Containers/> View Containers</a>
+                                <a role="menuitem" type="object" name="action_location_report" class="dropdown-item"><i class='fa fa-bar-chart' title="Location Report/> Location Report</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="delete" class="dropdown-item"><i class="fa fa-trash"></i> Archive</a>
+                                <a role="menuitem" type="delete" class="dropdown-item"><i class='fa fa-trash'></i> Archive</a>
                             </div>
                         </t>
                     </templates>
@@ -108,11 +108,11 @@
                         <field name="active" widget="boolean_toggle"/>
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button name="action_view_containers" type="object" class="oe_stat_button" icon="fa-cube">
+                        <div class="oe_button_box" name="button_box>
+                            <button name="action_view_containers" type="object" class="oe_stat_button" icon="fa-cube>
                                 <field name="current_utilization" string="Containers" widget="statinfo"/>
                             </button>
-                            <button name="action_location_report" type="object" class="oe_stat_button" icon="fa-bar-chart">
+                            <button name="action_location_report" type="object" class="oe_stat_button" icon="fa-bar-chart>
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="utilization_percentage"/>
@@ -121,7 +121,7 @@
                                     <span class="o_stat_text">Utilization</span>
                                 </div>
                             </button>
-                            <button class="oe_stat_button" icon="fa-check-circle" style="color: green;">
+                            <button class="oe_stat_button" icon="fa-check-circle" style="color: green;>
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="available_spaces"/>

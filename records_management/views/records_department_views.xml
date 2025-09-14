@@ -27,20 +27,20 @@
             <form string="Customer Department">
                 <header>
                     <button name="action_activate" string="Activate" type="object" class="btn-success"
-invisible="state != 'draft'" groups="records_management.group_records_user"/>
+invisible="state != 'draft'" groups="records_management.group_records_user/>
                     <button name="action_archive" string="Archive" type="object" class="btn-warning"
-invisible="state != 'active'" groups="records_management.group_records_manager"/>
+invisible="state != 'active'" groups="records_management.group_records_manager/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-cube">
+                    <div class="oe_button_box" name="button_box>
+                        <button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-cube>
                             <field name="container_count" string="Containers" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file">
+                        <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file>
                             <field name="document_count" string="Documents" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-users">
+                        <button class="oe_stat_button" icon="fa-users>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
                                     <field name="user_ids" widget="many2many_tags"/>
@@ -177,13 +177,13 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#" title="More options">
+                                    <a class="o_kanban_manage_toggle_button" href="#" title="More options>
 <i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
 
                                     </a>
                                 </div>
                             </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group>
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="text-center">
@@ -210,13 +210,13 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                                     </div>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu>
                                 <a role="menuitem" type="edit" class="dropdown-item">Edit Department</a>
                                 <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">View Containers</a>
                                 <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">View Documents</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">Activate</a>
-                                <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state != 'active'">Archive</a>
+                                <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'>Activate</a>
+                                <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state != 'active'>Archive</a>
                             </div>
                         </div>
                     </t>

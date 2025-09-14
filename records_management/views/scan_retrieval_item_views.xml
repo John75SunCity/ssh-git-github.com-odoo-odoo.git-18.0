@@ -28,17 +28,17 @@
                                         </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        <i class="fa fa-tag"/>
+                                        <i class='fa fa-tag'/>
                                         <field name="document_type"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#">
+                                    <a class="o_kanban_manage_toggle_button" href="#>
                                         <i class='fa fa-ellipsis-v' role="img" aria-label="Manage" title="Manage"/>
                                     </a>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                            <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group>
                                 <div class="row">
                                     <div class="col-8">
                                         <div t-if="record.barcode.raw_value">
@@ -55,13 +55,13 @@
                                         </div>
                                     </div>
                                     <div class="col-4">
-                                        <span class="badge badge-primary" t-if="record.priority.raw_value == 'high'">
+                                        <span class="badge badge-primary" t-if="record.priority.raw_value == 'high'>
                                             <i class='fa fa-bolt'></i> High Priority
                                         </span>
-                                        <span class="badge badge-info" t-if="record.priority.raw_value == 'medium'">
+                                        <span class="badge badge-info" t-if="record.priority.raw_value == 'medium'>
                                             <i class='fa fa-clipboard'></i> Medium
                                         </span>
-                                        <span class="badge badge-secondary" t-if="record.priority.raw_value == 'low'">
+                                        <span class="badge badge-secondary" t-if="record.priority.raw_value == 'low'>
                                             <i class='fa fa-pencil'></i> Low
                                         </span>
                                         <div t-if="record.retrieval_work_order_id.raw_value">
@@ -106,14 +106,14 @@
             <form string="Scan Retrieval Item">
                 <header>
                     <!-- Converted legacy states to invisible expressions -->
-                    <button name="action_start_processing" string="Start Processing" type="object" class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_complete" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'"/>
-                    <button name="action_cancel" string="Cancel" type="object" class="btn-secondary" invisible="state not in ['draft','in_progress']"/>
+                    <button name="action_start_processing" string="Start Processing" type="object" class="btn-primary" invisible="state != 'draft'/>
+                    <button name="action_complete" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'/>
+                    <button name="action_cancel" string="Cancel" type="object" class="btn-secondary" invisible="state not in ['draft','in_progress']/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="action_view_work_order" type="object" class="oe_stat_button" icon="fa-tasks" invisible="retrieval_work_order_id == False">
+                    <div class="oe_button_box" name="button_box>
+                        <button name="action_view_work_order" type="object" class="oe_stat_button" icon="fa-tasks" invisible="retrieval_work_order_id == False>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_text">Work Order</span>
                             </div>

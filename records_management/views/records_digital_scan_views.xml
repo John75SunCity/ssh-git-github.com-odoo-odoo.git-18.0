@@ -10,7 +10,7 @@
         <field name="arch" type="xml">
             <list string="Digital Scans">
                 <field name="name"/>
-                <field name="document_ids"/>
+                <field name="document_id"/>
                 <field name="scan_date"/>
                 <field name="file_format"/>
                 <field name="resolution"/>
@@ -28,8 +28,8 @@
         <field name="arch" type="xml">
         <form string="Digital Scan">
             <header>
-<button name="action_confirm" string="Confirm Scan" type="object" class="oe_highlight" invisible="state != 'draft'"/>
-<button name="action_done" string="Mark Complete" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+<button name="action_confirm" string="Confirm Scan" type="object" class="oe_highlight" invisible="state != 'draft'/>
+<button name="action_done" string="Mark Complete" type="object" class="oe_highlight" invisible="state != 'confirmed'/>
 
         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
             </header>
@@ -41,10 +41,9 @@
                 </div>
                 <group>
                     <group>
-        <field name="document_ids"/>
-        <field name="scan_date"/>
-        <field name="scanned_by_id"/>
-
+                        <field name="document_id"/>
+                        <field name="scan_date"/>
+                        <field name="scanned_by_id"/>
                     </group>
                     <group>
         <field name="file_format"/>
@@ -78,9 +77,9 @@
         <field name="model">records.digital.scan</field>
         <field name="arch" type="xml">
         <search string="Digital Scans">
-        <field name="name"/>
-        <field name="document_ids"/>
-        <field name="scanned_by_id"/>
+            <field name="name"/>
+            <field name="document_id"/>
+            <field name="scanned_by_id"/>
 
             <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
             <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>

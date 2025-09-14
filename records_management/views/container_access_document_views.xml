@@ -1,22 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
-    <!-- List View -->
+    
     <record id="container_access_document_view_tree" model="ir.ui.view">
         <field name="name">container.access.document.view.tree</field>
         <field name="model">container.access.document</field>
         <field name="arch" type="xml">
             <list>
-        <field name="name"/>
-        <field name="activity_id"/>
-        <field name="attachment_id"/>
-        <field name="description"/>
-        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="name" />
+        <field name="activity_id" />
+        <field name="attachment_id" />
+        <field name="description" />
+        <field name="company_id" groups="base.group_multi_company" />
             </list>
         </field>
     </record>
 
-    <!-- Form View -->
+    
     <record id="container_access_document_view_form" model="ir.ui.view">
         <field name="name">container.access.document.view.form</field>
         <field name="model">container.access.document</field>
@@ -25,87 +25,87 @@
                 <sheet>
                     <group>
                         <group name="document_info">
-        <field name="name"/>
-        <field name="activity_id"/>
-        <field name="attachment_id"/>
+        <field name="name" />
+        <field name="activity_id" />
+        <field name="attachment_id" />
                         </group>
                         <group name="additional_info">
-        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="company_id" groups="base.group_multi_company" />
                         </group>
                     </group>
                     <group name="description_group">
-        <field name="description" nolabel="1" placeholder="Document description..."/>
+        <field name="description" nolabel="1" placeholder="Document description..." />
                     </group>
                 </sheet>
                 <div class="oe_chatter">
-        <field name="message_follower_ids"/>
-        <field name="activity_ids"/>
-        <field name="message_ids"/>
+        <field name="message_follower_ids" />
+        <field name="activity_id" />
+        <field name="message_ids" />
                 </div>
             </form>
         </field>
     </record>
 
-    <!-- Search View -->
+    
     <record id="container_access_document_view_search" model="ir.ui.view">
         <field name="name">container.access.document.view.search</field>
         <field name="model">container.access.document</field>
         <field name="arch" type="xml">
             <search>
-        <field name="name"/>
-        <field name="activity_id"/>
-        <field name="attachment_id"/>
-        <field name="description"/>
+        <field name="name" />
+        <field name="activity_id" />
+        <field name="attachment_id" />
+        <field name="description" />
 
-                <filter name="has_attachment" string="Has Attachment" domain="[('attachment_id','!=',False)]"/>
-                <filter name="no_attachment" string="No Attachment" domain="[('attachment_id','=',False)]"/>
+                <filter name="has_attachment" string="Has Attachment" domain="[('attachment_id','!=',False)]" />
+                <filter name="no_attachment" string="No Attachment" domain="[('attachment_id','=',False)]" />
 
-                <separator/>
-                <filter name="my_company" string="My Company" domain="[('company_id','=',company_id)]"/>
+                <separator />
+                <filter name="my_company" string="My Company" domain="[('company_id','=',company_id)]" />
 
                 <group expand="0" string="Group By">
-                    <filter name="group_by_activity" string="Access Activity" context="{'group_by':'activity_id'}"/>
-                    <filter name="group_by_company" string="Company" context="{'group_by':'company_id'}"/>
+                    <filter name="group_by_activity" string="Access Activity" context="{'group_by':'activity_id'}" />
+                    <filter name="group_by_company" string="Company" context="{'group_by':'company_id'}" />
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Kanban View -->
+    
     <record id="container_access_document_view_kanban" model="ir.ui.view">
         <field name="name">container.access.document.view.kanban</field>
         <field name="model">container.access.document</field>
         <field name="arch" type="xml">
             <kanban>
-        <field name="id"/>
-        <field name="name"/>
-        <field name="activity_id"/>
-        <field name="attachment_id"/>
-        <field name="description"/>
+        <field name="id" />
+        <field name="name" />
+        <field name="activity_id" />
+        <field name="attachment_id" />
+        <field name="description" />
                 <templates>
 <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_record_top mb16">
                                 <div class="o_kanban_record_headings">
                                     <strong class="o_kanban_record_title">
-        <field name="name"/>
+        <field name="name" />
                                     </strong>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#">
-                                        <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/>
+                                        <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage" />
                                     </a>
                                 </div>
                             </div>
                             <div class="o_kanban_record_body">
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
-        <field name="activity_id"/>
+        <field name="activity_id" />
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <t t-if="record.attachment_id.raw_value">
                                             <span class="badge badge-pill badge-success">
-                                                <i class="fa fa-paperclip"/> Attached
+                                                <i class="fa fa-paperclip" /> Attached
                                             </span>
                                         </t>
                                     </div>
@@ -118,7 +118,7 @@
         </field>
     </record>
 
-    <!-- Action -->
+    
     <record id="container_access_document_action" model="ir.actions.act_window">
         <field name="name">Container Access Documents</field>
         <field name="res_model">container.access.document</field>
@@ -133,11 +133,7 @@
         </field>
     </record>
 
-    <!-- Menu Item -->
-    <menuitem id="menu_container_access_document"
-                name="Access Documents"
-                parent="records_management.menu_container_access"
-                action="container_access_document_action"
-                sequence="15"/>
+    
+    <menuitem id="menu_container_access_document" name="Access Documents" parent="records_management.menu_container_access" action="container_access_document_action" sequence="15" />
 
 </odoo>

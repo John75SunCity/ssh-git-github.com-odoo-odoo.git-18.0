@@ -16,7 +16,7 @@
                 <field name="edge_count" string="Edges"/>
                 <field name="create_date" string="Created"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-                <button name="action_generate_diagram" type="object" string="Generate" class="btn-primary" icon="fa-refresh"/>
+                <button name="action_generate_diagram" type="object" string="Generate" class="btn-primary" icon="fa-refresh/>
             </list>
         </field>
     </record>
@@ -36,11 +36,11 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,generated,cached"/>
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="action" icon="fa-sitemap">
+                    <div class="oe_button_box" name="button_box>
+                        <button class="oe_stat_button" type="action" icon="fa-sitemap>
                             <field name="node_count" string="Nodes" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" type="action" icon="fa-link">
+                        <button class="oe_stat_button" type="action" icon="fa-link>
                             <field name="edge_count" string="Edges" widget="statinfo"/>
                         </button>
                     </div>
@@ -170,7 +170,7 @@
                                         <strong class="o_kanban_record_title">
                                             <field name="name"/>
                                         </strong>
-                                        <span class="badge badge-pill float-right" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}">
+                                        <span class="badge badge-pill float-right" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}>
                                             <t t-if="record.search_type.raw_value == 'user'"><i class='fa fa-user'></i> User</t>
                                             <t t-elif="record.search_type.raw_value == 'model'"><i class='fa fa-building-o'></i> Model</t>
                                             <t t-else=""><i class='fa fa-building'></i> Company</t>

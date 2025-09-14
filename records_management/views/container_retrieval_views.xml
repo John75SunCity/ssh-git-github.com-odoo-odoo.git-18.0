@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
     <record id="container_retrieval_view_tree" model="ir.ui.view">
@@ -6,18 +6,18 @@
         <field name="model">container.retrieval</field>
     <field name="arch" type="xml">
             <list string="Container Retrieval">
-                <field name="name"/>
-                <field name="container_ids"/>
-                <field name="partner_id"/>
-                <field name="location_id"/>
-                <field name="storage_location_id"/>
-                <field name="state"/>
-                <field name="priority"/>
-                <field name="retrieval_date"/>
-                <field name="retrieved_by_id"/>
-                <field name="retrieval_cost"/>
-                <field name="currency_id"/>
-                <field name="active"/>
+                <field name="name" />
+                <field name="container_id" />
+                <field name="partner_id" />
+                <field name="location_id" />
+                <field name="storage_location_id" />
+                <field name="state" />
+                <field name="priority" />
+                <field name="retrieval_date" />
+                <field name="retrieved_by_id" />
+                <field name="retrieval_cost" />
+                <field name="currency_id" />
+                <field name="active" />
             </list>
         </field>
     </record>
@@ -29,22 +29,22 @@
             <form string="Container Retrieval">
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="company_id"/>
-                        <field name="user_id"/>
-                        <field name="container_ids"/>
-                        <field name="partner_id"/>
-                        <field name="location_id"/>
-                        <field name="storage_location_id"/>
-                        <field name="state"/>
-                        <field name="priority"/>
-                        <field name="estimated_time"/>
-                        <field name="actual_time"/>
-                        <field name="retrieval_date"/>
-                        <field name="retrieved_by_id"/>
-                        <field name="retrieval_cost"/>
-                        <field name="currency_id"/>
-                        <field name="active"/>
+                        <field name="name" />
+                        <field name="company_id" />
+                        <field name="user_id" />
+                        <field name="container_id" />
+                        <field name="partner_id" />
+                        <field name="location_id" />
+                        <field name="storage_location_id" />
+                        <field name="state" />
+                        <field name="priority" />
+                        <field name="estimated_time" />
+                        <field name="actual_time" />
+                        <field name="retrieval_date" />
+                        <field name="retrieved_by_id" />
+                        <field name="retrieval_cost" />
+                        <field name="currency_id" />
+                        <field name="active" />
                     </group>
                 </sheet>
             </form>

@@ -17,7 +17,7 @@
         <field name="container_count" string="Containers" widget="integer"/>
         <field name="state" string="Status" widget="badge"/>
         <field name="active" string="Active"/>
-<button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link" title="View Documents"/>
+<button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link" title="View Documents/>
 
             </list>
         </field>
@@ -31,22 +31,22 @@
             <form string="Document Type Configuration">
                 <header>
                     <button name="action_activate" string="Activate" type="object" class="btn-success"
-invisible="state != 'draft'" groups="records_management.group_records_user"/>
+invisible="state != 'draft'" groups="records_management.group_records_user/>
                     <button name="action_deprecate" string="Deprecate" type="object" class="btn-warning"
-invisible="state != 'active'" groups="records_management.group_records_manager"/>
+invisible="state != 'active'" groups="records_management.group_records_manager/>
                     <button name="action_archive" string="Archive" type="object" class="btn-secondary"
-invisible="state in ('draft', 'deprecated')" groups="records_management.group_records_manager"/>
+invisible="state in ('draft', 'deprecated')" groups="records_management.group_records_manager/>
         <field name="state" widget="statusbar" statusbar_visible="draft,active,deprecated,archived"/>
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-<button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file" title="View Documents">
+                    <div class="oe_button_box" name="button_box>
+<button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file" title="View Documents>
         <field name="document_count" string="Documents" widget="statinfo"/>
                         </button>
-<button class="oe_stat_button" icon="fa-cube" title="Container Information">
+<button class="oe_stat_button" icon="fa-cube" title="Container Information>
         <field name="container_count" string="Containers" widget="statinfo"/>
                         </button>
-<button class="oe_stat_button" icon="fa-clock" title="Retention Period">
+<button class="oe_stat_button" icon="fa-clock" title="Retention Period>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
         <field name="effective_retention_years"/>
@@ -188,11 +188,11 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="oe_button_box" name="button_box">
-                                <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file">
+                            <div class="oe_button_box" name="button_box>
+                                <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file>
         <field name="document_count" string="Documents" widget="statinfo"/>
                                 </button>
-                                <button class="oe_stat_button" icon="fa-cube">
+                                <button class="oe_stat_button" icon="fa-cube>
         <field name="container_count" string="Containers" widget="statinfo"/>
                                 </button>
                             </div>
@@ -208,18 +208,18 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-<i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
+                                    <a class="o_kanban_manage_toggle_button" href="#" title="More options>
+<i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options/>
                                     </a>
                                 </div>
                             </div>
-        <div class="oe_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+        <div class="oe_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group>
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="text-center">
                                             <span class="badge badge-primary">
         <field name="document_count"/>
-<i class="fa fa-file-o" title="Documents"/>
+<i class='fa fa-file-o' title="Documents/>
                                             </span>
                                         </div>
                                     </div>
@@ -227,7 +227,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                         <div class="text-center">
                                             <span class="badge badge-info">
         <field name="container_count"/>
-<i class="fa fa-box" title="Containers"/>
+<i class='fa fa-box' title="Containers/>
                                             </span>
                                         </div>
                                     </div>
@@ -235,7 +235,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 <div class="row mt-2">
                                     <div class="col-12">
                                         <small class="text-muted">
-<i class="fa fa-shield" aria-hidden="true" title="Security Level"/>
+<i class='fa fa-shield' aria-hidden="true" title="Security Level/>
         <field name="confidentiality_level"/>
                                         </small>
                                     </div>
@@ -243,27 +243,27 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 <div class="row mt-1">
                                     <div class="col-12">
                                         <small class="text-muted">
-<i class="fa fa-clock" aria-hidden="true" title="Retention Period"/>
+<i class='fa fa-clock' aria-hidden="true" title="Retention Period/>
         <field name="effective_retention_years"/> years
                                         </small>
                                     </div>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu>
 <a role="menuitem" type="edit" class="dropdown-item">
-    <i class="fa fa-edit" title="Edit"/>
+    <i class='fa fa-edit' title="Edit/>
 Edit Type</a>
 <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">
-    <i class="fa fa-file-o" title="View Documents"/>
+    <i class='fa fa-file-o' title="View Documents/>
 View Documents</a>
-<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">
-    <i class="fa fa-check-circle text-success" title="Activate"/>
+<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'>
+    <i class='fa fa-check-circle text-success' title="Activate/>
 Activate</a>
-<a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" invisible="state != 'active'">
-    <i class="fa fa-warning" title="Deprecate"/>
+<a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" invisible="state != 'active'>
+    <i class='fa fa-warning' title="Deprecate/>
 Deprecate</a>
                                 <div class="dropdown-divider"/>
-<a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state in ('draft', 'deprecated')">📁 Archive</a>
+<a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state in ('draft', 'deprecated')>📁 Archive</a>
                             </div>
                         </div>
                     </t>
