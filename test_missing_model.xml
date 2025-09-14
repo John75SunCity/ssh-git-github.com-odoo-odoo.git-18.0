@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Test view with non-existent model -->
+    <record id="test_view" model="ir.ui.view">
+        <field name="name">test.nonexistent.model.view</field>
+        <field name="model">test.nonexistent.model</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Test action with non-existent res_model -->
+    <record id="test_action" model="ir.actions.act_window">
+        <field name="name">Test Action</field>
+        <field name="res_model">another.nonexistent.model</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

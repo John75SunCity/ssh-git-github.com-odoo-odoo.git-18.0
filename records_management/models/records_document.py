@@ -239,6 +239,39 @@ class RecordsDocument(models.Model):
     recently_accessed = fields.Boolean(string="Accessed Recently", compute="_compute_recent_access", search="_search_recent_access", help="True if accessed in last 30 days.")
 
     # ============================================================================
+    # MISSING FIELDS FROM VIEWS (Added to fix field validation errors)
+    # ============================================================================
+    created_date = fields.Date(string='Created Date', related='create_date', store=True, help='Date when document was created in the system')
+    event_type = fields.Selection([
+        ('created', 'Document Created'),
+        ('modified', 'Document Modified'),
+        ('accessed', 'Document Accessed'),
+        ('moved', 'Document Moved'),
+        ('destroyed', 'Document Destroyed'),
+    ], string='Event Type', default='created', help='Type of the last event')
+    responsible_person = fields.Char(string='Responsible Person', related='responsible_person_id.name', store=True, help='Name of the responsible person')
+    location = fields.Char(string='Location', related='location_id.name', store=True, help='Current location name')
+    signature_verified = fields.Boolean(string='Signature Verified', help='Whether digital signature has been verified')
+    audit_trail_ids = fields.One2many('naid.audit.log', 'document_id', string='Audit Trail', help='Complete audit trail for this document')
+    timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now, help='Timestamp of last significant event')
+
+    # Additional missing fields from view validation
+    action_type = fields.Selection([
+        ('store', 'Store'),
+        ('retrieve', 'Retrieve'),
+        ('destroy', 'Destroy'),
+        ('audit', 'Audit'),
+    ], string='Action Type', help='Type of action being performed on document')
+    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user, help='User associated with this document')
+    destruction_date = fields.Date(string='Destruction Date', related='actual_destruction_date', help='Date when document was destroyed')
+    destruction_authorized_by = fields.Char(string='Authorized By', related='destruction_authorized_by_id.name', store=True, help='Name of person who authorized destruction')
+    destruction_witness = fields.Char(string='Destruction Witness', related='destruction_witness_id.name', store=True, help='Name of destruction witness')
+    file_format = fields.Char(string='File Format', help='Format of the digital file (PDF, TIFF, etc.)')
+    resolution = fields.Char(string='Resolution', help='Scan resolution (DPI)')
+    file_size = fields.Float(string='File Size (MB)', help='Size of the digital file in megabytes')
+    storage_location = fields.Char(string='Storage Location', related='location_id.complete_name', store=True, help='Complete storage location path')
+
+    # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
     @api.model_create_multi

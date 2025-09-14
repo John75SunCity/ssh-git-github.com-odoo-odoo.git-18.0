@@ -186,6 +186,17 @@ class RecordsDocumentType(models.Model):
     ineffective_date = fields.Date(string='Ineffective Date')
 
     # ============================================================================
+    # MISSING FIELDS FROM VIEWS (Added to fix field validation errors)
+    # ============================================================================
+    storage_start_date = fields.Date(string='Storage Start Date', help='Date when storage begins for this document type')
+    retention_years = fields.Integer(string='Retention Years', related='default_retention_years', store=True, help='Number of years to retain documents of this type')
+    destruction_trigger = fields.Selection([
+        ('date_based', 'Date Based'),
+        ('event_based', 'Event Based'),
+        ('manual', 'Manual Review'),
+    ], string='Destruction Trigger', default='date_based', help='Trigger mechanism for document destruction')
+
+    # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
     @api.depends('document_ids', 'child_type_ids', 'container_ids')

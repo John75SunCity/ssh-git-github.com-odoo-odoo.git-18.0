@@ -294,6 +294,22 @@ class SafeValidator:
         else:
             return "Review XML structure and ensure proper formatting."
 
+    def _validate_model_existence(self, model_name, file_path):
+        """Validate that a model referenced in views actually exists"""
+        # Skip core Odoo models - they exist in the system
+        if model_name in self.core_odoo_models:
+            return
+
+        # Check if the model exists in our scanned models
+        if model_name not in self.model_fields:
+            self.field_errors.append({
+                'file': os.path.basename(file_path),
+                'model': model_name,
+                'field': 'N/A',
+                'error': f'🚨 DEPLOYMENT BLOCKER: Model "{model_name}" does not exist! Referenced in view but model not found in scanned Python files.',
+                'type': 'missing_model_definition'
+            })
+
     def _validate_field_reference(self, field_name, model_name, file_path):
         """Validate a single field reference"""
         # First check if it's a system field
@@ -399,12 +415,21 @@ class SafeValidator:
                 if model_field is not None:
                     model_name = model_field.text
                     if model_name:
+                        # First check if the model exists
+                        self._validate_model_existence(model_name, file_path)
+                        # Then check fields in the view
                         self._check_fields_in_arch(record, model_name, file_path)
 
             # Validate data records
             for record in data_records:
                 model_name = record.get('model')
                 if model_name:
+                    # Check for action records with res_model field that references other models
+                    if model_name == 'ir.actions.act_window':
+                        res_model_field = record.find('.//field[@name="res_model"]')
+                        if res_model_field is not None and res_model_field.text:
+                            self._validate_model_existence(res_model_field.text, file_path)
+
                     self._check_data_record_fields(record, model_name, file_path)
 
             return True
