@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List view for advanced.billing.profile -->
+    
+    <data><!-- List view for advanced.billing.profile -->
     <record id="advanced_billing_profile_view_tree" model="ir.ui.view">
         <field name="name">advanced.billing.profile.view.tree</field>
         <field name="model">advanced.billing.profile</field>
@@ -120,4 +121,5 @@
               action="advanced_billing_profile_action"
               sequence="21"/>
 
+    </data>
 </odoo>

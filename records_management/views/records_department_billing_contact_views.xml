@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
         <!-- Enhanced Departmental Billing Contact Views -->
 
         <!-- Tree view -->
@@ -7,7 +8,7 @@
             <field name="name">records.department.billing.contact.view.tree</field>
             <field name="model">records.department.billing.contact</field>
             <field name="arch" type="xml">
-                <list decoration-danger="budget_utilization &gt; 90" decoration-warning="budget_utilization &gt; 75" decoration-success="budget_utilization &lt;= 50">
+                <tree decoration-danger="budget_utilization &gt; 90" decoration-warning="budget_utilization &gt; 75" decoration-success="budget_utilization &lt;= 50">
                     <field name="contact_name" string="Contact"/>
                     <field name="department_id" string="Department"/>
                     <field name="billing_role" string="Role"/>
@@ -19,7 +20,7 @@
                     <field name="approval_authority" string="Approver" widget="boolean_toggle"/>
                     <field name="active" string="Active" widget="boolean_toggle"/>
                     <button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link" title="Generate Budget Report"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -69,13 +70,13 @@
                         <notebook>
                             <page string="Approval History" name="approvals">
                                 <field name="approval_history_ids" mode="tree">
-                                    <list>
+                                    <tree>
                                         <field name="approval_date"/>
                                         <field name="charge_amount"/>
                                         <field name="service_description"/>
                                         <field name="vendor"/>
                                         <field name="approval_notes"/>
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page string="Budget Analysis" name="budget">
@@ -134,24 +135,24 @@
                     <field name="budget_utilization"/>
                     <field name="approval_authority"/>
                     <templates>
-                        <t t-name="card">
+                        <t t-name="kanban-box">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_card_header">
                                     <div class="o_kanban_card_header_title">
                                         <div class="o_primary">
                                             <strong>
-                                                <i class='fa fa-briefcase' title="Business Contact"/>
+                                                <i class="fa fa-briefcase" title="Business Contact"/>
                                                 <field name="contact_name"/>
                                             </strong>
                                         </div>
                                         <div class="o_secondary">
-                                            <i class='fa fa-building' title="Department"/>
+                                            <i class="fa fa-building" title="Department"/>
                                             <field name="department_id"/>
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
                                         <a class="o_kanban_manage_toggle_button" href="#">
-                                            <i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
+                                            <i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
                                         </a>
                                     </div>
                                 </div>
@@ -159,24 +160,24 @@
                                     <div class="row">
                                         <div class="col-8">
                                             <div>
-                                                <i class='fa fa-user' title="Role"/>
+                                                <i class="fa fa-user" title="Role"/>
                                                 <field name="billing_role"/>
                                             </div>
                                             <div>
-                                                <i class='fa fa-money' title="Budget"/>
+                                                <i class="fa fa-money" title="Budget"/>
                                                 Budget: $<field name="monthly_budget"/>
                                             </div>
                                             <div>
-                                                <i class='fa fa-credit-card' title="Charges"/>
+                                                <i class="fa fa-credit-card" title="Charges"/>
                                                 Used: $<field name="current_month_charges"/>
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="badge" t-att-class="record.budget_utilization.raw_value &gt; 90 ? 'badge-danger' : record.budget_utilization.raw_value &gt; 75 ? 'badge-warning' : 'badge-success'">
+                                            <span class="badge" t-att-class="record.budget_utilization.raw_value &gt; 90 ? 'badge-danger' : record.budget_utilization.raw_value > 75 ? 'badge-warning' : 'badge-success'">
                                                 <field name="budget_utilization"/>% Used
                                             </span>
                                             <span class="badge badge-primary" t-if="record.approval_authority.raw_value">
-                                                <i class='fa fa-check-circle' title="Approval Authority"/>
+                                                <i class="fa fa-check-circle" title="Approval Authority"/>
                                                 Approver
                                             </span>
                                         </div>
@@ -184,7 +185,7 @@
                                     <div class="row mt-2">
                                         <div class="col-12">
                                             <button class="btn btn-info btn-sm" type="object" name="action_view_approvals">
-                                                <i class='fa fa-check-circle' title="View Approvals"/>
+                                                <i class="fa fa-check-circle" title="View Approvals"/>
                                                 Approvals
                                             </button>
                                         </div>
@@ -192,20 +193,20 @@
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                     <a role="menuitem" type="edit" class="dropdown-item">
-                                        <i class='fa fa-edit' title="Edit Contact"/>
+                                        <i class="fa fa-edit" title="Edit Contact"/>
                                         Edit Contact
                                     </a>
                                     <a role="menuitem" type="object" name="action_view_approvals" class="dropdown-item">
-                                        <i class='fa fa-check-circle' title="View Approvals"/>
+                                        <i class="fa fa-check-circle" title="View Approvals"/>
                                         View Approvals
                                     </a>
                                     <a role="menuitem" type="object" name="action_budget_report" class="dropdown-item">
-                                        <i class='fa fa-file-text-o' title="Budget Report"/>
+                                        <i class="fa fa-file-text-o" title="Budget Report"/>
                                         Budget Report
                                     </a>
                                     <div class="dropdown-divider"/>
                                     <a role="menuitem" type="object" name="action_send_bill_notification" class="dropdown-item">
-                                        <i class='fa fa-envelope' title="Send Bill Notification"/>
+                                        <i class="fa fa-envelope" title="Send Bill Notification"/>
                                         Send Bill Notification
                                     </a>
                                 </div>
@@ -270,30 +271,41 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class='fa fa-money fa-3x' title="Money Management"/>
+                    <i class="fa fa-money fa-3x" title="Money Management"/>
                     <br/>
                     Set up your first departmental billing contact!
                 </p>
                 <p>
                     <b>Enterprise Departmental Billing:</b>
                     <br/>
-                    •<i class='fa fa-briefcase' title="Business"/>
+                    •<i class="fa fa-briefcase" title="Business"/>
                     Multi-level departmental cost allocation<br/>
-                    •<i class='fa fa-bar-chart' title="Analytics"/>
+                    •<i class="fa fa-bar-chart" title="Analytics"/>
                     Real-time budget tracking and alerts<br/>
-                    •<i class='fa fa-check-circle' title="Approvals"/>
+                    •<i class="fa fa-check-circle" title="Approvals"/>
                     Hierarchical approval workflows<br/>
-                    •<i class='fa fa-envelope' title="Notifications"/>
+                    •<i class="fa fa-envelope" title="Notifications"/>
                     Automated billing notifications<br/>
-                    •<i class='fa fa-file-text-o' title="Reports"/>
+                    •<i class="fa fa-file-text-o" title="Reports"/>
                     Comprehensive budget reporting<br/>
-                    •<i class='fa fa-bullseye' title="Authorization"/>
+                    •<i class="fa fa-bullseye" title="Authorization"/>
                     Role-based billing authorization<br/>
-                    •<i class='fa fa-line-chart' title="Analysis"/>
+                    •<i class="fa fa-line-chart" title="Analysis"/>
                     Budget variance analysis and forecasting<br/>
-                    •<i class='fa fa-mobile' title="Mobile"/>
+                    •<i class="fa fa-mobile" title="Mobile"/>
                     Mobile-optimized budget management
                 </p>
             </field>
         </record>
+    </data>
+</odoo>
+ Role-based billing authorization<br/>
+                    •<i class="fa fa-line-chart"/>
+ Budget variance analysis and forecasting<br/>
+                    •<i class="fa fa-mobile"/>
+ Mobile-optimized budget management
+</p>
+</field>
+</record>
+</data>
 </odoo>

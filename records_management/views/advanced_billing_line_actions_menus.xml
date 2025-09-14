@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Action for simple views -->
+    
+    <data><!-- Action for simple views -->
     <record id="advanced_billing_line_action_simple" model="ir.actions.act_window">
         <field name="name">Simple Billing Lines</field>
         <field name="res_model">advanced.billing.line</field>
@@ -32,4 +33,5 @@
     <menuitem id="advanced_billing_line_menu_simple" name="Simple View" parent="advanced_billing_line_menu_root" action="advanced_billing_line_action_simple" sequence="1"/>
     <menuitem id="advanced_billing_line_menu_detailed" name="Detailed View" parent="advanced_billing_line_menu_root" action="advanced_billing_line_action_detailed" sequence="2"/>
 
+    </data>
 </odoo>

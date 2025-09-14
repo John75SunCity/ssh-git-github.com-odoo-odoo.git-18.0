@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <data>
 <!-- List view for base.rate -->
     <record id="records_deletion_request_enhanced_view_tree" model="ir.ui.view">
-        <field name="name">records.deletion.request.view.tree</field>
-        <field name="model">records.deletion.request</field>
+        <field name="name">records.deletion.request.enhanced.view.tree</field>
+        <field name="model">records.deletion.request.enhanced</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -14,10 +15,10 @@
 
     <!-- Form view for base.rate -->
     <record id="records_deletion_request_enhanced_view_form" model="ir.ui.view">
-        <field name="name">records.deletion.request.view.form</field>
-        <field name="model">records.deletion.request</field>
+        <field name="name">records.deletion.request.enhanced.view.form</field>
+        <field name="model">records.deletion.request.enhanced</field>
         <field name="arch" type="xml">
-            <form string="Records Deletion Request">
+            <form string="Records Deletion Request Enhanced">
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
@@ -32,8 +33,8 @@
 
     <!-- Search view for base.rate -->
     <record id="records_deletion_request_enhanced_view_search" model="ir.ui.view">
-        <field name="name">records.deletion.request.view.search</field>
-        <field name="model">records.deletion.request</field>
+        <field name="name">records.deletion.request.enhanced.view.search</field>
+        <field name="model">records.deletion.request.enhanced</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -45,16 +46,17 @@
 
     <!-- List view for Action -->
     <record id="action_records_deletion_request_enhanced" model="ir.actions.act_window">
-        <field name="name">Records Deletion Request</field>
-        <field name="res_model">records.deletion.request</field>
+        <field name="name">Records Deletion Request Enhanced</field>
+        <field name="res_model">records.deletion.request.enhanced</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Records Deletion Request.
+                There is no examples click here to add new Records Deletion Request Enhanced.
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

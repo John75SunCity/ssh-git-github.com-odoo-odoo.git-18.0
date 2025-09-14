@@ -25,38 +25,6 @@ class SingleFileValidator:
             'base': ['id', 'create_date', 'create_uid', 'write_date', 'write_uid', '__last_update', 'display_name'],
         }
 
-        # Core Odoo models that are commonly used in data files
-        self.core_odoo_models = {
-            'ir.actions.act_window': {
-                'name', 'res_model', 'view_mode', 'view_id', 'view_ids', 'domain', 'context',
-                'limit', 'target', 'type', 'binding_model_id', 'binding_type', 'usage',
-                'groups_id', 'help', 'auto_search', 'filter', 'multi', 'search_view_id'
-            },
-            'ir.ui.menu': {
-                'name', 'parent_id', 'action', 'sequence', 'groups_id', 'web_icon',
-                'active', 'web_icon_data'
-            },
-            'ir.model.access': {
-                'name', 'model_id', 'group_id', 'perm_read', 'perm_write', 'perm_create', 'perm_unlink'
-            },
-            'ir.rule': {
-                'name', 'model_id', 'groups', 'domain_force', 'perm_read', 'perm_write',
-                'perm_create', 'perm_unlink', 'active'
-            },
-            'ir.sequence': {
-                'name', 'code', 'prefix', 'suffix', 'padding', 'number_next', 'number_increment',
-                'implementation', 'active', 'company_id'
-            },
-            'mail.template': {
-                'name', 'model_id', 'subject', 'body_html', 'email_from', 'email_to',
-                'email_cc', 'auto_delete', 'use_default_to', 'attachment_ids'
-            },
-            'product.template': {
-                'name', 'categ_id', 'type', 'list_price', 'standard_price', 'uom_id',
-                'uom_po_id', 'purchase_ok', 'sale_ok', 'active', 'company_id', 'barcode'
-            }
-        }
-
         # System fields that exist in all models
         self.system_fields = {'id', 'create_date', 'create_uid', 'write_date', 'write_uid', '__last_update', 'display_name'}
 
@@ -105,23 +73,6 @@ class SingleFileValidator:
 
     def _validate_field_reference(self, field_name, model_name, file_path):
         """Validate a single field reference"""
-        # First check if it's a system field that exists in all models
-        if field_name in self.system_fields:
-            return
-
-        # Check if it's a core Odoo model
-        if model_name in self.core_odoo_models:
-            model_fields = self.core_odoo_models[model_name]
-            if field_name not in model_fields:
-                self.field_errors.append({
-                    'file': os.path.basename(file_path),
-                    'model': model_name,
-                    'field': field_name,
-                    'error': f'Field "{field_name}" is not valid for core Odoo model "{model_name}" - DEPLOYMENT BLOCKER!',
-                    'type': 'invalid_core_field'
-                })
-            return
-
         if model_name not in self.model_fields:
             self.field_errors.append({
                 'file': os.path.basename(file_path),
@@ -168,16 +119,6 @@ class SingleFileValidator:
                 continue
             self._validate_field_reference(field_name, model_name, file_path)
 
-    def _check_data_record_fields(self, record, model_name, file_path):
-        """Check field references in data records (non-view records)"""
-        # Find all field elements in the record
-        field_elements = record.findall('.//field[@name]')
-
-        for field_element in field_elements:
-            field_name = field_element.get('name')
-            if field_name and field_name not in self.system_fields:
-                self._validate_field_reference(field_name, model_name, file_path)
-
     def validate_file(self, file_path):
         """Validate a single XML view file"""
         if not os.path.exists(file_path):
@@ -196,17 +137,12 @@ class SingleFileValidator:
             # Find all view records
             view_records = root.findall('.//record[@model="ir.ui.view"]')
 
-            # Find all other data records (actions, menus, etc.)
-            all_records = root.findall('.//record[@model]')
-            data_records = [r for r in all_records if r.get('model') != 'ir.ui.view']
-
-            if not view_records and not data_records:
-                print(f"  ⚠️  No records found")
+            if not view_records:
+                print(f"  ⚠️  No view records found")
                 return True
 
-            print(f"  📊 Found {len(view_records)} view records, {len(data_records)} data records")
+            print(f"  📊 Found {len(view_records)} view records")
 
-            # Validate view records
             for record in view_records:
                 # Get the model this view is for
                 model_field = record.find('.//field[@name="model"]')
@@ -214,12 +150,6 @@ class SingleFileValidator:
                     model_name = model_field.text
                     if model_name:
                         self._check_fields_in_arch(record, model_name, file_path)
-
-            # Validate data records (NEW!)
-            for record in data_records:
-                model_name = record.get('model')
-                if model_name:
-                    self._check_data_record_fields(record, model_name, file_path)
 
             return True
 

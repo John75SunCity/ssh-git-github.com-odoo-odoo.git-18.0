@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List View -->
+    
+    <data><!-- List View -->
     <record id="pickup_location_view_tree" model="ir.ui.view">
         <field name="name">pickup.location.view.tree</field>
         <field name="model">pickup.location</field>
@@ -64,4 +65,5 @@
         <field name="view_mode">list,form</field>
     </record>
 
+    </data>
 </odoo>

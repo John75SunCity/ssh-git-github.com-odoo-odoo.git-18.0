@@ -21,12 +21,6 @@ class RecordsDepartment(models.Model):
     # Batch 3 label disambiguation
     description = fields.Text(string='Department Description')
 
-    # Contact information fields
-    email = fields.Char(string='Email')
-    phone = fields.Char(string='Phone')
-    is_primary = fields.Boolean(string='Is Primary Department', default=False)
-    storage_start_date = fields.Date(string='Storage Start Date')
-
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================

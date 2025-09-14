@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- List view for route.optimizer -->
+
+    <data><!-- List view for route.optimizer -->
     <record id="route_optimizer_view_tree" model="ir.ui.view">
         <field name="name">route.optimizer.view.tree</field>
         <field name="model">route.optimizer</field>
@@ -57,4 +58,5 @@
     </field>
     </record>
 
+    </data>
 </odoo>

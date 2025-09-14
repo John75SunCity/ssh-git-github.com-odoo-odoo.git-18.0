@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- ============================================================================ -->
+
+    <data><!-- ============================================================================ -->
 <!--        <field name="domain">[('date_deadline', '&lt;', context_today.strftime('%Y-%m-%d')), ('stage_id.name', '!=', 'Completed'), ('project_id.name', 'ilike', 'work order')]</field>UNIFIED WORK ORDER DASHBOARD -->
 <!-- ============================================================================ -->
 
@@ -154,4 +155,5 @@
         <field name="context">{'search_default_open': 1}</field>
     </record>
 
+    </data>
 </odoo>

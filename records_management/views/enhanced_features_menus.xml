@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Enhanced Features Menu Structure -->
+    
+    <data><!-- Enhanced Features Menu Structure -->
 
     <!-- Main Enhanced Features Menu -->
     <menuitem id="menu_enhanced_features" name="Enhanced Features" parent="records_management.menu_records_management_root" sequence="100" groups="records_management.group_records_manager"/>
@@ -39,4 +40,5 @@
     <!-- FSM Analytics -->
     <menuitem id="menu_fsm_analytics" name="FSM Analytics" parent="menu_analytics_reporting" sequence="30" action="action_fsm_analytics" groups="records_management.group_records_manager"/>
 
+    </data>
 </odoo>

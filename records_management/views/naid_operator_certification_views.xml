@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List View -->
+    
+    <data><!-- List View -->
     <record id="naid_operator_certification_view_tree" model="ir.ui.view">
         <field name="name">naid.operator.certification.view.tree</field>
         <field name="model">naid.operator.certification</field>
@@ -103,4 +104,5 @@ invisible="status not in ('expired', 'active')"
         <field name="view_mode">list,form</field>
     </record>
 
+    </data>
 </odoo>

@@ -1,131 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <data>
 <!-- List view for records.survey.user.input -->
-    <record id="records_survey_user_input_view_tree" model="ir.ui.view">
+<record id="records_survey_user_input_view_tree" model="ir.ui.view">
         <field name="name">records.survey.user.input.view.list</field>
         <field name="model">records.survey.user.input</field>
         <field name="arch" type="xml">
-        <list>
-        <field name="name"/>
-        <field name="records_partner_id"/>
-        <field name="records_service_type"/>
-        <field name="sentiment_category"/>
-        <field name="feedback_priority"/>
-        <field name="state"/>
-        <field name="response_date"/>
-        <field name="requires_followup"/>
-        </list>
-    </field>
+            <list>
+                <field name="name"/>
+                <field name="records_partner_id"/>
+                <field name="records_service_type"/>
+                <field name="sentiment_category"/>
+                <field name="feedback_priority"/>
+                <field name="state"/>
+                <field name="response_date"/>
+                <field name="requires_followup"/>
+            </list>
+        </field>
     </record>
 
-<!-- Records Survey User Input Form View -->
+    <!-- Records Survey User Input Form View -->
     <record id="records_survey_user_input_view_form" model="ir.ui.view">
         <field name="name">records.survey.user.input.view.form</field>
         <field name="model">records.survey.user.input</field>
         <field name="arch" type="xml">
-        <form string="Records Survey User Input">
-            <header>
-        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,reviewed,processed,archived"/>
-            </header>
-            <sheet>
-                <div class="oe_button_box" name="button_box">
-                    <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
-        <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
-                    </button>
-                </div>
+            <form string="Records Survey User Input">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,reviewed,processed,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
 
-                <div class="oe_title">
-                    <label for="name"/>
-                    <h1>
-        <field name="name" placeholder="Survey Response Name..."/>
-                    </h1>
-                </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Survey Response Name..."/>
+                        </h1>
+                    </div>
 
-                <group>
                     <group>
-        <field name="survey_title"/>
-        <field name="response_date"/>
-        <field name="records_service_type"/>
-        <field name="records_partner_id"/>
+                        <group>
+                            <field name="survey_title"/>
+                            <field name="response_date"/>
+                            <field name="records_service_type"/>
+                            <field name="records_partner_id"/>
+                        </group>
+                        <group>
+                            <field name="sentiment_score"/>
+                            <field name="sentiment_category"/>
+                            <field name="feedback_priority"/>
+                            <field name="requires_followup"/>
+                        </group>
                     </group>
-                    <group>
-        <field name="sentiment_score"/>
-        <field name="sentiment_category"/>
-        <field name="feedback_priority"/>
-        <field name="requires_followup"/>
-                    </group>
-                </group>
 
-                <notebook>
-                    <page string="Related Records" name="related_records">
-                        <group>
-        <field name="related_container_id"/>
-        <field name="related_pickup_request_id"/>
-        <field name="related_destruction_id"/>
-                        </group>
-                    </page>
+                    <notebook>
+                        <page string="Related Records" name="related_records">
+                            <group>
+                                <field name="related_container_id"/>
+                                <field name="related_pickup_request_id"/>
+                                <field name="related_destruction_id"/>
+                            </group>
+                        </page>
 
-                    <page string="Follow-up" name="followup">
-                        <group>
-        <field name="followup_assigned_to_id"/>
-        <field name="followup_status"/>
-                        </group>
-                    </page>
+                        <page string="Follow-up" name="followup">
+                            <group>
+                                <field name="followup_assigned_to_id"/>
+                                <field name="followup_status"/>
+                            </group>
+                        </page>
 
-                    <page string="System Info" name="system_info">
-                        <group>
-        <field name="company_id"/>
-        <field name="user_id"/>
-                        </group>
-                    </page>
-                </notebook>
-            </sheet>
-            <div class="oe_chatter">
-        <field name="message_follower_ids" groups="base.group_user"/>
-        <field name="activity_ids"/>
-        <field name="message_ids"/>
-            </div>
-        </form>
-    </field>
+                        <page string="System Info" name="system_info">
+                            <group>
+                                <field name="company_id"/>
+                                <field name="user_id"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
     </record>
 
-<!-- Records Survey User Input Search View -->
+    <!-- Records Survey User Input Search View -->
     <record id="records_survey_user_input_view_search" model="ir.ui.view">
         <field name="name">records.survey.user.input.view.search</field>
         <field name="model">records.survey.user.input</field>
         <field name="arch" type="xml">
-        <search>
-        <field name="name"/>
-        <field name="records_partner_id"/>
-        <field name="survey_title"/>
-        <field name="records_service_type"/>
+            <search>
+                <field name="name"/>
+                <field name="records_partner_id"/>
+                <field name="survey_title"/>
+                <field name="records_service_type"/>
 
-            <filter string="Active" name="active" domain="[('active','=',True)]"/>
-            <separator/>
-            <filter string="Requires Follow-up" name="requires_followup" domain="[('requires_followup','=',True)]"/>
-            <filter string="High Priority" name="high_priority" domain="[('feedback_priority','in',['high','urgent'])]"/>
-            <separator/>
-            <filter string="Positive Sentiment" name="positive" domain="[('sentiment_category','in',['positive','very_positive'])]"/>
-            <filter string="Negative Sentiment" name="negative" domain="[('sentiment_category','in',['negative','very_negative'])]"/>
-            <separator/>
-            <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
-            <filter string="Submitted" name="submitted" domain="[('state','=','submitted')]"/>
-            <filter string="Reviewed" name="reviewed" domain="[('state','=','reviewed')]"/>
+                <filter string="Active" name="active" domain="[('active','=',True)]"/>
+                <separator/>
+                <filter string="Requires Follow-up" name="requires_followup" domain="[('requires_followup','=',True)]"/>
+                <filter string="High Priority" name="high_priority" domain="[('feedback_priority','in',['high','urgent'])]"/>
+                <separator/>
+                <filter string="Positive Sentiment" name="positive" domain="[('sentiment_category','in',['positive','very_positive'])]"/>
+                <filter string="Negative Sentiment" name="negative" domain="[('sentiment_category','in',['negative','very_negative'])]"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Submitted" name="submitted" domain="[('state','=','submitted')]"/>
+                <filter string="Reviewed" name="reviewed" domain="[('state','=','reviewed')]"/>
 
-            <group expand="1" string="Group By">
-                <filter string="Customer" name="group_partner" domain="[]" context="{'group_by':'records_partner_id'}"/>
-                <filter string="Service Type" name="group_service" domain="[]" context="{'group_by':'records_service_type'}"/>
-                <filter string="Sentiment" name="group_sentiment" domain="[]" context="{'group_by':'sentiment_category'}"/>
-                <filter string="Priority" name="group_priority" domain="[]" context="{'group_by':'feedback_priority'}"/>
-                <filter string="Status" name="group_status" domain="[]" context="{'group_by':'state'}"/>
-                <filter string="Response Date" name="group_date" domain="[]" context="{'group_by':'response_date'}"/>
-            </group>
-        </search>
-    </field>
+                <group expand="1" string="Group By">
+                    <filter string="Customer" name="group_partner" domain="[]" context="{'group_by':'records_partner_id'}"/>
+                    <filter string="Service Type" name="group_service" domain="[]" context="{'group_by':'records_service_type'}"/>
+                    <filter string="Sentiment" name="group_sentiment" domain="[]" context="{'group_by':'sentiment_category'}"/>
+                    <filter string="Priority" name="group_priority" domain="[]" context="{'group_by':'feedback_priority'}"/>
+                    <filter string="Status" name="group_status" domain="[]" context="{'group_by':'state'}"/>
+                    <filter string="Response Date" name="group_date" domain="[]" context="{'group_by':'response_date'}"/>
+                </group>
+            </search>
+        </field>
     </record>
 
-<!-- Action records.survey.user.input -->
+    <!-- Action records.survey.user.input -->
     <record id="action_records_survey_user_input" model="ir.actions.act_window">
         <field name="name">Survey Responses</field>
         <field name="res_model">records.survey.user.input</field>
@@ -133,14 +134,15 @@
         <field name="domain">[]</field>
         <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-            Click to create a new survey response.
-        </p>
-        <p>
-            Manage customer feedback and survey responses integrated with your Records Management system.
-            Track sentiment analysis, service evaluations, and follow-up actions.
-        </p>
-    </field>
+            <p class="oe_view_nocontent_create">
+                Click to create a new survey response.
+            </p>
+            <p>
+                Manage customer feedback and survey responses integrated with your Records Management system.
+                Track sentiment analysis, service evaluations, and follow-up actions.
+            </p>
+        </field>
     </record>
+</data>
 
 </odoo>

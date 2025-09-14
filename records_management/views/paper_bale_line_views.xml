@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List View -->
+    
+    <data><!-- List View -->
     <record id="paper_bale_line_view_tree" model="ir.ui.view">
         <field name="name">paper.bale.line.view.tree</field>
         <field name="model">paper.bale.line</field>
@@ -58,4 +59,5 @@
         <field name="view_mode">list,form</field>
     </record>
 
+    </data>
 </odoo>

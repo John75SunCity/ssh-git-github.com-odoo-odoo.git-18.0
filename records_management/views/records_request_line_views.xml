@@ -1,97 +1,107 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <record id="records_request_line_view_tree" model="ir.ui.view">
-        <field name="name">records.request.line.view.tree</field>
-        <field name="model">records.request.line</field>
+    <data>
+        <!-- List View -->
+        <record id="records_request_line_view_tree" model="ir.ui.view">
+            <field name="name">records.request.line.view.tree</field>
+            <field name="model">records.request.line</field>
         <field name="arch" type="xml">
-        <list decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='done'" decoration-muted="state=='cancelled'">
-        <field name="request_id" />
-        <field name="partner_id" />
-        <field name="document_id" />
-        <field name="box_id" />
-        <field name="container_id" />
-        <field name="request_type_id" />
-        <field name="state" widget="badge" />
-        <field name="company_id" groups="base.group_multi_company" />
-        </list>
-    </field>
-    </record>
+                <list decoration-info="state=='draft'"
+                      decoration-warning="state=='in_progress'"
+                      decoration-success="state=='done'"
+                      decoration-muted="state=='cancelled'">
+                    <field name="request_id"/>
+                    <field name="partner_id"/>
+                    <field name="document_id"/>
+                    <field name="box_id"/>
+                    <field name="container_id"/>
+                    <field name="request_type_id"/>
+                    <field name="state" widget="badge"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
 
-
-    <record id="records_request_line_view_form" model="ir.ui.view">
-        <field name="name">records.request.line.view.form</field>
-        <field name="model">records.request.line</field>
+        <!-- Form View -->
+        <record id="records_request_line_view_form" model="ir.ui.view">
+            <field name="name">records.request.line.view.form</field>
+            <field name="model">records.request.line</field>
         <field name="arch" type="xml">
-        <form>
-            <sheet>
-                <group>
-                    <group name="request_info">
-        <field name="request_id" />
-        <field name="partner_id" />
-        <field name="request_type_id" />
-        <field name="state" />
+                <form>
+                    <sheet>
+                        <group>
+                            <group name="request_info">
+                                <field name="request_id"/>
+                                <field name="partner_id"/>
+                                <field name="request_type_id"/>
+                                <field name="state"/>
+                            </group>
+                            <group name="item_info">
+                                <field name="document_id"/>
+                                <field name="box_id"/>
+                                <field name="container_id"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="records_request_line_view_search" model="ir.ui.view">
+            <field name="name">records.request.line.view.search</field>
+            <field name="model">records.request.line</field>
+        <field name="arch" type="xml">
+                <search>
+                    <field name="request_id"/>
+                    <field name="partner_id"/>
+                    <field name="document_id"/>
+                    <field name="container_id"/>
+                    <field name="box_id"/>
+
+                    <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                    <filter name="in_progress" string="In Progress" domain="[('state','=','in_progress')]"/>
+                    <filter name="done" string="Done" domain="[('state','=','done')]"/>
+
+                    <separator/>
+                    <filter name="my_company" string="My Company" domain="[('company_id','=',company_id)]"/>
+
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_request" string="Request" context="{'group_by':'request_id'}"/>
+                        <filter name="group_by_customer" string="Customer" context="{'group_by':'partner_id'}"/>
+                        <filter name="group_by_state" string="Status" context="{'group_by':'state'}"/>
+                        <filter name="group_by_request_type" string="Request Type" context="{'group_by':'request_type_id'}"/>
                     </group>
-                    <group name="item_info">
-        <field name="document_id" />
-        <field name="box_id" />
-        <field name="container_id" />
-        <field name="company_id" groups="base.group_multi_company" />
-                    </group>
-                </group>
-            </sheet>
-            <div class="oe_chatter">
-        <field name="message_follower_ids" />
-        <field name="message_ids" />
-            </div>
-        </form>
-    </field>
-    </record>
+                </search>
+            </field>
+        </record>
 
+        <!-- Action -->
+        <record id="records_request_line_action" model="ir.actions.act_window">
+            <field name="name">Request Lines</field>
+            <field name="res_model">records.request.line</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new request line!
+                </p>
+                <p>
+                    Request lines represent individual items within customer requests.
+                </p>
+            </field>
+        </record>
 
-    <record id="records_request_line_view_search" model="ir.ui.view">
-        <field name="name">records.request.line.view.search</field>
-        <field name="model">records.request.line</field>
-        <field name="arch" type="xml">
-        <search>
-        <field name="request_id" />
-        <field name="partner_id" />
-        <field name="document_id" />
-        <field name="container_id" />
-        <field name="box_id" />
+        <!-- Menu Item -->
+        <menuitem id="menu_records_request_line"
+                  name="Request Lines"
+                  parent="records_management.menu_records_main"
+                  action="records_request_line_action"
+                  sequence="25"/>
 
-            <filter name="draft" string="Draft" domain="[('state','=','draft')]" />
-            <filter name="in_progress" string="In Progress" domain="[('state','=','in_progress')]" />
-            <filter name="done" string="Done" domain="[('state','=','done')]" />
-
-            <separator />
-            <filter name="my_company" string="My Company" domain="[('company_id','=',company_id)]" />
-
-            <group expand="0" string="Group By">
-                <filter name="group_by_request" string="Request" context="{'group_by':'request_id'}" />
-                <filter name="group_by_customer" string="Customer" context="{'group_by':'partner_id'}" />
-                <filter name="group_by_state" string="Status" context="{'group_by':'state'}" />
-                <filter name="group_by_request_type" string="Request Type" context="{'group_by':'request_type_id'}" />
-            </group>
-        </search>
-    </field>
-    </record>
-
-
-    <record id="records_request_line_action" model="ir.actions.act_window">
-        <field name="name">Request Lines</field>
-        <field name="res_model">records.request.line</field>
-        <field name="view_mode">list,form</field>
-        <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-            Create a new request line!
-        </p>
-        <p>
-            Request lines represent individual items within customer requests.
-        </p>
-    </field>
-    </record>
-
-
-    <menuitem id="menu_records_request_line" name="Request Lines" parent="records_management.menu_records_management_root" action="records_request_line_action" sequence="25" />
+    </data>
 </odoo>

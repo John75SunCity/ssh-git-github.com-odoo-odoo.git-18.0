@@ -23,37 +23,7 @@ class RecordsDigitalScan(models.Model):
     document_id = fields.Many2one('records.document', string="Parent Document", required=True, ondelete='cascade', tracking=True)
     scanned_by_id = fields.Many2one('hr.employee', string='Scanned By', tracking=True)
 
-    # Source tracking - links to where the document was retrieved from
-    container_id = fields.Many2one('records.container', string="Source Container",
-                                 related='document_id.container_id', store=True, readonly=True,
-                                 help="Container where the document was physically stored")
-    location_id = fields.Many2one('stock.location', string="Source Location",
-                                related='document_id.location_id', store=True, readonly=True,
-                                help="Location where the document was physically stored")
-    series_id = fields.Many2one('records.series', string="File Series",
-                              related='document_id.series_id', store=True, readonly=True,
-                              help="File folder/series that the document belongs to")
-
-    # Manual override fields for N/A scenarios (when document doesn't originate from inventory)
-    override_container_id = fields.Many2one('records.container', string="Override Container",
-                                          help="Manual container assignment for non-inventory documents")
-    override_location_id = fields.Many2one('stock.location', string="Override Location",
-                                         help="Manual location assignment for non-inventory documents")
-    override_series_id = fields.Many2one('records.series', string="Override Series",
-                                       help="Manual series assignment for non-inventory documents")
-    is_non_inventory = fields.Boolean(string="Non-Inventory Scan",
-                                     help="Check if this scan is not from customer inventory files")
-
-    # Computed final values (use override if available, otherwise use document's values)
-    final_container_id = fields.Many2one('records.container', string="Container",
-                                        compute='_compute_final_source_fields', store=True,
-                                        help="Final container reference (override or document source)")
-    final_location_id = fields.Many2one('stock.location', string="Location",
-                                       compute='_compute_final_source_fields', store=True,
-                                       help="Final location reference (override or document source)")
-    final_series_id = fields.Many2one('records.series', string="Series",
-                                     compute='_compute_final_source_fields', store=True,
-                                     help="Final series reference (override or document source)")    # ============================================================================
+    # ============================================================================
     # STATE & LIFECYCLE
     # ============================================================================
     state = fields.Selection([
@@ -98,27 +68,6 @@ class RecordsDigitalScan(models.Model):
     # ============================================================================
     # COMPUTE & CONSTRAINTS
     # ============================================================================
-    @api.depends('override_container_id', 'override_location_id', 'override_series_id',
-                 'container_id', 'location_id', 'series_id', 'is_non_inventory')
-    def _compute_final_source_fields(self):
-        """Compute final source fields using override values when available."""
-        for record in self:
-            # Use override values if non-inventory or if override fields are set
-            if record.is_non_inventory or record.override_container_id:
-                record.final_container_id = record.override_container_id
-            else:
-                record.final_container_id = record.container_id
-
-            if record.is_non_inventory or record.override_location_id:
-                record.final_location_id = record.override_location_id
-            else:
-                record.final_location_id = record.location_id
-
-            if record.is_non_inventory or record.override_series_id:
-                record.final_series_id = record.override_series_id
-            else:
-                record.final_series_id = record.series_id
-
     @api.depends('resolution', 'file_size')
     def _compute_scan_info(self):
         """Compute a display string for key scan information."""

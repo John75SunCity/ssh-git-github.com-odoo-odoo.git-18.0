@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- List view for Paper Bale -->
+
+    <data>
+<!-- List view for base.rate -->
     <record id="records_management_bale_view_tree" model="ir.ui.view">
-        <field name="name">paper.bale.view.tree</field>
-        <field name="model">paper.bale</field>
+        <field name="name">records_management.bale.view.tree</field>
+        <field name="model">records_management.bale</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -11,12 +13,12 @@
         </field>
     </record>
 
-    <!-- Form view for Paper Bale -->
+    <!-- Form view for base.rate -->
     <record id="records_management_bale_view_form" model="ir.ui.view">
-        <field name="name">paper.bale.view.form</field>
-        <field name="model">paper.bale</field>
+        <field name="name">records_management.bale.view.form</field>
+        <field name="model">records_management.bale</field>
         <field name="arch" type="xml">
-            <form string="Paper Bale">
+            <form string="Records_management Bale">
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
@@ -29,10 +31,10 @@
         </field>
     </record>
 
-    <!-- Search view for Paper Bale -->
+    <!-- Search view for base.rate -->
     <record id="records_management_bale_view_search" model="ir.ui.view">
-        <field name="name">paper.bale.view.search</field>
-        <field name="model">paper.bale</field>
+        <field name="name">records_management.bale.view.search</field>
+        <field name="model">records_management.bale</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -42,17 +44,19 @@
         </field>
     </record>
 
-    <!-- Action for Paper Bale -->
+    <!-- List view for Action -->
     <record id="action_records_management_bale" model="ir.actions.act_window">
-        <field name="name">Paper Bale</field>
-        <field name="res_model">paper.bale</field>
+        <field name="name">Records_management Bale</field>
+        <field name="res_model">records_management.bale</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Paper Bale.
+                There is no examples click here to add new Records_management Bale.
             </p>
         </field>
     </record>
+</data>
+
 </odoo>

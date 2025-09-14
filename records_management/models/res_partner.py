@@ -36,12 +36,6 @@ class ResPartner(models.Model):
         compute='_compute_records_stats',
     )
 
-    negotiated_rates_count = fields.Integer(
-        string="Negotiated Rates Count",
-        compute='_compute_negotiated_rates_count',
-        help="Number of negotiated rates for this customer"
-    )
-
     destruction_address_id = fields.Many2one('res.partner', string='Destruction Address')
 
     # =========================================================================
@@ -106,171 +100,6 @@ class ResPartner(models.Model):
     )
 
     # ============================================================================
-    # TRANSITORY FIELD CONFIGURATION FIELDS
-    # ============================================================================
-    transitory_field_config_id = fields.Many2one(
-        'transitory.field.config',
-        string="Transitory Field Configuration",
-        help="Configuration for transitory fields display"
-    )
-    field_label_config_id = fields.Many2one(
-        'field.label.config',
-        string="Field Label Configuration",
-        help="Configuration for field labels"
-    )
-    allow_transitory_items = fields.Boolean(
-        string="Allow Transitory Items",
-        default=False,
-        help="Whether this partner can have transitory items"
-    )
-    max_transitory_items = fields.Integer(
-        string="Max Transitory Items",
-        default=0,
-        help="Maximum number of transitory items allowed"
-    )
-    active_transitory_items = fields.Integer(
-        string="Active Transitory Items",
-        compute='_compute_transitory_stats',
-        help="Number of currently active transitory items"
-    )
-    total_transitory_items = fields.Integer(
-        string="Total Transitory Items",
-        compute='_compute_transitory_stats',
-        help="Total number of transitory items ever created"
-    )
-    customized_label_count = fields.Integer(
-        string="Customized Label Count",
-        compute='_compute_transitory_stats',
-        help="Number of customized labels"
-    )
-    required_field_count = fields.Integer(
-        string="Required Field Count",
-        compute='_compute_transitory_stats',
-        help="Number of required fields in configuration"
-    )
-    visible_field_count = fields.Integer(
-        string="Visible Field Count",
-        compute='_compute_transitory_stats',
-        help="Number of visible fields in configuration"
-    )
-
-    # Field requirement flags
-    require_client_reference = fields.Boolean(string="Require Client Reference", default=False)
-    require_confidentiality = fields.Boolean(string="Require Confidentiality", default=False)
-    require_container_number = fields.Boolean(string="Require Container Number", default=False)
-    require_content_description = fields.Boolean(string="Require Content Description", default=False)
-    require_date_from = fields.Boolean(string="Require Date From", default=False)
-    require_date_to = fields.Boolean(string="Require Date To", default=False)
-    require_description = fields.Boolean(string="Require Description", default=False)
-    require_destruction_date = fields.Boolean(string="Require Destruction Date", default=False)
-    require_project_code = fields.Boolean(string="Require Project Code", default=False)
-    require_record_type = fields.Boolean(string="Require Record Type", default=False)
-    require_sequence_from = fields.Boolean(string="Require Sequence From", default=False)
-    require_sequence_to = fields.Boolean(string="Require Sequence To", default=False)
-
-    # Field display flags
-    show_authorized_by = fields.Boolean(string="Show Authorized By", default=True)
-    show_client_reference = fields.Boolean(string="Show Client Reference", default=True)
-    show_compliance_notes = fields.Boolean(string="Show Compliance Notes", default=True)
-    show_confidentiality = fields.Boolean(string="Show Confidentiality", default=True)
-    show_container_number = fields.Boolean(string="Show Container Number", default=True)
-    show_content_description = fields.Boolean(string="Show Content Description", default=True)
-    show_created_by_dept = fields.Boolean(string="Show Created By Dept", default=True)
-    show_date_ranges = fields.Boolean(string="Show Date Ranges", default=True)
-    show_description = fields.Boolean(string="Show Description", default=True)
-    show_destruction_date = fields.Boolean(string="Show Destruction Date", default=True)
-    show_file_count = fields.Boolean(string="Show File Count", default=True)
-    show_filing_system = fields.Boolean(string="Show Filing System", default=True)
-    show_project_code = fields.Boolean(string="Show Project Code", default=True)
-    show_record_type = fields.Boolean(string="Show Record Type", default=True)
-    show_sequence_ranges = fields.Boolean(string="Show Sequence Ranges", default=True)
-    show_size_estimate = fields.Boolean(string="Show Size Estimate", default=True)
-    show_special_handling = fields.Boolean(string="Show Special Handling", default=True)
-    show_weight_estimate = fields.Boolean(string="Show Weight Estimate", default=True)
-
-    # Field labels (customizable)
-    label_authorized_by = fields.Char(string="Label: Authorized By", default="Authorized By")
-    label_client_reference = fields.Char(string="Label: Client Reference", default="Client Reference")
-    label_compliance_notes = fields.Char(string="Label: Compliance Notes", default="Compliance Notes")
-    label_confidentiality = fields.Char(string="Label: Confidentiality", default="Confidentiality")
-    label_container_number = fields.Char(string="Label: Container Number", default="Container Number")
-    label_content_description = fields.Char(string="Label: Content Description", default="Content Description")
-    label_created_by_dept = fields.Char(string="Label: Created By Dept", default="Created By Department")
-    label_date_from = fields.Char(string="Label: Date From", default="Date From")
-    label_date_to = fields.Char(string="Label: Date To", default="Date To")
-    label_destruction_date = fields.Char(string="Label: Destruction Date", default="Destruction Date")
-    label_file_count = fields.Char(string="Label: File Count", default="File Count")
-    label_filing_system = fields.Char(string="Label: Filing System", default="Filing System")
-    label_folder_type = fields.Char(string="Label: Folder Type", default="Folder Type")
-    label_hierarchy_display = fields.Char(string="Label: Hierarchy Display", default="Hierarchy Display")
-    label_item_description = fields.Char(string="Label: Item Description", default="Item Description")
-    label_parent_container = fields.Char(string="Label: Parent Container", default="Parent Container")
-    label_project_code = fields.Char(string="Label: Project Code", default="Project Code")
-    label_record_type = fields.Char(string="Label: Record Type", default="Record Type")
-    label_sequence_from = fields.Char(string="Label: Sequence From", default="Sequence From")
-    label_sequence_to = fields.Char(string="Label: Sequence To", default="Sequence To")
-    label_size_estimate = fields.Char(string="Label: Size Estimate", default="Size Estimate")
-    label_special_handling = fields.Char(string="Label: Special Handling", default="Special Handling")
-    label_weight_estimate = fields.Char(string="Label: Weight Estimate", default="Weight Estimate")
-
-    # Additional fields from various views
-    total_records_containers = fields.Integer(
-        string="Total Records Containers",
-        compute='_compute_records_stats',
-        help="Total number of records containers"
-    )
-    key_restriction_status = fields.Selection([
-        ('none', 'No Restrictions'),
-        ('temporary', 'Temporary Restriction'),
-        ('permanent', 'Permanent Restriction')
-    ], string="Key Restriction Status", default='none')
-    key_issuance_allowed = fields.Boolean(
-        string="Key Issuance Allowed",
-        default=True,
-        help="Whether key issuance is allowed for this partner"
-    )
-    key_restriction_reason = fields.Text(
-        string="Key Restriction Reason",
-        help="Reason for key restriction if applicable"
-    )
-
-    # Additional key restriction fields from bin_unlock_service_views.xml
-    key_restriction_date = fields.Date(
-        string="Key Restriction Date",
-        help="Date when key restriction was imposed"
-    )
-    key_restriction_approved_by_id = fields.Many2one(
-        'res.users',
-        string="Key Restriction Approved By",
-        help="User who approved the key restriction"
-    )
-    restricted_unlock_count = fields.Integer(
-        string="Restricted Unlock Count",
-        compute='_compute_unlock_service_stats',
-        store=True,
-        help="Number of unlocks performed while under restriction"
-    )
-    key_restriction_notes = fields.Text(
-        string="Key Restriction Notes",
-        help="Additional notes about the key restriction"
-    )
-    key_restriction_history_ids = fields.One2many(
-        'key.restriction.history',
-        'partner_id',
-        string="Key Restriction History",
-        help="History of key restrictions for this partner"
-    )
-    key_restriction_history_count = fields.Integer(
-        string="Key Restriction History Count",
-        compute='_compute_key_restriction_stats',
-        help="Number of key restriction history records"
-    )
-    approved_by = fields.Char(
-        string="Approved By",
-        help="Name or identifier of approver"
-    )
-
-    # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
     @api.depends('department_ids')
@@ -302,24 +131,6 @@ class ResPartner(models.Model):
         for partner in self:
             partner.container_count = container_map.get(partner.id, 0)
             partner.document_count = document_map.get(partner.id, 0)
-            partner.total_records_containers = partner.container_count  # Same as container_count
-
-    def _compute_negotiated_rates_count(self):
-        """Compute the count of negotiated rates for the partner."""
-        if not self.env['customer.negotiated.rate']._table_exists():
-            for partner in self:
-                partner.negotiated_rates_count = 0
-            return
-
-        rates_data = self.env['customer.negotiated.rate']._read_group(
-            [('partner_id', 'in', self.ids)],
-            ['partner_id'],
-            ['__count']
-        )
-        rates_map = {item['partner_id'][0]: item['__count'] for item in rates_data}
-
-        for partner in self:
-            partner.negotiated_rates_count = rates_map.get(partner.id, 0)
 
     # =========================================================================
     # COMPUTE: BIN KEY STATS
@@ -385,96 +196,6 @@ class ResPartner(models.Model):
             partner.unlock_service_count = svc_count_map.get(partner.id, 0)
             partner.total_unlock_charges = svc_cost_map.get(partner.id, 0.0)
 
-    def _compute_transitory_stats(self):
-        """Compute transitory field configuration statistics"""
-        for partner in self:
-            # Initialize default values
-            partner.active_transitory_items = 0
-            partner.total_transitory_items = 0
-            partner.customized_label_count = 0
-            partner.required_field_count = 0
-            partner.visible_field_count = 0
-
-            # Count required fields
-            required_fields = [
-                partner.require_client_reference,
-                partner.require_confidentiality,
-                partner.require_container_number,
-                partner.require_content_description,
-                partner.require_date_from,
-                partner.require_date_to,
-                partner.require_description,
-                partner.require_destruction_date,
-                partner.require_project_code,
-                partner.require_record_type,
-                partner.require_sequence_from,
-                partner.require_sequence_to
-            ]
-            partner.required_field_count = sum(1 for req in required_fields if req)
-
-            # Count visible fields
-            visible_fields = [
-                partner.show_authorized_by,
-                partner.show_client_reference,
-                partner.show_compliance_notes,
-                partner.show_confidentiality,
-                partner.show_container_number,
-                partner.show_content_description,
-                partner.show_created_by_dept,
-                partner.show_date_ranges,
-                partner.show_description,
-                partner.show_destruction_date,
-                partner.show_file_count,
-                partner.show_filing_system,
-                partner.show_project_code,
-                partner.show_record_type,
-                partner.show_sequence_ranges,
-                partner.show_size_estimate,
-                partner.show_special_handling,
-                partner.show_weight_estimate
-            ]
-            partner.visible_field_count = sum(1 for vis in visible_fields if vis)
-
-            # Count customized labels (non-default values)
-            default_labels = {
-                'label_authorized_by': 'Authorized By',
-                'label_client_reference': 'Client Reference',
-                'label_compliance_notes': 'Compliance Notes',
-                'label_confidentiality': 'Confidentiality',
-                'label_container_number': 'Container Number',
-                'label_content_description': 'Content Description',
-                'label_created_by_dept': 'Created By Department',
-                'label_date_from': 'Date From',
-                'label_date_to': 'Date To',
-                'label_destruction_date': 'Destruction Date',
-                'label_file_count': 'File Count',
-                'label_filing_system': 'Filing System',
-                'label_folder_type': 'Folder Type',
-                'label_hierarchy_display': 'Hierarchy Display',
-                'label_item_description': 'Item Description',
-                'label_parent_container': 'Parent Container',
-                'label_project_code': 'Project Code',
-                'label_record_type': 'Record Type',
-                'label_sequence_from': 'Sequence From',
-                'label_sequence_to': 'Sequence To',
-                'label_size_estimate': 'Size Estimate',
-                'label_special_handling': 'Special Handling',
-                'label_weight_estimate': 'Weight Estimate'
-            }
-
-            customized_count = 0
-            for field_name, default_value in default_labels.items():
-                if hasattr(partner, field_name):
-                    current_value = getattr(partner, field_name)
-                    if current_value and current_value != default_value:
-                        customized_count += 1
-            partner.customized_label_count = customized_count
-
-    def _compute_key_restriction_stats(self):
-        """Compute key restriction statistics"""
-        for partner in self:
-            partner.key_restriction_history_count = len(partner.key_restriction_history_ids)
-
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
@@ -512,18 +233,6 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Documents'),
             'res_model': 'records.document',
-            'view_mode': 'tree,form',
-            'domain': [('partner_id', '=', self.id)],
-            'context': {'default_partner_id': self.id}
-        }
-
-    def action_view_negotiated_rates(self):
-        """Opens the tree view of negotiated rates related to this partner."""
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Negotiated Rates'),
-            'res_model': 'customer.negotiated.rate',
             'view_mode': 'tree,form',
             'domain': [('partner_id', '=', self.id)],
             'context': {'default_partner_id': self.id}

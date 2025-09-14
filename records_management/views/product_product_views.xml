@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
+        <!--
+            PRODUCT VIEWS - Records Management Integration
 
-    <!--
-        PRODUCT VIEWS - Records Management Integration
+            This file provides integration views for products in the Records Management module.
+            Currently contains placeholder views for future product functionality.
 
-        This file provides integration views for products in the Records Management module.
-        Currently contains placeholder views for future product functionality.
+            Note: These views are currently disabled as they require proper inheritance setup
+            and specific product module integration requirements.
+        -->
 
-        Note: These views are currently disabled as they require proper inheritance setup
-        and specific product module integration requirements.
-    -->
+        <!-- Placeholder for future product integration -->
+        <!-- These views will be implemented when product module requirements are defined -->
 
-    <!-- Placeholder for future product integration -->
-    <!-- These views will be implemented when product module requirements are defined -->
-
+    </data>
 </odoo>

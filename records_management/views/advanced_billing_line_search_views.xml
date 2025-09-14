@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Search view for advanced.billing.line -->
+    
+    <data><!-- Search view for advanced.billing.line -->
     <record id="advanced_billing_line_view_search" model="ir.ui.view">
         <field name="name">advanced.billing.line.view.search</field>
         <field name="model">advanced.billing.line</field>
@@ -14,4 +15,5 @@
         </field>
     </record>
 
+    </data>
 </odoo>

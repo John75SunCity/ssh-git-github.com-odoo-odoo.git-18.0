@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List View -->
+    
+    <data><!-- List View -->
     <record id="inventory_item_type_view_tree" model="ir.ui.view">
         <field name="name">inventory.item.type.view.tree</field>
         <field name="model">inventory.item.type</field>
@@ -67,4 +68,5 @@
         sequence="10"/>
     -->
 
+    </data>
 </odoo>

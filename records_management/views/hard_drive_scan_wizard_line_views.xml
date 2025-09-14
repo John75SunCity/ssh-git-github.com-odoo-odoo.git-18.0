@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List View -->
+    
+    <data><!-- List View -->
     <record id="hard_drive_scan_wizard_line_view_tree" model="ir.ui.view">
         <field name="name">hard.drive.scan.wizard.line.view.tree</field>
         <field name="model">hard.drive.scan.wizard.line</field>
@@ -58,4 +59,5 @@
         sequence="10"/>
     -->
 
+    </data>
 </odoo>

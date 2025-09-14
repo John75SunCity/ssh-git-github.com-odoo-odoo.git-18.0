@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List View -->
+    
+    <data><!-- List View -->
     <record id="inventory_item_retrieval_line_view_tree" model="ir.ui.view">
         <field name="name">inventory.item.retrieval.line.tree</field>
         <field name="model">inventory.item.retrieval.line</field>
@@ -104,4 +105,5 @@
                 action="inventory_item_retrieval_line_action"
                 sequence="25"/>
 
+    </data>
 </odoo>

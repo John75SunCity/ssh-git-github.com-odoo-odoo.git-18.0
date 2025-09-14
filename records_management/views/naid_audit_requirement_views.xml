@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- NAID Audit Requirements Views -->
+    
+    <data><!-- NAID Audit Requirements Views -->
 
 <!-- List View -->
     <record id="naid_audit_requirement_view_tree" model="ir.ui.view">
@@ -250,4 +251,5 @@
     <menuitem id="naid_audit_requirement_menu" name="Audit Requirements" parent="naid_audit_menu" action="naid_audit_requirement_action" sequence="10"/>
     <menuitem id="naid_create_checklist_menu" name="Create Default Checklist" parent="naid_audit_menu" action="action_create_default_naid_checklist" sequence="5"/>
 
+    </data>
 </odoo>

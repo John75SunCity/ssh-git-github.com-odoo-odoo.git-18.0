@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List View -->
+    
+    <data><!-- List View -->
     <record id="portal_request_line_view_tree" model="ir.ui.view">
         <field name="name">portal.request.line.view.tree</field>
         <field name="model">portal.request.line</field>
@@ -64,4 +65,5 @@
         <field name="view_mode">list,form</field>
     </record>
 
+    </data>
 </odoo>

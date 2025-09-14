@@ -22,13 +22,7 @@ class MassViewFieldValidator:
         self.field_errors = []  # List of field validation errors
         self.accessibility_errors = []  # FontAwesome accessibility issues
         self.method_errors = []  # Missing method errors
-        self.xmlid_errors = []  # Missing XML ID reference errors
-        self.xml_syntax_errors = []  # XML syntax errors (NEW)
         self.manual_review = [] # Complex issues requiring manual review
-
-        # XML ID mappings
-        self.xml_ids = set()  # All defined XML IDs in the module
-        self.external_xml_ids = set()  # XML IDs from dependencies
 
         # Common inherited fields from base Odoo models
         self.inherited_fields = {
@@ -40,9 +34,6 @@ class MassViewFieldValidator:
         # System fields that exist in all models
         self.system_fields = {'id', 'create_date', 'create_uid', 'write_date', 'write_uid', '__last_update', 'display_name'}
 
-        # Load core Odoo module fields from manifest dependencies
-        self.core_odoo_fields = self._load_core_odoo_fields()
-
         # Field patterns that commonly need correction (for suggestion purposes only)
         self.common_corrections = {
             'status': 'state',
@@ -50,239 +41,8 @@ class MassViewFieldValidator:
             'container_id': 'container_ids',  # Many2one vs Many2many pattern
         }
 
-        # Load all model definitions and XML IDs
+        # Load all model definitions
         self._scan_model_definitions()
-        self._scan_xml_ids()
-
-    def _load_core_odoo_fields(self):
-        """Load essential core Odoo model fields that our module extends"""
-        core_fields = {
-            'res.config.settings': {
-                # Standard res.config.settings fields
-                'id', 'create_date', 'create_uid', 'write_date', 'write_uid',
-                'display_name', '__last_update',
-                # Configuration framework fields
-                'company_id', 'user_id', 'module_ids', 'config_parameter_ids',
-                # TransientModel specific fields
-                'active', 'sequence', 'name', 'state'
-            },
-            'res.partner': {
-                'id', 'name', 'display_name', 'email', 'phone', 'mobile',
-                'street', 'street2', 'city', 'zip', 'state_id', 'country_id',
-                'is_company', 'active', 'partner_type', 'company_id'
-            },
-            'maintenance.team': {
-                'id', 'name', 'display_name', 'active', 'company_id',
-                'member_ids', 'user_id', 'color', 'alias_id'
-            },
-            'project.task': {
-                'id', 'name', 'display_name', 'active', 'sequence', 'state',
-                'project_id', 'user_ids', 'tag_ids', 'priority', 'date_deadline',
-                'description', 'company_id'
-            },
-            'account.move': {
-                'id', 'name', 'display_name', 'state', 'move_type', 'partner_id',
-                'date', 'invoice_date', 'amount_total', 'company_id'
-            },
-            'product.template': {
-                'id', 'name', 'display_name', 'active', 'sequence', 'type',
-                'categ_id', 'list_price', 'standard_price', 'company_id'
-            },
-            'stock.location': {
-                'id', 'name', 'display_name', 'active', 'usage', 'location_id',
-                'company_id', 'barcode'
-            }
-        }
-        return core_fields
-
-    def _scan_xml_ids(self):
-        """Scan all XML files to build a database of available XML IDs"""
-        print("🔍 Scanning all XML files for XML ID definitions...")
-
-        # Core XML IDs that are always available from base Odoo
-        self.external_xml_ids.update([
-            'base.main_company', 'base.group_user', 'base.group_system', 'base.group_portal',
-            'portal.portal_menu', 'mail.menu_mail_message', 'stock.menu_stock_root',
-            'account.menu_finance', 'sale.menu_sale_root', 'project.menu_main_pm',
-            'hr.menu_hr_root', 'maintenance.menu_maintenance', 'fleet.menu_root',
-            'crm.crm_menu_root', 'purchase.menu_purchase_root', 'repair.menu_repair',
-            'website.main_menu'
-        ])
-
-        # Scan all XML files in the module
-        xml_files = []
-        for root, dirs, files in os.walk(self.base_path):
-            for file in files:
-                if file.endswith('.xml'):
-                    xml_files.append(os.path.join(root, file))
-
-        for xml_file in xml_files:
-            try:
-                tree = ET.parse(xml_file)
-                root = tree.getroot()
-
-                # Find all elements with id attributes
-                for elem in root.iter():
-                    if 'id' in elem.attrib:
-                        xml_id = elem.attrib['id']
-                        # Add both with and without module prefix
-                        self.xml_ids.add(xml_id)
-                        self.xml_ids.add(f"records_management.{xml_id}")
-
-            except ET.ParseError as e:
-                continue  # Skip malformed XML files
-
-        print(f"✅ Found {len(self.xml_ids)} XML IDs in module")
-
-    def _check_xml_id_references(self, content, file_path):
-        """Check for missing XML ID references in menuitem, action, inherit_id etc."""
-        errors = []
-
-        # Patterns to find XML ID references
-        patterns = [
-            (r'parent="([^"]+)"', 'parent'),
-            (r'action="([^"]+)"', 'action'),
-            (r'inherit_id="([^"]+)"', 'inherit_id'),
-            (r'ref="([^"]+)"', 'ref'),
-            (r'res_id="ref\(([^)]+)\)"', 'res_id_ref'),
-        ]
-
-        lines = content.split('\n')
-        for line_num, line in enumerate(lines, 1):
-            for pattern, ref_type in patterns:
-                matches = re.finditer(pattern, line)
-                for match in matches:
-                    xml_id = match.group(1).strip()
-
-                    # Skip if it's a variable or expression
-                    if '(' in xml_id or '+' in xml_id or xml_id.startswith('%('):
-                        continue
-
-                    # Check if XML ID exists
-                    if (xml_id not in self.xml_ids and
-                        xml_id not in self.external_xml_ids and
-                        not xml_id.startswith('__')):  # Skip dynamic IDs
-
-                        # Try to suggest alternatives
-                        suggestions = self._suggest_xml_id_alternatives(xml_id)
-                        suggestion_text = f" → Try: {suggestions[0]}" if suggestions else ""
-
-                        errors.append({
-                            'type': 'XML_ID',
-                            'file': file_path,
-                            'line': line_num,
-                            'error': f"Missing XML ID '{xml_id}' in {ref_type} reference{suggestion_text}",
-                            'context': line.strip()
-                        })
-
-        return errors
-
-    def _suggest_xml_id_alternatives(self, missing_id):
-        """Suggest alternative XML IDs based on similarity"""
-        suggestions = []
-        missing_lower = missing_id.lower()
-
-        # Look for similar XML IDs
-        for xml_id in self.xml_ids:
-            if (missing_lower in xml_id.lower() or
-                any(word in xml_id.lower() for word in missing_lower.split('_'))):
-                suggestions.append(xml_id)
-
-        return suggestions[:3]  # Return top 3 suggestions
-
-    def _load_core_odoo_fields(self):
-        """Load core Odoo module fields based on manifest dependencies"""
-        core_fields = {}
-
-        # Read manifest dependencies
-        manifest_path = os.path.join(self.base_path, '__manifest__.py')
-        if os.path.exists(manifest_path):
-            try:
-                with open(manifest_path, 'r', encoding='utf-8') as f:
-                    manifest_content = f.read()
-
-                # Extract dependencies from manifest
-                import ast
-                tree = ast.parse(manifest_content)
-                for node in ast.walk(tree):
-                    if isinstance(node, ast.Dict):
-                        for key, value in zip(node.keys, node.values):
-                            if (isinstance(key, ast.Constant) and key.value == 'depends' and
-                                isinstance(value, ast.List)):
-                                # Found the depends list
-                                dependencies = [item.value for item in value.elts if isinstance(item, ast.Constant)]
-                                break
-
-                # Define core Odoo model fields based on common dependencies
-                for dep in dependencies:
-                    if dep == 'maintenance':
-                        core_fields['maintenance.team'] = {
-                            'name', 'member_ids', 'color', 'company_id', 'partner_id', 'equipment_ids',
-                            'request_ids', 'maintenance_count', 'equipment_count', 'active'
-                        }
-                        core_fields['maintenance.request'] = {
-                            'name', 'description', 'request_date', 'owner_user_id', 'category_id',
-                            'equipment_id', 'maintenance_type', 'user_id', 'technician_user_id',
-                            'stage_id', 'priority', 'color', 'close_date', 'kanban_state',
-                            'archive', 'maintenance_team_id', 'duration', 'company_id'
-                        }
-                    elif dep == 'stock':
-                        core_fields['stock.location'] = {
-                            'name', 'complete_name', 'active', 'usage', 'location_id', 'child_ids',
-                            'comment', 'posx', 'posy', 'posz', 'parent_path', 'company_id',
-                            'scrap_location', 'return_location', 'removal_strategy_id'
-                        }
-                        core_fields['stock.quant'] = {
-                            'product_id', 'location_id', 'lot_id', 'package_id', 'owner_id',
-                            'quantity', 'reserved_quantity', 'company_id', 'in_date'
-                        }
-                    elif dep == 'product':
-                        core_fields['product.product'] = {
-                            'name', 'display_name', 'product_tmpl_id', 'active', 'default_code',
-                            'barcode', 'price', 'lst_price', 'standard_price', 'volume',
-                            'weight', 'sale_ok', 'purchase_ok', 'categ_id', 'company_id'
-                        }
-                    elif dep == 'account':
-                        core_fields['account.move'] = {
-                            'name', 'ref', 'state', 'move_type', 'partner_id', 'commercial_partner_id',
-                            'invoice_date', 'date', 'amount_total', 'amount_untaxed', 'amount_tax',
-                            'company_id', 'currency_id', 'invoice_line_ids', 'line_ids'
-                        }
-                    elif dep == 'sale':
-                        core_fields['sale.order'] = {
-                            'name', 'state', 'date_order', 'validity_date', 'partner_id',
-                            'partner_invoice_id', 'partner_shipping_id', 'amount_untaxed',
-                            'amount_tax', 'amount_total', 'currency_id', 'company_id',
-                            'order_line', 'user_id', 'team_id'
-                        }
-                    elif dep == 'hr':
-                        core_fields['hr.employee'] = {
-                            'name', 'active', 'company_id', 'user_id', 'resource_id',
-                            'job_id', 'job_title', 'department_id', 'manager_id', 'coach_id',
-                            'work_email', 'work_phone', 'mobile_phone', 'employee_type'
-                        }
-                    elif dep == 'project':
-                        core_fields['project.project'] = {
-                            'name', 'active', 'sequence', 'partner_id', 'user_id', 'date_start',
-                            'date', 'company_id', 'currency_id', 'task_count', 'task_ids',
-                            'color', 'favorite_user_ids', 'description'
-                        }
-                        core_fields['project.task'] = {
-                            'name', 'description', 'active', 'project_id', 'user_ids',
-                            'partner_id', 'stage_id', 'kanban_state', 'priority', 'sequence',
-                            'date_deadline', 'company_id', 'color', 'displayed_image_id'
-                        }
-                    elif dep == 'fleet':
-                        core_fields['fleet.vehicle'] = {
-                            'name', 'active', 'company_id', 'license_plate', 'vin_sn',
-                            'driver_id', 'model_id', 'brand_id', 'model_year', 'color',
-                            'state_id', 'location', 'seats', 'doors', 'fuel_type',
-                            'transmission', 'odometer', 'odometer_unit'
-                        }
-            except Exception as e:
-                print(f"Warning: Could not parse manifest dependencies: {e}")
-
-        return core_fields
 
     def _scan_model_definitions(self):
         """Scan all Python model files to extract field definitions"""
@@ -347,25 +107,15 @@ class MassViewFieldValidator:
 
     def _validate_field_reference(self, field_name, model_name, file_path):
         """Validate a single field reference"""
-        # First check if it's a system field that exists in all models
-        if field_name in self.system_fields:
-            return
-
-        # Check if the model exists in our scanned models
         if model_name not in self.model_fields:
-            # Check if it's a core Odoo model that we should know about
-            if model_name in self.core_odoo_fields:
-                # Add core Odoo model fields to our known models
-                self.model_fields[model_name] = self.core_odoo_fields[model_name]
-            else:
-                self.field_errors.append({
-                    'file': os.path.basename(file_path),
-                    'model': model_name,
-                    'field': field_name,
-                    'error': f'Model {model_name} not found in scanned models or core Odoo modules',
-                    'type': 'missing_model'
-                })
-                return
+            self.field_errors.append({
+                'file': os.path.basename(file_path),
+                'model': model_name,
+                'field': field_name,
+                'error': f'Model {model_name} not found in scanned models',
+                'type': 'missing_model'
+            })
+            return
 
         model_fields = self.model_fields[model_name]
 
@@ -395,64 +145,14 @@ class MassViewFieldValidator:
         # Get all content from arch field including child elements
         arch_content = ET.tostring(arch_field, encoding='unicode')
 
-        # Use regex to find all field references in the XML string WITH line numbers
-        lines = arch_content.split('\n')
-        for line_num, line in enumerate(lines, 1):
-            field_matches = re.finditer(r'<field[^>]*name=[\'"]([^\'"]+)[\'"]', line)
+        # Use regex to find all field references in the XML string
+        field_matches = re.findall(r'<field[^>]*name=[\'"]([^\'"]+)[\'"]', arch_content)
 
-            for match in field_matches:
-                field_name = match.group(1)
-                # Skip view structure fields and system fields
-                if field_name in self.system_fields or field_name == 'arch':
-                    continue
-
-                # Enhanced validation with line number
-                self._validate_field_reference_enhanced(field_name, model_name, file_path, line_num, line.strip())
-
-    def _validate_field_reference_enhanced(self, field_name, model_name, file_path, line_num, line_context):
-        """Enhanced field validation with better error reporting"""
-        # First check if it's a system field that exists in all models
-        if field_name in self.system_fields:
-            return
-
-        # Check if the model exists in our scanned models
-        if model_name not in self.model_fields:
-            # Check if it's a core Odoo model that we should know about
-            if model_name in self.core_odoo_fields:
-                # Add core Odoo model fields to our known models
-                self.model_fields[model_name] = self.core_odoo_fields[model_name]
-            else:
-                self.field_errors.append({
-                    'file': os.path.basename(file_path),
-                    'model': model_name,
-                    'field': field_name,
-                    'line': line_num,
-                    'context': line_context,
-                    'error': f'Field "{field_name}" does not exist in model "{model_name}" - Deployment Error Risk!',
-                    'type': 'missing_model'
-                })
-                return
-
-        model_fields = self.model_fields[model_name]
-
-        if field_name not in model_fields:
-            # Find similar field names
-            similar_fields = [f for f in model_fields if field_name.lower() in f.lower() or f.lower() in field_name.lower()]
-
-            # Check for common correction patterns
-            suggested_correction = self.common_corrections.get(field_name)
-
-            self.field_errors.append({
-                'file': os.path.basename(file_path),
-                'model': model_name,
-                'field': field_name,
-                'line': line_num,
-                'context': line_context,
-                'error': f'Field "{field_name}" does not exist in model "{model_name}" - DEPLOYMENT ERROR RISK!',
-                'similar_fields': similar_fields[:5],  # Show top 5 similar fields
-                'suggested_correction': suggested_correction,
-                'type': 'missing_field'
-            })
+        for field_name in field_matches:
+            # Skip view structure fields and system fields
+            if field_name in self.system_fields or field_name == 'arch':
+                continue
+            self._validate_field_reference(field_name, model_name, file_path)
 
     def _check_fontawesome_accessibility(self, content, file_path):
         """Check for FontAwesome icons missing title attributes"""
@@ -530,63 +230,6 @@ class MassViewFieldValidator:
         except Exception as e:
             pass  # Skip files that can't be processed
 
-    def _check_xml_syntax(self, file_path):
-        """Check XML syntax and report detailed errors with line numbers"""
-        try:
-            tree = ET.parse(file_path)
-            return []  # No syntax errors
-        except ET.ParseError as e:
-            # Extract line number and column from the error message
-            error_line = getattr(e, 'lineno', 0)
-            error_col = getattr(e, 'offset', 0)
-
-            # Try to read the problematic line for context
-            context_line = ""
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    lines = f.readlines()
-                    if error_line > 0 and error_line <= len(lines):
-                        context_line = lines[error_line - 1].strip()
-            except:
-                pass
-
-            return [{
-                'type': 'xml_syntax_error',
-                'file': os.path.basename(file_path),
-                'line': error_line,
-                'column': error_col,
-                'error': str(e),
-                'context': context_line,
-                'fix_suggestion': self._suggest_xml_fix(str(e))
-            }]
-        except Exception as e:
-            return [{
-                'type': 'xml_file_error',
-                'file': os.path.basename(file_path),
-                'line': 0,
-                'column': 0,
-                'error': f"Could not read XML file: {e}",
-                'context': "",
-                'fix_suggestion': "Check file encoding and permissions"
-            }]
-
-    def _suggest_xml_fix(self, error_message):
-        """Suggest fixes for common XML syntax errors"""
-        error_lower = error_message.lower()
-
-        if "opening and ending tag mismatch" in error_lower:
-            return "Check for missing closing tags or extra closing tags. Ensure all XML tags are properly paired."
-        elif "expected" in error_lower and ">" in error_lower:
-            return "Check for missing '>' character or malformed tag attributes."
-        elif "not well-formed" in error_lower:
-            return "Check for unescaped special characters (&, <, >) or malformed XML structure."
-        elif "unexpected end of file" in error_lower:
-            return "File may be truncated or missing closing tags."
-        elif "attribute" in error_lower:
-            return "Check attribute syntax - ensure quotes around values and proper spacing."
-        else:
-            return "Review XML structure and ensure proper formatting."
-
     def scan_all_views(self):
         """Scan all XML view files for field validation issues"""
         print("🔍 Scanning all XML view files for field references...")
@@ -600,12 +243,6 @@ class MassViewFieldValidator:
         print(f"📊 Found {len(view_files)} XML files to validate")
 
         for file_path in view_files:
-            # NEW: Check XML syntax FIRST before parsing
-            xml_syntax_errors = self._check_xml_syntax(file_path)
-            if xml_syntax_errors:
-                self.xml_syntax_errors.extend(xml_syntax_errors)
-                continue  # Skip further validation if XML is malformed
-
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
@@ -633,10 +270,6 @@ class MassViewFieldValidator:
                 # NEW: Check action method references
                 self._check_action_methods(content, file_path)
 
-                # NEW: Check XML ID references
-                xmlid_errors = self._check_xml_id_references(content, file_path)
-                self.xmlid_errors.extend(xmlid_errors)
-
             except ET.ParseError as e:
                 self.field_errors.append({
                     'file': os.path.basename(file_path),
@@ -659,17 +292,13 @@ class MassViewFieldValidator:
         total_field_errors = len(self.field_errors)
         total_accessibility_errors = len(self.accessibility_errors)
         total_method_errors = len(self.method_errors)
-        total_xmlid_errors = len(self.xmlid_errors)
-        total_xml_syntax_errors = len(self.xml_syntax_errors)  # NEW
-        total_errors = total_field_errors + total_accessibility_errors + total_method_errors + total_xmlid_errors + total_xml_syntax_errors
+        total_errors = total_field_errors + total_accessibility_errors + total_method_errors
         manual_reviews = len(self.manual_review)
 
         print(f"📊 Scan complete:")
         print(f"   - Field errors found: {total_field_errors}")
         print(f"   - FontAwesome accessibility errors: {total_accessibility_errors}")
         print(f"   - Missing method errors: {total_method_errors}")
-        print(f"   - XML ID reference errors: {total_xmlid_errors}")
-        print(f"   - XML syntax errors: {total_xml_syntax_errors}")  # NEW
         print(f"   - Total errors: {total_errors}")
         print(f"   - Manual review needed: {manual_reviews}")
         print(f"   - AUTO-FIXES DISABLED - Validation only mode")        # Group errors by file for targeted fixes
@@ -679,10 +308,6 @@ class MassViewFieldValidator:
         for error in self.accessibility_errors:
             errors_by_file[error['file']].append(error)
         for error in self.method_errors:
-            errors_by_file[error['file']].append(error)
-        for error in self.xmlid_errors:
-            errors_by_file[error['file']].append(error)
-        for error in self.xml_syntax_errors:
             errors_by_file[error['file']].append(error)
 
         # Save detailed report
@@ -695,8 +320,6 @@ class MassViewFieldValidator:
             f.write(f"Field errors found: {total_field_errors}\n")
             f.write(f"FontAwesome accessibility errors: {total_accessibility_errors}\n")
             f.write(f"Missing method errors: {total_method_errors}\n")
-            f.write(f"XML ID reference errors: {total_xmlid_errors}\n")
-            f.write(f"XML syntax errors: {total_xml_syntax_errors}\n")  # NEW
             f.write(f"Total errors: {total_errors}\n")
             f.write(f"Manual review needed: {manual_reviews}\n")
             f.write(f"AUTO-FIXES: DISABLED (Pure validation mode)\n\n")
@@ -739,18 +362,6 @@ class MassViewFieldValidator:
                                     f.write(f"    Available actions: {', '.join(error['available_actions'])}\n")
                                 f.write(f"    💡 Fix: Add method to {error['model']} or remove button\n")
 
-                            elif error_type == 'XML_ID':
-                                f.write(f"    Line: {error['line']}\n")
-                                f.write(f"    Error: {error['error']}\n")
-                                f.write(f"    Context: {error['context']}\n")
-                                f.write(f"    💡 Fix: Create missing XML ID or correct reference\n")
-
-                            elif error_type == 'xml_syntax_error':
-                                f.write(f"    Line: {error['line']}, Column: {error['column']}\n")
-                                f.write(f"    Error: {error['error']}\n")
-                                f.write(f"    Context: {error['context']}\n")
-                                f.write(f"    💡 Fix: {error['fix_suggestion']}\n")
-
                             f.write("\n")
 
             if self.manual_review:
@@ -768,16 +379,10 @@ class MassViewFieldValidator:
 
             error_count = 0
 
-            # Show field errors with enhanced details
+            # Show field errors
             for i, error in enumerate(self.field_errors[:10]):
                 error_count += 1
-                if 'line' in error:
-                    print(f"{error_count}. [FIELD] {error['file']}:{error['line']} - {error['model']}.{error['field']}")
-                    print(f"   Context: {error['context']}")
-                    print(f"   Error: {error['error']}")
-                else:
-                    print(f"{error_count}. [FIELD] {error['file']} - {error['model']}.{error['field']}")
-
+                print(f"{error_count}. [FIELD] {error['file']} - {error['model']}.{error['field']}")
                 if 'suggested_correction' in error and error['suggested_correction']:
                     print(f"   💡 Fix: {error['field']} → {error['suggested_correction']}")
                 elif 'similar_fields' in error and error['similar_fields']:
@@ -796,22 +401,6 @@ class MassViewFieldValidator:
                 error_count += 1
                 print(f"{error_count}. [METHOD] {error['file']} - {error['model']}.{error['action']}")
                 print(f"   💡 Fix: Add method to model or remove button")
-                print()
-
-            # Show XML ID errors
-            for i, error in enumerate(self.xmlid_errors[:5]):
-                error_count += 1
-                print(f"{error_count}. [XML_ID] {error['file']} - {error['error']}")
-                print(f"   💡 Fix: Create missing XML ID or fix reference")
-                print()
-
-            # Show XML syntax errors - HIGHEST PRIORITY (deployment blockers)
-            for i, error in enumerate(self.xml_syntax_errors[:5]):
-                error_count += 1
-                print(f"{error_count}. [XML_SYNTAX] {error['file']}:{error['line']}:{error['column']}")
-                print(f"   🚨 DEPLOYMENT BLOCKER: {error['error']}")
-                print(f"   Context: {error['context']}")
-                print(f"   💡 Fix: {error['fix_suggestion']}")
                 print()
 
 def main():

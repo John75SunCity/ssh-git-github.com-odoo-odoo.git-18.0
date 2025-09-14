@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
 <!-- List view for records.document.type -->
     <record id="records_document_type_view_tree" model="ir.ui.view">
         <field name="name">records.document.type.view.tree</field>
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
             <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="state == 'deprecated'" decoration-info="state == 'draft'">
-        <field name="sequence" widget="handle"/>
-        <field name="name" string="Document Type"/>
-        <field name="code" string="Code"/>
+                <field name="sequence" widget="handle"/>
+                <field name="name" string="Document Type"/>
+<field name="code" string="Code"/>
 
-        <field name="category" string="Category"/>
-        <field name="confidentiality_level" string="Security Level"/>
-        <field name="effective_retention_years" string="Retention (Years)"/>
-        <field name="document_count" string="Documents" widget="integer"/>
-        <field name="container_count" string="Containers" widget="integer"/>
-        <field name="state" string="Status" widget="badge"/>
-        <field name="active" string="Active"/>
+                <field name="category" string="Category"/>
+                <field name="confidentiality_level" string="Security Level"/>
+                <field name="effective_retention_years" string="Retention (Years)"/>
+                <field name="document_count" string="Documents" widget="integer"/>
+                <field name="container_count" string="Containers" widget="integer"/>
+                <field name="state" string="Status" widget="badge"/>
+                <field name="active" string="Active"/>
 <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link" title="View Documents"/>
 
             </list>
@@ -36,20 +37,20 @@ invisible="state != 'draft'" groups="records_management.group_records_user"/>
 invisible="state != 'active'" groups="records_management.group_records_manager"/>
                     <button name="action_archive" string="Archive" type="object" class="btn-secondary"
 invisible="state in ('draft', 'deprecated')" groups="records_management.group_records_manager"/>
-        <field name="state" widget="statusbar" statusbar_visible="draft,active,deprecated,archived"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,deprecated,archived"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
 <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file" title="View Documents">
-        <field name="document_count" string="Documents" widget="statinfo"/>
+                            <field name="document_count" string="Documents" widget="statinfo"/>
                         </button>
 <button class="oe_stat_button" icon="fa-cube" title="Container Information">
-        <field name="container_count" string="Containers" widget="statinfo"/>
+                            <field name="container_count" string="Containers" widget="statinfo"/>
                         </button>
 <button class="oe_stat_button" icon="fa-clock" title="Retention Period">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
-        <field name="effective_retention_years"/>
+                                    <field name="effective_retention_years"/>
                                 </span>
                                 <span class="o_stat_text">Retention Years</span>
                             </div>
@@ -59,112 +60,112 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                     <div class="oe_title">
                         <label for="name"/>
                         <h1>
-        <field name="name" placeholder="Document Type Name..."/>
+                            <field name="name" placeholder="Document Type Name..."/>
                         </h1>
                     </div>
 
                     <group>
                         <group string="Basic Information">
-        <field name="name" required="1"/>
-        <field name="code" required="1"/>
-        <field name="description"/>
-        <field name="sequence"/>
-        <field name="category" required="1"/>
-        <field name="active" widget="boolean_toggle"/>
+                            <field name="name" required="1"/>
+                            <field name="code" required="1"/>
+                            <field name="description"/>
+                            <field name="sequence"/>
+                            <field name="category" required="1"/>
+                            <field name="active" widget="boolean_toggle"/>
                         </group>
                         <group string="Organization">
-        <field name="parent_type_id"/>
-        <field name="company_id" groups="base.group_multi_company"/>
-        <field name="partner_id"/>
-        <field name="department_id"/>
-        <field name="category_id"/>
+                            <field name="parent_type_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="partner_id"/>
+                            <field name="department_id"/>
+                            <field name="category_id"/>
                         </group>
                     </group>
 
                     <group>
                         <group string="Security &amp; Compliance">
-        <field name="confidentiality_level" required="1"/>
-        <field name="naid_compliance" widget="boolean_toggle"/>
-        <field name="hipaa_protected" widget="boolean_toggle"/>
-        <field name="sox_compliance" widget="boolean_toggle"/>
-        <field name="gdpr_applicable" widget="boolean_toggle"/>
+                            <field name="confidentiality_level" required="1"/>
+                            <field name="naid_compliance" widget="boolean_toggle"/>
+                            <field name="hipaa_protected" widget="boolean_toggle"/>
+                            <field name="sox_compliance" widget="boolean_toggle"/>
+                            <field name="gdpr_applicable" widget="boolean_toggle"/>
                         </group>
                         <group string="Retention &amp; Destruction">
-        <field name="default_retention_years"/>
-        <field name="retention_policy_id"/>
-        <field name="effective_retention_years" readonly="1"/>
-        <field name="requires_legal_hold" widget="boolean_toggle"/>
-        <field name="destruction_method"/>
+                            <field name="default_retention_years"/>
+                            <field name="retention_policy_id"/>
+                            <field name="effective_retention_years" readonly="1"/>
+                            <field name="requires_legal_hold" widget="boolean_toggle"/>
+                            <field name="destruction_method"/>
                         </group>
                     </group>
 
                     <group>
                         <group string="Physical Requirements">
-        <field name="max_box_weight"/>
-        <field name="storage_requirements"/>
-        <field name="handling_instructions"/>
+                            <field name="max_box_weight"/>
+                            <field name="storage_requirements"/>
+                            <field name="handling_instructions"/>
                         </group>
                         <group string="Configuration">
-        <field name="approval_required" widget="boolean_toggle"/>
-        <field name="indexing_required" widget="boolean_toggle"/>
-        <field name="barcode_required" widget="boolean_toggle"/>
-        <field name="digital_copy_required" widget="boolean_toggle"/>
-        <field name="encryption_required" widget="boolean_toggle"/>
+                            <field name="approval_required" widget="boolean_toggle"/>
+                            <field name="indexing_required" widget="boolean_toggle"/>
+                            <field name="barcode_required" widget="boolean_toggle"/>
+                            <field name="digital_copy_required" widget="boolean_toggle"/>
+                            <field name="encryption_required" widget="boolean_toggle"/>
                         </group>
                     </group>
 
                     <notebook>
                         <page string="Regulatory Requirements" name="regulatory">
-        <field name="regulatory_requirements" placeholder="Specific regulatory requirements and compliance notes..."/>
+                            <field name="regulatory_requirements" placeholder="Specific regulatory requirements and compliance notes..."/>
                         </page>
                         <page string="Documents" name="documents">
-        <field name="document_ids" mode="list" limit="20">
+                            <field name="document_ids" mode="list" limit="20">
                                 <list>
-        <field name="name"/>
-        <field name="reference"/>
-        <field name="state"/>
-        <field name="received_date"/>
-        <field name="destruction_eligible_date"/>
+                                    <field name="name"/>
+                                    <field name="reference"/>
+                                    <field name="state"/>
+                                    <field name="received_date"/>
+                                    <field name="destruction_eligible_date"/>
                                 </list>
                             </field>
                         </page>
                         <page string="Containers" name="containers">
-        <field name="container_ids" mode="list" limit="20">
+                            <field name="container_ids" mode="list" limit="20">
                                 <list>
-        <field name="name"/>
-        <field name="state"/>
-        <field name="storage_start_date"/>
-        <field name="location_id"/>
+                                    <field name="name"/>
+                                    <field name="state"/>
+                                    <field name="storage_start_date"/>
+                                    <field name="location_id"/>
                                 </list>
                             </field>
                         </page>
                         <page string="Child Types" name="children">
-        <field name="child_type_ids" mode="list">
+                            <field name="child_type_ids" mode="list">
                                 <list>
-        <field name="name"/>
-        <field name="code"/>
-        <field name="category"/>
-        <field name="state"/>
-        <field name="document_count"/>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="category"/>
+                                    <field name="state"/>
+                                    <field name="document_count"/>
                                 </list>
                             </field>
                         </page>
                         <page string="Retention Rules" name="retention">
-        <field name="retention_rule_ids" mode="list">
+                            <field name="retention_rule_ids" mode="list">
                                 <list>
-        <field name="name"/>
-        <field name="retention_period"/>
-        <field name="action_on_expiry"/>
-        <field name="active"/>
+                                    <field name="name"/>
+                                    <field name="retention_years"/>
+                                    <field name="destruction_trigger"/>
+                                    <field name="active"/>
                                 </list>
                             </field>
                         </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-        <field name="message_follower_ids"/>
-        <field name="activity_ids"/>
-        <field name="message_ids"/>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
                 </div>
             </form>
         </field>
@@ -176,58 +177,62 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
             <kanban default_group_by="category" class="o_kanban_document_type">
-        <field name="name"/>
-        <field name="code"/>
-        <field name="category"/>
-        <field name="state"/>
-        <field name="active"/>
-        <field name="document_count"/>
-        <field name="container_count"/>
-        <field name="confidentiality_level"/>
-        <field name="effective_retention_years"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category"/>
+                <field name="state"/>
+                <field name="active"/>
+                <field name="document_count"/>
+                <field name="container_count"/>
+                <field name="confidentiality_level"/>
+                <field name="effective_retention_years"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_button_box" name="button_box">
                                 <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file">
-        <field name="document_count" string="Documents" widget="statinfo"/>
+                                    <field name="document_count" string="Documents" widget="statinfo"/>
                                 </button>
                                 <button class="oe_stat_button" icon="fa-cube">
-        <field name="container_count" string="Containers" widget="statinfo"/>
+                                    <field name="container_count" string="Containers" widget="statinfo"/>
                                 </button>
                             </div>
                             <div class="oe_kanban_card_header">
                                 <div class="oe_kanban_card_header_title">
                                     <div class="o_primary">
                                         <strong>
-        <field name="name"/>
+                                            <field name="name"/>
                                         </strong>
                                     </div>
                                     <div class="o_secondary">
-        <field name="code"/>
+                                        <field name="code"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-<i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
+<i class="fa fa-ellipsis-v" role="img" aria-label="More options"/>
+
+
                                     </a>
                                 </div>
                             </div>
-        <div class="oe_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+<div class="oe_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="text-center">
                                             <span class="badge badge-primary">
-        <field name="document_count"/>
-<i class="fa fa-file-o" title="Documents"/>
+<field name="document_count"/>
+<i class="fa fa-file-o"/>
+
                                             </span>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="text-center">
                                             <span class="badge badge-info">
-        <field name="container_count"/>
-<i class="fa fa-box" title="Containers"/>
+<field name="container_count"/>
+<i class="fa fa-box"/>
+
                                             </span>
                                         </div>
                                     </div>
@@ -235,32 +240,36 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 <div class="row mt-2">
                                     <div class="col-12">
                                         <small class="text-muted">
-<i class="fa fa-shield" aria-hidden="true" title="Security Level"/>
-        <field name="confidentiality_level"/>
+<i class="fa fa-shield" aria-hidden="true"/>
+
+
+                                            <field name="confidentiality_level"/>
                                         </small>
                                     </div>
                                 </div>
                                 <div class="row mt-1">
                                     <div class="col-12">
                                         <small class="text-muted">
-<i class="fa fa-clock" aria-hidden="true" title="Retention Period"/>
-        <field name="effective_retention_years"/> years
+<i class="fa fa-clock" aria-hidden="true"/>
+
+
+                                            <field name="effective_retention_years"/> years
                                         </small>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
 <a role="menuitem" type="edit" class="dropdown-item">
-    <i class="fa fa-edit" title="Edit"/>
+    <i class="fa fa-edit"/>
  Edit Type</a>
 <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">
-    <i class="fa fa-file-o" title="View Documents"/>
+    <i class="fa fa-file-o"/>
  View Documents</a>
 <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">
-    <i class="fa fa-check-circle text-success" title="Activate"/>
+    <i class="fa fa-check-circle text-success"/>
  Activate</a>
 <a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" invisible="state != 'active'">
-    <i class="fa fa-warning" title="Deprecate"/>
+    <i class="fa fa-warning"/>
  Deprecate</a>
                                 <div class="dropdown-divider"/>
 <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state in ('draft', 'deprecated')">📁 Archive</a>
@@ -278,13 +287,13 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
             <search string="Search Document Types">
-        <field name="name" string="Document Type" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
-        <field name="code"/>
-        <field name="category"/>
-        <field name="confidentiality_level"/>
-        <field name="parent_type_id"/>
-        <field name="partner_id"/>
-        <field name="department_id"/>
+                <field name="name" string="Document Type" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
+                <field name="code"/>
+                <field name="category"/>
+                <field name="confidentiality_level"/>
+                <field name="parent_type_id"/>
+                <field name="partner_id"/>
+                <field name="department_id"/>
 
                 <filter string="Active Types" name="active" domain="[('active', '=', True)]"/>
 <filter string="Archived Types" name="inactive" domain="[('active', '=', False)]"/>
@@ -332,7 +341,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
 
     <!-- Action for records.document.type -->
     <record id="action_records_document_type" model="ir.actions.act_window">
-        <field name="name">Document Types</field>
+<field name="name">Document Types</field>
         <field name="res_model">records.document.type</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="records_document_type_view_search"/>
@@ -352,5 +361,6 @@ Create your first document type!
                 • NAID AAA certified document classification system
 </p>
 </field>
-    </record>
+</record>
+</data>
 </odoo>

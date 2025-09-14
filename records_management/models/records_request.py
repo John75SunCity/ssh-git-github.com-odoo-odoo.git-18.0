@@ -22,11 +22,6 @@ class RecordsRequest(models.Model):
     user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     destruction_address_id = fields.Many2one('res.partner', string='Destruction Address', related='partner_id.destruction_address_id', readonly=False)
 
-    # Additional fields referenced in views
-    document_id = fields.Many2one('records.document', string='Document')
-    box_id = fields.Many2one('records.container', string='Box')
-    container_ids = fields.Many2many('records.container', string='Containers')
-
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:

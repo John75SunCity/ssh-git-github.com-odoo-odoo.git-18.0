@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="destruction_item_view_tree" model="ir.ui.view">
+    
+    <data><record id="destruction_item_view_tree" model="ir.ui.view">
         <field name="name">destruction.item.view.tree</field>
         <field name="model">destruction.item</field>
     <field name="arch" type="xml">
@@ -45,4 +46,5 @@
         <field name="view_mode">list,form</field>
     </record>
 
+    </data>
 </odoo>

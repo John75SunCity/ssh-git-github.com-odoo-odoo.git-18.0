@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
-
+    
     <record id="shredding_inventory_item_view_tree" model="ir.ui.view">
         <field name="name">shredding.inventory.item.view.tree</field>
         <field name="model">shredding.inventory.item</field>
@@ -91,7 +91,7 @@
         <field name="view_mode">list,form</field>
     </record>
 
-
+    
     <record id="shredding_picklist_item_view_tree" model="ir.ui.view">
         <field name="name">shredding.picklist.item.view.tree</field>
         <field name="model">shredding.picklist.item</field>
@@ -154,8 +154,8 @@
         <field name="view_mode">list,form</field>
     </record>
 
-
-    <menuitem id="menu_shredding_inventory_root" name="Shredding Inventory" parent="records_management.menu_records_management_root" sequence="35" />
+    
+    <menuitem id="menu_shredding_inventory_root" name="Shredding Inventory" parent="records_management.menu_records_main" sequence="35" />
 
     <menuitem id="menu_shredding_inventory_items" name="Inventory Items" parent="menu_shredding_inventory_root" action="action_shredding_inventory_item" sequence="10" />
 

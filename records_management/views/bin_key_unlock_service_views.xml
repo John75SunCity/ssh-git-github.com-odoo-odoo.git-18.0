@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- ============================================================================ -->
+
+    <data><!-- ============================================================================ -->
 <!-- BIN KEY UNLOCK SERVICE - LIST VIEW -->
 <!-- ============================================================================ -->
     <record id="bin_key_unlock_service_view_tree" model="ir.ui.view">
@@ -283,4 +284,5 @@
 
     <menuitem id="menu_bin_key_unlock_service" name="Unlock Services" parent="records_management.menu_records_security" action="action_bin_key_unlock_service" sequence="30"/>
 
+    </data>
 </odoo>

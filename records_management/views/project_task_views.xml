@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
+        <!--
+            PROJECT TASK VIEWS - Records Management Integration
 
-    <!--
-        PROJECT TASK VIEWS - Records Management Integration
+            This file provides integration views for project tasks in the Records Management module.
+            Currently contains placeholder views for future project task functionality.
 
-        This file provides integration views for project tasks in the Records Management module.
-        Currently contains placeholder views for future project task functionality.
+            Note: These views are currently disabled as they require proper inheritance setup
+            and specific project module integration requirements.
+        -->
 
-        Note: These views are currently disabled as they require proper inheritance setup
-        and specific project module integration requirements.
-    -->
+        <!-- Placeholder for future project task integration -->
+        <!-- These views will be implemented when project module requirements are defined -->
 
-    <!-- Placeholder for future project task integration -->
-    <!-- These views will be implemented when project module requirements are defined -->
-
+    </data>
 </odoo>

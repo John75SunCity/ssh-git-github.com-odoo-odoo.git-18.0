@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List view for location.report.wizard -->
+    
+    <data><!-- List view for location.report.wizard -->
     <record id="records_location_report_wizard_view_tree" model="ir.ui.view">
         <field name="name">location.report.wizard.view.tree</field>
         <field name="model">location.report.wizard</field>
@@ -77,4 +78,5 @@
         </field>
     </record>
 
+    </data>
 </odoo>

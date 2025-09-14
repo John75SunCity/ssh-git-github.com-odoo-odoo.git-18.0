@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="customer_category_view_tree" model="ir.ui.view">
+    
+    <data><record id="customer_category_view_tree" model="ir.ui.view">
         <field name="name">customer.category.view.tree</field>
         <field name="model">customer.category</field>
     <field name="arch" type="xml">
@@ -64,4 +65,5 @@
         <field name="view_mode">list,form</field>
     </record>
 
+    </data>
 </odoo>

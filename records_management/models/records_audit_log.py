@@ -33,11 +33,6 @@ class RecordsAuditLog(models.Model):
 
     description = fields.Char(string="Description", readonly=True, required=True, help="A human-readable summary of the event.")
 
-    # Additional fields for retention policy views
-    action = fields.Char(string="Action", readonly=True, help="Specific action performed")
-    action_date = fields.Datetime(string="Action Date", readonly=True, help="Date when action was performed")
-    notes = fields.Text(string="Notes", readonly=True, help="Additional notes about the audit event")
-
     # ============================================================================
     # RELATED DOCUMENT
     # ============================================================================

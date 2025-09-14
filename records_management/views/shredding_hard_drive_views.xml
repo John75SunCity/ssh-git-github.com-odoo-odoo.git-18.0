@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- List view for base.rate -->
+
+    <data><!-- List view for base.rate -->
     <record id="shredding_hard_drive_view_tree" model="ir.ui.view">
         <field name="name">shredding.hard_drive.view.tree</field>
         <field name="model">shredding.hard_drive</field>
@@ -209,4 +210,5 @@
         <field name="context">{'default_scan_location': 'facility'}</field>
     </record>
 
+    </data>
 </odoo>

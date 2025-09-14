@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- List view for records.permanent.flag.wizard -->
+
+    <data><!-- List view for records.permanent.flag.wizard -->
     <record id="records_permanent_flag_wizard_view_tree" model="ir.ui.view">
         <field name="name">records.permanent.flag.wizard.view.tree</field>
         <field name="model">records.permanent.flag.wizard</field>
@@ -73,4 +74,5 @@ There are no examples. Click here to add a new Records Permanent Flag Wizard.
     </field>
     </record>
 
+    </data>
 </odoo>

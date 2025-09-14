@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- List view for invoice.generation.log -->
+
+    <data><!-- List view for invoice.generation.log -->
     <record id="invoice_generation_log_view_tree" model="ir.ui.view">
         <field name="name">invoice.generation.log.view.tree</field>
         <field name="model">invoice.generation.log</field>
@@ -57,4 +58,5 @@
     </field>
     </record>
 
+    </data>
 </odoo>

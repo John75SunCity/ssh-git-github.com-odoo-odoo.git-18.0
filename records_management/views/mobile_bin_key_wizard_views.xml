@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- Form view for Mobile Bin Key Wizard -->
+
+    <data><!-- Form view for Mobile Bin Key Wizard -->
     <record id="mobile_bin_key_wizard_view_form" model="ir.ui.view">
         <field name="name">mobile.bin.key.wizard.view.form</field>
         <field name="model">mobile.bin.key.wizard</field>
@@ -136,4 +137,5 @@ action = {
     </field>
     </record>
 
+    </data>
 </odoo>

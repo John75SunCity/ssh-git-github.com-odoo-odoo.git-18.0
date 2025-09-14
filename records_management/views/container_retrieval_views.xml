@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="container_retrieval_view_tree" model="ir.ui.view">
+    
+    <data><record id="container_retrieval_view_tree" model="ir.ui.view">
         <field name="name">container.retrieval.view.tree</field>
         <field name="model">container.retrieval</field>
     <field name="arch" type="xml">
@@ -57,4 +58,5 @@
         <field name="view_mode">list,form</field>
     </record>
 
+    </data>
 </odoo>

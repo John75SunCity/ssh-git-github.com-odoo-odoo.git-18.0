@@ -1,6 +1,6 @@
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.12.0.4",  # Bumped to force module upgrade (retention_years ParseError fix)
+    "version": "18.0.12.0.3",  # Bumped to force module upgrade (wizard consolidation + ACL fix)
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
@@ -165,6 +165,7 @@
         "views/records_bulk_user_import_views.xml",
         "views/records_category_views.xml",
         "views/records_center_location_views.xml",
+        "views/records_config_setting_views.xml",
         "views/records_config_settings_views.xml",
         "views/records_container_content_views.xml",
         "views/records_container_line_views.xml",
@@ -179,9 +180,9 @@
         "views/records_destruction_job_views.xml",
         "views/records_destruction_line_views.xml",
         "views/records_destruction_views.xml",
+        "views/records_document_field_label_helper_views.xml",
         "views/records_document_type_views.xml",
         "views/records_document_views.xml",
-        "views/records_document_field_label_helper_views.xml",
         "views/records_installer_views.xml",
         "views/records_inventory_dashboard_views.xml",
         "views/records_location_inspection_line_views.xml",
@@ -205,6 +206,8 @@
         "views/records_tag_views.xml",
         "views/records_usage_tracking_views.xml",
         "views/reference_views.xml",
+        "views/report_records_management_report_customer_inventory_views.xml",
+        "views/report_records_management_report_location_utilization_views.xml",
         "views/revenue_analytic_views.xml",
         "views/revenue_forecast_line_views.xml",
         "views/revenue_forecast_views.xml",
@@ -223,7 +226,7 @@
         "views/stock_lot_views.xml",
         "views/survey_feedback_theme_views.xml",
         "views/survey_improvement_action_views.xml",
-
+        "views/survey_user_input_enhanced_views.xml",
         "views/temp_inventory_views.xml",
         "views/work_order_coordinator_views.xml",
         "views/workflow_visualization_manager_views.xml",

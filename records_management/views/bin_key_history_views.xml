@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- List view for bin.key.history -->
+
+    <data><!-- List view for bin.key.history -->
     <record id="bin_key_history_view_tree" model="ir.ui.view">
         <field name="name">bin.key.history.view.tree</field>
         <field name="model">bin.key.history</field>
@@ -218,4 +219,5 @@ Key history records are automatically created when keys are assigned,
     </field>
     </record>
 
+    </data>
 </odoo>

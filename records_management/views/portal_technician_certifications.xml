@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!-- Portal templates for customers to view NAID technician certifications and training status -->
+
+    <data><!-- Portal templates for customers to view NAID technician certifications and training status -->
 <template id="portal_my_certifications" name="Technician Certifications">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
@@ -74,4 +75,5 @@
         <field name="parent_id" ref="portal.portal_my_home"/>
         <field name="sequence">20</field>
     </record>
+    </data>
 </odoo>

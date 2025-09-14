@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List view for Container -->
+    
+    <data><!-- List view for Container -->
     <record id="records_container_type_converter_view_form" model="ir.ui.view">
         <field name="name">records.container.type.converter.view.form</field>
         <field name="model">records.container.type.converter</field>
@@ -51,4 +52,5 @@
     <!-- List view for Menu -->
     <menuitem id="menu_container_type_converter" name="Bulk Convert Container Types" parent="menu_records_operations" action="action_container_type_converter" sequence="30"/>
 
+    </data>
 </odoo>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="certificate_template_data_view_tree" model="ir.ui.view">
+    
+    <data><record id="certificate_template_data_view_tree" model="ir.ui.view">
         <field name="name">certificate.template.data.view.tree</field>
         <field name="model">certificate.template.data</field>
     <field name="arch" type="xml">
@@ -58,4 +59,5 @@
         <field name="view_mode">list,form</field>
     </record>
 
+    </data>
 </odoo>

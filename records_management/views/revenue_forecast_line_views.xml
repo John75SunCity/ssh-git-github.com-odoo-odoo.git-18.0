@@ -174,7 +174,7 @@ invisible="status != 'in_progress'"/>
 <!-- FSM Service Management Menu -->
     <menuitem id="menu_fsm_service_management"
             name="FSM Services"
-            parent="records_management.menu_records_operations"
+            parent="records_management.menu_fsm"
             sequence="50"/>
 
     <menuitem id="menu_fsm_service_lines"
@@ -210,7 +210,7 @@ parent="menu_records_reporting"
 <!-- Shredding Documentation Menu -->
     <menuitem id="menu_shredding_documentation"
             name="Shredding Documentation"
-            parent="records_management.menu_records_operations"
+            parent="records_management.menu_shredding"
             sequence="70"/>
 
     <menuitem id="menu_shredding_service_photos"

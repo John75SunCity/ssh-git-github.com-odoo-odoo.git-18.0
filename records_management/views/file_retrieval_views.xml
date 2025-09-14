@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List View -->
+    
+    <data><!-- List View -->
     <record id="file_retrieval_view_tree" model="ir.ui.view">
         <field name="name">file.retrieval.view.tree</field>
         <field name="model">file.retrieval</field>
@@ -134,4 +135,5 @@ invisible="status != 'pending'"
         sequence="10"/>
     -->
 
+    </data>
 </odoo>

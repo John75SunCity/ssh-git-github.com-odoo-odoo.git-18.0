@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- ============================================================================ -->
+
+    <data><!-- ============================================================================ -->
 <!-- WORK ORDER SHREDDING - LIST VIEW -->
 <!-- ============================================================================ -->
     <record id="work_order_shredding_view_tree" model="ir.ui.view">
@@ -383,4 +384,5 @@
         <field name="context">{'search_default_group_coordinator': 1}</field>
     </record>
 
+    </data>
 </odoo>

@@ -1,25 +1,26 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
 
-    
+        <!-- List View -->
         <record id="records_container_log_view_tree" model="ir.ui.view">
             <field name="name">records.container.log.view.tree</field>
             <field name="model">records.container.log</field>
         <field name="arch" type="xml">
                 <list string="Records Container Log">
-                    <field name="name" />
-                    <field name="display_name" />
-                    <field name="company_id" />
-                    <field name="active" />
-                    <field name="container_id" />
-                    <field name="event_type" />
-                    <field name="date" />
-                    <field name="user_id" />
+                    <field name="name"/>
+                    <field name="display_name"/>
+                    <field name="company_id"/>
+                    <field name="active"/>
+                    <field name="container_id"/>
+                    <field name="event_type"/>
+                    <field name="date"/>
+                    <field name="user_id"/>
                 </list>
             </field>
         </record>
 
-        
+        <!-- Form View -->
         <record id="records_container_log_view_form" model="ir.ui.view">
             <field name="name">records.container.log.view.form</field>
             <field name="model">records.container.log</field>
@@ -27,37 +28,38 @@
                 <form string="Records Container Log">
                     <sheet>
                         <group>
-                            <field name="name" />
-                            <field name="display_name" />
-                            <field name="company_id" />
-                            <field name="active" />
-                            <field name="container_id" />
-                            <field name="event_type" />
-                            <field name="date" />
-                            <field name="user_id" />
-                            <field name="notes" />
+                            <field name="name"/>
+                            <field name="display_name"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
+                            <field name="container_id"/>
+                            <field name="event_type"/>
+                            <field name="date"/>
+                            <field name="user_id"/>
+                            <field name="notes"/>
                         </group>
                     </sheet>
                 </form>
             </field>
         </record>
 
-        
+        <!-- Search View -->
         <record id="records_container_log_view_search" model="ir.ui.view">
             <field name="name">records.container.log.view.search</field>
             <field name="model">records.container.log</field>
         <field name="arch" type="xml">
                 <search string="Search Records Container Log">
-                    
+                    <!-- Add search fields here -->
                 </search>
             </field>
         </record>
 
-        
+        <!-- Action -->
         <record id="action_records_container_log" model="ir.actions.act_window">
             <field name="name">Records Container Log</field>
             <field name="res_model">records.container.log</field>
             <field name="view_mode">list,form</field>
         </record>
 
+    </data>
 </odoo>

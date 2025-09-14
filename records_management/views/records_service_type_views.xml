@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- View records.service.type View List -->
+
+    <data><!-- View records.service.type View List -->
     <record id="records_service_type_view_tree" model="ir.ui.view">
         <field name="name">records.service.type.view.tree</field>
         <field name="model">records.service.type</field>
@@ -57,4 +58,5 @@
 </field>
     </record>
 
+    </data>
 </odoo>

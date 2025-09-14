@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- HR Employee Form View Extension for Records Management -->
+
+    <data><!-- HR Employee Form View Extension for Records Management -->
     <record id="hr_employee_view_form" model="ir.ui.view">
         <field name="name">hr.employee.form.inherit.records</field>
         <field name="model">hr.employee</field>
@@ -128,4 +129,5 @@ NAID Certified
     </field>
     </record>
 
+    </data>
 </odoo>

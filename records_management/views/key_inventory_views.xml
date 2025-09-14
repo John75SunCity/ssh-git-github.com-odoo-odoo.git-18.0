@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- List View -->
+    
+    <data><!-- List View -->
     <record id="key_inventory_view_tree" model="ir.ui.view">
         <field name="name">key.inventory.view.tree</field>
         <field name="model">key.inventory</field>
@@ -60,4 +61,5 @@
         <field name="view_mode">list,form</field>
     </record>
 
+    </data>
 </odoo>

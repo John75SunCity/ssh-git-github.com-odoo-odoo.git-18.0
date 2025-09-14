@@ -1,48 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <data>
 <!-- List view for records.retention.rule -->
     <record id="records_retention_rule_view_tree" model="ir.ui.view">
         <field name="name">records.retention.rule.view.tree</field>
         <field name="model">records.retention.rule</field>
         <field name="arch" type="xml">
-        <list>
-        <field name="name"/>
-        </list>
-    </field>
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
     </record>
 
-<!-- Form view for records.retention.rule -->
+    <!-- Form view for records.retention.rule -->
     <record id="records_retention_rule_view_form" model="ir.ui.view">
         <field name="name">records.retention.rule.view.form</field>
         <field name="model">records.retention.rule</field>
         <field name="arch" type="xml">
-        <form string="Records.Retention.Rule">
-            <sheet>
-                <div class="oe_title">
-                    <label for="name"/>
-                    <h1>
-        <field name="name" placeholder="Name..."/>
-                    </h1>
-                </div>
-            </sheet>
-        </form>
-    </field>
+            <form string="Records.Retention.Rule">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
     </record>
 
-<!-- Search view for records.retention.rule -->
+    <!-- Search view for records.retention.rule -->
     <record id="records_retention_rule_view_search" model="ir.ui.view">
         <field name="name">records.retention.rule.view.search</field>
         <field name="model">records.retention.rule</field>
         <field name="arch" type="xml">
-        <search>
-            <group expand="1" string="Group By">
-                <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
-            </group>
-        </search>
-    </field>
+            <search>
+                <group expand="1" string="Group By">
+                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+                </group>
+            </search>
+        </field>
     </record>
 
-<!-- Action for records.retention.rule -->
+    <!-- Action for records.retention.rule -->
     <record id="action_records_retention_rule" model="ir.actions.act_window">
         <field name="name">Records.Retention.Rule</field>
         <field name="res_model">records.retention.rule</field>
@@ -50,9 +52,11 @@
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-            Click to add a new records.retention.rule.
-        </p>
-    </field>
+            <p class="oe_view_nocontent_create">
+                Click to add a new records.retention.rule.
+            </p>
+        </field>
     </record>
+</data>
+
 </odoo>

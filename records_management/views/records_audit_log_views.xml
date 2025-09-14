@@ -1,69 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <data>
 <!-- List view for base.rate -->
     <record id="records_audit_log_view_tree" model="ir.ui.view">
         <field name="name">records.audit.log.view.tree</field>
         <field name="model">records.audit.log</field>
         <field name="arch" type="xml">
-        <list>
-        <field name="description"/>
-        <field name="timestamp"/>
-        <field name="user_id"/>
-        <field name="event_type"/>
-        </list>
-    </field>
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
     </record>
 
-<!-- Form view for base.rate -->
+    <!-- Form view for base.rate -->
     <record id="records_audit_log_view_form" model="ir.ui.view">
         <field name="name">records.audit.log.view.form</field>
         <field name="model">records.audit.log</field>
         <field name="arch" type="xml">
-        <form string="Records Audit Log">
-            <sheet>
-                <div class="oe_title">
-                    <label for="description"/>
-                    <h1>
-        <field name="description" placeholder="Description..."/>
-                    </h1>
-                </div>
-                <group>
-                    <group>
-        <field name="event_type"/>
-        <field name="timestamp"/>
-        <field name="user_id"/>
-                    </group>
-                    <group>
-        <field name="res_model"/>
-        <field name="res_id"/>
-        <field name="res_name"/>
-                    </group>
-                </group>
-            </sheet>
-        </form>
-    </field>
+            <form string="Records Audit Log">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
     </record>
 
-<!-- Search view for base.rate -->
+    <!-- Search view for base.rate -->
     <record id="records_audit_log_view_search" model="ir.ui.view">
         <field name="name">records.audit.log.view.search</field>
         <field name="model">records.audit.log</field>
         <field name="arch" type="xml">
-        <search>
-        <field name="description"/>
-        <field name="event_type"/>
-        <field name="user_id"/>
-        <field name="res_model"/>
-            <group expand="1" string="Group By">
-                <filter string="Event Type" name="event_type" domain="[]" context="{'group_by':'event_type'}"/>
-                <filter string="User" name="user_id" domain="[]" context="{'group_by':'user_id'}"/>
-            </group>
-        </search>
-    </field>
+            <search>
+                <group expand="1" string="Group By">
+                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+                </group>
+            </search>
+        </field>
     </record>
 
-<!-- List view for Action -->
+    <!-- List view for Action -->
     <record id="action_records_audit_log" model="ir.actions.act_window">
         <field name="name">Records Audit Log</field>
         <field name="res_model">records.audit.log</field>
@@ -71,10 +52,11 @@
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Records Audit Log.
-        </p>
-    </field>
+            <p class="oe_view_nocontent_create">
+                There is no examples click here to add new Records Audit Log.
+            </p>
+        </field>
     </record>
+</data>
 
 </odoo>

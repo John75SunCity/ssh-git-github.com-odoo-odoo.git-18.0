@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- Form view for paper bale weigh wizard -->
+
+    <data><!-- Form view for paper bale weigh wizard -->
     <record id="paper_bale_weigh_wizard_view_form" model="ir.ui.view">
         <field name="name">paper.bale.weigh.wizard.view.form</field>
         <field name="model">paper.bale.weigh.wizard</field>
@@ -46,4 +47,5 @@
         <field name="context">{'default_bale_id': context.get('active_id', False)}</field>
     </record>
 
+    </data>
 </odoo>

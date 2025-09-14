@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- List view for Portal -->
+
+    <data><!-- List view for Portal -->
 
 <!-- List view for Main -->
 <menuitem id="menu_portal_feedback" 
@@ -19,4 +20,5 @@
             sequence="10"
             groups="records_management.group_records_manager"/>
 
+    </data>
 </odoo>

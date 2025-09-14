@@ -1,136 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 <!-- List view for Records Storage Department User -->
-    <record id="records_storage_department_user_view_tree" model="ir.ui.view">
-        <field name="name">records.storage.department.user.view.tree</field>
-        <field name="model">records.storage.department.user</field>
-        <field name="arch" type="xml">
-    <list decoration-success="state=='active'" decoration-muted="state=='inactive'">
-        <field name="display_name"/>
-        <field name="user_id"/>
-        <field name="department_id"/>
-        <field name="role"/>
-        <field name="start_date"/>
-        <field name="end_date"/>
-        <field name="state" widget="badge" decoration-success="state=='active'" decoration-muted="state=='inactive'"/>
-        <field name="company_id" groups="base.group_multi_company"/>
-    </list>
-</field>
-    </record>
+<record id="records_storage_department_user_view_tree" model="ir.ui.view">
+    <field name="name">records.storage.department.user.view.tree</field>
+    <field name="model">records.storage.department.user</field>
+    <field name="arch" type="xml">
+<list decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-muted="state=='draft'">
+            <field name="name"/>
+<field name="user_id"/>
+<field name="department_id"/>
+
+<field name="date"/>
+
+<field name="state" widget="badge" decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-muted="state=='draft'"/>
+<field name="company_id" groups="base.group_multi_company"/>
+
+        </list>
+    </field>
+</record>
 
 <!-- Form view for Records Storage Department User -->
-    <record id="records_storage_department_user_view_form" model="ir.ui.view">
-        <field name="name">records.storage.department.user.view.form</field>
-        <field name="model">records.storage.department.user</field>
-        <field name="arch" type="xml">
-    <form string="Records Storage Department User">
-        <header>
-            <button name="action_activate" type="object" string="Activate" class="oe_highlight" invisible="state != 'inactive'"/>
-            <button name="action_deactivate" type="object" string="Deactivate" invisible="state != 'active'"/>
-        <field name="state" widget="statusbar" statusbar_visible="active,inactive"/>
-        </header>
-        <sheet>
-            <div class="oe_button_box" name="button_box">
-                <button class="oe_stat_button" type="object" name="action_view_assignments" icon="fa-tasks" title="View Assignments" groups="records_management.group_records_user">
-                    <span class="o_stat_text">View Assignments</span>
-                </button>
-            </div>
+<record id="records_storage_department_user_view_form" model="ir.ui.view">
+    <field name="name">records.storage.department.user.view.form</field>
+    <field name="model">records.storage.department.user</field>
+    <field name="arch" type="xml">
+        <form string="Records Storage Department User">
+<header>
+<button name="action_confirm" type="object" string="Confirm" class="oe_highlight" invisible="state != 'draft'"/>
+<button name="action_done" type="object" string="Mark as Done" class="oe_highlight" invisible="state != 'confirmed'"/>
 
-            <div class="oe_title">
-                <label for="display_name" class="oe_edit_only"/>
-                <h1>
-        <field name="display_name" placeholder="Department User Assignment"/>
-                </h1>
-            </div>
+<button name="action_reset_to_draft" type="object" string="Reset to Draft" groups="records_management.group_records_manager" invisible="state != 'cancelled'"/>
+<button name="action_cancel" type="object" string="Cancel" invisible="state not in ['draft','confirmed']"/>
 
-            <group>
-                <group name="basic_info" string="Basic Information">
-        <field name="user_id" required="1"/>
-        <field name="department_id" required="1"/>
-        <field name="role" required="1"/>
-        <field name="active"/>
-                </group>
-                <group name="assignment_info" string="Assignment Details">
-        <field name="start_date"/>
-        <field name="end_date"/>
-                </group>
-            </group>
+<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
 
-            <group name="company_info" string="Company Information">
-        <field name="company_id" groups="base.group_multi_company"/>
-            </group>
-        </sheet>
-        <div class="oe_chatter">
-        <field name="message_follower_ids"/>
-        <field name="activity_ids"/>
-        <field name="message_ids"/>
-        </div>
-    </form>
+</header>
+            <sheet>
+<div class="oe_button_box" name="button_box">
+<button class="oe_stat_button" type="object" name="action_view_assignments" icon="fa-tasks" title="View Assignments" groups="records_management.group_records_user">
+    <field name="assignment_count" string="Assignments" widget="statbutton"/>
+</button>
+</div>
+
+                <div class="oe_title">
+<label for="name" class="oe_edit_only"/>
+
+                    <h1>
+<field name="name" placeholder="Department User Assignment Name..."/>
+
+                    </h1>
+                </div>
+
+<group>
+<group name="basic_info" string="Basic Information">
+    <field name="user_id" required="1"/>
+<field name="department_id" required="1"/>
+
+<field name="date"/>
+<field name="active"/>
+
+<field name="priority" widget="priority"/>
+
+</group>
+<group name="assignment_info" string="Assignment Details">
+<field name="role" required="1"/>
+<field name="access_level"/>
+<field name="start_date"/>
+<field name="end_date"/>
+</group>
+</group>
+
+<group name="company_info" string="Company Information">
+<field name="company_id" groups="base.group_multi_company"/>
+</group>
+<notebook>
+<page string="Description" name="description">
+    <group>
+<field name="description" nolabel="1" placeholder="Description of the department user assignment..."/>
+</group>
+</page>
+<page string="Access Permissions" name="permissions">
+<group>
+    <field name="can_view_containers" string="Can View Containers"/>
+    <field name="can_edit_containers" string="Can Edit Containers"/>
+    <field name="can_approve_requests" string="Can Approve Requests"/>
+    <field name="can_generate_reports" string="Can Generate Reports"/>
+</group>
+</page>
+<page string="Notes &amp; History" name="notes">
+<group>
+    <field name="notes" nolabel="1" placeholder="Additional notes and comments..."/>
+</group>
+<div class="oe_clear">
+<label string="Assignment History"/>
+<field name="history_ids" nolabel="1">
+    <list>
+        <field name="date"/>
+        <field name="action"/>
+        <field name="user_id"/>
+        <field name="notes"/>
+    </list>
 </field>
-    </record>
+</div>
+</page>
+</notebook>
+            </sheet>
+<div class="oe_chatter">
+<field name="message_follower_ids"/>
+<field name="activity_ids"/>
+<field name="message_ids"/>
+</div>
+        </form>
+    </field>
+</record>
 
 <!-- Search view for Records Storage Department User -->
-    <record id="records_storage_department_user_view_search" model="ir.ui.view">
-        <field name="name">records.storage.department.user.view.search</field>
-        <field name="model">records.storage.department.user</field>
-        <field name="arch" type="xml">
-    <search>
-        <field name="display_name" string="Name" filter_domain="[('display_name', 'ilike', self)]"/>
-        <field name="user_id" string="User"/>
-        <field name="department_id" string="Department"/>
-        <field name="role" string="Role"/>
+<record id="records_storage_department_user_view_search" model="ir.ui.view">
+    <field name="name">records.storage.department.user.view.search</field>
+    <field name="model">records.storage.department.user</field>
+    <field name="arch" type="xml">
+        <search>
+<field name="name" string="Name" filter_domain="[('name', 'ilike', self)]"/>
 
-        <separator/>
+<field name="user_id" string="User"/>
+<field name="department_id" string="Department"/>
 
-        <filter string="Active" name="active" domain="[('active', '=', True)]"/>
-        <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
-        <separator/>
+<separator/>
 
-        <filter string="Active Assignments" name="state_active" domain="[('state', '=', 'active')]"/>
-        <filter string="Inactive Assignments" name="state_inactive" domain="[('state', '=', 'inactive')]"/>
-        <separator/>
+<filter string="Active" name="active" domain="[('active', '=', True)]"/>
+<filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+<separator/>
 
-        <filter string="My Assignments" name="my_assignments" domain="[('user_id', '=', uid)]"/>
-        <filter string="This Month" name="this_month" domain="[('start_date', '&gt;=', (context_today - relativedelta(day=1)).strftime('%Y-%m-%d')),
-                            ('start_date', '&lt;', (context_today + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+<filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+<filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+<filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+<separator/>
+<filter string="My Assignments" name="my_assignments" domain="[('user_id', '=', uid)]"/>
+<filter string="This Month" name="this_month" domain="[('date', '&gt;=', (context_today - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                            ('date', '&lt;', (context_today + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
 
-        <group expand="1" string="Group By">
-            <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
-            <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
-            <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
-            <filter string="Role" name="group_role" context="{'group_by': 'role'}"/>
-            <filter string="Start Date" name="group_start_date" context="{'group_by': 'start_date'}"/>
-        </group>
-    </search>
-</field>
-    </record>
+            <group expand="1" string="Group By">
+<filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
+<filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+<filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+<filter string="Role" name="group_role" context="{'group_by': 'role'}"/>
+<filter string="Date" name="group_date" context="{'group_by': 'date'}"/>
+
+            </group>
+        </search>
+    </field>
+</record>
 
 <!-- Action for Records Storage Department User -->
-    <record id="action_records_storage_department_user" model="ir.actions.act_window">
-        <field name="name">Department User Assignments</field>
-        <field name="res_model">records.storage.department.user</field>
-        <field name="view_mode">list,form</field>
-        <field name="view_ids" eval="[(5, 0, 0),
+<record id="action_records_storage_department_user" model="ir.actions.act_window">
+<field name="name">Department User Assignments</field>
+    <field name="res_model">records.storage.department.user</field>
+    <field name="view_mode">list,form</field>
+<field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'list', 'view_id': ref('records_storage_department_user_view_tree')}),
         (0, 0, {'view_mode': 'form', 'view_id': ref('records_storage_department_user_view_form')})]"/>
-        <field name="domain">[]</field>
-        <field name="context">{
+
+    <field name="domain">[]</field>
+<field name="context">{
         'search_default_active': 1,
-        'search_default_state_active': 1
+        'search_default_this_month': 1
     }</field>
-        <field name="help" type="html">
-    <p class="oe_view_nocontent_create">
+    <field name="help" type="html">
+<p class="oe_view_nocontent_create">
             Click to create a new department user assignment.
-    </p>
-    <p>
-    Department user assignments allow you to manage which users have access to specific departments
+</p>
+<p>
+Department user assignments allow you to manage which users have access to specific departments
             within the Records Management system. This enables granular access control and department-level
             data separation for multi-tenant scenarios.
         </p>
-</field>
-    </record>
+    </field>
+</record>
 
 <!-- Menu item -->
-    <menuitem id="menu_records_storage_department_user" name="Department Users" parent="records_management.menu_records_configuration" action="action_records_storage_department_user" sequence="30" groups="records_management.group_records_manager"/>
+<menuitem id="menu_records_storage_department_user" name="Department Users" parent="records_management.menu_records_configuration" action="action_records_storage_department_user" sequence="30" groups="records_management.group_records_manager"/>
 
 </odoo>

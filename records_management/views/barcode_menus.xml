@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<!-- Barcode Menus - Loaded after main menu structure -->
+
+    <data><!-- Barcode Menus - Loaded after main menu structure -->
 
 <!-- Menu Items for Barcode Configuration and History -->
 <menuitem id="menu_barcode_config" name="Barcode Configuration" parent="menu_records_configuration" 
@@ -10,4 +11,5 @@ action="action_barcode_generation_history" sequence="40"/>
 <menuitem id="menu_barcode_history" name="Barcode History" parent="menu_records_reporting" 
 action="action_barcode_generation_history" sequence="40"/>
 
+    </data>
 </odoo>

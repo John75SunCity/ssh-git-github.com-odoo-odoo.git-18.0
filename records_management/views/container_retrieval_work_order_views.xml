@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!-- Placeholder: legacy container.retrieval.work.order views removed (consolidated) -->
+
+    <data><!-- Placeholder: legacy container.retrieval.work.order views removed (consolidated) -->
+    </data>
 </odoo>

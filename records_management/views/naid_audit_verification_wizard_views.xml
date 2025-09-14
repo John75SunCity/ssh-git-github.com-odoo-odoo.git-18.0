@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="naid_audit_verification_wizard_view_form" model="ir.ui.view">
+    
+    <data><record id="naid_audit_verification_wizard_view_form" model="ir.ui.view">
         <field name="name">naid.audit.verification.wizard.view.form</field>
         <field name="model">naid.audit.verification.wizard</field>
         <field name="arch" type="xml">
@@ -24,4 +25,5 @@
             </form>
         </field>
     </record>
+    </data>
 </odoo>

@@ -4,7 +4,8 @@
 
 
     
-    <record id="processing_log_resolution_wizard_view_form" model="ir.ui.view">
+    
+    <data><record id="processing_log_resolution_wizard_view_form" model="ir.ui.view">
         <field name="name">processing.log.resolution.wizard.view.form</field>
         <field name="model">processing.log.resolution.wizard</field>
         <field name="arch" type="xml">
@@ -407,4 +408,5 @@
         </field>
     </record>
 
+    </data>
 </odoo>

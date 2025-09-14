@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Kanban view for Enhanced -->
+    <data>
+        <!-- Kanban view for Enhanced -->
         <record id="records_location_view_kanban" model="ir.ui.view">
             <field name="name">records.location.view.kanban</field>
             <field name="model">records.location</field>
@@ -8,8 +9,8 @@
                 <kanban default_group_by="location_type" class="o_kanban_location_dashboard">
                     <field name="name"/>
                     <field name="location_type"/>
-                    <field name="container_count"/>
-                    <field name="max_capacity"/>
+                    <field name="current_utilization"/>
+                    <field name="storage_capacity"/>
                     <field name="available_spaces"/>
                     <field name="utilization_percentage"/>
                     <field name="active"/>
@@ -39,16 +40,16 @@
                                         <div class="row">
                                             <div class="col-6">
                                                 <button name="action_view_containers" type="object" class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-cube" aria-hidden="true" title="Container"/>
+                                                    <i class="fa fa-cube" aria-hidden="true"/>
                                                     View Containers
                                                 </button>
                                             </div>
                                             <div class="col-6">
                                                 <div class="text-right">
                                                     <span class="badge badge-info">
-                                                        <field name="container_count"/>
+                                                        <field name="current_utilization"/>
                                                         /
-                                                        <field name="max_capacity"/>
+                                                        <field name="storage_capacity"/>
                                                         Used
                                                     </span>
                                                     <br/>
@@ -61,16 +62,16 @@
                                         </div>
                                     </div>
                                     <div class="progress mt-2" style="height: 8px;">
-                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + ((record.utilization_percentage &amp;&amp; record.utilization_percentage.raw_value != null) ? record.utilization_percentage.raw_value : 0) + '%'"/>
+                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + (record.utilization_percentage.raw_value or 0) + '%'"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-edit" title="Edit"/> Edit Location</a>
-                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class="fa fa-box" title="View Containers"/> View Containers</a>
-                                <a role="menuitem" type="object" name="action_location_report" class="dropdown-item"><i class="fa fa-bar-chart" title="Location Report"/> Location Report</a>
+                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-edit"/> Edit Location</a>
+                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class="fa fa-box"/> View Containers</a>
+                                <a role="menuitem" type="object" name="action_location_report" class="dropdown-item"><i class="fa fa-bar-chart"/> Location Report</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="archive" class="dropdown-item"><i class="fa fa-trash"></i> Archive</a>
+                                <a role="menuitem" type="delete" class="dropdown-item"><i class="fa fa-trash"></i> Archive</a>
                             </div>
                         </t>
                     </templates>
@@ -83,11 +84,11 @@
             <field name="name">records.location.view.tree</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
-                <list decoration-success="container_count &lt; max_capacity * 0.8" decoration-warning="container_count &gt;= max_capacity * 0.8 and container_count &lt; max_capacity" decoration-danger="container_count &gt;= max_capacity">
+                <list decoration-success="current_utilization &lt; storage_capacity * 0.8" decoration-warning="current_utilization &gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &gt;= storage_capacity">
                     <field name="name" string="Location Name"/>
                     <field name="location_type" string="Type"/>
-                    <field name="max_capacity" string="Capacity"/>
-                    <field name="container_count" string="Current Usage"/>
+                    <field name="storage_capacity" string="Capacity"/>
+                    <field name="current_utilization" string="Current Usage"/>
                     <field name="available_spaces" string="Available Spaces"/>
                     <field name="utilization_percentage" string="Utilization %" widget="percentage"/>
                     <field name="active" string="Active"/>
@@ -110,7 +111,7 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_containers" type="object" class="oe_stat_button" icon="fa-cube">
-                                <field name="container_count" string="Containers" widget="statinfo"/>
+                                <field name="current_utilization" string="Containers" widget="statinfo"/>
                             </button>
                             <button name="action_location_report" type="object" class="oe_stat_button" icon="fa-bar-chart">
                                 <div class="o_field_widget o_stat_info">
@@ -121,7 +122,7 @@
                                     <span class="o_stat_text">Utilization</span>
                                 </div>
                             </button>
-                            <button class="oe_stat_button text-success" icon="fa-check-circle">
+                            <button class="oe_stat_button" icon="fa-check-circle" style="color: green;">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="available_spaces"/>
@@ -138,8 +139,8 @@
                                 <field name="parent_location_id" string="Parent Location"/>
                             </group>
                             <group string="Capacity &amp; Usage">
-                                <field name="max_capacity"/>
-                                <field name="container_count"/>
+                                <field name="storage_capacity"/>
+                                <field name="current_utilization"/>
                                 <field name="available_spaces"/>
                                 <field name="utilization_percentage" widget="percentage"/>
                             </group>
@@ -180,12 +181,12 @@
             <field name="model">records.location</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name" string="Location"/>
+                    <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
                     <field name="location_type"/>
 
                     <filter name="available_space" string="Available Space" domain="[('available_spaces', '&gt;', 0)]"/>
                     <filter name="near_capacity" string="Near Capacity" domain="[('utilization_percentage', '&gt;=', 80)]"/>
-                    <filter name="at_capacity" string="At Capacity" domain="[('is_at_capacity', '=', True)]"/>
+                    <filter name="at_capacity" string="At Capacity" domain="[('current_utilization', '&gt;=', 'storage_capacity')]"/>
 
                     <separator/>
                     <filter name="optimal_load" string="Optimal Load (20-80%)" domain="[('utilization_percentage', '&gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
@@ -205,7 +206,7 @@
 
         <!-- Action for ENTERPRISE -->
         <record id="action_records_location" model="ir.actions.act_window">
-            <field name="name">Storage Locations</field>
+            <field name="name"><i class='fa fa-building'></i> Storage Locations</field>
             <field name="res_model">records.location</field>
             <field name="view_mode">kanban,list,form</field>
             <field name="search_view_id" ref="records_location_view_search"/>
@@ -220,12 +221,13 @@
                 <p>
                     <b>Enterprise Storage Management:</b>
                     <br/>
-                    • <i class='fa fa-box' title='Container Tracking'></i> Track box locations with visual kanban boards<br/>
-                    • <i class='fa fa-bar-chart' title='Capacity Monitoring'></i> Monitor capacity utilization in real-time<br/>
+                    • <i class='fa fa-box'></i> Track box locations with visual kanban boards<br/>
+                    • <i class='fa fa-bar-chart'></i> Monitor capacity utilization in real-time<br/>
                     • <i class='fa fa-search'></i> Smart search with advanced filters<br/>
                     • <i class='fa fa-building'></i> Hierarchical location organization<br/>
                     • <i class='fa fa-mobile'></i> Mobile-optimized for facility operations
                 </p>
             </field>
         </record>
+    </data>
 </odoo>

@@ -8,19 +8,17 @@
         <field name="name">records.digital.scan.view.tree</field>
         <field name="model">records.digital.scan</field>
         <field name="arch" type="xml">
-        <list string="Digital Scans">
-            <field name="name"/>
-            <field name="document_id"/>
-            <field name="final_container_id"/>
-            <field name="final_location_id"/>
-            <field name="final_series_id"/>
-            <field name="scan_date"/>
-            <field name="file_format"/>
-            <field name="resolution"/>
-            <field name="scan_quality"/>
-            <field name="scanned_by_id"/>
-            <field name="state"/>
-        </list>
+        <tree string="Digital Scans">
+        <field name="name"/>
+        <field name="document_ids"/>
+        <field name="scan_date"/>
+        <field name="file_format"/>
+        <field name="resolution"/>
+        <field name="scan_quality"/>
+        <field name="scanned_by_id"/>
+
+        <field name="state"/>
+        </tree>
     </field>
     </record>
 
@@ -31,9 +29,10 @@
         <field name="arch" type="xml">
         <form string="Digital Scan">
             <header>
-                <button name="action_confirm" string="Confirm Scan" type="object" class="oe_highlight" invisible="state != 'draft'"/>
-                <button name="action_done" string="Mark Complete" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
-                <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+<button name="action_confirm" string="Confirm Scan" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+<button name="action_done" string="Mark Complete" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+
+        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
             </header>
             <sheet>
                 <div class="oe_title">
@@ -43,29 +42,17 @@
                 </div>
                 <group>
                     <group>
-                        <field name="document_id"/>
-                        <field name="scan_date"/>
-                        <field name="scanned_by_id"/>
+        <field name="document_ids"/>
+        <field name="scan_date"/>
+        <field name="scanned_by_id"/>
+
                     </group>
                     <group>
-                        <field name="file_format"/>
-                        <field name="resolution"/>
-                        <field name="scan_quality"/>
-                        <field name="file_size"/>
-                        <field name="scanner_id"/>
-                    </group>
-                </group>
-                <group string="Source Tracking">
-                    <group>
-                        <field name="final_container_id" readonly="1"/>
-                        <field name="final_location_id" readonly="1"/>
-                        <field name="final_series_id" readonly="1"/>
-                    </group>
-                    <group>
-                        <field name="is_non_inventory"/>
-                        <field name="override_container_id" invisible="not is_non_inventory"/>
-                        <field name="override_location_id" invisible="not is_non_inventory"/>
-                        <field name="override_series_id" invisible="not is_non_inventory"/>
+        <field name="file_format"/>
+        <field name="resolution"/>
+        <field name="scan_quality"/>
+        <field name="file_size"/>
+        <field name="scanner_id"/>
                     </group>
                 </group>
                 <notebook>
@@ -92,25 +79,20 @@
         <field name="model">records.digital.scan</field>
         <field name="arch" type="xml">
         <search string="Digital Scans">
-            <field name="name"/>
-            <field name="document_id"/>
-            <field name="scanned_by_id"/>
-            <field name="final_container_id"/>
-            <field name="final_location_id"/>
-            <field name="final_series_id"/>
+        <field name="name"/>
+        <field name="document_ids"/>
+        <field name="scanned_by_id"/>
+
             <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
             <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
             <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
             <separator/>
-            <filter string="My Scans" name="my_scans" domain="[('scanned_by_id.user_id', '=', uid)]"/>
-            <filter string="Non-Inventory Scans" name="non_inventory" domain="[('is_non_inventory', '=', True)]"/>
-            <filter string="Inventory Scans" name="inventory" domain="[('is_non_inventory', '=', False)]"/>
+<filter string="My Scans" name="my_scans" domain="[('scanned_by_id.user_id', '=', uid)]"/>
+
             <group expand="0" string="Group By">
                 <filter string="Document" name="group_document" context="{'group_by': 'document_id'}"/>
-                <filter string="Scanned By" name="group_scanned_by" context="{'group_by': 'scanned_by_id'}"/>
-                <filter string="Container" name="group_container" context="{'group_by': 'final_container_id'}"/>
-                <filter string="Location" name="group_location" context="{'group_by': 'final_location_id'}"/>
-                <filter string="Series" name="group_series" context="{'group_by': 'final_series_id'}"/>
+<filter string="Scanned By" name="group_scanned_by" context="{'group_by': 'scanned_by_id'}"/>
+
                 <filter string="File Format" name="group_format" context="{'group_by': 'file_format'}"/>
                 <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
             </group>

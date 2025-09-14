@@ -57,7 +57,6 @@ from . import document_retrieval_equipment
 from . import document_retrieval_item
 from . import document_search_attempt
 from . import feedback_improvement_area
-from . import field_label_config
 from . import field_label_customization
 from . import full_customization_name
 from . import hard_drive_scan_wizard
@@ -73,7 +72,6 @@ from . import inventory_item_retrieval_line
 from . import inventory_item_type
 from . import invoice_generation_log
 from . import key_inventory
-from . import key_restriction_history
 from . import location_group
 from . import location_report_wizard
 from . import maintenance_equipment

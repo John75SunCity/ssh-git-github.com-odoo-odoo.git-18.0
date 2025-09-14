@@ -35,324 +35,326 @@
     License: LGPL-3
 -->
 <odoo>
+    <data>
 
-    <!-- ==================================================================== -->
-    <!-- RECORDS WORK VEHICLES - FSM & WORK INTEGRATION FOCUSED             -->
-    <!-- ==================================================================== -->
+        <!-- ==================================================================== -->
+        <!-- RECORDS WORK VEHICLES - FSM & WORK INTEGRATION FOCUSED             -->
+        <!-- ==================================================================== -->
 
-    <!--
-        ENHANCED FORM VIEW - Work Integration Focus
+        <!--
+            ENHANCED FORM VIEW - Work Integration Focus
 
-        Extends the standard fleet vehicle form to add work-specific functionality:
-        * Work-focused stat buttons for route and task management
-        * Records Work Integration tab with specialized configuration
-        * NAID compliance alerts and certification status
-        * Real-time operational status monitoring
-        * FSM task integration and work order management
+            Extends the standard fleet vehicle form to add work-specific functionality:
+            * Work-focused stat buttons for route and task management
+            * Records Work Integration tab with specialized configuration
+            * NAID compliance alerts and certification status
+            * Real-time operational status monitoring
+            * FSM task integration and work order management
 
-        Inheritance: fleet.fleet_vehicle_view_form
-        Security: records_management.group_records_user, group_records_manager
-    -->
-    <record id="fleet_vehicle_view_form_records_work" model="ir.ui.view">
-        <field name="name">fleet.vehicle.form.inherit.records.work</field>
-        <field name="model">fleet.vehicle</field>
-        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
-        <field name="arch" type="xml">
+            Inheritance: fleet.fleet_vehicle_view_form
+            Security: records_management.group_records_user, group_records_manager
+        -->
+        <record id="fleet_vehicle_view_form_records_work" model="ir.ui.view">
+            <field name="name">fleet.vehicle.form.inherit.records.work</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+            <field name="arch" type="xml">
 
-            <!-- Work-focused stat buttons -->
-            <xpath expr="//div[@name='button_box']" position="inside">
-                <!-- Active Routes Button: Shows current pickup routes assigned to vehicle -->
-                <button name="action_view_pickup_routes" type="object" class="oe_stat_button" icon="fa-route" string="Active Routes" groups="records_management.group_records_user,records_management.group_records_manager" invisible="not pickup_route_ids">
-                    <div class="o_field_widget o_stat_info">
-                        <span class="o_stat_value"><field name="pickup_route_ids" widget="statinfo"/></span>
-                        <span class="o_stat_text">Work Routes</span>
-                    </div>
-                </button>
-                <!-- Set Available Button: Quick action to mark vehicle as available for work -->
-                <button name="action_set_records_available" type="object" class="oe_stat_button" icon="fa-check-circle" string="Set Available" groups="records_management.group_records_manager" invisible="records_operational_status != 'out_of_service'"/>
-            </xpath>
-
-            <!-- Work Integration Tab -->
-            <xpath expr="//sheet/notebook" position="inside">
-                <page string="Records Work Integration" name="records_work" groups="records_management.group_records_user,records_management.group_records_manager">
-                    <group>
-                        <!-- Work Vehicle Configuration Section -->
-                        <group string="Work Vehicle Configuration">
-                            <field name="records_vehicle_type"/>
-                            <field name="records_operational_status"/>
-                            <field name="max_container_capacity"/>
-                            <field name="naid_compliant"/>
-                        </group>
-                        <!-- Current Work Assignment Section -->
-                        <group string="Current Work Assignment">
-                            <field name="pickup_route_ids" context="{'default_vehicle_id': id}" readonly="1"/>
-                        </group>
-                    </group>
-
-                    <!-- Work Type Guidelines Information -->
-                    <separator string="Work Type Guidelines"/>
-                    <div class="alert alert-info" role="status">
-                        <strong><i class="fa fa-wrench" title="Work Configuration"/> Work-Integrated Vehicle Types</strong>
-                        <ul class="mt8">
-                            <li><b>Standard Pickup:</b> FSM pickup/delivery tasks with route optimization</li>
-                            <li><b>Secure Transport:</b> NAID-compliant chain-of-custody work orders</li>
-                            <li><b>Shredding Truck:</b> Mobile destruction FSM tasks with certificates</li>
-                            <li><b>Container Delivery:</b> Container placement/retrieval work orders</li>
-                        </ul>
-                    </div>
-
-                    <!-- Compliance & Work Safety Alerts -->
-                    <group string="Compliance &amp; Work Safety">
-                        <!-- Warning for non-NAID compliant secure transport vehicles -->
-                        <div class="alert alert-warning" role="alert" invisible="records_vehicle_type != 'secure_transport' or naid_compliant">
-                            <i class="fa fa-exclamation-triangle" title="Compliance Warning"/> NAID compliance required for secure transport work orders.
+                <!-- Work-focused stat buttons -->
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <!-- Active Routes Button: Shows current pickup routes assigned to vehicle -->
+                    <button name="action_view_pickup_routes" type="object" class="oe_stat_button" icon="fa-route" string="Active Routes" groups="records_management.group_records_user,records_management.group_records_manager" invisible="not pickup_route_ids">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value"><field name="pickup_route_ids" widget="statinfo"/></span>
+                            <span class="o_stat_text">Work Routes</span>
                         </div>
-                        <!-- Success indicator for NAID compliant vehicles -->
-                        <div class="alert alert-success" role="status" invisible="not naid_compliant">
-                            <i class="fa fa-shield" title="NAID Certified"/> This vehicle is certified for NAID-compliant work orders.
+                    </button>
+                    <!-- Set Available Button: Quick action to mark vehicle as available for work -->
+                    <button name="action_set_records_available" type="object" class="oe_stat_button" icon="fa-check-circle" string="Set Available" groups="records_management.group_records_manager" invisible="records_operational_status != 'out_of_service'"/>
+                </xpath>
+
+                <!-- Work Integration Tab -->
+                <xpath expr="//sheet/notebook" position="inside">
+                    <page string="Records Work Integration" name="records_work" groups="records_management.group_records_user,records_management.group_records_manager">
+                        <group>
+                            <!-- Work Vehicle Configuration Section -->
+                            <group string="Work Vehicle Configuration">
+                                <field name="records_vehicle_type"/>
+                                <field name="records_operational_status"/>
+                                <field name="max_container_capacity"/>
+                                <field name="naid_compliant"/>
+                            </group>
+                            <!-- Current Work Assignment Section -->
+                            <group string="Current Work Assignment">
+                                <field name="pickup_route_ids" context="{'default_vehicle_id': id}" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- Work Type Guidelines Information -->
+                        <separator string="Work Type Guidelines"/>
+                        <div class="alert alert-info" role="status">
+                            <strong><i class="fa fa-wrench"/> Work-Integrated Vehicle Types</strong>
+                            <ul class="mt8">
+                                <li><b>Standard Pickup:</b> FSM pickup/delivery tasks with route optimization</li>
+                                <li><b>Secure Transport:</b> NAID-compliant chain-of-custody work orders</li>
+                                <li><b>Shredding Truck:</b> Mobile destruction FSM tasks with certificates</li>
+                                <li><b>Container Delivery:</b> Container placement/retrieval work orders</li>
+                            </ul>
                         </div>
-                    </group>
-                </page>
-            </xpath>
-        </field>
-    </record>
 
-    <!--
-        WORK-FOCUSED TREE VIEW
+                        <!-- Compliance & Work Safety Alerts -->
+                        <group string="Compliance &amp; Work Safety">
+                            <!-- Warning for non-NAID compliant secure transport vehicles -->
+                            <div class="alert alert-warning" role="alert" invisible="records_vehicle_type != 'secure_transport' or naid_compliant">
+                                <i class="fa fa-exclamation-triangle"/> NAID compliance required for secure transport work orders.
+                            </div>
+                            <!-- Success indicator for NAID compliant vehicles -->
+                            <div class="alert alert-success" role="status" invisible="not naid_compliant">
+                                <i class="fa fa-shield"/> This vehicle is certified for NAID-compliant work orders.
+                            </div>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
 
-        Provides a streamlined list view optimized for work vehicle management:
-        * Essential work-related fields displayed prominently
-        * Operational status and vehicle type visible at a glance
-        * NAID compliance status for quick verification
-        * Optional fields for detailed capacity planning
-        * Badge widgets for active route visualization
+        <!--
+            WORK-FOCUSED TREE VIEW
 
-        Features:
-        * Create disabled (vehicles created through fleet module)
-        * Sortable columns for efficient filtering
-        * Optional fields for customizable display
-    -->
-            <!-- List View for Records Work Vehicles -->
-    <record id="fleet_vehicle_view_list_records_work" model="ir.ui.view">
-        <field name="name">fleet.vehicle.list.records.work</field>
-        <field name="model">fleet.vehicle</field>
-        <field name="arch" type="xml">
-            <list string="Records Work Vehicles" create="true" edit="true" delete="true">
-                <field name="name"/>
-                <field name="model_id"/>
-                <field name="license_plate"/>
-                <field name="records_vehicle_type"/>
-                <field name="records_operational_status"/>
-                <field name="naid_compliant" widget="boolean_toggle"/>
-                <field name="max_container_capacity"/>
-                <field name="driver_id"/>
-                <field name="pickup_route_ids" widget="many2many_tags"/>
-            </list>
-        </field>
-    </record>
+            Provides a streamlined list view optimized for work vehicle management:
+            * Essential work-related fields displayed prominently
+            * Operational status and vehicle type visible at a glance
+            * NAID compliance status for quick verification
+            * Optional fields for detailed capacity planning
+            * Badge widgets for active route visualization
 
-    <!--
-        WORK-FOCUSED KANBAN VIEW
+            Features:
+            * Create disabled (vehicles created through fleet module)
+            * Sortable columns for efficient filtering
+            * Optional fields for customizable display
+        -->
+                <!-- List View for Records Work Vehicles -->
+        <record id="fleet_vehicle_view_list_records_work" model="ir.ui.view">
+            <field name="name">fleet.vehicle.list.records.work</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="arch" type="xml">
+                <list string="Records Work Vehicles" create="true" edit="true" delete="true">
+                    <field name="name"/>
+                    <field name="model_id"/>
+                    <field name="license_plate"/>
+                    <field name="records_vehicle_type"/>
+                    <field name="records_operational_status"/>
+                    <field name="naid_compliant" widget="boolean_toggle"/>
+                    <field name="max_container_capacity"/>
+                    <field name="driver_id"/>
+                    <field name="pickup_route_ids" widget="many2many_tags"/>
+                </list>
+            </field>
+        </record>
 
-        Visual workflow management interface grouped by operational status:
-        * Card-based layout for intuitive vehicle status tracking
-        * Color-coded badges for quick identification of vehicle capabilities
-        * Dropdown actions for direct vehicle management
-        * Responsive design optimized for different screen sizes
-        * Real-time status updates with automatic grouping
+        <!--
+            WORK-FOCUSED KANBAN VIEW
 
-        Card Information:
-        * Vehicle name and license plate prominently displayed
-        * Operational status badge for current work state
-        * Vehicle type and NAID compliance indicators
-        * Container capacity for work planning
-        * Driver assignment information
+            Visual workflow management interface grouped by operational status:
+            * Card-based layout for intuitive vehicle status tracking
+            * Color-coded badges for quick identification of vehicle capabilities
+            * Dropdown actions for direct vehicle management
+            * Responsive design optimized for different screen sizes
+            * Real-time status updates with automatic grouping
 
-        Grouping: Default grouped by records_operational_status
-    -->
-    <record id="fleet_vehicle_view_kanban_records_work" model="ir.ui.view">
-        <field name="name">fleet.vehicle.records.work.kanban</field>
-        <field name="model">fleet.vehicle</field>
-        <field name="arch" type="xml">
-            <kanban string="Records Work Vehicles" create="false" default_group_by="records_operational_status">
-                <field name="name"/>
-                <field name="license_plate"/>
-                <field name="driver_id"/>
-                <field name="records_vehicle_type"/>
-                <field name="records_operational_status"/>
-                <field name="naid_compliant"/>
-                <field name="max_container_capacity"/>
-                <templates>
-                    <t t-name="card">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="oe_kanban_content">
-                                <!-- Card Header with Vehicle Info and Actions -->
-                                <div class="o_kanban_record_top">
-                                    <div class="o_kanban_record_headings">
-                                        <strong class="o_kanban_record_title">
-                                            <t t-esc="record.name.value"/>
-                                        </strong>
-                                        <small class="o_kanban_record_subtitle text-muted">
-                                            <t t-esc="record.license_plate.value"/>
-                                        </small>
-                                    </div>
-                                    <div class="o_kanban_record_top_right">
-                                        <!-- Dropdown Menu for Quick Actions -->
-                                        <div class="o_dropdown_kanban dropdown">
-                                            <a class="dropdown-toggle o-no-caret btn" data-bs-toggle="dropdown" href="#" role="button" aria-label="Dropdown menu" title="Dropdown menu">
-                                                <span class="fa fa-ellipsis-v"/>
-                                            </a>
-                                            <div class="dropdown-menu" role="menu">
-                                                <a t-if="widget.editable" type="edit" class="dropdown-item">Edit Vehicle</a>
-                                                <a t-if="widget.deletable" type="delete" class="dropdown-item">Delete</a>
+            Card Information:
+            * Vehicle name and license plate prominently displayed
+            * Operational status badge for current work state
+            * Vehicle type and NAID compliance indicators
+            * Container capacity for work planning
+            * Driver assignment information
+
+            Grouping: Default grouped by records_operational_status
+        -->
+        <record id="fleet_vehicle_view_kanban_records_work" model="ir.ui.view">
+            <field name="name">fleet.vehicle.records.work.kanban</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="arch" type="xml">
+                <kanban string="Records Work Vehicles" create="false" default_group_by="records_operational_status">
+                    <field name="name"/>
+                    <field name="license_plate"/>
+                    <field name="driver_id"/>
+                    <field name="records_vehicle_type"/>
+                    <field name="records_operational_status"/>
+                    <field name="naid_compliant"/>
+                    <field name="max_container_capacity"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <!-- Card Header with Vehicle Info and Actions -->
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <t t-esc="record.name.value"/>
+                                            </strong>
+                                            <small class="o_kanban_record_subtitle text-muted">
+                                                <t t-esc="record.license_plate.value"/>
+                                            </small>
+                                        </div>
+                                        <div class="o_kanban_record_top_right">
+                                            <!-- Dropdown Menu for Quick Actions -->
+                                            <div class="o_dropdown_kanban dropdown">
+                                                <a class="dropdown-toggle o-no-caret btn" data-bs-toggle="dropdown" href="#" role="button" aria-label="Dropdown menu" title="Dropdown menu">
+                                                    <span class="fa fa-ellipsis-v"/>
+                                                </a>
+                                                <div class="dropdown-menu" role="menu">
+                                                    <a t-if="widget.editable" type="edit" class="dropdown-item">Edit Vehicle</a>
+                                                    <a t-if="widget.deletable" type="delete" class="dropdown-item">Delete</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- Card Body with Status and Capability Badges -->
-                                <div class="o_kanban_record_body">
-                                    <!-- Operational Status Badge -->
-                                    <field name="records_operational_status" widget="badge"/>
-                                    <!-- Vehicle Capabilities and Specifications -->
-                                    <div class="mt8">
-                                        <!-- Vehicle Type Badge -->
-                                        <span t-if="record.records_vehicle_type.raw_value" class="badge badge-info me-1">
-                                            <t t-esc="record.records_vehicle_type.value"/>
-                                        </span>
-                                        <!-- NAID Compliance Badge -->
-                                        <span t-if="record.naid_compliant.raw_value" class="badge badge-success me-1">
-                                            <i class="fa fa-shield" title="NAID Certified"/> NAID
-                                        </span>
-                                        <!-- Container Capacity Badge -->
-                                        <span t-if="record.max_container_capacity.raw_value" class="badge badge-secondary">
-                                            <i class="fa fa-box" title="Container Capacity"/> <t t-esc="record.max_container_capacity.value"/> max
-                                        </span>
-                                    </div>
-                                    <!-- Driver Assignment Information -->
-                                    <div class="mt8" t-if="record.driver_id.value">
-                                        <i class="fa fa-user text-muted" title="Assigned Driver"/> <t t-esc="record.driver_id.value"/>
+                                    <!-- Card Body with Status and Capability Badges -->
+                                    <div class="o_kanban_record_body">
+                                        <!-- Operational Status Badge -->
+                                        <field name="records_operational_status" widget="badge"/>
+                                        <!-- Vehicle Capabilities and Specifications -->
+                                        <div class="mt8">
+                                            <!-- Vehicle Type Badge -->
+                                            <span t-if="record.records_vehicle_type.raw_value" class="badge badge-info me-1">
+                                                <t t-esc="record.records_vehicle_type.value"/>
+                                            </span>
+                                            <!-- NAID Compliance Badge -->
+                                            <span t-if="record.naid_compliant.raw_value" class="badge badge-success me-1">
+                                                <i class="fa fa-shield"/> NAID
+                                            </span>
+                                            <!-- Container Capacity Badge -->
+                                            <span t-if="record.max_container_capacity.raw_value" class="badge badge-secondary">
+                                                <i class="fa fa-box"/> <t t-esc="record.max_container_capacity.value"/> max
+                                            </span>
+                                        </div>
+                                        <!-- Driver Assignment Information -->
+                                        <div class="mt8" t-if="record.driver_id.value">
+                                            <i class="fa fa-user text-muted"/> <t t-esc="record.driver_id.value"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
 
-    <!--
-        WORK-FOCUSED SEARCH VIEW
+        <!--
+            WORK-FOCUSED SEARCH VIEW
 
-        Advanced search and filtering interface for work vehicle management:
-        * Quick filters for common operational scenarios
-        * Vehicle type filtering for specialized work assignments
-        * NAID compliance filtering for secure transport requirements
-        * Grouping options for organized vehicle management
-        * Searchable fields for rapid vehicle location
+            Advanced search and filtering interface for work vehicle management:
+            * Quick filters for common operational scenarios
+            * Vehicle type filtering for specialized work assignments
+            * NAID compliance filtering for secure transport requirements
+            * Grouping options for organized vehicle management
+            * Searchable fields for rapid vehicle location
 
-        Filter Categories:
-        * Operational Status: Available, working, out of service
-        * Compliance: NAID certified vehicles only
-        * Vehicle Types: Pickup, secure transport, shredding, container
-        * Grouping: By work type, status, or certification
-    -->
-    <record id="fleet_vehicle_view_search_records_work" model="ir.ui.view">
-        <field name="name">fleet.vehicle.records.work.search</field>
-        <field name="model">fleet.vehicle</field>
-        <field name="arch" type="xml">
-            <search string="Records Work Vehicles">
-                <!-- Basic Search Fields -->
-                <field name="name"/>
-                <field name="license_plate"/>
-                <field name="driver_id"/>
-                <field name="records_vehicle_type"/>
-                <field name="records_operational_status"/>
-                <separator/>
-                <!-- Operational Status Filters -->
-                <filter string="Available for Work" name="available_work" domain="[('records_operational_status','=','available')]"/>
-                <filter string="Currently Working" name="on_work" domain="[('records_operational_status','=','on_route')]"/>
-                <filter string="NAID Certified" name="naid_certified" domain="[('naid_compliant','=',True)]"/>
-                <separator/>
-                <!-- Vehicle Type Filters -->
-                <filter string="Pickup Vehicles" name="pickup_vehicles" domain="[('records_vehicle_type','=','standard_pickup')]"/>
-                <filter string="Secure Transport" name="secure_transport" domain="[('records_vehicle_type','=','secure_transport')]"/>
-                <filter string="Mobile Shredding" name="mobile_shredding" domain="[('records_vehicle_type','=','shredding_truck')]"/>
-                <filter string="Container Service" name="container_service" domain="[('records_vehicle_type','=','container_delivery')]"/>
-                <!-- Grouping Options -->
-                <group expand="0" string="Group By">
-                    <filter string="Work Type" name="group_work_type" context="{'group_by':'records_vehicle_type'}"/>
-                    <filter string="Work Status" name="group_work_status" context="{'group_by':'records_operational_status'}"/>
-                    <filter string="NAID Certification" name="group_naid" context="{'group_by':'naid_compliant'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+            Filter Categories:
+            * Operational Status: Available, working, out of service
+            * Compliance: NAID certified vehicles only
+            * Vehicle Types: Pickup, secure transport, shredding, container
+            * Grouping: By work type, status, or certification
+        -->
+        <record id="fleet_vehicle_view_search_records_work" model="ir.ui.view">
+            <field name="name">fleet.vehicle.records.work.search</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="arch" type="xml">
+                <search string="Records Work Vehicles">
+                    <!-- Basic Search Fields -->
+                    <field name="name"/>
+                    <field name="license_plate"/>
+                    <field name="driver_id"/>
+                    <field name="records_vehicle_type"/>
+                    <field name="records_operational_status"/>
+                    <separator/>
+                    <!-- Operational Status Filters -->
+                    <filter string="Available for Work" name="available_work" domain="[('records_operational_status','=','available')]"/>
+                    <filter string="Currently Working" name="on_work" domain="[('records_operational_status','=','on_route')]"/>
+                    <filter string="NAID Certified" name="naid_certified" domain="[('naid_compliant','=',True)]"/>
+                    <separator/>
+                    <!-- Vehicle Type Filters -->
+                    <filter string="Pickup Vehicles" name="pickup_vehicles" domain="[('records_vehicle_type','=','standard_pickup')]"/>
+                    <filter string="Secure Transport" name="secure_transport" domain="[('records_vehicle_type','=','secure_transport')]"/>
+                    <filter string="Mobile Shredding" name="mobile_shredding" domain="[('records_vehicle_type','=','shredding_truck')]"/>
+                    <filter string="Container Service" name="container_service" domain="[('records_vehicle_type','=','container_delivery')]"/>
+                    <!-- Grouping Options -->
+                    <group expand="0" string="Group By">
+                        <filter string="Work Type" name="group_work_type" context="{'group_by':'records_vehicle_type'}"/>
+                        <filter string="Work Status" name="group_work_status" context="{'group_by':'records_operational_status'}"/>
+                        <filter string="NAID Certification" name="group_naid" context="{'group_by':'naid_compliant'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
-    <!--
-        WORK-FOCUSED ACTION WINDOW
+        <!--
+            WORK-FOCUSED ACTION WINDOW
 
-        Main action window for comprehensive work vehicle management:
-        * Multi-view interface (kanban, tree, form) for different use cases
-        * Custom view order optimized for work operations
-        * Domain filter to show only records-enabled vehicles
-        * Default context to highlight available vehicles
-        * Comprehensive help content with feature overview
+            Main action window for comprehensive work vehicle management:
+            * Multi-view interface (kanban, tree, form) for different use cases
+            * Custom view order optimized for work operations
+            * Domain filter to show only records-enabled vehicles
+            * Default context to highlight available vehicles
+            * Comprehensive help content with feature overview
 
-        View Sequence:
-        1. Kanban: Visual workflow management (default)
-        2. Tree: List view for bulk operations
-        3. Form: Detailed vehicle configuration
+            View Sequence:
+            1. Kanban: Visual workflow management (default)
+            2. Tree: List view for bulk operations
+            3. Form: Detailed vehicle configuration
 
-        Features Highlighted in Help:
-        * Route integration with FSM
-        * Work order management
-        * NAID compliance tracking
-        * Capacity planning
-        * Mobile field service
-        * Complete audit trails
-    -->
-    <record id="action_fleet_vehicle_records_work" model="ir.actions.act_window">
-        <field name="name">Records Work Vehicles</field>
-        <field name="res_model">fleet.vehicle</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="view_ids" eval="[(5, 0, 0),
-            (0, 0, {'view_mode': 'kanban', 'view_id': ref('fleet_vehicle_view_kanban_records_work')}),
-            (0, 0, {'view_mode': 'list', 'view_id': ref('fleet_vehicle_view_list_records_work')}),
-            (0, 0, {'view_mode': 'form', 'view_id': ref('fleet_vehicle_view_form_records_work')})]"/>
-        <field name="search_view_id" ref="fleet_vehicle_view_search_records_work"/>
-        <field name="domain">[('records_vehicle_type','!=',False)]</field>
-        <field name="context">{'search_default_available_work':1}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                <i class="fa fa-truck" title="Work Vehicles"/> Configure your first Records Work Vehicle!
-            </p>
-            <ul>
-                <li><i class="fa fa-route" title="Route Integration"/> <b>Route Integration:</b> Automatic FSM task creation for pickup routes</li>
-                <li><i class="fa fa-tasks" title="Work Orders"/> <b>Work Order Management:</b> Direct integration with project tasks</li>
-                <li><i class="fa fa-shield" title="NAID Compliance"/> <b>NAID Compliance:</b> Certified vehicles for secure work orders</li>
-                <li><i class="fa fa-box" title="Capacity Planning"/> <b>Capacity Planning:</b> Container limits for work scheduling</li>
-                <li><i class="fa fa-mobile" title="Field Service"/> <b>Field Service:</b> Mobile work order execution</li>
-                <li><i class="fa fa-certificate" title="Work Tracking"/> <b>Work Tracking:</b> Complete audit trail for all work performed</li>
-            </ul>
-        </field>
-    </record>
+            Features Highlighted in Help:
+            * Route integration with FSM
+            * Work order management
+            * NAID compliance tracking
+            * Capacity planning
+            * Mobile field service
+            * Complete audit trails
+        -->
+        <record id="action_fleet_vehicle_records_work" model="ir.actions.act_window">
+            <field name="name">Records Work Vehicles</field>
+            <field name="res_model">fleet.vehicle</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('fleet_vehicle_view_kanban_records_work')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('fleet_vehicle_view_list_records_work')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('fleet_vehicle_view_form_records_work')})]"/>
+            <field name="search_view_id" ref="fleet_vehicle_view_search_records_work"/>
+            <field name="domain">[('records_vehicle_type','!=',False)]</field>
+            <field name="context">{'search_default_available_work':1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-truck"/> Configure your first Records Work Vehicle!
+                </p>
+                <ul>
+                    <li><i class="fa fa-route"/> <b>Route Integration:</b> Automatic FSM task creation for pickup routes</li>
+                    <li><i class="fa fa-tasks"/> <b>Work Order Management:</b> Direct integration with project tasks</li>
+                    <li><i class="fa fa-shield"/> <b>NAID Compliance:</b> Certified vehicles for secure work orders</li>
+                    <li><i class="fa fa-box"/> <b>Capacity Planning:</b> Container limits for work scheduling</li>
+                    <li><i class="fa fa-mobile"/> <b>Field Service:</b> Mobile work order execution</li>
+                    <li><i class="fa fa-certificate"/> <b>Work Tracking:</b> Complete audit trail for all work performed</li>
+                </ul>
+            </field>
+        </record>
 
-    <!--
-        MENU ITEM INTEGRATION
+        <!--
+            MENU ITEM INTEGRATION
 
-        Integrates work vehicles into the main records management navigation:
-        * Located under Operations menu for operational focus
-        * Sequence 30 for logical positioning after core operations
-        * Security groups for proper access control
-        * Direct action binding for seamless navigation
-    -->
-    <menuitem
-        id="menu_fleet_vehicle_records_work"
-        name="Work Vehicles"
-        parent="records_management.menu_records_operations"
-        action="action_fleet_vehicle_records_work"
-        sequence="30"
-        groups="records_management.group_records_user,records_management.group_records_manager"/>
+            Integrates work vehicles into the main records management navigation:
+            * Located under Operations menu for operational focus
+            * Sequence 30 for logical positioning after core operations
+            * Security groups for proper access control
+            * Direct action binding for seamless navigation
+        -->
+        <menuitem
+            id="menu_fleet_vehicle_records_work"
+            name="Work Vehicles"
+            parent="records_management.menu_records_operations"
+            action="action_fleet_vehicle_records_work"
+            sequence="30"
+            groups="records_management.group_records_user,records_management.group_records_manager"/>
 
+    </data>
 </odoo>
