@@ -30,10 +30,10 @@
         </field>
     </record>
 
-    <!-- Search view for records.customer.billing.profile -->
+    <!-- Search view for customer.billing.profile -->
     <record id="records_customer_billing_profile_view_search" model="ir.ui.view">
-        <field name="name">records.customer.billing.profile.view.search</field>
-        <field name="model">records.customer.billing.profile</field>
+        <field name="name">customer.billing.profile.view.search</field>
+        <field name="model">customer.billing.profile</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -43,16 +43,16 @@
         </field>
     </record>
 
-    <!-- Action for records.customer.billing.profile -->
+    <!-- Action for customer.billing.profile -->
     <record id="action_records_customer_billing_profile" model="ir.actions.act_window">
-        <field name="name">Records.Customer.Billing.Profile</field>
-        <field name="res_model">records.customer.billing.profile</field>
+        <field name="name">Customer Billing Profile</field>
+        <field name="res_model">customer.billing.profile</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                Click to add a new records.customer.billing.profile.
+                Click to add a new customer billing profile.
             </p>
         </field>
     </record>
