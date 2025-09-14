@@ -172,40 +172,40 @@
                                             </div>
                                         </div>
                                         <div class="col-4">
-                                            <span class="badge" t-att-class=record.budget_utilization.raw_value &gt; 90 ? 'badge-danger' : record.budget_utilization.raw_value > 75 ? 'badge-warning' : 'badge-success'">
+                                            <span class="badge" t-att-class="record.budget_utilization.raw_value &gt; 90 ? 'badge-danger' : record.budget_utilization.raw_value &gt; 75 ? 'badge-warning' : 'badge-success'">
                                                 <field name="budget_utilization"/>% Used
                                             </span>
-                                            <span class="badge badge-primary" t-if="record.approval_authority.raw_value>
-                                                <i class='fa fa-check-circle' title="Approval Authority/>
+                                            <span class="badge badge-primary" t-if="record.approval_authority.raw_value">
+                                                <i class='fa fa-check-circle' title="Approval Authority"/>
                                                 Approver
                                             </span>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-12">
-                                            <button class="btn btn-info btn-sm" type="object" name="action_view_approvals>
-                                                <i class='fa fa-check-circle' title="View Approvals/>
+                                            <button class="btn btn-info btn-sm" type="object" name="action_view_approvals">
+                                                <i class='fa fa-check-circle' title="View Approvals"/>
                                                 Approvals
                                             </button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu>
+                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                     <a role="menuitem" type="edit" class="dropdown-item">
-                                        <i class='fa fa-edit' title="Edit Contact/>
+                                        <i class='fa fa-edit' title="Edit Contact"/>
                                         Edit Contact
                                     </a>
                                     <a role="menuitem" type="object" name="action_view_approvals" class="dropdown-item">
-                                        <i class='fa fa-check-circle' title="View Approvals/>
+                                        <i class='fa fa-check-circle' title="View Approvals"/>
                                         View Approvals
                                     </a>
                                     <a role="menuitem" type="object" name="action_budget_report" class="dropdown-item">
-                                        <i class='fa fa-file-text-o' title="Budget Report/>
+                                        <i class='fa fa-file-text-o' title="Budget Report"/>
                                         Budget Report
                                     </a>
                                     <div class="dropdown-divider"/>
                                     <a role="menuitem" type="object" name="action_send_bill_notification" class="dropdown-item">
-                                        <i class='fa fa-envelope' title="Send Bill Notification/>
+                                        <i class='fa fa-envelope' title="Send Bill Notification"/>
                                         Send Bill Notification
                                     </a>
                                 </div>
@@ -270,28 +270,28 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class='fa fa-money fa-3x' title="Money Management/>
+                    <i class='fa fa-money fa-3x' title="Money Management"/>
                     <br/>
                     Set up your first departmental billing contact!
                 </p>
                 <p>
                     <b>Enterprise Departmental Billing:</b>
                     <br/>
-                    •<i class='fa fa-briefcase' title="Business/>
+                    •<i class='fa fa-briefcase' title="Business"/>
                     Multi-level departmental cost allocation<br/>
-                    •<i class='fa fa-bar-chart' title="Analytics/>
+                    •<i class='fa fa-bar-chart' title="Analytics"/>
                     Real-time budget tracking and alerts<br/>
-                    •<i class='fa fa-check-circle' title="Approvals/>
+                    •<i class='fa fa-check-circle' title="Approvals"/>
                     Hierarchical approval workflows<br/>
-                    •<i class='fa fa-envelope' title="Notifications/>
+                    •<i class='fa fa-envelope' title="Notifications"/>
                     Automated billing notifications<br/>
-                    •<i class='fa fa-file-text-o' title="Reports/>
+                    •<i class='fa fa-file-text-o' title="Reports"/>
                     Comprehensive budget reporting<br/>
-                    •<i class='fa fa-bullseye' title="Authorization/>
+                    •<i class='fa fa-bullseye' title="Authorization"/>
                     Role-based billing authorization<br/>
-                    •<i class='fa fa-line-chart' title="Analysis/>
+                    •<i class='fa fa-line-chart' title="Analysis"/>
                     Budget variance analysis and forecasting<br/>
-                    •<i class='fa fa-mobile' title="Mobile/>
+                    •<i class='fa fa-mobile' title="Mobile"/>
                     Mobile-optimized budget management
                 </p>
             </field>
