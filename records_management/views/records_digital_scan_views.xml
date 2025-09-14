@@ -10,7 +10,7 @@
         <field name="arch" type="xml">
         <list string="Digital Scans">
         <field name="name"/>
-        <field name="document_ids"/>
+        <field name="document_id"/>
         <field name="scan_date"/>
         <field name="file_format"/>
         <field name="resolution"/>
@@ -42,7 +42,7 @@
                 </div>
                 <group>
                     <group>
-        <field name="document_ids"/>
+        <field name="document_id"/>
         <field name="scan_date"/>
         <field name="scanned_by_id"/>
 
@@ -80,7 +80,7 @@
         <field name="arch" type="xml">
         <search string="Digital Scans">
         <field name="name"/>
-        <field name="document_ids"/>
+        <field name="document_id"/>
         <field name="scanned_by_id"/>
 
             <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
