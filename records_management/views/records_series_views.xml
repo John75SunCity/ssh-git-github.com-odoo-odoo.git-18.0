@@ -1,98 +1,96 @@
 <odoo>
-    <data>
 
-        <!-- List View -->
-        <record id="records_series_view_tree" model="ir.ui.view">
-            <field name="name">records.series.view.tree</field>
-            <field name="model">records.series</field>
-        <field name="arch" type="xml">
-                <list string="Records Series">
-                    <field name="name"/>
-                    <field name="code"/>
-                    <field name="retention_policy_id"/>
-                    <field name="document_count"/>
-                    <field name="active"/>
-                </list>
-            </field>
-        </record>
+<!-- List View -->
+<record id="records_series_view_tree" model="ir.ui.view">
+    <field name="name">records.series.view.tree</field>
+    <field name="model">records.series</field>
+<field name="arch" type="xml">
+        <list string="Records Series">
+            <field name="name"/>
+            <field name="code"/>
+            <field name="retention_policy_id"/>
+            <field name="document_count"/>
+            <field name="active"/>
+        </list>
+    </field>
+</record>
 
-        <!-- Form View -->
-        <record id="records_series_view_form" model="ir.ui.view">
-            <field name="name">records.series.view.form</field>
-            <field name="model">records.series</field>
-        <field name="arch" type="xml">
-                <form string="Records Series">
-                    <sheet>
-                        <div class="oe_title">
-                            <h1><field name="name"/></h1>
-                        </div>
-                        <group>
-                            <group>
-                                <field name="code"/>
-                                <field name="active"/>
-                            </group>
-                            <group>
-                                <field name="retention_policy_id"/>
-                                <field name="user_id"/>
-                            </group>
-                        </group>
-                        <notebook>
-                            <page string="Description">
-                                <field name="description"/>
-                            </page>
-                            <page string="Document Types">
-                                <field name="document_type_ids"/>
-                            </page>
-                            <page string="Documents">
-                                <field name="document_ids"/>
-                            </page>
-                        </notebook>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
-                </form>
-            </field>
-        </record>
-
-        <!-- Search View -->
-        <record id="records_series_view_search" model="ir.ui.view">
-            <field name="name">records.series.view.search</field>
-            <field name="model">records.series</field>
-        <field name="arch" type="xml">
-                <search string="Search Records Series">
-                    <field name="name"/>
-                    <field name="code"/>
-                    <field name="retention_policy_id"/>
-                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
-                    <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Retention Policy" name="group_by_retention_policy" context="{'group_by': 'retention_policy_id'}"/>
+<!-- Form View -->
+<record id="records_series_view_form" model="ir.ui.view">
+    <field name="name">records.series.view.form</field>
+    <field name="model">records.series</field>
+<field name="arch" type="xml">
+        <form string="Records Series">
+            <sheet>
+                <div class="oe_title">
+                    <h1><field name="name"/></h1>
+                </div>
+                <group>
+                    <group>
+                        <field name="code"/>
+                        <field name="active"/>
                     </group>
-                </search>
-            </field>
-        </record>
+                    <group>
+                        <field name="retention_policy_id"/>
+                        <field name="user_id"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page string="Description">
+                        <field name="description"/>
+                    </page>
+                    <page string="Document Types">
+                        <field name="document_type_ids"/>
+                    </page>
+                    <page string="Documents">
+                        <field name="document_ids"/>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids"/>
+                <field name="activity_ids"/>
+                <field name="message_ids"/>
+            </div>
+        </form>
+    </field>
+</record>
 
-        <!-- Action -->
-        <record id="action_records_series" model="ir.actions.act_window">
-            <field name="name">Records Series</field>
-            <field name="res_model">records.series</field>
-            <field name="view_mode">list,form</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Create a new records series.
-                </p>
-            </field>
-        </record>
+<!-- Search View -->
+<record id="records_series_view_search" model="ir.ui.view">
+    <field name="name">records.series.view.search</field>
+    <field name="model">records.series</field>
+<field name="arch" type="xml">
+        <search string="Search Records Series">
+            <field name="name"/>
+            <field name="code"/>
+            <field name="retention_policy_id"/>
+            <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+            <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+            <group expand="0" string="Group By">
+                <filter string="Retention Policy" name="group_by_retention_policy" context="{'group_by': 'retention_policy_id'}"/>
+            </group>
+        </search>
+    </field>
+</record>
 
-        <!-- Menu -->
-        <menuitem id="menu_records_series"
-                  name="Series"
-                  parent="records_management.menu_records_configuration"
-                  action="action_records_series"
-                  sequence="20"/>
+<!-- Action -->
+<record id="action_records_series" model="ir.actions.act_window">
+    <field name="name">Records Series</field>
+    <field name="res_model">records.series</field>
+    <field name="view_mode">list,form</field>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            Create a new records series.
+        </p>
+    </field>
+</record>
 
-    </data>
+<!-- Menu -->
+<menuitem id="menu_records_series"
+          name="Series"
+          parent="records_management.menu_records_configuration"
+          action="action_records_series"
+          sequence="20"/>
+
 </odoo>
