@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
 """
-Comprehensive Records Management Validator with Auto-Fix
-Unified validator that can validate single files or all files
-Includes XML syntax validation, field validation, core Odoo model validation, and auto-fix capabilities
+Comprehensive Records Management Validator with Auto-Fix - DISABLED FOR SAFETY
+===============================================================================
+
+⚠️  AUTO-FIX FUNCTIONALITY TEMPORARILY DISABLED ⚠️
+
+This validator has been modified to prevent accidental mass changes.
+Auto-fix functionality has been disabled after previous mass changes
+caused issues with working files.
+
+For safe validation without modifications, use:
+  development-tools/validation-tools/comprehensive_validator_validation_only.py
 
 Usage:
-  python3 comprehensive_validator.py                           # Validate all files
-  python3 comprehensive_validator.py path/to/file.xml          # Validate single file
-  python3 comprehensive_validator.py --auto-fix               # Validate and auto-fix all files
-  python3 comprehensive_validator.py file.xml --auto-fix      # Validate and auto-fix single file
+  python3 comprehensive_validator.py                           # Validate all files (NO AUTO-FIX)
+  python3 comprehensive_validator.py path/to/file.xml          # Validate single file (NO AUTO-FIX)
   python3 comprehensive_validator.py --help                    # Show help
+
+NOTE: --auto-fix flag is disabled and will show a warning message.
 """
 
 import os
@@ -794,10 +802,10 @@ class ComprehensiveValidator:
                     print(f"{i+len(self.xml_syntax_errors[:5])+1}. [CORE] {error['file']} - {error['model']}.{error['field']}")
 
 def main():
-    parser = argparse.ArgumentParser(description='Comprehensive Records Management Validator with Auto-Fix')
+    parser = argparse.ArgumentParser(description='Comprehensive Records Management Validator - AUTO-FIX DISABLED')
     parser.add_argument('file', nargs='?', help='Single XML file to validate (optional)')
     parser.add_argument('--all', action='store_true', help='Validate all files (default if no file specified)')
-    parser.add_argument('--auto-fix', action='store_true', help='Automatically fix common XML issues')
+    parser.add_argument('--auto-fix', action='store_true', help='⚠️  AUTO-FIX DISABLED FOR SAFETY')
 
     args = parser.parse_args()
 
@@ -805,12 +813,23 @@ def main():
         print("❌ Error: Run this script from the workspace root directory")
         return 1
 
-    print("🔍 COMPREHENSIVE RECORDS MANAGEMENT VALIDATOR")
+    # Check if user tried to use auto-fix
     if args.auto_fix:
-        print("🔧 AUTO-FIX MODE ENABLED")
+        print("� AUTO-FIX FUNCTIONALITY HAS BEEN DISABLED FOR SAFETY")
+        print("⚠️  This prevents accidental mass changes to working files")
+        print()
+        print("🔧 For safe validation without modifications, use:")
+        print("   python3 development-tools/validation-tools/comprehensive_validator_validation_only.py")
+        print()
+        print("🔄 Continuing with validation-only mode...")
+        print()
+
+    print("�🔍 COMPREHENSIVE RECORDS MANAGEMENT VALIDATOR")
+    print("� AUTO-FIX DISABLED - VALIDATION ONLY")
     print("=" * 60)
 
-    validator = ComprehensiveValidator('records_management', auto_fix=args.auto_fix)
+    # Force auto_fix to False regardless of argument
+    validator = ComprehensiveValidator('records_management', auto_fix=False)
 
     if args.file:
         # Single file mode
