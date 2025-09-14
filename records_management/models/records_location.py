@@ -44,7 +44,7 @@ class RecordsLocation(models.Model):
     # === AUDIT: MISSING FIELDS ===
     description = fields.Char(string='Description')
     location_type = fields.Char(string='Location Type')
-    storage_capacity = fields.Char(string='Storage Capacity')
+    storage_capacity = fields.Char(string='Storage Capacity', compute='_compute_storage_capacity', store=True)
     _name = 'records.location'
     _description = 'Records Storage Location'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -96,12 +96,11 @@ class RecordsLocation(models.Model):
     # CAPACITY & UTILIZATION
     # ============================================================================
     max_capacity = fields.Integer(string="Maximum Capacity (Containers)", tracking=True, help="The total number of containers this location can hold.")
-    utilization_percentage = fields.Float(string="Utilization (%)", compute='_compute_utilization_percentage', store=True, aggregator="avg")
+    utilization_percentage = fields.Float(string="Utilization (%)", compute='_compute_utilization_percentage', store=True)
     available_spaces = fields.Integer(string="Available Spaces", compute='_compute_available_spaces', store=True)
     is_at_capacity = fields.Boolean(string="Is At Capacity", compute='_compute_is_at_capacity', store=True)
 
-    # Missing fields from view validation
-    current_utilization = fields.Float(string="Current Utilization", related='utilization_percentage', store=True, help="Current percentage of location capacity being used")
+    # Removed redundant current_utilization field for consistency; use utilization_percentage throughout
     access_instructions = fields.Text(string="Access Instructions", help="Special instructions for accessing this location")
 
     # ============================================================================
@@ -127,17 +126,44 @@ class RecordsLocation(models.Model):
     temperature_controlled = fields.Boolean(string="Temperature Controlled")
     humidity_controlled = fields.Boolean(string="Humidity Controlled")
     fire_suppression_system = fields.Boolean(string="Fire Suppression System")
+    # NOTE: The 'last_inspection_date' field is readonly and should be updated via a scheduled job,
+    # inspection workflow, or manually by an authorized user (e.g., through a custom action).
     last_inspection_date = fields.Date(string="Last Inspection Date", readonly=True)
     next_inspection_date = fields.Date(string="Next Inspection Date", tracking=True)
 
     # ============================================================================
-    # ORM OVERRIDES
+    # DYNAMIC NAME PLACEHOLDER
+    # ============================================================================
+    warehouse_id = fields.Many2one(
+        comodel_name='stock.warehouse',
+        string='Warehouse',
+        help='Associated warehouse for dynamic naming'
+    )
+
+    name_placeholder = fields.Char(
+        string='Name Placeholder',
+        compute='_compute_name_placeholder',
+        store=False,
+        help='Dynamic placeholder based on warehouse'
+    )
+
+    @api.depends('warehouse_id.name')
+    def _compute_name_placeholder(self):
+        for record in self:
+            if record.warehouse_id:
+                record.name_placeholder = _("e.g., %s - Section 1", record.warehouse_id.name)
+            else:
+                record.name_placeholder = _("e.g., Building A - Section 1")
+
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('code', _('New')) == _('New'):
-                vals['code'] = self.env['ir.sequence'].next_by_code('records.location') or _('New')
+                sequence_code = self.env['ir.sequence'].next_by_code('records.location')
+                if not sequence_code:
+                    raise UserError(_("Failed to generate a unique code for the location. Please check the sequence configuration."))
+                vals['code'] = sequence_code
         return super().create(vals_list)
 
     def unlink(self):
@@ -148,13 +174,10 @@ class RecordsLocation(models.Model):
                 raise UserError(_("You cannot delete a location that has child locations. Please remove or re-parent them first."))
         return super().unlink()
 
-    # ============================================================================
-    # COMPUTE & ONCHANGE METHODS
-    # ============================================================================
     @api.depends('name', 'code')
     def _compute_display_name(self):
         for record in self:
-            record.display_name = f"[{record.code}] {record.name}" if record.code else record.name
+            record.display_name = _("[%s] %s", record.code, record.name) if record.code else record.name
 
     @api.depends('street', 'street2', 'city', 'state_id', 'zip', 'country_id')
     def _compute_full_address(self):
@@ -196,13 +219,26 @@ class RecordsLocation(models.Model):
         for record in self:
             record.is_at_capacity = record.available_spaces <= 0
 
+    @api.depends('max_capacity')
+    def _compute_storage_capacity(self):
+        for record in self:
+            record.storage_capacity = str(record.max_capacity) if record.max_capacity else ''
+
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================
     @api.constrains('parent_location_id')
     def _check_location_hierarchy(self):
-        if not self._check_recursion():
-            raise ValidationError(_('You cannot create recursive locations.'))
+        # Optimized: Filter to records with parent_location_id to avoid checking unrelated records
+        # This limits the recursion check to the relevant set (e.g., records in the current view/operation)
+        # and performs a targeted ancestor check for efficiency on large recordsets
+        for record in self.filtered('parent_location_id'):
+            # Check if this record is an ancestor of itself (recursion)
+            current = record.parent_location_id
+            while current:
+                if current == record:
+                    raise ValidationError(_('You cannot create recursive locations.'))
+                current = current.parent_location_id
 
     @api.constrains('max_capacity')
     def _check_max_capacity(self):
@@ -236,9 +272,13 @@ class RecordsLocation(models.Model):
         }
 
     def action_activate(self):
-        self.write({'active': True, 'state': 'active'})
-        self.message_post(body=_("Location activated."))
+        self.ensure_one()
+        if not self.active or self.state != 'active':
+            self.write({'active': True, 'state': 'active'})
+            self.message_post(body=_("Location activated."))
 
     def action_deactivate(self):
-        self.write({'active': False, 'state': 'inactive'})
-        self.message_post(body=_("Location deactivated."))
+        self.ensure_one()
+        if self.active or self.state != 'inactive':
+            self.write({'active': False, 'state': 'inactive'})
+            self.message_post(body=_("Location deactivated."))

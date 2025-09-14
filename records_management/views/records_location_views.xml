@@ -62,7 +62,7 @@
                                         </div>
                                     </div>
                                     <div class="progress mt-2" style="height: 8px;">
-                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + (record.utilization_percentage.raw_value or 0) + '%'"/>
+                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + ((record.utilization_percentage && record.utilization_percentage.raw_value != null) ? record.utilization_percentage.raw_value : 0) + '%'"/>
                                     </div>
                                 </div>
                             </div>
@@ -71,7 +71,7 @@
                                 <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class="fa fa-box" title="View Containers"/> View Containers</a>
                                 <a role="menuitem" type="object" name="action_location_report" class="dropdown-item"><i class="fa fa-bar-chart" title="Location Report"/> Location Report</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="delete" class="dropdown-item"><i class="fa fa-trash"></i> Archive</a>
+                                <a role="menuitem" type="archive" class="dropdown-item"><i class="fa fa-trash"></i> Archive</a>
                             </div>
                         </t>
                     </templates>
@@ -122,7 +122,7 @@
                                     <span class="o_stat_text">Utilization</span>
                                 </div>
                             </button>
-                            <button class="oe_stat_button" icon="fa-check-circle" style="color: green;">
+                            <button class="oe_stat_button text-success" icon="fa-check-circle">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="available_spaces"/>
@@ -134,7 +134,7 @@
 
                         <group>
                             <group string="Location Information">
-                                <field name="name" placeholder="e.g., Building A - Section 1"/>
+                                <field name="name" t-att-placeholder="record.name_placeholder or _('e.g., Building A - Section 1')"/>
                                 <field name="location_type"/>
                                 <field name="parent_location_id" string="Parent Location"/>
                             </group>
@@ -181,12 +181,12 @@
             <field name="model">records.location</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
+                    <field name="name" string="Location"/>
                     <field name="location_type"/>
 
                     <filter name="available_space" string="Available Space" domain="[('available_spaces', '&gt;', 0)]"/>
                     <filter name="near_capacity" string="Near Capacity" domain="[('utilization_percentage', '&gt;=', 80)]"/>
-                    <filter name="at_capacity" string="At Capacity" domain="[('current_utilization', '&gt;=', 'storage_capacity')]"/>
+                    <filter name="at_capacity" string="At Capacity" domain="[('is_at_capacity', '=', True)]"/>
 
                     <separator/>
                     <filter name="optimal_load" string="Optimal Load (20-80%)" domain="[('utilization_percentage', '&gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
@@ -206,7 +206,7 @@
 
         <!-- Action for ENTERPRISE -->
         <record id="action_records_location" model="ir.actions.act_window">
-            <field name="name"><i class='fa fa-building'></i> Storage Locations</field>
+            <field name="name">Storage Locations</field>
             <field name="res_model">records.location</field>
             <field name="view_mode">kanban,list,form</field>
             <field name="search_view_id" ref="records_location_view_search"/>
