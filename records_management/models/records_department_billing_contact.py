@@ -27,6 +27,7 @@ class RecordsDepartmentBillingContact(models.Model):
     # Contact details
     email = fields.Char(string='Email')
     phone = fields.Char(string='Phone')
+    is_primary = fields.Boolean(string='Primary Contact', default=False, help='Indicates if this is the primary billing contact for the department')
 
     # Billing role & budgets
     billing_role = fields.Selection([

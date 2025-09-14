@@ -84,7 +84,7 @@ class RecordsDocument(models.Model):
         tracking=True,
     )
     container_id = fields.Many2one(comodel_name="records.container", string="Container", tracking=True)
-    location_id = fields.Many2one(related='container_id.location_id', string="Location", store=True, readonly=True, comodel_name='stock.location')
+    location_id = fields.Many2one(related='container_id.location_id', string="Location ID", store=True, readonly=True, comodel_name='stock.location')
     document_type_id = fields.Many2one(comodel_name="records.document.type", string="Document Type", tracking=True)
     lot_id = fields.Many2one(
         comodel_name="stock.lot",
@@ -162,7 +162,7 @@ class RecordsDocument(models.Model):
     destruction_certificate_id = fields.Many2one(comodel_name="naid.certificate", string="Destruction Certificate")
     naid_destruction_verified = fields.Boolean("NAID Destruction Verified")
     destruction_authorized_by_id = fields.Many2one(comodel_name="res.users", string="Destruction Authorized By")
-    destruction_witness_id = fields.Many2one(comodel_name="res.partner", string="Destruction Witness")  # Already singular, no change needed
+    destruction_witness_id = fields.Many2one(comodel_name="res.partner", string="Destruction Witness ID")  # Already singular, no change needed
     destruction_facility = fields.Char("Destruction Facility")
     destruction_notes = fields.Text("Destruction Notes")
 
@@ -250,7 +250,7 @@ class RecordsDocument(models.Model):
         ('destroyed', 'Document Destroyed'),
     ], string='Event Type', default='created', help='Type of the last event')
     responsible_person = fields.Char(string='Responsible Person', related='responsible_person_id.name', store=True, help='Name of the responsible person')
-    location = fields.Char(string='Location', related='location_id.name', store=True, help='Current location name')
+    location = fields.Char(string='Location Name', related='location_id.name', store=True, help='Current location name')
     signature_verified = fields.Boolean(string='Signature Verified', help='Whether digital signature has been verified')
     audit_trail_ids = fields.One2many('naid.audit.log', 'document_id', string='Audit Trail', help='Complete audit trail for this document')
     timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now, help='Timestamp of last significant event')
@@ -265,7 +265,7 @@ class RecordsDocument(models.Model):
     user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user, help='User associated with this document')
     destruction_date = fields.Date(string='Destruction Date', related='actual_destruction_date', help='Date when document was destroyed')
     destruction_authorized_by = fields.Char(string='Authorized By', related='destruction_authorized_by_id.name', store=True, help='Name of person who authorized destruction')
-    destruction_witness = fields.Char(string='Destruction Witness', related='destruction_witness_id.name', store=True, help='Name of destruction witness')
+    destruction_witness = fields.Char(string='Destruction Witness Name', related='destruction_witness_id.name', store=True, help='Name of destruction witness')
     file_format = fields.Char(string='File Format', help='Format of the digital file (PDF, TIFF, etc.)')
     resolution = fields.Char(string='Resolution', help='Scan resolution (DPI)')
     file_size = fields.Float(string='File Size (MB)', help='Size of the digital file in megabytes')

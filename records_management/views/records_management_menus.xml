@@ -220,7 +220,7 @@
 <!-- Temporarily commented out menuitems with missing actions -->
     <menuitem id="menu_records_reports" name="Storage Reports" parent="menu_records_reporting" action="action_storage_reports" sequence="10" groups="records_management.group_records_user"/>
 
-    <menuitem id="menu_inventory_reports" name="Inventory Reports" parent="menu_records_reporting" action="action_report_records_management_report_customer_inventory" sequence="20" groups="records_management.group_records_user"/>
+    <menuitem id="menu_inventory_reports" name="Inventory Reports" parent="menu_records_reporting" action="action_customer_inventory" sequence="20" groups="records_management.group_records_user"/>
 
 
     <menuitem id="menu_compliance_reports" name="Compliance Reports" parent="menu_records_reporting" action="action_compliance_reports" sequence="30" groups="records_management.group_records_manager"/>
