@@ -1,6 +1,6 @@
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.12.0.3",  # Bumped to force module upgrade (wizard consolidation + ACL fix)
+    "version": "18.0.12.0.4",  # Bumped to force module upgrade (retention_years ParseError fix)
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
