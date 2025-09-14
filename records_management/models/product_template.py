@@ -176,12 +176,16 @@ class ProductTemplate(models.Model):
     is_template_service = fields.Boolean(string="Is Template Service")
     last_sale_date = fields.Date(string="Last Sale Date", compute='_compute_sales_stats')
     max_boxes_included = fields.Integer(string="Max Boxes Included", default=0)
-    naid_compliance_level = fields.Selection([
-        ('none', 'None'),
-        ('basic', 'Basic'),
-        ('aaa', 'AAA'),
-        ('enhanced', 'Enhanced AAA')
-    ], string="NAID Compliance Level", default='aaa')
+    naid_compliance_level = fields.Selection(
+        selection_add=[
+            ('none', 'None'),
+            ('basic', 'Basic'),
+            ('aaa', 'AAA'),
+            ('enhanced', 'Enhanced AAA')
+        ],
+        string="NAID Compliance Level",
+        default='aaa'
+    )
     pickup_delivery_included = fields.Boolean(string="Pickup/Delivery Included", default=True)
     profit_margin = fields.Float(string="Profit Margin %", compute='_compute_price_stats')
     requires_approval = fields.Boolean(string="Requires Approval")

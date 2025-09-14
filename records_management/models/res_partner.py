@@ -247,6 +247,7 @@ class ResPartner(models.Model):
     restricted_unlock_count = fields.Integer(
         string="Restricted Unlock Count",
         compute='_compute_unlock_service_stats',
+        store=True,
         help="Number of unlocks performed while under restriction"
     )
     key_restriction_notes = fields.Text(
