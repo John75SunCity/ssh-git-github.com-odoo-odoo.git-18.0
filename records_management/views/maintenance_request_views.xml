@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!--
-            MAINTENANCE REQUEST VIEWS - Records Management Integration
 
-            This file provides integration views for maintenance requests in the Records Management module.
-            Currently contains placeholder views for future maintenance functionality.
+    <!--
+        MAINTENANCE REQUEST VIEWS - Records Management Integration
 
-            Note: These views are currently disabled as they require proper inheritance setup
-            and specific maintenance module integration requirements.
-        -->
+        This file provides integration views for maintenance requests in the Records Management module.
+        Currently contains placeholder views for future maintenance functionality.
 
-        <!-- Placeholder for future maintenance request integration -->
-        <!-- These views will be implemented when maintenance module requirements are defined -->
+        Note: These views are currently disabled as they require proper inheritance setup
+        and specific maintenance module integration requirements.
+    -->
 
-    </data>
+    <!-- Placeholder for future maintenance request integration -->
+    <!-- These views will be implemented when maintenance module requirements are defined -->
+
 </odoo>

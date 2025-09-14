@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-<data>
 <!-- Maintenance Equipment Form View Extension -->
 <record id="maintenance_equipment_view_form" model="ir.ui.view">
-        <field name="name">maintenance.equipment.form.inherit.records</field>
-        <field name="model">maintenance.equipment</field>
+    <field name="name">maintenance.equipment.form.inherit.records</field>
+    <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_form"/>
 
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
 <!-- Add Records Management specific fields -->
 <xpath expr="//sheet//group[last()]" position="after">
-        <group string="Records Management Integration" col="2">
-                <field name="records_location_id"/>
+    <group string="Records Management Integration" col="2">
+            <field name="records_location_id"/>
 
 <field name="records_department_id"/>
 
@@ -24,72 +23,72 @@
 <field name="equipment_certification_number"/>
 
 </group>
-            </xpath>
+        </xpath>
 <!-- Add NAID compliance section -->
 <xpath expr="//sheet//group[last()]" position="after">
 <group string="NAID Compliance" col="2" invisible="naid_compliant == False">
-                <field name="naid_certification_date"/>
-                <field name="naid_certification_expiry"/>
-                <field name="next_naid_audit_date"/>
-                <field name="destruction_method"/>
-        </group>
+            <field name="naid_certification_date"/>
+            <field name="naid_certification_expiry"/>
+            <field name="next_naid_audit_date"/>
+            <field name="destruction_method"/>
+    </group>
 </xpath>
 
 <!-- Add maintenance history integration -->
 <xpath expr="//sheet" position="inside">
-        <notebook>
+    <notebook>
 <page string="Destruction History" invisible="equipment_category != 'shredding'">
-                        <field name="destruction_service_ids" mode="tree">
-                                <list>
-                                        <field name="service_date"/>
-                                        <field name="total_weight"/>
-                                        <field name="certificate_number"/>
-                                        <field name="state"/>
-                                </list>
-                        </field>
-                </page>
-        </notebook>
+                    <field name="destruction_service_ids" mode="tree">
+                            <list>
+                                    <field name="service_date"/>
+                                    <field name="total_weight"/>
+                                    <field name="certificate_number"/>
+                                    <field name="state"/>
+                            </list>
+                    </field>
+            </page>
+    </notebook>
 </xpath>
-        </field>
-    </record>
+    </field>
+</record>
 
 <!-- Maintenance Equipment List View Extension -->
 <record id="maintenance_equipment_view_tree" model="ir.ui.view">
-        <field name="name">maintenance.equipment.tree.inherit.records</field>
-        <field name="model">maintenance.equipment</field>
+    <field name="name">maintenance.equipment.tree.inherit.records</field>
+    <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_tree"/>
 
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
 <!-- Add Records Management columns -->
 <xpath expr="//field[@name='category_id']" position="after">
-        <field name="records_location_id"/>
+    <field name="records_location_id"/>
 
 <field name="records_department_id"/>
 <field name="naid_compliant" widget="boolean_toggle"/>
 <field name="maintenance_status" widget="badge" decoration-success="maintenance_status == 'operational'" decoration-warning="maintenance_status == 'maintenance'" decoration-danger="maintenance_status == 'out_of_service'"/>
 <field name="next_naid_audit_date" optional="hide"/>
 
-            </xpath>
-        </field>
-    </record>
+        </xpath>
+    </field>
+</record>
 
 <!-- Maintenance Equipment Search View Extension -->
 <record id="maintenance_equipment_view_search" model="ir.ui.view">
-        <field name="name">maintenance.equipment.search.inherit.records</field>
-        <field name="model">maintenance.equipment</field>
+    <field name="name">maintenance.equipment.search.inherit.records</field>
+    <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_filter"/>
 
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
 <!-- Add Records Management search fields -->
 <xpath expr="//field[@name='name']" position="after">
-        <field name="records_location_id"/>
-        <field name="records_department_id"/>
-        <field name="equipment_certification_number"/>
+    <field name="records_location_id"/>
+    <field name="records_department_id"/>
+    <field name="equipment_certification_number"/>
 </xpath>
 
 <!-- Add Records Management search filters -->
 <xpath expr="//filter[@name='inactive']" position="after">
-        <separator/>
+    <separator/>
 
 <filter name="naid_compliant" string="NAID Compliant" domain="[('naid_compliant', '=', True)]"/>
 <filter name="destruction_required" string="Destruction Certificate Required" domain="[('destruction_certificate_required', '=', True)]"/>
@@ -104,30 +103,30 @@
 <filter string="Maintenance Status" name="group_maintenance_status" context="{'group_by': 'maintenance_status'}"/>
 <filter string="Equipment Category" name="group_equipment_category" context="{'group_by': 'equipment_category'}"/>
 
-            </xpath>
-        </field>
-    </record>
+        </xpath>
+    </field>
+</record>
 
 <!-- Maintenance Equipment Kanban View Extension -->
 <record id="maintenance_equipment_view_kanban" model="ir.ui.view">
-        <field name="name">maintenance.equipment.kanban.inherit.records</field>
-        <field name="model">maintenance.equipment</field>
+    <field name="name">maintenance.equipment.kanban.inherit.records</field>
+    <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_kanban"/>
 
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
 <!-- Add Records Management indicators -->
 <xpath expr="//div[hasclass('oe_kanban_details')]" position="inside">
-        <div class="o_kanban_tags_section">
+    <div class="o_kanban_tags_section">
 <span t-if="record.naid_compliant.raw_value" class="badge badge-success">
-        <i class="fa fa-certificate"/>
+    <i class="fa fa-certificate"/>
  NAID Compliant
 </span>
 <span t-if="record.destruction_certificate_required.raw_value" class="badge badge-warning">
-        <i class="fa fa-shield"/>
+    <i class="fa fa-shield"/>
  Destruction Cert Required
 </span>
 <span t-if="record.equipment_category.raw_value == 'shredding'" class="badge badge-info">
-        <i class="fa fa-cogs"/>
+    <i class="fa fa-cogs"/>
  Shredding Equipment
 </span>
 </div>
@@ -138,62 +137,61 @@
 <field name="shredding_capacity_per_hour"/>
  lbs/hour capacity
 </div>
-            </xpath>
-        </field>
-    </record>
+        </xpath>
+    </field>
+</record>
 
 <!-- Maintenance Equipment Graph View Extension -->
 <record id="maintenance_equipment_view_graph" model="ir.ui.view">
-        <field name="name">maintenance.equipment.graph.inherit.records</field>
-        <field name="model">maintenance.equipment</field>
+    <field name="name">maintenance.equipment.graph.inherit.records</field>
+    <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_graph"/>
 
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
 <!-- Enhance graph with Records Management dimensions -->
 <xpath expr="//graph" position="attributes">
-        <attribute name="sample">1</attribute>
-            </xpath>
+    <attribute name="sample">1</attribute>
+        </xpath>
 <xpath expr="//field[@name='category_id']" position="after">
-        <field name="records_department_id" type="row"/>
-        <field name="maintenance_status" type="col"/>
+    <field name="records_department_id" type="row"/>
+    <field name="maintenance_status" type="col"/>
 </xpath>
-        </field>
-    </record>
+    </field>
+</record>
 
 <!-- Maintenance Equipment Pivot View Extension -->
 <record id="maintenance_equipment_view_pivot" model="ir.ui.view">
-        <field name="name">maintenance.equipment.pivot.inherit.records</field>
-        <field name="model">maintenance.equipment</field>
+    <field name="name">maintenance.equipment.pivot.inherit.records</field>
+    <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_pivot"/>
 
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
 <!-- Add Records Management pivot dimensions -->
 <xpath expr="//pivot" position="attributes">
-        <attribute name="sample">1</attribute>
-            </xpath>
+    <attribute name="sample">1</attribute>
+        </xpath>
 <xpath expr="//field[@name='category_id']" position="after">
-        <field name="records_department_id" type="row"/>
-        <field name="maintenance_status" type="col"/>
-        <field name="naid_compliant" type="measure"/>
+    <field name="records_department_id" type="row"/>
+    <field name="maintenance_status" type="col"/>
+    <field name="naid_compliant" type="measure"/>
 </xpath>
-        </field>
-    </record>
+    </field>
+</record>
 
 <!-- Maintenance Equipment Calendar View Extension -->
 <record id="maintenance_equipment_view_calendar" model="ir.ui.view">
-        <field name="name">maintenance.equipment.calendar.inherit.records</field>
-        <field name="model">maintenance.equipment</field>
+    <field name="name">maintenance.equipment.calendar.inherit.records</field>
+    <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_calendar"/>
 
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
 <!-- Enhance calendar view with Records Management information -->
 <xpath expr="//calendar" position="attributes">
-        <attribute name="color">records_location_id</attribute>
+    <attribute name="color">records_location_id</attribute>
 <attribute name="date_start">next_naid_audit_date</attribute>
 <attribute name="string">NAID Audit Schedule</attribute>
-            </xpath>
-        </field>
-    </record>
-</data>
+        </xpath>
+    </field>
+</record>
 
 </odoo>

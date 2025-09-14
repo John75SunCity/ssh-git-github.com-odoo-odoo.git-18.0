@@ -1,69 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
-        <!-- List View -->
-        <record id="pickup_location_view_tree" model="ir.ui.view">
-            <field name="name">pickup.location.view.tree</field>
-            <field name="model">pickup.location</field>
-        <field name="arch" type="xml">
-                <list string="Pickup Location">
-                    <field name="name"/>
-                    <field name="address"/>
-                    <field name="city"/>
-                    <field name="state_id"/>
-                    <field name="zip"/>
-                    <field name="country_id"/>
-                    <field name="active"/>
-                    <field name="company_id"/>
-                    <field name="user_id"/>
-                </list>
-            </field>
-        </record>
+    <!-- List View -->
+    <record id="pickup_location_view_tree" model="ir.ui.view">
+        <field name="name">pickup.location.view.tree</field>
+        <field name="model">pickup.location</field>
+    <field name="arch" type="xml">
+            <list string="Pickup Location">
+                <field name="name"/>
+                <field name="address"/>
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="zip"/>
+                <field name="country_id"/>
+                <field name="active"/>
+                <field name="company_id"/>
+                <field name="user_id"/>
+            </list>
+        </field>
+    </record>
 
-        <!-- Form View -->
-        <record id="pickup_location_view_form" model="ir.ui.view">
-            <field name="name">pickup.location.view.form</field>
-            <field name="model">pickup.location</field>
-        <field name="arch" type="xml">
-                <form string="Pickup Location">
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="address"/>
-                            <field name="city"/>
-                            <field name="state_id"/>
-                            <field name="zip"/>
-                            <field name="country_id"/>
-                            <field name="active"/>
-                            <field name="company_id"/>
-                            <field name="user_id"/>
-                            <field name="notes"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+    <!-- Form View -->
+    <record id="pickup_location_view_form" model="ir.ui.view">
+        <field name="name">pickup.location.view.form</field>
+        <field name="model">pickup.location</field>
+    <field name="arch" type="xml">
+            <form string="Pickup Location">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="address"/>
+                        <field name="city"/>
+                        <field name="state_id"/>
+                        <field name="zip"/>
+                        <field name="country_id"/>
+                        <field name="active"/>
+                        <field name="company_id"/>
+                        <field name="user_id"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <!-- Search View -->
-        <record id="pickup_location_view_search" model="ir.ui.view">
-            <field name="name">pickup.location.view.search</field>
-            <field name="model">pickup.location</field>
-        <field name="arch" type="xml">
-                <search string="Search Pickup Location">
-                    <field name="name"/>
-                    <field name="address"/>
-                    <field name="city"/>
-                </search>
-            </field>
-        </record>
+    <!-- Search View -->
+    <record id="pickup_location_view_search" model="ir.ui.view">
+        <field name="name">pickup.location.view.search</field>
+        <field name="model">pickup.location</field>
+    <field name="arch" type="xml">
+            <search string="Search Pickup Location">
+                <field name="name"/>
+                <field name="address"/>
+                <field name="city"/>
+            </search>
+        </field>
+    </record>
 
-        <!-- Action -->
-        <record id="action_pickup_location" model="ir.actions.act_window">
-            <field name="name">Pickup Location</field>
-            <field name="res_model">pickup.location</field>
-            <field name="view_mode">list,form</field>
-        </record>
+    <!-- Action -->
+    <record id="action_pickup_location" model="ir.actions.act_window">
+        <field name="name">Pickup Location</field>
+        <field name="res_model">pickup.location</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-    </data>
 </odoo>

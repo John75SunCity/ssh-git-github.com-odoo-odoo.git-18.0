@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<data>
+
 <!-- Form view for records.user.invitation.wizard -->
 <record id="records_user_invitation_wizard_view_form" model="ir.ui.view">
-    <field name="name">records.user.invitation.wizard.view.form</field>
-    <field name="model">records.user.invitation.wizard</field>
-    <field name="arch" type="xml">
-        <form string="Records User Invitation Wizard">
-            <sheet>
-                <div class="oe_title">
-                    <label for="user_ids"/>
+<field name="name">records.user.invitation.wizard.view.form</field>
+<field name="model">records.user.invitation.wizard</field>
+<field name="arch" type="xml">
+    <form string="Records User Invitation Wizard">
+        <sheet>
+            <div class="oe_title">
+                <label for="user_ids"/>
 
 <field name="user_ids" widget="many2many_tags" placeholder="Select users to invite..."/>
 
@@ -26,16 +26,16 @@
 
 <!-- Action for User Invitation Wizard -->
 <record id="action_records_user_invitation_wizard" model="ir.actions.act_window">
-    <field name="name">Records User Invitation Wizard</field>
-    <field name="res_model">records.user.invitation.wizard</field>
-    <field name="view_mode">form</field>
-    <field name="target">new</field>
-    <field name="context">{}</field>
-    <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-                    Invite users to access the Records Management portal.
-        </p>
-    </field>
+<field name="name">Records User Invitation Wizard</field>
+<field name="res_model">records.user.invitation.wizard</field>
+<field name="view_mode">form</field>
+<field name="target">new</field>
+<field name="context">{}</field>
+<field name="help" type="html">
+    <p class="oe_view_nocontent_create">
+                Invite users to access the Records Management portal.
+    </p>
+</field>
 </record>
-</data>
+
 </odoo>

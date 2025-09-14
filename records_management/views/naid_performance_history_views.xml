@@ -1,62 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <data>
 <!-- List view for naid.performance.history -->
-    <record id="naid_performance_history_view_tree" model="ir.ui.view">
-        <field name="name">naid.performance.history.view.tree</field>
-        <field name="model">naid.performance.history</field>
-        <field name="arch" type="xml">
-            <list>
-                <field name="name"/>
-            </list>
-        </field>
-    </record>
+<record id="naid_performance_history_view_tree" model="ir.ui.view">
+    <field name="name">naid.performance.history.view.tree</field>
+    <field name="model">naid.performance.history</field>
+    <field name="arch" type="xml">
+        <list>
+            <field name="name"/>
+        </list>
+    </field>
+</record>
 
-    <!-- Form view for naid.performance.history -->
-    <record id="naid_performance_history_view_form" model="ir.ui.view">
-        <field name="name">naid.performance.history.view.form</field>
-        <field name="model">naid.performance.history</field>
-        <field name="arch" type="xml">
-            <form string="Naid.Performance.History">
-                <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Name..."/>
-                        </h1>
-                    </div>
-                </sheet>
-            </form>
-        </field>
-    </record>
+<!-- Form view for naid.performance.history -->
+<record id="naid_performance_history_view_form" model="ir.ui.view">
+    <field name="name">naid.performance.history.view.form</field>
+    <field name="model">naid.performance.history</field>
+    <field name="arch" type="xml">
+        <form string="Naid.Performance.History">
+            <sheet>
+                <div class="oe_title">
+                    <label for="name"/>
+                    <h1>
+                        <field name="name" placeholder="Name..."/>
+                    </h1>
+                </div>
+            </sheet>
+        </form>
+    </field>
+</record>
 
-    <!-- Search view for naid.performance.history -->
-    <record id="naid_performance_history_view_search" model="ir.ui.view">
-        <field name="name">naid.performance.history.view.search</field>
-        <field name="model">naid.performance.history</field>
-        <field name="arch" type="xml">
-            <search>
-                <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+<!-- Search view for naid.performance.history -->
+<record id="naid_performance_history_view_search" model="ir.ui.view">
+    <field name="name">naid.performance.history.view.search</field>
+    <field name="model">naid.performance.history</field>
+    <field name="arch" type="xml">
+        <search>
+            <group expand="1" string="Group By">
+                <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+            </group>
+        </search>
+    </field>
+</record>
 
-    <!-- Action for naid.performance.history -->
-    <record id="action_naid_performance_history" model="ir.actions.act_window">
-        <field name="name">Naid.Performance.History</field>
-        <field name="res_model">naid.performance.history</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                Click to add a new naid.performance.history.
-            </p>
-        </field>
-    </record>
-</data>
+<!-- Action for naid.performance.history -->
+<record id="action_naid_performance_history" model="ir.actions.act_window">
+    <field name="name">Naid.Performance.History</field>
+    <field name="res_model">naid.performance.history</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+            Click to add a new naid.performance.history.
+        </p>
+    </field>
+</record>
 
 </odoo>

@@ -1,97 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
-        <!-- List View -->
-        <record id="feedback_improvement_area_view_tree" model="ir.ui.view">
-            <field name="name">feedback.improvement.area.view.tree</field>
-            <field name="model">feedback.improvement.area</field>
-        <field name="arch" type="xml">
-                <list string="Feedback Improvement Area" decoration-info="state == 'under_review'" decoration-success="state == 'closed'">
-                    <field name="name"/>
-                    <field name="description"/>
-                    <field name="state"/>
-                    <field name="feedback_count"/>
-                    <field name="active"/>
-                </list>
-            </field>
-        </record>
+    <!-- List View -->
+    <record id="feedback_improvement_area_view_tree" model="ir.ui.view">
+        <field name="name">feedback.improvement.area.view.tree</field>
+        <field name="model">feedback.improvement.area</field>
+    <field name="arch" type="xml">
+            <list string="Feedback Improvement Area" decoration-info="state == 'under_review'" decoration-success="state == 'closed'">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="state"/>
+                <field name="feedback_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
 
-        <!-- Form View -->
-        <record id="feedback_improvement_area_view_form" model="ir.ui.view">
-            <field name="name">feedback.improvement.area.view.form</field>
-            <field name="model">feedback.improvement.area</field>
-        <field name="arch" type="xml">
-                <form string="Feedback Improvement Area">
-                    <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button type="object" name="action_view_related_feedback" string="Feedback"
-                                    class="oe_stat_button" icon="fa-comments">
-                                <field name="feedback_count" widget="statinfo" string="Feedback"/>
-                            </button>
-                            <button type="object" name="action_create_improvement_plan" string="Create Plan"
-                                    class="oe_stat_button" icon="fa-plus-circle"/>
-                        </div>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="name" placeholder="Improvement Area Name..."/>
-                            </h1>
-                        </div>
-                        <group>
-                            <group name="basic_info">
-                                <field name="state"/>
-                                <field name="active"/>
-                                <field name="color" widget="color"/>
-                            </group>
+    <!-- Form View -->
+    <record id="feedback_improvement_area_view_form" model="ir.ui.view">
+        <field name="name">feedback.improvement.area.view.form</field>
+        <field name="model">feedback.improvement.area</field>
+    <field name="arch" type="xml">
+            <form string="Feedback Improvement Area">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_related_feedback" string="Feedback"
+                                class="oe_stat_button" icon="fa-comments">
+                            <field name="feedback_count" widget="statinfo" string="Feedback"/>
+                        </button>
+                        <button type="object" name="action_create_improvement_plan" string="Create Plan"
+                                class="oe_stat_button" icon="fa-plus-circle"/>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Improvement Area Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="basic_info">
+                            <field name="state"/>
+                            <field name="active"/>
+                            <field name="color" widget="color"/>
                         </group>
-                        <notebook>
-                            <page string="Description" name="description">
-                                <field name="description" nolabel="1" placeholder="Describe this improvement area..."/>
-                            </page>
-                            <page string="Related Feedback" name="feedback">
-                                <field name="feedback_ids" nolabel="1">
-                                    <list string="Feedback">
-                                        <field name="name"/>
-                                        <field name="rating"/>
-                                        <field name="sentiment_category"/>
-                                        <field name="priority"/>
-                                        <field name="state"/>
-                                    </list>
-                                </field>
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" nolabel="1" placeholder="Describe this improvement area..."/>
+                        </page>
+                        <page string="Related Feedback" name="feedback">
+                            <field name="feedback_ids" nolabel="1">
+                                <list string="Feedback">
+                                    <field name="name"/>
+                                    <field name="rating"/>
+                                    <field name="sentiment_category"/>
+                                    <field name="priority"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <!-- Search View -->
-        <record id="feedback_improvement_area_view_search" model="ir.ui.view">
-            <field name="name">feedback.improvement.area.view.search</field>
-            <field name="model">feedback.improvement.area</field>
-        <field name="arch" type="xml">
-                <search string="Search Feedback Improvement Area">
-                    <!-- Add search fields here -->
-                </search>
-            </field>
-        </record>
+    <!-- Search View -->
+    <record id="feedback_improvement_area_view_search" model="ir.ui.view">
+        <field name="name">feedback.improvement.area.view.search</field>
+        <field name="model">feedback.improvement.area</field>
+    <field name="arch" type="xml">
+            <search string="Search Feedback Improvement Area">
+                <!-- Add search fields here -->
+            </search>
+        </field>
+    </record>
 
-        <!-- Action -->
-        <record id="action_feedback_improvement_area" model="ir.actions.act_window">
-            <field name="name">Feedback Improvement Area</field>
-            <field name="res_model">feedback.improvement.area</field>
-            <field name="view_mode">list,form</field>
-        </record>
+    <!-- Action -->
+    <record id="action_feedback_improvement_area" model="ir.actions.act_window">
+        <field name="name">Feedback Improvement Area</field>
+        <field name="res_model">feedback.improvement.area</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-        <!-- Menu -->
-        <!--
-        <menuitem
-            id="menu_feedback_improvement_area"
-            name="Feedback Improvement Area"
-            action="action_feedback_improvement_area"
-            parent="REPLACE_WITH_PARENT_MENU_ID"
-            sequence="10"/>
-        -->
+    <!-- Menu -->
+    <!--
+    <menuitem
+        id="menu_feedback_improvement_area"
+        name="Feedback Improvement Area"
+        action="action_feedback_improvement_area"
+        parent="REPLACE_WITH_PARENT_MENU_ID"
+        sequence="10"/>
+    -->
 
-    </data>
 </odoo>

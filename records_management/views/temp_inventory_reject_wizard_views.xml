@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <data>
 <!-- List view for temp.inventory.reject.wizard -->
-    <record id="temp_inventory_reject_wizard_view_tree" model="ir.ui.view">
-        <field name="name">temp.inventory.reject.wizard.view.tree</field>
-        <field name="model">temp.inventory.reject.wizard</field>
-        <field name="arch" type="xml">
-            <list>
+<record id="temp_inventory_reject_wizard_view_tree" model="ir.ui.view">
+    <field name="name">temp.inventory.reject.wizard.view.tree</field>
+    <field name="model">temp.inventory.reject.wizard</field>
+    <field name="arch" type="xml">
+        <list>
 <field name="inventory_id"/>
 <field name="rejection_reason"/>
 
-            </list>
-        </field>
-    </record>
+        </list>
+    </field>
+</record>
 
-    <!-- Form view for temp.inventory.reject.wizard -->
-    <record id="temp_inventory_reject_wizard_view_form" model="ir.ui.view">
-        <field name="name">temp.inventory.reject.wizard.view.form</field>
-        <field name="model">temp.inventory.reject.wizard</field>
-        <field name="arch" type="xml">
+<!-- Form view for temp.inventory.reject.wizard -->
+<record id="temp_inventory_reject_wizard_view_form" model="ir.ui.view">
+    <field name="name">temp.inventory.reject.wizard.view.form</field>
+    <field name="model">temp.inventory.reject.wizard</field>
+    <field name="arch" type="xml">
 <form string="Reject Temporary Inventory">
-                <sheet>
+            <sheet>
 <group>
-    <field name="inventory_id" readonly="true"/>
+<field name="inventory_id" readonly="true"/>
 
 <field name="rejection_reason" placeholder="Enter rejection reason..."/>
 </group>
@@ -31,40 +30,39 @@
 <button name="action_confirm_rejection" string="Confirm Rejection" type="object" class="btn-primary"/>
 <button string="Cancel" class="btn-secondary" special="cancel"/>
 </footer>
-                </sheet>
-            </form>
-        </field>
-    </record>
+            </sheet>
+        </form>
+    </field>
+</record>
 
-    <!-- Search view for temp.inventory.reject.wizard -->
-    <record id="temp_inventory_reject_wizard_view_search" model="ir.ui.view">
-        <field name="name">temp.inventory.reject.wizard.view.search</field>
-        <field name="model">temp.inventory.reject.wizard</field>
-        <field name="arch" type="xml">
-            <search>
+<!-- Search view for temp.inventory.reject.wizard -->
+<record id="temp_inventory_reject_wizard_view_search" model="ir.ui.view">
+    <field name="name">temp.inventory.reject.wizard.view.search</field>
+    <field name="model">temp.inventory.reject.wizard</field>
+    <field name="arch" type="xml">
+        <search>
 <field name="inventory_id"/>
 <field name="rejection_reason"/>
 
-                <group expand="1" string="Group By">
+            <group expand="1" string="Group By">
 <filter string="Inventory Movement" name="inventory_id" context="{'group_by':'inventory_id'}"/>
 
 
-                </group>
-            </search>
-        </field>
-    </record>
+            </group>
+        </search>
+    </field>
+</record>
 
-    <!-- Action for temp.inventory.reject.wizard -->
-    <record id="action_temp_inventory_reject_wizard" model="ir.actions.act_window">
-        <field name="name">Temp.Inventory.Reject.Wizard</field>
-        <field name="res_model">temp.inventory.reject.wizard</field>
+<!-- Action for temp.inventory.reject.wizard -->
+<record id="action_temp_inventory_reject_wizard" model="ir.actions.act_window">
+    <field name="name">Temp.Inventory.Reject.Wizard</field>
+    <field name="res_model">temp.inventory.reject.wizard</field>
 <field name="view_mode">list,form</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                Click to add a new temp.inventory.reject.wizard.
-            </p>
-        </field>
-    </record>
-</data>
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+            Click to add a new temp.inventory.reject.wizard.
+        </p>
+    </field>
+</record>
 
 </odoo>

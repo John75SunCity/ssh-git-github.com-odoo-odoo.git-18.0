@@ -1,68 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <data>
 <!-- List view: show chosen model and field -->
-    <record id="field_label_helper_wizard_view_tree" model="ir.ui.view">
-        <field name="name">field.label.helper.wizard.view.tree</field>
-        <field name="model">field.label.helper.wizard</field>
-        <field name="arch" type="xml">
+<record id="field_label_helper_wizard_view_tree" model="ir.ui.view">
+    <field name="name">field.label.helper.wizard.view.tree</field>
+    <field name="model">field.label.helper.wizard</field>
+    <field name="arch" type="xml">
 <list string="Field Label Helper">
-    <field name="model_id"/>
-    <field name="field_id"/>
+<field name="model_id"/>
+<field name="field_id"/>
 
-            </list>
-        </field>
-    </record>
+        </list>
+    </field>
+</record>
 
 <!-- Form view: allow selecting model + field then confirm -->
-    <record id="field_label_helper_wizard_view_form" model="ir.ui.view">
-        <field name="name">field.label.helper.wizard.view.form</field>
-        <field name="model">field.label.helper.wizard</field>
-        <field name="arch" type="xml">
+<record id="field_label_helper_wizard_view_form" model="ir.ui.view">
+    <field name="name">field.label.helper.wizard.view.form</field>
+    <field name="model">field.label.helper.wizard</field>
+    <field name="arch" type="xml">
 <form string="Select Field for Label Customization">
-                <sheet>
+            <sheet>
 <group>
-    <field name="model_id" options="{'no_open': True, 'no_create': True}"/>
-    <field name="field_id" domain="[('model_id', '=', model_id)]" options="{'no_open': True, 'no_create': True}"/>
-    <field name="available_model_names" invisible="1"/>
+<field name="model_id" options="{'no_open': True, 'no_create': True}"/>
+<field name="field_id" domain="[('model_id', '=', model_id)]" options="{'no_open': True, 'no_create': True}"/>
+<field name="available_model_names" invisible="1"/>
 </group>
-                </sheet>
+            </sheet>
 <footer>
 <button name="action_select_field" type="object" class="btn-primary" string="Use This Field" invisible="not model_id or not field_id"/>
 
-    <button special="cancel" string="Cancel"/>
+<button special="cancel" string="Cancel"/>
 </footer>
-            </form>
-        </field>
-    </record>
+        </form>
+    </field>
+</record>
 
 <!-- Search view: simple search on model and field -->
-    <record id="field_label_helper_wizard_view_search" model="ir.ui.view">
-        <field name="name">field.label.helper.wizard.view.search</field>
-        <field name="model">field.label.helper.wizard</field>
-        <field name="arch" type="xml">
+<record id="field_label_helper_wizard_view_search" model="ir.ui.view">
+    <field name="name">field.label.helper.wizard.view.search</field>
+    <field name="model">field.label.helper.wizard</field>
+    <field name="arch" type="xml">
 <search string="Field Label Helper">
-    <field name="model_id"/>
-    <field name="field_id"/>
+<field name="model_id"/>
+<field name="field_id"/>
 
-            </search>
-        </field>
-    </record>
+        </search>
+    </field>
+</record>
 
 <!-- Action: open wizard in form first -->
-    <record id="action_field_label_helper_wizard" model="ir.actions.act_window">
+<record id="action_field_label_helper_wizard" model="ir.actions.act_window">
 <field name="name">Field Label Helper</field>
-        <field name="res_model">field.label.helper.wizard</field>
+    <field name="res_model">field.label.helper.wizard</field>
 <field name="view_mode">form</field>
 <field name="target">new</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
+    <field name="context">{}</field>
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
 Select a model and a field to return its original label for customization.
-            </p>
-        </field>
-    </record>
-</data>
+        </p>
+    </field>
+</record>
 
 </odoo>

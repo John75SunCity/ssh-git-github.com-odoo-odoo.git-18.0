@@ -1,63 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
-        <!-- List View -->
-        <record id="media_type_view_tree" model="ir.ui.view">
-            <field name="name">media.type.view.tree</field>
-            <field name="model">media.type</field>
-        <field name="arch" type="xml">
-                <list string="Media Type">
-                    <field name="name"/>
-                    <field name="code"/>
-                    <field name="category"/>
-                    <field name="retention_period"/>
-                    <field name="destruction_method"/>
-                    <field name="is_electronic"/>
-                    <field name="active"/>
-                </list>
-            </field>
-        </record>
+    <!-- List View -->
+    <record id="media_type_view_tree" model="ir.ui.view">
+        <field name="name">media.type.view.tree</field>
+        <field name="model">media.type</field>
+    <field name="arch" type="xml">
+            <list string="Media Type">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category"/>
+                <field name="retention_period"/>
+                <field name="destruction_method"/>
+                <field name="is_electronic"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
 
-        <!-- Form View -->
-        <record id="media_type_view_form" model="ir.ui.view">
-            <field name="name">media.type.view.form</field>
-            <field name="model">media.type</field>
-        <field name="arch" type="xml">
-                <form string="Media Type">
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="code"/>
-                            <field name="category"/>
-                            <field name="retention_period"/>
-                            <field name="destruction_method"/>
-                            <field name="is_electronic"/>
-                            <field name="requires_special_handling"/>
-                            <field name="active"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+    <!-- Form View -->
+    <record id="media_type_view_form" model="ir.ui.view">
+        <field name="name">media.type.view.form</field>
+        <field name="model">media.type</field>
+    <field name="arch" type="xml">
+            <form string="Media Type">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="category"/>
+                        <field name="retention_period"/>
+                        <field name="destruction_method"/>
+                        <field name="is_electronic"/>
+                        <field name="requires_special_handling"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <!-- Search View -->
-        <record id="media_type_view_search" model="ir.ui.view">
-            <field name="name">media.type.view.search</field>
-            <field name="model">media.type</field>
-        <field name="arch" type="xml">
-                <search string="Search Media Type">
-                    <!-- Add search fields here -->
-                </search>
-            </field>
-        </record>
+    <!-- Search View -->
+    <record id="media_type_view_search" model="ir.ui.view">
+        <field name="name">media.type.view.search</field>
+        <field name="model">media.type</field>
+    <field name="arch" type="xml">
+            <search string="Search Media Type">
+                <!-- Add search fields here -->
+            </search>
+        </field>
+    </record>
 
-        <!-- Action -->
-        <record id="action_media_type" model="ir.actions.act_window">
-            <field name="name">Media Type</field>
-            <field name="res_model">media.type</field>
-            <field name="view_mode">list,form</field>
-        </record>
+    <!-- Action -->
+    <record id="action_media_type" model="ir.actions.act_window">
+        <field name="name">Media Type</field>
+        <field name="res_model">media.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-    </data>
 </odoo>

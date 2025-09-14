@@ -1,171 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- List view for naid.custody -->
-        <record id="naid_custody_view_list" model="ir.ui.view">
-            <field name="name">naid.custody.view.list</field>
-            <field name="model">naid.custody</field>
-            <field name="arch" type="xml">
-                <list decoration-success="event_type == 'creation'" decoration-info="event_type == 'pickup'" decoration-warning="event_type == 'transfer'" decoration-danger="event_type == 'destruction'">
-                    <field name="event_date" widget="datetime"/>
-                    <field name="document_id"/>
-                    <field name="event_type" widget="badge"/>
-                    <field name="user_id"/>
-                    <field name="location_id" optional="hide"/>
-                    <field name="partner_id" optional="hide"/>
-                    <field name="notes" optional="show"/>  <!-- Changed from 'description' to 'notes' for consistency with form view -->
-                </list>
-            </field>
-        </record>
 
-        <!-- Form view for naid.custody -->
-        <record id="naid_custody_view_form" model="ir.ui.view">
-            <field name="name">naid.custody.view.form</field>
-            <field name="model">naid.custody</field>
-            <field name="arch" type="xml">
-                <form string="NAID Chain of Custody Event">
-                    <sheet>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="name" placeholder="Custody Event Reference"/>
-                            </h1>
-                        </div>
-                        <group>
-                            <group string="Event Details">
-                                <field name="event_date"/>
-                                <field name="event_type"/>
-                                <field name="document_id"/>
-                                <field name="user_id"/>
-                            </group>
-                            <group string="Location &amp; Verification">
-                                <field name="location_id"/>
-                                <field name="signature_verified"/>
-                                <field name="witness_present"/>
-                                <field name="company_id" groups="base.group_multi_company"/>
-                            </group>
-                        </group>
-                        <group string="Additional Information">
-                            <field name="notes" placeholder="Additional notes about this custody event..."/>
-                            <field name="temperature"/>
-                            <field name="humidity"/>
-                            <field name="security_measures"/>
-                        </group>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
+    <!-- List view for naid.custody -->
+    <record id="naid_custody_view_list" model="ir.ui.view">
+        <field name="name">naid.custody.view.list</field>
+        <field name="model">naid.custody</field>
+        <field name="arch" type="xml">
+            <list decoration-success="event_type == 'creation'" decoration-info="event_type == 'pickup'" decoration-warning="event_type == 'transfer'" decoration-danger="event_type == 'destruction'">
+                <field name="event_date" widget="datetime"/>
+                <field name="document_id"/>
+                <field name="event_type" widget="badge"/>
+                <field name="user_id"/>
+                <field name="location_id" optional="hide"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="notes" optional="show"/>  <!-- Changed from 'description' to 'notes' for consistency with form view -->
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for naid.custody -->
+    <record id="naid_custody_view_form" model="ir.ui.view">
+        <field name="name">naid.custody.view.form</field>
+        <field name="model">naid.custody</field>
+        <field name="arch" type="xml">
+            <form string="NAID Chain of Custody Event">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Custody Event Reference"/>
+                        </h1>
                     </div>
-                </form>
-            </field>
-        </record>
+                    <group>
+                        <group string="Event Details">
+                            <field name="event_date"/>
+                            <field name="event_type"/>
+                            <field name="document_id"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group string="Location &amp; Verification">
+                            <field name="location_id"/>
+                            <field name="signature_verified"/>
+                            <field name="witness_present"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Additional Information">
+                        <field name="notes" placeholder="Additional notes about this custody event..."/>
+                        <field name="temperature"/>
+                        <field name="humidity"/>
+                        <field name="security_measures"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
 
-        <!-- Kanban view for naid.custody -->
-        <record id="naid_custody_view_kanban" model="ir.ui.view">
-            <field name="name">naid.custody.view.kanban</field>
-            <field name="model">naid.custody</field>
-            <field name="arch" type="xml">
-                <kanban default_group_by="event_type" class="o_kanban_custody">
-                    <field name="event_date"/>
-                    <field name="event_type"/>
-                    <field name="document_id"/>
-                    <field name="user_id"/>
-                    <field name="location_id"/>
-                    <field name="signature_verified"/>
-                    <templates>
-                        <t t-name="card">
-                            <div class="oe_kanban_card oe_kanban_global_click">
-                                <div class="o_kanban_card_header">
-                                    <div class="o_primary">
-                                        <field name="event_type"/>
-                                    </div>
-                                    <div class="o_secondary">
-                                        <field name="event_date"/>
-                                    </div>
+    <!-- Kanban view for naid.custody -->
+    <record id="naid_custody_view_kanban" model="ir.ui.view">
+        <field name="name">naid.custody.view.kanban</field>
+        <field name="model">naid.custody</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="event_type" class="o_kanban_custody">
+                <field name="event_date"/>
+                <field name="event_type"/>
+                <field name="document_id"/>
+                <field name="user_id"/>
+                <field name="location_id"/>
+                <field name="signature_verified"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_primary">
+                                    <field name="event_type"/>
                                 </div>
-                                <div class="o_kanban_card_content" role="group">
-                                    <div>
-                                        <i class="fa fa-file-o" title="Document"></i> <field name="document_id"/>
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-user" title="User"></i> <field name="user_id"/>
-                                    </div>
-                                    <div>
-                                        <i class="fa fa-map-marker-alt" title="Location"></i> <field name="location_id"/>
-                                    </div>
-                                    <div t-if="record.signature_verified.raw_value">
-                                        <i class="fa fa-check-circle text-success"></i> <span class="text-success">Verified</span>
-                                    </div>
+                                <div class="o_secondary">
+                                    <field name="event_date"/>
                                 </div>
                             </div>
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
+                            <div class="o_kanban_card_content" role="group">
+                                <div>
+                                    <i class="fa fa-file-o" title="Document"></i> <field name="document_id"/>
+                                </div>
+                                <div>
+                                    <i class="fa fa-user" title="User"></i> <field name="user_id"/>
+                                </div>
+                                <div>
+                                    <i class="fa fa-map-marker-alt" title="Location"></i> <field name="location_id"/>
+                                </div>
+                                <div t-if="record.signature_verified.raw_value">
+                                    <i class="fa fa-check-circle text-success"></i> <span class="text-success">Verified</span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
 
-        <!-- Search view for naid.custody -->
-        <record id="naid_custody_view_search" model="ir.ui.view">
-            <field name="name">naid.custody.view.search</field>
-            <field name="model">naid.custody</field>
-            <field name="arch" type="xml">
-                <search string="Search Chain of Custody Events">
-                    <field name="notes" string="Event Description"/>  <!-- Changed from 'description' to 'notes' for consistency -->
-                    <field name="document_id"/>
-                    <field name="user_id"/>
-                    <field name="location_id"/>
-                    <field name="partner_id"/>
-                    <separator/>
-                    <filter string="Creation Events" name="creation_events" domain="[('event_type', '=', 'creation')]"/>
-                    <filter string="Pickup Events" name="pickup_events" domain="[('event_type', '=', 'pickup')]"/>
-                    <filter string="Storage Events" name="storage_events" domain="[('event_type', '=', 'storage')]"/>
-                    <filter string="Retrieval Events" name="retrieval_events" domain="[('event_type', '=', 'retrieval')]"/>
-                    <filter string="Transfer Events" name="transfer_events" domain="[('event_type', '=', 'transfer')]"/>
-                    <filter string="Destruction Events" name="destruction_events" domain="[('event_type', '=', 'destruction')]"/>
-                    <filter string="Audit Events" name="audit_events" domain="[('event_type', '=', 'audit')]"/>
-                    <filter string="Other Events" name="other_events" domain="[('event_type', '=', 'other')]"/>
-                    <separator/>
-                    <!-- Updated domains to use Odoo-compatible syntax (removed Python expressions, used context_today for date comparisons) -->
-                    <filter string="Today" name="filter_today" domain="[('event_date', '&gt;=', context_today)]"/>
-                    <filter string="This Week" name="filter_this_week" domain="[('event_date', '&gt;=', (context_today - relativedelta(days=7)))]"/>
-                    <filter string="This Month" name="filter_this_month" domain="[('event_date', '&gt;=', (context_today - relativedelta(days=30)))]"/>
-                    <filter string="Last 7 Days" name="filter_last_7_days" domain="[('event_date', '&gt;=', (context_today - relativedelta(days=7)))]"/>
-                    <filter string="Last 30 Days" name="filter_last_30_days" domain="[('event_date', '&gt;=', (context_today - relativedelta(days=30)))]"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Event Type" name="group_by_event_type" context="{'group_by':'event_type'}"/>
-                        <filter string="Document" name="group_by_document" context="{'group_by':'document_id'}"/>
-                        <filter string="User" name="group_by_user" context="{'group_by':'user_id'}"/>
-                        <filter string="Location" name="group_by_location" context="{'group_by':'location_id'}"/>
-                        <filter string="Customer" name="group_by_customer" context="{'group_by':'partner_id'}"/>
-                        <filter string="Date" name="group_by_date" context="{'group_by':'event_date:day'}"/>
-                        <filter string="Month" name="group_by_month" context="{'group_by':'event_date:month'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
+    <!-- Search view for naid.custody -->
+    <record id="naid_custody_view_search" model="ir.ui.view">
+        <field name="name">naid.custody.view.search</field>
+        <field name="model">naid.custody</field>
+        <field name="arch" type="xml">
+            <search string="Search Chain of Custody Events">
+                <field name="notes" string="Event Description"/>  <!-- Changed from 'description' to 'notes' for consistency -->
+                <field name="document_id"/>
+                <field name="user_id"/>
+                <field name="location_id"/>
+                <field name="partner_id"/>
+                <separator/>
+                <filter string="Creation Events" name="creation_events" domain="[('event_type', '=', 'creation')]"/>
+                <filter string="Pickup Events" name="pickup_events" domain="[('event_type', '=', 'pickup')]"/>
+                <filter string="Storage Events" name="storage_events" domain="[('event_type', '=', 'storage')]"/>
+                <filter string="Retrieval Events" name="retrieval_events" domain="[('event_type', '=', 'retrieval')]"/>
+                <filter string="Transfer Events" name="transfer_events" domain="[('event_type', '=', 'transfer')]"/>
+                <filter string="Destruction Events" name="destruction_events" domain="[('event_type', '=', 'destruction')]"/>
+                <filter string="Audit Events" name="audit_events" domain="[('event_type', '=', 'audit')]"/>
+                <filter string="Other Events" name="other_events" domain="[('event_type', '=', 'other')]"/>
+                <separator/>
+                <!-- Updated domains to use Odoo-compatible syntax (removed Python expressions, used context_today for date comparisons) -->
+                <filter string="Today" name="filter_today" domain="[('event_date', '&gt;=', context_today)]"/>
+                <filter string="This Week" name="filter_this_week" domain="[('event_date', '&gt;=', (context_today - relativedelta(days=7)))]"/>
+                <filter string="This Month" name="filter_this_month" domain="[('event_date', '&gt;=', (context_today - relativedelta(days=30)))]"/>
+                <filter string="Last 7 Days" name="filter_last_7_days" domain="[('event_date', '&gt;=', (context_today - relativedelta(days=7)))]"/>
+                <filter string="Last 30 Days" name="filter_last_30_days" domain="[('event_date', '&gt;=', (context_today - relativedelta(days=30)))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Event Type" name="group_by_event_type" context="{'group_by':'event_type'}"/>
+                    <filter string="Document" name="group_by_document" context="{'group_by':'document_id'}"/>
+                    <filter string="User" name="group_by_user" context="{'group_by':'user_id'}"/>
+                    <filter string="Location" name="group_by_location" context="{'group_by':'location_id'}"/>
+                    <filter string="Customer" name="group_by_customer" context="{'group_by':'partner_id'}"/>
+                    <filter string="Date" name="group_by_date" context="{'group_by':'event_date:day'}"/>
+                    <filter string="Month" name="group_by_month" context="{'group_by':'event_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
 
-        <!-- Action for naid.custody -->
-        <record id="action_naid_custody" model="ir.actions.act_window">
-            <field name="name">NAID Chain of Custody</field>
-            <field name="res_model">naid.custody</field>
-            <field name="view_mode">kanban,list,form</field>
-            <field name="search_view_id" ref="naid_custody_view_search"/>
-            <field name="context">{'search_default_filter_today': 1}</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    No custody events found.
-                </p>
-                <p>
-                    <b>NAID AAA Chain of Custody:</b>
-                    <br/>
-                    • Complete chronological record of document handling<br/>
-                    • User accountability for every custody event<br/>
-                    • Location tracking throughout document lifecycle<br/>
-                    • Immutable audit trail for compliance verification<br/>
-                    • Event type classification (creation, pickup, storage, etc.)<br/>
-                    • Customer association for multi-tenant environments
-                </p>
-            </field>
-        </record>
-    </data>
+    <!-- Action for naid.custody -->
+    <record id="action_naid_custody" model="ir.actions.act_window">
+        <field name="name">NAID Chain of Custody</field>
+        <field name="res_model">naid.custody</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="naid_custody_view_search"/>
+        <field name="context">{'search_default_filter_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No custody events found.
+            </p>
+            <p>
+                <b>NAID AAA Chain of Custody:</b>
+                <br/>
+                • Complete chronological record of document handling<br/>
+                • User accountability for every custody event<br/>
+                • Location tracking throughout document lifecycle<br/>
+                • Immutable audit trail for compliance verification<br/>
+                • Event type classification (creation, pickup, storage, etc.)<br/>
+                • Customer association for multi-tenant environments
+            </p>
+        </field>
+    </record>
+
 </odoo>

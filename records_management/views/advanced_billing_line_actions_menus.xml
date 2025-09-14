@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Action for simple views -->
-        <record id="advanced_billing_line_action_simple" model="ir.actions.act_window">
-            <field name="name">Simple Billing Lines</field>
-            <field name="res_model">advanced.billing.line</field>
-            <field name="view_mode">list,form</field>
-            <field name="view_id" ref="advanced_billing_line_view_tree"/>
-            <field name="search_view_id" ref="advanced_billing_line_view_search"/>
-            <field name="context">{'search_default_filter_active': 1}</field>
-            <field name="help">Manage basic billing line items</field>
-        </record>
 
-        <!-- Action for detailed views -->
-        <record id="advanced_billing_line_action_detailed" model="ir.actions.act_window">
-            <field name="name">Detailed Billing Lines</field>
-            <field name="res_model">advanced.billing.line</field>
-            <field name="view_mode">list,form</field>
+    <!-- Action for simple views -->
+    <record id="advanced_billing_line_action_simple" model="ir.actions.act_window">
+        <field name="name">Simple Billing Lines</field>
+        <field name="res_model">advanced.billing.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="advanced_billing_line_view_tree"/>
+        <field name="search_view_id" ref="advanced_billing_line_view_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help">Manage basic billing line items</field>
+    </record>
+
+    <!-- Action for detailed views -->
+    <record id="advanced_billing_line_action_detailed" model="ir.actions.act_window">
+        <field name="name">Detailed Billing Lines</field>
+        <field name="res_model">advanced.billing.line</field>
+        <field name="view_mode">list,form</field>
 <field name="view_id" ref="advanced_billing_line_view_tree"/>
 
-            <field name="search_view_id" ref="advanced_billing_line_view_search"/>
-            <field name="context">{'search_default_filter_active': 1}</field>
-            <field name="help">Manage detailed billing line items with amounts and currencies</field>
-        </record>
+        <field name="search_view_id" ref="advanced_billing_line_view_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help">Manage detailed billing line items with amounts and currencies</field>
+    </record>
 
-        <!-- Menu structure for billing lines -->
-        <menuitem id="advanced_billing_line_menu_root"
-                  name="Billing Lines"
-                  parent="records_management.menu_records_billing"
-                  sequence="23"/>
-        <menuitem id="advanced_billing_line_menu_simple" name="Simple View" parent="advanced_billing_line_menu_root" action="advanced_billing_line_action_simple" sequence="1"/>
-        <menuitem id="advanced_billing_line_menu_detailed" name="Detailed View" parent="advanced_billing_line_menu_root" action="advanced_billing_line_action_detailed" sequence="2"/>
-    </data>
+    <!-- Menu structure for billing lines -->
+    <menuitem id="advanced_billing_line_menu_root"
+              name="Billing Lines"
+              parent="records_management.menu_records_billing"
+              sequence="23"/>
+    <menuitem id="advanced_billing_line_menu_simple" name="Simple View" parent="advanced_billing_line_menu_root" action="advanced_billing_line_action_simple" sequence="1"/>
+    <menuitem id="advanced_billing_line_menu_detailed" name="Detailed View" parent="advanced_billing_line_menu_root" action="advanced_billing_line_action_detailed" sequence="2"/>
+
 </odoo>

@@ -12,98 +12,96 @@
     Fields covered include visitor, container, work order, authorization, timing, location, barcode, description, and issue tracking.
 -->
 <odoo>
-    <data>
 
-        <!-- List View -->
-        <record id="container_access_activity_view_tree" model="ir.ui.view">
-            <field name="name">container.access.activity.view.tree</field>
-            <field name="model">container.access.activity</field>
-        <field name="arch" type="xml">
-                <list string="Container Access Activity" decoration-info="status == 'in_progress'" decoration-success="status == 'completed'">
-                    <field name="name"/>
-                    <field name="visitor_id"/>
-                    <field name="container_id"/>
-                    <field name="partner_id"/>
-                    <field name="activity_time"/>
-                    <field name="description"/>
-                    <field name="status"/>
-                    <field name="authorized_by_id"/>
-                </list>
-            </field>
-        </record>
+    <!-- List View -->
+    <record id="container_access_activity_view_tree" model="ir.ui.view">
+        <field name="name">container.access.activity.view.tree</field>
+        <field name="model">container.access.activity</field>
+    <field name="arch" type="xml">
+            <list string="Container Access Activity" decoration-info="status == 'in_progress'" decoration-success="status == 'completed'">
+                <field name="name"/>
+                <field name="visitor_id"/>
+                <field name="container_id"/>
+                <field name="partner_id"/>
+                <field name="activity_time"/>
+                <field name="description"/>
+                <field name="status"/>
+                <field name="authorized_by_id"/>
+            </list>
+        </field>
+    </record>
 
-        <!-- Form View -->
-        <record id="container_access_activity_view_form" model="ir.ui.view">
-            <field name="name">container.access.activity.view.form</field>
-            <field name="model">container.access.activity</field>
-        <field name="arch" type="xml">
-                <form string="Container Access Activity">
-                    <sheet>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="display_name" readonly="1"/>
-                            </h1>
-                        </div>
-                        <group>
-                            <group name="basic_info">
-                                <field name="name"/>
-                                <field name="visitor_id"/>
-                                <field name="container_id"/>
-                                <field name="work_order_id"/>
-                                <field name="status"/>
-                            </group>
-                            <group name="authorization">
-                                <field name="authorized_by_id"/>
-                                <field name="supervised_by_id"/>
-                                <field name="approved_by_id"/>
-                                <field name="active"/>
-                            </group>
+    <!-- Form View -->
+    <record id="container_access_activity_view_form" model="ir.ui.view">
+        <field name="name">container.access.activity.view.form</field>
+        <field name="model">container.access.activity</field>
+    <field name="arch" type="xml">
+            <form string="Container Access Activity">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="basic_info">
+                            <field name="name"/>
+                            <field name="visitor_id"/>
+                            <field name="container_id"/>
+                            <field name="work_order_id"/>
+                            <field name="status"/>
                         </group>
-                        <group>
-                            <group name="timing">
-                                <field name="activity_time"/>
-                                <field name="completion_time"/>
-                            </group>
-                            <group name="container_details">
-                                <field name="location_id"/>
-                                <field name="partner_id"/>
-                                <field name="container_barcode"/>
-                            </group>
+                        <group name="authorization">
+                            <field name="authorized_by_id"/>
+                            <field name="supervised_by_id"/>
+                            <field name="approved_by_id"/>
+                            <field name="active"/>
                         </group>
-                        <notebook>
-                            <page string="Description" name="description">
-                                <field name="description" nolabel="1" placeholder="Describe the activity performed..."/>
-                            </page>
-                            <page string="Issues" name="issues">
-                                <group>
-                                    <field name="issues_found"/>
+                    </group>
+                    <group>
+                        <group name="timing">
+                            <field name="activity_time"/>
+                            <field name="completion_time"/>
+                        </group>
+                        <group name="container_details">
+                            <field name="location_id"/>
+                            <field name="partner_id"/>
+                            <field name="container_barcode"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" nolabel="1" placeholder="Describe the activity performed..."/>
+                        </page>
+                        <page string="Issues" name="issues">
+                            <group>
+                                <field name="issues_found"/>
 <field name="issue_description" invisible="issues_found == False"/>
 
-                                </group>
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <!-- Search View -->
-        <record id="container_access_activity_view_search" model="ir.ui.view">
-            <field name="name">container.access.activity.view.search</field>
-            <field name="model">container.access.activity</field>
-        <field name="arch" type="xml">
-                <search string="Search Container Access Activity">
-                    <!-- Add search fields here -->
-                </search>
-            </field>
-        </record>
+    <!-- Search View -->
+    <record id="container_access_activity_view_search" model="ir.ui.view">
+        <field name="name">container.access.activity.view.search</field>
+        <field name="model">container.access.activity</field>
+    <field name="arch" type="xml">
+            <search string="Search Container Access Activity">
+                <!-- Add search fields here -->
+            </search>
+        </field>
+    </record>
 
-        <!-- Action -->
-        <record id="action_container_access_activity" model="ir.actions.act_window">
-            <field name="name">Container Access Activity</field>
-            <field name="res_model">container.access.activity</field>
-            <field name="view_mode">list,form</field>
-        </record>
+    <!-- Action -->
+    <record id="action_container_access_activity" model="ir.actions.act_window">
+        <field name="name">Container Access Activity</field>
+        <field name="res_model">container.access.activity</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-    </data>
 </odoo>

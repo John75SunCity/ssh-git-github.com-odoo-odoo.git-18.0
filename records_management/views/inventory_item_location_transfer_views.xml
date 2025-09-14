@@ -13,86 +13,86 @@
     Follows Odoo view and action definition standards.
 -->
 <odoo>
-    <data>
-        <!-- List View -->
-        <record id="inventory_item_location_transfer_view_tree" model="ir.ui.view">
-            <field name="name">inventory.item.location.transfer.view.tree</field>
-            <field name="model">inventory.item.location.transfer</field>
-        <field name="arch" type="xml">
-                <list string="Inventory Item Location Transfer">
-                    <field name="name"/>
-                    <field name="item_id"/>
-                    <field name="from_location_id"/>
-                    <field name="to_location_id"/>
-                    <field name="transfer_date"/>
-                    <field name="user_id"/>
-                    <field name="notes"/>
-                    <field name="active"/>
-                    <field name="company_id"/>
-                </list>
-            </field>
-        </record>
 
-        <!-- Form View -->
-        <record id="inventory_item_location_transfer_view_form" model="ir.ui.view">
-            <field name="name">inventory.item.location.transfer.view.form</field>
-            <field name="model">inventory.item.location.transfer</field>
-        <field name="arch" type="xml">
-                <form string="Inventory Item Location Transfer">
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="item_id"/>
-                            <field name="from_location_id"/>
-                            <field name="to_location_id"/>
-                            <field name="transfer_date"/>
-                            <field name="user_id"/>
-                            <field name="notes"/>
-                            <field name="active"/>
-                            <field name="company_id"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+    <!-- List View -->
+    <record id="inventory_item_location_transfer_view_tree" model="ir.ui.view">
+        <field name="name">inventory.item.location.transfer.view.tree</field>
+        <field name="model">inventory.item.location.transfer</field>
+    <field name="arch" type="xml">
+            <list string="Inventory Item Location Transfer">
+                <field name="name"/>
+                <field name="item_id"/>
+                <field name="from_location_id"/>
+                <field name="to_location_id"/>
+                <field name="transfer_date"/>
+                <field name="user_id"/>
+                <field name="notes"/>
+                <field name="active"/>
+                <field name="company_id"/>
+            </list>
+        </field>
+    </record>
 
-        <!-- Search View -->
-        <record id="inventory_item_location_transfer_view_search" model="ir.ui.view">
-            <field name="name">inventory.item.location.transfer.view.search</field>
-            <field name="model">inventory.item.location.transfer</field>
-        <field name="arch" type="xml">
-                <search string="Search Inventory Item Location Transfer">
-                    <field name="name"/>
-                    <field name="item_id"/>
-                    <field name="from_location_id"/>
-                    <field name="to_location_id"/>
-                    <field name="transfer_date"/>
-                    <field name="user_id"/>
-                    <filter string="Active" name="active" domain="[('active','=',True)]"/>
-                </search>
-            </field>
-        </record>
+    <!-- Form View -->
+    <record id="inventory_item_location_transfer_view_form" model="ir.ui.view">
+        <field name="name">inventory.item.location.transfer.view.form</field>
+        <field name="model">inventory.item.location.transfer</field>
+    <field name="arch" type="xml">
+            <form string="Inventory Item Location Transfer">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="item_id"/>
+                        <field name="from_location_id"/>
+                        <field name="to_location_id"/>
+                        <field name="transfer_date"/>
+                        <field name="user_id"/>
+                        <field name="notes"/>
+                        <field name="active"/>
+                        <field name="company_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <!-- Action -->
-        <record id="action_inventory_item_location_transfer" model="ir.actions.act_window">
-            <field name="name">Inventory Item Location Transfer</field>
-            <field name="res_model">inventory.item.location.transfer</field>
-            <field name="view_mode">list,form</field>
-        </record>
+    <!-- Search View -->
+    <record id="inventory_item_location_transfer_view_search" model="ir.ui.view">
+        <field name="name">inventory.item.location.transfer.view.search</field>
+        <field name="model">inventory.item.location.transfer</field>
+    <field name="arch" type="xml">
+            <search string="Search Inventory Item Location Transfer">
+                <field name="name"/>
+                <field name="item_id"/>
+                <field name="from_location_id"/>
+                <field name="to_location_id"/>
+                <field name="transfer_date"/>
+                <field name="user_id"/>
+                <filter string="Active" name="active" domain="[('active','=',True)]"/>
+            </search>
+        </field>
+    </record>
 
-        <!-- Action -->
-        <record id="action_inventory_item_location_transfer" model="ir.actions.act_window">
-            <field name="name">Inventory Item Location Transfer</field>
-            <field name="res_model">inventory.item.location.transfer</field>
-            <field name="view_mode">list,form</field>
-        </record>
+    <!-- Action -->
+    <record id="action_inventory_item_location_transfer" model="ir.actions.act_window">
+        <field name="name">Inventory Item Location Transfer</field>
+        <field name="res_model">inventory.item.location.transfer</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-        <!-- Menu (optional - provide a real parent ID when enabling)
-        <menuitem id="menu_inventory_item_location_transfer"
-                  name="Inventory Item Location Transfer"
-                  parent="REPLACE_WITH_PARENT_MENU_ID"
-                  action="action_inventory_item_location_transfer"
-                  sequence="10"/>
-        -->
-    </data>
+    <!-- Action -->
+    <record id="action_inventory_item_location_transfer" model="ir.actions.act_window">
+        <field name="name">Inventory Item Location Transfer</field>
+        <field name="res_model">inventory.item.location.transfer</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu (optional - provide a real parent ID when enabling)
+    <menuitem id="menu_inventory_item_location_transfer"
+              name="Inventory Item Location Transfer"
+              parent="REPLACE_WITH_PARENT_MENU_ID"
+              action="action_inventory_item_location_transfer"
+              sequence="10"/>
+    -->
+
 </odoo>

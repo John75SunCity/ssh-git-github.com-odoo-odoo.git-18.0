@@ -1,189 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+
 <!-- Volume Calculator Form View -->
 <record id="custom_box_volume_calculator_view_form" model="ir.ui.view">
-    <field name="name">custom.box.volume.calculator.view.form</field>
-    <field name="model">custom.box.volume.calculator</field>
-    <field name="arch" type="xml">
-        <form string="Box Volume Calculator">
-            <sheet>
-                <div class="oe_title">
-                    <h1>
-                        <field name="name" placeholder="Volume Calculation Session"/>
-                    </h1>
-                </div>
+<field name="name">custom.box.volume.calculator.view.form</field>
+<field name="model">custom.box.volume.calculator</field>
+<field name="arch" type="xml">
+    <form string="Box Volume Calculator">
+        <sheet>
+            <div class="oe_title">
+                <h1>
+                    <field name="name" placeholder="Volume Calculation Session"/>
+                </h1>
+            </div>
 
-                <group name="session_info" string="Session Information">
-                    <group>
-                        <field name="user_id" readonly="1"/>
-                        <field name="calculation_date" readonly="1"/>
-                        <field name="calculation_purpose"/>
-                    </group>
-                    <group>
-                        <field name="company_id" readonly="1"/>
-                        <field name="fsm_task_id" domain="[('project_id.is_fsm', '=', True)]"/>
-                        <field name="pickup_request_id"/>
-                    </group>
+            <group name="session_info" string="Session Information">
+                <group>
+                    <field name="user_id" readonly="1"/>
+                    <field name="calculation_date" readonly="1"/>
+                    <field name="calculation_purpose"/>
                 </group>
+                <group>
+                    <field name="company_id" readonly="1"/>
+                    <field name="fsm_task_id" domain="[('project_id.is_fsm', '=', True)]"/>
+                    <field name="pickup_request_id"/>
+                </group>
+            </group>
 
-                <notebook>
-                    <page name="dimensions" string="Box Dimensions">
-                        <group name="measurement_unit" string="Measurement System">
-                            <field name="measurement_unit" widget="radio"/>
-                        </group>
+            <notebook>
+                <page name="dimensions" string="Box Dimensions">
+                    <group name="measurement_unit" string="Measurement System">
+                        <field name="measurement_unit" widget="radio"/>
+                    </group>
 
 <group name="dimensions_inches" string="Dimensions (Inches)" invisible="measurement_unit != 'inches'">
-                            <field name="length_inches" required="1"/>
-                            <field name="width_inches" required="1"/>
-                            <field name="height_inches" required="1"/>
-                        </group>
+                        <field name="length_inches" required="1"/>
+                        <field name="width_inches" required="1"/>
+                        <field name="height_inches" required="1"/>
+                    </group>
 
 <group name="dimensions_cm" string="Dimensions (Centimeters)" invisible="measurement_unit != 'centimeters'">
-                            <field name="length_cm" required="1"/>
-                            <field name="width_cm" required="1"/>
-                            <field name="height_cm" required="1"/>
-                        </group>
+                        <field name="length_cm" required="1"/>
+                        <field name="width_cm" required="1"/>
+                        <field name="height_cm" required="1"/>
+                    </group>
 
-                        <group name="calculated_volume" string="Calculated Volume">
-                            <field name="custom_volume_cf" widget="float_time"/>
-                            <field name="custom_volume_liters" widget="float_time"/>
-                        </group>
-                    </page>
+                    <group name="calculated_volume" string="Calculated Volume">
+                        <field name="custom_volume_cf" widget="float_time"/>
+                        <field name="custom_volume_liters" widget="float_time"/>
+                    </group>
+                </page>
 
-                    <page name="standard_conversion" string="Standard Container Conversion">
-                        <group name="recommendation" string="Recommendation">
-                            <field name="recommended_container_type"/>
-                            <field name="equivalent_standard_boxes" widget="float_time"/>
-                            <field name="volume_difference_cf" widget="float_time"/>
-                        </group>
+                <page name="standard_conversion" string="Standard Container Conversion">
+                    <group name="recommendation" string="Recommendation">
+                        <field name="recommended_container_type"/>
+                        <field name="equivalent_standard_boxes" widget="float_time"/>
+                        <field name="volume_difference_cf" widget="float_time"/>
+                    </group>
 
-                        <group name="comparison" string="Volume Comparison">
+                    <group name="comparison" string="Volume Comparison">
 <div class="alert alert-info" role="status">
-                                <strong>Recommendation:</strong>
-                                <field name="recommended_container_type" readonly="1" force_save="1"/>
-                                        provides the closest match to your custom box volume.
-                            </div>
-                        </group>
-                    </page>
+                            <strong>Recommendation:</strong>
+                            <field name="recommended_container_type" readonly="1" force_save="1"/>
+                                    provides the closest match to your custom box volume.
+                        </div>
+                    </group>
+                </page>
 
-                    <page name="pricing" string="Pricing Analysis">
-                        <group name="rates" string="Pricing Rates">
-                            <field name="base_rate_per_cf" widget="monetary"/>
-                        </group>
+                <page name="pricing" string="Pricing Analysis">
+                    <group name="rates" string="Pricing Rates">
+                        <field name="base_rate_per_cf" widget="monetary"/>
+                    </group>
 
-                        <group name="price_comparison" string="Price Comparison">
-                            <field name="custom_box_price" widget="monetary"/>
-                            <field name="standard_box_price" widget="monetary"/>
-                            <field name="price_difference" widget="monetary"/>
-                        </group>
+                    <group name="price_comparison" string="Price Comparison">
+                        <field name="custom_box_price" widget="monetary"/>
+                        <field name="standard_box_price" widget="monetary"/>
+                        <field name="price_difference" widget="monetary"/>
+                    </group>
 
-                        <group name="pricing_notes" string="Pricing Notes">
+                    <group name="pricing_notes" string="Pricing Notes">
 <div class="alert alert-warning" role="alert" invisible="price_difference &lt;= 0">
-                                <strong>Cost Savings:</strong> Using a custom box saves you
-                                <field name="price_difference" widget="monetary" readonly="1" force_save="1"/>
-                                        compared to standard boxes.
-                            </div>
+                            <strong>Cost Savings:</strong> Using a custom box saves you
+                            <field name="price_difference" widget="monetary" readonly="1" force_save="1"/>
+                                    compared to standard boxes.
+                        </div>
 <div class="alert alert-info" role="status" invisible="price_difference &gt; 0">
-                                <strong>Note:</strong> Standard boxes may be more cost-effective for this volume.
-                            </div>
-                        </group>
-                    </page>
+                            <strong>Note:</strong> Standard boxes may be more cost-effective for this volume.
+                        </div>
+                    </group>
+                </page>
 
-                    <page name="integration" string="FSM Integration">
-                        <group name="fsm_links" string="Related Records">
-                            <field name="fsm_task_id"/>
-                            <field name="pickup_request_id"/>
-                            <field name="shredding_service_id"/>
-                        </group>
+                <page name="integration" string="FSM Integration">
+                    <group name="fsm_links" string="Related Records">
+                        <field name="fsm_task_id"/>
+                        <field name="pickup_request_id"/>
+                        <field name="shredding_service_id"/>
+                    </group>
 
-                        <group name="actions" string="Actions">
+                    <group name="actions" string="Actions">
 <button name="action_apply_to_fsm_task" string="Apply to FSM Task" type="object" class="btn-primary" invisible="fsm_task_id == False"/>
 
-                            <button name="action_create_quote_line" string="Create Quote Line" type="object" class="btn-secondary"/>
-                            <button name="action_save_calculation" string="Save Calculation" type="object" class="btn-success"/>
-                        </group>
-                    </page>
-                </notebook>
+                        <button name="action_create_quote_line" string="Create Quote Line" type="object" class="btn-secondary"/>
+                        <button name="action_save_calculation" string="Save Calculation" type="object" class="btn-success"/>
+                    </group>
+                </page>
+            </notebook>
 
-                <group name="notes" string="Additional Notes">
-                    <field name="notes" placeholder="Enter any additional notes about this calculation..."/>
-                </group>
-            </sheet>
+            <group name="notes" string="Additional Notes">
+                <field name="notes" placeholder="Enter any additional notes about this calculation..."/>
+            </group>
+        </sheet>
 
-            <div class="oe_chatter">
-                <field name="message_follower_ids" widget="mail_followers"/>
-                <field name="activity_ids" widget="mail_activity"/>
-                <field name="message_ids" widget="mail_thread"/>
-            </div>
-        </form>
-    </field>
+        <div class="oe_chatter">
+            <field name="message_follower_ids" widget="mail_followers"/>
+            <field name="activity_ids" widget="mail_activity"/>
+            <field name="message_ids" widget="mail_thread"/>
+        </div>
+    </form>
+</field>
 </record>
 
 <!-- Volume Calculator List View -->
 <record id="custom_box_volume_calculator_view_tree" model="ir.ui.view">
-    <field name="name">custom.box.volume.calculator.view.tree</field>
-    <field name="model">custom.box.volume.calculator</field>
-    <field name="arch" type="xml">
+<field name="name">custom.box.volume.calculator.view.tree</field>
+<field name="model">custom.box.volume.calculator</field>
+<field name="arch" type="xml">
 <list string="Volume Calculations">
-            <field name="name"/>
-            <field name="user_id"/>
-            <field name="calculation_date"/>
-            <field name="calculation_purpose"/>
-            <field name="measurement_unit"/>
-            <field name="custom_volume_cf"/>
-            <field name="recommended_container_type"/>
-            <field name="custom_box_price"/>
-            <field name="fsm_task_id"/>
+        <field name="name"/>
+        <field name="user_id"/>
+        <field name="calculation_date"/>
+        <field name="calculation_purpose"/>
+        <field name="measurement_unit"/>
+        <field name="custom_volume_cf"/>
+        <field name="recommended_container_type"/>
+        <field name="custom_box_price"/>
+        <field name="fsm_task_id"/>
 </list>
-    </field>
+</field>
 </record>
 
 <!-- Volume Calculator Search View -->
 <record id="custom_box_volume_calculator_view_search" model="ir.ui.view">
-    <field name="name">custom.box.volume.calculator.view.search</field>
-    <field name="model">custom.box.volume.calculator</field>
-    <field name="arch" type="xml">
-        <search string="Search Volume Calculations">
-            <field name="name"/>
-            <field name="user_id"/>
-            <field name="calculation_purpose"/>
-            <field name="measurement_unit"/>
-            <field name="recommended_container_type"/>
-            <field name="fsm_task_id"/>
-            <field name="pickup_request_id"/>
-            <field name="shredding_service_id"/>
+<field name="name">custom.box.volume.calculator.view.search</field>
+<field name="model">custom.box.volume.calculator</field>
+<field name="arch" type="xml">
+    <search string="Search Volume Calculations">
+        <field name="name"/>
+        <field name="user_id"/>
+        <field name="calculation_purpose"/>
+        <field name="measurement_unit"/>
+        <field name="recommended_container_type"/>
+        <field name="fsm_task_id"/>
+        <field name="pickup_request_id"/>
+        <field name="shredding_service_id"/>
 
-            <filter string="My Calculations" name="my_calculations" domain="[('user_id', '=', uid)]"/>
-            <filter string="FSM Quotes" name="fsm_quotes" domain="[('calculation_purpose', '=', 'fsm_quote')]"/>
-            <filter string="Customer Quotes" name="customer_quotes" domain="[('calculation_purpose', '=', 'customer_quote')]"/>
-            <filter string="Today" name="today" domain="[('calculation_date', '&gt;=', context_today.strftime('%Y-%m-%d 00:00:00')),
-                                         ('calculation_date', '&lt;', context_today.strftime('%Y-%m-%d 23:59:59'))]"/>
-            <group expand="0" string="Group By">
-                <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
-                <filter string="Purpose" name="group_purpose" context="{'group_by': 'calculation_purpose'}"/>
-                <filter string="Container Type" name="group_container" context="{'group_by': 'recommended_container_type'}"/>
-                <filter string="Date" name="group_date" context="{'group_by': 'calculation_date:day'}"/>
-            </group>
-        </search>
-    </field>
+        <filter string="My Calculations" name="my_calculations" domain="[('user_id', '=', uid)]"/>
+        <filter string="FSM Quotes" name="fsm_quotes" domain="[('calculation_purpose', '=', 'fsm_quote')]"/>
+        <filter string="Customer Quotes" name="customer_quotes" domain="[('calculation_purpose', '=', 'customer_quote')]"/>
+        <filter string="Today" name="today" domain="[('calculation_date', '&gt;=', context_today.strftime('%Y-%m-%d 00:00:00')),
+                                     ('calculation_date', '&lt;', context_today.strftime('%Y-%m-%d 23:59:59'))]"/>
+        <group expand="0" string="Group By">
+            <filter string="User" name="group_user" context="{'group_by': 'user_id'}"/>
+            <filter string="Purpose" name="group_purpose" context="{'group_by': 'calculation_purpose'}"/>
+            <filter string="Container Type" name="group_container" context="{'group_by': 'recommended_container_type'}"/>
+            <filter string="Date" name="group_date" context="{'group_by': 'calculation_date:day'}"/>
+        </group>
+    </search>
+</field>
 </record>
 
 <!-- Volume Calculator Action -->
 <record id="custom_box_volume_calculator_action" model="ir.actions.act_window">
-    <field name="name">Box Volume Calculator</field>
-    <field name="res_model">custom.box.volume.calculator</field>
+<field name="name">Box Volume Calculator</field>
+<field name="res_model">custom.box.volume.calculator</field>
 <field name="view_mode">list,form</field>
 <field name="view_id" ref="custom_box_volume_calculator_view_tree"/>
 
 
-    <field name="search_view_id" ref="custom_box_volume_calculator_view_search"/>
-    <field name="context">{'default_calculation_purpose': 'fsm_quote'}</field>
-    <field name="help">Calculate custom box volumes and compare with standard containers</field>
+<field name="search_view_id" ref="custom_box_volume_calculator_view_search"/>
+<field name="context">{'default_calculation_purpose': 'fsm_quote'}</field>
+<field name="help">Calculate custom box volumes and compare with standard containers</field>
 </record>
 
 <!-- Volume Calculator Menu Item -->
 <menuitem id="custom_box_volume_calculator_menu" name="Volume Calculator" parent="records_management.records_management_menu" action="custom_box_volume_calculator_action" sequence="20" groups="records_management.group_records_user"/>
 
-    </data>
 </odoo>

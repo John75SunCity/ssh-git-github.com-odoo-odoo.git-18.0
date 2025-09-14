@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
-        <record id="customer_inventory_report_wizard_view_form" model="ir.ui.view">
-            <field name="name">customer.inventory.report.wizard.view.form</field>
-            <field name="model">customer.inventory.report.wizard</field>
-            <field name="arch" type="xml">
-                <form string="Customer Inventory Report Wizard">
-                    <sheet>
-                        <group>
-                            <field name="partner_id"/>
-                            <field name="department_id"/>
-                            <field name="inventory_date_from"/>
-                            <field name="inventory_date_to"/>
-                            <field name="company_id"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+    <record id="customer_inventory_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">customer.inventory.report.wizard.view.form</field>
+        <field name="model">customer.inventory.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Customer Inventory Report Wizard">
+                <sheet>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="department_id"/>
+                        <field name="inventory_date_from"/>
+                        <field name="inventory_date_to"/>
+                        <field name="company_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <record id="action_customer_inventory_report_wizard" model="ir.actions.act_window">
-            <field name="name">Customer Inventory Report Wizard</field>
-            <field name="res_model">customer.inventory.report.wizard</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-        </record>
+    <record id="action_customer_inventory_report_wizard" model="ir.actions.act_window">
+        <field name="name">Customer Inventory Report Wizard</field>
+        <field name="res_model">customer.inventory.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
 
-    </data>
 </odoo>

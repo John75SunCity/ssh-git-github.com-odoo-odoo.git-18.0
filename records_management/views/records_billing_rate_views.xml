@@ -1,92 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Records Billing Rate Views -->
-        <record id="records_billing_rate_view_tree" model="ir.ui.view">
-            <field name="name">records.billing.rate.view.tree</field>
-            <field name="model">records.billing.rate</field>
-            <field name="arch" type="xml">
-                <list string="Billing Rates" editable="bottom">
-                    <field name="service_type"/>
-                    <field name="rate_type"/>
-                    <field name="base_rate"/>
-                    <field name="unit_of_measure"/>
-                    <field name="tier_threshold"/>
-                    <field name="discount_percentage"/>
-                    <field name="effective_date"/>
-                    <field name="active"/>
-                </list>
-            </field>
-        </record>
 
-        <record id="records_billing_rate_view_form" model="ir.ui.view">
-            <field name="name">records.billing.rate.view.form</field>
-            <field name="model">records.billing.rate</field>
-            <field name="arch" type="xml">
-                <form string="Billing Rate">
-                    <sheet>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="service_type" readonly="1"/>
-                                <field name="rate_type" readonly="1"/>
-                            </h1>
-                        </div>
-                        <group>
-                            <group string="Rate Configuration">
-                                <field name="service_type"/>
-                                <field name="rate_type"/>
-                                <field name="base_rate"/>
-                                <field name="unit_of_measure"/>
-                            </group>
-                            <group string="Advanced Settings">
-                                <field name="tier_threshold"/>
-                                <field name="discount_percentage"/>
-                                <field name="effective_date"/>
-                                <field name="active"/>
-                            </group>
+    <!-- Records Billing Rate Views -->
+    <record id="records_billing_rate_view_tree" model="ir.ui.view">
+        <field name="name">records.billing.rate.view.tree</field>
+        <field name="model">records.billing.rate</field>
+        <field name="arch" type="xml">
+            <list string="Billing Rates" editable="bottom">
+                <field name="service_type"/>
+                <field name="rate_type"/>
+                <field name="base_rate"/>
+                <field name="unit_of_measure"/>
+                <field name="tier_threshold"/>
+                <field name="discount_percentage"/>
+                <field name="effective_date"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="records_billing_rate_view_form" model="ir.ui.view">
+        <field name="name">records.billing.rate.view.form</field>
+        <field name="model">records.billing.rate</field>
+        <field name="arch" type="xml">
+            <form string="Billing Rate">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="service_type" readonly="1"/>
+                            <field name="rate_type" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Rate Configuration">
+                            <field name="service_type"/>
+                            <field name="rate_type"/>
+                            <field name="base_rate"/>
+                            <field name="unit_of_measure"/>
                         </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <record id="records_billing_rate_view_search" model="ir.ui.view">
-            <field name="name">records.billing.rate.view.search</field>
-            <field name="model">records.billing.rate</field>
-            <field name="arch" type="xml">
-                <search string="Search Billing Rates">
-                    <field name="service_type"/>
-                    <field name="rate_type"/>
-                    <field name="base_rate"/>
-                    <field name="effective_date"/>
-                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
-                    <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
-                    <separator/>
-                    <filter string="Storage" name="storage" domain="[('service_type', '=', 'storage')]"/>
-                    <filter string="Retrieval" name="retrieval" domain="[('service_type', '=', 'retrieval')]"/>
-                    <filter string="Destruction" name="destruction" domain="[('service_type', '=', 'destruction')]"/>
-                    <filter string="Digital" name="digital" domain="[('service_type', '=', 'digital')]"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Service Type" name="group_service" context="{'group_by': 'service_type'}"/>
-                        <filter string="Rate Type" name="group_rate" context="{'group_by': 'rate_type'}"/>
+                        <group string="Advanced Settings">
+                            <field name="tier_threshold"/>
+                            <field name="discount_percentage"/>
+                            <field name="effective_date"/>
+                            <field name="active"/>
+                        </group>
                     </group>
-                </search>
-            </field>
-        </record>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <record id="records_billing_rate_action" model="ir.actions.act_window">
-            <field name="name">Billing Rates</field>
-            <field name="res_model">records.billing.rate</field>
-            <field name="view_mode">list,form</field>
-            <field name="search_view_id" ref="records_billing_rate_view_search"/>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Create your first billing rate configuration
-                </p>
-                <p>
-                    Define different rate structures for various services including storage, retrieval, destruction, and digital services.
-                </p>
-            </field>
-        </record>
-    </data>
+    <record id="records_billing_rate_view_search" model="ir.ui.view">
+        <field name="name">records.billing.rate.view.search</field>
+        <field name="model">records.billing.rate</field>
+        <field name="arch" type="xml">
+            <search string="Search Billing Rates">
+                <field name="service_type"/>
+                <field name="rate_type"/>
+                <field name="base_rate"/>
+                <field name="effective_date"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Storage" name="storage" domain="[('service_type', '=', 'storage')]"/>
+                <filter string="Retrieval" name="retrieval" domain="[('service_type', '=', 'retrieval')]"/>
+                <filter string="Destruction" name="destruction" domain="[('service_type', '=', 'destruction')]"/>
+                <filter string="Digital" name="digital" domain="[('service_type', '=', 'digital')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Service Type" name="group_service" context="{'group_by': 'service_type'}"/>
+                    <filter string="Rate Type" name="group_rate" context="{'group_by': 'rate_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="records_billing_rate_action" model="ir.actions.act_window">
+        <field name="name">Billing Rates</field>
+        <field name="res_model">records.billing.rate</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="records_billing_rate_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first billing rate configuration
+            </p>
+            <p>
+                Define different rate structures for various services including storage, retrieval, destruction, and digital services.
+            </p>
+        </field>
+    </record>
+
 </odoo>

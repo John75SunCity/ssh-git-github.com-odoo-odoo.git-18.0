@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- List view for Document -->
 
-        <!-- List view for Work -->
-        <menuitem id="menu_document_retrieval_work_orders" name="Document Retrieval Orders" parent="menu_records_operations" action="action_document_retrieval_work_order" sequence="15" groups="records_management.group_records_user"/>
+    <!-- List view for Document -->
 
-        <!-- List view for Rates -->
-        <menuitem id="menu_document_retrieval_rates" name="Document Retrieval Rates" parent="menu_records_configuration" sequence="60" groups="records_management.group_records_manager"/>
+    <!-- List view for Work -->
+    <menuitem id="menu_document_retrieval_work_orders" name="Document Retrieval Orders" parent="menu_records_operations" action="action_document_retrieval_work_order" sequence="15" groups="records_management.group_records_user"/>
 
-        <menuitem id="menu_document_retrieval_base_rates" name="Base Rates" parent="menu_document_retrieval_rates" action="action_document_retrieval_rates" sequence="10" groups="records_management.group_records_manager"/>
-    </data>
+    <!-- List view for Rates -->
+    <menuitem id="menu_document_retrieval_rates" name="Document Retrieval Rates" parent="menu_records_configuration" sequence="60" groups="records_management.group_records_manager"/>
+
+    <menuitem id="menu_document_retrieval_base_rates" name="Base Rates" parent="menu_document_retrieval_rates" action="action_document_retrieval_rates" sequence="10" groups="records_management.group_records_manager"/>
+
 </odoo>

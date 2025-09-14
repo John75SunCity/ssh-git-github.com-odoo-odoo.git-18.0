@@ -1,69 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
-        <record id="customer_category_view_tree" model="ir.ui.view">
-            <field name="name">customer.category.view.tree</field>
-            <field name="model">customer.category</field>
-        <field name="arch" type="xml">
-                <list string="Customer Category">
-                    <field name="name"/>
-                    <field name="description"/>
-                    <field name="default_billing_model"/>
-                    <field name="priority_level"/>
-                    <field name="sla_hours"/>
-                    <field name="customer_count"/>
-                    <field name="active"/>
-                    <field name="company_id"/>
-                </list>
-            </field>
-        </record>
+    <record id="customer_category_view_tree" model="ir.ui.view">
+        <field name="name">customer.category.view.tree</field>
+        <field name="model">customer.category</field>
+    <field name="arch" type="xml">
+            <list string="Customer Category">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="default_billing_model"/>
+                <field name="priority_level"/>
+                <field name="sla_hours"/>
+                <field name="customer_count"/>
+                <field name="active"/>
+                <field name="company_id"/>
+            </list>
+        </field>
+    </record>
 
-        <record id="customer_category_view_form" model="ir.ui.view">
-            <field name="name">customer.category.view.form</field>
-            <field name="model">customer.category</field>
-        <field name="arch" type="xml">
-                <form string="Customer Category">
-                    <sheet>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="name" placeholder="Category Name..."/>
-                            </h1>
-                        </div>
-                        <group>
-                            <group name="main_info">
-                                <field name="description"/>
-                                <field name="company_id"/>
-                                <field name="active"/>
-                            </group>
-                            <group name="configuration">
-                                <field name="default_billing_model"/>
-                                <field name="priority_level"/>
-                                <field name="sla_hours"/>
-                            </group>
+    <record id="customer_category_view_form" model="ir.ui.view">
+        <field name="name">customer.category.view.form</field>
+        <field name="model">customer.category</field>
+    <field name="arch" type="xml">
+            <form string="Customer Category">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Category Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="main_info">
+                            <field name="description"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
                         </group>
-                        <notebook>
-                            <page string="Customers" name="customers">
-                                <field name="partner_ids" nolabel="1">
-                                    <list string="Customers">
-                                        <field name="name"/>
-                                        <field name="email"/>
-                                        <field name="phone"/>
-                                        <field name="is_company"/>
-                                    </list>
-                                </field>
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+                        <group name="configuration">
+                            <field name="default_billing_model"/>
+                            <field name="priority_level"/>
+                            <field name="sla_hours"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Customers" name="customers">
+                            <field name="partner_ids" nolabel="1">
+                                <list string="Customers">
+                                    <field name="name"/>
+                                    <field name="email"/>
+                                    <field name="phone"/>
+                                    <field name="is_company"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <record id="action_customer_category" model="ir.actions.act_window">
-            <field name="name">Customer Category</field>
-            <field name="res_model">customer.category</field>
-            <field name="view_mode">list,form</field>
-        </record>
+    <record id="action_customer_category" model="ir.actions.act_window">
+        <field name="name">Customer Category</field>
+        <field name="res_model">customer.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-    </data>
 </odoo>

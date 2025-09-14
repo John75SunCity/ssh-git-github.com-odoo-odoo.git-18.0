@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
-        <!-- hard.drive.scan.wizard form view -->
-        <record id="hard_drive_scan_wizard_view_form" model="ir.ui.view">
-            <field name="name">hard.drive.scan.wizard.form</field>
-            <field name="model">hard.drive.scan.wizard</field>
-        <field name="arch" type="xml">
-                <form string="Scan Hard Drives for Destruction">
-                    <group>
-                        <field name="fsm_task_id" options="{'no_create': True, 'no_open': True}"/>
-                        <field name="partner_id"/>
-                        <field name="destruction_method"/>
-                    </group>
-                    <group string="Bulk Scan">
-                        <field name="serial_numbers_text" placeholder="Scan or paste serial numbers here, one per line..."/>
-                        <button name="action_process_scanned_serials" string="Process Scanned Serials" type="object" class="btn-primary"/>
-                    </group>
-                    <notebook>
-                        <page string="Scanned Serials" name="scanned_serials">
-                            <field name="scan_line_ids" nolabel="1">
-                                <list editable="bottom">
-                                    <field name="serial_number"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
-                    <footer>
-                        <button name="action_confirm_destruction" string="Confirm Destruction" type="object" class="btn-primary" data-hotkey="q"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+    <!-- hard.drive.scan.wizard form view -->
+    <record id="hard_drive_scan_wizard_view_form" model="ir.ui.view">
+        <field name="name">hard.drive.scan.wizard.form</field>
+        <field name="model">hard.drive.scan.wizard</field>
+    <field name="arch" type="xml">
+            <form string="Scan Hard Drives for Destruction">
+                <group>
+                    <field name="fsm_task_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="partner_id"/>
+                    <field name="destruction_method"/>
+                </group>
+                <group string="Bulk Scan">
+                    <field name="serial_numbers_text" placeholder="Scan or paste serial numbers here, one per line..."/>
+                    <button name="action_process_scanned_serials" string="Process Scanned Serials" type="object" class="btn-primary"/>
+                </group>
+                <notebook>
+                    <page string="Scanned Serials" name="scanned_serials">
+                        <field name="scan_line_ids" nolabel="1">
+                            <list editable="bottom">
+                                <field name="serial_number"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+                <footer>
+                    <button name="action_confirm_destruction" string="Confirm Destruction" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 
-        <!-- Action to open the hard drive scan wizard -->
-        <record id="action_hard_drive_scan_wizard" model="ir.actions.act_window">
-            <field name="name">Scan Hard Drives</field>
-            <field name="res_model">hard.drive.scan.wizard</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-            <field name="binding_model_id" ref="project.model_project_task"/>
-            <field name="binding_view_types">form</field>
-        </record>
+    <!-- Action to open the hard drive scan wizard -->
+    <record id="action_hard_drive_scan_wizard" model="ir.actions.act_window">
+        <field name="name">Scan Hard Drives</field>
+        <field name="res_model">hard.drive.scan.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="project.model_project_task"/>
+        <field name="binding_view_types">form</field>
+    </record>
 
-    </data>
 </odoo>

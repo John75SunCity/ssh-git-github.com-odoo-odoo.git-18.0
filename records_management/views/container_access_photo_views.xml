@@ -1,186 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+
 <!-- List view for container.access.photo -->
-    <record id="container_access_photo_view_tree" model="ir.ui.view">
-        <field name="name">container.access.photo.view.tree</field>
-        <field name="model">container.access.photo</field>
-        <field name="arch" type="xml">
-            <list string="Container Access Photos" decoration-info="is_primary==True">
-                <field name="activity_id"/>
-                <field name="photo_type"/>
-                <field name="description"/>
-                <field name="is_primary"/>
-                <field name="photo_timestamp"/>
-                <field name="create_date" string="Created"/>
-            </list>
-        </field>
-    </record>
+<record id="container_access_photo_view_tree" model="ir.ui.view">
+    <field name="name">container.access.photo.view.tree</field>
+    <field name="model">container.access.photo</field>
+    <field name="arch" type="xml">
+        <list string="Container Access Photos" decoration-info="is_primary==True">
+            <field name="activity_id"/>
+            <field name="photo_type"/>
+            <field name="description"/>
+            <field name="is_primary"/>
+            <field name="photo_timestamp"/>
+            <field name="create_date" string="Created"/>
+        </list>
+    </field>
+</record>
 
-    <!-- Form view for container.access.photo -->
-    <record id="container_access_photo_view_form" model="ir.ui.view">
-        <field name="name">container.access.photo.view.form</field>
-        <field name="model">container.access.photo</field>
-        <field name="arch" type="xml">
-            <form string="Container Access Photo">
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_set_primary"
-                                icon="fa-star" string="Set Primary"
-                                invisible="is_primary"/>
-                    </div>
+<!-- Form view for container.access.photo -->
+<record id="container_access_photo_view_form" model="ir.ui.view">
+    <field name="name">container.access.photo.view.form</field>
+    <field name="model">container.access.photo</field>
+    <field name="arch" type="xml">
+        <form string="Container Access Photo">
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" type="object" name="action_set_primary"
+                            icon="fa-star" string="Set Primary"
+                            invisible="is_primary"/>
+                </div>
 
-                    <group>
-                        <group name="photo_details">
-                            <field name="activity_id" required="1"/>
-                            <field name="photo_type"/>
-                            <field name="is_primary"/>
-                            <field name="photo_timestamp"/>
-                        </group>
-
-                        <group name="metadata">
-                            <field name="description"/>
-                            <field name="file_size" widget="size"/>
-                            <field name="photo_quality"/>
-                        </group>
+                <group>
+                    <group name="photo_details">
+                        <field name="activity_id" required="1"/>
+                        <field name="photo_type"/>
+                        <field name="is_primary"/>
+                        <field name="photo_timestamp"/>
                     </group>
 
-                    <notebook>
-                        <page string="Photo" name="photo">
-                            <field name="photo_data" widget="image" class="oe_avatar"/>
-                        </page>
-
-                        <page string="Technical Details" name="technical">
-                            <group>
-                                <field name="camera_model"/>
-                                <field name="gps_coordinates"/>
-                                <field name="resolution"/>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <!-- Search view for container.access.photo -->
-    <record id="container_access_photo_view_search" model="ir.ui.view">
-        <field name="name">container.access.photo.view.search</field>
-        <field name="model">container.access.photo</field>
-        <field name="arch" type="xml">
-            <search string="Search Container Access Photos">
-                <field name="activity_id"/>
-                <field name="photo_type"/>
-                <field name="description"/>
-
-                <filter string="Primary Photos" name="primary" domain="[('is_primary', '=', True)]"/>
-                <filter string="Secondary Photos" name="secondary" domain="[('is_primary', '=', False)]"/>
-                <filter string="High Quality" name="high_quality" domain="[('photo_quality', '>=', 80)]"/>
-
-                <separator/>
-                <filter string="Today" name="today"
-                        domain="[('photo_timestamp', '>=', datetime.datetime.combine(context_today, datetime.time(0,0,0)))]"/>
-                <filter string="This Week" name="this_week"
-                        domain="[('photo_timestamp', '>=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-
-                <group expand="1" string="Group By">
-                    <filter string="Activity" name="group_activity" domain="[]" context="{'group_by': 'activity_id'}"/>
-                    <filter string="Photo Type" name="group_type" domain="[]" context="{'group_by': 'photo_type'}"/>
-                    <filter string="Date" name="group_date" domain="[]" context="{'group_by': 'photo_timestamp:day'}"/>
+                    <group name="metadata">
+                        <field name="description"/>
+                        <field name="file_size" widget="size"/>
+                        <field name="photo_quality"/>
+                    </group>
                 </group>
-            </search>
-        </field>
-    </record>
 
-    <!-- Kanban view for container.access.photo -->
-    <record id="container_access_photo_view_kanban" model="ir.ui.view">
-        <field name="name">container.access.photo.view.kanban</field>
-        <field name="model">container.access.photo</field>
-        <field name="arch" type="xml">
-            <kanban string="Container Access Photos" class="o_kanban_mobile">
-                <field name="id"/>
-                <field name="activity_id"/>
-                <field name="photo_type"/>
-                <field name="is_primary"/>
-                <field name="photo_timestamp"/>
-                <field name="description"/>
-                <field name="photo_data"/>
+                <notebook>
+                    <page string="Photo" name="photo">
+                        <field name="photo_data" widget="image" class="oe_avatar"/>
+                    </page>
 
-                <templates>
+                    <page string="Technical Details" name="technical">
+                        <group>
+                            <field name="camera_model"/>
+                            <field name="gps_coordinates"/>
+                            <field name="resolution"/>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+
+            <div class="oe_chatter">
+                <field name="message_follower_ids"/>
+                <field name="activity_ids"/>
+                <field name="message_ids"/>
+            </div>
+        </form>
+    </field>
+</record>
+
+<!-- Search view for container.access.photo -->
+<record id="container_access_photo_view_search" model="ir.ui.view">
+    <field name="name">container.access.photo.view.search</field>
+    <field name="model">container.access.photo</field>
+    <field name="arch" type="xml">
+        <search string="Search Container Access Photos">
+            <field name="activity_id"/>
+            <field name="photo_type"/>
+            <field name="description"/>
+
+            <filter string="Primary Photos" name="primary" domain="[('is_primary', '=', True)]"/>
+            <filter string="Secondary Photos" name="secondary" domain="[('is_primary', '=', False)]"/>
+            <filter string="High Quality" name="high_quality" domain="[('photo_quality', '>=', 80)]"/>
+
+            <separator/>
+            <filter string="Today" name="today"
+                    domain="[('photo_timestamp', '>=', datetime.datetime.combine(context_today, datetime.time(0,0,0)))]"/>
+            <filter string="This Week" name="this_week"
+                    domain="[('photo_timestamp', '>=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+
+            <group expand="1" string="Group By">
+                <filter string="Activity" name="group_activity" domain="[]" context="{'group_by': 'activity_id'}"/>
+                <filter string="Photo Type" name="group_type" domain="[]" context="{'group_by': 'photo_type'}"/>
+                <filter string="Date" name="group_date" domain="[]" context="{'group_by': 'photo_timestamp:day'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+
+<!-- Kanban view for container.access.photo -->
+<record id="container_access_photo_view_kanban" model="ir.ui.view">
+    <field name="name">container.access.photo.view.kanban</field>
+    <field name="model">container.access.photo</field>
+    <field name="arch" type="xml">
+        <kanban string="Container Access Photos" class="o_kanban_mobile">
+            <field name="id"/>
+            <field name="activity_id"/>
+            <field name="photo_type"/>
+            <field name="is_primary"/>
+            <field name="photo_timestamp"/>
+            <field name="description"/>
+            <field name="photo_data"/>
+
+            <templates>
 <t t-name="card">
-                        <div class="oe_kanban_global_click">
-                            <div class="oe_kanban_image">
+                    <div class="oe_kanban_global_click">
+                        <div class="oe_kanban_image">
 <img t-att-src="kanban_image('container.access.photo', 'photo_data', record.id.raw_value)" alt="Access Photo"
 class="o_image_64_cover"/>
-                            </div>
+                        </div>
 
-                            <div class="oe_kanban_details">
-                                <div class="o_kanban_record_top">
-                                    <div class="o_kanban_record_headings">
-                                        <strong class="o_kanban_record_title">
-                                            <t t-esc="record.activity_id.value"/>
-                                        </strong>
-                                    </div>
-
-                                    <div class="o_kanban_record_body">
-                                        <div>
-                                            <t t-if="record.is_primary.raw_value">
-                                                <span class="badge badge-success">Primary</span>
-                                            </t>
-                                            <span class="badge badge-info">
-                                                <t t-esc="record.photo_type.value"/>
-                                            </span>
-                                        </div>
-
-                                        <div t-if="record.description.value">
-                                            <t t-esc="record.description.value"/>
-                                        </div>
-                                    </div>
+                        <div class="oe_kanban_details">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <t t-esc="record.activity_id.value"/>
+                                    </strong>
                                 </div>
 
-                                <div class="o_kanban_record_bottom">
-                                    <div class="oe_kanban_bottom_left">
-                                        <time t-esc="record.photo_timestamp.value"/>
+                                <div class="o_kanban_record_body">
+                                    <div>
+                                        <t t-if="record.is_primary.raw_value">
+                                            <span class="badge badge-success">Primary</span>
+                                        </t>
+                                        <span class="badge badge-info">
+                                            <t t-esc="record.photo_type.value"/>
+                                        </span>
                                     </div>
+
+                                    <div t-if="record.description.value">
+                                        <t t-esc="record.description.value"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <time t-esc="record.photo_timestamp.value"/>
                                 </div>
                             </div>
                         </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
 
-    <!-- Action for container.access.photo -->
-    <record id="action_container_access_photo" model="ir.actions.act_window">
-        <field name="name">Container Access Photos</field>
-        <field name="res_model">container.access.photo</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                No container access photos found!
-            </p>
-            <p>
-                Photos are automatically created when container access activities are documented.
-                Use the camera integration to capture before/after photos of container access operations.
-            </p>
-        </field>
-    </record>
+<!-- Action for container.access.photo -->
+<record id="action_container_access_photo" model="ir.actions.act_window">
+    <field name="name">Container Access Photos</field>
+    <field name="res_model">container.access.photo</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            No container access photos found!
+        </p>
+        <p>
+            Photos are automatically created when container access activities are documented.
+            Use the camera integration to capture before/after photos of container access operations.
+        </p>
+    </field>
+</record>
 
-    <!-- Menu item for container.access.photo -->
-    <menuitem id="menu_container_access_photos"
-              name="Access Photos"
-              parent="menu_container_access"
-              action="action_container_access_photo"
-              sequence="40"/>
-</data>
+<!-- Menu item for container.access.photo -->
+<menuitem id="menu_container_access_photos"
+          name="Access Photos"
+          parent="menu_container_access"
+          action="action_container_access_photo"
+          sequence="40"/>
 
 </odoo>

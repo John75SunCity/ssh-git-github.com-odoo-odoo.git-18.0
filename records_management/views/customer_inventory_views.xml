@@ -1,93 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+
 <!-- List view for CUSTOMER -->
 
-    <!-- Kanban view for Kanban -->
-    <record id="customer_inventory_view_kanban" model="ir.ui.view">
-        <field name="name">customer.inventory.view.kanban</field>
-        <field name="model">customer.inventory</field>
-        <field name="arch" type="xml">
-            <kanban class="o_kanban_customer_inventory" default_group_by="status">
-                <field name="partner_id"/>
-                <field name="total_containers"/>
-                <field name="total_documents"/>
-                <field name="state"/>
-                <templates>
-                    <t t-name="card">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="o_kanban_card_header">
-                                <strong><i class="fa fa-bar-chart"/>                                    <field name="partner_id"/>
-                                </strong>
-                                <span class="float-end">
-                                    <field name="state" widget="label_selection"/>
-                                </span>
-                            </div>
+<!-- Kanban view for Kanban -->
+<record id="customer_inventory_view_kanban" model="ir.ui.view">
+    <field name="name">customer.inventory.view.kanban</field>
+    <field name="model">customer.inventory</field>
+    <field name="arch" type="xml">
+        <kanban class="o_kanban_customer_inventory" default_group_by="status">
+            <field name="partner_id"/>
+            <field name="total_containers"/>
+            <field name="total_documents"/>
+            <field name="state"/>
+            <templates>
+                <t t-name="card">
+                    <div class="oe_kanban_card oe_kanban_global_click">
+                        <div class="o_kanban_card_header">
+                            <strong><i class="fa fa-bar-chart"/>                                    <field name="partner_id"/>
+                            </strong>
+                            <span class="float-end">
+                                <field name="state" widget="label_selection"/>
+                            </span>
+                        </div>
 <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
-                                <div class="mb-2">
-                                    <strong>Containers:</strong>
-                                    <field name="total_containers"/>
-                                    <br/>
-                                    <strong>Documents:</strong>
-                                    <field name="total_documents"/>
-                                </div>
+                            <div class="mb-2">
+                                <strong>Containers:</strong>
+                                <field name="total_containers"/>
+                                <br/>
+                                <strong>Documents:</strong>
+                                <field name="total_documents"/>
                             </div>
                         </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <!-- List view for List -->
-    <record id="customer_inventory_view_tree" model="ir.ui.view">
-        <field name="name">customer.inventory.view.tree</field>
-        <field name="model">customer.inventory</field>
-        <field name="arch" type="xml">
-            <list>
-                <field name="partner_id"/>
-                <field name="total_containers"/>
-                <field name="total_documents"/>
-                <field name="state" widget="badge"/>
-                <field name="last_updated" widget="date"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Form view for base.rate -->
-    <record id="customer_inventory_view_form" model="ir.ui.view">
-        <field name="name">customer.inventory.view.form</field>
-        <field name="model">customer.inventory</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="partner_id"/>
-                        </h1>
                     </div>
-                    <group>
-                        <field name="total_containers"/>
-                        <field name="total_documents"/>
-                        <field name="state"/>
-                        <field name="last_updated"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
 
-    <!-- List view for Action -->
-    <record id="action_customer_inventory" model="ir.actions.act_window">
-        <field name="name">Customer Inventory</field>
-        <field name="res_model">customer.inventory</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                <i class="fa fa-bar-chart"/> No customer inventory data yet!
-            </p>
-        </field>
-    </record>
-</data>
+<!-- List view for List -->
+<record id="customer_inventory_view_tree" model="ir.ui.view">
+    <field name="name">customer.inventory.view.tree</field>
+    <field name="model">customer.inventory</field>
+    <field name="arch" type="xml">
+        <list>
+            <field name="partner_id"/>
+            <field name="total_containers"/>
+            <field name="total_documents"/>
+            <field name="state" widget="badge"/>
+            <field name="last_updated" widget="date"/>
+        </list>
+    </field>
+</record>
+
+<!-- Form view for base.rate -->
+<record id="customer_inventory_view_form" model="ir.ui.view">
+    <field name="name">customer.inventory.view.form</field>
+    <field name="model">customer.inventory</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="partner_id"/>
+                    </h1>
+                </div>
+                <group>
+                    <field name="total_containers"/>
+                    <field name="total_documents"/>
+                    <field name="state"/>
+                    <field name="last_updated"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<!-- List view for Action -->
+<record id="action_customer_inventory" model="ir.actions.act_window">
+    <field name="name">Customer Inventory</field>
+    <field name="res_model">customer.inventory</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            <i class="fa fa-bar-chart"/> No customer inventory data yet!
+        </p>
+    </field>
+</record>
 
 </odoo>

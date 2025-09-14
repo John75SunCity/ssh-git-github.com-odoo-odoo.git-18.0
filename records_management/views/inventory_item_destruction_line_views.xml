@@ -1,83 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
-        <!-- List View -->
-        <record id="inventory_item_destruction_line_view_tree" model="ir.ui.view">
-            <field name="name">inventory.item.destruction.line.view.tree</field>
-            <field name="model">inventory.item.destruction.line</field>
-        <field name="arch" type="xml">
-                <list string="Inventory Item Destruction Line">
-                    <field name="destruction_id"/>
-                    <field name="item_id"/>
-                    <field name="quantity"/>
-                    <field name="destruction_method"/>
-                    <field name="state"/>
-                    <field name="destruction_date"/>
-                    <field name="responsible_id"/>
-                    <field name="certificate_number"/>
-                </list>
-            </field>
-        </record>
+    <!-- List View -->
+    <record id="inventory_item_destruction_line_view_tree" model="ir.ui.view">
+        <field name="name">inventory.item.destruction.line.view.tree</field>
+        <field name="model">inventory.item.destruction.line</field>
+    <field name="arch" type="xml">
+            <list string="Inventory Item Destruction Line">
+                <field name="destruction_id"/>
+                <field name="item_id"/>
+                <field name="quantity"/>
+                <field name="destruction_method"/>
+                <field name="state"/>
+                <field name="destruction_date"/>
+                <field name="responsible_id"/>
+                <field name="certificate_number"/>
+            </list>
+        </field>
+    </record>
 
-        <!-- Form View -->
-        <record id="inventory_item_destruction_line_view_form" model="ir.ui.view">
-            <field name="name">inventory.item.destruction.line.view.form</field>
-            <field name="model">inventory.item.destruction.line</field>
-        <field name="arch" type="xml">
-                <form string="Inventory Item Destruction Line">
-                    <sheet>
+    <!-- Form View -->
+    <record id="inventory_item_destruction_line_view_form" model="ir.ui.view">
+        <field name="name">inventory.item.destruction.line.view.form</field>
+        <field name="model">inventory.item.destruction.line</field>
+    <field name="arch" type="xml">
+            <form string="Inventory Item Destruction Line">
+                <sheet>
+                    <group>
                         <group>
-                            <group>
-                                <field name="destruction_id"/>
-                                <field name="item_id"/>
-                                <field name="quantity"/>
-                                <field name="sequence"/>
-                                <field name="location_id"/>
-                            </group>
-                            <group>
-                                <field name="destruction_method"/>
-                                <field name="state"/>
-                                <field name="destruction_date"/>
-                                <field name="responsible_id"/>
-                                <field name="certificate_number"/>
-                            </group>
+                            <field name="destruction_id"/>
+                            <field name="item_id"/>
+                            <field name="quantity"/>
+                            <field name="sequence"/>
+                            <field name="location_id"/>
                         </group>
-                        <group string="Notes">
-                            <field name="notes" nolabel="1"/>
+                        <group>
+                            <field name="destruction_method"/>
+                            <field name="state"/>
+                            <field name="destruction_date"/>
+                            <field name="responsible_id"/>
+                            <field name="certificate_number"/>
                         </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <!-- Search View -->
-        <record id="inventory_item_destruction_line_view_search" model="ir.ui.view">
-            <field name="name">inventory.item.destruction.line.view.search</field>
-            <field name="model">inventory.item.destruction.line</field>
-        <field name="arch" type="xml">
-                <search string="Search Inventory Item Destruction Line">
-                    <!-- Add search fields here -->
-                </search>
-            </field>
-        </record>
+    <!-- Search View -->
+    <record id="inventory_item_destruction_line_view_search" model="ir.ui.view">
+        <field name="name">inventory.item.destruction.line.view.search</field>
+        <field name="model">inventory.item.destruction.line</field>
+    <field name="arch" type="xml">
+            <search string="Search Inventory Item Destruction Line">
+                <!-- Add search fields here -->
+            </search>
+        </field>
+    </record>
 
-        <!-- Action -->
-        <record id="action_inventory_item_destruction_line" model="ir.actions.act_window">
-            <field name="name">Inventory Item Destruction Line</field>
-            <field name="res_model">inventory.item.destruction.line</field>
-            <field name="view_mode">list,form</field>
-        </record>
+    <!-- Action -->
+    <record id="action_inventory_item_destruction_line" model="ir.actions.act_window">
+        <field name="name">Inventory Item Destruction Line</field>
+        <field name="res_model">inventory.item.destruction.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-        <!-- Menu -->
-        <!--
-        <menuitem
-            id="menu_inventory_item_destruction_line"
-            name="Inventory Item Destruction Line"
-            action="action_inventory_item_destruction_line"
-            parent="REPLACE_WITH_PARENT_MENU_ID"
-            sequence="10"/>
-        -->
+    <!-- Menu -->
+    <!--
+    <menuitem
+        id="menu_inventory_item_destruction_line"
+        name="Inventory Item Destruction Line"
+        action="action_inventory_item_destruction_line"
+        parent="REPLACE_WITH_PARENT_MENU_ID"
+        sequence="10"/>
+    -->
 
-    </data>
 </odoo>

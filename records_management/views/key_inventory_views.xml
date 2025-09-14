@@ -1,65 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
-        <!-- List View -->
-        <record id="key_inventory_view_tree" model="ir.ui.view">
-            <field name="name">key.inventory.view.tree</field>
-            <field name="model">key.inventory</field>
-        <field name="arch" type="xml">
-                <list string="Key Inventory">
-                    <field name="name"/>
-                    <field name="serial_number"/>
-                    <field name="location_id"/>
-                    <field name="assigned_to_id"/>
-                    <field name="status"/>
-                    <field name="active"/>
-                    <field name="company_id"/>
-                </list>
-            </field>
-        </record>
+    <!-- List View -->
+    <record id="key_inventory_view_tree" model="ir.ui.view">
+        <field name="name">key.inventory.view.tree</field>
+        <field name="model">key.inventory</field>
+    <field name="arch" type="xml">
+            <list string="Key Inventory">
+                <field name="name"/>
+                <field name="serial_number"/>
+                <field name="location_id"/>
+                <field name="assigned_to_id"/>
+                <field name="status"/>
+                <field name="active"/>
+                <field name="company_id"/>
+            </list>
+        </field>
+    </record>
 
-        <!-- Form View -->
-        <record id="key_inventory_view_form" model="ir.ui.view">
-            <field name="name">key.inventory.view.form</field>
-            <field name="model">key.inventory</field>
-        <field name="arch" type="xml">
-                <form string="Key Inventory">
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="serial_number"/>
-                            <field name="location_id"/>
-                            <field name="assigned_to_id"/>
-                            <field name="status"/>
-                            <field name="active"/>
-                            <field name="company_id"/>
-                            <field name="notes"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+    <!-- Form View -->
+    <record id="key_inventory_view_form" model="ir.ui.view">
+        <field name="name">key.inventory.view.form</field>
+        <field name="model">key.inventory</field>
+    <field name="arch" type="xml">
+            <form string="Key Inventory">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="serial_number"/>
+                        <field name="location_id"/>
+                        <field name="assigned_to_id"/>
+                        <field name="status"/>
+                        <field name="active"/>
+                        <field name="company_id"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <!-- Search View -->
-        <record id="key_inventory_view_search" model="ir.ui.view">
-            <field name="name">key.inventory.view.search</field>
-            <field name="model">key.inventory</field>
-        <field name="arch" type="xml">
-                <search string="Search Key Inventory">
-                    <field name="name"/>
-                    <field name="serial_number"/>
-                    <field name="status"/>
-                </search>
-            </field>
-        </record>
+    <!-- Search View -->
+    <record id="key_inventory_view_search" model="ir.ui.view">
+        <field name="name">key.inventory.view.search</field>
+        <field name="model">key.inventory</field>
+    <field name="arch" type="xml">
+            <search string="Search Key Inventory">
+                <field name="name"/>
+                <field name="serial_number"/>
+                <field name="status"/>
+            </search>
+        </field>
+    </record>
 
-        <!-- Action -->
-        <record id="action_key_inventory" model="ir.actions.act_window">
-            <field name="name">Key Inventory</field>
-            <field name="res_model">key.inventory</field>
-            <field name="view_mode">list,form</field>
-        </record>
+    <!-- Action -->
+    <record id="action_key_inventory" model="ir.actions.act_window">
+        <field name="name">Key Inventory</field>
+        <field name="res_model">key.inventory</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-    </data>
 </odoo>

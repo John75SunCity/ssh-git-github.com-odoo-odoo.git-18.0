@@ -1,60 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+
 <!-- List view for Minimal -->
 
-    <!-- List view for base.rate -->
-    <record id="records_tag_view_tree" model="ir.ui.view">
-        <field name="name">records.tag.view.tree</field>
-        <field name="model">records.tag</field>
-        <field name="arch" type="xml">
-            <list string="Records Tags">
-                <field name="name"/>
-                <field name="color"/>
-            </list>
-        </field>
-    </record>
+<!-- List view for base.rate -->
+<record id="records_tag_view_tree" model="ir.ui.view">
+    <field name="name">records.tag.view.tree</field>
+    <field name="model">records.tag</field>
+    <field name="arch" type="xml">
+        <list string="Records Tags">
+            <field name="name"/>
+            <field name="color"/>
+        </list>
+    </field>
+</record>
 
-    <!-- Form view for Simple -->
-    <record id="records_tag_view_form" model="ir.ui.view">
-        <field name="name">records.tag.view.form</field>
-        <field name="model">records.tag</field>
-        <field name="arch" type="xml">
-            <form string="Record Tag">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="color"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
+<!-- Form view for Simple -->
+<record id="records_tag_view_form" model="ir.ui.view">
+    <field name="name">records.tag.view.form</field>
+    <field name="model">records.tag</field>
+    <field name="arch" type="xml">
+        <form string="Record Tag">
+            <sheet>
+                <group>
+                    <field name="name"/>
+                    <field name="color"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
 
-    <!-- Search view for Simple -->
-    <record id="records_tag_view_search" model="ir.ui.view">
-        <field name="name">records.tag.view.search</field>
-        <field name="model">records.tag</field>
-        <field name="arch" type="xml">
-            <search string="Search Records Tags">
-                <field name="name"/>
-            </search>
-        </field>
-    </record>
+<!-- Search view for Simple -->
+<record id="records_tag_view_search" model="ir.ui.view">
+    <field name="name">records.tag.view.search</field>
+    <field name="model">records.tag</field>
+    <field name="arch" type="xml">
+        <search string="Search Records Tags">
+            <field name="name"/>
+        </search>
+    </field>
+</record>
 
-    <!-- List view for Simple -->
-    <record id="action_records_tag_simple" model="ir.actions.act_window">
-        <field name="name">Records Tags</field>
-        <field name="res_model">records.tag</field>
-        <field name="view_mode">list,form</field>
-        <field name="view_id" ref="records_tag_view_tree"/>
-        <field name="search_view_id" ref="records_tag_view_search"/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Create your first record tag!
-            </p>
-        </field>
-    </record>
-</data>
+<!-- List view for Simple -->
+<record id="action_records_tag_simple" model="ir.actions.act_window">
+    <field name="name">Records Tags</field>
+    <field name="res_model">records.tag</field>
+    <field name="view_mode">list,form</field>
+    <field name="view_id" ref="records_tag_view_tree"/>
+    <field name="search_view_id" ref="records_tag_view_search"/>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            Create your first record tag!
+        </p>
+    </field>
+</record>
 
 </odoo>

@@ -1,160 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-<!-- Document Retrieval Item List View -->
-    <record id="document_retrieval_item_view_tree" model="ir.ui.view">
-        <field name="name">document.retrieval.item.view.tree</field>
-        <field name="model">document.retrieval.item</field>
-        <field name="arch" type="xml">
-            <list decoration-danger="priority=='3'" decoration-warning="priority=='2'" decoration-muted="status=='not_found'">
-                <field name="priority" widget="priority" optional="show"/>
-                <field name="name"/>
-                <field name="item_type"/>
-                <field name="status" decoration-success="status=='delivered'" decoration-info="status=='retrieved'"/>
-                <field name="partner_id" optional="hide"/>
-                <field name="work_order_id" optional="hide"/>
-                <field name="retrieval_cost" optional="show" sum="Total Cost"/>
-                <field name="effective_priority" invisible="1"/>
-                <field name="sequence" invisible="1"/>
-            </list>
-        </field>
-    </record>
 
-    <!-- Document Retrieval Item Form View -->
-    <record id="document_retrieval_item_view_form" model="ir.ui.view">
-        <field name="name">document.retrieval.item.view.form</field>
-        <field name="model">document.retrieval.item</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                    <field name="priority" widget="priority" class="oe_read_only"/>
-                    <field name="status" widget="statusbar" statusbar_visible="pending,searching,located,retrieved,packaged,delivered"/>
+<!-- Document Retrieval Item List View -->
+<record id="document_retrieval_item_view_tree" model="ir.ui.view">
+    <field name="name">document.retrieval.item.view.tree</field>
+    <field name="model">document.retrieval.item</field>
+    <field name="arch" type="xml">
+        <list decoration-danger="priority=='3'" decoration-warning="priority=='2'" decoration-muted="status=='not_found'">
+            <field name="priority" widget="priority" optional="show"/>
+            <field name="name"/>
+            <field name="item_type"/>
+            <field name="status" decoration-success="status=='delivered'" decoration-info="status=='retrieved'"/>
+            <field name="partner_id" optional="hide"/>
+            <field name="work_order_id" optional="hide"/>
+            <field name="retrieval_cost" optional="show" sum="Total Cost"/>
+            <field name="effective_priority" invisible="1"/>
+            <field name="sequence" invisible="1"/>
+        </list>
+    </field>
+</record>
+
+<!-- Document Retrieval Item Form View -->
+<record id="document_retrieval_item_view_form" model="ir.ui.view">
+    <field name="name">document.retrieval.item.view.form</field>
+    <field name="model">document.retrieval.item</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+                <field name="priority" widget="priority" class="oe_read_only"/>
+                <field name="status" widget="statusbar" statusbar_visible="pending,searching,located,retrieved,packaged,delivered"/>
 <button name="action_locate_item" string="Locate Item" type="object" class="btn-primary"
 invisible="status != 'pending'"/>
-                    <button name="action_retrieve_item" string="Retrieve Item" type="object" class="btn-primary"
+                <button name="action_retrieve_item" string="Retrieve Item" type="object" class="btn-primary"
 invisible="status != 'located'"/>
-                    <button name="action_package_item" string="Package Item" type="object" class="btn-primary"
+                <button name="action_package_item" string="Package Item" type="object" class="btn-primary"
 invisible="status != 'retrieved'"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="name" placeholder="Item Reference"/>
-                        </h1>
-                        <field name="display_name" invisible="1"/>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="work_order_id"/>
-                            <field name="partner_id"/>
-                            <field name="item_type"/>
-                            <field name="priority" widget="priority"/>
-                            <field name="effective_priority" readonly="1"/>
-                        </group>
-                        <group>
-                            <field name="sequence"/>
-                            <field name="active"/>
-                            <field name="company_id"/>
-                            <field name="user_id"/>
-                        </group>
-                    </group>
-                    <!-- ...existing form content... -->
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+            </header>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name" placeholder="Item Reference"/>
+                    </h1>
+                    <field name="display_name" invisible="1"/>
                 </div>
-            </form>
-        </field>
-    </record>
-
-    <!-- Document Retrieval Item Search View -->
-    <record id="document_retrieval_item_view_search" model="ir.ui.view">
-        <field name="name">document.retrieval.item.view.search</field>
-        <field name="model">document.retrieval.item</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="work_order_id"/>
-                <field name="status"/>
-                <field name="priority"/>
-                <separator/>
-<filter name="high_priority" string="High Priority"
-                        domain="[('priority', 'in', ['2', '3'])]"/>
-<filter name="very_high_priority" string="Very High Priority"
-                        domain="[('priority', '=', '3')]"/>
-<filter name="pending_items" string="Pending"
-                        domain="[('status', '=', 'pending')]"/>
-<filter name="active_items" string="Active Items"
-                        domain="[('status', 'in', ['pending', 'searching', 'located', 'retrieved'])]"/>
-                <separator/>
-                <group expand="0" string="Group By">
-                    <filter name="group_priority" string="Priority" context="{'group_by': 'priority'}"/>
-                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
-                    <filter name="group_partner" string="Customer" context="{'group_by': 'partner_id'}"/>
-                    <filter name="group_work_order" string="Work Order" context="{'group_by': 'work_order_id'}"/>
+                <group>
+                    <group>
+                        <field name="work_order_id"/>
+                        <field name="partner_id"/>
+                        <field name="item_type"/>
+                        <field name="priority" widget="priority"/>
+                        <field name="effective_priority" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="sequence"/>
+                        <field name="active"/>
+                        <field name="company_id"/>
+                        <field name="user_id"/>
+                    </group>
                 </group>
-            </search>
-        </field>
-    </record>
+                <!-- ...existing form content... -->
+            </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids"/>
+                <field name="activity_ids"/>
+                <field name="message_ids"/>
+            </div>
+        </form>
+    </field>
+</record>
 
-    <!-- Document Retrieval Item Kanban View -->
-    <record id="document_retrieval_item_view_kanban" model="ir.ui.view">
-        <field name="name">document.retrieval.item.view.kanban</field>
-        <field name="model">document.retrieval.item</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="status" class="o_kanban_small_column">
-                <field name="priority"/>
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="status"/>
-                <field name="effective_priority"/>
-                <templates>
+<!-- Document Retrieval Item Search View -->
+<record id="document_retrieval_item_view_search" model="ir.ui.view">
+    <field name="name">document.retrieval.item.view.search</field>
+    <field name="model">document.retrieval.item</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="partner_id"/>
+            <field name="work_order_id"/>
+            <field name="status"/>
+            <field name="priority"/>
+            <separator/>
+<filter name="high_priority" string="High Priority"
+                    domain="[('priority', 'in', ['2', '3'])]"/>
+<filter name="very_high_priority" string="Very High Priority"
+                    domain="[('priority', '=', '3')]"/>
+<filter name="pending_items" string="Pending"
+                    domain="[('status', '=', 'pending')]"/>
+<filter name="active_items" string="Active Items"
+                    domain="[('status', 'in', ['pending', 'searching', 'located', 'retrieved'])]"/>
+            <separator/>
+            <group expand="0" string="Group By">
+                <filter name="group_priority" string="Priority" context="{'group_by': 'priority'}"/>
+                <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                <filter name="group_partner" string="Customer" context="{'group_by': 'partner_id'}"/>
+                <filter name="group_work_order" string="Work Order" context="{'group_by': 'work_order_id'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+
+<!-- Document Retrieval Item Kanban View -->
+<record id="document_retrieval_item_view_kanban" model="ir.ui.view">
+    <field name="name">document.retrieval.item.view.kanban</field>
+    <field name="model">document.retrieval.item</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="status" class="o_kanban_small_column">
+            <field name="priority"/>
+            <field name="name"/>
+            <field name="partner_id"/>
+            <field name="status"/>
+            <field name="effective_priority"/>
+            <templates>
 <t t-name="card">
-                        <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.priority.raw_value == '3' ? 'oe_kanban_card_danger' : record.priority.raw_value == '2' ? 'oe_kanban_card_warning' : ''}">
-                            <div class="o_kanban_content">
-                                <div class="o_kanban_record_top">
-                                    <div class="o_kanban_record_headings">
-                                        <strong class="o_kanban_record_title">
-                                            <field name="name"/>
-                                        </strong>
-                                    </div>
-                                    <div class="o_kanban_record_right">
-                                        <field name="priority" widget="priority"/>
-                                    </div>
+                    <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.priority.raw_value == '3' ? 'oe_kanban_card_danger' : record.priority.raw_value == '2' ? 'oe_kanban_card_warning' : ''}">
+                        <div class="o_kanban_content">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
                                 </div>
-                                <div class="o_kanban_record_body">
-                                    <field name="partner_id"/>
+                                <div class="o_kanban_record_right">
+                                    <field name="priority" widget="priority"/>
                                 </div>
-                                <div class="o_kanban_record_bottom">
-                                    <div class="oe_kanban_bottom_left">
-                                        <field name="effective_priority" invisible="1"/>
-                                    </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <field name="partner_id"/>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="effective_priority" invisible="1"/>
                                 </div>
                             </div>
                         </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
 
-    <!-- Action for Document Retrieval Items -->
-    <record id="action_document_retrieval_item" model="ir.actions.act_window">
-        <field name="name">Document Retrieval Items</field>
-        <field name="res_model">document.retrieval.item</field>
-        <field name="view_mode">list,kanban,form</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Create your first document retrieval item!
-            </p>
-            <p>
-                Manage individual items within document retrieval work orders with priority-based processing.
-            </p>
-        </field>
-    </record>
-</data>
+<!-- Action for Document Retrieval Items -->
+<record id="action_document_retrieval_item" model="ir.actions.act_window">
+    <field name="name">Document Retrieval Items</field>
+    <field name="res_model">document.retrieval.item</field>
+    <field name="view_mode">list,kanban,form</field>
+    <field name="context">{}</field>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            Create your first document retrieval item!
+        </p>
+        <p>
+            Manage individual items within document retrieval work orders with priority-based processing.
+        </p>
+    </field>
+</record>
+
 </odoo>

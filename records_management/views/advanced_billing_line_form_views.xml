@@ -1,98 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Form view for advanced.billing.line (simple version) -->
-<record id="advanced_billing_line_view_form" model="ir.ui.view">
-    <field name="name">advanced.billing.line.view.form</field>
-            <field name="priority">10</field>
-            <field name="model">advanced.billing.line</field>
-            <field name="arch" type="xml">
-                <form string="Advanced Billing Line">
-                    <sheet>
-                        <div class="oe_title">
-                            <label for="name"/>
-                            <h1>
-                                <field name="name"/>
-                            </h1>
-                        </div>
-                        <group>
-                            <group>
-                                <field name="type"/>
-                                <field name="product_id"/>
-                                <field name="billing_id"/>
-                                <field name="billing_profile_id"/>
-                            </group>
-                            <group>
-                                <field name="quantity"/>
-                                <field name="unit_price"/>
-                                <field name="amount"/>
-                                <field name="currency_id"/>
-                            </group>
-                        </group>
-                        <group>
-                            <group>
-                                <field name="discount"/>
-                                <field name="discount_amount"/>
-                                <field name="subtotal"/>
-                            </group>
-                            <group>
-                                <field name="sequence"/>
-                                <field name="active"/>
-                            </group>
-                        </group>
-                        <field name="notes"/>
-                    </sheet>
-                </form>
-            </field>
-        </record>
 
-        <!-- Form view for advanced.billing.line (detailed version) -->
+    <!-- Form view for advanced.billing.line (simple version) -->
+<record id="advanced_billing_line_view_form" model="ir.ui.view">
+<field name="name">advanced.billing.line.view.form</field>
+        <field name="priority">10</field>
+        <field name="model">advanced.billing.line</field>
+        <field name="arch" type="xml">
+            <form string="Advanced Billing Line">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type"/>
+                            <field name="product_id"/>
+                            <field name="billing_id"/>
+                            <field name="billing_profile_id"/>
+                        </group>
+                        <group>
+                            <field name="quantity"/>
+                            <field name="unit_price"/>
+                            <field name="amount"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="discount"/>
+                            <field name="discount_amount"/>
+                            <field name="subtotal"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Form view for advanced.billing.line (detailed version) -->
 <record id="advanced_billing_line_view_form_detailed" model="ir.ui.view">
-    <field name="name">advanced.billing.line.view.form.detailed</field>
-            <field name="priority">20</field>
-            <field name="model">advanced.billing.line</field>
-            <field name="arch" type="xml">
-                <form string="Advanced Billing Line">
-                    <header>
-                        <field name="active" widget="boolean_toggle"/>
-                    </header>
-                    <sheet>
-                        <div class="oe_title">
-                            <label for="name"/>
-                            <h1>
-                                <field name="name"/>
-                            </h1>
-                        </div>
-                        <group>
-                            <group string="Basic Information">
-                                <field name="type"/>
-                                <field name="sequence"/>
-                                <field name="product_id"/>
-                            </group>
-                            <group string="Billing References">
-                                <field name="billing_id"/>
-                                <field name="billing_profile_id"/>
-                            </group>
+<field name="name">advanced.billing.line.view.form.detailed</field>
+        <field name="priority">20</field>
+        <field name="model">advanced.billing.line</field>
+        <field name="arch" type="xml">
+            <form string="Advanced Billing Line">
+                <header>
+                    <field name="active" widget="boolean_toggle"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Basic Information">
+                            <field name="type"/>
+                            <field name="sequence"/>
+                            <field name="product_id"/>
                         </group>
-                        <group>
-                            <group string="Pricing">
-                                <field name="quantity"/>
-                                <field name="unit_price"/>
-                                <field name="amount"/>
-                                <field name="currency_id"/>
-                            </group>
-                            <group string="Discounts">
-                                <field name="discount"/>
-                                <field name="discount_amount"/>
-                                <field name="subtotal"/>
-                            </group>
+                        <group string="Billing References">
+                            <field name="billing_id"/>
+                            <field name="billing_profile_id"/>
                         </group>
-                        <group string="Additional Information">
-                            <field name="notes" colspan="4"/>
+                    </group>
+                    <group>
+                        <group string="Pricing">
+                            <field name="quantity"/>
+                            <field name="unit_price"/>
+                            <field name="amount"/>
+                            <field name="currency_id"/>
                         </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-    </data>
+                        <group string="Discounts">
+                            <field name="discount"/>
+                            <field name="discount_amount"/>
+                            <field name="subtotal"/>
+                        </group>
+                    </group>
+                    <group string="Additional Information">
+                        <field name="notes" colspan="4"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
 </odoo>

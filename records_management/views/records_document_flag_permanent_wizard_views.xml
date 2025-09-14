@@ -1,63 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Flag Document as Permanent Wizard Form View -->
-        <record id="records_document_flag_permanent_wizard_view_form" model="ir.ui.view">
-<field name="name">records.document.flag.permanent.wizard.view.form</field>
-            <field name="model">records.document.flag.permanent.wizard</field>
-        <field name="arch" type="xml">
-                <form string="Flag Document as Permanent">
-                    <div class="alert alert-warning" role="alert">
-                        <strong>Warning:</strong> Flagging a document as permanent will exempt it from all destruction policies.
-                        This action should only be used for documents with legal, historical, or business critical value.
-                    </div>
 
-                    <group>
-                        <group string="Document Information">
+    <!-- Flag Document as Permanent Wizard Form View -->
+    <record id="records_document_flag_permanent_wizard_view_form" model="ir.ui.view">
+<field name="name">records.document.flag.permanent.wizard.view.form</field>
+        <field name="model">records.document.flag.permanent.wizard</field>
+    <field name="arch" type="xml">
+            <form string="Flag Document as Permanent">
+                <div class="alert alert-warning" role="alert">
+                    <strong>Warning:</strong> Flagging a document as permanent will exempt it from all destruction policies.
+                    This action should only be used for documents with legal, historical, or business critical value.
+                </div>
+
+                <group>
+                    <group string="Document Information">
 <field name="document_id" invisible="document_id != False"/>
 
 
-                            <field name="document_name" readonly="1"/>
-                            <field name="document_reference" readonly="1"/>
-                            <field name="current_state" readonly="1"/>
-                        </group>
+                        <field name="document_name" readonly="1"/>
+                        <field name="document_reference" readonly="1"/>
+                        <field name="current_state" readonly="1"/>
                     </group>
+                </group>
 
-                    <group string="Permanent Flag Details">
-                        <field name="permanent_reason"
+                <group string="Permanent Flag Details">
+                    <field name="permanent_reason"
 placeholder="State the reason (e.g., legal, historical, business value)"
-                               required="1"/>
-                    </group>
+                           required="1"/>
+                </group>
 
-                    <group>
-                        <field name="confirm_action"
-                               string="I confirm this document should be flagged as permanent"
+                <group>
+                    <field name="confirm_action"
+                           string="I confirm this document should be flagged as permanent"
 widget="boolean_toggle"
-                               required="1"/>
-                    </group>
+                           required="1"/>
+                </group>
 
-                    <footer>
-                        <button name="action_flag_permanent"
-                                string="Flag as Permanent"
-                                type="object"
+                <footer>
+                    <button name="action_flag_permanent"
+                            string="Flag as Permanent"
+                            type="object"
 confirm="Are you sure you want to flag this document as permanent? This action cannot be easily undone and can only be reversed by an administrator."/>
-                                confirm="Are you sure you want to flag this document as permanent? This action cannot be easily undone."/>
-                        <button name="action_cancel"
-                                string="Cancel"
-                                type="object"
+                            confirm="Are you sure you want to flag this document as permanent? This action cannot be easily undone."/>
+                    <button name="action_cancel"
+                            string="Cancel"
+                            type="object"
 class="btn-outline-secondary"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+                </footer>
+            </form>
+        </field>
+    </record>
 
-        <!-- Action for the Wizard -->
-        <record id="records_document_flag_permanent_wizard_action" model="ir.actions.act_window">
-            <field name="name">Flag Document as Permanent</field>
-            <field name="res_model">records.document.flag.permanent.wizard</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-            <field name="view_id" ref="records_document_flag_permanent_wizard_view_form"/>
-        </record>
-    </data>
+    <!-- Action for the Wizard -->
+    <record id="records_document_flag_permanent_wizard_action" model="ir.actions.act_window">
+        <field name="name">Flag Document as Permanent</field>
+        <field name="res_model">records.document.flag.permanent.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="records_document_flag_permanent_wizard_view_form"/>
+    </record>
+
 </odoo>

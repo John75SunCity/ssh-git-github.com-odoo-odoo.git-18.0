@@ -1,99 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Document Retrieval Team Views - Simplified for functionality -->
 
-        <!-- Inherited List View: add specialization column -->
-        <record id="document_retrieval_team_view_tree" model="ir.ui.view">
-            <field name="name">maintenance.team.view.tree.inherit.retrieval</field>
-            <field name="model">maintenance.team</field>
-            <field name="inherit_id" ref="maintenance.maintenance_team_view_tree"/>
-            <field name="arch" type="xml">
-                <xpath expr="//tree" position="inside">
-                    <field name="specialization" optional="show"/>
-                </xpath>
-            </field>
-        </record>
+    <!-- Document Retrieval Team Views - Simplified for functionality -->
 
-        <!-- Inherited Form View: add retrieval specialization fields -->
-        <record id="document_retrieval_team_view_form" model="ir.ui.view">
-            <field name="name">maintenance.team.view.form.inherit.retrieval</field>
-            <field name="model">maintenance.team</field>
-            <field name="inherit_id" ref="maintenance.maintenance_team_view_form"/>
-            <field name="arch" type="xml">
-                <!-- Add specialization and NAID certification -->
-                <xpath expr="//sheet" position="inside">
-                    <group string="Document Retrieval Configuration" name="retrieval_config">
-                        <group>
-                            <field name="specialization"/>
-                            <field name="naid_certified"/>
-                            <field name="certification_level" attrs="{'invisible': [('naid_certified', '=', False)]}"/>
-                        </group>
-                        <group>
-                            <field name="average_response_time" readonly="1"/>
-                            <field name="average_resolution_time" readonly="1"/>
-                            <field name="records_department_id"/>
-                        </group>
+    <!-- Inherited List View: add specialization column -->
+    <record id="document_retrieval_team_view_tree" model="ir.ui.view">
+        <field name="name">maintenance.team.view.tree.inherit.retrieval</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref="maintenance.maintenance_team_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="specialization" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherited Form View: add retrieval specialization fields -->
+    <record id="document_retrieval_team_view_form" model="ir.ui.view">
+        <field name="name">maintenance.team.view.form.inherit.retrieval</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref="maintenance.maintenance_team_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Add specialization and NAID certification -->
+            <xpath expr="//sheet" position="inside">
+                <group string="Document Retrieval Configuration" name="retrieval_config">
+                    <group>
+                        <field name="specialization"/>
+                        <field name="naid_certified"/>
+                        <field name="certification_level" attrs="{'invisible': [('naid_certified', '=', False)]}"/>
                     </group>
-                </xpath>
+                    <group>
+                        <field name="average_response_time" readonly="1"/>
+                        <field name="average_resolution_time" readonly="1"/>
+                        <field name="records_department_id"/>
+                    </group>
+                </group>
+            </xpath>
 
-                <!-- Add service locations notebook page -->
-                <xpath expr="//sheet" position="inside">
-                    <notebook name="retrieval_team_notebook">
-                        <page string="Service Locations" name="service_locations">
-                            <field name="service_location_ids" nolabel="1">
-                                <tree editable="bottom">
-                                    <field name="name"/>
-                                    <field name="address"/>
-                                    <field name="location_type"/>
-                                    <field name="active"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Maintenance Requests" name="maintenance_requests">
-                            <field name="maintenance_request_ids" nolabel="1">
-                                <tree create="false" edit="false">
-                                    <field name="name"/>
-                                    <field name="equipment_id"/>
-                                    <field name="request_date"/>
-                                    <field name="stage_id"/>
-                                    <field name="priority" widget="priority"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
-                </xpath>
-            </field>
-        </record>
+            <!-- Add service locations notebook page -->
+            <xpath expr="//sheet" position="inside">
+                <notebook name="retrieval_team_notebook">
+                    <page string="Service Locations" name="service_locations">
+                        <field name="service_location_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="address"/>
+                                <field name="location_type"/>
+                                <field name="active"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Maintenance Requests" name="maintenance_requests">
+                        <field name="maintenance_request_ids" nolabel="1">
+                            <tree create="false" edit="false">
+                                <field name="name"/>
+                                <field name="equipment_id"/>
+                                <field name="request_date"/>
+                                <field name="stage_id"/>
+                                <field name="priority" widget="priority"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
 
-        <!-- Inherited Kanban View: add specialization -->
-        <record id="document_retrieval_team_view_kanban" model="ir.ui.view">
-            <field name="name">maintenance.team.view.kanban.inherit.retrieval</field>
-            <field name="model">maintenance.team</field>
-            <field name="inherit_id" ref="maintenance.maintenance_team_view_kanban"/>
-            <field name="arch" type="xml">
-                <xpath expr="//kanban" position="inside">
-                    <field name="specialization"/>
-                    <field name="naid_certified"/>
-                </xpath>
-            </field>
-        </record>
+    <!-- Inherited Kanban View: add specialization -->
+    <record id="document_retrieval_team_view_kanban" model="ir.ui.view">
+        <field name="name">maintenance.team.view.kanban.inherit.retrieval</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref="maintenance.maintenance_team_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="inside">
+                <field name="specialization"/>
+                <field name="naid_certified"/>
+            </xpath>
+        </field>
+    </record>
 
-        <!-- Inherited Search View: add retrieval filters -->
-        <record id="document_retrieval_team_view_search" model="ir.ui.view">
-            <field name="name">maintenance.team.view.search.inherit.retrieval</field>
-            <field name="model">maintenance.team</field>
-            <field name="inherit_id" ref="maintenance.maintenance_team_view_search"/>
-            <field name="arch" type="xml">
-                <xpath expr="//search" position="inside">
-                    <field name="specialization"/>
-                    <separator/>
-                    <filter name="naid_certified" string="NAID Certified" domain="[('naid_certified','=',True)]"/>
-                    <filter name="shredding_teams" string="Shredding Teams" domain="[('specialization','=','shredding')]"/>
-                    <filter name="baling_teams" string="Baling Teams" domain="[('specialization','=','baling')]"/>
-                    <filter name="vehicle_teams" string="Vehicle Teams" domain="[('specialization','=','vehicles')]"/>
-                </xpath>
-            </field>
-        </record>
-    </data>
+    <!-- Inherited Search View: add retrieval filters -->
+    <record id="document_retrieval_team_view_search" model="ir.ui.view">
+        <field name="name">maintenance.team.view.search.inherit.retrieval</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref="maintenance.maintenance_team_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="specialization"/>
+                <separator/>
+                <filter name="naid_certified" string="NAID Certified" domain="[('naid_certified','=',True)]"/>
+                <filter name="shredding_teams" string="Shredding Teams" domain="[('specialization','=','shredding')]"/>
+                <filter name="baling_teams" string="Baling Teams" domain="[('specialization','=','baling')]"/>
+                <filter name="vehicle_teams" string="Vehicle Teams" domain="[('specialization','=','vehicles')]"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

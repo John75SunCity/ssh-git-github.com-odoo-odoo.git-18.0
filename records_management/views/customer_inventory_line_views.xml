@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
-        <record id="customer_inventory_line_view_tree" model="ir.ui.view">
-            <field name="name">customer.inventory.line.view.tree</field>
-            <field name="model">customer.inventory.line</field>
-        <field name="arch" type="xml">
-                <list string="Customer Inventory Line">
+    <record id="customer_inventory_line_view_tree" model="ir.ui.view">
+        <field name="name">customer.inventory.line.view.tree</field>
+        <field name="model">customer.inventory.line</field>
+    <field name="arch" type="xml">
+            <list string="Customer Inventory Line">
 <field name="container_id"/>
 <field name="location_id"/>
 <field name="file_count"/>
@@ -19,17 +18,17 @@
 <field name="variance_amount"/>
 <field name="variance_percentage"/>
 
-                </list>
-            </field>
-        </record>
+            </list>
+        </field>
+    </record>
 
-        <record id="customer_inventory_line_view_form" model="ir.ui.view">
-            <field name="name">customer.inventory.line.view.form</field>
-            <field name="model">customer.inventory.line</field>
-        <field name="arch" type="xml">
-                <form string="Customer Inventory Line">
-                    <sheet>
-                        <group>
+    <record id="customer_inventory_line_view_form" model="ir.ui.view">
+        <field name="name">customer.inventory.line.view.form</field>
+        <field name="model">customer.inventory.line</field>
+    <field name="arch" type="xml">
+            <form string="Customer Inventory Line">
+                <sheet>
+                    <group>
 <field name="inventory_id"/>
 <field name="container_id"/>
 <field name="location_id"/>
@@ -48,17 +47,16 @@
 <field name="container_type_id"/>
 <field name="department_id"/>
 
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <record id="action_customer_inventory_line" model="ir.actions.act_window">
-            <field name="name">Customer Inventory Line</field>
-            <field name="res_model">customer.inventory.line</field>
-            <field name="view_mode">list,form</field>
-        </record>
+    <record id="action_customer_inventory_line" model="ir.actions.act_window">
+        <field name="name">Customer Inventory Line</field>
+        <field name="res_model">customer.inventory.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-    </data>
 </odoo>

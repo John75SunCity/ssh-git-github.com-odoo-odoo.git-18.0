@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
+
 <!-- ========================================== -->
 <!-- ACTION DEFINITIONS (Must come first) -->
 <!-- ========================================== -->
 
 <!-- Records Container Action Definition -->
 <record id="action_records_container" model="ir.actions.act_window">
-    <field name="name">Storage Containers</field>
-    <field name="res_model">records.container</field>
-        <field name="view_mode">list,kanban,form,calendar,graph</field>
-    <field name="context">{
-                'search_default_stored': 1,
-                'search_default_active': 1
-            }</field>
-    <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-                    Create your first storage container!
-        </p>
-        <p>
-            <b>Enterprise Container Management:</b>
-            <br/>
-                    • Visual kanban boards for container tracking<br/>
-                    • Automated barcode generation and printing<br/>
-                    • QR code generation for mobile scanning<br/>
-                    • Real-time location tracking with movement history<br/>
-                    • Document association and content management<br/>
-                    • Service request integration and workflows<br/>
-                    • Advanced analytics and reporting<br/>
-                    • Mobile-optimized for warehouse operations
+<field name="name">Storage Containers</field>
+<field name="res_model">records.container</field>
+    <field name="view_mode">list,kanban,form,calendar,graph</field>
+<field name="context">{
+            'search_default_stored': 1,
+            'search_default_active': 1
+        }</field>
+<field name="help" type="html">
+    <p class="o_view_nocontent_smiling_face">
+                Create your first storage container!
+    </p>
+    <p>
+        <b>Enterprise Container Management:</b>
+        <br/>
+                • Visual kanban boards for container tracking<br/>
+                • Automated barcode generation and printing<br/>
+                • QR code generation for mobile scanning<br/>
+                • Real-time location tracking with movement history<br/>
+                • Document association and content management<br/>
+                • Service request integration and workflows<br/>
+                • Advanced analytics and reporting<br/>
+                • Mobile-optimized for warehouse operations
 </p>
 </field>
 </record>
 
 <!-- Records Document Action Definition -->
 <record id="action_records_document" model="ir.actions.act_window">
-    <field name="name">Documents</field>
-    <field name="res_model">records.document</field>
-        <field name="view_mode">list,form</field>
-    <field name="context">{
-                'search_default_active': 1
-            }</field>
-    <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-                    Manage your document records!
-        </p>
-        <p>
-            <b>Document Management:</b>
-            <br/>
-                    • Track document lifecycle and status<br/>
-                    • Associate documents with containers<br/>
-                    • Manage retention policies<br/>
-                    • Generate compliance reports<br/>
-                    • Mobile document scanning
+<field name="name">Documents</field>
+<field name="res_model">records.document</field>
+    <field name="view_mode">list,form</field>
+<field name="context">{
+            'search_default_active': 1
+        }</field>
+<field name="help" type="html">
+    <p class="o_view_nocontent_smiling_face">
+                Manage your document records!
+    </p>
+    <p>
+        <b>Document Management:</b>
+        <br/>
+                • Track document lifecycle and status<br/>
+                • Associate documents with containers<br/>
+                • Manage retention policies<br/>
+                • Generate compliance reports<br/>
+                • Mobile document scanning
 </p>
 </field>
 </record>
@@ -214,8 +214,8 @@
 <!-- ========================================== -->
 
 <menuitem id="menu_records_reporting" name="Reports" parent="menu_records_management_root" sequence="40" groups="records_management.group_records_user"/>
-        <!-- Added intermediate Reports parent referenced elsewhere as records_management.menu_reports -->
-        <menuitem id="menu_reports" name="Reporting Hub" parent="menu_records_reporting" sequence="41" groups="records_management.group_records_user"/>
+    <!-- Added intermediate Reports parent referenced elsewhere as records_management.menu_reports -->
+    <menuitem id="menu_reports" name="Reporting Hub" parent="menu_records_reporting" sequence="41" groups="records_management.group_records_user"/>
 
 <!-- Temporarily commented out menuitems with missing actions -->
 <menuitem id="menu_records_reports" name="Storage Reports" parent="menu_records_reporting" action="action_storage_reports" sequence="10" groups="records_management.group_records_user"/>
@@ -243,8 +243,8 @@
 <!-- CONFIGURATION MENU (Level 1) -->
 <!-- ========================================== -->
 <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="90" groups="records_management.group_records_manager"/>
-        <!-- Master Data Sub-Menu -->
-        <menuitem id="menu_records_master_data" name="Master Data" parent="menu_records_configuration" sequence="10" groups="records_management.group_records_manager"/>
+    <!-- Master Data Sub-Menu -->
+    <menuitem id="menu_records_master_data" name="Master Data" parent="menu_records_configuration" sequence="10" groups="records_management.group_records_manager"/>
 <!-- Temporarily commented out menuitems with missing actions -->
 <menuitem id="menu_records_location" name="Storage Locations" parent="menu_records_master_data" action="action_records_location" sequence="10" groups="records_management.group_records_manager"/>
 <menuitem id="menu_records_document_type" name="Document Types" parent="menu_records_master_data" action="action_records_document_type" sequence="20" groups="records_management.group_records_manager"/>
@@ -252,7 +252,7 @@
 <menuitem id="menu_records_departments" name="Records Departments" parent="menu_records_master_data" action="action_records_department" sequence="40" groups="records_management.group_records_manager"/>
 
 <!-- Products &amp; Services Sub-Menu -->
-        <menuitem id="menu_records_products" name="Products &amp; Services" parent="menu_records_configuration" sequence="20" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_records_products" name="Products &amp; Services" parent="menu_records_configuration" sequence="20" groups="records_management.group_records_manager"/>
 <!-- Temporarily commented out menuitems with missing actions -->
 <menuitem id="menu_records_products_list" name="Service Products" parent="menu_records_products" action="product.product_template_action" sequence="10" groups="records_management.group_records_manager"/>
 <menuitem id="menu_records_product_variants" name="Product Variants" parent="menu_records_products" action="product.product_normal_action" sequence="20" groups="records_management.group_records_manager"/>
@@ -260,8 +260,8 @@
 <!-- Department Billing Contacts -->
 <!-- <menuitem id="menu_department_billing_contacts" name="Department Billing Contacts" parent="menu_records_configuration" action="action_department_billing_contacts" sequence="25" groups="records_management.group_records_manager"/> -->
 
-        <!-- Security &amp; Access Sub-Menu -->
-        <menuitem id="menu_records_security" name="Security &amp; Access" parent="menu_records_configuration" sequence="30" groups="records_management.group_records_manager"/>
+    <!-- Security &amp; Access Sub-Menu -->
+    <menuitem id="menu_records_security" name="Security &amp; Access" parent="menu_records_configuration" sequence="30" groups="records_management.group_records_manager"/>
 <!-- Temporarily commented out menuitems with missing actions -->
 <menuitem id="menu_bin_key_management" name="Bin Key Management" parent="menu_records_security" action="action_bin_key_management" sequence="10" groups="records_management.group_records_manager"/>
 <menuitem id="menu_bin_keys" name="Physical Bin Keys" parent="menu_records_security" action="action_bin_key" sequence="20" groups="records_management.group_records_manager"/>
@@ -306,8 +306,8 @@
 <!-- <menuitem id="menu_service_item_portal_requests" name="Portal Requests" parent="menu_service_item_portal" action="records_management.action_portal_service_requests" sequence="10" groups="records_management.group_records_manager"/> -->
 <!-- <menuitem id="menu_service_item_self_service" name="Self-Service Setup" parent="menu_service_item_portal" action="records_management.action_service_item_self_service" sequence="15" groups="records_management.group_records_manager"/> -->
 
-        <!-- System Configuration Sub-Menu -->
-        <menuitem id="menu_system_config" name="System Configuration" parent="menu_records_configuration" sequence="40" groups="records_management.group_records_manager"/>
+    <!-- System Configuration Sub-Menu -->
+    <menuitem id="menu_system_config" name="System Configuration" parent="menu_records_configuration" sequence="40" groups="records_management.group_records_manager"/>
 <!-- Temporarily commented out menuitems with missing actions -->
 <!-- <menuitem id="menu_rm_module_configurator" name="RM Module Configurator" parent="menu_system_config" action="action_rm_module_configurator" sequence="10" groups="records_management.group_records_manager"/> -->
 <!-- <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="menu_system_config" action="action_field_label_customization" sequence="20" groups="records_management.group_records_manager"/> -->
@@ -315,8 +315,5 @@
 <!-- <menuitem id="menu_mobile_settings" name="Mobile Settings" parent="menu_system_config" action="action_mobile_settings" sequence="30" groups="records_management.group_records_manager"/> -->
 <!-- <menuitem id="menu_enhanced_fsm_integration" name="Enhanced FSM Integration" parent="menu_system_config" action="action_enhanced_fsm_integration" sequence="40" groups="records_management.group_records_manager"/> -->
 <!-- <menuitem id="menu_mobile_fsm_integration" name="Mobile FSM Integration" parent="menu_system_config" action="action_mobile_fsm_integration" sequence="50" groups="records_management.group_records_manager"/> -->
-
-
-</data>
 
 </odoo>

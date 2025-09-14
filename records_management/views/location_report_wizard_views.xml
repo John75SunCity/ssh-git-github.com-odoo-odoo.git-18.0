@@ -1,82 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <data>
 <!-- List view for location.report.wizard -->
-    <record id="location_report_wizard_view_tree" model="ir.ui.view">
-        <field name="name">location.report.wizard.view.tree</field>
-        <field name="model">location.report.wizard</field>
-        <field name="arch" type="xml">
-            <list>
+<record id="location_report_wizard_view_tree" model="ir.ui.view">
+    <field name="name">location.report.wizard.view.tree</field>
+    <field name="model">location.report.wizard</field>
+    <field name="arch" type="xml">
+        <list>
 <field name="location_id"/>
 <field name="include_child_locations"/>
 <field name="report_date"/>
 <field name="company_id"/>
 
-            </list>
-        </field>
-    </record>
+        </list>
+    </field>
+</record>
 
-    <!-- Form view for location.report.wizard -->
-    <record id="location_report_wizard_view_form" model="ir.ui.view">
-        <field name="name">location.report.wizard.view.form</field>
-        <field name="model">location.report.wizard</field>
-        <field name="arch" type="xml">
+<!-- Form view for location.report.wizard -->
+<record id="location_report_wizard_view_form" model="ir.ui.view">
+    <field name="name">location.report.wizard.view.form</field>
+    <field name="model">location.report.wizard</field>
+    <field name="arch" type="xml">
 <form string="Location Report Wizard">
-                <sheet>
-                    <div class="oe_title">
+            <sheet>
+                <div class="oe_title">
 <h1><i class="fa fa-bar-chart"/> Location Utilization Report</h1>
-                    </div>
+                </div>
 <group>
 <group string="Location Selection">
-        <field name="location_id"/>
-        <field name="include_child_locations"/>
-    </group>
-<group string="Report Settings">
-        <field name="report_date"/>
-        <field name="company_id"/>
-    </group>
+    <field name="location_id"/>
+    <field name="include_child_locations"/>
 </group>
-                </sheet>
+<group string="Report Settings">
+    <field name="report_date"/>
+    <field name="company_id"/>
+</group>
+</group>
+            </sheet>
 <footer>
 <button name="action_print_report" type="object" string="Generate Report" class="btn-primary"/>
 
-    <button string="Cancel" class="btn-secondary" special="cancel"/>
+<button string="Cancel" class="btn-secondary" special="cancel"/>
 </footer>
-            </form>
-        </field>
-    </record>
+        </form>
+    </field>
+</record>
 
-    <!-- Search view for location.report.wizard -->
-    <record id="location_report_wizard_view_search" model="ir.ui.view">
-        <field name="name">location.report.wizard.view.search</field>
-        <field name="model">location.report.wizard</field>
-        <field name="arch" type="xml">
-            <search>
+<!-- Search view for location.report.wizard -->
+<record id="location_report_wizard_view_search" model="ir.ui.view">
+    <field name="name">location.report.wizard.view.search</field>
+    <field name="model">location.report.wizard</field>
+    <field name="arch" type="xml">
+        <search>
 <field name="location_id"/>
 <field name="company_id"/>
 
-                <group expand="1" string="Group By">
+            <group expand="1" string="Group By">
 <filter string="Location" name="location_id" domain="[]" context="{'group_by':'location_id'}"/>
 <filter string="Company" name="company_id" domain="[]" context="{'group_by':'company_id'}"/>
 
-                </group>
-            </search>
-        </field>
-    </record>
+            </group>
+        </search>
+    </field>
+</record>
 
-    <!-- Action for location.report.wizard -->
-    <record id="action_location_report_wizard" model="ir.actions.act_window">
+<!-- Action for location.report.wizard -->
+<record id="action_location_report_wizard" model="ir.actions.act_window">
 <field name="name">Location Report Wizard</field>
-        <field name="res_model">location.report.wizard</field>
+    <field name="res_model">location.report.wizard</field>
 <field name="view_mode">form</field>
 <field name="target">new</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
 Generate location utilization reports.
-            </p>
-        </field>
-    </record>
-</data>
+        </p>
+    </field>
+</record>
 
 </odoo>

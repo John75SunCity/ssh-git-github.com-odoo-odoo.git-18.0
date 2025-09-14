@@ -1,62 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <data>
 <!-- View mobile.photo View Tree -->
 <record id="mobile_photo_view_tree" model="ir.ui.view">
-    <field name="name">mobile.photo.view.tree</field>
-        <field name="model">mobile.photo</field>
-        <field name="arch" type="xml">
+<field name="name">mobile.photo.view.tree</field>
+    <field name="model">mobile.photo</field>
+    <field name="arch" type="xml">
 <list>
-                <field name="name"/>
+            <field name="name"/>
 </list>
-        </field>
-    </record>
+    </field>
+</record>
 
-    <!-- View mobile.photo form -->
-    <record id="mobile_photo_view_form" model="ir.ui.view">
-        <field name="name">mobile.photo.view.form</field>
-        <field name="model">mobile.photo</field>
-        <field name="arch" type="xml">
-            <form string="Mobile Photo">
-                <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Name..."/>
-                        </h1>
-                    </div>
-                </sheet>
-            </form>
-        </field>
-    </record>
+<!-- View mobile.photo form -->
+<record id="mobile_photo_view_form" model="ir.ui.view">
+    <field name="name">mobile.photo.view.form</field>
+    <field name="model">mobile.photo</field>
+    <field name="arch" type="xml">
+        <form string="Mobile Photo">
+            <sheet>
+                <div class="oe_title">
+                    <label for="name"/>
+                    <h1>
+                        <field name="name" placeholder="Name..."/>
+                    </h1>
+                </div>
+            </sheet>
+        </form>
+    </field>
+</record>
 
-    <!-- View mobile.photo search -->
-    <record id="mobile_photo_view_search" model="ir.ui.view">
-        <field name="name">mobile.photo.view.search</field>
-        <field name="model">mobile.photo</field>
-        <field name="arch" type="xml">
-            <search>
-                <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+<!-- View mobile.photo search -->
+<record id="mobile_photo_view_search" model="ir.ui.view">
+    <field name="name">mobile.photo.view.search</field>
+    <field name="model">mobile.photo</field>
+    <field name="arch" type="xml">
+        <search>
+            <group expand="1" string="Group By">
+                <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+            </group>
+        </search>
+    </field>
+</record>
 
-    <!-- Action mobile.photo -->
-    <record id="action_mobile_photo" model="ir.actions.act_window">
-        <field name="name">Mobile Photo</field>
-        <field name="res_model">mobile.photo</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Mobile Photo.
-            </p>
-        </field>
-    </record>
-</data>
+<!-- Action mobile.photo -->
+<record id="action_mobile_photo" model="ir.actions.act_window">
+    <field name="name">Mobile Photo</field>
+    <field name="res_model">mobile.photo</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+            There is no examples click here to add new Mobile Photo.
+        </p>
+    </field>
+</record>
 
 </odoo>

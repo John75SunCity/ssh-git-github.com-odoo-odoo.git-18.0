@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Minimal res.partner extension for Records Management -->
-        <!-- This view can be extended later if records-specific partner fields are needed -->
-    </data>
+
+    <!-- Minimal res.partner extension for Records Management -->
+    <!-- This view can be extended later if records-specific partner fields are needed -->
+
 </odoo>
