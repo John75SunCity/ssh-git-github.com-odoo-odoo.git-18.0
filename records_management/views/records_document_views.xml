@@ -248,7 +248,7 @@
         <field name="file_format" />
         <field name="resolution" />
         <field name="file_size" />
-        <field name="storage_location" />
+        <field name="scan_quality" />
 
                                 </list>
                             </field>
