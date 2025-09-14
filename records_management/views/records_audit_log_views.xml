@@ -8,12 +8,17 @@
         <field name="model">records.audit.log</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
+                <field name="description"/>
+                <field name="event_type"/>
+                <field name="user_id"/>
+                <field name="timestamp"/>
+                <field name="res_model"/>
+                <field name="res_name"/>
             </list>
         </field>
     </record>
 
-    <!-- Form view for base.rate -->
+    <!-- Form view for records.audit.log -->
     <record id="records_audit_log_view_form" model="ir.ui.view">
         <field name="name">records.audit.log.view.form</field>
         <field name="model">records.audit.log</field>
@@ -21,24 +26,42 @@
             <form string="Records Audit Log">
                 <sheet>
                     <div class="oe_title">
-                        <label for="name"/>
+                        <label for="description"/>
                         <h1>
-                            <field name="name" placeholder="Name..."/>
+                            <field name="description" placeholder="Description..."/>
                         </h1>
                     </div>
+                    <group>
+                        <group>
+                            <field name="event_type"/>
+                            <field name="user_id"/>
+                            <field name="timestamp"/>
+                        </group>
+                        <group>
+                            <field name="res_model"/>
+                            <field name="res_name"/>
+                            <field name="ip_address"/>
+                        </group>
+                    </group>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- Search view for base.rate -->
+    <!-- Search view for records.audit.log -->
     <record id="records_audit_log_view_search" model="ir.ui.view">
         <field name="name">records.audit.log.view.search</field>
         <field name="model">records.audit.log</field>
         <field name="arch" type="xml">
             <search>
+                <field name="description"/>
+                <field name="event_type"/>
+                <field name="user_id"/>
+                <field name="res_model"/>
                 <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+                    <filter string="Event Type" name="event_type" domain="[]" context="{'group_by':'event_type'}"/>
+                    <filter string="User" name="user_id" domain="[]" context="{'group_by':'user_id'}"/>
+                    <filter string="Model" name="res_model" domain="[]" context="{'group_by':'res_model'}"/>
                 </group>
             </search>
         </field>

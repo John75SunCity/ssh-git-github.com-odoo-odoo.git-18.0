@@ -3,8 +3,8 @@
 
 
 
-    
-    
+
+
     <data><record id="processing_log_resolution_wizard_view_form" model="ir.ui.view">
         <field name="name">processing.log.resolution.wizard.view.form</field>
         <field name="model">processing.log.resolution.wizard</field>
@@ -28,7 +28,7 @@
         </field>
     </record>
 
-    
+
     <record id="scan_digital_asset_view_tree" model="ir.ui.view">
         <field name="name">scan.digital.asset.view.tree</field>
         <field name="model">scan.digital.asset</field>
@@ -62,7 +62,7 @@
         </field>
     </record>
 
-    
+
     <record id="serial_number_view_tree" model="ir.ui.view">
         <field name="name">serial.number.view.tree</field>
         <field name="model">serial.number</field>
@@ -96,7 +96,7 @@
         </field>
     </record>
 
-    
+
     <record id="route_optimizer_view_tree" model="ir.ui.view">
         <field name="name">route.optimizer.view.tree</field>
         <field name="model">route.optimizer</field>
@@ -132,7 +132,7 @@
         </field>
     </record>
 
-    
+
     <record id="document_retrieval_item_view_tree" model="ir.ui.view">
         <field name="name">document.retrieval.item.view.tree</field>
         <field name="model">document.retrieval.item</field>
@@ -166,45 +166,45 @@
         </field>
     </record>
 
-    
-    <record id="records_audit_log_view_tree" model="ir.ui.view">
-        <field name="name">records.audit.log.view.tree</field>
+
+    <record id="records_audit_log_view_tree_duplicate" model="ir.ui.view">
+        <field name="name">records.audit.log.view.tree.duplicate</field>
         <field name="model">records.audit.log</field>
         <field name="arch" type="xml">
         <list>
-        <field name="name" />
+        <field name="description" />
         <field name="user_id" />
-        <field name="action" />
+        <field name="event_type" />
         <field name="timestamp" />
-        <field name="model_name" />
+        <field name="res_model" />
 </list>
         </field>
     </record>
 
-    <record id="records_audit_log_view_form" model="ir.ui.view">
-        <field name="name">records.audit.log.view.form</field>
+    <record id="records_audit_log_view_form_duplicate" model="ir.ui.view">
+        <field name="name">records.audit.log.view.form.duplicate</field>
         <field name="model">records.audit.log</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
                     <div class="oe_title">
-                        <h1><field name="name" /></h1>
+                        <h1><field name="description" /></h1>
                     </div>
                     <group>
         <field name="user_id" />
-        <field name="action" />
+        <field name="event_type" />
         <field name="timestamp" />
-        <field name="model_name" />
-        <field name="record_id" />
-        <field name="old_values" />
-        <field name="new_values" />
+        <field name="res_model" />
+        <field name="res_id" />
+        <field name="res_name" />
+        <field name="ip_address" />
                     </group>
                 </sheet>
             </form>
         </field>
     </record>
 
-    
+
     <record id="container_access_document_view_tree" model="ir.ui.view">
         <field name="name">container.access.document.view.tree</field>
         <field name="model">container.access.document</field>
@@ -241,7 +241,7 @@
 
 
 
-    
+
     <record id="revenue_forecast_line_view_tree" model="ir.ui.view">
         <field name="name">revenue.forecast.line.view.tree</field>
         <field name="model">revenue.forecast.line</field>
@@ -275,7 +275,7 @@
         </field>
     </record>
 
-    
+
     <record id="records_security_audit_view_tree" model="ir.ui.view">
         <field name="name">records.security.audit.view.tree</field>
         <field name="model">records.security.audit</field>
@@ -310,7 +310,7 @@
         </field>
     </record>
 
-    
+
     <record id="shredding_rate_view_tree" model="ir.ui.view">
         <field name="name">shredding.rate.view.tree</field>
         <field name="model">shredding.rate</field>
@@ -344,7 +344,7 @@
         </field>
     </record>
 
-    
+
     <record id="key_restriction_checker_wizard_view_form" model="ir.ui.view">
         <field name="name">key.restriction.checker.wizard.view.form</field>
         <field name="model">key.restriction.checker.wizard</field>
@@ -370,7 +370,7 @@
         </field>
     </record>
 
-    
+
     <record id="records_container_movement_view_tree" model="ir.ui.view">
         <field name="name">records.container.movement.view.tree</field>
         <field name="model">records.container.movement</field>
