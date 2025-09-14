@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    
+
     <data><!-- Bin Barcode Inventory Form View -->
     <record id="bin_barcode_inventory_view_form" model="ir.ui.view">
         <field name="name">bin.barcode.inventory.view.form</field>
@@ -335,7 +335,6 @@ invisible="state != 'full'"/>
         <field name="res_model">shredding.bin.sequence.reset.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
-        <field name="groups_id" eval="[(4, ref('records_management.group_records_manager'))]"/>
     </record>
 
 <!-- Menu Items -->

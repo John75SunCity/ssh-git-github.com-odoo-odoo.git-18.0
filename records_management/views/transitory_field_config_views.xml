@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+
     <data><!-- List view for transitory.field.config -->
     <record id="transitory_field_config_view_tree" model="ir.ui.view">
         <field name="name">transitory.field.config.view.tree</field>
@@ -373,7 +373,6 @@ action = {
     }
 }
         </field>
-        <field name="groups_id" eval="[(4, ref('group_search_admin'))]"/>
     </record>
     </data>
 </odoo>
