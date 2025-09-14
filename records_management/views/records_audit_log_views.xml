@@ -60,7 +60,6 @@
                     <filter string="Event Type" name="event_type" domain="[]" context="{'group_by':'event_type'}"/>
                     <filter string="User" name="user_id" domain="[]" context="{'group_by':'user_id'}"/>
                 </group>
-                </group>
             </search>
         </field>
     </record>
