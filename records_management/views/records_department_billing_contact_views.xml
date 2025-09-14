@@ -140,34 +140,34 @@
                                     <div class="o_kanban_card_header_title">
                                         <div class="o_primary">
                                             <strong>
-                                                <i class='fa fa-briefcase' title="Business Contact/>
+                                                <i class='fa fa-briefcase' title="Business Contact"/>
                                                 <field name="contact_name"/>
                                             </strong>
                                         </div>
                                         <div class="o_secondary">
-                                            <i class='fa fa-building' title="Department/>
+                                            <i class='fa fa-building' title="Department"/>
                                             <field name="department_id"/>
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
-                                        <a class="o_kanban_manage_toggle_button" href="#>
-                                            <i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options/>
+                                        <a class="o_kanban_manage_toggle_button" href="#">
+                                            <i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
                                         </a>
                                     </div>
                                 </div>
-                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group>
+                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                     <div class="row">
                                         <div class="col-8">
                                             <div>
-                                                <i class='fa fa-user' title="Role/>
+                                                <i class='fa fa-user' title="Role"/>
                                                 <field name="billing_role"/>
                                             </div>
                                             <div>
-                                                <i class='fa fa-money' title="Budget/>
+                                                <i class='fa fa-money' title="Budget"/>
                                                 Budget: $<field name="monthly_budget"/>
                                             </div>
                                             <div>
-                                                <i class='fa fa-credit-card' title="Charges/>
+                                                <i class='fa fa-credit-card' title="Charges"/>
                                                 Used: $<field name="current_month_charges"/>
                                             </div>
                                         </div>

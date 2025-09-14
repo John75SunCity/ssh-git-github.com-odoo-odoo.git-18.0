@@ -42,7 +42,7 @@
                     <page string="Request Lines">
                         <field name="request_line_ids">
                             <list editable="bottom">
-                                <field name="document_ids"/>
+                                <field name="document_id"/>
                                 <field name="box_id"/>
                                 <field name="container_ids"/>
                             </list>

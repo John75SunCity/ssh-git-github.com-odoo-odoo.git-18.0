@@ -46,7 +46,7 @@ invisible="status != 'pending'"
         <field name="priority"/>
                         </group>
                         <group name="details">
-        <field name="document_ids"/>
+        <field name="document_id"/>
         <field name="container_ids"/>
         <field name="barcode"/>
         <field name="company_id"/>
