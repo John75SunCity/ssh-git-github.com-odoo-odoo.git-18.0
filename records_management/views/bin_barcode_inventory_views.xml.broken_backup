@@ -94,17 +94,17 @@ invisible="state != 'full'"/>
         <field name="model">bin.barcode.inventory</field>
         <field name="arch" type="xml">
             <list string="Bin Barcode Inventory"
-                  decoration-success="state == 'available'"
-                  decoration-warning="state == 'in_use'"
-                  decoration-danger="state == 'full'"
-                  decoration-muted="state == 'retired'">
+                    decoration-success="state == 'available'"
+                    decoration-warning="state == 'in_use'"
+                    decoration-danger="state == 'full'"
+                    decoration-muted="state == 'retired'">
         <field name="barcode"/>
         <field name="bin_size"/>
         <field name="bin_type"/>
         <field name="state" widget="badge"
-                       decoration-success="state == 'available'"
-                       decoration-warning="state == 'in_use'"
-                       decoration-danger="state == 'full'"/>
+                        decoration-success="state == 'available'"
+                        decoration-warning="state == 'in_use'"
+                        decoration-danger="state == 'full'"/>
         <field name="customer_id"/>
         <field name="technician_id"/>
         <field name="vehicle_id"/>
@@ -179,8 +179,8 @@ invisible="state != 'full'"/>
 </div>
 <small class="text-muted">
         <field name="current_weight"/>
- /        <field name="capacity_pounds"/>
- lbs
+/        <field name="capacity_pounds"/>
+lbs
 </small>
                                 </div>
                             </div>

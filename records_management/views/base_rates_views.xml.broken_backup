@@ -101,9 +101,9 @@
 
     <!-- Menu Item -->
     <menuitem id="base_rates_menu"
-              name="Base Rates"
-              parent="records_management.menu_records_configuration"
-              action="base_rates_action"
-              sequence="30"/>
+                name="Base Rates"
+                parent="records_management.menu_records_configuration"
+                action="base_rates_action"
+                sequence="30"/>
 
 </odoo>

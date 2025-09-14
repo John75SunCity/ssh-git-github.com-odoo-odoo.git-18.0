@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view for paper.load.shipment -->
+    <record id="paper_load_shipment_view_tree" model="ir.ui.view">
+        <field name="name">paper.load.shipment.view.tree</field>
+        <field name="model">paper.load.shipment</field>
+        <field name="arch" type="xml">
+            <list string="Load Shipments" decoration-success="state=='completed'" decoration-info="state=='delivered'" decoration-warning="state=='in_transit'" decoration-primary="state=='ready'">
+                <field name="name"/>
+                <field name="scheduled_pickup_date"/>
+                <field name="driver_id"/>
+                <field name="carrier_id"/>
+                <field name="bale_count" sum="Total Bales"/>
+                <field name="total_weight" sum="Total Weight (kg)"/>
+                <field name="white_count"/>
+                <field name="mixed_count"/>
+                <field name="cardboard_count"/>
+                <field name="state" widget="badge" decoration-success="state=='completed'" decoration-info="state=='delivered'" decoration-warning="state=='in_transit'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for paper.load.shipment -->
+    <record id="paper_load_shipment_view_form" model="ir.ui.view">
+        <field name="name">paper.load.shipment.view.form</field>
+        <field name="model">paper.load.shipment</field>
+        <field name="arch" type="xml">
+            <form string="Load Shipment">
+                <header>
+                    <button name="action_ready_for_shipment" string="Ready for Shipment" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_start_transit" string="Start Transit" type="object" class="btn-primary" invisible="state != 'ready'"/>
+                    <button name="action_deliver" string="Mark Delivered" type="object" class="btn-success" invisible="state != 'in_transit'"/>
+                    <button name="action_complete" string="Complete" type="object" class="btn-info" invisible="state != 'delivered'"/>
+                    <button name="action_view_bales" string="View Bales" type="object" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ready,in_transit,delivered,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_bales" type="object" class="oe_stat_button" icon="fa-cubes">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="bale_count"/>
+                                </span>
+                                <span class="o_stat_text">Bales</span>
+                            </div>
+                        </button>
+                        <button name="action_view_bales" type="object" class="oe_stat_button" icon="fa-balance-scale">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="total_weight" widget="float"/>
+                                </span>
+                                <span class="o_stat_text">Total kg</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group name="shipping_info" string="Shipping Information">
+                            <field name="carrier_id"/>
+                            <field name="driver_id"/>
+                            <field name="pickup_location_id"/>
+                            <field name="delivery_location_id"/>
+                        </group>
+                        <group name="schedule_info" string="Schedule">
+                            <field name="scheduled_pickup_date"/>
+                            <field name="actual_pickup_date"/>
+                            <field name="scheduled_delivery_date"/>
+                            <field name="actual_delivery_date"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group name="load_summary" string="Load Summary">
+                            <field name="bale_count" readonly="1"/>
+                            <field name="total_weight" readonly="1"/>
+                        </group>
+                        <group name="grade_breakdown" string="Paper Grade Breakdown">
+                            <field name="white_count" readonly="1" string="White Bales"/>
+                            <field name="mixed_count" readonly="1" string="Mixed Bales"/>
+                            <field name="cardboard_count" readonly="1" string="Cardboard Bales"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Bales in Load" name="bales">
+                            <field name="bale_ids" nolabel="1">
+                                <list string="Paper Bales">
+                                    <field name="name"/>
+                                    <field name="bale_number"/>
+                                    <field name="paper_grade"/>
+                                    <field name="weight" sum="Total Weight"/>
+                                    <field name="source_date"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+
+                    <group name="system_info" string="System Information">
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban view for paper.load.shipment -->
+    <record id="paper_load_shipment_view_kanban" model="ir.ui.view">
+        <field name="name">paper.load.shipment.view.kanban</field>
+        <field name="model">paper.load.shipment</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="scheduled_pickup_date"/>
+                <field name="driver_id"/>
+                <field name="carrier_id"/>
+                <field name="bale_count"/>
+                <field name="total_weight"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <span class="float-end">
+                                        <field name="state" widget="label_selection" options="{'classes': {'draft': 'secondary', 'ready': 'primary', 'in_transit': 'info', 'delivered': 'warning', 'completed': 'success', 'cancelled': 'danger'}}"/>
+                                    </span>
+                                </div>
+                                <span class="o_kanban_record_subtitle text-muted">
+                                    <field name="driver_id"/> • <field name="scheduled_pickup_date"/>
+                                </span>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between">
+                                        <small>
+                                            <strong><field name="bale_count"/> bales</strong>
+                                        </small>
+                                        <small>
+                                            <strong><field name="total_weight"/> kg</strong>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <strong>Carrier:</strong>
+                                        <field name="carrier_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search view for paper.load.shipment -->
+    <record id="paper_load_shipment_view_search" model="ir.ui.view">
+        <field name="name">paper.load.shipment.view.search</field>
+        <field name="model">paper.load.shipment</field>
+        <field name="arch" type="xml">
+            <search string="Load Shipments">
+                <field name="name"/>
+                <field name="driver_id"/>
+                <field name="carrier_id"/>
+
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Ready" name="ready" domain="[('state', '=', 'ready')]"/>
+                <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
+                <filter string="Delivered" name="delivered" domain="[('state', '=', 'delivered')]"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+
+                <separator/>
+                <filter string="Today" name="today" domain="[('scheduled_pickup_date', '=', context_today)]"/>
+                <filter string="This Week" name="this_week" domain="[('scheduled_pickup_date', '&gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('scheduled_pickup_date', '&gt;=', (context_today.replace(day=1)).strftime('%Y-%m-%d'))]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
+                    <filter string="Pickup Date" name="group_pickup_date" context="{'group_by': 'scheduled_pickup_date'}"/>
+                    <filter string="Driver" name="group_driver" context="{'group_by': 'driver_id'}"/>
+                    <filter string="Carrier" name="group_carrier" context="{'group_by': 'carrier_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for paper.load.shipment -->
+    <record id="action_paper_load_shipment" model="ir.actions.act_window">
+        <field name="name">Load Shipments</field>
+        <field name="res_model">paper.load.shipment</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="paper_load_shipment_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first load shipment!
+            </p>
+            <p>
+                Track load shipments from scheduling through to completion.
+                Manage drivers, carriers, and bale collections efficiently.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu items -->
+    <menuitem id="menu_paper_recycling" name="Paper Recycling" parent="menu_records_management_root" sequence="25" groups="records_management.group_records_user"/>
+
+    <menuitem id="menu_load_shipments" name="Load Shipments" parent="menu_paper_recycling" action="action_paper_load_shipment" sequence="20" groups="records_management.group_records_user"/>
+
+    <!-- Dashboard action -->
+    <record id="action_paper_recycling_dashboard" model="ir.actions.act_window">
+        <field name="name">Paper Recycling Dashboard</field>
+        <field name="res_model">paper.load.shipment</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="paper_load_shipment_view_kanban"/>
+        <field name="domain">[('state', 'in', ['draft', 'ready', 'in_transit'])]</field>
+        <field name="context">{'search_default_group_status': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Welcome to Paper Recycling Dashboard!
+            </p>
+            <p>
+                Track your paper recycling operations from bale production to delivery.
+                Manage load shipments, schedules, and carrier coordination.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_paper_recycling_dashboard" name="Dashboard" parent="menu_paper_recycling" action="action_paper_recycling_dashboard" sequence="5" groups="records_management.group_records_user"/>
+
+</odoo>

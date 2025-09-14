@@ -57,7 +57,7 @@
                         <page string="Report Lines" name="lines">
         <field name="line_ids" mode="tree,form">
                                 <list editable="bottom">
-        <field name="container_id"/>
+        <field name="container_ids"/>
         <field name="document_count"/>
         <field name="monthly_storage_cost" widget="monetary"/>
         <field name="line_status"/>
@@ -186,7 +186,7 @@
     <!-- Menu Item -->
     <menuitem id="menu_customer_inventory_report"
 name="Customer Inventory Reports" parent="menu_records_reporting"
-              action="customer_inventory_report_action"
-              sequence="10"/>
+                action="customer_inventory_report_action"
+                sequence="10"/>
 
 </odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Updated XML ID to follow convention: {model_name}_view_{type} -->
+    <record id="billing_period_view_tree" model="ir.ui.view">
+        <field name="name">billing.period.tree</field>
+        <field name="model">billing.period</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="active"/>
+                <!-- Added note field for completeness, matching form view -->
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+    <!-- Updated XML ID to follow convention -->
+    <record id="billing_period_view_form" model="ir.ui.view">
+        <field name="name">billing.period.form</field>
+        <field name="model">billing.period</field>
+        <field name="arch" type="xml">
+            <form string="Billing Period">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="active"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Updated XML ID and changed view_mode to tree,form for consistency -->
+    <record id="billing_period_action" model="ir.actions.act_window">
+        <field name="name">Billing Periods</field>
+        <field name="res_model">billing.period</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <!-- Updated XML ID to follow convention -->
+    <menuitem id="billing_period_menu" name="Billing Periods" parent="records_management.menu_records_billing" action="billing_period_action" sequence="10"/>
+
+</odoo>

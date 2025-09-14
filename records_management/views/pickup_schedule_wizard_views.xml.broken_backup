@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- List view for pickup.schedule.wizard -->
+    <record id="pickup_schedule_wizard_view_tree" model="ir.ui.view">
+        <field name="name">pickup.schedule.wizard.view.tree</field>
+        <field name="model">pickup.schedule.wizard</field>
+        <field name="arch" type="xml">
+    <list>
+        <field name="partner_id"/>
+        <field name="scheduled_date"/>
+        <field name="technician_id"/>
+
+</list>
+</field>
+    </record>
+
+<!-- Form view for pickup.schedule.wizard -->
+    <record id="pickup_schedule_wizard_view_form" model="ir.ui.view">
+        <field name="name">pickup.schedule.wizard.view.form</field>
+        <field name="model">pickup.schedule.wizard</field>
+        <field name="arch" type="xml">
+    <form string="Schedule Pickup">
+        <sheet>
+            <div class="oe_title">
+        <h1>
+        <field name="request_id" readonly="1"/>
+
+</h1>
+</div>
+        <group>
+        <group>
+        <field name="partner_id"/>
+        <field name="scheduled_date"/>
+</group>
+        <group>
+        <field name="technician_id"/>
+</group>
+</group>
+        <group>
+        <field name="notes" placeholder="Add scheduling notes..." help="Enter any important information or instructions related to the pickup schedule."/>
+</group>
+</sheet>
+<footer>
+<button string="Schedule Pickup" name="action_schedule_pickup" type="object" class="oe_highlight"/>
+<button string="Cancel" class="oe_link" special="cancel"/>
+</footer>
+</form>
+</field>
+    </record>
+
+<!-- Search view for pickup.schedule.wizard -->
+    <record id="pickup_schedule_wizard_view_search" model="ir.ui.view">
+        <field name="name">pickup.schedule.wizard.view.search</field>
+        <field name="model">pickup.schedule.wizard</field>
+        <field name="arch" type="xml">
+    <search>
+        <field name="partner_id"/>
+        <field name="technician_id"/>
+        <field name="scheduled_date"/>
+
+        <group expand="1" string="Group By">
+<filter string="Customer" name="partner_id" domain="[]" context="{'group_by':'partner_id'}"/>
+<filter string="Technician" name="technician_id" domain="[]" context="{'group_by':'technician_id'}"/>
+<filter string="Scheduled Date" name="scheduled_date" domain="[]" context="{'group_by':'scheduled_date'}"/>
+
+</group>
+</search>
+</field>
+    </record>
+
+<!-- Action for pickup.schedule.wizard -->
+    <record id="action_pickup_schedule_wizard" model="ir.actions.act_window">
+        <field name="name">Schedule Pickup</field>
+        <field name="res_model">pickup.schedule.wizard</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+<p class="oe_view_nocontent_create">
+                Click to schedule a pickup.
+</p>
+</field>
+    </record>
+
+</odoo>

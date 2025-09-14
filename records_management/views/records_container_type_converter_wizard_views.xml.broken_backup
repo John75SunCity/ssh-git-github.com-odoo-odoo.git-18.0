@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- List view for base.rate -->
+    <record id="records_container_type_converter_wizard_view_tree" model="ir.ui.view">
+        <field name="name">records.container.type.converter.wizard.view.tree</field>
+        <field name="model">records.container.type.converter.wizard</field>
+        <field name="arch" type="xml">
+        <list>
+        <field name="name"/>
+        </list>
+    </field>
+    </record>
+
+<!-- Form view for base.rate -->
+    <record id="records_container_type_converter_wizard_view_form" model="ir.ui.view">
+        <field name="name">records.container.type.converter.wizard.view.form</field>
+        <field name="model">records.container.type.converter.wizard</field>
+        <field name="arch" type="xml">
+        <form string="Records Container Type Converter Wizard">
+            <sheet>
+                <div class="oe_title">
+                    <label for="name"/>
+                    <h1>
+        <field name="name" placeholder="Name..."/>
+                    </h1>
+                </div>
+            </sheet>
+        </form>
+    </field>
+    </record>
+
+<!-- Search view for base.rate -->
+    <record id="records_container_type_converter_wizard_view_search" model="ir.ui.view">
+        <field name="name">records.container.type.converter.wizard.view.search</field>
+        <field name="model">records.container.type.converter.wizard</field>
+        <field name="arch" type="xml">
+        <search>
+            <group expand="1" string="Group By">
+                <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+            </group>
+        </search>
+    </field>
+    </record>
+
+<!-- List view for Action -->
+    <record id="action_records_container_type_converter_wizard" model="ir.actions.act_window">
+        <field name="name">Records Container Type Converter Wizard</field>
+        <field name="res_model">records.container.type.converter.wizard</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+            There is no examples click here to add new Records Container Type Converter Wizard.
+        </p>
+    </field>
+    </record>
+
+</odoo>

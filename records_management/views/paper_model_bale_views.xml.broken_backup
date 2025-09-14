@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- ============================================================================ -->
+<!-- PAPER MODEL BALE VIEWS -->
+<!-- ============================================================================ -->
+
+<!-- List View -->
+    <record id="paper_model_bale_view_tree" model="ir.ui.view">
+        <field name="name">paper.model.bale.view.tree</field>
+        <field name="model">paper.model_bale</field>
+        <field name="arch" type="xml">
+    <list string="Paper Model Bales">
+        <field name="name"/>
+        <field name="bale_number"/>
+        <field name="weight"/>
+        <field name="volume"/>
+        <field name="material_type"/>
+        <field name="date_created"/>
+        <field name="location_id"/>
+    </list>
+</field>
+    </record>
+
+<!-- Form View -->
+    <record id="paper_model_bale_view_form" model="ir.ui.view">
+        <field name="name">paper.model.bale.view.form</field>
+        <field name="model">paper.model_bale</field>
+        <field name="arch" type="xml">
+    <form string="Paper Model Bale">
+        <sheet>
+            <div class="oe_title">
+                <h1>
+        <field name="name" readonly="1"/>
+                </h1>
+            </div>
+            <group>
+                <group>
+        <field name="bale_number"/>
+        <field name="material_type"/>
+        <field name="weight"/>
+        <field name="volume"/>
+        <field name="date_created"/>
+                </group>
+                <group>
+        <field name="location_id"/>
+                </group>
+            </group>
+            <notebook>
+                <page string="Notes">
+        <field name="notes"/>
+                </page>
+            </notebook>
+        </sheet>
+        <div class="oe_chatter">
+        <field name="message_follower_ids"/>
+        <field name="activity_ids"/>
+        <field name="message_ids"/>
+        </div>
+    </form>
+</field>
+    </record>
+
+<!-- Kanban View -->
+    <record id="paper_model_bale_view_kanban" model="ir.ui.view">
+        <field name="name">paper.model.bale.view.kanban</field>
+        <field name="model">paper.model_bale</field>
+        <field name="arch" type="xml">
+    <kanban default_group_by="material_type">
+        <field name="name"/>
+        <field name="bale_number"/>
+        <field name="weight"/>
+        <field name="material_type"/>
+        <field name="location_id"/>
+        <templates>
+            <t t-name="card">
+                <div class="oe_kanban_card oe_kanban_global_click">
+                    <div class="o_kanban_record_top">
+                        <div class="o_kanban_record_headings">
+                            <strong class="o_kanban_record_title">
+                                <span><field name="name"/></span>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="o_kanban_record_body">
+                        <div class="o_kanban_record_bottom">
+                            <div class="oe_kanban_bottom_left">
+                                <span class="o_text_overflow">
+        <field name="bale_number"/>
+                                </span>
+                            </div>
+                            <div class="oe_kanban_bottom_right">
+        <field name="material_type" widget="label"/>
+                            </div>
+                        </div>
+                        <div>
+                            <span>Weight: </span>
+        <field name="weight"/>
+                            <span> lbs</span>
+                        </div>
+                        <div>
+                            <span>Material: </span>
+        <field name="material_type"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </templates>
+    </kanban>
+</field>
+    </record>
+
+<!-- Search View -->
+    <record id="paper_model_bale_view_search" model="ir.ui.view">
+        <field name="name">paper.model.bale.view.search</field>
+        <field name="model">paper.model_bale</field>
+        <field name="arch" type="xml">
+    <search string="Paper Model Bales">
+        <field name="name"/>
+        <field name="bale_number"/>
+        <field name="material_type"/>
+        <field name="location_id"/>
+        <filter string="White Paper" name="white" domain="[('material_type', '=', 'white')]"/>
+        <filter string="Mixed Paper" name="mixed" domain="[('material_type', '=', 'mixed')]"/>
+        <filter string="Cardboard" name="cardboard" domain="[('material_type', '=', 'cardboard')]"/>
+        <filter string="Trash" name="trash" domain="[('material_type', '=', 'trash')]"/>
+        <group expand="0" string="Group By">
+            <filter string="Material Type" name="group_material" context="{'group_by': 'material_type'}"/>
+            <filter string="Location" name="group_location" context="{'group_by': 'location_id'}"/>
+            <filter string="Date Created" name="group_date" context="{'group_by': 'date_created'}"/>
+        </group>
+    </search>
+</field>
+    </record>
+
+<!-- Action -->
+    <record id="action_paper_model_bale" model="ir.actions.act_window">
+        <field name="name">Paper Model Bales</field>
+        <field name="res_model">paper.model_bale</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="view_id" ref="paper_model_bale_view_tree"/>
+        <field name="help">Manage paper model bales for records management</field>
+    </record>
+
+</odoo>

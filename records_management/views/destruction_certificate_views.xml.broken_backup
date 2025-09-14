@@ -141,7 +141,7 @@
     <i class="fa fa-archive" title="Containers Processed" aria-label="Containers Processed" role="img"/>
 
         <field name="containers_processed"/>
- containers
+containers
                                             </div>
                                         </div>
                                         <div class="col-4">
@@ -236,30 +236,30 @@ Create your first destruction certificate!
 <br/>
 
 •<i class="fa fa-id-card"/>
- Unique certificate numbering system<br/>
+Unique certificate numbering system<br/>
                     •<i class="fa fa-check-circle"/>
- NAID verification and compliance tracking<br/>
+NAID verification and compliance tracking<br/>
                     •<i class="fa fa-users"/>
- Multi-signature authorization process<br/>
+Multi-signature authorization process<br/>
                     •<i class="fa fa-list-alt"/>
- Detailed item-by-item destruction records<br/>
+Detailed item-by-item destruction records<br/>
                     •<i class="fa fa-link"/>
- Complete chain of custody integration<br/>
+Complete chain of custody integration<br/>
                     •<i class="fa fa-bar-chart"/>
- Financial tracking and profitability analysis<br/>
+Financial tracking and profitability analysis<br/>
                     •<i class="fa fa-calendar"/>
- Automated expiry and renewal management<br/>
+Automated expiry and renewal management<br/>
                     •<i class="fa fa-trophy"/>
- Full audit trail for regulatory compliance
+Full audit trail for regulatory compliance
                 </p>
             </field>
     </record>
 
         <!-- Menu item for destruction certificates -->
     <menuitem id="menu_destruction_certificates"
-                  name="Destruction Certificates"
-                  parent="records_management.menu_records_compliance"
-                  action="action_destruction_certificate"
-                  sequence="25"/>
+                    name="Destruction Certificates"
+                    parent="records_management.menu_records_compliance"
+                    action="action_destruction_certificate"
+                    sequence="25"/>
 
 </odoo>
