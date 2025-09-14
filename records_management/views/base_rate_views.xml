@@ -57,7 +57,6 @@
         </field>
     </record>
 
-<data>
         <!-- List view for Base -->
     <record id="base_rates_view_tree" model="ir.ui.view">
         <field name="name">base.rate.view.tree</field>
@@ -500,7 +499,5 @@
 
         <!-- List view for Rate -->
     <menuitem id="menu_rate_analysis" name="Rate Analysis Tools" parent="menu_rate_management" action="action_rate_analysis_wizard" sequence="40" groups="records_management.group_records_manager"/>
-
-    </data>
 
 </odoo>
