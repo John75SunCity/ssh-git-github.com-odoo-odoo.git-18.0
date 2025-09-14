@@ -36,6 +36,12 @@ class ResPartner(models.Model):
         compute='_compute_records_stats',
     )
 
+    negotiated_rates_count = fields.Integer(
+        string="Negotiated Rates Count",
+        compute='_compute_negotiated_rates_count',
+        help="Number of negotiated rates for this customer"
+    )
+
     destruction_address_id = fields.Many2one('res.partner', string='Destruction Address')
 
     # =========================================================================
@@ -131,6 +137,23 @@ class ResPartner(models.Model):
         for partner in self:
             partner.container_count = container_map.get(partner.id, 0)
             partner.document_count = document_map.get(partner.id, 0)
+
+    def _compute_negotiated_rates_count(self):
+        """Compute the count of negotiated rates for the partner."""
+        if not self.env['customer.negotiated.rate']._table_exists():
+            for partner in self:
+                partner.negotiated_rates_count = 0
+            return
+
+        rates_data = self.env['customer.negotiated.rate']._read_group(
+            [('partner_id', 'in', self.ids)],
+            ['partner_id'],
+            ['__count']
+        )
+        rates_map = {item['partner_id'][0]: item['__count'] for item in rates_data}
+
+        for partner in self:
+            partner.negotiated_rates_count = rates_map.get(partner.id, 0)
 
     # =========================================================================
     # COMPUTE: BIN KEY STATS
@@ -233,6 +256,18 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Documents'),
             'res_model': 'records.document',
+            'view_mode': 'tree,form',
+            'domain': [('partner_id', '=', self.id)],
+            'context': {'default_partner_id': self.id}
+        }
+
+    def action_view_negotiated_rates(self):
+        """Opens the tree view of negotiated rates related to this partner."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Negotiated Rates'),
+            'res_model': 'customer.negotiated.rate',
             'view_mode': 'tree,form',
             'domain': [('partner_id', '=', self.id)],
             'context': {'default_partner_id': self.id}

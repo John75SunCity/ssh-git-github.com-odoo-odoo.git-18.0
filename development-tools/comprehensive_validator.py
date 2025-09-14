@@ -77,17 +77,51 @@ class ComprehensiveValidator:
             },
             'product.template': {
                 'name', 'categ_id', 'type', 'list_price', 'standard_price', 'uom_id',
-                'uom_po_id', 'purchase_ok', 'sale_ok', 'active', 'company_id', 'barcode'
+                'uom_po_id', 'purchase_ok', 'sale_ok', 'active', 'company_id', 'barcode',
+                'default_code', 'description', 'description_purchase', 'description_sale',
+                'weight', 'volume', 'warranty', 'currency_id', 'cost_currency_id',
+                'product_variant_ids', 'product_variant_id', 'product_variant_count',
+                'attribute_line_ids', 'valid_product_template_attribute_line_ids',
+                'taxes_id', 'supplier_taxes_id', 'property_account_income_id',
+                'property_account_expense_id', 'tracking', 'invoice_policy',
+                'expense_policy', 'sales_count', 'purchase_count', 'service_type',
+                'sale_line_warn', 'purchase_line_warn', 'sale_line_warn_msg',
+                'purchase_line_warn_msg', 'can_image_1024_be_zoomed', 'has_configurable_attributes'
             },
             'res.config.settings': {
                 'id', 'create_date', 'create_uid', 'write_date', 'write_uid',
                 'display_name', '__last_update', 'company_id', 'user_id', 'module_ids',
-                'config_parameter_ids', 'active', 'sequence', 'name', 'state'
+                'config_parameter_ids', 'active', 'sequence', 'name', 'state',
+                # RECORDS MANAGEMENT INHERITED FIELDS
+                'total_active_containers', 'total_stored_documents', 'pending_destruction_requests', 'compliance_score',
+                'records_auto_barcode_generation', 'records_enable_advanced_search', 'records_auto_location_assignment',
+                'records_enable_container_weight_tracking', 'records_barcode_nomenclature_id', 'records_default_retention_days',
+                'records_default_container_type_id', 'records_container_capacity_warning_threshold', 'naid_compliance_level',
+                'naid_auto_audit_logging', 'naid_require_dual_authorization', 'security_department_isolation',
+                'security_require_bin_key_management', 'naid_audit_retention_years', 'security_failed_access_lockout_enabled',
+                'security_failed_access_attempt_limit', 'pickup_auto_route_optimization', 'fsm_integration_enabled',
+                'pickup_automatic_confirmation', 'pickup_default_time_window_hours', 'pickup_advance_notice_days',
+                'billing_period_type', 'billing_auto_invoice_generation', 'billing_prorate_first_month',
+                'billing_volume_discount_enabled', 'billing_default_currency_id', 'portal_allow_customer_requests',
+                'portal_enable_document_preview', 'portal_require_request_approval', 'portal_auto_notification_enabled',
+                'portal_feedback_collection_enabled', 'portal_ai_sentiment_analysis', 'notification_email_enabled',
+                'notification_sms_enabled', 'notification_retention_expiry_days', 'notification_pickup_reminder_hours',
+                'analytics_enable_advanced_reporting', 'analytics_auto_report_generation', 'analytics_customer_kpi_tracking',
+                'analytics_predictive_analytics_enabled', 'integration_accounting_auto_sync', 'integration_document_management_system',
+                'integration_api_access_enabled', 'integration_webhook_notifications', 'naid_compliance_enabled', 'naid_audit_retention_days'
             },
             'res.partner': {
                 'id', 'name', 'display_name', 'email', 'phone', 'mobile',
                 'street', 'street2', 'city', 'zip', 'state_id', 'country_id',
-                'is_company', 'active', 'partner_type', 'company_id'
+                'is_company', 'active', 'partner_type', 'company_id', 'parent_id',
+                'user_id', 'company_type', 'website', 'vat', 'ref', 'lang',
+                'category_id', 'title', 'function', 'comment', 'image_1920',
+                'is_records_customer', 'department_ids', 'department_count',
+                'container_count', 'document_count', 'destruction_address_id',
+                'negotiated_rates_count', 'has_bin_key', 'is_emergency_key_contact',
+                'active_bin_key_count', 'key_issue_date', 'total_bin_keys_issued',
+                'bin_key_history_ids', 'unlock_service_history_ids', 'unlock_service_count',
+                'total_unlock_charges', 'company_currency_id'
             }
         }
 
