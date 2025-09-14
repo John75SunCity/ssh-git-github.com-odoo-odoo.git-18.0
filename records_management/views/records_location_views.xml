@@ -9,8 +9,8 @@
                 <kanban default_group_by="location_type" class="o_kanban_location_dashboard">
                     <field name="name"/>
                     <field name="location_type"/>
-                    <field name="current_utilization"/>
-                    <field name="storage_capacity"/>
+                    <field name="container_count"/>
+                    <field name="max_capacity"/>
                     <field name="available_spaces"/>
                     <field name="utilization_percentage"/>
                     <field name="active"/>
@@ -47,9 +47,9 @@
                                             <div class="col-6">
                                                 <div class="text-right">
                                                     <span class="badge badge-info">
-                                                        <field name="current_utilization"/>
+                                                        <field name="container_count"/>
                                                         /
-                                                        <field name="storage_capacity"/>
+                                                        <field name="max_capacity"/>
                                                         Used
                                                     </span>
                                                     <br/>
@@ -84,11 +84,11 @@
             <field name="name">records.location.view.tree</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
-                <list decoration-success="current_utilization &lt; storage_capacity * 0.8" decoration-warning="current_utilization &gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &gt;= storage_capacity">
+                <list decoration-success="container_count &lt; max_capacity * 0.8" decoration-warning="container_count &gt;= max_capacity * 0.8 and container_count &lt; max_capacity" decoration-danger="container_count &gt;= max_capacity">
                     <field name="name" string="Location Name"/>
                     <field name="location_type" string="Type"/>
-                    <field name="storage_capacity" string="Capacity"/>
-                    <field name="current_utilization" string="Current Usage"/>
+                    <field name="max_capacity" string="Capacity"/>
+                    <field name="container_count" string="Current Usage"/>
                     <field name="available_spaces" string="Available Spaces"/>
                     <field name="utilization_percentage" string="Utilization %" widget="percentage"/>
                     <field name="active" string="Active"/>
@@ -111,7 +111,7 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_containers" type="object" class="oe_stat_button" icon="fa-cube">
-                                <field name="current_utilization" string="Containers" widget="statinfo"/>
+                                <field name="container_count" string="Containers" widget="statinfo"/>
                             </button>
                             <button name="action_location_report" type="object" class="oe_stat_button" icon="fa-bar-chart">
                                 <div class="o_field_widget o_stat_info">
@@ -139,8 +139,8 @@
                                 <field name="parent_location_id" string="Parent Location"/>
                             </group>
                             <group string="Capacity &amp; Usage">
-                                <field name="storage_capacity"/>
-                                <field name="current_utilization"/>
+                                <field name="max_capacity"/>
+                                <field name="container_count"/>
                                 <field name="available_spaces"/>
                                 <field name="utilization_percentage" widget="percentage"/>
                             </group>
