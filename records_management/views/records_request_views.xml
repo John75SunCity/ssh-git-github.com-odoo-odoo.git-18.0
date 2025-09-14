@@ -44,7 +44,7 @@
                             <list editable="bottom">
                                 <field name="document_id"/>
                                 <field name="box_id"/>
-                                <field name="container_ids"/>
+                                <field name="container_id"/>
                             </list>
                         </field>
                     </page>
