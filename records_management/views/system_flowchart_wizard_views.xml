@@ -37,7 +37,7 @@ System Architecture Flowchart</h1>
         <field name="config_valid" readonly="1"/>
 </group>
 </div>
-        <div invisible="step != 'complete'" class="alert alert-success text-center" role="status" aria-live="polite>
+        <div invisible="step != 'complete'" class="alert alert-success text-center" role="status" aria-live="polite">
 <h3>
     <i class='fa fa-check-circle me-2' aria-hidden="true"/>
 Ready to Launch!
