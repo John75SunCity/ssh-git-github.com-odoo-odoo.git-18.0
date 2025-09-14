@@ -168,8 +168,11 @@ class ResConfigSettings(models.TransientModel):
         help="Number of years to retain NAID audit logs.",
         default=5
     )
-    naid_compliance_level = fields.Selection(
-        selection_add=[('aaa', 'NAID AAA'), ('aa', 'NAID AA'), ('a', 'NAID A')],
+    naid_compliance_level = fields.Selection([
+        ('aaa', 'NAID AAA'),
+        ('aa', 'NAID AA'),
+        ('a', 'NAID A')
+    ],
         string="NAID Compliance Level",
         config_parameter='records_management.naid_compliance_level',
         help="Target NAID compliance certification level.",

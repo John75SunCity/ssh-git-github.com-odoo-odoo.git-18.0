@@ -93,12 +93,11 @@ class ResConfigSettings(models.TransientModel):
     # ============================================================================
     # NAID COMPLIANCE & SECURITY SETTINGS
     # ============================================================================
-    naid_compliance_level = fields.Selection(
-        selection_add=[
-            ('basic', 'Basic'),
-            ('aaa', 'AAA Standard'),
-            ('enhanced', 'Enhanced AAA')
-        ],
+    naid_compliance_level = fields.Selection([
+        ('basic', 'Basic'),
+        ('aaa', 'AAA Standard'),
+        ('enhanced', 'Enhanced AAA')
+    ],
         string="Compliance Level",
         config_parameter='records_management.naid_compliance_level',
         default='aaa',
