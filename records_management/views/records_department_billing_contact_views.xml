@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <!-- Enhanced Departmental Billing Contact Views -->
 
         <!-- Tree view -->
@@ -297,5 +296,4 @@
                 </p>
             </field>
         </record>
-    </data>
 </odoo>
