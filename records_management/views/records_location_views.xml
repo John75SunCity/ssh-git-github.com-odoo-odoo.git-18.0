@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Kanban view for Enhanced -->
+    <!-- Kanban view for Enhanced -->
         <record id="records_location_view_kanban" model="ir.ui.view">
             <field name="name">records.location.view.kanban</field>
             <field name="model">records.location</field>
@@ -134,7 +133,7 @@
 
                         <group>
                             <group string="Location Information">
-                                <field name="name" t-att-placeholder="record.name_placeholder or _('e.g., Building A - Section 1')"/>
+                                <field name="name" placeholder="e.g., Building A - Section 1"/>
                                 <field name="location_type"/>
                                 <field name="parent_location_id" string="Parent Location"/>
                             </group>
@@ -229,5 +228,4 @@
                 </p>
             </field>
         </record>
-    </data>
 </odoo>
