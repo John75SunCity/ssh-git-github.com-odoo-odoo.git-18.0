@@ -86,7 +86,16 @@ class ComprehensiveValidator:
                 'property_account_expense_id', 'tracking', 'invoice_policy',
                 'expense_policy', 'sales_count', 'purchase_count', 'service_type',
                 'sale_line_warn', 'purchase_line_warn', 'sale_line_warn_msg',
-                'purchase_line_warn_msg', 'can_image_1024_be_zoomed', 'has_configurable_attributes'
+                'purchase_line_warn_msg', 'can_image_1024_be_zoomed', 'has_configurable_attributes',
+                # RECORDS MANAGEMENT CUSTOM FIELDS
+                'is_records_management_product', 'is_records_container', 'container_volume_cf',
+                'container_weight_lbs', 'naid_compliant', 'hipaa_compliant', 'requires_appointment',
+                'sla_response_time', 'sla_completion_time', 'is_featured_service',
+                'service_description_portal', 'customer_rating', 'feedback_count',
+                'price_history_count', 'can_be_expensed', 'price_margin', 'base_cost',
+                'labor_cost', 'material_cost', 'overhead_cost', 'billing_frequency', 'minimum_billing_period',
+                'prorate_partial_periods', 'auto_invoice', 'document_storage_included',
+                'max_documents_included', 'additional_document_cost'
             },
             'res.config.settings': {
                 'id', 'create_date', 'create_uid', 'write_date', 'write_uid',
