@@ -88,11 +88,11 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-<!-- Converted legacy states to invisible expressions -->
-<button name="action_mark_reviewed" type="object" string="Mark as Reviewed" class="btn-primary" invisible="state != 'new'"/>
-<button name="action_respond" type="object" string="Respond" class="btn-success" invisible="state not in ['new','in_progress']"/>
-<button name="action_escalate" type="object" string="Escalate" class="btn-warning" invisible="state not in ['new','in_progress']"/>
+<!-- Using correct action methods that exist in the model -->
+<button name="action_start_progress" type="object" string="Start Progress" class="btn-primary" invisible="state != 'new'"/>
+<button name="action_resolve" type="object" string="Resolve" class="btn-success" invisible="state not in ['new','in_progress']"/>
 <button name="action_close" type="object" string="Close" class="btn-secondary" invisible="state != 'resolved'"/>
+<button name="action_cancel" type="object" string="Cancel" class="btn-warning" invisible="state in ['closed','cancelled']"/>
 
                     <field name="state" widget="statusbar" statusbar_visible="new,in_progress,resolved,closed"/>
                 </header>
