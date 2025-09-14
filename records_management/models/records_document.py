@@ -241,7 +241,7 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # MISSING FIELDS FROM VIEWS (Added to fix field validation errors)
     # ============================================================================
-    created_date = fields.Date(string='Created Date', related='create_date', store=True, help='Date when document was created in the system')
+    created_date = fields.Datetime(string='Created Date', related='create_date', store=True, help='Date when document was created in the system')
     event_type = fields.Selection([
         ('created', 'Document Created'),
         ('modified', 'Document Modified'),
