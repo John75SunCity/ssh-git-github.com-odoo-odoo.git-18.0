@@ -29,8 +29,8 @@
         <field name="arch" type="xml">
         <form string="Digital Scan">
             <header>
-                <button name="action_confirm" string="Confirm Scan" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                <button name="action_done" string="Mark Complete" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'confirmed')]}"/>
+                <button name="action_confirm" string="Confirm Scan" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                <button name="action_done" string="Mark Complete" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
                 <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
             </header>
             <sheet>
