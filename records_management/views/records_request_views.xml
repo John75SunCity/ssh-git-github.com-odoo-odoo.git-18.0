@@ -94,7 +94,7 @@
 <!-- Menu -->
 <menuitem id="menu_records_request"
             name="Requests"
-            parent="records_management.menu_records_management_operations"
+            parent="records_management.menu_records_operations"
             action="action_records_request"
             sequence="30"/>
 </odoo>

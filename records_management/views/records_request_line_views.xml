@@ -93,5 +93,5 @@
     </record>
 
 
-    <menuitem id="menu_records_request_line" name="Request Lines" parent="records_management.menu_records_main" action="records_request_line_action" sequence="25" />
+    <menuitem id="menu_records_request_line" name="Request Lines" parent="records_management.menu_records_management_root" action="records_request_line_action" sequence="25" />
 </odoo>

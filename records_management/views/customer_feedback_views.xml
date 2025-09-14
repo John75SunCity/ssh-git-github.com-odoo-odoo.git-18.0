@@ -1,6 +1,4 @@
 <odoo>
-<!-- Added root menu (only create once; if already defined elsewhere, remove this line there) -->
-    <menuitem id="records_management_menu_root" name="Records Management" sequence="10"/>
 <!-- List View -->
     <record id="customer_feedback_view_tree" model="ir.ui.view">
         <field name="name">customer.feedback.view.tree</field>
@@ -100,7 +98,7 @@ Manage customer feedback items. Use stages to track progress from New to Closed.
 </p>
 </field>
     </record>
-<!-- Child menu under the newly ensured root menu -->
-    <menuitem id="customer_feedback_menu" name="Customer Feedback" parent="records_management_menu_root" action="customer_feedback_action" sequence="40"/>
+<!-- Child menu under the standard root menu -->
+    <menuitem id="customer_feedback_menu" name="Customer Feedback" parent="records_management.menu_records_management_root" action="customer_feedback_action" sequence="40"/>
 
 </odoo>
