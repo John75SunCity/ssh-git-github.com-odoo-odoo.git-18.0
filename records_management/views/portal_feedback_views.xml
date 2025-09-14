@@ -203,12 +203,7 @@
         </field>
     </record>
 
-    <!-- List view for Menu -->
-    <menuitem id="menu_portal_feedback"
-              name="Customer Feedback"
-              parent="records_management.menu_portal_root"
-              action="action_portal_feedback"
-              sequence="20"/>
+    <!-- Menu definition removed - already exists in records_management_menus.xml and portal_feedback_menus.xml -->
 </data>
 
 </odoo>
