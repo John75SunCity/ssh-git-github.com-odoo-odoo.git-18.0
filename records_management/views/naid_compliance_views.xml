@@ -233,12 +233,11 @@
                             <field name="destruction_record_ids" mode="list">
                                 <list>
                                     <field name="destruction_date"/>
-                                    <field name="client_name"/>
-                                    <field name="material_type"/>
-                                    <field name="destruction_method"/>
-                                    <field name="witness_present"/>
-                                    <field name="certificate_issued"/>
-                                    <field name="compliance_verified"/>
+                                    <field name="partner_id"/>
+                                    <field name="method"/>
+                                    <field name="responsible_user_id"/>
+                                    <field name="items_destroyed"/>
+                                    <field name="state"/>
                                 </list>
                             </field>
                         </page>
