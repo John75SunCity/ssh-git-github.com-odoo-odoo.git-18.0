@@ -89,7 +89,6 @@
                 <form>
                     <header>
                         <button name="action_view_containers" type="object" string="View Containers" class="btn-primary"/>
-                        <button name="action_location_report" type="object" string="Generate Report" class="btn-secondary"/>
                         <field name="active" widget="boolean_toggle"/>
                     </header>
                     <sheet>
