@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<data>
-<!-- Kanban view for Enhanced -->
+<odoo>
+    <data>
+        <!-- Kanban view for Enhanced -->
         <record id="records_location_view_kanban" model="ir.ui.view">
             <field name="name">records.location.view.kanban</field>
             <field name="model">records.location</field>
@@ -14,7 +15,7 @@
                     <field name="utilization_percentage"/>
                     <field name="active"/>
                     <templates>
-                        <t t-name="card">
+                        <t t-name="kanban-box">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_card_header">
                                     <div class="o_kanban_card_header_title">
@@ -34,7 +35,7 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                <div class="o_kanban_card_content">
                                     <div class="o_kanban_primary_left">
                                         <div class="row">
                                             <div class="col-6">
@@ -64,13 +65,13 @@
                                         <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + (record.utilization_percentage.raw_value or 0) + '%'"/>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-edit"/> Edit Location</a>
-                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class="fa fa-box"/> View Containers</a>
-                                <a role="menuitem" type="object" name="action_location_report" class="dropdown-item"><i class="fa fa-bar-chart"/> Location Report</a>
-                                <div class="dropdown-divider"/>
-                                <a role="menuitem" type="delete" class="dropdown-item"><i class="fa fa-trash"></i> Archive</a>
+                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                    <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-edit"/> Edit Location</a>
+                                    <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class="fa fa-box"/> View Containers</a>
+                                    <a role="menuitem" type="object" name="action_location_report" class="dropdown-item"><i class="fa fa-bar-chart"/> Location Report</a>
+                                    <div class="dropdown-divider"/>
+                                    <a role="menuitem" type="delete" class="dropdown-item"><i class="fa fa-trash"/> Archive</a>
+                                </div>
                             </div>
                         </t>
                     </templates>
@@ -83,7 +84,7 @@
             <field name="name">records.location.view.tree</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
-                <list decoration-success="current_utilization &lt; storage_capacity * 0.8" decoration-warning="current_utilization &gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &gt;= storage_capacity">
+                <tree decoration-success="current_utilization &lt; storage_capacity * 0.8" decoration-warning="current_utilization &gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &gt;= storage_capacity">
                     <field name="name" string="Location Name"/>
                     <field name="location_type" string="Type"/>
                     <field name="storage_capacity" string="Capacity"/>
@@ -92,7 +93,7 @@
                     <field name="utilization_percentage" string="Utilization %" widget="percentage"/>
                     <field name="active" string="Active"/>
                     <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -147,13 +148,13 @@
 
                         <notebook>
                             <page name="containers" string="Stored Containers">
-                                <field name="container_ids" mode="list">
-                                    <list>
+                                <field name="container_ids" mode="tree">
+                                    <tree>
                                         <field name="name"/>
                                         <field name="partner_id"/>
                                         <field name="state"/>
                                         <field name="storage_start_date"/>
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page name="details" string="Details &amp; Notes">
@@ -204,10 +205,10 @@
         </record>
 
         <!-- Action for ENTERPRISE -->
-    <record id="action_records_location" model="ir.actions.act_window">
-            <field name="name"><i class='fa fa-building'></i> Storage Locations</field>
+        <record id="action_records_location" model="ir.actions.act_window">
+            <field name="name">Storage Locations</field>
             <field name="res_model">records.location</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="records_location_view_search"/>
             <field name="context">{
                 'search_default_active': 1,
@@ -215,17 +216,18 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class='fa fa-building'></i> Create your first storage location!
+                    Create your first storage location!
                 </p>
                 <p>
                     <b>Enterprise Storage Management:</b>
                     <br/>
-                    • <i class='fa fa-box'></i> Track box locations with visual kanban boards<br/>
-                    • <i class='fa fa-bar-chart'></i> Monitor capacity utilization in real-time<br/>
-                    • <i class='fa fa-search'></i> Smart search with advanced filters<br/>
-                    • <i class='fa fa-building'></i> Hierarchical location organization<br/>
-                    • <i class='fa fa-mobile'></i> Mobile-optimized for facility operations
+                    • Track box locations with visual kanban boards<br/>
+                    • Monitor capacity utilization in real-time<br/>
+                    • Smart search with advanced filters<br/>
+                    • Hierarchical location organization<br/>
+                    • Mobile-optimized for facility operations
                 </p>
             </field>
         </record>
-</data>
+    </data>
+</odoo>
