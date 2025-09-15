@@ -84,7 +84,7 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                                     <field name="name"/>
                                     <field name="email"/>
                                     <field name="phone"/>
-                                    <field name="is_primary"/>
+                                    <field name="billing_role"/>
                                 </list>
                             </field>
                         </page>
