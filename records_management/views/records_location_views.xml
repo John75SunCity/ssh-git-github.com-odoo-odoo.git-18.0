@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<data>
+    <data>
 <!-- Kanban view for Enhanced -->
         <record id="records_location_view_kanban" model="ir.ui.view">
             <field name="name">records.location.view.kanban</field>
@@ -229,5 +229,5 @@
                 </p>
             </field>
         </record>
-</data>
+    </data>
 </odoo>
