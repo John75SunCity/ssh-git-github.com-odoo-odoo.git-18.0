@@ -46,10 +46,35 @@
             <search string="Records Categories">
                 <field name="name"/>
                 <field name="parent_id"/>
+                <filter string="Top Level Categories" name="top_level" domain="[('parent_id', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Parent Category" name="group_parent" context="{'group_by': 'parent_id'}"/>
+                </group>
             </search>
         </field>
     </record>
 
-    <menuitem id="menu_records_category_root" name="Categories" parent="records_management.menu_records_management_root" sequence="30"/>
-    <act_window id="action_records_category" name="Categories" res_model="records.category" view_mode="tree,form" menu_id="menu_records_category_root"/>
+    <record id="action_records_category" model="ir.actions.act_window">
+        <field name="name">Categories</field>
+        <field name="res_model">records.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('records_category_view_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('records_category_view_form')})]"/>
+        <field name="search_view_id" ref="records_category_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first records category
+            </p>
+            <p>
+                Categories help organize your document types hierarchically.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_records_category_root"
+              name="Categories"
+              parent="records_management.menu_records_management_root"
+              action="action_records_category"
+              sequence="30"/>
 </odoo>
