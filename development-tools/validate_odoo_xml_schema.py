@@ -45,33 +45,36 @@ def validate_xml_schema(file_path):
         lines = content.split('\n')
         in_record = False
         in_data = False
+        has_any_data_tag = '<data' in content
 
-        for i, line in enumerate(lines, 1):
-            stripped = line.strip()
+        # Only check for menu placement if there are data tags in the file
+        if has_any_data_tag:
+            for i, line in enumerate(lines, 1):
+                stripped = line.strip()
 
-            # Track if we're inside a record
-            if '<record' in stripped and not stripped.startswith('<!--'):
-                in_record = True
-            elif '</record>' in stripped and not stripped.startswith('<!--'):
-                in_record = False
+                # Track if we're inside a record
+                if '<record' in stripped and not stripped.startswith('<!--'):
+                    in_record = True
+                elif '</record>' in stripped and not stripped.startswith('<!--'):
+                    in_record = False
 
-            # Track if we're inside a data tag
-            if '<data' in stripped and not stripped.startswith('<!--'):
-                in_data = True
-            elif '</data>' in stripped and not stripped.startswith('<!--'):
-                in_data = False
+                # Track if we're inside a data tag
+                if '<data' in stripped and not stripped.startswith('<!--'):
+                    in_data = True
+                elif '</data>' in stripped and not stripped.startswith('<!--'):
+                    in_data = False
 
-            # Check for menu items or actions outside of proper containers
-            if ('<menuitem' in stripped or '<act_window' in stripped) and not stripped.startswith('<!--'):
-                # These should be either:
-                # 1. Inside a <data> tag, or
-                # 2. Inside a <record> tag (for ir.actions.act_window records), or
-                # 3. At root level but wrapped in <data>
-                if not in_record and not in_data:
-                    # Check if the line is directly under <odoo>
-                    preceding_lines = [l.strip() for l in lines[:i-1] if l.strip() and not l.strip().startswith('<!--')]
-                    if preceding_lines and not any('<data' in l for l in preceding_lines[-3:]):
-                        issues.append(f"Line {i}: Menu item or action outside of <data> wrapper: {stripped[:80]}...")
+                # Check for menu items or actions outside of proper containers
+                if ('<menuitem' in stripped or '<act_window' in stripped) and not stripped.startswith('<!--'):
+                    # These should be either:
+                    # 1. Inside a <data> tag, or
+                    # 2. Inside a <record> tag (for ir.actions.act_window records), or
+                    # 3. At root level but wrapped in <data>
+                    if not in_record and not in_data:
+                        # Check if the line is directly under <odoo>
+                        preceding_lines = [l.strip() for l in lines[:i-1] if l.strip() and not l.strip().startswith('<!--')]
+                        if preceding_lines and not any('<data' in l for l in preceding_lines[-3:]):
+                            issues.append(f"Line {i}: Menu item or action outside of <data> wrapper: {stripped[:80]}...")
 
         # Check for invalid nested <odoo><data> structure
         if '<odoo>' in content and '<data>' in content:
