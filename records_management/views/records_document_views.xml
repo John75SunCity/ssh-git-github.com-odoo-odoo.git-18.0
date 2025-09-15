@@ -234,14 +234,14 @@
                         <page string="Destruction Record" name="destruction" invisible="state != 'destroyed'">
                             <group>
                                 <group string="Destruction Details">
-                                    <field name="destruction_date"/>
+                                    <field name="actual_destruction_date"/>
                                     <field name="destruction_method"/>
                                     <field name="destruction_certificate_id"/>
                                     <field name="naid_destruction_verified"/>
                                 </group>
                                 <group string="Authorized Personnel">
-                                    <field name="destruction_authorized_by"/>
-                                    <field name="destruction_witness"/>
+                                    <field name="destruction_authorized_by_id"/>
+                                    <field name="destruction_witness_id"/>
                                     <field name="destruction_facility"/>
                                 </group>
                             </group>
