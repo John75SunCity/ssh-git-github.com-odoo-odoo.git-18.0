@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 <!-- List View -->
 <record id="records_bulk_user_import_view_tree" model="ir.ui.view">
     <field name="name">records.bulk.user.import.view.tree</field>
@@ -70,5 +69,4 @@
 
         <!-- Menu Item -->
         <menuitem id="records_bulk_user_import_menu" name="Bulk User Import" parent="menu_records_management_root" action="records_bulk_user_import_action" groups="records_management.group_records_manager"/>
-    </data>
-</odoo>
+    </odoo>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <!-- Paper Model Bale Feature Configuration -->
         <record id="config_enable_paper_model_bale" model="rm.module.configurator">
             <field name="name">Enable Paper Model Bales</field>
@@ -66,5 +65,4 @@
             <field name="description">Default capacity for new shred bins in pounds. Used for capacity monitoring and alert thresholds.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
-    </data>
-</odoo>
+    </odoo>

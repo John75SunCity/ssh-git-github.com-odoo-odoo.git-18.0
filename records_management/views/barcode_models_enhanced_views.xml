@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for base.rate -->
+<odoo><!-- List view for base.rate -->
     <record id="barcode_models_enhanced_view_tree" model="ir.ui.view">
         <field name="name">barcode.models.enhanced.view.tree</field>
         <field name="model">barcode.models.enhanced</field>
@@ -58,5 +55,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

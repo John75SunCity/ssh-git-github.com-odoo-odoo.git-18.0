@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for revenue.forecast -->
+<odoo><!-- List view for revenue.forecast -->
     <record id="revenue_forecast_view_tree" model="ir.ui.view">
         <field name="name">revenue.forecast.view.tree</field>
         <field name="model">revenue.forecast</field>
@@ -58,5 +55,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <!-- List View for Destruction Certificates -->
         <record id="destruction_certificate_view_tree" model="ir.ui.view">
             <field name="name">destruction.certificate.view.tree</field>
@@ -263,5 +262,4 @@ Create your first destruction certificate!
                   action="action_destruction_certificate"
                   sequence="25"/>
 
-    </data>
-</odoo>
+    </odoo>

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<odoo>
-
-    
-    <data><!-- Inherited view to add smart button for Field Label Helper Wizard on Container form -->
+<odoo><!-- Inherited view to add smart button for Field Label Helper Wizard on Container form -->
     <record id="records_container_view_form_inherit" model="ir.ui.view">
         <field name="name">records.container.view.form.inherit.field_label_helper</field>
         <field name="model">records.container</field>
@@ -20,5 +17,4 @@
         </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

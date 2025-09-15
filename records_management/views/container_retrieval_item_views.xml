@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
+<odoo><!-- Deprecated: all container.retrieval.item views removed (unified retrieval architecture) -->
 
-
-    <data><!-- Deprecated: all container.retrieval.item views removed (unified retrieval architecture) -->
-
-    </data>
-</odoo>
+    </odoo>

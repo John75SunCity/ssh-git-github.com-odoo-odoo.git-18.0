@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for base.rate -->
+<odoo><!-- List view for base.rate -->
     <record id="portal_feedback_action_view_tree" model="ir.ui.view">
         <field name="name">portal.feedback.action.view.tree</field>
         <field name="model">portal.feedback.action</field>
@@ -58,5 +55,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

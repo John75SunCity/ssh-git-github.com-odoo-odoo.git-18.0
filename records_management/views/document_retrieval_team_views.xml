@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <!-- Document Retrieval Team Views - Simplified for functionality -->
 
         <!-- Inherited List View: add specialization column -->
@@ -95,5 +94,4 @@
                 </xpath>
             </field>
         </record>
-    </data>
-</odoo>
+    </odoo>

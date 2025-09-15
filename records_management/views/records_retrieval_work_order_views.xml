@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-    
-    <data><!-- ============================================================================ -->
+<odoo><!-- ============================================================================ -->
     <!-- RECORDS RETRIEVAL WORK ORDER - LIST VIEW -->
     <!-- ============================================================================ -->
     <record id="records_retrieval_work_order_view_tree" model="ir.ui.view">
@@ -214,5 +211,4 @@
         <field name="context">{'default_state': 'draft'}</field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

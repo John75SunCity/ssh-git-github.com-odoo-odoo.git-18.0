@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 <!-- List view for PORTAL -->
 
     <!-- Kanban view for Kanban -->
@@ -204,6 +203,4 @@
     </record>
 
     <!-- Menu definition removed - already exists in records_management_menus.xml and portal_feedback_menus.xml -->
-</data>
-
 </odoo>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <!-- Temporary Inventory Feature Configuration -->
         <record id="config_enable_temp_inventory" model="rm.module.configurator">
             <field name="name">Enable Temporary Inventory</field>
@@ -66,5 +65,4 @@
             <field name="description">Send notifications when temporary inventory items are created, moved, or approaching expiration.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
-    </data>
-</odoo>
+    </odoo>

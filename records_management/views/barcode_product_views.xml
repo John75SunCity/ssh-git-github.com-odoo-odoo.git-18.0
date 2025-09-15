@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-    
-    <data><!-- Kanban view for KANBAN -->
+<odoo><!-- Kanban view for KANBAN -->
     <record id="barcode_product_view_kanban" model="ir.ui.view">
         <field name="name">barcode.product.view.kanban</field>
         <field name="model">barcode.product</field>
@@ -359,5 +356,4 @@
         </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

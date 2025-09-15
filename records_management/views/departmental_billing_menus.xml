@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for Department -->
+<odoo><!-- List view for Department -->
 
 <!-- List view for Menu -->
 <menuitem id="menu_department_billing_contacts" 
@@ -12,5 +9,4 @@
             sequence="26"
             groups="records_management.group_records_manager"/>
 
-    </data>
-</odoo>
+    </odoo>

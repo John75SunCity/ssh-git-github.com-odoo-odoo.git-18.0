@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for location.report.wizard -->
+<odoo><!-- List view for location.report.wizard -->
     <record id="location_report_wizard_view_tree" model="ir.ui.view">
         <field name="name">location.report.wizard.view.tree</field>
         <field name="model">location.report.wizard</field>
@@ -78,5 +75,4 @@ Generate location utilization reports.
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

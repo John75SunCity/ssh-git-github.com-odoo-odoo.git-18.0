@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    
-    <data><!-- NAID Operator Certification Views -->
+<odoo><!-- NAID Operator Certification Views -->
     <record id="naid_operator_certification_view_tree" model="ir.ui.view">
         <field name="name">naid.operator.certification.view.tree</field>
         <field name="model">naid.operator.certification</field>
@@ -189,5 +187,4 @@
                 action="naid_operator_certification_action" sequence="10"/>
     <menuitem id="naid_training_schedule_menu" name="Training Schedule" parent="naid_certification_menu"
                 action="naid_training_schedule_action" sequence="20"/>
-    </data>
-</odoo>
+    </odoo>

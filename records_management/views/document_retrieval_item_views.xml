@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- Document Retrieval Item List View -->
+<odoo><!-- Document Retrieval Item List View -->
     <record id="document_retrieval_item_view_tree" model="ir.ui.view">
         <field name="name">document.retrieval.item.view.tree</field>
         <field name="model">document.retrieval.item</field>
@@ -158,5 +155,4 @@ invisible="status != 'retrieved'"/>
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

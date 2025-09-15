@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    
-    <data><record id="destruction_event_view_tree" model="ir.ui.view">
+<odoo><record id="destruction_event_view_tree" model="ir.ui.view">
         <field name="name">destruction.event.view.tree</field>
         <field name="model">destruction.event</field>
         <field name="arch" type="xml">
@@ -65,5 +63,4 @@
         <field name="domain">[("certificate_id", "=", active_id)]</field>
         <field name="context">{"default_certificate_id": active_id}</field>
     </record>
-    </data>
-</odoo>
+    </odoo>

@@ -14,8 +14,6 @@
     This file is part of the enterprise-grade Records Management module for Odoo 18.0.
 -->
 <odoo>
-
-    <data>
 <!-- Account Move Line Form View Extension for Records Management -->
     <record id="account_move_line_view_form" model="ir.ui.view">
         <field name="name">account.move.line.form.inherit.records</field>
@@ -176,6 +174,4 @@ invisible="records_service_type == False"/>
     </record>
 
     <!-- No changes required in this file. Ensure 'account' is in your manifest and installed. -->
-</data>
-
 </odoo>

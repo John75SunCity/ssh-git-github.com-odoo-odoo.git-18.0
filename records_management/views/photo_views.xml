@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-    
-    <data><!-- List view for photo -->
+<odoo><!-- List view for photo -->
     <record id="photo_view_tree" model="ir.ui.view">
         <field name="name">photo.view.tree</field>
         <field name="model">photo</field>
@@ -69,5 +66,4 @@
         </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

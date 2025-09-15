@@ -35,7 +35,6 @@
     License: LGPL-3
 -->
 <odoo>
-    <data>
 
         <!-- ==================================================================== -->
         <!-- RECORDS WORK VEHICLES - FSM & WORK INTEGRATION FOCUSED             -->
@@ -356,5 +355,4 @@
             sequence="30"
             groups="records_management.group_records_user,records_management.group_records_manager"/>
 
-    </data>
-</odoo>
+    </odoo>

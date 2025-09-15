@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for naid.compliance.checklist -->
+<odoo><!-- List view for naid.compliance.checklist -->
     <record id="naid_compliance_checklist_view_tree" model="ir.ui.view">
         <field name="name">naid.compliance.checklist.view.tree</field>
         <field name="model">naid.compliance.checklist</field>
@@ -106,5 +103,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

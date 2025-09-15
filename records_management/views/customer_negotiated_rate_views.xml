@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- View customer.negotiated.rate View Tree -->
+<odoo><!-- View customer.negotiated.rate View Tree -->
     <record id="customer_negotiated_rate_view_tree" model="ir.ui.view">
         <field name="name">customer.negotiated.rate.view.tree</field>
         <field name="model">customer.negotiated.rate</field>
@@ -58,5 +55,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

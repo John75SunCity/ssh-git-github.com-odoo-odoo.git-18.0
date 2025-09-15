@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-    
-    <data><!-- List view for Temporary -->
+<odoo><!-- List view for Temporary -->
     <record id="temp_inventory_view_tree" model="ir.ui.view">
         <field name="name">temp.inventory.view.tree</field>
         <field name="model">temp.inventory</field>
@@ -296,5 +293,4 @@ invisible="temp_inventory_enabled == False"/>
                 sequence="30"
                 groups="records_management.group_records_manager"/>
 
-    </data>
-</odoo>
+    </odoo>

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <data>
 <!-- List view for records.promotional.discount -->
     <record id="records_promotional_discount_view_tree" model="ir.ui.view">
         <field name="name">records.promotional.discount.view.tree</field>
@@ -57,6 +55,4 @@
             </p>
         </field>
     </record>
-</data>
-
 </odoo>

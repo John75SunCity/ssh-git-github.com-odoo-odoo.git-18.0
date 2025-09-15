@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <!-- List View -->
         <record id="records_request_line_view_tree" model="ir.ui.view">
             <field name="name">records.request.line.view.tree</field>
@@ -103,5 +102,4 @@
                   action="records_request_line_action"
                   sequence="25"/>
 
-    </data>
-</odoo>
+    </odoo>

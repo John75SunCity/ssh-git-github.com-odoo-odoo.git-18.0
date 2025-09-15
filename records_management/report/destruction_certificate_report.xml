@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <record id="action_report_destruction_certificate" model="ir.actions.report">
 <field name="name">Destruction Certificate</field>
 <field name="model">destruction.certificate</field>
@@ -140,5 +139,4 @@
 </t><!-- foreach doc -->
 </t><!-- html_container -->
         </template>
-    </data>
-</odoo>
+    </odoo>

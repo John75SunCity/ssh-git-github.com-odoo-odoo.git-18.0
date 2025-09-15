@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- Shredding Service Photo Views -->
+<odoo><!-- Shredding Service Photo Views -->
 
 <!-- List View -->
     <record id="shredding_service_photo_view_tree" model="ir.ui.view">
@@ -103,5 +100,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

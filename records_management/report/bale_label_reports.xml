@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <!-- Bale label report with technician signatures and dates -->
         <report id="bale_label_report"
                 model="records_management.bale"
@@ -78,5 +77,4 @@
             </t>
         </template>
 
-    </data>
-</odoo>
+    </odoo>

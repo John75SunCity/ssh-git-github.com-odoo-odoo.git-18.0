@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <!-- Portal Inventory Dashboard Template -->
         <template id="portal_inventory_dashboard" name="Portal Inventory Dashboard">
             <t t-call="portal.portal_layout">
@@ -329,5 +328,4 @@
             </t>
         </template>
 
-    </data>
-</odoo>
+    </odoo>

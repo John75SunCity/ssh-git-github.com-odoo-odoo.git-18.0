@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <!--
         Customer Inventory Report Action:
         Defines a QWeb PDF report for customer inventory, binding it to the `res.partner` model.
@@ -263,5 +262,4 @@
                 </tbody>
             </table>
         </template>
-    </data>
-</odoo>
+    </odoo>

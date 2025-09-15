@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 <!-- ============================================================================ -->
 <!-- PAPER MODEL BALE VIEWS -->
 <!-- ============================================================================ -->
@@ -142,5 +141,4 @@
     <field name="help">Manage paper model bales for records management</field>
 </record>
 
-    </data>
-</odoo>
+    </odoo>

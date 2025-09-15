@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 <!-- Report for destruction.certificate model (renamed from destruction_certificate_report.xml) -->
 <record id="action_report_destruction_certificate" model="ir.actions.report">
     <field name="name">Destruction Certificate</field>
@@ -461,5 +460,4 @@ This certificate confirms the secure destruction of customer-provided materials
                 </div>
             </t>
         </template>
-    </data>
-</odoo>
+    </odoo>

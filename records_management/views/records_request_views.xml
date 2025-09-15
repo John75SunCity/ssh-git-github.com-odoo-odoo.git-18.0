@@ -1,5 +1,4 @@
 <odoo>
-    <data>
 
         <!-- List View -->
         <record id="records_request_view_tree" model="ir.ui.view">
@@ -99,5 +98,4 @@
                   action="action_records_request"
                   sequence="30"/>
 
-    </data>
-</odoo>
+    </odoo>

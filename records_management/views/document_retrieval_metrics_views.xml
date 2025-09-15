@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- Document Retrieval Metrics Views -->
+<odoo><!-- Document Retrieval Metrics Views -->
 
 <!-- List View -->
     <record id="document_retrieval_metrics_view_tree" model="ir.ui.view">
@@ -123,5 +120,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

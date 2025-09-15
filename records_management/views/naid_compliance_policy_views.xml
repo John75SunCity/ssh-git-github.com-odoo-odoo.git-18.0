@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- View naid.compliance.policy View List -->
+<odoo><!-- View naid.compliance.policy View List -->
     <record id="view_naid_compliance_policy_list" model="ir.ui.view">
         <field name="name">view.naid.compliance.policy.list</field>
         <field name="model">naid.compliance.policy</field>
@@ -58,5 +55,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

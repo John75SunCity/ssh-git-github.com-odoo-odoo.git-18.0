@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
         <!-- Portal Audit Trail Report Action -->
         <record id="action_portal_audit_report" model="ir.actions.report">
             <field name="name">NAID AAA Audit Trail Report</field>
@@ -548,5 +547,4 @@
                 </style>
             </t>
         </template>
-    </data>
-</odoo>
+    </odoo>

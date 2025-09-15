@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for file.retrieval.item -->
+<odoo><!-- List view for file.retrieval.item -->
     <record id="file_retrieval_item_view_tree" model="ir.ui.view">
         <field name="name">file.retrieval.item.view.list</field>
         <field name="model">file.retrieval.item</field>
@@ -58,5 +55,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

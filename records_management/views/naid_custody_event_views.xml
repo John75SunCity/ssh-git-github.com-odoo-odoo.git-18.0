@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for naid.custody.event -->
+<odoo><!-- List view for naid.custody.event -->
     <record id="naid_custody_event_view_tree" model="ir.ui.view">
         <field name="name">naid.custody.event.view.tree</field>
         <field name="model">naid.custody.event</field>
@@ -58,5 +55,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

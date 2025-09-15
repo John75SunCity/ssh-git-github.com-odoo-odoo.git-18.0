@@ -1,11 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<odoo>
-
-
-
-
-    
-    <data><record id="work_order_coordinator_view_tree" model="ir.ui.view">
+<odoo><record id="work_order_coordinator_view_tree" model="ir.ui.view">
         <field name="name">work.order.coordinator.view.tree</field>
         <field name="model">work.order.coordinator</field>
         <field name="arch" type="xml">
@@ -350,5 +344,4 @@ Click to create a new Work Order Coordinator.
         <field name="context">{'search_default_group_department': 1}</field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

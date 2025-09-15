@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
 
         <!-- List View -->
         <record id="records_center_location_view_tree" model="ir.ui.view">
@@ -66,5 +65,4 @@
             <field name="view_mode">list,form</field>
         </record>
 
-    </data>
-</odoo>
+    </odoo>

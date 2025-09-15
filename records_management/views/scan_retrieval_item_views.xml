@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-    
-    <data><!-- Enhanced Kanban View -->
+<odoo><!-- Enhanced Kanban View -->
     <record id="scan_retrieval_item_view_kanban" model="ir.ui.view">
         <field name="name">scan.retrieval.item.view.kanban</field>
         <field name="model">scan.retrieval.item</field>
@@ -263,5 +260,4 @@
         </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

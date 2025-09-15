@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for records.retention.policy.version -->
+<odoo><!-- List view for records.retention.policy.version -->
     <record id="records_retention_policy_version_view_tree" model="ir.ui.view">
         <field name="name">records.retention.policy.version.view.tree</field>
         <field name="model">records.retention.policy.version</field>
@@ -203,5 +200,4 @@
             action="action_records_retention_policy_version"
             sequence="15"/>
 
-    </data>
-</odoo>
+    </odoo>

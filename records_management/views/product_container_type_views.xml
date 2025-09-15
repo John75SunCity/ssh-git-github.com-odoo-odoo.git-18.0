@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for product.container.type -->
+<odoo><!-- List view for product.container.type -->
     <record id="product_container_type_view_tree" model="ir.ui.view">
         <field name="name">product.container.type.view.tree</field>
         <field name="model">product.container.type</field>
@@ -58,5 +55,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

@@ -1,9 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<odoo>
-
-    
-    
-    <data><record id="naid_custody_view_list" model="ir.ui.view">
+<odoo><record id="naid_custody_view_list" model="ir.ui.view">
         <field name="name">naid.custody.view.list</field>
         <field name="model">naid.custody</field>
         <field name="arch" type="xml">
@@ -169,5 +165,4 @@
         </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

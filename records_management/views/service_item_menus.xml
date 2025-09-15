@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-    
-    <data><!-- ============================================================================ -->
+<odoo><!-- ============================================================================ -->
     <!-- SERVICE ITEMS SECTION (Enhanced with comprehensive structure) -->
     <!-- ============================================================================ -->
     <menuitem id="menu_service_item_main" name="Service Items" parent="menu_records_configuration" sequence="30"/>
@@ -86,5 +83,4 @@
     <!-- Customer Self-Service Setup -->
     <menuitem id="menu_service_item_self_service" name="&lt;i class='fa fa-wrench'/&gt; Self-Service Setup" parent="menu_service_item_portal" action="action_service_item_self_service" sequence="15"/>
 
-    </data>
-</odoo>
+    </odoo>

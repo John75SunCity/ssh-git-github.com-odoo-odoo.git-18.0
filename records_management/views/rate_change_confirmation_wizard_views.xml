@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for rate.change.confirmation.wizard -->
+<odoo><!-- List view for rate.change.confirmation.wizard -->
     <record id="rate_change_confirmation_wizard_view_tree" model="ir.ui.view">
         <field name="name">rate.change.confirmation.wizard.view.tree</field>
         <field name="model">rate.change.confirmation.wizard</field>
@@ -86,5 +83,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

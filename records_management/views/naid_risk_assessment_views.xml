@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for naid.risk.assessment -->
+<odoo><!-- List view for naid.risk.assessment -->
     <record id="naid_risk_assessment_view_tree" model="ir.ui.view">
         <field name="name">naid.risk.assessment.view.tree</field>
         <field name="model">naid.risk.assessment</field>
@@ -58,5 +55,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-    
-    <data><!-- Workflow Visualization Manager Views -->
+<odoo><!-- Workflow Visualization Manager Views -->
 
     <!-- List View -->
     <record id="workflow_visualization_manager_view_tree" model="ir.ui.view">
@@ -103,5 +100,4 @@
         </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>

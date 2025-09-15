@@ -15,7 +15,6 @@
     Maintainer: Records Management Team
 -->
 <odoo>
-    <data>
         <!-- Add a generic To Do activity type for customer follow-up and general tasks -->
         <record id="mail_activity_data_todo" model="mail.activity.type">
             <field name="name">To Do</field>
@@ -25,5 +24,4 @@
             <field name="delay_count">0</field>
             <field name="sequence">10</field>
         </record>
-    </data>
-</odoo>
+    </odoo>

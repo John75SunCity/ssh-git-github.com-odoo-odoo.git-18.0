@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-
-
-    <data><!-- List view for temp.inventory.reject.wizard -->
+<odoo><!-- List view for temp.inventory.reject.wizard -->
     <record id="temp_inventory_reject_wizard_view_tree" model="ir.ui.view">
         <field name="name">temp.inventory.reject.wizard.view.tree</field>
         <field name="model">temp.inventory.reject.wizard</field>
@@ -66,5 +63,4 @@
     </field>
     </record>
 
-    </data>
-</odoo>
+    </odoo>
