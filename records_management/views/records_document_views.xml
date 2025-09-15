@@ -254,7 +254,7 @@
                                     <field name="file_format"/>
                                     <field name="resolution"/>
                                     <field name="file_size"/>
-                                    <field name="document_id.location_id"/>
+                                    <field name="storage_location_id"/>
                                     <button name="action_download" type="object" string="Download" icon="fas fa-download" class="btn-link"/>
                                 </list>
                             </field>

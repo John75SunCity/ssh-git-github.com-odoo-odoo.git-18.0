@@ -54,6 +54,16 @@ class RecordsDigitalScan(models.Model):
     ], string="Scan Quality", default='medium', tracking=True)
     scanner_id = fields.Char(string="Scanner ID/Name", help="Identifier for the scanning hardware used.")
     scan_info = fields.Char(string="Scan Info", compute='_compute_scan_info', store=True)
+    
+    # Storage location - related field from document's container location
+    storage_location_id = fields.Many2one(
+        related='document_id.location_id',
+        string="Storage Location",
+        store=True,
+        readonly=True,
+        comodel_name='stock.location',
+        help="Warehouse location where the document's container is stored"
+    )
 
     # ============================================================================
     # ORM OVERRIDES
