@@ -55,6 +55,12 @@ class RecordsDigitalScan(models.Model):
     scanner_id = fields.Char(string="Scanner ID/Name", help="Identifier for the scanning hardware used.")
     scan_info = fields.Char(string="Scan Info", compute='_compute_scan_info', store=True)
     
+    # ============================================================================
+    # FILE STORAGE - Built-in Odoo Download Functionality
+    # ============================================================================
+    file_data = fields.Binary(string="Scanned File", help="The actual scanned file data")
+    file_name = fields.Char(string="File Name", help="Name of the scanned file")
+    
     # Storage location - related field from document's container location
     storage_location_id = fields.Many2one(
         related='document_id.location_id',
