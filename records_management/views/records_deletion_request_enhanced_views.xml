@@ -24,13 +24,13 @@
         <field name="arch" type="xml">
             <form string="Records Deletion Request Enhanced">
                 <header>
-                    <button name="action_submit" type="object" string="Submit" states="draft" class="oe_highlight"/>
-                    <button name="action_approve" type="object" string="Approve" states="submitted" class="oe_highlight" groups="records_management.group_records_manager"/>
-                    <button name="action_reject" type="object" string="Reject" states="submitted,approved" groups="records_management.group_records_manager"/>
-                    <button name="action_schedule" type="object" string="Schedule" states="approved" class="oe_highlight"/>
-                    <button name="action_start_deletion" type="object" string="Start Deletion" states="scheduled" class="oe_highlight"/>
-                    <button name="action_complete_deletion" type="object" string="Complete" states="in_progress" class="oe_highlight"/>
-                    <button name="action_cancel" type="object" string="Cancel" states="draft,submitted,approved,scheduled"/>
+                    <button name="action_submit" type="object" string="Submit" invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_approve" type="object" string="Approve" invisible="state != 'submitted'" class="oe_highlight" groups="records_management.group_records_manager"/>
+                    <button name="action_reject" type="object" string="Reject" invisible="state not in ['submitted', 'approved']" groups="records_management.group_records_manager"/>
+                    <button name="action_schedule" type="object" string="Schedule" invisible="state != 'approved'" class="oe_highlight"/>
+                    <button name="action_start_deletion" type="object" string="Start Deletion" invisible="state != 'scheduled'" class="oe_highlight"/>
+                    <button name="action_complete_deletion" type="object" string="Complete" invisible="state != 'in_progress'" class="oe_highlight"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state not in ['draft', 'submitted', 'approved', 'scheduled']"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,scheduled,in_progress,completed"/>
                 </header>
                 <sheet>
@@ -67,8 +67,8 @@
                         </page>
                         <page string="Items">
                             <group>
-                                <field name="container_ids" widget="many2many_tags" attrs="{'invisible': [('deletion_type', '=', 'document')]}"/>
-                                <field name="document_ids" widget="many2many_tags" attrs="{'invisible': [('deletion_type', '=', 'container')]}"/>
+                                <field name="container_ids" widget="many2many_tags" invisible="deletion_type == 'document'"/>
+                                <field name="document_ids" widget="many2many_tags" invisible="deletion_type == 'container'"/>
                             </group>
                         </page>
                         <page string="Compliance">

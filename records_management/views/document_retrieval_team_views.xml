@@ -27,7 +27,7 @@
                         <group>
                             <field name="specialization"/>
                             <field name="naid_certified"/>
-                            <field name="certification_level" attrs="{'invisible': [('naid_certified', '=', False)]}"/>
+                            <field name="certification_level" invisible="not naid_certified"/>
                         </group>
                         <group>
                             <field name="average_response_time" readonly="1"/>
