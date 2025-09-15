@@ -3,12 +3,12 @@
     <data>
 <record id="report_records_deletion_request_enhanced" model="ir.actions.report">
         <field name="name">Records Deletion Request Enhanced</field>
-        <field name="model">records.deletion.request.enhanced</field>
+        <field name="model">records.deletion.request</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_records_deletion_request_enhanced_view</field>
         <field name="report_file">records_management.report_records_deletion_request_enhanced</field>
         <field name="print_report_name">"(Records Deletion Request Enhanced Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="records_management.model_records_deletion_request_enhanced"/>
+        <field name="binding_model_id" ref="model_records_deletion_request"/>
         <field name="binding_type">report</field>
     </record>
 
@@ -17,27 +17,78 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Records Deletion Request Enhanced Report</h2>
+                        <h2>Records Deletion Request Report</h2>
                         <table class="table table-condensed">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
+                                    <th>Request ID</th>
+                                    <th>Customer</th>
+                                    <th>Request Date</th>
+                                    <th>State</th>
+                                    <th>Priority</th>
+                                    <th>Total Items</th>
+                                    <th>Reason</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-if="doc.field_ids">
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
+                                <tr>
+                                    <td><span t-esc="doc.name"/></td>
+                                    <td><span t-esc="doc.partner_id.name"/></td>
+                                    <td><span t-esc="doc.request_date"/></td>
+                                    <td><span t-esc="doc.state"/></td>
+                                    <td><span t-esc="doc.priority"/></td>
+                                    <td><span t-esc="doc.total_items_count"/></td>
+                                    <td><span t-esc="doc.reason"/></td>
                                 </tr>
-                            </t>
                             </tbody>
                         </table>
+                        
+                        <div class="mt16">
+                            <h4>Deletion Details</h4>
+                            <p><strong>Description:</strong> <span t-esc="doc.description"/></p>
+                            <p><strong>Special Instructions:</strong> <span t-esc="doc.special_instructions"/></p>
+                            <p><strong>Notes:</strong> <span t-esc="doc.notes"/></p>
+                        </div>
+                        
+                        <t t-if="doc.container_ids">
+                            <div class="mt16">
+                                <h4>Containers for Deletion</h4>
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>Container</th>
+                                            <th>Location</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="doc.container_ids" t-as="container">
+                                            <td><span t-esc="container.name"/></td>
+                                            <td><span t-esc="container.location_id.name if container.location_id else 'N/A'"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </t>
+                        
+                        <t t-if="doc.document_ids">
+                            <div class="mt16">
+                                <h4>Documents for Deletion</h4>
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>Document</th>
+                                            <th>Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="doc.document_ids" t-as="document">
+                                            <td><span t-esc="document.name"/></td>
+                                            <td><span t-esc="document.document_type_id.name if document.document_type_id else 'N/A'"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </t>
                     </div>
                 </t>
             </t>
