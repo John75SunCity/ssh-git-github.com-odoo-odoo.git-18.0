@@ -178,6 +178,8 @@
                 </p>
                 <p>
                     <b><i class="fa fa-building" aria-hidden="true"/> Enterprise Storage Management:</b>
+                </p>
+                <ul>
                     <li><i class="fa fa-cube" aria-hidden="true"/> Track box locations with visual kanban boards</li>
                     <li><i class="fa fa-bar-chart" aria-hidden="true"/> Monitor capacity utilization in real-time</li>
                     <li><i class="fa fa-search" aria-hidden="true"/> Smart search with advanced filters</li>
