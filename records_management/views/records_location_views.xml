@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
 <!-- Kanban view for Enhanced -->
         <record id="records_location_view_kanban" model="ir.ui.view">
             <field name="name">records.location.view.kanban</field>
@@ -204,7 +205,7 @@
         </record>
 
         <!-- Action for ENTERPRISE -->
-        <record id="action_records_location" model="ir.actions.act_window">
+    <record id="action_records_location" model="ir.actions.act_window">
             <field name="name"><i class='fa fa-building'></i> Storage Locations</field>
             <field name="res_model">records.location</field>
             <field name="view_mode">kanban,list,form</field>
@@ -228,4 +229,5 @@
                 </p>
             </field>
         </record>
+    </data>
 </odoo>
