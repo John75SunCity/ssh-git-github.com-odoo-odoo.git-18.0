@@ -8,7 +8,9 @@ NO AUTO-FIXES - Pure validation and reporting for manual review
 import os
 import re
 import xml.etree.ElementTree as ET
-from collections import defaultdict
+from collections import defaultd        # First collect all XML IDs across the module
+        print("📋 Collecting XML IDs across module...")
+        # self._collect_xml_ids()  # Temporarily disabled to test base validator
 
 class MassViewFieldValidator:
     def __init__(self, records_management_path):
@@ -22,6 +24,7 @@ class MassViewFieldValidator:
         self.field_errors = []  # List of field validation errors
         self.accessibility_errors = []  # FontAwesome accessibility issues
         self.method_errors = []  # Missing method errors
+        self.external_id_errors = []  # Missing external ID references
         self.manual_review = [] # Complex issues requiring manual review
 
         # Common inherited fields from base Odoo models
@@ -43,6 +46,10 @@ class MassViewFieldValidator:
 
         # Load all model definitions
         self._scan_model_definitions()
+
+        # Collect all defined XML IDs for external reference validation
+        self.defined_xml_ids = set()
+        self._collect_xml_ids()
 
     def _scan_model_definitions(self):
         """Scan all Python model files to extract field definitions"""
@@ -180,6 +187,83 @@ class MassViewFieldValidator:
                     'type': 'accessibility_fa_title'
                 })
 
+    def _collect_xml_ids(self):
+        """Collect all defined XML IDs from all XML files for external reference validation"""
+        print("🔍 Collecting all defined XML IDs for external reference validation...")
+
+        xml_files = []
+        for root, dirs, files in os.walk(self.base_path):
+            for file in files:
+                if file.endswith('.xml'):
+                    xml_files.append(os.path.join(root, file))
+
+        for file_path in xml_files:
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+
+                # Find all XML ID definitions: <record id="..." or <menuitem id="..." etc.
+                id_pattern = r'<[^>]+\sid="([^"]+)"'
+                matches = re.finditer(id_pattern, content)
+
+                for match in matches:
+                    xml_id = match.group(1)
+                    # Add both with and without module prefix
+                    self.defined_xml_ids.add(xml_id)
+                    self.defined_xml_ids.add(f"records_management.{xml_id}")
+
+            except Exception as e:
+                continue
+
+        print(f"📊 Found {len(self.defined_xml_ids)} defined XML IDs")
+
+    def _check_external_id_references(self, content, file_path):
+        """Check for external ID references that don't exist"""
+        # Find parent references in menuitems
+        parent_pattern = r'parent="([^"]+)"'
+        parent_matches = re.finditer(parent_pattern, content)
+
+        for match in parent_matches:
+            parent_ref = match.group(1)
+            if parent_ref not in self.defined_xml_ids:
+                self.external_id_errors.append({
+                    'file': os.path.basename(file_path),
+                    'reference': parent_ref,
+                    'type': 'menuitem_parent',
+                    'error': f'External ID not found: {parent_ref}',
+                    'context': match.group(0)
+                })
+
+        # Find action references in menuitems
+        action_pattern = r'action="([^"]+)"'
+        action_matches = re.finditer(action_pattern, content)
+
+        for match in action_matches:
+            action_ref = match.group(1)
+            if action_ref not in self.defined_xml_ids:
+                self.external_id_errors.append({
+                    'file': os.path.basename(file_path),
+                    'reference': action_ref,
+                    'type': 'menuitem_action',
+                    'error': f'External ID not found: {action_ref}',
+                    'context': match.group(0)
+                })
+
+        # Find ref() references
+        ref_pattern = r'ref\([\'"]([^\'"]+)[\'"]\)'
+        ref_matches = re.finditer(ref_pattern, content)
+
+        for match in ref_matches:
+            ref_id = match.group(1)
+            if ref_id not in self.defined_xml_ids:
+                self.external_id_errors.append({
+                    'file': os.path.basename(file_path),
+                    'reference': ref_id,
+                    'type': 'ref_function',
+                    'error': f'External ID not found: {ref_id}',
+                    'context': match.group(0)
+                })
+
     def _check_action_methods(self, content, file_path):
         """Check for button actions that reference non-existent methods"""
         # Find all button name references
@@ -231,74 +315,39 @@ class MassViewFieldValidator:
             pass  # Skip files that can't be processed
 
     def scan_all_views(self):
-        """Scan all XML view files for field validation issues"""
-        print("🔍 Scanning all XML view files for field references...")
+        """Scan all view files in the module for various errors."""
+        print("🔍 Starting comprehensive view scan...")
+
+        # First collect all XML IDs across the module
+        print("� Collecting XML IDs across module...")
+        self.collect_xml_ids()
 
         view_files = []
-        for root, dirs, files in os.walk(self.views_path):
+        for root, dirs, files in os.walk("records_management"):
             for file in files:
                 if file.endswith('.xml'):
                     view_files.append(os.path.join(root, file))
 
-        print(f"📊 Found {len(view_files)} XML files to validate")
-
+        print(f"Found {len(view_files)} XML files to scan")
         for file_path in view_files:
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
-
-                # Parse XML
-                root = ET.fromstring(content)
-
-                # Find all view records
-                view_records = root.findall('.//record[@model="ir.ui.view"]')
-
-                for record in view_records:
-                    # Get the model this view is for
-                    model_field = record.find('.//field[@name="model"]')
-                    if model_field is not None:
-                        model_name = model_field.text
-                        if model_name:
-                            self._check_fields_in_arch(record, model_name, file_path)
-
-                # Check for other issues
-                self._check_actions_and_menus(file_path)
-
-                # NEW: Check FontAwesome accessibility
-                self._check_fontawesome_accessibility(content, file_path)
-
-                # NEW: Check action method references
-                self._check_action_methods(content, file_path)
-
-            except ET.ParseError as e:
-                self.field_errors.append({
-                    'file': os.path.basename(file_path),
-                    'model': 'XML_PARSE_ERROR',
-                    'field': 'N/A',
-                    'error': f'XML Parse Error: {e}',
-                    'type': 'xml_error'
-                })
-            except Exception as e:
-                self.field_errors.append({
-                    'file': os.path.basename(file_path),
-                    'model': 'VALIDATION_ERROR',
-                    'field': 'N/A',
-                    'error': f'Validation Error: {e}',
-                    'type': 'validation_error'
-                })
+            print(f"Scanning: {file_path}")
+            self.scan_view_file(file_path)
+            # self._check_external_id_references(file_path)  # Temporarily disabled
 
     def generate_report(self):
         """Generate comprehensive validation report"""
         total_field_errors = len(self.field_errors)
         total_accessibility_errors = len(self.accessibility_errors)
         total_method_errors = len(self.method_errors)
-        total_errors = total_field_errors + total_accessibility_errors + total_method_errors
+        total_external_id_errors = len(self.external_id_errors)
+        total_errors = total_field_errors + total_accessibility_errors + total_method_errors + total_external_id_errors
         manual_reviews = len(self.manual_review)
 
         print(f"📊 Scan complete:")
         print(f"   - Field errors found: {total_field_errors}")
         print(f"   - FontAwesome accessibility errors: {total_accessibility_errors}")
         print(f"   - Missing method errors: {total_method_errors}")
+        print(f"   - External ID reference errors: {total_external_id_errors}")
         print(f"   - Total errors: {total_errors}")
         print(f"   - Manual review needed: {manual_reviews}")
         print(f"   - AUTO-FIXES DISABLED - Validation only mode")        # Group errors by file for targeted fixes
