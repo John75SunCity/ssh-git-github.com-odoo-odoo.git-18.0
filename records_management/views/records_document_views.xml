@@ -5,18 +5,8 @@
 
     <!-- Kanban view for Document -->
     <record id="records_document_view_kanban" model="ir.ui.view">
-        <field name="name">records.document.view.kanb                        <page string="Digital Scans" name="digital" invisible="digital_scanning_enabled == False">
-                            <field name="digital_scan_ids" mode="list">
-                                <list>
-                                    <field name="scan_date"/>
-                                    <field name="file_format"/>
-                                    <field name="resolution"/>
-                                    <field name="file_size"/>
-                                    <field name="storage_location_id"/>
-                                    <field name="file_data" widget="binary" filename="file_name"/>
-                                </list>
-                            </field>
-                        </page>        <field name="model">records.document</field>
+        <field name="name">records.document.view.kanban</field>
+        <field name="model">records.document</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_document_dashboard">
                 <field name="name"/>

@@ -143,6 +143,12 @@ class RecordsDocument(models.Model):
     media_type = fields.Char("Media Type", tracking=True)
     original_format = fields.Char("Original Format", tracking=True)
     digitized = fields.Boolean("Digitized")
+    # Toggle for enabling Digital Scans tab (referenced in view)
+    digital_scanning_enabled = fields.Boolean(
+        string="Digital Scanning Enabled",
+        default=True,
+        help="Controls visibility and access to the Digital Scans tab in the document form."
+    )
     digital_scan_ids = fields.One2many('records.digital.scan', 'document_id', string="Digital Scans")
     scan_count = fields.Integer(string="Scan Count", compute='_compute_scan_count', store=True)
     total_scan_size_kb = fields.Integer(

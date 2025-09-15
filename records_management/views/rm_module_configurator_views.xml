@@ -161,8 +161,8 @@
 
 <separator/>
 
-<filter string="Recent" name="filter_recent" domain="[('create_date', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
-<filter string="Recently Modified" name="filter_recently_modified" domain="[('last_modified', '&gt;=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+<filter string="Recent" name="filter_recent" domain="[('create_date', '&gt;=', (context_today - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+<filter string="Recently Modified" name="filter_recently_modified" domain="[('last_modified', '&gt;=', (context_today - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
 <group expand="0" string="Group By">
     <filter string="Category" name="group_by_category" context="{'group_by': 'category'}"/>
     <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
