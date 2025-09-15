@@ -213,8 +213,8 @@
                                 <list>
                                     <field name="event_date"/>
                                     <field name="event_type"/>
-                                    <field name="to_custodian_id"/>
-                                    <field name="location"/>
+                                    <field name="user_id"/>
+                                    <field name="location_id"/>
                                     <field name="signature_verified"/>
                                     <field name="notes"/>
                                 </list>
