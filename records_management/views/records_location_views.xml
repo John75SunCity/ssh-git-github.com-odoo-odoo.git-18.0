@@ -9,13 +9,10 @@
                 <kanban default_group_by="location_type" class="o_kanban_location_dashboard">
                     <field name="name"/>
                     <field name="location_type"/>
-                    <field name="current_utilization"/>
                     <field name="storage_capacity"/>
-                    <field name="available_spaces"/>
-                    <field name="utilization_percentage"/>
                     <field name="active"/>
                     <templates>
-                        <t t-name="kanban-box">
+                        <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_card_header">
                                     <div class="o_kanban_card_header_title">
@@ -47,22 +44,12 @@
                                             <div class="col-6">
                                                 <div class="text-right">
                                                     <span class="badge badge-info">
-                                                        <field name="current_utilization"/>
-                                                        /
+                                                        Capacity:
                                                         <field name="storage_capacity"/>
-                                                        Used
-                                                    </span>
-                                                    <br/>
-                                                    <span class="badge badge-success">
-                                                        <field name="available_spaces"/>
-                                                        Available
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="progress mt-2" style="height: 8px;">
-                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + (record.utilization_percentage.raw_value or 0) + '%'"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
@@ -84,13 +71,10 @@
             <field name="name">records.location.view.tree</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
-                <tree decoration-success="current_utilization &lt; storage_capacity * 0.8" decoration-warning="current_utilization &gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &gt;= storage_capacity">
+                <tree>
                     <field name="name" string="Location Name"/>
                     <field name="location_type" string="Type"/>
                     <field name="storage_capacity" string="Capacity"/>
-                    <field name="current_utilization" string="Current Usage"/>
-                    <field name="available_spaces" string="Available Spaces"/>
-                    <field name="utilization_percentage" string="Utilization %" widget="percentage"/>
                     <field name="active" string="Active"/>
                     <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
                 </tree>
@@ -111,23 +95,9 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_containers" type="object" class="oe_stat_button" icon="fa-cube">
-                                <field name="current_utilization" string="Containers" widget="statinfo"/>
-                            </button>
-                            <button name="action_location_report" type="object" class="oe_stat_button" icon="fa-bar-chart">
                                 <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="utilization_percentage"/>
-                                        %
-                                    </span>
-                                    <span class="o_stat_text">Utilization</span>
-                                </div>
-                            </button>
-                            <button class="oe_stat_button" icon="fa-check-circle" style="color: green;">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="available_spaces"/>
-                                    </span>
-                                    <span class="o_stat_text">Available</span>
+                                    <span class="o_stat_value">View</span>
+                                    <span class="o_stat_text">Containers</span>
                                 </div>
                             </button>
                         </div>
@@ -138,11 +108,8 @@
                                 <field name="location_type"/>
                                 <field name="parent_location_id" string="Parent Location"/>
                             </group>
-                            <group string="Capacity &amp; Usage">
+                            <group string="Capacity">
                                 <field name="storage_capacity"/>
-                                <field name="current_utilization"/>
-                                <field name="available_spaces"/>
-                                <field name="utilization_percentage" widget="percentage"/>
                             </group>
                         </group>
 
@@ -184,11 +151,44 @@
                     <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
                     <field name="location_type"/>
 
-                    <filter name="available_space" string="Available Space" domain="[('available_spaces', '&gt;', 0)]"/>
-                    <filter name="near_capacity" string="Near Capacity" domain="[('utilization_percentage', '&gt;=', 80)]"/>
-                    <filter name="at_capacity" string="At Capacity" domain="[('current_utilization', '&gt;=', 'storage_capacity')]"/>
-
                     <separator/>
+                    <filter name="active" string="Active Locations" domain="[('active', '=', True)]"/>
+                    <filter name="inactive" string="Archived Locations" domain="[('active', '=', False)]"/>
+
+                    <group string="Group By" expand="0">
+                        <filter name="group_by_type" string="Type" context="{'group_by': 'location_type'}"/>
+                        <filter name="group_by_parent" string="Parent Location" context="{'group_by': 'parent_location_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for ENTERPRISE -->
+        <record id="action_records_location" model="ir.actions.act_window">
+            <field name="name">Storage Locations</field>
+            <field name="res_model">records.location</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="records_location_view_search"/>
+            <field name="context">{
+                'search_default_active': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first storage location!
+                </p>
+                <p>
+                    <b>Enterprise Storage Management:</b>
+                    <br/>
+                    • Track box locations with visual kanban boards<br/>
+                    • Monitor capacity utilization in real-time<br/>
+                    • Smart search with advanced filters<br/>
+                    • Hierarchical location organization<br/>
+                    • Mobile-optimized for facility operations
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>
                     <filter name="optimal_load" string="Optimal Load (20-80%)" domain="[('utilization_percentage', '&gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
                     <filter name="lots_of_space" string="Lots of Space (&gt;10)" domain="[('available_spaces', '&gt;', 10)]"/>
 
