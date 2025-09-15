@@ -3,12 +3,12 @@
     <data>
 <record id="report_records_billing_contact" model="ir.actions.report">
         <field name="name">Records Billing Contact</field>
-        <field name="model">records.billing.contact</field>
+        <field name="model">records.department.billing.contact</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_records_billing_contact_view</field>
         <field name="report_file">records_management.report_records_billing_contact</field>
         <field name="print_report_name">"(Records Billing Contact Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="records_management.model_records_billing_contact"/>
+        <field name="binding_model_id" ref="model_records_department_billing_contact"/>
         <field name="binding_type">report</field>
     </record>
 
@@ -17,27 +17,36 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Records Billing Contact Report</h2>
+                        <h2>Records Department Billing Contact Report</h2>
                         <table class="table table-condensed">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
+                                    <th>Contact Name</th>
+                                    <th>Department</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Role</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-if="doc.field_ids">
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
+                                <tr>
+                                    <td><span t-esc="doc.contact_name"/></td>
+                                    <td><span t-esc="doc.department_id.name"/></td>
+                                    <td><span t-esc="doc.email"/></td>
+                                    <td><span t-esc="doc.phone"/></td>
+                                    <td><span t-esc="doc.role"/></td>
                                 </tr>
-                            </t>
                             </tbody>
                         </table>
+                        
+                        <div class="mt16">
+                            <h4>Additional Information</h4>
+                            <p><strong>Active:</strong> <span t-esc="'Yes' if doc.active else 'No'"/></p>
+                            <p><strong>Primary Contact:</strong> <span t-esc="'Yes' if doc.is_primary else 'No'"/></p>
+                            <t t-if="doc.notes">
+                                <p><strong>Notes:</strong> <span t-esc="doc.notes"/></p>
+                            </t>
+                        </div>
                     </div>
                 </t>
             </t>

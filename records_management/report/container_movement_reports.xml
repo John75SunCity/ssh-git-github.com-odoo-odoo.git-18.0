@@ -91,7 +91,7 @@
 
 <record id="action_report_container_movement" model="ir.actions.report">
     <field name="name">Container Movement Report</field>
-    <field name="model">records.box</field>
+    <field name="model">records.storage.box</field>
     <field name="report_type">qweb-pdf</field>
     <field name="report_name">records_management.report_container_movement</field>
     <field name="report_file">records_management.report_container_movement</field>
