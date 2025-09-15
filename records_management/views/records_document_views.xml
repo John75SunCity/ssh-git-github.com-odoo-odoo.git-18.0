@@ -213,7 +213,7 @@
                                 <list>
                                     <field name="event_date"/>
                                     <field name="event_type"/>
-                                    <field name="responsible_person"/>
+                                    <field name="to_custodian_id"/>
                                     <field name="location"/>
                                     <field name="signature_verified"/>
                                     <field name="notes"/>
