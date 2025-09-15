@@ -174,10 +174,10 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-building" aria-hidden="true"/> Create your first storage location!
+                    Create your first storage location!
                 </p>
                 <p>
-                    <b>Enterprise Storage Management:</b>
+                    <b><i class="fa fa-building" aria-hidden="true"/> Enterprise Storage Management:</b>
                 </p>
                 <ul>
                     <li><i class="fa fa-cube" aria-hidden="true"/> Track box locations with visual kanban boards</li>
