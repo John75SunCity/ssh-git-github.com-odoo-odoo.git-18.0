@@ -191,7 +191,7 @@
                         <page string="Document Details" name="details">
                             <group>
                                 <group string="Dates &amp; Timeline">
-                                    <field name="created_date"/>
+                                    <field name="create_date"/>
                                     <field name="received_date"/>
                                     <field name="storage_date"/>
                                     <field name="last_access_date"/>
