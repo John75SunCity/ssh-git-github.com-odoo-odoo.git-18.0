@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
         <record id="records_category_view_tree" model="ir.ui.view">
@@ -55,4 +54,5 @@
         <menuitem id="menu_records_category_root" name="Categories" parent="records_management.menu_records_management_root" sequence="30"/>
     <act_window id="action_records_category" name="Categories" res_model="records.category" view_mode="tree,form" menu_id="menu_records_category_root"/>
     </data>
+</odoo>
 </odoo>
