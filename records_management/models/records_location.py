@@ -232,9 +232,11 @@ class RecordsLocation(models.Model):
         }
 
     def action_activate(self):
-    # DEPRECATED (Phase 1): prefer direct write/statebar; kept for compatibility.
-    self.write({'active': True, 'state': 'active'})
+        # DEPRECATED (Phase 1): prefer direct write/statebar; kept for compatibility.
+        # Minimal no-logic wrapper retained for backward compatibility with existing buttons or server actions.
+        self.write({'active': True, 'state': 'active'})
 
     def action_deactivate(self):
-    # DEPRECATED (Phase 1): prefer direct write/statebar; kept for compatibility.
-    self.write({'active': False, 'state': 'inactive'})
+        # DEPRECATED (Phase 1): prefer direct write/statebar; kept for compatibility.
+        # Minimal no-logic wrapper retained for backward compatibility with existing buttons or server actions.
+        self.write({'active': False, 'state': 'inactive'})
