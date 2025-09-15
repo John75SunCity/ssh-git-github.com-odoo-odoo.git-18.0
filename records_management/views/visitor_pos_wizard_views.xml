@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- ENTERPRISE VISITOR POS WIZARD - Advanced Walk-In Customer Processing &amp; Audit Integration -->
+<odoo>
+    <data>
+<!-- ENTERPRISE VISITOR POS WIZARD - Advanced Walk-In Customer Processing &amp; Audit Integration -->
 
     <!-- Form view for visitor.pos.wizard - Fixed for cache refresh -->
     <record id="visitor_pos_wizard_view_form" model="ir.ui.view">
@@ -152,5 +154,5 @@
         <field name="target">new</field>
         <field name="context">{}</field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

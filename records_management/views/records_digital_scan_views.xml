@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <data>
 <!-- List view for Digital -->
 
 <!-- List view for base.rate -->
@@ -120,5 +120,5 @@
 
 <!-- List view for Menu -->
 <!-- Menu removed: moved to central menus file (records_management_menus.xml) to keep top-level menu definitions unified -->
-
+    </data>
 </odoo>

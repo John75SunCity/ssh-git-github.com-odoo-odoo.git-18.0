@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <data>
 <!-- ========================================== -->
 <!-- ACTION DEFINITIONS (Must come first) -->
 <!-- ========================================== -->
@@ -315,5 +315,5 @@
 <!-- <menuitem id="menu_mobile_settings" name="Mobile Settings" parent="menu_system_config" action="action_mobile_settings" sequence="30" groups="records_management.group_records_manager"/> -->
 <!-- <menuitem id="menu_enhanced_fsm_integration" name="Enhanced FSM Integration" parent="menu_system_config" action="action_enhanced_fsm_integration" sequence="40" groups="records_management.group_records_manager"/> -->
 <!-- <menuitem id="menu_mobile_fsm_integration" name="Mobile FSM Integration" parent="menu_system_config" action="action_mobile_fsm_integration" sequence="50" groups="records_management.group_records_manager"/> -->
-
+    </data>
 </odoo>

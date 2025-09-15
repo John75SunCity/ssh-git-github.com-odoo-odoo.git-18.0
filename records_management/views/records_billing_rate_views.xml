@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- Records Billing Rate Views -->
+<odoo>
+    <data>
+<!-- Records Billing Rate Views -->
     <record id="records_billing_rate_view_tree" model="ir.ui.view">
         <field name="name">records.billing.rate.view.tree</field>
         <field name="model">records.billing.rate</field>
@@ -86,5 +88,5 @@
             </p>
         </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

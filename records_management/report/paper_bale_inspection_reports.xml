@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_paper_bale_inspection" model="ir.actions.report">
+    <data>
+<record id="report_paper_bale_inspection" model="ir.actions.report">
         <field name="name">Paper Bale Inspection</field>
         <field name="model">paper.bale.inspection</field>
         <field name="report_type">qweb-html</field>
@@ -42,5 +43,5 @@
             </t>
         </t>
     </template>
-
+    </data>
 </odoo>

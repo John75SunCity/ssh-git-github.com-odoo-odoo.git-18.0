@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-        <!-- List View -->
+    <data>
+<!-- List View -->
         <record id="location_group_view_tree" model="ir.ui.view">
             <field name="name">location.group.view.tree</field>
             <field name="model">location.group</field>
@@ -53,5 +53,5 @@
             <field name="res_model">location.group</field>
             <field name="view_mode">list,form</field>
         </record>
-
-    </odoo>
+    </data>
+</odoo>

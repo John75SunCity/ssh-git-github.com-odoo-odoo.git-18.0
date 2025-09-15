@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Enhanced List View with Status Indicators -->
+    <data>
+<!-- Enhanced List View with Status Indicators -->
     <record id="rm_module_configurator_view_tree" model="ir.ui.view">
         <field name="name">rm.module.configurator.view.tree</field>
         <field name="model">rm.module.configurator</field>
@@ -314,4 +315,5 @@
                 'search_default_group_by_category': 1
             }</field>
 </record>
+    </data>
 </odoo>

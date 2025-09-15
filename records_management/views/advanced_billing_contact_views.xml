@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for advanced.billing.contact -->
+<odoo>
+    <data>
+<!-- List view for advanced.billing.contact -->
     <record id="advanced_billing_contact_view_tree" model="ir.ui.view">
         <field name="name">advanced.billing.contact.view.tree</field>
         <field name="model">advanced.billing.contact</field>
@@ -119,4 +121,5 @@
               parent="records_management.menu_records_billing"
               action="advanced_billing_contact_action"
               sequence="25"/>
-    </odoo>
+    </data>
+</odoo>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <!-- Form view for advanced.billing.line (simple version) -->
+    <data>
+<!-- Form view for advanced.billing.line (simple version) -->
 <record id="advanced_billing_line_view_form" model="ir.ui.view">
 <field name="name">advanced.billing.line.view.form</field>
         <field name="priority">10</field>
@@ -94,5 +94,5 @@
             </form>
         </field>
     </record>
-
+    </data>
 </odoo>

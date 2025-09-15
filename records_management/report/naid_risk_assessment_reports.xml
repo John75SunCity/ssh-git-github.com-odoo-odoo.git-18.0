@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_naid_risk_assessment" model="ir.actions.report">
+    <data>
+<record id="report_naid_risk_assessment" model="ir.actions.report">
         <field name="name">NAID Risk Assessment</field>
         <field name="model">naid.risk.assessment</field>
         <field name="report_type">qweb-html</field>
@@ -107,5 +108,5 @@
             </t>
         </t>
     </template>
-
+    </data>
 </odoo>

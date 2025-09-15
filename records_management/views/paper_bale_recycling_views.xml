@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- List view for paper.bale.recycling -->
+    <data>
+<!-- List view for paper.bale.recycling -->
         <record id="paper_bale_recycling_view_tree" model="ir.ui.view">
             <field name="name">paper.bale.recycling.view.tree</field>
             <field name="model">paper.bale.recycling</field>
@@ -158,4 +159,5 @@
                 </p>
             </field>
         </record>
-    </odoo>
+    </data>
+</odoo>

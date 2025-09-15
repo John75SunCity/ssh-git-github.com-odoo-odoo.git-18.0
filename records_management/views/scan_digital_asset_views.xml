@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for scan.digital.asset -->
+<odoo>
+    <data>
+<!-- List view for scan.digital.asset -->
     <record id="scan_digital_asset_view_tree" model="ir.ui.view">
         <field name="name">scan.digital.asset.view.tree</field>
         <field name="model">scan.digital.asset</field>
@@ -54,5 +56,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

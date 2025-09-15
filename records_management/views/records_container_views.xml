@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- ========================================== -->
+<odoo>
+    <data>
+<!-- ========================================== -->
 <!-- RECORDS CONTAINER VIEWS -->
 <!-- ========================================== -->
     <record id="records_container_view_kanban" model="ir.ui.view">
@@ -335,5 +337,5 @@ Destroy Container</a>
         </search>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

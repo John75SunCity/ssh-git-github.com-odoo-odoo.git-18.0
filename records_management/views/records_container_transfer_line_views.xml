@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for records.container.transfer.line -->
+<odoo>
+    <data>
+<!-- List view for records.container.transfer.line -->
     <record id="records_container_transfer_line_view_tree" model="ir.ui.view">
         <field name="name">records.container.transfer.line.view.list</field>
         <field name="model">records.container.transfer.line</field>
@@ -54,5 +56,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

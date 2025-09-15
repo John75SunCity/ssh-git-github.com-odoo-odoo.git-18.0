@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- Bin Barcode Inventory Form View -->
+<odoo>
+    <data>
+<!-- Bin Barcode Inventory Form View -->
     <record id="bin_barcode_inventory_view_form" model="ir.ui.view">
         <field name="name">bin.barcode.inventory.view.form</field>
         <field name="model">bin.barcode.inventory</field>
@@ -341,5 +343,5 @@ invisible="state != 'full'"/>
 
     <menuitem id="menu_bin_sequence_reset" name="Reset Bin Sequences" parent="menu_bin_barcode_inventory_root" action="action_shredding_bin_sequence_reset_wizard" groups="records_management.group_records_manager" sequence="20"/>
     <menuitem id="menu_bin_route_dashboard" name="Route Dashboard" parent="menu_bin_barcode_inventory_root" action="action_bin_route_dashboard" sequence="40"/>
-
-    </odoo>
+    </data>
+</odoo>

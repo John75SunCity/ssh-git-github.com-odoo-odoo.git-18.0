@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_hard_drive_scan_wizard" model="ir.actions.report">
+    <data>
+<record id="report_hard_drive_scan_wizard" model="ir.actions.report">
         <field name="name">Hard Drive Scan Wizard</field>
         <field name="model">hard.drive.scan.wizard</field>
         <field name="report_type">qweb-html</field>
@@ -42,5 +43,5 @@
             </t>
         </t>
     </template>
-
+    </data>
 </odoo>

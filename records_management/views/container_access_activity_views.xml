@@ -12,8 +12,8 @@
     Fields covered include visitor, container, work order, authorization, timing, location, barcode, description, and issue tracking.
 -->
 <odoo>
-
-        <!-- List View -->
+    <data>
+<!-- List View -->
         <record id="container_access_activity_view_tree" model="ir.ui.view">
             <field name="name">container.access.activity.view.tree</field>
             <field name="model">container.access.activity</field>
@@ -113,5 +113,5 @@
             parent="REPLACE_WITH_PARENT_MENU_ID"
             sequence="10"/>
         -->
-
-    </odoo>
+    </data>
+</odoo>

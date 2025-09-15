@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<odoo><record id="shredding_service_view_kanban" model="ir.ui.view">
+<odoo>
+    <data>
+<record id="shredding_service_view_kanban" model="ir.ui.view">
         <field name="name">shredding.service.view.kanban</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
@@ -206,4 +208,5 @@
             <p>Schedule secure document destruction with NAID AAA compliance tracking.</p>
         </field>
     </record>
-    </odoo>
+    </data>
+</odoo>

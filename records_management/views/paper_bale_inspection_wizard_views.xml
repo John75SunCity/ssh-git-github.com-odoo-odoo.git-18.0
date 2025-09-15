@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for paper bale inspection wizard -->
+<odoo>
+    <data>
+<!-- List view for paper bale inspection wizard -->
     <record id="paper_bale_inspection_wizard_view_tree" model="ir.ui.view">
         <field name="name">paper.bale.inspection.wizard.view.tree</field>
         <field name="model">paper.bale.inspection.wizard</field>
@@ -75,5 +77,5 @@ Click here to create a new paper bale inspection.
 </p>
 </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

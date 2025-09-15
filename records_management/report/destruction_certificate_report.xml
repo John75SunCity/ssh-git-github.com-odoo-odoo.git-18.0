@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <record id="action_report_destruction_certificate" model="ir.actions.report">
+    <data>
+<record id="action_report_destruction_certificate" model="ir.actions.report">
 <field name="name">Destruction Certificate</field>
 <field name="model">destruction.certificate</field>
             <field name="report_type">qweb-pdf</field>
@@ -139,4 +140,5 @@
 </t><!-- foreach doc -->
 </t><!-- html_container -->
         </template>
-    </odoo>
+    </data>
+</odoo>

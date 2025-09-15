@@ -2,7 +2,8 @@
 Updated file: Fixed invalid domain in ir.rule for granular inventory access (changed 'department_id.partner_id' to 'department_id.partner_id.id' for correct leaf evaluation—typo caused ParseError/Invalid field per log/Odoo docs). This accomplishes secure, department-based access to sensitive docs (e.g., inventory uploads not portal-wide, aligning with NAID AAA chain-of-custody and ISO 15489 data segregation). Clean/simple: Used proper domain syntax (dotted notation for related fields). User-friendly: Ensures portal views load without errors, modern UI unaffected. Innovative idea: Add dynamic rule computation via computed domain for AI-driven access (e.g., based on user behavior logs via torch sentiment analysis on feedback); standards: NAID AAA requires audited access controls—log rule evaluations in message_post for compliance audits.
 -->
 <odoo>
-    <!-- Existing security groups/rules -->
+    <data>
+<!-- Existing security groups/rules -->
 
     <record id="group_records_user" model="res.groups">
         <field name="name">Records User</field>
@@ -155,4 +156,5 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
     </record>
 
     <!-- More rules as needed for other models -->
+    </data>
 </odoo>

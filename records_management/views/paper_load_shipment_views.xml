@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- List view for paper.load.shipment -->
+    <data>
+<!-- List view for paper.load.shipment -->
         <record id="paper_load_shipment_view_tree" model="ir.ui.view">
             <field name="name">paper.load.shipment.view.tree</field>
             <field name="model">paper.load.shipment</field>
@@ -246,5 +247,5 @@
         </record>
 
         <menuitem id="menu_paper_recycling_dashboard" name="Dashboard" parent="menu_paper_recycling" action="action_paper_recycling_dashboard" sequence="5" groups="records_management.group_records_user"/>
-
-    </odoo>
+    </data>
+</odoo>

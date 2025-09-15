@@ -13,8 +13,8 @@ It includes:
 These definitions allow administrators to manage Odoo view records directly from the UI.
 -->
 <odoo>
-
-    <!-- List View -->
+    <data>
+<!-- List View -->
     <record id="ir_ui_view_view_tree" model="ir.ui.view">
         <field name="name">ir.ui.view.view.tree</field>
         <field name="model">ir.ui.view</field>
@@ -78,5 +78,5 @@ These definitions allow administrators to manage Odoo view records directly from
         parent="TODO_REPLACE_WITH_ACTUAL_PARENT_MENU_ID"
         sequence="10"/>
     -->
-
+    </data>
 </odoo>

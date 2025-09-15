@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- Maintenance Equipment Form View Extension -->
+<odoo>
+    <data>
+<!-- Maintenance Equipment Form View Extension -->
     <record id="maintenance_equipment_view_form" model="ir.ui.view">
         <field name="name">maintenance.equipment.form.inherit.records</field>
         <field name="model">maintenance.equipment</field>
@@ -191,5 +193,5 @@ lbs/hour capacity
         </xpath>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

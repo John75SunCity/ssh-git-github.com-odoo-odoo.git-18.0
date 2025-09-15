@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List View -->
+<odoo>
+    <data>
+<!-- List View -->
     <record id="inventory_adjustment_reason_view_tree" model="ir.ui.view">
         <field name="name">inventory.adjustment.reason.view.tree</field>
         <field name="model">inventory.adjustment.reason</field>
@@ -60,5 +62,5 @@
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
     -->
-
-    </odoo>
+    </data>
+</odoo>

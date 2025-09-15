@@ -1,5 +1,6 @@
 <odoo>
-    <!-- Batch 4: Domain-specific label enhancements -->
+    <data>
+<!-- Batch 4: Domain-specific label enhancements -->
     <record id="field_label_customization_retention_policy_status" model="field.label.customization">
         <field name="name">Retention Policy Status Label</field>
         <field name="model_name">records.retention.policy</field>
@@ -90,4 +91,5 @@
         <field name="priority">10</field>
         <field name="description">Clarify status for promotional discount lifecycle</field>
     </record>
+    </data>
 </odoo>

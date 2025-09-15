@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<odoo><record id="naid_audit_log_view_tree" model="ir.ui.view">
+<odoo>
+    <data>
+<record id="naid_audit_log_view_tree" model="ir.ui.view">
         <field name="name">naid.audit.log.view.tree</field>
         <field name="model">naid.audit.log</field>
         <field name="arch" type="xml">
@@ -237,5 +239,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

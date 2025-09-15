@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for base.rate -->
+<odoo>
+    <data>
+<!-- List view for base.rate -->
     <record id="transitory_item_view_tree" model="ir.ui.view">
         <field name="name">transitory.item.view.tree</field>
         <field name="model">transitory.item</field>
@@ -54,5 +56,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

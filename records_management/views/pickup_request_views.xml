@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for Minimal -->
+<odoo>
+    <data>
+<!-- List view for Minimal -->
     <record id="action_pickup_request" model="ir.actions.act_window">
         <field name="name">Pickup Requests</field>
         <field name="res_model">pickup.request</field>
@@ -13,5 +15,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

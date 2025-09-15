@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-        <!-- Sequence for Records Container -->
+    <data>
+<!-- Sequence for Records Container -->
         <record id="seq_records_container" model="ir.sequence">
             <field name="name">Records Container Sequence</field>
             <field name="code">records.container</field>
@@ -186,4 +187,5 @@
             <field name="number_next">1</field>
             <field name="company_id" eval="False"/>
         </record>
-    </odoo>
+    </data>
+</odoo>

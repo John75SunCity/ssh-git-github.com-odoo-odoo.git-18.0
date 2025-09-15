@@ -1,4 +1,5 @@
 <odoo>
+    <data>
 <!-- Added root menu (only create once; if already defined elsewhere, remove this line there) -->
     <menuitem id="records_management_menu_root" name="Records Management" sequence="10"/>
 <!-- List View -->
@@ -102,5 +103,5 @@ Manage customer feedback items. Use stages to track progress from New to Closed.
     </record>
 <!-- Child menu under the newly ensured root menu -->
     <menuitem id="customer_feedback_menu" name="Customer Feedback" parent="records_management_menu_root" action="customer_feedback_action" sequence="40"/>
-
+    </data>
 </odoo>

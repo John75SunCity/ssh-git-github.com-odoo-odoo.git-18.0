@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- Unified Records Retrieval Order Views -->
+    <data>
+<!-- Unified Records Retrieval Order Views -->
 
         <!-- List View -->
         <record id="records_retrieval_order_view_tree" model="ir.ui.view">
@@ -205,4 +206,5 @@
 
         <!-- Menu Item (under Operations) -->
         <menuitem id="menu_records_retrieval_orders" name="Retrieval Orders" parent="menu_records_operations" action="action_records_retrieval_order" sequence="25" groups="records_management.group_records_user"/>
-    </odoo>
+    </data>
+</odoo>

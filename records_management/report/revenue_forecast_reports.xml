@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Revenue Forecast Report Template -->
+    <data>
+<!-- Revenue Forecast Report Template -->
     <template id="revenue_forecast_report_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
@@ -101,4 +102,5 @@
         <field name="binding_model_id" ref="records_management.model_revenue_forecaster"/>
         <field name="binding_type">report</field>
     </record>
+    </data>
 </odoo>

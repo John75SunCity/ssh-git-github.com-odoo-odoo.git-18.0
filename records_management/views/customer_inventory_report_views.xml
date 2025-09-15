@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List View -->
+<odoo>
+    <data>
+<!-- List View -->
     <record id="customer_inventory_report_view_tree" model="ir.ui.view">
         <field name="name">customer.inventory.report.view.list</field>
         <field name="model">customer.inventory.report</field>
@@ -186,5 +188,5 @@
 name="Customer Inventory Reports" parent="menu_records_reporting"
               action="customer_inventory_report_action"
               sequence="10"/>
-
-    </odoo>
+    </data>
+</odoo>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for shredding.rate -->
+<odoo>
+    <data>
+<!-- List view for shredding.rate -->
     <record id="shredding_rate_view_tree" model="ir.ui.view">
         <field name="name">shredding.rate.view.tree</field>
         <field name="model">shredding.rate</field>
@@ -54,5 +56,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

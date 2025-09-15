@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <record id="action_report_container_contents_list" model="ir.actions.report">
+    <data>
+<record id="action_report_container_contents_list" model="ir.actions.report">
             <field name="name">Container Contents List</field>
             <field name="model">records.container</field>
             <field name="report_type">qweb-pdf</field>
@@ -35,4 +36,5 @@
                 </t>
             </t>
         </template>
-    </odoo>
+    </data>
+</odoo>

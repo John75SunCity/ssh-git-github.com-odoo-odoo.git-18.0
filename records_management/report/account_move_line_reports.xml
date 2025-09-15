@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_account_move_line" model="ir.actions.report">
+    <data>
+<record id="report_account_move_line" model="ir.actions.report">
         <field name="name">Account Move Line Report</field>
         <field name="model">account.move.line</field>
         <field name="report_type">qweb-pdf</field>
@@ -50,4 +51,5 @@
             </div>
         </xpath>
     </template>
+    </data>
 </odoo>

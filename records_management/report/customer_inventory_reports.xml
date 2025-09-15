@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!--
+    <data>
+<!--
         Customer Inventory Report Action:
         Defines a QWeb PDF report for customer inventory, binding it to the `res.partner` model.
         This report generates a downloadable PDF file named dynamically based on the customer's name.
@@ -262,4 +263,5 @@
                 </tbody>
             </table>
         </template>
-    </odoo>
+    </data>
+</odoo>

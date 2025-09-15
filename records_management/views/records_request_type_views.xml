@@ -1,6 +1,6 @@
 <odoo>
-
-        <!-- List View -->
+    <data>
+<!-- List View -->
         <record id="view_records_request_type_tree" model="ir.ui.view">
             <field name="name">records.request.type.tree</field>
             <field name="model">records.request.type</field>
@@ -61,5 +61,5 @@
                   parent="records_management.menu_records_configuration"
                   action="action_records_request_type"
                   sequence="30"/>
-
-    </odoo>
+    </data>
+</odoo>

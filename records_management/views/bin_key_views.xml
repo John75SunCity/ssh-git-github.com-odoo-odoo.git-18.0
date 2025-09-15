@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for bin.key -->
+<odoo>
+    <data>
+<!-- List view for bin.key -->
     <record id="bin_key_view_tree" model="ir.ui.view">
         <field name="name">bin.key.view.tree</field>
         <field name="model">bin.key</field>
@@ -260,6 +262,6 @@ Click to create a new bin key.
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>
 

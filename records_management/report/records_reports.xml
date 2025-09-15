@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Container Content Report -->
+    <data>
+<!-- Container Content Report -->
     <record id="report_container_contents" model="ir.actions.report">
         <field name="name">Container Contents</field>
         <field name="model">records.container</field>
@@ -91,4 +92,5 @@
 </t>
 </t>
 </template>
+    </data>
 </odoo>

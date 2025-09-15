@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- Window actions + basic views to back previously commented reporting menus -->
+<odoo>
+    <data>
+<!-- Window actions + basic views to back previously commented reporting menus -->
     <!-- Storage Reports: Browse Containers -->
     <record id="records_container_view_tree" model="ir.ui.view">
         <field name="name">records.container.view.list.storage</field>
@@ -136,5 +138,5 @@
 
         <field name="domain">['|', ('is_company','=',True), ('company_type','=','company')]</field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

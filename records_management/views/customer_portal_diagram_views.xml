@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <data>
 <!-- ============================================================================= -->
 <!-- List view for Customer -->
 <!-- ============================================================================= -->
@@ -202,5 +202,5 @@
 
 <!-- List view for Submenu -->
     <menuitem id="menu_customer_portal_diagram_config" name="Diagram Configuration" parent="menu_records_configuration" action="action_customer_portal_diagram_admin" sequence="50" groups="records_management.group_records_manager"/>
-
+    </data>
 </odoo>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for naid.performance.history -->
+<odoo>
+    <data>
+<!-- List view for naid.performance.history -->
     <record id="naid_performance_history_view_tree" model="ir.ui.view">
         <field name="name">naid.performance.history.view.tree</field>
         <field name="model">naid.performance.history</field>
@@ -54,5 +56,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

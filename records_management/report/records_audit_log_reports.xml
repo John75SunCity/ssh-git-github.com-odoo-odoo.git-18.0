@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_records_audit_log" model="ir.actions.report">
+    <data>
+<record id="report_records_audit_log" model="ir.actions.report">
         <field name="name">Records Audit Log</field>
         <field name="model">naid.audit.log</field>
         <field name="report_type">qweb-html</field>
@@ -32,5 +33,6 @@
             </div>
         </t>
     </template>
+    </data>
 </odoo>
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_paper_bale_weigh_wizard" model="ir.actions.report">
+    <data>
+<record id="report_paper_bale_weigh_wizard" model="ir.actions.report">
         <field name="name">Paper Bale Weigh Wizard</field>
         <field name="model">paper.bale.weigh.wizard</field>
         <field name="report_type">qweb-html</field>
@@ -40,5 +41,5 @@
             </t>
         </t>
     </template>
-
+    </data>
 </odoo>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_shredding_service_log" model="ir.actions.report">
+    <data>
+<record id="report_shredding_service_log" model="ir.actions.report">
         <field name="name">Shredding Service Log</field>
         <field name="model">shredding.service.log</field>
         <field name="report_type">qweb-html</field>
@@ -42,5 +43,5 @@
             </t>
         </t>
     </template>
-
+    </data>
 </odoo>

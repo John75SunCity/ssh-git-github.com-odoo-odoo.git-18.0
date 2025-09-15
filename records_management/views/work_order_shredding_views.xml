@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- ============================================================================ -->
+<odoo>
+    <data>
+<!-- ============================================================================ -->
 <!-- WORK ORDER SHREDDING - LIST VIEW -->
 <!-- ============================================================================ -->
     <record id="work_order_shredding_view_tree" model="ir.ui.view">
@@ -380,5 +382,5 @@
         <field name="domain">[('scheduled_date', '&gt;=', datetime.datetime.combine(context_today, datetime.time(0,0,0))), ('scheduled_date', '&lt;=', datetime.datetime.combine(context_today, datetime.time(23,59,59)))]</field>
         <field name="context">{'search_default_group_coordinator': 1}</field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

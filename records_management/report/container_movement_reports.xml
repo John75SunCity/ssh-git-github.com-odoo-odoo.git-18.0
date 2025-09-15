@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <template id="report_container_movement">
+    <data>
+<template id="report_container_movement">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <div class="page">
@@ -97,4 +98,5 @@
     <field name="binding_model_id" ref="records_management.model_records_box"/>
     <field name="binding_type">report</field>
 </record>
+    </data>
 </odoo>

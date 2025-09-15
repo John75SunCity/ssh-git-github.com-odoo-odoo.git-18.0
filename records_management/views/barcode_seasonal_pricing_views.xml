@@ -1,6 +1,6 @@
 <odoo>
-
-    <record id="barcode_seasonal_pricing_view_tree" model="ir.ui.view">
+    <data>
+<record id="barcode_seasonal_pricing_view_tree" model="ir.ui.view">
         <field name="name">barcode.seasonal.pricing.view.tree</field>
         <field name="model">barcode.seasonal.pricing</field>
         <field name="arch" type="xml">
@@ -58,5 +58,5 @@
     </record>
 
 <menuitem id="barcode_seasonal_pricing_menu" name="Seasonal Pricing" parent="menu_barcode_config" action="barcode_seasonal_pricing_action" sequence="95"/>
-
+    </data>
 </odoo>

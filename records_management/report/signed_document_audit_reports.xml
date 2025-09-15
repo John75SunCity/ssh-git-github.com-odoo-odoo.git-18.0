@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_signed_document_audit" model="ir.actions.report">
+    <data>
+<record id="report_signed_document_audit" model="ir.actions.report">
         <field name="name">Signed Document Audit</field>
         <field name="model">signed.document.audit</field>
         <field name="report_type">qweb-html</field>
@@ -42,5 +43,5 @@
             </t>
         </t>
     </template>
-
+    </data>
 </odoo>

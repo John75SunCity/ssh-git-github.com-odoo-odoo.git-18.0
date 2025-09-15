@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- Base Rates Form View -->
+<odoo>
+    <data>
+<!-- Base Rates Form View -->
     <record id="base_rates_view_form" model="ir.ui.view">
         <field name="name">base.rates.view.form</field>
         <field name="model">base.rates</field>
@@ -103,5 +105,5 @@
               parent="records_management.menu_records_configuration"
               action="base_rates_action"
               sequence="30"/>
-
-    </odoo>
+    </data>
+</odoo>

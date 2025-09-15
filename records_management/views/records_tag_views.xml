@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for Minimal -->
+<odoo>
+    <data>
+<!-- List view for Minimal -->
 
 <!-- List view for base.rate -->
     <record id="records_tag_view_tree" model="ir.ui.view">
@@ -53,5 +55,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

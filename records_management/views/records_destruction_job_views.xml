@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-        <!-- List View -->
+    <data>
+<!-- List View -->
         <record id="records_destruction_job_view_tree" model="ir.ui.view">
             <field name="name">records.destruction.job.view.tree</field>
             <field name="model">records.destruction.job</field>
@@ -60,5 +60,5 @@
             <field name="res_model">records.destruction.job</field>
             <field name="view_mode">list,form</field>
         </record>
-
-    </odoo>
+    </data>
+</odoo>

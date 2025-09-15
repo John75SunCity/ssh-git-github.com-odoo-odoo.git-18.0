@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for PAPER -->
+<odoo>
+    <data>
+<!-- List view for PAPER -->
 
 <!-- Kanban view for KANBAN -->
     <record id="load_view_kanban" model="ir.ui.view">
@@ -397,5 +399,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

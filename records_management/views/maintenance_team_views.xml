@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- View maintenance.team form -->
+<odoo>
+    <data>
+<!-- View maintenance.team form -->
     <record id="maintenance_team_view_form" model="ir.ui.view">
         <field name="name">maintenance.team.view.form.inherit.records_management</field>
         <field name="model">maintenance.team</field>
@@ -81,5 +83,5 @@
         </xpath>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

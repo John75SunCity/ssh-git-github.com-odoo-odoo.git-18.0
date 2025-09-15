@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for transitory.field.config -->
+<odoo>
+    <data>
+<!-- List view for transitory.field.config -->
     <record id="transitory_field_config_view_tree" model="ir.ui.view">
         <field name="name">transitory.field.config.view.tree</field>
         <field name="model">transitory.field.config</field>
@@ -372,5 +374,6 @@ action = {
 }
         </field>
     </record>
-    </odoo>
+    </data>
+</odoo>
         <!-- =============================================================== -->

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_records_storage_department_user" model="ir.actions.report">
+    <data>
+<record id="report_records_storage_department_user" model="ir.actions.report">
         <field name="name">Records Storage Department User</field>
         <field name="model">records.storage.department.user</field>
         <field name="report_type">qweb-html</field>
@@ -42,5 +43,5 @@
             </t>
         </t>
     </template>
-
+    </data>
 </odoo>

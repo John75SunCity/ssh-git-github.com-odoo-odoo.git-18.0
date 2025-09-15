@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Single consolidated report definition for Work Order Coordinator -->
+    <data>
+<!-- Single consolidated report definition for Work Order Coordinator -->
     <record id="report_work_order_coordinator" model="ir.actions.report">
         <field name="name">Work Order Coordinator</field>
         <field name="model">work.order.coordinator</field>
@@ -41,4 +42,5 @@
             </t>
         </t>
     </template>
+    </data>
 </odoo>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- View shredding.bin.barcode.wizard View List -->
+<odoo>
+    <data>
+<!-- View shredding.bin.barcode.wizard View List -->
     <record id="shredding_bin_barcode_wizard_view_tree" model="ir.ui.view">
         <field name="name">shredding.bin.barcode.wizard.view.tree</field>
         <field name="model">shredding.bin.barcode.wizard</field>
@@ -81,5 +83,5 @@ There are no examples. Click here to add a new Shredding Bin Barcode Wizard.
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

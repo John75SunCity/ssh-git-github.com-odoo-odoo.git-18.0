@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-        <!-- List View -->
+    <data>
+<!-- List View -->
         <record id="records_container_line_view_tree" model="ir.ui.view">
             <field name="name">records.container.line.view.tree</field>
             <field name="model">records.container.line</field>
@@ -92,5 +92,5 @@
             <field name="res_model">records.container.line</field>
             <field name="view_mode">list,form</field>
         </record>
-
-    </odoo>
+    </data>
+</odoo>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List View -->
+<odoo>
+    <data>
+<!-- List View -->
     <record id="container_access_visitor_view_tree" model="ir.ui.view">
         <field name="name">container.access.visitor.view.tree</field>
         <field name="model">container.access.visitor</field>
@@ -68,5 +70,5 @@
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
     -->
-
-    </odoo>
+    </data>
+</odoo>

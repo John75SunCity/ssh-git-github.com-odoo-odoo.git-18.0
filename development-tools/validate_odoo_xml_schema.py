@@ -76,10 +76,39 @@ def validate_xml_schema(file_path):
         # Check for invalid nested <odoo><data> structure
         if '<odoo>' in content and '<data>' in content:
             # Pattern that would cause "Element odoo has extra content: data" error
-            if re.search(r'<odoo>\s*<data>', content):
-                # But allow <odoo><data noupdate="1">
-                if not re.search(r'<odoo>\s*<data\s+noupdate=', content):
-                    issues.append("Invalid nested <odoo><data> structure found - should be <odoo> with direct content")
+            # This is WRONG - we actually WANT <odoo><data> structure in most cases
+            # Only flag if there are elements both inside AND outside data tags
+            lines_content = content.split('\n')
+            has_elements_outside_data = False
+            has_data_tag = False
+            in_odoo_root = False
+            in_data_tag = False
+
+            for line in lines_content:
+                stripped = line.strip()
+                if '<odoo>' in stripped:
+                    in_odoo_root = True
+                elif '</odoo>' in stripped:
+                    in_odoo_root = False
+                elif in_odoo_root and '<data' in stripped:
+                    has_data_tag = True
+                    in_data_tag = True
+                elif in_odoo_root and '</data>' in stripped:
+                    in_data_tag = False
+                elif (in_odoo_root and not in_data_tag and not stripped.startswith('<!--')
+                      and stripped and not '<data' in stripped):
+                    if (stripped.startswith('<record') or stripped.startswith('<menuitem')
+                        or stripped.startswith('<act_window')):
+                        has_elements_outside_data = True
+
+            if has_data_tag and has_elements_outside_data:
+                issues.append("Mixed structure: Elements both inside and outside <data> tags")
+
+        # The old check was wrong - commenting out:
+        # if re.search(r'<odoo>\s*<data>', content):
+        #     # But allow <odoo><data noupdate="1">
+        #     if not re.search(r'<odoo>\s*<data\s+noupdate=', content):
+        #         issues.append("Invalid nested <odoo><data> structure found - should be <odoo> with direct content")
 
     except ET.ParseError as e:
         issues.append(f"XML parsing error: {e}")

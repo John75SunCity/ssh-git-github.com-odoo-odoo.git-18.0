@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- ============================================================================ -->
+<odoo>
+    <data>
+<!-- ============================================================================ -->
 <!-- SHRED MODEL BIN VIEWS -->
 <!-- ============================================================================ -->
 
@@ -156,5 +158,5 @@
         <field name="view_id" ref="shred_model_bin_view_tree"/>
         <field name="help">Manage shred model bins for records management</field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

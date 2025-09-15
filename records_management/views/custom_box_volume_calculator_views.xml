@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- Volume Calculator Form View -->
+<odoo>
+    <data>
+<!-- Volume Calculator Form View -->
     <record id="custom_box_volume_calculator_view_form" model="ir.ui.view">
         <field name="name">custom.box.volume.calculator.view.form</field>
         <field name="model">custom.box.volume.calculator</field>
@@ -182,5 +184,5 @@
 
 <!-- Volume Calculator Menu Item -->
     <menuitem id="custom_box_volume_calculator_menu" name="Volume Calculator" parent="records_management.records_management_menu" action="custom_box_volume_calculator_action" sequence="20" groups="records_management.group_records_user"/>
-
-    </odoo>
+    </data>
+</odoo>

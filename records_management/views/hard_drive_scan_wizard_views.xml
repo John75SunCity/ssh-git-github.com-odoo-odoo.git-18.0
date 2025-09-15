@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- hard.drive.scan.wizard form view -->
+<odoo>
+    <data>
+<!-- hard.drive.scan.wizard form view -->
     <record id="hard_drive_scan_wizard_view_form" model="ir.ui.view">
         <field name="name">hard.drive.scan.wizard.form</field>
         <field name="model">hard.drive.scan.wizard</field>
@@ -40,5 +42,5 @@
         <field name="binding_model_id" ref="project.model_project_task"/>
         <field name="binding_view_types">form</field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

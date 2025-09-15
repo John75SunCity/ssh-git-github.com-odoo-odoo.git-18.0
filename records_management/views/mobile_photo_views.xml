@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- View mobile.photo View Tree -->
+<odoo>
+    <data>
+<!-- View mobile.photo View Tree -->
     <record id="mobile_photo_view_tree" model="ir.ui.view">
         <field name="name">mobile.photo.view.tree</field>
         <field name="model">mobile.photo</field>
@@ -54,5 +56,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

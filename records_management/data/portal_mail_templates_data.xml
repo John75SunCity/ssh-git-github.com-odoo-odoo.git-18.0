@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- Portal Model XML ID definitions for security rules -->
+    <data>
+<!-- Portal Model XML ID definitions for security rules -->
         <record id="model_customer_feedback" model="ir.model">
             <field name="model">customer.feedback</field>
             <field name="name">Customer Feedback</field>
@@ -622,5 +623,5 @@
             <field name="auto_delete" eval="True"/>
             <field name="lang">${object.lang}</field>
         </record>
-
-    </odoo>
+    </data>
+</odoo>

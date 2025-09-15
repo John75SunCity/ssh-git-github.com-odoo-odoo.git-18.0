@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- Enhanced Kanban view for Stock Lot Management -->
+<odoo>
+    <data>
+<!-- Enhanced Kanban view for Stock Lot Management -->
     <record id="stock_lot_view_kanban" model="ir.ui.view">
         <field name="name">stock.lot.view.kanban</field>
         <field name="model">stock.lot</field>
@@ -285,5 +287,5 @@ Expires:<field name="expiration_date"/>
 
 <!-- Menu Integration with Records Management -->
 <!-- Removed duplicate menuitem definition for menu_stock_lot_inventory -->
-
-    </odoo>
+    </data>
+</odoo>

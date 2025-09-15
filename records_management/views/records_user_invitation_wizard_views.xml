@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- Form view for records.user.invitation.wizard -->
+<odoo>
+    <data>
+<!-- Form view for records.user.invitation.wizard -->
     <record id="records_user_invitation_wizard_view_form" model="ir.ui.view">
         <field name="name">records.user.invitation.wizard.view.form</field>
         <field name="model">records.user.invitation.wizard</field>
@@ -35,5 +37,5 @@
     </p>
 </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

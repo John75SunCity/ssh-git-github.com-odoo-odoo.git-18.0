@@ -6,7 +6,8 @@
     through the wizard.
 -->
 <odoo>
-    <!--
+    <data>
+<!--
         Report Action for the Records Permanent Flag Wizard.
         This action defines the report that can be printed from the wizard. It specifies
         the model, report type, and other parameters for generating the report.
@@ -59,5 +60,5 @@
             </t>
         </t>
     </template>
-
+    </data>
 </odoo>

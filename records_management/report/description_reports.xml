@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Report Action for Description Model -->
+    <data>
+<!-- Report Action for Description Model -->
     <record id="description_report_action" model="ir.actions.report">
         <field name="name">Description</field>
         <field name="model">description</field>
@@ -38,4 +39,5 @@
             </t>
         </t>
     </template>
+    </data>
 </odoo>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- Simplified List View (only existing fields) -->
+    <data>
+<!-- Simplified List View (only existing fields) -->
         <record id="chain_of_custody_view_list" model="ir.ui.view">
             <field name="name">chain.of.custody.view.list</field>
             <field name="model">chain.of.custody</field>
@@ -182,5 +183,5 @@
                 </p>
             </field>
         </record>
-
-    </odoo>
+    </data>
+</odoo>

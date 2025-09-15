@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- Enhanced Departmental Billing Contact Views -->
+    <data>
+<!-- Enhanced Departmental Billing Contact Views -->
 
         <!-- Tree view -->
         <record id="records_department_billing_contact_view_tree" model="ir.ui.view">
@@ -296,4 +297,5 @@
                 </p>
             </field>
         </record>
-    </odoo>
+    </data>
+</odoo>

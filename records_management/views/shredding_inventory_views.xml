@@ -1,8 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-
-    
-    <record id="shredding_inventory_item_view_tree" model="ir.ui.view">
+    <data>
+<record id="shredding_inventory_item_view_tree" model="ir.ui.view">
         <field name="name">shredding.inventory.item.view.tree</field>
         <field name="model">shredding.inventory.item</field>
     <field name="arch" type="xml">
@@ -160,5 +159,5 @@
     <menuitem id="menu_shredding_inventory_items" name="Inventory Items" parent="menu_shredding_inventory_root" action="action_shredding_inventory_item" sequence="10" />
 
     <menuitem id="menu_shredding_picklist_items" name="Picklist Items" parent="menu_shredding_inventory_root" action="action_shredding_picklist_item" sequence="20" />
-
+    </data>
 </odoo>

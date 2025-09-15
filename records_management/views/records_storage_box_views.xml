@@ -1,6 +1,6 @@
 <odoo>
-
-    <!-- List View -->
+    <data>
+<!-- List View -->
     <record id="records_storage_box_view_tree" model="ir.ui.view">
         <field name="name">records.storage.box.view.tree</field>
         <field name="model">records.storage.box</field>
@@ -91,5 +91,5 @@
                 parent="records_management.menu_records_inventory"
                 action="records_storage_box_action"
                 sequence="20"/>
-
+    </data>
 </odoo>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <data>
 <!-- Work Order Retrieval List View -->
     <record id="work_order_retrieval_view_tree" model="ir.ui.view">
         <field name="name">work.order.retrieval.view.tree</field>
@@ -248,5 +248,5 @@
             'search_default_in_progress': 1
         }</field>
     </record>
-
+    </data>
 </odoo>

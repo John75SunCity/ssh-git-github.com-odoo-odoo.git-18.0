@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- Paper Format -->
+    <data>
+<!-- Paper Format -->
         <record id="paperformat_service_item_report" model="report.paperformat">
             <field name="name">Service Item Report</field>
             <field name="default" eval="True"/>
@@ -40,4 +41,5 @@
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="paperformat_service_item_report"/>
         </record>
-    </odoo>
+    </data>
+</odoo>

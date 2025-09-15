@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Pickup Request: users can read their own, managers can manage all -->
+    <data>
+<!-- Pickup Request: users can read their own, managers can manage all -->
     <record id="pickup_request_rule_user_read_own" model="ir.rule">
         <field name="name">Pickup Request: Read Own</field>
         <field name="model_id" ref="records_management.model_pickup_request"/>
@@ -126,4 +127,5 @@
         <field name="perm_create" eval="True"/>
         <field name="perm_unlink" eval="True"/>
     </record>
+    </data>
 </odoo>

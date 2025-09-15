@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for base.rate -->
+<odoo>
+    <data>
+<!-- List view for base.rate -->
     <record id="res_partner_key_restriction_view_tree" model="ir.ui.view">
         <field name="name">res.partner.key.restriction.view.tree</field>
         <field name="model">res.partner.key.restriction</field>
@@ -54,5 +56,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

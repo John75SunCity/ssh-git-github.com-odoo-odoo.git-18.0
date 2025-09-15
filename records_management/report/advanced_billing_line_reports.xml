@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_advanced_billing_line" model="ir.actions.report">
+    <data>
+<record id="report_advanced_billing_line" model="ir.actions.report">
         <field name="name">Advanced Billing Line</field>
         <field name="model">advanced.billing.line</field>
         <field name="report_type">qweb-pdf</field>
@@ -42,5 +43,5 @@
             </t>
         </t>
     </template>
-
+    </data>
 </odoo>

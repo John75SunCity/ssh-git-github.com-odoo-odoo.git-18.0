@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_paper_load_shipment" model="ir.actions.report">
+    <data>
+<record id="report_paper_load_shipment" model="ir.actions.report">
         <field name="name">Paper Load Shipment</field>
         <field name="model">paper.load.shipment</field>
         <field name="report_type">qweb-html</field>
@@ -42,5 +43,5 @@
             </t>
         </t>
     </template>
-
+    </data>
 </odoo>

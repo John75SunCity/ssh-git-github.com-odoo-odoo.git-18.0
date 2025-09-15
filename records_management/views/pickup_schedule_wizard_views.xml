@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for pickup.schedule.wizard -->
+<odoo>
+    <data>
+<!-- List view for pickup.schedule.wizard -->
     <record id="pickup_schedule_wizard_view_tree" model="ir.ui.view">
         <field name="name">pickup.schedule.wizard.view.tree</field>
         <field name="model">pickup.schedule.wizard</field>
@@ -79,5 +81,5 @@
 </p>
 </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

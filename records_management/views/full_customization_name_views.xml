@@ -13,8 +13,8 @@
     All fields referenced here must exist in the full.customization.name model.
 -->
 <odoo>
-
-    <!-- Full Customization Name List View -->
+    <data>
+<!-- Full Customization Name List View -->
     <record id="full_customization_name_view_tree" model="ir.ui.view">
         <field name="name">full.customization.name.tree</field>
         <field name="model">full.customization.name</field>
@@ -110,5 +110,5 @@
                 parent="records_management.menu_records_configuration"
                 action="full_customization_name_action"
                 sequence="50"/>
-
+    </data>
 </odoo>

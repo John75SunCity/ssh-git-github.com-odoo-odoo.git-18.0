@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="action_report_load_manifest" model="ir.actions.report">
+    <data>
+<record id="action_report_load_manifest" model="ir.actions.report">
         <field name="name">Load Manifest</field>
         <field name="model">paper.bale.load</field>
         <field name="report_type">qweb-pdf</field>
@@ -11,4 +12,5 @@
         <field name="binding_type">report</field>
         <field name="paperformat_id" ref="base.paperformat_us"/>
     </record>
+    </data>
 </odoo>

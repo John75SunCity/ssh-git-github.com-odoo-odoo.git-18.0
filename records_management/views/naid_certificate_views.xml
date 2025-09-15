@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- List view for naid.certificate -->
+    <data>
+<!-- List view for naid.certificate -->
         <record id="naid_certificate_view_tree" model="ir.ui.view">
             <field name="name">naid.certificate.view.tree</field>
             <field name="model">naid.certificate</field>
@@ -125,4 +126,5 @@
                 </p>
             </field>
         </record>
-    </odoo>
+    </data>
+</odoo>

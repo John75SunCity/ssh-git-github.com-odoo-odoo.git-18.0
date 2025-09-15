@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- Payment Split Line Views -->
+<odoo>
+    <data>
+<!-- Payment Split Line Views -->
 
 <!-- List View -->
     <record id="payment_split_line_view_tree" model="ir.ui.view">
@@ -97,5 +99,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

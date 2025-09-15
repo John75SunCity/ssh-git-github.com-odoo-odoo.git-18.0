@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- Kanban view for paper.bale -->
+    <data>
+<!-- Kanban view for paper.bale -->
         <record id="paper_bale_view_kanban" model="ir.ui.view">
             <field name="name">paper.bale.view.kanban</field>
             <field name="model">paper.bale</field>
@@ -204,5 +205,5 @@
                 </p>
             </field>
         </record>
-
-    </odoo>
+    </data>
+</odoo>

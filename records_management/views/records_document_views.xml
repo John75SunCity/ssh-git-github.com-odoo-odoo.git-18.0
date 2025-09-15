@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
 <!-- List view for ENTERPRISE -->
 
     <!-- Kanban view for Document -->
@@ -345,4 +346,5 @@
 </p>
 </field>
 </record>
+    </data>
 </odoo>

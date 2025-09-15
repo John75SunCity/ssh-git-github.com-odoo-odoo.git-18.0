@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- ============================================================================ -->
+<odoo>
+    <data>
+<!-- ============================================================================ -->
 <!-- SERVICE ITEM - KANBAN VIEW -->
 <!-- ============================================================================ -->
     <record id="service_item_view_kanban" model="ir.ui.view">
@@ -485,5 +487,5 @@
 <p>Portal-visible informational services not requestable directly.</p>
 </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

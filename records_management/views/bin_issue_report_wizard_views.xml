@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- ============================================================================ -->
+<odoo>
+    <data>
+<!-- ============================================================================ -->
 <!-- BIN ISSUE REPORT WIZARD FORM VIEW -->
 <!-- ============================================================================ -->
     <record id="bin_issue_report_wizard_view_form" model="ir.ui.view">
@@ -454,5 +456,5 @@
             action="bin_issue_billing_action"
             sequence="50"
             groups="records_management.group_records_manager"/>
-
-    </odoo>
+    </data>
+</odoo>

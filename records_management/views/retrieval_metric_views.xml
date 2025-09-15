@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for retrieval.metric -->
+<odoo>
+    <data>
+<!-- List view for retrieval.metric -->
     <record id="retrieval_metric_view_tree" model="ir.ui.view">
         <field name="name">retrieval.metric.view.tree</field>
         <field name="model">retrieval.metric</field>
@@ -54,5 +56,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

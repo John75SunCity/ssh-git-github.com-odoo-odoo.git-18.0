@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo><!-- List view for CUSTOMER -->
+<odoo>
+    <data>
+<!-- List view for CUSTOMER -->
 
 <!-- Kanban view for Kanban -->
     <record id="customer_inventory_view_kanban" model="ir.ui.view">
@@ -86,5 +88,5 @@
         </p>
     </field>
     </record>
-
-    </odoo>
+    </data>
+</odoo>

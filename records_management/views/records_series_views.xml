@@ -1,5 +1,5 @@
 <odoo>
-
+    <data>
 <!-- List View -->
     <record id="records_series_view_tree" model="ir.ui.view">
         <field name="name">records.series.view.tree</field>
@@ -92,5 +92,5 @@
             parent="records_management.menu_records_configuration"
             action="action_records_series"
             sequence="20"/>
-
+    </data>
 </odoo>

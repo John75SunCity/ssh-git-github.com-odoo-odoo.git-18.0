@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<odoo><record id="document_search_attempt_view_search" model="ir.ui.view">
+<odoo>
+    <data>
+<record id="document_search_attempt_view_search" model="ir.ui.view">
         <field name="name">document.search.attempt.view.search</field>
         <field name="model">document.search.attempt</field>
     <field name="arch" type="xml">
@@ -84,5 +86,5 @@
 
     
     <menuitem id="menu_document_search_attempt" name="Search Attempts" action="action_document_search_attempt" parent="menu_document_retrieval_work_order" sequence="20" />
-
-    </odoo>
+    </data>
+</odoo>
