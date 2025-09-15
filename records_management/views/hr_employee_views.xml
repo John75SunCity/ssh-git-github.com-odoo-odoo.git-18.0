@@ -10,11 +10,12 @@
 <!-- Add Records Management section after department -->
         <xpath expr="//field[@name='department_id']" position="after">
         <group string="Records Management" col="2">
-        <field name="records_department_id" string="Records Department"/>
         <field name="records_access_level" string="Records Access Level"/>
-        <field name="naid_certified" string="NAID Certified"/>
+        <field name="naid_security_clearance" string="NAID Security Clearance"/>
+        <field name="naid_certification_date" string="NAID Certification Date"/>
+        <field name="certification_status" string="Certification Status"/>
 
-        <field name="key_management_level" string="Key Management Level" invisible="records_access_level == 'none'"/>
+        <field name="naid_security_clearance" string="Security Clearance" invisible="records_access_level == 'none'"/>
 
 </group>
         </xpath>
