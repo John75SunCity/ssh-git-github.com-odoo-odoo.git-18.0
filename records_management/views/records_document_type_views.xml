@@ -154,8 +154,9 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                             <field name="retention_rule_ids" mode="list">
                                 <list>
                                     <field name="name"/>
-                                    <field name="retention_years"/>
-                                    <field name="destruction_trigger"/>
+                                    <field name="retention_period"/>
+                                    <field name="retention_unit"/>
+                                    <field name="action_on_expiry"/>
                                     <field name="active"/>
                                 </list>
                             </field>
