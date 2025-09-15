@@ -11,7 +11,6 @@
                     <button type="action"
                             class="oe_stat_button"
                             name="%(action_field_label_helper_wizard)d"
-                            context="{'default_model_id': ref('base.model_records_document')}"
                             icon="fa-tag"
                             groups="records_management.group_records_manager"
                             string="Field Labels"/>
