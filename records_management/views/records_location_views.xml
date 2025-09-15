@@ -174,59 +174,18 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    Create your first storage location!
+                    <i class="fa fa-building" aria-hidden="true"/> Create your first storage location!
                 </p>
                 <p>
                     <b>Enterprise Storage Management:</b>
-                    <br/>
-                    • Track box locations with visual kanban boards<br/>
-                    • Monitor capacity utilization in real-time<br/>
-                    • Smart search with advanced filters<br/>
-                    • Hierarchical location organization<br/>
-                    • Mobile-optimized for facility operations
                 </p>
-            </field>
-        </record>
-    </data>
-</odoo>
-                    <filter name="optimal_load" string="Optimal Load (20-80%)" domain="[('utilization_percentage', '&gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
-                    <filter name="lots_of_space" string="Lots of Space (&gt;10)" domain="[('available_spaces', '&gt;', 10)]"/>
-
-                    <separator/>
-                    <filter name="active" string="Active Locations" domain="[('active', '=', True)]"/>
-                    <filter name="inactive" string="Archived Locations" domain="[('active', '=', False)]"/>
-
-                    <group string="Group By" expand="0">
-                        <filter name="group_by_type" string="Type" context="{'group_by': 'location_type'}"/>
-                        <filter name="group_by_parent" string="Parent Location" context="{'group_by': 'parent_location_id'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
-
-        <!-- Action for ENTERPRISE -->
-        <record id="action_records_location" model="ir.actions.act_window">
-            <field name="name">Storage Locations</field>
-            <field name="res_model">records.location</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <field name="search_view_id" ref="records_location_view_search"/>
-            <field name="context">{
-                'search_default_active': 1,
-                'search_default_available_space': 1
-            }</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Create your first storage location!
-                </p>
-                <p>
-                    <b>Enterprise Storage Management:</b>
-                    <br/>
-                    • Track box locations with visual kanban boards<br/>
-                    • Monitor capacity utilization in real-time<br/>
-                    • Smart search with advanced filters<br/>
-                    • Hierarchical location organization<br/>
-                    • Mobile-optimized for facility operations
-                </p>
+                <ul>
+                    <li><i class="fa fa-cube" aria-hidden="true"/> Track box locations with visual kanban boards</li>
+                    <li><i class="fa fa-bar-chart" aria-hidden="true"/> Monitor capacity utilization in real-time</li>
+                    <li><i class="fa fa-search" aria-hidden="true"/> Smart search with advanced filters</li>
+                    <li><i class="fa fa-sitemap" aria-hidden="true"/> Hierarchical location organization</li>
+                    <li><i class="fa fa-mobile" aria-hidden="true"/> Mobile-optimized for facility operations</li>
+                </ul>
             </field>
         </record>
     </data>
