@@ -47,6 +47,7 @@ class ServiceItem(models.Model):
         ('maintenance', 'Under Maintenance'),
         ('retired', 'Retired'),
     ], string="Status", default='available', required=True, tracking=True, help="Lifecycle status of the service item.")
+    # Phase 1 Refactor: State managed directly; no trivial action wrappers.
 
     # ============================================================================
     # SPECIFICATIONS (for Equipment)

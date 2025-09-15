@@ -56,6 +56,7 @@ class BarcodePricingTier(models.Model):
         ('active', 'Active'),
         ('expired', 'Expired')
     ], string='Status', default='draft', required=True, tracking=True)
+    # Phase 1 Refactor: No separate activate/deactivate methods; use selection transitions.
 
     # ============================================================================
     # PRICING & TIER CONFIGURATION

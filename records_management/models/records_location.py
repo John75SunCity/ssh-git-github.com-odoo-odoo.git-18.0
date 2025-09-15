@@ -232,9 +232,9 @@ class RecordsLocation(models.Model):
         }
 
     def action_activate(self):
-        self.write({'active': True, 'state': 'active'})
-        self.message_post(body=_("Location activated."))
+    # DEPRECATED (Phase 1): prefer direct write/statebar; kept for compatibility.
+    self.write({'active': True, 'state': 'active'})
 
     def action_deactivate(self):
-        self.write({'active': False, 'state': 'inactive'})
-        self.message_post(body=_("Location deactivated."))
+    # DEPRECATED (Phase 1): prefer direct write/statebar; kept for compatibility.
+    self.write({'active': False, 'state': 'inactive'})

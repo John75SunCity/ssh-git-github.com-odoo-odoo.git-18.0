@@ -102,14 +102,7 @@ class DiscountRule(models.Model):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_activate(self):
-        """Activate the selected discount rules."""
-        self.ensure_one()
-        self.write({'active': True})
-        self.message_post(body=_("Rule(s) activated."))
-
-    def action_deactivate(self):
-        """Deactivate the selected discount rules."""
-        self.ensure_one()
-        self.write({'active': False})
-        self.message_post(body=_("Rule(s) deactivated."))
+    # Phase 1 Refactor Note:
+    # Removed trivial action_activate/action_deactivate that only toggled 'active'.
+    # Use standard archive/unarchive UI. Chatter tracking can be restored by enabling
+    # tracking=True on 'active' or overriding write if required.

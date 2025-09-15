@@ -79,18 +79,18 @@ class RecordsDepartment(models.Model):
     # ACTION METHODS
     # ============================================================================
     def action_activate(self):
+        # DEPRECATED (Phase 1): Previously validated draft -> active and posted chatter.
+        # Prefer direct state change via statusbar; retain minimal guard for safety.
         self.ensure_one()
-        if self.state != 'draft':
-            raise UserError(_("Only draft departments can be activated."))
-        self.write({'state': 'active'})
-        self.message_post(body=_("Department activated."))
+        if self.state == 'draft':
+            self.write({'state': 'active'})
 
     def action_archive(self):
+        # DEPRECATED (Phase 1): Replace with direct write; maintain safety constraint.
         self.ensure_one()
         if self.container_count > 0 or self.document_count > 0:
             raise UserError(_("Cannot archive a department that still has active containers or documents."))
         self.write({'state': 'archived', 'active': False})
-        self.message_post(body=_("Department archived."))
 
     def action_view_containers(self):
         self.ensure_one()
