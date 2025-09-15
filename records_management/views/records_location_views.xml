@@ -53,11 +53,24 @@
                                     </div>
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                    <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-edit"/> Edit Location</a>
-                                    <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class="fa fa-box"/> View Containers</a>
-                                    <a role="menuitem" type="object" name="action_location_report" class="dropdown-item"><i class="fa fa-bar-chart"/> Location Report</a>
+<a role="menuitem" type="edit" class="dropdown-item">
+    <i class="fa fa-edit"/>
+                                        Edit Location
+</a>
+<a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">
+    <i class="fa fa-cube"/>
+                                        View Containers
+</a>
                                     <div class="dropdown-divider"/>
-                                    <a role="menuitem" type="delete" class="dropdown-item"><i class="fa fa-trash"/> Archive</a>
+<a role="menuitem" type="object" name="toggle_active" class="dropdown-item">
+    <i class="fa fa-archive"/>
+    <t t-if="record.active.raw_value">Archive</t>
+    <t t-else="">Unarchive</t>
+</a>
+<a role="menuitem" type="object" name="action_duplicate" class="dropdown-item">
+    <i class="fa fa-copy"/>
+                                        Duplicate
+</a>
                                 </div>
                             </div>
                         </t>
@@ -147,7 +160,8 @@
             <field name="model">records.location</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
+<field name="name" string="Location" filter_domain="['|', ('name', 'ilike', '%s'), ('description', 'ilike', '%s')]"/>
+
                     <field name="location_type"/>
 
                     <separator/>
@@ -176,14 +190,32 @@
                     Create your first storage location!
                 </p>
                 <p>
-                    <b><i class="fa fa-building" aria-hidden="true"/> Enterprise Storage Management:</b>
+<b>
+    <i class="fa fa-building" aria-hidden="true"/>
+                        Enterprise Storage Management:
+</b>
                 </p>
                 <ul>
-                    <li><i class="fa fa-cube" aria-hidden="true"/> Track box locations with visual kanban boards</li>
-                    <li><i class="fa fa-bar-chart" aria-hidden="true"/> Monitor capacity utilization in real-time</li>
-                    <li><i class="fa fa-search" aria-hidden="true"/> Smart search with advanced filters</li>
-                    <li><i class="fa fa-sitemap" aria-hidden="true"/> Hierarchical location organization</li>
-                    <li><i class="fa fa-mobile" aria-hidden="true"/> Mobile-optimized for facility operations</li>
+<li>
+    <i class="fa fa-cube" aria-hidden="true"/>
+                        Track box locations with visual kanban boards
+</li>
+<li>
+    <i class="fa fa-bar-chart" aria-hidden="true"/>
+                        Monitor capacity utilization in real-time
+</li>
+<li>
+    <i class="fa fa-search" aria-hidden="true"/>
+                        Smart search with advanced filters
+</li>
+<li>
+    <i class="fa fa-sitemap" aria-hidden="true"/>
+                        Hierarchical location organization
+</li>
+<li>
+    <i class="fa fa-mobile" aria-hidden="true"/>
+                        Mobile-optimized for facility operations
+</li>
                 </ul>
             </field>
         </record>
