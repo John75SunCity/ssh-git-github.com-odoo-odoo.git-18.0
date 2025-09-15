@@ -351,7 +351,7 @@
     </record>
 
     <!-- Menu items -->
-    <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="records_management.menu_configuration" action="action_field_label_customization" sequence="15"/>
+    <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="records_management.menu_records_configuration" action="action_field_label_customization" sequence="15"/>
     <menuitem id="menu_intelligent_search_config" name="Search Configuration" parent="base.menu_administration" sequence="50" groups_id="[(4, ref('group_search_admin'))]"/>
     <menuitem id="menu_field_label_customization_sub" name="Field Label Customization" parent="menu_intelligent_search_config" action="action_field_label_customization" sequence="10" groups_id="[(4, ref('group_search_admin'))]"/>
 

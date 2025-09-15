@@ -99,7 +99,7 @@
         <!-- Menu Item -->
         <menuitem id="menu_records_request_line"
                   name="Request Lines"
-                  parent="records_management.menu_records_main"
+                  parent="records_management.menu_records_management_root"
                   action="records_request_line_action"
                   sequence="25"/>
     </data>
