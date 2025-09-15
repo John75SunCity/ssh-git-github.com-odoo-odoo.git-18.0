@@ -5,7 +5,7 @@
         <record id="records_document_view_form_inherit" model="ir.ui.view">
             <field name="name">records.document.view.form.inherit.field_label_helper</field>
             <field name="model">records.document</field>
-            <field name="inherit_id" ref="records_management.records_document_view_form"/>
+            <field name="inherit_id" ref="records_document_view_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//form/sheet/div[@name='button_box']" position="inside">
                     <button type="action"
