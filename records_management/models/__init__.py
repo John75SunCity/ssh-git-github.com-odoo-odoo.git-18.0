@@ -271,3 +271,17 @@ try:
     from . import naid_performance_history  # noqa: F401
 except Exception as e:  # broad on purpose during staged syntax cleanup
     _logger.warning("Skipped loading naid_performance_history: %s", e)
+
+# Wizard Models
+from . import bin_issue_report_wizard
+from . import customer_inventory_report_wizard  
+from . import key_restriction_checker_wizard
+from . import records_user_invitation_wizard
+from . import field_label_helper_wizard
+from . import mobile_bin_key_wizard
+from . import rate_change_confirmation_wizard
+from . import records_container_type_converter_wizard
+from . import records_permanent_flag_wizard
+from . import shredding_bin_barcode_wizard
+from . import system_flowchart_wizard
+from . import work_order_bin_assignment_wizard

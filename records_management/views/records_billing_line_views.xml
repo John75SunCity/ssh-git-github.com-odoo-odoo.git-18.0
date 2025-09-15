@@ -3,8 +3,8 @@
     <data>
 <!-- List view for base.rate -->
     <record id="records_billing_line_view_tree" model="ir.ui.view">
-        <field name="name">records.billing.line.view.tree</field>
-        <field name="model">records.billing.line</field>
+        <field name="name">records.billing.view.tree</field>
+        <field name="model">records.billing</field>
         <field name="arch" type="xml">
         <list>
         <field name="name"/>
@@ -14,8 +14,8 @@
 
 <!-- Form view for base.rate -->
     <record id="records_billing_line_view_form" model="ir.ui.view">
-        <field name="name">records.billing.line.view.form</field>
-        <field name="model">records.billing.line</field>
+        <field name="name">records.billing.view.form</field>
+        <field name="model">records.billing</field>
         <field name="arch" type="xml">
         <form string="Records Billing Line">
             <sheet>
@@ -32,8 +32,8 @@
 
 <!-- Search view for base.rate -->
     <record id="records_billing_line_view_search" model="ir.ui.view">
-        <field name="name">records.billing.line.view.search</field>
-        <field name="model">records.billing.line</field>
+        <field name="name">records.billing.view.search</field>
+        <field name="model">records.billing</field>
         <field name="arch" type="xml">
         <search>
             <group expand="1" string="Group By">
@@ -46,7 +46,7 @@
 <!-- List view for Action -->
     <record id="action_records_billing_line" model="ir.actions.act_window">
         <field name="name">Records Billing Line</field>
-        <field name="res_model">records.billing.line</field>
+        <field name="res_model">records.billing</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
