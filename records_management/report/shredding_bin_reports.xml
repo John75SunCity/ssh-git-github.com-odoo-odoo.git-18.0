@@ -3,12 +3,12 @@
     <data>
 <record id="report_shredding_bin" model="ir.actions.report">
         <field name="name">Shredding Bin</field>
-        <field name="model">shredding.bin</field>
+        <field name="model">shredding.service.bin</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_shredding_bin_view</field>
         <field name="report_file">records_management.report_shredding_bin</field>
-        <field name="print_report_name">"(Shredding Bin Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="records_management.model_shredding_bin"/>
+        <field name="print_report_name">"(Shredding Bin Report) %s" % (object.barcode or 'N/A')</field>
+        <field name="binding_model_id" ref="model_shredding_service_bin"/>
         <field name="binding_type">report</field>
     </record>
 
@@ -21,23 +21,35 @@
                         <table class="table table-condensed">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
+                                    <th>Barcode</th>
+                                    <th>Size</th>
+                                    <th>Status</th>
+                                    <th>Current Customer</th>
+                                    <th>Location</th>
+                                    <th>Last Service Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-if="doc.field_ids">
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
+                                <tr>
+                                    <td><span t-esc="doc.barcode"/></td>
+                                    <td><span t-esc="doc.size"/></td>
+                                    <td><span t-esc="doc.status"/></td>
+                                    <td><span t-esc="doc.current_customer_id.name if doc.current_customer_id else 'Unassigned'"/></td>
+                                    <td><span t-esc="doc.current_location_id.name if doc.current_location_id else 'N/A'"/></td>
+                                    <td><span t-esc="doc.last_service_date"/></td>
                                 </tr>
-                            </t>
                             </tbody>
                         </table>
+                        
+                        <div class="mt16">
+                            <h4>Service Details</h4>
+                            <p><strong>Service Frequency:</strong> <span t-esc="doc.service_frequency"/></p>
+                            <p><strong>Tips Included:</strong> <span t-esc="'Yes' if doc.tips_included else 'No'"/></p>
+                            <p><strong>Lock Required:</strong> <span t-esc="'Yes' if doc.lock_required else 'No'"/></p>
+                            <t t-if="doc.special_instructions">
+                                <p><strong>Special Instructions:</strong> <span t-esc="doc.special_instructions"/></p>
+                            </t>
+                        </div>
                     </div>
                 </t>
             </t>
