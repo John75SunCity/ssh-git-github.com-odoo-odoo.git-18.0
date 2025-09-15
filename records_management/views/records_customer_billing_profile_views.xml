@@ -1,39 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- List view for records.customer.billing.profile -->
+<!-- List view for customer.billing.profile -->
     <record id="records_customer_billing_profile_view_tree" model="ir.ui.view">
-        <field name="name">records.customer.billing.profile.view.tree</field>
-        <field name="model">records.customer.billing.profile</field>
+        <field name="name">customer.billing.profile.view.tree</field>
+        <field name="model">customer.billing.profile</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
+                <field name="partner_id"/>
+                <field name="profile_type"/>
+                <field name="active"/>
             </list>
         </field>
     </record>
 
-    <!-- Form view for records.customer.billing.profile -->
+    <!-- Form view for customer.billing.profile -->
     <record id="records_customer_billing_profile_view_form" model="ir.ui.view">
-        <field name="name">records.customer.billing.profile.view.form</field>
-        <field name="model">records.customer.billing.profile</field>
+        <field name="name">customer.billing.profile.view.form</field>
+        <field name="model">customer.billing.profile</field>
         <field name="arch" type="xml">
-            <form string="Records.Customer.Billing.Profile">
+            <form string="Customer Billing Profile">
                 <sheet>
                     <div class="oe_title">
-                        <label for="name"/>
                         <h1>
-                            <field name="name" placeholder="Name..."/>
+                            <field name="name" readonly="1"/>
                         </h1>
                     </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="profile_type"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- Search view for records.customer.billing.profile -->
+    <!-- Search view for customer.billing.profile -->
     <record id="records_customer_billing_profile_view_search" model="ir.ui.view">
-        <field name="name">records.customer.billing.profile.view.search</field>
-        <field name="model">records.customer.billing.profile</field>
+        <field name="name">customer.billing.profile.view.search</field>
+        <field name="model">customer.billing.profile</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -43,16 +54,16 @@
         </field>
     </record>
 
-    <!-- Action for records.customer.billing.profile -->
+    <!-- Action for customer.billing.profile -->
     <record id="action_records_customer_billing_profile" model="ir.actions.act_window">
-        <field name="name">Records.Customer.Billing.Profile</field>
-        <field name="res_model">records.customer.billing.profile</field>
+        <field name="name">Customer Billing Profile</field>
+        <field name="res_model">customer.billing.profile</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                Click to add a new records.customer.billing.profile.
+                Click to add a new customer billing profile.
             </p>
         </field>
     </record>
