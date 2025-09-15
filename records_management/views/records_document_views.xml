@@ -221,13 +221,13 @@
                             </field>
                         </page>
                         <page string="Audit Trail" name="audit">
-                            <field name="audit_trail_ids" mode="list">
+                            <field name="audit_log_ids" mode="list">
                                 <list>
                                     <field name="timestamp"/>
                                     <field name="action_type"/>
                                     <field name="user_id"/>
                                     <field name="description"/>
-                                    <field name="compliance_verified"/>
+                                    <field name="naid_compliant"/>
                                 </list>
                             </field>
                         </page>
