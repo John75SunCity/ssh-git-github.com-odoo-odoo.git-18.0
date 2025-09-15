@@ -71,13 +71,13 @@
             <field name="name">records.location.view.tree</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" string="Location Name"/>
                     <field name="location_type" string="Type"/>
                     <field name="storage_capacity" string="Capacity"/>
                     <field name="active" string="Active"/>
                     <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -116,12 +116,12 @@
                         <notebook>
                             <page name="containers" string="Stored Containers">
                                 <field name="container_ids" mode="tree">
-                                    <tree>
+                                    <list>
                                         <field name="name"/>
                                         <field name="partner_id"/>
                                         <field name="state"/>
                                         <field name="storage_start_date"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page name="details" string="Details &amp; Notes">
