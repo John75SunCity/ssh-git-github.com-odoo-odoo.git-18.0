@@ -21,17 +21,6 @@
                     <field name="compliance_status" string="Compliance" widget="badge"/>
                     <field name="document_count" string="Documents" widget="integer"/>
                     <field name="rule_count" string="Rules" widget="integer"/>
-                    <button name="action_activate"
-                            type="object"
-                            string="Activate"
-                            icon="fa-play"
-                            class="btn-link"
-                            invisible="state != 'draft'"/>
-                    <button name="action_view_rules"
-                            type="object"
-                            string="View Rules"
-                            icon="fa-list"
-                            class="btn-link"/>
                 </list>
             </field>
         </record>
@@ -44,26 +33,13 @@
             <field name="arch" type="xml">
                 <form string="Records Retention Policy">
                     <header>
-                        <button name="action_activate"
-                                type="object"
-                                string="Activate Policy"
-                                class="oe_highlight"
-                                invisible="state != 'draft'"/>
-                        <button name="action_archive"
-                                type="object"
-                                string="Archive Policy"
-                                invisible="state != 'active'"/>
-                        <button name="action_set_to_draft"
-                                type="object"
-                                string="Set to Draft"
-                                invisible="state == 'draft'"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,active,under_review,archived"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,active,under_review,archived" clickable="1"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button class="oe_stat_button"
-                                    type="object"
-                                    name="action_view_rules"
+                                    type="action"
+                                    name="records_management.action_retention_rules"
                                     icon="fas fa-gavel">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
@@ -73,8 +49,8 @@
                                 </div>
                             </button>
                             <button class="oe_stat_button"
-                                    type="object"
-                                    name="action_view_versions"
+                                    type="action"
+                                    name="records_management.action_retention_policy_versions"
                                     icon="fas fa-history">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
@@ -138,6 +114,7 @@
                                     </tree>
                                 </field>
                             </page>
+                            <!--
                             <page string="Documents" name="documents">
                                 <field name="document_ids" mode="tree" limit="20">
                                     <tree>
@@ -149,6 +126,7 @@
                                     </tree>
                                 </field>
                             </page>
+                            -->
                             <page string="Child Policies" name="children">
                                 <field name="child_policy_ids" mode="tree">
                                     <tree>
