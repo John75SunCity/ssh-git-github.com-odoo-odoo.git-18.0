@@ -1,4 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding=                    <button name="action_view_rules"
+                            type="object"
+                            string="View Rules"
+                            icon="fa-list"
+                            class="btn-link"/>
+                </list>"?>
 <odoo>
     <data>
         <!-- Tree View for Records Retention Policy -->
@@ -7,7 +12,7 @@
             <field name="model">records.retention.policy</field>
             <field name="type">list</field>
             <field name="arch" type="xml">
-                <tree decoration-success="state == 'active'"
+                <list decoration-success="state == 'active'"
                       decoration-muted="state == 'archived'"
                       decoration-warning="is_expired == True"
                       decoration-info="state == 'draft'">
@@ -21,16 +26,16 @@
                     <field name="compliance_status" string="Compliance" widget="badge"/>
                     <field name="document_count" string="Documents" widget="integer"/>
                     <field name="rule_count" string="Rules" widget="integer"/>
-                    <button name="action_activate" 
-                            type="object" 
-                            string="Activate" 
-                            icon="fa-play" 
-                            class="btn-link" 
+                    <button name="action_activate"
+                            type="object"
+                            string="Activate"
+                            icon="fa-play"
+                            class="btn-link"
                             attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                    <button name="action_view_rules" 
-                            type="object" 
-                            string="View Rules" 
-                            icon="fa-list" 
+                    <button name="action_view_rules"
+                            type="object"
+                            string="View Rules"
+                            icon="fa-list"
                             class="btn-link"/>
                 </tree>
             </field>
@@ -44,27 +49,27 @@
             <field name="arch" type="xml">
                 <form string="Records Retention Policy">
                     <header>
-                        <button name="action_activate" 
-                                type="object" 
-                                string="Activate Policy" 
-                                class="oe_highlight" 
+                        <button name="action_activate"
+                                type="object"
+                                string="Activate Policy"
+                                class="oe_highlight"
                                 attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                        <button name="action_archive" 
-                                type="object" 
-                                string="Archive Policy" 
+                        <button name="action_archive"
+                                type="object"
+                                string="Archive Policy"
                                 attrs="{'invisible': [('state', '!=', 'active')]}"/>
-                        <button name="action_review" 
-                                type="object" 
-                                string="Review Policy" 
-                                class="oe_highlight" 
+                        <button name="action_review"
+                                type="object"
+                                string="Review Policy"
+                                class="oe_highlight"
                                 attrs="{'invisible': [('state', '!=', 'active')]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,active,under_review,archived"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" 
-                                    type="object" 
-                                    name="action_view_documents" 
+                            <button class="oe_stat_button"
+                                    type="object"
+                                    name="action_view_documents"
                                     icon="fas fa-file-alt">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
@@ -73,9 +78,9 @@
                                     <span class="o_stat_text">Documents</span>
                                 </div>
                             </button>
-                            <button class="oe_stat_button" 
-                                    type="object" 
-                                    name="action_view_rules" 
+                            <button class="oe_stat_button"
+                                    type="object"
+                                    name="action_view_rules"
                                     icon="fas fa-gavel">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
@@ -84,9 +89,9 @@
                                     <span class="o_stat_text">Rules</span>
                                 </div>
                             </button>
-                            <button class="oe_stat_button" 
-                                    type="object" 
-                                    name="action_view_compliance" 
+                            <button class="oe_stat_button"
+                                    type="object"
+                                    name="action_view_compliance"
                                     icon="fas fa-shield-alt">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_text">Compliance</span>
@@ -124,15 +129,15 @@
                         <notebook>
                             <page string="Policy Details" name="details">
                                 <group>
-                                    <field name="description" widget="html" 
+                                    <field name="description" widget="html"
                                            placeholder="Detailed description of the retention policy..."/>
                                 </group>
                                 <group string="Legal Requirements">
-                                    <field name="legal_requirements" widget="text" 
+                                    <field name="legal_requirements" widget="text"
                                            placeholder="Legal and regulatory requirements..."/>
                                 </group>
                                 <group string="Compliance Notes">
-                                    <field name="compliance_notes" widget="text" 
+                                    <field name="compliance_notes" widget="text"
                                            placeholder="Additional compliance information..."/>
                                 </group>
                             </page>

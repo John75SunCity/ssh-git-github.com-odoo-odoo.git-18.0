@@ -7,7 +7,7 @@
             <field name="model">records.retention.policy.version</field>
             <field name="type">list</field>
             <field name="arch" type="xml">
-                <tree decoration-success="is_active == True"
+                <list decoration-success="is_active == True"
                       decoration-muted="is_active == False"
                       decoration-info="approval_status == 'pending'"
                       decoration-warning="approval_status == 'rejected'">
@@ -30,7 +30,7 @@
                             string="Compare"
                             icon="fa-code-fork"
                             class="btn-link"/>
-                </tree>
+                </list>
             </field>
         </record>
 
