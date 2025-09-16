@@ -130,7 +130,8 @@
                             <div class="row mt-2">
                                 <div class="col-12">
                                     <small class="text-muted">
-                                        <i class="fa fa-user" />
+<i class="fa fa-user" aria-hidden="true"/>
+
         <field name="user_id" />
                                     </small>
                                 </div>
@@ -138,7 +139,8 @@
                             <div class="row mt-1">
                                 <div class="col-12">
                                     <small class="text-muted">
-                                        <i class="fa fa-link" />
+<i class="fa fa-link" aria-hidden="true"/>
+
         <field name="res_name" />
                                     </small>
                                 </div>
@@ -146,7 +148,8 @@
                             <div class="row mt-1">
                                 <div class="col-12">
                                     <small class="text-muted">
-                                        <i class="fa fa-globe" />
+<i class="fa fa-globe" aria-hidden="true"/>
+
         <field name="ip_address" />
                                     </small>
                                 </div>

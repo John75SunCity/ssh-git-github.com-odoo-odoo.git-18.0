@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- List View for Destruction Certificates -->
+        <!-- List View for Destruction Certificates -->
         <record id="destruction_certificate_view_tree" model="ir.ui.view">
             <field name="name">destruction.certificate.view.tree</field>
             <field name="model">destruction.certificate</field>
             <field name="arch" type="xml">
-<list string="Destruction Certificates" default_order="certificate_date desc">
-    <field name="name"/>
-    <field name="certificate_date"/>
-    <field name="partner_id"/>
-    <field name="destruction_type" optional="hide"/>
-    <field name="containers_processed" optional="hide"/>
-    <field name="weight_processed" optional="hide"/>
-    <field name="state" widget="badge"/>
-    <field name="company_id" groups="base.group_multi_company"/>
-</list>
+                <list string="Destruction Certificates" default_order="certificate_date desc">
+                    <field name="name"/>
+                    <field name="certificate_date"/>
+                    <field name="partner_id"/>
+                    <field name="destruction_type" optional="hide"/>
+                    <field name="containers_processed" optional="hide"/>
+                    <field name="weight_processed" optional="hide"/>
+                    <field name="state" widget="badge"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </list>
             </field>
         </record>
 
@@ -26,66 +26,60 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-<button name="action_confirm_destruction" type="object" string="Confirm Destruction" class="btn-primary" invisible="state != 'draft' or destruction_confirmed"/>
-<button name="action_issue_certificate" type="object" string="Issue" class="btn-primary" invisible="state != 'draft'"/>
-<button name="action_deliver_certificate" type="object" string="Deliver" class="btn-success" invisible="state != 'issued'"/>
-<button name="action_archive_certificate" type="object" string="Archive" class="btn-secondary" invisible="state != 'delivered'"/>
-<button name="action_force_regenerate_certificate" type="object" string="Regenerate Doc" class="btn-secondary" invisible="not destruction_confirmed" help="Force regeneration of the attached certificate document"/>
-<button name="action_print_certificate" type="object" string="Print" class="btn-secondary" invisible="state == 'draft'"/>
+                        <button name="action_confirm_destruction" type="object" string="Confirm Destruction" class="btn-primary" invisible="state != 'draft' or destruction_confirmed"/>
+                        <button name="action_issue_certificate" type="object" string="Issue" class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_deliver_certificate" type="object" string="Deliver" class="btn-success" invisible="state != 'issued'"/>
+                        <button name="action_archive_certificate" type="object" string="Archive" class="btn-secondary" invisible="state != 'delivered'"/>
+                        <button name="action_force_regenerate_certificate" type="object" string="Regenerate Doc" class="btn-secondary" invisible="not destruction_confirmed" help="Force regeneration of the attached certificate document"/>
+                        <button name="action_print_certificate" type="object" string="Print" class="btn-secondary" invisible="state == 'draft'"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,issued,delivered,archived"/>
                     </header>
                     <sheet>
-<div class="oe_button_box" name="button_box">
-    <button name="%(records_management.action_destruction_event)d" type="action" class="oe_stat_button" icon="fa-bolt">
-        <field name="event_count" widget="statinfo" string="Events"/>
-    </button>
-</div>
-<group>
-<group string="Certificate Information">
-    <field name="name"/>
-
-<field name="partner_id"/>
-
-<field name="certificate_date"/>
-
+                        <div class="oe_button_box" name="button_box">
+                            <button name="%(records_management.action_destruction_event)d" type="action" class="oe_stat_button" icon="fa-bolt">
+                                <field name="event_count" widget="statinfo" string="Events"/>
+                            </button>
+                        </div>
+                        <group>
+                            <group string="Certificate Information">
+                                <field name="name"/>
+                                <field name="partner_id"/>
+                                <field name="certificate_date"/>
                             </group>
-<group string="Destruction Details">
-    <field name="destruction_type"/>
-    <field name="weight_processed"/>
-    <field name="containers_processed"/>
-    <field name="naid_certificate_number" placeholder="Official NAID certificate number (if applicable)"/>
-    <field name="destruction_confirmed" invisible="1"/>
+                            <group string="Destruction Details">
+                                <field name="destruction_type"/>
+                                <field name="weight_processed"/>
+                                <field name="containers_processed"/>
+                                <field name="naid_certificate_number" placeholder="Official NAID certificate number (if applicable)"/>
+                                <field name="destruction_confirmed" invisible="1"/>
                             </group>
                         </group>
 
                         <group>
-<group string="Personnel">
-    <field name="compliance_officer_id"/>
-    <field name="witness_id"/>
-
-<field name="operator_certification_id"/>
-
+                            <group string="Personnel">
+                                <field name="compliance_officer_id"/>
+                                <field name="witness_id"/>
+                                <field name="operator_certification_id"/>
                             </group>
-<group string="Related Records">
-    <field name="fsm_task_id"/>
-    <field name="work_order_id"/>
-    <field name="invoice_id"/>
-    <field name="naid_certificate_id"/>
-
+                            <group string="Related Records">
+                                <field name="fsm_task_id"/>
+                                <field name="work_order_id"/>
+                                <field name="invoice_id"/>
+                                <field name="naid_certificate_id"/>
                             </group>
                         </group>
 
                         <notebook>
-<page string="Destruction Events" name="events">
-    <field name="event_ids"/>
-</page>
-<page string="Notes" name="notes">
-    <field name="notes" nolabel="1" placeholder="Certificate notes and additional information..."/>
-</page>
-</notebook>
-</sheet>
-</form>
-</field>
+                            <page string="Destruction Events" name="events">
+                                <field name="event_ids"/>
+                            </page>
+                            <page string="Notes" name="notes">
+                                <field name="notes" nolabel="1" placeholder="Certificate notes and additional information..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
         </record>
 
         <!-- Kanban View for Destruction Certificates -->
@@ -94,14 +88,13 @@
             <field name="model">destruction.certificate</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_certificate_dashboard">
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="certificate_date"/>
-                <field name="state"/>
-                <field name="destruction_type"/>
-                <field name="containers_processed"/>
-                <field name="naid_certificate_id"/>
-
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="certificate_date"/>
+                    <field name="state"/>
+                    <field name="destruction_type"/>
+                    <field name="containers_processed"/>
+                    <field name="naid_certificate_id"/>
 
                     <templates>
                         <t t-name="card">
@@ -109,48 +102,42 @@
                                 <div class="o_kanban_card_header">
                                     <div class="o_kanban_card_header_title">
                                         <div class="o_primary">
-<strong>
-    <field name="name"/>
-</strong>
+                                            <strong>
+                                                <field name="name"/>
+                                            </strong>
                                         </div>
                                         <div class="o_secondary">
-<field name="partner_id"/>
-
+                                            <field name="partner_id"/>
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
                                         <a class="o_kanban_manage_toggle_button" href="#">
-<i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
-
+                                            <i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
                                         </a>
                                     </div>
                                 </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                     <div class="row">
                                         <div class="col-8">
                                             <div>
-<i class="fa fa-calendar" title="Certificate Date" aria-label="Certificate Date" role="img"/>
-<field name="certificate_date"/>
-
+                                                <i class="fa fa-calendar" aria-hidden="true"/>
+                                                <field name="certificate_date"/>
                                             </div>
                                             <div>
-<i class="fa fa-truck" title="Destruction Type" aria-label="Destruction Type" role="img"/>
-<field name="destruction_type"/>
-
+                                                <i class="fa fa-truck" aria-hidden="true"/>
+                                                <field name="destruction_type"/>
                                             </div>
-<div>
-    <i class="fa fa-archive" title="Containers Processed" aria-label="Containers Processed" role="img"/>
-
-<field name="containers_processed"/>
- containers
+                                            <div>
+                                                <i class="fa fa-archive" aria-hidden="true"/>
+                                                <field name="containers_processed"/>
+                                                containers
                                             </div>
                                         </div>
                                         <div class="col-4">
                                             <div class="text-center">
-<field name="state" widget="label_selection"/>
-<div t-if="record.naid_certificate_id.raw_value" class="text-success mt-1">
-    <i class="fa fa-shield" title="NAID Certified" aria-label="NAID Certified" role="img"/>
-
+                                                <field name="state" widget="label_selection"/>
+                                                <div t-if="record.naid_certificate_id.raw_value" class="text-success mt-1">
+                                                    <i class="fa fa-shield" aria-hidden="true"/>
                                                     NAID
                                                 </div>
                                             </div>
@@ -159,23 +146,23 @@
                                     <div class="row mt-2">
                                         <div class="col-6">
                                             <button class="btn btn-primary btn-sm" type="object" name="action_print_certificate">
-Print
+                                                Print
                                             </button>
                                         </div>
                                         <div class="col-6">
-<button class="btn btn-info btn-sm" type="object" name="action_send_notification">
-Notify
+                                            <button class="btn btn-info btn-sm" type="object" name="action_send_notification">
+                                                Notify
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-<a role="menuitem" type="edit" class="dropdown-item">Edit Certificate</a>
-<a role="menuitem" type="object" name="action_view_details" class="dropdown-item">View Details</a>
-<a role="menuitem" type="object" name="action_print_certificate" class="dropdown-item">Print Certificate</a>
-<a role="menuitem" type="object" name="action_send_notification" class="dropdown-item">Send Notification</a>
+                                    <a role="menuitem" type="edit" class="dropdown-item">Edit Certificate</a>
+                                    <a role="menuitem" type="object" name="action_view_details" class="dropdown-item">View Details</a>
+                                    <a role="menuitem" type="object" name="action_print_certificate" class="dropdown-item">Print Certificate</a>
+                                    <a role="menuitem" type="object" name="action_send_notification" class="dropdown-item">Send Notification</a>
                                     <div class="dropdown-divider"/>
-<a role="menuitem" type="object" name="action_revoke_certificate" class="dropdown-item" invisible="state not in ['issued', 'active']">Revoke Certificate</a>
+                                    <a role="menuitem" type="object" name="action_revoke_certificate" class="dropdown-item" invisible="state not in ['issued', 'active']">Revoke Certificate</a>
                                 </div>
                             </div>
                         </t>
@@ -213,45 +200,44 @@ Notify
             <field name="name">destruction.certificate.view.calendar</field>
             <field name="model">destruction.certificate</field>
             <field name="arch" type="xml">
-<calendar string="Destruction Certificate Schedule" date_start="certificate_date" color="state">
-    <field name="name"/>
-    <field name="partner_id"/>
-    <field name="destruction_type"/>
-</calendar>
+                <calendar string="Destruction Certificate Schedule" date_start="certificate_date" color="state">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="destruction_type"/>
+                </calendar>
             </field>
         </record>
 
         <!-- Action Window for Destruction Certificates -->
         <record id="action_destruction_certificate" model="ir.actions.act_window">
-<field name="name">Destruction Certificates</field>
+            <field name="name">Destruction Certificates</field>
             <field name="res_model">destruction.certificate</field>
             <field name="view_mode">kanban,list,form,calendar</field>
             <field name="search_view_id" ref="destruction_certificate_view_search"/>
             <field name="context">{'search_default_draft': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-Create your first destruction certificate!
-</p>
-<p>
-<b>NAID AAA Compliant Destruction Certificates:</b>
-<br/>
-
-•<i class="fa fa-id-card"/>
- Unique certificate numbering system<br/>
-                    •<i class="fa fa-check-circle"/>
- NAID verification and compliance tracking<br/>
-                    •<i class="fa fa-users"/>
- Multi-signature authorization process<br/>
-                    •<i class="fa fa-list-alt"/>
- Detailed item-by-item destruction records<br/>
-                    •<i class="fa fa-link"/>
- Complete chain of custody integration<br/>
-                    •<i class="fa fa-bar-chart"/>
- Financial tracking and profitability analysis<br/>
-                    •<i class="fa fa-calendar"/>
- Automated expiry and renewal management<br/>
-                    •<i class="fa fa-trophy"/>
- Full audit trail for regulatory compliance
+                    Create your first destruction certificate!
+                </p>
+                <p>
+                    <b>NAID AAA Compliant Destruction Certificates:</b>
+                    <br/>
+                    • <i class="fa fa-id-card" aria-hidden="true"/>
+                    Unique certificate numbering system<br/>
+                    • <i class="fa fa-check-circle" aria-hidden="true"/>
+                    NAID verification and compliance tracking<br/>
+                    • <i class="fa fa-users" aria-hidden="true"/>
+                    Multi-signature authorization process<br/>
+                    • <i class="fa fa-list-alt" aria-hidden="true"/>
+                    Detailed item-by-item destruction records<br/>
+                    • <i class="fa fa-link" aria-hidden="true"/>
+                    Complete chain of custody integration<br/>
+                    • <i class="fa fa-bar-chart" aria-hidden="true"/>
+                    Financial tracking and profitability analysis<br/>
+                    • <i class="fa fa-calendar" aria-hidden="true"/>
+                    Automated expiry and renewal management<br/>
+                    • <i class="fa fa-trophy" aria-hidden="true"/>
+                    Full audit trail for regulatory compliance
                 </p>
             </field>
         </record>
