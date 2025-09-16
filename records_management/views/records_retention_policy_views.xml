@@ -14,14 +14,14 @@
                     <field name="sequence" widget="handle"/>
                     <field name="name" string="Policy Name"/>
                     <field name="code" string="Code"/>
-                    <field name="retention_years" string="Retention (Years)"/>
+                    <field name="retention_years" string="Retention Period"/>
                     <field name="retention_unit" string="Unit"/>
                     <field name="destruction_method" string="Destruction"/>
                     <field name="state" string="Status" widget="badge"/>
                     <field name="compliance_status" string="Compliance" widget="badge"/>
                     <field name="document_count" string="Documents"/>
                     <field name="rule_count" string="Rules"/>
-                    <field name="is_expired" invisible="1"/>
+                    <field name="is_expired" string="Expired" widget="boolean_toggle"/>
                 </list>
             </field>
         </record>
@@ -78,12 +78,16 @@
                                 <field name="retention_years" required="1"/>
                                 <field name="retention_unit"/>
                                 <field name="destruction_method" required="1"/>
-                                <field name="is_expired" readonly="1"/>
+                                <field name="is_expired"
+                                       readonly="1"
+                                       widget="boolean_toggle"
+                                       help="Automatically computed based on expiration date. When True, this policy has passed its expiration date and may need review or archival."/>
                             </group>
                             <group name="status_info">
                                 <field name="compliance_status" widget="badge"/>
                                 <field name="effective_date"/>
-                                <field name="expiration_date"/>
+                                <field name="expiration_date"
+                                       attrs="{'readonly': [('state', '=', 'archived')]}"/>
                                 <field name="last_review_date"/>
                                 <field name="next_review_date"/>
                             </group>
@@ -92,8 +96,9 @@
                             <page string="Policy Details" name="details">
                                 <group string="Policy Description">
                                     <field name="description" widget="html"
-                                           placeholder="Detailed description (HTML supported) including legal and regulatory requirements..."/>
-                                </group>
+                                    <field name="description" widget="html"
+                                           placeholder="Detailed description (HTML supported) including legal and regulatory requirements..."
+                                           help="Provide a detailed description of the retention policy, including references to applicable legal and regulatory requirements."/>
                                 <group string="Compliance Notes">
                                     <field name="compliance_notes" widget="text"
                                            placeholder="Additional compliance information..."/>
@@ -205,40 +210,39 @@
                     <field name="state"/>
                     <field name="compliance_status"/>
                     <field name="retention_years"/>
+                    <field name="retention_unit"/>
                     <field name="destruction_method"/>
                     <field name="document_count"/>
                     <field name="rule_count"/>
+                    <field name="is_expired"/>
                     <templates>
                         <t t-name="kanban-box">
-                            <div class="oe_kanban_card oe_kanban_global_click">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.is_expired.raw_value ? 'border-warning' : ''}"
+                                 t-att-title="record.is_expired.raw_value ? 'This policy is expired and may need review or archival.' : ''">
                                 <div class="row">
                                     <div class="col-6">
                                         <strong><span><t t-esc="record.name.value"/></span></strong>
+                                        <t t-if="record.is_expired.raw_value">
+                                            <span class="badge badge-warning ml-2">
+                                                <i class="fa fa-exclamation-triangle"/> Expired
+                                            </span>
+                                        </t>
                                     </div>
-                                    <div class="col-6">
-                                        <span class="float-right badge badge-pill">
-                                            <t t-if="record.state.raw_value == 'draft'" t-attf-class="badge-secondary">
-                                                <t t-esc="record.state.value"/>
-                                            </t>
-                                            <t t-if="record.state.raw_value == 'active'" t-attf-class="badge-success">
-                                                <t t-esc="record.state.value"/>
-                                            </t>
-                                            <t t-if="record.state.raw_value == 'archived'" t-attf-class="badge-secondary">
-                                                <t t-esc="record.state.value"/>
-                                            </t>
+                                        <!-- Badge class mapping for policy states -->
+                                        <t t-set="badge_class_map" t-value="{
+                                            'active': 'badge-success',
+                                            'draft': 'badge-secondary',
+                                            'archived': 'badge-secondary'
+                                        }"/>
+                                        <span t-attf-class="float-right badge badge-pill #{badge_class_map.get(record.state.raw_value, '')}">
+                                            <t t-esc="record.state.value"/>
+                                        </span>
                                         </span>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <span>Code: <t t-esc="record.code.value"/></span>
-                                    </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-6">
                                         <span>
                                             <i class="fa fa-clock-o" aria-hidden="true"/>
-                                            <t t-esc="record.retention_years.value"/> years
+                                            <t t-esc="record.retention_years.value"/> <t t-esc="record.retention_unit.value"/>
                                         </span>
                                     </div>
                                     <div class="col-6">
@@ -272,10 +276,9 @@
         <!-- Action for Records Retention Policy -->
         <record id="action_records_retention_policy" model="ir.actions.act_window">
             <field name="name">Retention Policies</field>
-            <field name="res_model">records.retention.policy</field>
             <field name="view_mode">tree,form,kanban</field>
             <field name="domain">[]</field>
-            <field name="context">{}</field>
+            <field name="help" type="html">
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     No retention policies found!
