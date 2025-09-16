@@ -79,8 +79,20 @@
     "python.linting.enabled": true,
     "python.linting.lintOnSave": true,
     "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
+    "editor.formatOnPaste": false,
     "editor.formatOnType": false,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.trimAutoWhitespace": true,
+    "editor.renderWhitespace": "boundary",
+    "editor.renderControlCharacters": false,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 120,
+    "editor.rulers": [
+      88,
+      120
+    ],
     "editor.codeActionsOnSave": {
         "source.organizeImports": "never",
         "source.fixAll.ruff": "explicit",
@@ -91,12 +103,20 @@
         "editor.insertSpaces": true,
         "editor.detectIndentation": false,
         "editor.formatOnSave": true,
-        "editor.formatOnPaste": true,
-        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnPaste": false,
+        "editor.formatOnType": false,
+        "editor.defaultFormatter": "ms-python.python",
         "editor.codeActionsOnSave": {
             "source.organizeImports": "never",
-            "source.fixAll.ruff": "explicit"
+            "source.fixAll.ruff": "explicit",
+            "source.fixAll": "never"
         },
+        "editor.rulers": [
+          88,
+          120
+        ],
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 120,
         "odoo.disableAllLinting": true,
         "odoo.disablePythonLinting": true,
         "odoo.disableTranslationLinting": true,
@@ -119,8 +139,16 @@
         "editor.formatOnSave": false,
         "editor.formatOnPaste": false,
         "editor.formatOnType": false,
-        "editor.autoIndent": "none",
-        "editor.defaultFormatter": "DotJoshJohnson.xml"
+        "editor.autoIndent": "advanced",
+        "editor.defaultFormatter": "DotJoshJohnson.xml",
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 120,
+        "editor.rulers": [
+          100,
+          120
+        ],
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs": true
     },
     "xml.format.enabled": false,
     "xml.format.legacy": false,
@@ -147,15 +175,13 @@
         "editor.tabSize": 2,
         "editor.insertSpaces": true,
         "editor.detectIndentation": false,
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.formatOnSave": true
     },
     "[markdown]": {
         "editor.tabSize": 2,
         "editor.insertSpaces": true,
         "editor.detectIndentation": false,
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.formatOnSave": true
     },
     "files.associations": {
         "*.py": "python",
@@ -169,10 +195,11 @@
         "*.md": "markdown"
     },
     "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 3000,
+    "files.autoSaveDelay": 2000,
     "files.trimTrailingWhitespace": true,
     "files.trimFinalNewlines": true,
     "files.insertFinalNewline": true,
+    "files.eol": "\n",
     "security.workspace.trust.enabled": true,
     "problems.showCurrentInStatus": true,
     "problems.decorations.enabled": true,
@@ -368,16 +395,30 @@
     "task.quickOpen.detail": true,
     "task.quickOpen.skip": false,
     "editor.minimap.enabled": true,
-    "editor.renderWhitespace": "boundary",
-    "editor.renderControlCharacters": false,
-    "editor.wordWrap": "off",
     "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs": true,
     "editor.guides.bracketPairsHorizontal": true,
     "editor.guides.highlightActiveBracketPair": true,
     "editor.guides.highlightActiveIndentation": true,
     "editor.guides.indentation": true,
-    "cSpell.words": ["naid"],
+    "cSpell.words": [
+      "naid",
+      "odoo",
+      "addons",
+      "fsm",
+      "kanban",
+      "chatter",
+      "comodel",
+      "vals",
+      "recordset"
+    ],
     "Odoo.selectedProfile": "default",
-    "codeQL.githubDatabase.update": "never"
+    "codeQL.githubDatabase.update": "never",
+    "emmet.includeLanguages": {
+      "xml": "html"
+    },
+    "emmet.triggerExpansionOnTab": false,
+    "breadcrumbs.enabled": true,
+    "breadcrumbs.showFiles": true,
+    "breadcrumbs.showSymbols": true
 }
