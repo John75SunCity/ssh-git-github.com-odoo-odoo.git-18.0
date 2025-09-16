@@ -279,13 +279,11 @@ class RecordsRetentionPolicy(models.Model):
             'last_review_date': False,
         })
         return super().copy(default)
-    @api.depends('name', 'code', 'DEFAULT_CODE')
+    @api.depends('name', 'code')
     def _compute_display_name(self):
         """Display name as [CODE] Name if code is set."""
         for policy in self:
-            policy.display_name = f"[{policy.code}] {policy.name}" if policy.code and policy.code != self.DEFAULT_CODE else policy.name
-        for policy in self:
-            policy.display_name = f"[{policy.code}] {policy.name}" if policy.code and policy.code != self.DEFAULT_CODE else policy.name
+            policy.display_name = f"[{policy.code}] {policy.name}" if policy.code and policy.code != policy.DEFAULT_CODE else policy.name
 
     @api.depends('rule_ids', 'version_ids')
     def _compute_counts(self):
