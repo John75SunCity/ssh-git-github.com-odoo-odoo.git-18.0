@@ -63,7 +63,8 @@
                                     </a>
                                     <div class="dropdown-divider"/>
                                     <a role="menuitem" type="object" name="toggle_active" class="dropdown-item">
-                                        <i class="fa fa-archive"/>
+<i class="fa fa-archive" title="Archive/Unarchive Location"/>
+
                                         <t t-if="record.active.raw_value">Archive</t>
                                         <t t-else="">Unarchive</t>
                                     </a>
@@ -138,8 +139,8 @@
                             </page>
                             <page name="details" string="Details &amp; Notes">
                                 <group>
-                                    <field name="description" placeholder="Location description and special instructions..."/>
-                                    <field name="access_instructions"/>
+<field name="description" placeholder="Location description and special instructions..."/>
+
                                     <field name="security_level"/>
                                 </group>
                             </page>
