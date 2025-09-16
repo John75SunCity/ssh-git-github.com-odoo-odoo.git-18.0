@@ -19,9 +19,12 @@ Key Features:
 # Stdlib first
 import calendar
 from datetime import date
+import logging
 # Odoo core imports next
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class RecordsRetentionPolicy(models.Model):
@@ -123,6 +126,7 @@ class RecordsRetentionPolicy(models.Model):
     # === COMPUTED COUNTS & STATS ===
     rule_count = fields.Integer(string="Rule Count", compute='_compute_counts')
     document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
+    version_count = fields.Integer(string="Version Count", compute='_compute_counts')
     policy_level = fields.Integer(string='Policy Level', compute='_compute_policy_level')
 
     # === REVIEW & COMPLIANCE ===
@@ -242,8 +246,10 @@ class RecordsRetentionPolicy(models.Model):
     supersedes_id = fields.Many2one('records.retention.policy', string='Supersedes')
     effective_date = fields.Date(string='Effective Date')
     ineffective_date = fields.Date(string='Ineffective Date')
-    # Indicates the version number of the policy for tracking changes and versioning history.
-    version = fields.Integer(string='Version')
+    version = fields.Integer(
+        string='Version',
+        help='Indicates the version number of the policy for tracking changes and versioning history.'
+    )
 
     # === SQL CONSTRAINTS ===
     _sql_constraints = [
@@ -273,11 +279,11 @@ class RecordsRetentionPolicy(models.Model):
             'last_review_date': False,
         })
         return super().copy(default)
-
-    # === COMPUTE & ONCHANGE METHODS ===
-    @api.depends('name', 'code')
+    @api.depends('name', 'code', 'DEFAULT_CODE')
     def _compute_display_name(self):
         """Display name as [CODE] Name if code is set."""
+        for policy in self:
+            policy.display_name = f"[{policy.code}] {policy.name}" if policy.code and policy.code != self.DEFAULT_CODE else policy.name
         for policy in self:
             policy.display_name = f"[{policy.code}] {policy.name}" if policy.code and policy.code != self.DEFAULT_CODE else policy.name
 
@@ -287,6 +293,14 @@ class RecordsRetentionPolicy(models.Model):
         for policy in self:
             policy.rule_count = len(policy.rule_ids)
             policy.version_count = len(policy.version_ids)
+
+    current_version_id = fields.Many2one(
+        'records.retention.policy.version',
+        string='Current Version',
+        compute='_compute_current_version',
+        store=True,
+        readonly=True
+    )
 
     @api.depends('version_ids.state')
     def _compute_current_version(self):
@@ -361,11 +375,11 @@ class RecordsRetentionPolicy(models.Model):
             elif policy.retention_unit == 'days':
                 policy.retention_years = policy.retention_period / 365
             elif policy.retention_unit == 'indefinite':
-                policy.retention_years = None
-            else:
                 policy.retention_years = 0
-                _logger = getattr(self.env, 'logger', None)
+            else:
                 _logger.warning(f"Unsupported retention unit '{policy.retention_unit}' for policy '{policy.name}'. Set retention_years to 0.")
+                policy.retention_years = 0
+
     # Class-level constant for retention period defaults
     RETENTION_PERIOD_DEFAULTS = {
         'days': 30,
@@ -381,13 +395,8 @@ class RecordsRetentionPolicy(models.Model):
         if self.retention_unit == 'indefinite':
             self.retention_period = 0
             self._retention_period_was_indefinite = True
-        elif self._retention_period_was_indefinite and self.retention_period == 0:
-            # Restore a sensible default only if last set by indefinite and value is 0
-            self.retention_period = self.RETENTION_PERIOD_DEFAULTS.get(self.retention_unit, 1)
-            self._retention_period_was_indefinite = False
-        else:
-            self._retention_period_was_indefinite = False
-            # Only set default if current value is 0 or not set
+    # Computed field for expiration status
+    # is_expired field is already defined above, so this duplicate definition is removed.
             if not self.retention_period:
                 self.retention_period = self.RETENTION_PERIOD_DEFAULTS.get(self.retention_unit, 1)
 
