@@ -1,9 +1,4 @@
-<?xml version="1.0" encoding=                    <button name="action_view_rules"
-                            type="object"
-                            string="View Rules"
-                            icon="fa-list"
-                            class="btn-link"/>
-                </list>"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
         <!-- Tree View for Records Retention Policy -->
@@ -37,7 +32,7 @@
                             string="View Rules"
                             icon="fa-list"
                             class="btn-link"/>
-                </tree>
+                </list>
             </field>
         </record>
 
