@@ -2,7 +2,16 @@
 <odoo>
     <data>
         <!-- Tree View for Records Retention Policy -->
-        <record id="records_retention_policy_view_tree" model="ir.ui.view">
+        <record id="records_retention_policy_view_                                <group string="Audit Log">
+                                    <field name="audit_log_ids" mode="tree" limit="10">
+                                        <list>
+                                            <field name="event_type"/>
+                                            <field name="timestamp"/>
+                                            <field name="user_id"/>
+                                            <field name="description"/>
+                                        </list>
+                                    </field>
+                                </group>l="ir.ui.view">
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
             <field name="type">list</field>
@@ -105,46 +114,46 @@
                             </page>
                             <page string="Retention Rules" name="rules">
                                 <field name="rule_ids" mode="tree" limit="20">
-                                    <tree>
+                                    <list>
                                         <field name="name"/>
                                         <field name="retention_years"/>
                                         <field name="destruction_method"/>
                                         <field name="document_type_id"/>
                                         <field name="state"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <!--
                             <page string="Documents" name="documents">
                                 <field name="document_ids" mode="tree" limit="20">
-                                    <tree>
+                                    <list>
                                         <field name="name"/>
                                         <field name="reference"/>
                                         <field name="document_type_id"/>
                                         <field name="create_date"/>
                                         <field name="destruction_eligible_date"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             -->
                             <page string="Child Policies" name="children">
                                 <field name="child_policy_ids" mode="tree">
-                                    <tree>
+                                    <list>
                                         <field name="name"/>
                                         <field name="code"/>
                                         <field name="state"/>
                                         <field name="retention_years"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Policy Versions" name="versions">
                                 <field name="version_ids" mode="tree">
-                                    <tree>
+                                    <list>
                                         <field name="name"/>
                                         <field name="version"/>
                                         <field name="effective_date"/>
                                         <field name="state"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Audit Trail" name="audit">
@@ -163,12 +172,12 @@
                                 <separator string="Audit History"/>
                                 <group string="Audit Log">
                                     <field name="audit_log_ids" mode="tree" limit="10">
-                                        <tree>
-                                            <field name="action"/>
-                                            <field name="action_date"/>
+                                        <list>
+                                            <field name="event_type"/>
+                                            <field name="timestamp"/>
                                             <field name="user_id"/>
-                                            <field name="notes"/>
-                                        </tree>
+                                            <field name="description"/>
+                                        </list>
                                     </field>
                                 </group>
                             </page>
@@ -287,7 +296,7 @@
         <record id="action_records_retention_policy" model="ir.actions.act_window">
             <field name="name">Retention Policies</field>
             <field name="res_model">records.retention.policy</field>
-            <field name="view_mode">tree,form,kanban</field>
+            <field name="view_mode">list,form,kanban</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
