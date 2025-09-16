@@ -53,24 +53,24 @@
                                     </div>
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-<a role="menuitem" type="edit" class="dropdown-item">
-    <i class="fa fa-edit"/>
+                                    <a role="menuitem" type="edit" class="dropdown-item">
+                                        <i class="fa fa-edit"/>
                                         Edit Location
-</a>
-<a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">
-    <i class="fa fa-cube"/>
+                                    </a>
+                                    <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">
+                                        <i class="fa fa-cube"/>
                                         View Containers
-</a>
+                                    </a>
                                     <div class="dropdown-divider"/>
-<a role="menuitem" type="object" name="toggle_active" class="dropdown-item">
-    <i class="fa fa-archive"/>
-    <t t-if="record.active.raw_value">Archive</t>
-    <t t-else="">Unarchive</t>
-</a>
-<a role="menuitem" type="object" name="action_duplicate" class="dropdown-item">
-    <i class="fa fa-copy"/>
+                                    <a role="menuitem" type="object" name="toggle_active" class="dropdown-item">
+                                        <i class="fa fa-archive"/>
+                                        <t t-if="record.active.raw_value">Archive</t>
+                                        <t t-else="">Unarchive</t>
+                                    </a>
+                                    <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item">
+                                        <i class="fa fa-copy"/>
                                         Duplicate
-</a>
+                                    </a>
                                 </div>
                             </div>
                         </t>
@@ -160,14 +160,11 @@
             <field name="model">records.location</field>
             <field name="arch" type="xml">
                 <search>
-<field name="name" string="Location" filter_domain="['|', ('name', 'ilike', '%s'), ('description', 'ilike', '%s')]"/>
-
+                    <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', '%s'), ('description', 'ilike', '%s')]"/>
                     <field name="location_type"/>
-
                     <separator/>
                     <filter name="active" string="Active Locations" domain="[('active', '=', True)]"/>
                     <filter name="inactive" string="Archived Locations" domain="[('active', '=', False)]"/>
-
                     <group string="Group By" expand="0">
                         <filter name="group_by_type" string="Type" context="{'group_by': 'location_type'}"/>
                         <filter name="group_by_parent" string="Parent Location" context="{'group_by': 'parent_location_id'}"/>
@@ -190,32 +187,32 @@
                     Create your first storage location!
                 </p>
                 <p>
-<b>
-    <i class="fa fa-building" aria-hidden="true"/>
+                    <b>
+                        <i class="fa fa-building" aria-hidden="true"/>
                         Enterprise Storage Management:
-</b>
+                    </b>
                 </p>
                 <ul>
-<li>
-    <i class="fa fa-cube" aria-hidden="true"/>
+                    <li>
+                        <i class="fa fa-cube" aria-hidden="true"/>
                         Track box locations with visual kanban boards
-</li>
-<li>
-    <i class="fa fa-bar-chart" aria-hidden="true"/>
+                    </li>
+                    <li>
+                        <i class="fa fa-bar-chart" aria-hidden="true"/>
                         Monitor capacity utilization in real-time
-</li>
-<li>
-    <i class="fa fa-search" aria-hidden="true"/>
+                    </li>
+                    <li>
+                        <i class="fa fa-search" aria-hidden="true"/>
                         Smart search with advanced filters
-</li>
-<li>
-    <i class="fa fa-sitemap" aria-hidden="true"/>
+                    </li>
+                    <li>
+                        <i class="fa fa-sitemap" aria-hidden="true"/>
                         Hierarchical location organization
-</li>
-<li>
-    <i class="fa fa-mobile" aria-hidden="true"/>
+                    </li>
+                    <li>
+                        <i class="fa fa-mobile" aria-hidden="true"/>
                         Mobile-optimized for facility operations
-</li>
+                    </li>
                 </ul>
             </field>
         </record>
