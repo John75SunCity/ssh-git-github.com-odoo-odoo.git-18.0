@@ -2,16 +2,7 @@
 <odoo>
     <data>
         <!-- Tree View for Records Retention Policy -->
-        <record id="records_retention_policy_view_                                <group string="Audit Log">
-                                    <field name="audit_log_ids" mode="tree" limit="10">
-                                        <list>
-                                            <field name="event_type"/>
-                                            <field name="timestamp"/>
-                                            <field name="user_id"/>
-                                            <field name="description"/>
-                                        </list>
-                                    </field>
-                                </group>l="ir.ui.view">
+        <record id="records_retention_policy_view_tree" model="ir.ui.view">
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
             <field name="type">list</field>
