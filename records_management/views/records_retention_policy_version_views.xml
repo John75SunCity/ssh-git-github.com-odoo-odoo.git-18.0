@@ -71,7 +71,7 @@
                                 <field name="approved_by" readonly="1" invisible="approved_by == False"/>
                                 <field name="approval_date" readonly="1" invisible="approval_date == False"/>
                                 <field name="rejection_reason"
-                                       invisible="approval_status != 'rejected'" required="approval_status == 'rejected'"/>
+                                       invisible="approval_status != 'rejected'" required="0"/>
                             </group>
                         </group>
                         <notebook>
@@ -151,11 +151,11 @@
                     <filter string="Rejected" name="rejected" domain="[('approval_status', '=', 'rejected')]"/>
                     <separator/>
                     <filter string="Current" name="current"
-                            domain="[('effective_date', '&lt;=', context_today().strftime('%Y-%m-%d')), '|', ('expiration_date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('expiration_date', '=', False)]"/>
+                            domain="[('effective_date', '&lt;=', context_today()), '|', ('expiration_date', '&gt;=', context_today()), ('expiration_date', '=', False)]"/>
                     <filter string="Future" name="future"
-                            domain="[('effective_date', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
+                            domain="[('effective_date', '&gt;', context_today())]"/>
                     <filter string="Expired" name="expired"
-                            domain="[('expiration_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                            domain="[('expiration_date', '&lt;', context_today()), ('expiration_date', '!=', False)]"/>
                     <group expand="1" string="Group By">
                         <filter string="Policy" name="group_policy" domain="[]" context="{'group_by': 'policy_id'}"/>
                         <filter string="Approval Status" name="group_status" domain="[]" context="{'group_by': 'approval_status'}"/>
@@ -189,4 +189,5 @@
                   action="action_records_retention_policy_version"
                   sequence="15"/>
     </data>
+</odoo>
 </odoo>
