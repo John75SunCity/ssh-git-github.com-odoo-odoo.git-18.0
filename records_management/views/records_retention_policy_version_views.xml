@@ -7,24 +7,24 @@
             <field name="model">records.retention.policy.version</field>
             <field name="type">list</field>
             <field name="arch" type="xml">
-                <list decoration-success="is_active == True"
-                      decoration-muted="is_active == False"
+                <list decoration-success="is_current == True"
+                      decoration-muted="active == False"
                       decoration-info="state == 'draft'"
                       decoration-warning="state == 'archived'">
                     <field name="policy_id" string="Policy"/>
-                    <field name="version_number" string="Version"/>
+                    <field name="version" string="Version"/>
                     <field name="effective_date" string="Effective"/>
-                    <field name="expiration_date" string="Expires"/>
-                    <field name="is_active" string="Active" widget="boolean_toggle"/>
-                    <field name="created_by" string="Created By"/>
+                    <field name="expiry_date" string="Expires"/>
+                    <field name="is_current" string="Current" widget="boolean_toggle"/>
+                    <field name="created_by_id" string="Created By"/>
                     <field name="state" string="Status" widget="badge"/>
-                    <field name="create_date" string="Created On"/>
+                    <field name="created_date" string="Created On"/>
                     <button name="action_activate"
                             type="object"
                             string="Activate"
                             icon="fa-play"
                             class="btn-link"
-                            invisible="is_active == True"/>
+                            invisible="is_current == True"/>
                     <button name="action_compare_versions"
                             type="object"
                             string="Compare"
@@ -100,21 +100,21 @@
                             <page string="Policy Content" name="content">
                                 <group>
                                     <group name="retention_info">
-                                        <field name="retention_period_years" required="1"/>
-                                        <field name="destruction_method" required="1"/>
-                                        <field name="legal_hold_applicable"/>
+                                        <field name="version" required="1"/>
+                                        <field name="state" required="1"/>
+                                        <field name="active"/>
                                     </group>
                                     <group name="compliance_info">
-                                        <field name="compliance_requirements"/>
-                                        <field name="regulatory_framework"/>
-                                        <field name="industry_standards"/>
+                                        <field name="is_current"/>
+                                        <field name="effective_date"/>
+                                        <field name="expiry_date"/>
                                     </group>
                                 </group>
                                 <separator string="Policy Description"/>
-                                <field name="policy_description" widget="html"
+                                <field name="description" widget="html"
                                        placeholder="Detailed description of retention policy requirements..."/>
                                 <separator string="Changes from Previous Version"/>
-                                <field name="change_summary" widget="html"
+                                <field name="changes" widget="html"
                                        placeholder="Summary of changes made in this version..."/>
                             </page>
                             <page string="Document Types" name="document_types">
@@ -126,25 +126,26 @@
                             <page string="Compliance" name="compliance">
                                 <group>
                                     <group string="Compliance Information">
-                                        <field name="certification_required"/>
-                                        <field name="review_frequency"/>
-                                        <field name="next_review_date"/>
-                                        <field name="compliance_officer"/>
+                                        <field name="created_date"/>
+                                        <field name="approved_date"/>
+                                        <field name="effective_date"/>
+                                        <field name="expiry_date"/>
                                     </group>
                                     <group string="Audit Information">
-                                        <field name="audit_requirements" widget="text"/>
+                                        <field name="created_by_id"/>
+                                        <field name="approved_by_id"/>
                                     </group>
                                 </group>
                             </page>
                             <page string="Version History" name="history">
-                                <field name="previous_versions" readonly="1">
+                                <field name="superseded_by_id" readonly="1">
                                     <tree>
-                                        <field name="version_number"/>
+                                        <field name="version"/>
                                         <field name="effective_date"/>
-                                        <field name="expiration_date"/>
-                                        <field name="created_by"/>
+                                        <field name="expiry_date"/>
+                                        <field name="created_by_id"/>
                                         <field name="state" widget="badge"/>
-                                        <field name="is_active" widget="boolean_toggle"/>
+                                        <field name="is_current" widget="boolean_toggle"/>
                                     </tree>
                                 </field>
                             </page>

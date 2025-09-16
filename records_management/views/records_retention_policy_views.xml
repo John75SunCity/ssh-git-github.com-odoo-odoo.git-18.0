@@ -118,9 +118,9 @@
                                     <field name="description" widget="html"
                                            placeholder="Detailed description of the retention policy..."/>
                                 </group>
-                                <group string="Legal Requirements">
-                                    <field name="legal_requirements" widget="text"
-                                           placeholder="Legal and regulatory requirements..."/>
+                                <group string="Policy Description">
+                                    <field name="description" widget="html"
+                                           placeholder="Detailed description of the retention policy including legal and regulatory requirements..."/>
                                 </group>
                                 <group string="Compliance Notes">
                                     <field name="compliance_notes" widget="text"
@@ -172,14 +172,14 @@
                             <page string="Audit Trail" name="audit">
                                 <group>
                                     <group string="Review Information">
-                                        <field name="reviewed_by"/>
-                                        <field name="approved_by"/>
+                                        <field name="last_review_date"/>
+                                        <field name="approved_by_id"/>
                                         <field name="approval_date"/>
                                     </group>
                                     <group string="Compliance Tracking">
-                                        <field name="compliance_officer"/>
-                                        <field name="regulatory_framework"/>
-                                        <field name="industry_standards"/>
+                                        <field name="compliance_status"/>
+                                        <field name="compliance_check_date"/>
+                                        <field name="next_review_date"/>
                                     </group>
                                 </group>
                                 <separator string="Audit History"/>
@@ -215,7 +215,7 @@
                     <field name="name"/>
                     <field name="code"/>
                     <field name="destruction_method"/>
-                    <field name="compliance_officer"/>
+                    <field name="user_id"/>
                     <separator/>
                     <filter string="Active Policies" name="active" domain="[('state', '=', 'active')]"/>
                     <filter string="Draft Policies" name="draft" domain="[('state', '=', 'draft')]"/>
