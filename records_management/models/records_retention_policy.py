@@ -391,6 +391,24 @@ class RecordsRetentionPolicy(models.Model):
             if not self.retention_period:
                 self.retention_period = self.RETENTION_PERIOD_DEFAULTS.get(self.retention_unit, 1)
 
+    # Computed field for expiration status
+    is_expired = fields.Boolean(
+        string='Is Expired',
+        compute='_compute_is_expired',
+        store=True,
+        help='Indicates if the retention policy has expired'
+    )
+
+    @api.depends('expiration_date', 'state')
+    def _compute_is_expired(self):
+        """Compute if the retention policy is expired"""
+        today = date.today()
+        for record in self:
+            if record.expiration_date and record.state in ['active', 'under_review']:
+                record.is_expired = record.expiration_date < today
+            else:
+                record.is_expired = False
+
     # === ACTION METHODS ===
     def action_activate(self):
         """Activate policy if it has at least one rule."""
