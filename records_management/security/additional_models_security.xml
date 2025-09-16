@@ -7,46 +7,46 @@
         <!-- Portal Request Access (already exists, but adding for completeness) -->
         <record id="access_portal_request_user" model="ir.model.access">
             <field name="name">portal.request.user</field>
-            <field name="model_id" ref="records_management.model_portal_request"/>
-            <field name="group_id" ref="records_management.group_records_user"/>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
+                <field name="model_id" ref="records_management.model_portal_request"/>
+                <field name="group_id" ref="records_management.group_records_user"/>
+                <field name="perm_read">1</field>
+                    <field name="perm_write">1</field>
+                        <field name="perm_create">1</field>
+                            <field name="perm_unlink">0</field>
+                            </record>
 
-        <record id="access_portal_request_manager" model="ir.model.access">
-            <field name="name">portal.request.manager</field>
-            <field name="model_id" ref="records_management.model_portal_request"/>
-            <field name="group_id" ref="records_management.group_records_manager"/>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+                            <record id="access_portal_request_manager" model="ir.model.access">
+                                <field name="name">portal.request.manager</field>
+                                    <field name="model_id" ref="records_management.model_portal_request"/>
+                                    <field name="group_id" ref="records_management.group_records_manager"/>
+                                    <field name="perm_read">1</field>
+                                        <field name="perm_write">1</field>
+                                            <field name="perm_create">1</field>
+                                                <field name="perm_unlink">1</field>
+                                                </record>
 
-        <!-- Customer Feedback Access -->
-        <record id="access_customer_feedback_user" model="ir.model.access">
-            <field name="name">customer.feedback.user</field>
-            <field name="model_id" ref="records_management.model_customer_feedback"/>
-            <field name="group_id" ref="records_management.group_records_user"/>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
+                                                <!-- Customer Feedback Access -->
+                                                <record id="access_customer_feedback_user" model="ir.model.access">
+                                                    <field name="name">customer.feedback.user</field>
+                                                        <field name="model_id" ref="records_management.model_customer_feedback"/>
+                                                        <field name="group_id" ref="records_management.group_records_user"/>
+                                                        <field name="perm_read">1</field>
+                                                            <field name="perm_write">1</field>
+                                                                <field name="perm_create">1</field>
+                                                                    <field name="perm_unlink">0</field>
+                                                                    </record>
 
-        <record id="access_customer_feedback_manager" model="ir.model.access">
-            <field name="name">customer.feedback.manager</field>
-            <field name="model_id" ref="records_management.model_customer_feedback"/>
-            <field name="group_id" ref="records_management.group_records_manager"/>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+                                                                    <record id="access_customer_feedback_manager" model="ir.model.access">
+                                                                        <field name="name">customer.feedback.manager</field>
+                                                                            <field name="model_id" ref="records_management.model_customer_feedback"/>
+                                                                            <field name="group_id" ref="records_management.group_records_manager"/>
+                                                                            <field name="perm_read">1</field>
+                                                                                <field name="perm_write">1</field>
+                                                                                    <field name="perm_create">1</field>
+                                                                                        <field name="perm_unlink">1</field>
+                                                                                        </record>
 
-        <!-- Add other existing model access rules when needed -->
+                                                                                        <!-- Add other existing model access rules when needed -->
 
-    </data>
-</odoo>
+                                                                                    </data>
+                                                                                </odoo>

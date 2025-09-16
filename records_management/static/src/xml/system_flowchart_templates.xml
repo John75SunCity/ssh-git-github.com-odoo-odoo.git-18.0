@@ -1,329 +1,329 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-<templates id="template" xml:space="preserve">
-    <!-- Main System Flowchart Template -->
-    <t t-name="SystemFlowchartTemplate">
-        <div class="o_system_flowchart_view">
-            <!-- Control Panel -->
-            <div class="o_flowchart_control_panel">
-                <div class="row">
-                    <div class="col-md-8">
-                        <!-- Search Controls -->
-                        <div class="input-group">
-                            <select class="form-control o_search_type_select" style="max-width: 150px;">
-                                <option value="user">Search Users</option>
-                                <option value="company">Search Companies</option>
-                                <option value="model">Search Models</option>
-                                <option value="access">Search Access</option>
-                            </select>
-                            <input type="text" class="form-control o_search_input" placeholder="Search system components..."/>
-                            <div class="input-group-append">
-<button class="btn btn-primary o_search_button" type="button" aria-label="Search">
-    <i class="fa fa-search"/>
-</button>
-</div>
-</div>
-</div>
-<div class="col-md-4 text-right">
-<!-- Action Buttons -->
-<div class="btn-group">
-<button class="btn btn-secondary o_refresh_button" title="Refresh Diagram" aria-label="Refresh">
-    <i class="fa fa-refresh"/>
-</button>
-<button class="btn btn-info o_export_button" title="Export Diagram" aria-label="Export">
-    <i class="fa fa-download"/>
-</button>
-</div>
-</div>
-</div>
-<div class="row mt-2">
-<div class="col-md-12">
-<!-- Filter Options -->
-<div class="form-check form-check-inline">
-<input class="form-check-input o_show_access_checkbox" type="checkbox" id="showAccessOnly"/>
-<label class="form-check-label" for="showAccessOnly">
-                                    Show Access Rights Only
-</label>
-</div>
+    <templates id="template" xml:space="preserve">
+        <!-- Main System Flowchart Template -->
+        <t t-name="SystemFlowchartTemplate">
+            <div class="o_system_flowchart_view">
+                <!-- Control Panel -->
+                <div class="o_flowchart_control_panel">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <!-- Search Controls -->
+                            <div class="input-group">
+                                <select class="form-control o_search_type_select" style="max-width: 150px;">
+                                    <option value="user">Search Users</option>
+                                        <option value="company">Search Companies</option>
+                                            <option value="model">Search Models</option>
+                                                <option value="access">Search Access</option>
+                                                </select>
+                                                <input type="text" class="form-control o_search_input" placeholder="Search system components..."/>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-primary o_search_button" type="button" aria-label="Search">
+                                                        <i class="fa fa-search"/>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-right">
+                                            <!-- Action Buttons -->
+                                            <div class="btn-group">
+                                                <button class="btn btn-secondary o_refresh_button" title="Refresh Diagram" aria-label="Refresh">
+                                                    <i class="fa fa-refresh"/>
+                                                </button>
+                                                <button class="btn btn-info o_export_button" title="Export Diagram" aria-label="Export">
+                                                    <i class="fa fa-download"/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-12">
+                                            <!-- Filter Options -->
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input o_show_access_checkbox" type="checkbox" id="showAccessOnly"/>
+                                                <label class="form-check-label" for="showAccessOnly">
+                                                    Show Access Rights Only
+                                                </label>
+                                            </div>
 
-<!-- Legend -->
-<div class="o_flowchart_legend">
-    <small class="text-muted">
-        <strong>Legend:</strong>
-        <span class="badge badge-primary">System</span>
-        <span class="badge badge-success">Models</span>
-        <span class="badge badge-warning">Users</span>
-        <span class="badge badge-info">Companies</span>
-        <span class="badge badge-secondary">Groups</span>
-        <span style="color: #4CAF50;">●</span> Has Access
-        <span style="color: #F44336;">●</span> No Access
-    </small>
-</div>
-</div>
-</div>
-</div>
+                                            <!-- Legend -->
+                                            <div class="o_flowchart_legend">
+                                                <small class="text-muted">
+                                                    <strong>Legend:</strong>
+                                                        <span class="badge badge-primary">System</span>
+                                                            <span class="badge badge-success">Models</span>
+                                                                <span class="badge badge-warning">Users</span>
+                                                                    <span class="badge badge-info">Companies</span>
+                                                                        <span class="badge badge-secondary">Groups</span>
+                                                                            <span style="color: #4CAF50;">●</span> Has Access
+                                                                                <span style="color: #F44336;">●</span> No Access
+                                                                                </small>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
 
-<!-- Loading Indicator -->
-<div class="o_loading text-center" style="display: none;">
-    <div class="o_progress mb-3">
-        <div class="progress">
-<div class="progress-bar o_progress_bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-</div>
-<small class="o_progress_text">Initializing diagram...</small>
-</div>
-<i class="fa fa-spinner fa-spin fa-2x text-primary" aria-label="Loading"/>
-<p class="text-muted mt-2">Loading system architecture...</p>
-</div>
+                                                                <!-- Loading Indicator -->
+                                                                <div class="o_loading text-center" style="display: none;">
+                                                                    <div class="o_progress mb-3">
+                                                                        <div class="progress">
+                                                                            <div class="progress-bar o_progress_bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                            </div>
+                                                                            <small class="o_progress_text">Initializing diagram...</small>
+                                                                            </div>
+                                                                            <i class="fa fa-spinner fa-spin fa-2x text-primary" aria-label="Loading"/>
+                                                                            <p class="text-muted mt-2">Loading system architecture...</p>
+                                                                            </div>
 
-<!-- Flowchart Container -->
-<div class="o_flowchart_container" style="height: 600px; border: 1px solid #dee2e6; border-radius: 0.25rem;">
-    <!-- Vis.js network will be rendered here -->
-</div>
+                                                                            <!-- Flowchart Container -->
+                                                                            <div class="o_flowchart_container" style="height: 600px; border: 1px solid #dee2e6; border-radius: 0.25rem;">
+                                                                                <!-- Vis.js network will be rendered here -->
+                                                                            </div>
 
-<!-- Information Panel -->
-<div class="o_flowchart_info_panel mt-3">
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h6 class="card-title">System Health</h6>
-                    <div class="o_system_status">
-<i class="fa fa-check-circle text-success fa-2x" aria-label="System Operational"/>
-<p class="text-success mt-1">All Systems Operational</p>
-</div>
-</div>
-</div>
-</div>
-<div class="col-md-3">
-<div class="card">
-<div class="card-body text-center">
-<h6 class="card-title">Active Users</h6>
-<div class="o_active_users">
-<span class="h4 text-primary o_user_count">-</span>
-<p class="text-muted mt-1">Currently Online</p>
-</div>
-</div>
-</div>
-</div>
-<div class="col-md-3">
-<div class="card">
-<div class="card-body text-center">
-<h6 class="card-title">Models</h6>
-<div class="o_model_count">
-<span class="h4 text-info o_models_total">-</span>
-<p class="text-muted mt-1">Active Models</p>
-</div>
-</div>
-</div>
-</div>
-<div class="col-md-3">
-<div class="card">
-<div class="card-body text-center">
-<h6 class="card-title">Access Rules</h6>
-<div class="o_access_rules">
-<span class="h4 text-warning o_rules_count">-</span>
-<p class="text-muted mt-1">Security Rules</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+                                                                            <!-- Information Panel -->
+                                                                            <div class="o_flowchart_info_panel mt-3">
+                                                                                <div class="row">
+                                                                                    <div class="col-md-3">
+                                                                                        <div class="card">
+                                                                                            <div class="card-body text-center">
+                                                                                                <h6 class="card-title">System Health</h6>
+                                                                                                    <div class="o_system_status">
+                                                                                                        <i class="fa fa-check-circle text-success fa-2x" aria-label="System Operational"/>
+                                                                                                        <p class="text-success mt-1">All Systems Operational</p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col-md-3">
+                                                                                                <div class="card">
+                                                                                                    <div class="card-body text-center">
+                                                                                                        <h6 class="card-title">Active Users</h6>
+                                                                                                            <div class="o_active_users">
+                                                                                                                <span class="h4 text-primary o_user_count">-</span>
+                                                                                                                    <p class="text-muted mt-1">Currently Online</p>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="col-md-3">
+                                                                                                            <div class="card">
+                                                                                                                <div class="card-body text-center">
+                                                                                                                    <h6 class="card-title">Models</h6>
+                                                                                                                        <div class="o_model_count">
+                                                                                                                            <span class="h4 text-info o_models_total">-</span>
+                                                                                                                                <p class="text-muted mt-1">Active Models</p>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    <div class="col-md-3">
+                                                                                                                        <div class="card">
+                                                                                                                            <div class="card-body text-center">
+                                                                                                                                <h6 class="card-title">Access Rules</h6>
+                                                                                                                                    <div class="o_access_rules">
+                                                                                                                                        <span class="h4 text-warning o_rules_count">-</span>
+                                                                                                                                            <p class="text-muted mt-1">Security Rules</p>
+                                                                                                                                            </div>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
 
-<!-- Tooltip -->
-<div class="o_tooltip" style="display: none; position: absolute; background: #000; color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 12px; z-index: 1000;"></div>
-</div>
-</t>
+                                                                                                                        <!-- Tooltip -->
+                                                                                                                        <div class="o_tooltip" style="display: none; position: absolute; background: #000; color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 12px; z-index: 1000;"></div>
+                                                                                                                        </div>
+                                                                                                                    </t>
 
-<!-- Node Details Template -->
-<t t-name="NodeDetailsTemplate">
-    <div class="o_node_details">
-        <div class="row">
-            <div class="col-md-12">
-                <h5>
-                    <i t-att-class="node.icon || 'fa fa-cube'"/>
-                    <t t-esc="node.label"/>
-                </h5>
-                <hr/>
-            </div>
-        </div>
+                                                                                                                    <!-- Node Details Template -->
+                                                                                                                    <t t-name="NodeDetailsTemplate">
+                                                                                                                        <div class="o_node_details">
+                                                                                                                            <div class="row">
+                                                                                                                                <div class="col-md-12">
+                                                                                                                                    <h5>
+                                                                                                                                        <i t-att-class="node.icon || 'fa fa-cube'"/>
+                                                                                                                                        <t t-esc="node.label"/>
+                                                                                                                                    </h5>
+                                                                                                                                    <hr/>
+                                                                                                                                </div>
+                                                                                                                            </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <strong>Type:</strong>
-        <span t-esc="node.group || 'Unknown'"/>
-    </div>
-    <div class="col-md-6">
-        <strong>ID:</strong>
-        <span t-esc="node.id"/>
-    </div>
-</div>
+                                                                                                                            <div class="row">
+                                                                                                                                <div class="col-md-6">
+                                                                                                                                    <strong>Type:</strong>
+                                                                                                                                        <span t-esc="node.group || 'Unknown'"/>
+                                                                                                                                    </div>
+                                                                                                                                    <div class="col-md-6">
+                                                                                                                                        <strong>ID:</strong>
+                                                                                                                                            <span t-esc="node.id"/>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
 
-<t t-if="node.color">
-    <div class="row mt-2">
-        <div class="col-md-12">
-            <strong>Color:</strong>
-            <span class="badge" t-att-style="'background-color: ' + (node.color.background || node.color)">
-                <t t-esc="node.color.background || node.color"/>
-            </span>
-        </div>
-    </div>
-</t>
+                                                                                                                                    <t t-if="node.color">
+                                                                                                                                        <div class="row mt-2">
+                                                                                                                                            <div class="col-md-12">
+                                                                                                                                                <strong>Color:</strong>
+                                                                                                                                                    <span class="badge" t-att-style="'background-color: ' + (node.color.background || node.color)">
+                                                                                                                                                        <t t-esc="node.color.background || node.color"/>
+                                                                                                                                                    </span>
+                                                                                                                                                </div>
+                                                                                                                                            </div>
+                                                                                                                                        </t>
 
-<t t-if="node.title">
-    <div class="row mt-2">
-        <div class="col-md-12">
-            <strong>Description:</strong>
-            <p t-esc="node.title"/>
-        </div>
-    </div>
-</t>
+                                                                                                                                        <t t-if="node.title">
+                                                                                                                                            <div class="row mt-2">
+                                                                                                                                                <div class="col-md-12">
+                                                                                                                                                    <strong>Description:</strong>
+                                                                                                                                                        <p t-esc="node.title"/>
+                                                                                                                                                    </div>
+                                                                                                                                                </div>
+                                                                                                                                            </t>
 
-<!-- Access Information for user nodes -->
-<t t-if="node.group === 'user'">
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <h6>Access Rights</h6>
-            <div class="access-indicator">
-                <t t-if="node.color and node.color.background === '#4CAF50'">
-                    <span class="badge badge-success">
-                        <i class="fa fa-check"/>
+                                                                                                                                            <!-- Access Information for user nodes -->
+                                                                                                                                            <t t-if="node.group === 'user'">
+                                                                                                                                                <div class="row mt-3">
+                                                                                                                                                    <div class="col-md-12">
+                                                                                                                                                        <h6>Access Rights</h6>
+                                                                                                                                                            <div class="access-indicator">
+                                                                                                                                                                <t t-if="node.color and node.color.background === '#4CAF50'">
+                                                                                                                                                                    <span class="badge badge-success">
+                                                                                                                                                                        <i class="fa fa-check"/>
 
- Full Access
-</span>
-</t>
-<t t-else="">
-<span class="badge badge-danger">
-<i class="fa fa-times"/>
+                                                                                                                                                                        Full Access
+                                                                                                                                                                    </span>
+                                                                                                                                                                </t>
+                                                                                                                                                                <t t-else="">
+                                                                                                                                                                    <span class="badge badge-danger">
+                                                                                                                                                                        <i class="fa fa-times"/>
 
- No Access
-</span>
-</t>
-</div>
-</div>
-</div>
-</t>
+                                                                                                                                                                        No Access
+                                                                                                                                                                    </span>
+                                                                                                                                                                </t>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                    </div>
+                                                                                                                                                </t>
 
-<!-- Model Information -->
-<t t-if="node.group === 'model'">
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <h6>Model Details</h6>
-            <p class="text-muted">
-                                This represents a core Records Management model with its relationships and dependencies.
-            </p>
-        </div>
-    </div>
-</t>
+                                                                                                                                                <!-- Model Information -->
+                                                                                                                                                <t t-if="node.group === 'model'">
+                                                                                                                                                    <div class="row mt-3">
+                                                                                                                                                        <div class="col-md-12">
+                                                                                                                                                            <h6>Model Details</h6>
+                                                                                                                                                                <p class="text-muted">
+                                                                                                                                                                    This represents a core Records Management model with its relationships and dependencies.
+                                                                                                                                                                </p>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                    </t>
 
-<!-- System Information -->
-<t t-if="node.group === 'system'">
-    <div class="row mt-3">
-        <div class="col-md-12">
-            <h6>System Information</h6>
-            <p class="text-muted">
-                                Core Records Management System - Enterprise Grade Document Management with NAID AAA Compliance
-            </p>
-            <ul class="list-unstyled">
-                <li>
-                    <i class="fa fa-check text-success"/>
+                                                                                                                                                    <!-- System Information -->
+                                                                                                                                                    <t t-if="node.group === 'system'">
+                                                                                                                                                        <div class="row mt-3">
+                                                                                                                                                            <div class="col-md-12">
+                                                                                                                                                                <h6>System Information</h6>
+                                                                                                                                                                    <p class="text-muted">
+                                                                                                                                                                        Core Records Management System - Enterprise Grade Document Management with NAID AAA Compliance
+                                                                                                                                                                    </p>
+                                                                                                                                                                    <ul class="list-unstyled">
+                                                                                                                                                                        <li>
+                                                                                                                                                                            <i class="fa fa-check text-success"/>
 
- NAID AAA Certified</li>
-<li>
-    <i class="fa fa-check text-success"/>
+                                                                                                                                                                            NAID AAA Certified</li>
+                                                                                                                                                                            <li>
+                                                                                                                                                                                <i class="fa fa-check text-success"/>
 
- ISO 15489 Compliant</li>
-<li>
-    <i class="fa fa-check text-success"/>
+                                                                                                                                                                                ISO 15489 Compliant</li>
+                                                                                                                                                                                <li>
+                                                                                                                                                                                    <i class="fa fa-check text-success"/>
 
- Enterprise Security</li>
-<li>
-    <i class="fa fa-check text-success"/>
+                                                                                                                                                                                    Enterprise Security</li>
+                                                                                                                                                                                    <li>
+                                                                                                                                                                                        <i class="fa fa-check text-success"/>
 
- Customer Portal</li>
-</ul>
-</div>
-</div>
-</t>
-</div>
-</t>
+                                                                                                                                                                                        Customer Portal</li>
+                                                                                                                                                                                    </ul>
+                                                                                                                                                                                </div>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        </t>
+                                                                                                                                                                    </div>
+                                                                                                                                                                </t>
 
-<!-- Search Results Template -->
-<t t-name="SearchResultsTemplate">
-    <div class="o_search_results">
-        <h6>Search Results</h6>
-        <t t-if="results.length === 0">
-            <p class="text-muted">No results found for your search query.</p>
-        </t>
-        <t t-else="">
-            <div class="list-group">
-                <t t-foreach="results" t-as="result">
-                    <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1" t-esc="result.label"/>
-                            <small class="text-muted" t-esc="result.group"/>
+                                                                                                                                                                <!-- Search Results Template -->
+                                                                                                                                                                <t t-name="SearchResultsTemplate">
+                                                                                                                                                                    <div class="o_search_results">
+                                                                                                                                                                        <h6>Search Results</h6>
+                                                                                                                                                                            <t t-if="results.length === 0">
+                                                                                                                                                                                <p class="text-muted">No results found for your search query.</p>
+                                                                                                                                                                                </t>
+                                                                                                                                                                                <t t-else="">
+                                                                                                                                                                                    <div class="list-group">
+                                                                                                                                                                                        <t t-foreach="results" t-as="result">
+                                                                                                                                                                                            <div class="list-group-item">
+                                                                                                                                                                                                <div class="d-flex w-100 justify-content-between">
+                                                                                                                                                                                                    <h6 class="mb-1" t-esc="result.label"/>
+                                                                                                                                                                                                    <small class="text-muted" t-esc="result.group"/>
 
-                            </div>
-                            <p class="mb-1 text-muted" t-esc="result.description || 'No description available'"/>
-                        </div>
-                    </t>
-                </div>
-            </t>
-        </div>
-    </t>
+                                                                                                                                                                                                </div>
+                                                                                                                                                                                                <p class="mb-1 text-muted" t-esc="result.description || 'No description available'"/>
+                                                                                                                                                                                            </div>
+                                                                                                                                                                                        </t>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </t>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        </t>
 
-    <!-- Help Template -->
-    <t t-name="FlowchartHelpTemplate">
-        <div class="o_flowchart_help">
-            <h5>Interactive System Flowchart - Help</h5>
-            <hr/>
+                                                                                                                                                                        <!-- Help Template -->
+                                                                                                                                                                        <t t-name="FlowchartHelpTemplate">
+                                                                                                                                                                            <div class="o_flowchart_help">
+                                                                                                                                                                                <h5>Interactive System Flowchart - Help</h5>
+                                                                                                                                                                                    <hr/>
 
-            <h6>Navigation</h6>
-            <ul>
-                <li>
-                    <strong>Pan:</strong> Click and drag to move around</li>
-                <li>
-                    <strong>Zoom:</strong> Use mouse wheel to zoom in/out</li>
-                <li>
-                    <strong>Select:</strong> Click on nodes to see details</li>
-                <li>
-                    <strong>Multi-select:</strong> Hold Ctrl and click multiple nodes</li>
-            </ul>
+                                                                                                                                                                                    <h6>Navigation</h6>
+                                                                                                                                                                                        <ul>
+                                                                                                                                                                                            <li>
+                                                                                                                                                                                                <strong>Pan:</strong> Click and drag to move around</li>
+                                                                                                                                                                                                    <li>
+                                                                                                                                                                                                        <strong>Zoom:</strong> Use mouse wheel to zoom in/out</li>
+                                                                                                                                                                                                            <li>
+                                                                                                                                                                                                                <strong>Select:</strong> Click on nodes to see details</li>
+                                                                                                                                                                                                                    <li>
+                                                                                                                                                                                                                        <strong>Multi-select:</strong> Hold Ctrl and click multiple nodes</li>
+                                                                                                                                                                                                                        </ul>
 
-            <h6>Search Features</h6>
-            <ul>
-                <li>
-                    <strong>User Search:</strong> Find specific users and their access rights</li>
-                <li>
-                    <strong>Company Search:</strong> Locate company structures and assignments</li>
-                <li>
-                    <strong>Model Search:</strong> Search for specific data models</li>
-                <li>
-                    <strong>Access Search:</strong> Find access control information</li>
-            </ul>
+                                                                                                                                                                                                                        <h6>Search Features</h6>
+                                                                                                                                                                                                                            <ul>
+                                                                                                                                                                                                                                <li>
+                                                                                                                                                                                                                                    <strong>User Search:</strong> Find specific users and their access rights</li>
+                                                                                                                                                                                                                                        <li>
+                                                                                                                                                                                                                                            <strong>Company Search:</strong> Locate company structures and assignments</li>
+                                                                                                                                                                                                                                                <li>
+                                                                                                                                                                                                                                                    <strong>Model Search:</strong> Search for specific data models</li>
+                                                                                                                                                                                                                                                        <li>
+                                                                                                                                                                                                                                                            <strong>Access Search:</strong> Find access control information</li>
+                                                                                                                                                                                                                                                            </ul>
 
-            <h6>Color Coding</h6>
-            <ul>
-                <li>
-                    <span style="color: #4CAF50;">●</span>
-                    <strong>Green:</strong> User has access / System active</li>
-                <li>
-                    <span style="color: #F44336;">●</span>
-                    <strong>Red:</strong> User denied access / System inactive</li>
-                <li>
-                    <span style="color: #2196F3;">●</span>
-                    <strong>Blue:</strong> Core system components</li>
-                <li>
-                    <span style="color: #FF9800;">●</span>
-                    <strong>Orange:</strong> Portal/external interfaces</li>
-                <li>
-                    <span style="color: #9C27B0;">●</span>
-                    <strong>Purple:</strong> Departments and organizational units</li>
-            </ul>
+                                                                                                                                                                                                                                                            <h6>Color Coding</h6>
+                                                                                                                                                                                                                                                                <ul>
+                                                                                                                                                                                                                                                                    <li>
+                                                                                                                                                                                                                                                                        <span style="color: #4CAF50;">●</span>
+                                                                                                                                                                                                                                                                            <strong>Green:</strong> User has access / System active</li>
+                                                                                                                                                                                                                                                                                <li>
+                                                                                                                                                                                                                                                                                    <span style="color: #F44336;">●</span>
+                                                                                                                                                                                                                                                                                        <strong>Red:</strong> User denied access / System inactive</li>
+                                                                                                                                                                                                                                                                                            <li>
+                                                                                                                                                                                                                                                                                                <span style="color: #2196F3;">●</span>
+                                                                                                                                                                                                                                                                                                    <strong>Blue:</strong> Core system components</li>
+                                                                                                                                                                                                                                                                                                        <li>
+                                                                                                                                                                                                                                                                                                            <span style="color: #FF9800;">●</span>
+                                                                                                                                                                                                                                                                                                                <strong>Orange:</strong> Portal/external interfaces</li>
+                                                                                                                                                                                                                                                                                                                    <li>
+                                                                                                                                                                                                                                                                                                                        <span style="color: #9C27B0;">●</span>
+                                                                                                                                                                                                                                                                                                                            <strong>Purple:</strong> Departments and organizational units</li>
+                                                                                                                                                                                                                                                                                                                            </ul>
 
-            <h6>Export Options</h6>
-            <p>Click the export button to download the current diagram as a PNG image.</p>
-        </div>
-    </t>
-</templates>
-</odoo>
+                                                                                                                                                                                                                                                                                                                            <h6>Export Options</h6>
+                                                                                                                                                                                                                                                                                                                                <p>Click the export button to download the current diagram as a PNG image.</p>
+                                                                                                                                                                                                                                                                                                                                </div>
+                                                                                                                                                                                                                                                                                                                            </t>
+                                                                                                                                                                                                                                                                                                                        </templates>
+                                                                                                                                                                                                                                                                                                                    </odoo>

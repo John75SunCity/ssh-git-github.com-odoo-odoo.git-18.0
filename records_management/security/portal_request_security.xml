@@ -1,131 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-<!-- Pickup Request: users can read their own, managers can manage all -->
-    <record id="pickup_request_rule_user_read_own" model="ir.rule">
-        <field name="name">Pickup Request: Read Own</field>
-        <field name="model_id" ref="records_management.model_pickup_request"/>
-        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="False"/>
-        <field name="perm_create" eval="False"/>
-        <field name="perm_unlink" eval="False"/>
-    </record>
-    <record id="pickup_request_rule_manager_all" model="ir.rule">
-        <field name="name">Pickup Request: Manager Full Access</field>
-        <field name="model_id" ref="records_management.model_pickup_request"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-    </record>
+        <!-- Pickup Request: users can read their own, managers can manage all -->
+        <record id="pickup_request_rule_user_read_own" model="ir.rule">
+            <field name="name">Pickup Request: Read Own</field>
+                <field name="model_id" ref="records_management.model_pickup_request"/>
+                <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+                    <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
+                    <field name="perm_read" eval="True"/>
+                    <field name="perm_write" eval="False"/>
+                    <field name="perm_create" eval="False"/>
+                    <field name="perm_unlink" eval="False"/>
+                </record>
+                <record id="pickup_request_rule_manager_all" model="ir.rule">
+                    <field name="name">Pickup Request: Manager Full Access</field>
+                        <field name="model_id" ref="records_management.model_pickup_request"/>
+                        <field name="domain_force">[(1, '=', 1)]</field>
+                            <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
+                            <field name="perm_read" eval="True"/>
+                            <field name="perm_write" eval="True"/>
+                            <field name="perm_create" eval="True"/>
+                            <field name="perm_unlink" eval="True"/>
+                        </record>
 
-    <!-- Shredding Service: similar pattern -->
-    <record id="shredding_service_rule_user_read_own" model="ir.rule">
-        <field name="name">Shredding Service: Read Own</field>
-        <field name="model_id" ref="records_management.model_shredding_service"/>
-        <field name="domain_force">[('provider_id', '=', user.partner_id.id)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="False"/>
-        <field name="perm_create" eval="False"/>
-        <field name="perm_unlink" eval="False"/>
-    </record>
-    <record id="shredding_service_rule_manager_all" model="ir.rule">
-        <field name="name">Shredding Service: Manager Full Access</field>
-        <field name="model_id" ref="records_management.model_shredding_service"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-    </record>
+                        <!-- Shredding Service: similar pattern -->
+                        <record id="shredding_service_rule_user_read_own" model="ir.rule">
+                            <field name="name">Shredding Service: Read Own</field>
+                                <field name="model_id" ref="records_management.model_shredding_service"/>
+                                <field name="domain_force">[('provider_id', '=', user.partner_id.id)]</field>
+                                    <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
+                                    <field name="perm_read" eval="True"/>
+                                    <field name="perm_write" eval="False"/>
+                                    <field name="perm_create" eval="False"/>
+                                    <field name="perm_unlink" eval="False"/>
+                                </record>
+                                <record id="shredding_service_rule_manager_all" model="ir.rule">
+                                    <field name="name">Shredding Service: Manager Full Access</field>
+                                        <field name="model_id" ref="records_management.model_shredding_service"/>
+                                        <field name="domain_force">[(1, '=', 1)]</field>
+                                            <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
+                                            <field name="perm_read" eval="True"/>
+                                            <field name="perm_write" eval="True"/>
+                                            <field name="perm_create" eval="True"/>
+                                            <field name="perm_unlink" eval="True"/>
+                                        </record>
 
-    <!-- Stock Move SMS Validation -->
-    <record id="stock_move_rule_user_read_own" model="ir.rule">
-        <field name="name">Stock Move SMS Validation: Read Own</field>
-        <field name="model_id" ref="stock.model_stock_move"/>
-        <field name="domain_force">[('create_uid', '=', user.id)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="False"/>
-        <field name="perm_create" eval="False"/>
-        <field name="perm_unlink" eval="False"/>
-    </record>
-    <record id="stock_move_rule_manager_all" model="ir.rule">
-        <field name="name">Stock Move SMS Validation: Manager Full Access</field>
-        <field name="model_id" ref="stock.model_stock_move"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-    </record>
+                                        <!-- Stock Move SMS Validation -->
+                                        <record id="stock_move_rule_user_read_own" model="ir.rule">
+                                            <field name="name">Stock Move SMS Validation: Read Own</field>
+                                                <field name="model_id" ref="stock.model_stock_move"/>
+                                                <field name="domain_force">[('create_uid', '=', user.id)]</field>
+                                                    <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
+                                                    <field name="perm_read" eval="True"/>
+                                                    <field name="perm_write" eval="False"/>
+                                                    <field name="perm_create" eval="False"/>
+                                                    <field name="perm_unlink" eval="False"/>
+                                                </record>
+                                                <record id="stock_move_rule_manager_all" model="ir.rule">
+                                                    <field name="name">Stock Move SMS Validation: Manager Full Access</field>
+                                                        <field name="model_id" ref="stock.model_stock_move"/>
+                                                        <field name="domain_force">[(1, '=', 1)]</field>
+                                                            <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
+                                                            <field name="perm_read" eval="True"/>
+                                                            <field name="perm_write" eval="True"/>
+                                                            <field name="perm_create" eval="True"/>
+                                                            <field name="perm_unlink" eval="True"/>
+                                                        </record>
 
-    <!-- Portal Request Rules (Customer Can See Own Requests) -->
-    <record id="portal_request_rule_portal_access" model="ir.rule">
-        <field name="name">Portal Request Portal Access</field>
-        <field name="model_id" ref="records_management.model_portal_request"/>
-        <field name="domain_force">[
-                ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id])
-            ]</field>
-        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="False"/>
-    </record>
+                                                        <!-- Portal Request Rules (Customer Can See Own Requests) -->
+                                                        <record id="portal_request_rule_portal_access" model="ir.rule">
+                                                            <field name="name">Portal Request Portal Access</field>
+                                                                <field name="model_id" ref="records_management.model_portal_request"/>
+                                                                <field name="domain_force">[
+                                                                    ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id])
+                                                                    ]</field>
+                                                                    <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+                                                                    <field name="perm_read" eval="True"/>
+                                                                    <field name="perm_write" eval="True"/>
+                                                                    <field name="perm_create" eval="True"/>
+                                                                    <field name="perm_unlink" eval="False"/>
+                                                                </record>
 
-    <!-- Installer: only managers -->
-    <!-- For inherited models, rules below are for illustration; you may not need them unless you add sensitive custom fields. -->
-    <!-- Stock Lot -->
-    <record id="stock_lot_rule_manager_all" model="ir.rule">
-        <field name="name">Stock Lot: Manager Full Access</field>
-        <field name="model_id" ref="stock.model_stock_lot"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-    </record>
-    <!-- Stock Picking -->
-    <record id="stock_picking_rule_manager_all" model="ir.rule">
-        <field name="name">Stock Picking: Manager Full Access</field>
-        <field name="model_id" ref="stock.model_stock_picking"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-    </record>
-    <!-- IR Module (inherited) -->
-    <record id="ir_module_module_rule_manager_all" model="ir.rule">
-        <field name="name">IR Module: Manager Full Access</field>
-        <field name="model_id" ref="base.model_ir_module_module"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-    </record>
-    <!-- IR Actions Report (inherited) -->
-<record id="ir_actions_report_action_manager" model="ir.rule">
-        <field name="name">IR Actions Report: Manager Full Access</field>
-        <field name="model_id" ref="base.model_ir_actions_report"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-    </record>
-    </data>
-</odoo>
+                                                                <!-- Installer: only managers -->
+                                                                <!-- For inherited models, rules below are for illustration; you may not need them unless you add sensitive custom fields. -->
+                                                                <!-- Stock Lot -->
+                                                                <record id="stock_lot_rule_manager_all" model="ir.rule">
+                                                                    <field name="name">Stock Lot: Manager Full Access</field>
+                                                                        <field name="model_id" ref="stock.model_stock_lot"/>
+                                                                        <field name="domain_force">[(1, '=', 1)]</field>
+                                                                            <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
+                                                                            <field name="perm_read" eval="True"/>
+                                                                            <field name="perm_write" eval="True"/>
+                                                                            <field name="perm_create" eval="True"/>
+                                                                            <field name="perm_unlink" eval="True"/>
+                                                                        </record>
+                                                                        <!-- Stock Picking -->
+                                                                        <record id="stock_picking_rule_manager_all" model="ir.rule">
+                                                                            <field name="name">Stock Picking: Manager Full Access</field>
+                                                                                <field name="model_id" ref="stock.model_stock_picking"/>
+                                                                                <field name="domain_force">[(1, '=', 1)]</field>
+                                                                                    <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
+                                                                                    <field name="perm_read" eval="True"/>
+                                                                                    <field name="perm_write" eval="True"/>
+                                                                                    <field name="perm_create" eval="True"/>
+                                                                                    <field name="perm_unlink" eval="True"/>
+                                                                                </record>
+                                                                                <!-- IR Module (inherited) -->
+                                                                                <record id="ir_module_module_rule_manager_all" model="ir.rule">
+                                                                                    <field name="name">IR Module: Manager Full Access</field>
+                                                                                        <field name="model_id" ref="base.model_ir_module_module"/>
+                                                                                        <field name="domain_force">[(1, '=', 1)]</field>
+                                                                                            <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
+                                                                                            <field name="perm_read" eval="True"/>
+                                                                                            <field name="perm_write" eval="True"/>
+                                                                                            <field name="perm_create" eval="True"/>
+                                                                                            <field name="perm_unlink" eval="True"/>
+                                                                                        </record>
+                                                                                        <!-- IR Actions Report (inherited) -->
+                                                                                        <record id="ir_actions_report_action_manager" model="ir.rule">
+                                                                                            <field name="name">IR Actions Report: Manager Full Access</field>
+                                                                                                <field name="model_id" ref="base.model_ir_actions_report"/>
+                                                                                                <field name="domain_force">[(1, '=', 1)]</field>
+                                                                                                    <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
+                                                                                                    <field name="perm_read" eval="True"/>
+                                                                                                    <field name="perm_write" eval="True"/>
+                                                                                                    <field name="perm_create" eval="True"/>
+                                                                                                    <field name="perm_unlink" eval="True"/>
+                                                                                                </record>
+                                                                                            </data>
+                                                                                        </odoo>
