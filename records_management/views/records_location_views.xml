@@ -54,25 +54,21 @@
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                     <a role="menuitem" type="edit" class="dropdown-item">
-<i class="fa fa-edit" title="Edit"/>
-
+                                        <i class="fa fa-edit" title="Edit"/>
                                         Edit Location
                                     </a>
                                     <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">
-<i class="fa fa-cube" title="Containers"/>
-
+                                        <i class="fa fa-cube" title="Containers"/>
                                         View Containers
                                     </a>
                                     <div class="dropdown-divider"/>
                                     <a role="menuitem" type="object" name="toggle_active" class="dropdown-item">
-<i class="fa fa-archive" title="Archive/Unarchive Location"/>
-
+                                        <i class="fa fa-archive" title="Archive/Unarchive Location"/>
                                         <t t-if="record.active.raw_value">Archive</t>
                                         <t t-else="">Unarchive</t>
                                     </a>
                                     <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item">
-<i class="fa fa-copy" title="Duplicate"/>
-
+                                        <i class="fa fa-copy" title="Duplicate"/>
                                         Duplicate
                                     </a>
                                 </div>
@@ -142,8 +138,7 @@
                             </page>
                             <page name="details" string="Details &amp; Notes">
                                 <group>
-<field name="description" placeholder="Location description and special instructions..."/>
-
+                                    <field name="description" placeholder="Location description and special instructions..."/>
                                     <field name="security_level"/>
                                 </group>
                             </page>

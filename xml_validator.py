@@ -24,9 +24,13 @@ def validate_fontawesome_icons(file_path):
         icon_tag = match.group(0)
         icon_name = match.group(1)
         
-        # Check if title attribute exists
+        # Skip decorative icons with aria-hidden="true" - they should NOT have title attributes
+        if 'aria-hidden="true"' in icon_tag:
+            continue
+            
+        # Check if interactive icon has title attribute
         if 'title=' not in icon_tag:
-            issues.append(f"FontAwesome icon 'fa-{icon_name}' missing title attribute")
+            issues.append(f"Interactive FontAwesome icon 'fa-{icon_name}' missing title attribute")
     
     return issues
 
