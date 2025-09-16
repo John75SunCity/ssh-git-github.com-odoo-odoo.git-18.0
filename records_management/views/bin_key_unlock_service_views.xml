@@ -208,7 +208,7 @@
                     <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
                         <div class="o_dropdown_kanban dropdown">
                             <a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
-                                <span class="fa fa-ellipsis-v"/>
+                                <span class="fa fa-ellipsis-v" aria-hidden="true"/>
                             </a>
                             <div class="dropdown-menu" role="menu">
                                 <a name="action_confirm" type="object" class="dropdown-item" t-if="record.state.raw_value == 'draft'">Confirm Service</a>
@@ -227,15 +227,15 @@
                                     <span t-if="record.emergency_access.raw_value" class="fa fa-exclamation-triangle text-danger" title="Emergency Access"/>
                                 </strong>
                                 <div class="o_kanban_record_subtitle">
-                                    <i class="fa fa-user"/>
+                                    <i class="fa fa-user" aria-hidden="true"/>
         <field name="partner_id"/>
                                 </div>
                                 <div class="o_kanban_record_subtitle" t-if="record.technician_id.raw_value">
-                                    <i class="fa fa-wrench"/>
+                                    <i class="fa fa-wrench" aria-hidden="true"/>
         <field name="technician_id"/>
                                 </div>
                                 <div class="o_kanban_record_subtitle" t-if="record.service_date.raw_value">
-                                    <i class="fa fa-calendar"/>
+                                    <i class="fa fa-calendar" aria-hidden="true"/>
         <field name="service_date"/>
                                 </div>
                             </div>

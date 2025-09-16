@@ -133,11 +133,11 @@
         <field name="action_type"/>
                         </span>
                         <br/>
-                        <i class="fa fa-calendar"/>
+                        <i class="fa fa-calendar" aria-hidden="true"/>
         <field name="assignment_date"/>
                         <t t-if="return_date">
                             <br/>
-                            <i class="fa fa-check"/>
+                            <i class="fa fa-check" aria-hidden="true"/>
         <field name="return_date"/>
                         </t>
                     </div>

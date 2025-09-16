@@ -47,7 +47,7 @@
             <!-- Warning banner -->
             <xpath expr="//sheet" position="before">
                 <div class="alert alert-warning" role="alert" invisible="key_issuance_allowed == True or id == False">
-                    <strong><i class="fa fa-exclamation-triangle text-danger"></i> Key Restriction Warning:</strong>
+                    <strong><i class="fa fa-exclamation-triangle text-danger" aria-hidden="true"></i> Key Restriction Warning:</strong>
                     This customer is restricted from receiving bin keys. Use bin unlock service instead.
                     <br/>
                     <field name="key_restriction_reason" readonly="1" nolabel="1"/>

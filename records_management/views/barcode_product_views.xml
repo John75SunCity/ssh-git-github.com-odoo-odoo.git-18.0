@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="mt-2">
                                     <span class="badge badge-info">
-                                        <i class="fa fa-ruler"></i>
+                                        <i class="fa fa-ruler" aria-hidden="true"></i>
                                         <field name="capacity"/>
                                         cu.ft
                                     </span>
@@ -70,7 +70,7 @@
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
                                     <span class="badge badge-pill badge-primary">
-                                        <i class="fa fa-tag"></i> Pattern: <field name="barcode_pattern"/>
+                                        <i class="fa fa-tag" aria-hidden="true"></i> Pattern: <field name="barcode_pattern"/>
                                     </span>
                                 </div>
                                 <div class="oe_kanban_bottom_right">

@@ -167,7 +167,7 @@
 <t t-name="card">
                 <div class="oe_kanban_card oe_kanban_global_click">
                     <div class="o_kanban_image">
-                        <i class="fa fa-key fa-2x" t-att-style="record.status.raw_value == 'available' and 'color: #28a745;' or record.status.raw_value == 'assigned' and 'color: #ffc107;' or record.status.raw_value == 'lost' and 'color: #dc3545;' or 'color: #6c757d;'"/>
+                        <i class="fa fa-key fa-2x" aria-hidden="true" t-att-style="record.status.raw_value == 'available' and 'color: #28a745;' or record.status.raw_value == 'assigned' and 'color: #ffc107;' or record.status.raw_value == 'lost' and 'color: #dc3545;' or 'color: #6c757d;'"/>
                     </div>
                     <div class="oe_kanban_details">
                         <strong class="o_kanban_record_title">
@@ -264,4 +264,3 @@ Click to create a new bin key.
     </record>
     </data>
 </odoo>
-

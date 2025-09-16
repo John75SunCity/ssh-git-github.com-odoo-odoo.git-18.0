@@ -104,7 +104,7 @@
                                     <div class="oe_kanban_bottom_right">
                                         <t t-if="record.attachment_id.raw_value">
                                             <span class="badge badge-pill badge-success">
-                                                <i class="fa fa-paperclip" /> Attached
+                                                <i class="fa fa-paperclip" aria-hidden="true" /> Attached
                                             </span>
                                         </t>
                                     </div>
