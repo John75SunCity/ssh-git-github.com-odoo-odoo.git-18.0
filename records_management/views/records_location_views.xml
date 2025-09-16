@@ -54,11 +54,13 @@
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                     <a role="menuitem" type="edit" class="dropdown-item">
-                                        <i class="fa fa-edit"/>
+<i class="fa fa-edit" title="Edit"/>
+
                                         Edit Location
                                     </a>
                                     <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">
-                                        <i class="fa fa-cube"/>
+<i class="fa fa-cube" title="Containers"/>
+
                                         View Containers
                                     </a>
                                     <div class="dropdown-divider"/>
@@ -69,7 +71,8 @@
                                         <t t-else="">Unarchive</t>
                                     </a>
                                     <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item">
-                                        <i class="fa fa-copy"/>
+<i class="fa fa-copy" title="Duplicate"/>
+
                                         Duplicate
                                     </a>
                                 </div>
