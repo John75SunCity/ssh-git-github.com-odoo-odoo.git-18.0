@@ -308,7 +308,7 @@
     <!-- ============================================================================ -->
 
     <!-- List view for Internal -->
-    <menuitem id="menu_shred_bin" name="Shred Bins" parent="records_management.menu_records_management_operations" action="action_shred_bin" sequence="15"/>
+    <menuitem id="menu_shred_bin" name="Shred Bins" parent="menu_records_operations" action="action_shred_bin" sequence="15"/>
 
     <!-- List view for Customer -->
     <menuitem id="menu_shred_bin_portal" name="My Shred Bins" parent="portal.portal_menu" action="action_shred_bin_portal" sequence="20" groups="base.group_portal"/>

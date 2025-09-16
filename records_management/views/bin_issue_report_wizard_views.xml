@@ -444,7 +444,7 @@
 <!-- Add bin issues to shredding services menu -->
     <menuitem id="menu_bin_issues"
             name="Bin Issues"
-            parent="records_management.menu_records_operations"
+            parent="menu_records_operations"
             action="bin_issue_record_action"
             sequence="42"
             groups="records_management.group_records_user"/>

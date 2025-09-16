@@ -350,7 +350,7 @@
         <menuitem
             id="menu_fleet_vehicle_records_work"
             name="Work Vehicles"
-            parent="records_management.menu_records_operations"
+            parent="menu_records_operations"
             action="action_fleet_vehicle_records_work"
             sequence="30"
             groups="records_management.group_records_user,records_management.group_records_manager"/>

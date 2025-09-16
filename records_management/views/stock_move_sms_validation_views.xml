@@ -92,6 +92,6 @@
 </field>
     </record>
 <!-- Menu Item -->
-    <menuitem id="stock_move_sms_validation_menu" name="SMS Validations" parent="records_management.menu_records_operations" action="stock_move_sms_validation_action" sequence="60"/>
+    <menuitem id="stock_move_sms_validation_menu" name="SMS Validations" parent="menu_records_operations" action="stock_move_sms_validation_action" sequence="60"/>
     </data>
 </odoo>
