@@ -24,11 +24,11 @@
                 <form string="Retention Policy Version">
                     <header>
                         <button name="action_activate" type="object" string="Activate Version"
-                                class="oe_highlight" attrs="{'invisible': [('is_active', '=', True)]}"/>
+                                class="oe_highlight" invisible="is_active == True"/>
                         <button name="action_approve" type="object" string="Approve"
-                                class="oe_highlight" attrs="{'invisible': [('approval_status', '!=', 'pending')]}"/>
+                                class="oe_highlight" invisible="approval_status != 'pending'"/>
                         <button name="action_reject" type="object" string="Reject"
-                                attrs="{'invisible': [('approval_status', '!=', 'pending')]}"/>
+                                invisible="approval_status != 'pending'"/>
                         <field name="approval_status" widget="statusbar" statusbar_visible="draft,pending,approved,rejected"/>
                     </header>
                     <sheet>
@@ -71,7 +71,8 @@
                                 <field name="approved_by" readonly="1"/>
                                 <field name="approval_date" readonly="1"/>
                                 <field name="rejection_reason"
-                                       attrs="{'invisible': [('approval_status', '!=', 'rejected')], 'required': [('approval_status', '=', 'rejected')]}"/>
+                                       invisible="approval_status != 'rejected'"
+                                       required="approval_status == 'rejected'"/>
                             </group>
                         </group>
                         <notebook>
@@ -185,7 +186,7 @@
 
         <menuitem id="menu_retention_policy_versions"
                   name="Policy Versions"
-                  parent="menu_compliance_management"
+                  parent="records_management.menu_records_management_config"
                   action="action_records_retention_policy_version"
                   sequence="15"/>
     </data>
