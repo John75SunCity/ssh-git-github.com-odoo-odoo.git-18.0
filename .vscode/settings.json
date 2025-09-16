@@ -96,7 +96,8 @@
     "editor.codeActionsOnSave": {
         "source.organizeImports": "never",
         "source.fixAll.ruff": "explicit",
-        "source.fixAll": "never"
+        "source.fixAll": "never",
+        "source.formatDocument": "never"
     },
     "[python]": {
         "editor.tabSize": 4,
@@ -139,8 +140,8 @@
         "editor.formatOnSave": false,
         "editor.formatOnPaste": false,
         "editor.formatOnType": false,
-        "editor.autoIndent": "advanced",
-        "editor.defaultFormatter": "DotJoshJohnson.xml",
+        "editor.autoIndent": "none",
+        "editor.defaultFormatter": null,
         "editor.wordWrap": "wordWrapColumn",
         "editor.wordWrapColumn": 120,
         "editor.rulers": [
@@ -148,22 +149,27 @@
           120
         ],
         "editor.bracketPairColorization.enabled": true,
-        "editor.guides.bracketPairs": true
+        "editor.guides.bracketPairs": true,
+        "editor.suggest.insertMode": "replace",
+        "editor.acceptSuggestionOnCommitCharacter": false,
+        "editor.acceptSuggestionOnEnter": "off"
     },
     "xml.format.enabled": false,
     "xml.format.legacy": false,
     "xml.format.enforceQuoteStyle": "preferred",
     "xml.format.quotations": "double",
-    "xml.format.preserveAttributeLineBreaks": false,
-    "xml.format.preserveEmptyContent": false,
+    "xml.format.preserveAttributeLineBreaks": true,
+    "xml.format.preserveEmptyContent": true,
     "xml.format.splitAttributes": false,
-    "xml.format.splitAttributesIndentSize": 2,
+    "xml.format.splitAttributesIndentSize": 4,
     "xml.format.tabSize": 4,
     "xml.format.insertSpaces": true,
     "xml.format.closingBracketNewLine": false,
     "xml.format.spaceBeforeEmptyCloseTag": true,
     "xml.format.maxLineWidth": 100,
-    "xml.format.grammarAwareFormatting": true,
+    "xml.format.grammarAwareFormatting": false,
+    "xml.validation.enabled": false,
+    "xml.validation.resolveExternalEntities": false,
     "[json]": {
         "editor.tabSize": 2,
         "editor.insertSpaces": true,
@@ -433,5 +439,19 @@
     "emmet.triggerExpansionOnTab": false,
     "breadcrumbs.enabled": true,
     "breadcrumbs.showFiles": true,
-    "breadcrumbs.showSymbols": true
+    "breadcrumbs.showSymbols": true,
+    "extensions.autoUpdate": false,
+    "redhat.telemetry.enabled": false,
+    "xml.downloadExternalResources.enabled": false,
+    "xml.fileAssociations": [],
+    "xml.preferences.includeSchemaAssociations": false,
+    "xml.codeLens.enabled": false,
+    "xml.completion.autoCloseTags": false,
+    "xml.format.insertFinalNewline": false,
+    "xml.format.joinCDATALines": false,
+    "xml.format.joinCommentLines": false,
+    "xml.format.joinContentLines": false,
+    "xml.format.preservedNewlines": 10,
+    "xml.format.trimFinalNewlines": false,
+    "xml.format.trimTrailingWhitespace": false
 }

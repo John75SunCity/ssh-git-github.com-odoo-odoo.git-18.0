@@ -68,9 +68,9 @@
         "DavidAnson.vscode-markdownlint",
         "yzhang.markdown-all-in-one",
 
-        // === XML TOOLS ===
-        "DotJoshJohnson.xml",
-        "redhat.vscode-xml",
+        // === XML TOOLS - DISABLED FOR MANUAL FORMATTING ===
+        // "DotJoshJohnson.xml",
+        // "redhat.vscode-xml",
 
         // === ENVIRONMENT MANAGEMENT ===
         "ms-vscode.vscode-env",
@@ -84,19 +84,10 @@
         "ms-vsliveshare.vsliveshare"
     ],
     "unwantedRecommendations": [
-        "ms-python.python",
-        "ms-vscode.vscode-typescript",
-        "ms-vscode.vscode-css",
-        "ms-vscode.vscode-html",
-        "ms-vscode.vscode-json",
-        "ms-vscode.vscode-yaml",
-        "ms-vscode.vscode-markdown",
+        "DotJoshJohnson.xml",
+        "redhat.vscode-xml",
         "ms-vscode.vscode-xml",
-        "ms-vscode.vscode-docker",
-        "ms-vscode.vscode-git-graph",
-        "ms-vscode.vscode-icons",
-        "ms-vscode.vscode-todo-highlight",
-        "ms-vscode.vscode-performance-monitor",
-        "ms-vsliveshare.vsliveshare"
+        "xmltools.xmltools",
+        "trinhanhngoc.odoo-xml-formatter"
     ]
 }
