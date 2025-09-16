@@ -404,7 +404,7 @@
         </record>
         <record id="action_records_retention_policy" model="ir.actions.act_window">
             <field name="name">
-                <i class="fa fa-clipboard" aria-hidden="true"/> Retention Policies
+                <i class="fas fa-clipboard" aria-hidden="true"/> Retention Policies
             </field>
             <field name="res_model">records.retention.policy</field>
             <field name="view_mode">kanban,list,form</field>
@@ -412,22 +412,22 @@
             <field name="context">{'search_default_active': 1, 'search_default_active_state': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-clipboard" aria-hidden="true"/> Create your first retention policy!
+                    <i class="fas fa-clipboard" aria-hidden="true"/> Create your first retention policy!
                 </p>
                 <p>
                     <b>Retention Policy Management:</b>
                     <br/>
-                • <i class="fa fa-calendar" aria-hidden="true"/> Define retention periods and destruction methods
+                • <i class="fas fa-calendar" aria-hidden="true"/> Define retention periods and destruction methods
                     <br/>
-                • <i class="fa fa-lock" aria-hidden="true"/> Configure compliance requirements and legal holds
+                • <i class="fas fa-lock" aria-hidden="true"/> Configure compliance requirements and legal holds
                     <br/>
-                • <i class="fa fa-clipboard" aria-hidden="true"/> Create retention rules and version control
+                • <i class="fas fa-clipboard" aria-hidden="true"/> Create retention rules and version control
                     <br/>
-                • <i class="fa fa-trophy" aria-hidden="true"/> NAID AAA certified policy management system
+                • <i class="fas fa-trophy" aria-hidden="true"/> NAID AAA certified policy management system
                     <br/>
-                • <i class="fa fa-bar-chart" aria-hidden="true"/> Track compliance status and review cycles
+                • <i class="fas fa-bar-chart" aria-hidden="true"/> Track compliance status and review cycles
                     <br/>
-                • <i class="fa fa-globe" aria-hidden="true"/> Support global and regional policy variations
+                • <i class="fas fa-globe" aria-hidden="true"/> Support global and regional policy variations
                 </p>
             </field>
         </record>
