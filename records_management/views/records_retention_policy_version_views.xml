@@ -24,7 +24,7 @@
                             string="Activate"
                             icon="fa-play"
                             class="btn-link"
-                            attrs="{'invisible': [('is_active', '=', True)]}"/>
+                            invisible="is_active == True"/>
                     <button name="action_compare_versions"
                             type="object"
                             string="Compare"
@@ -46,16 +46,16 @@
                                 type="object"
                                 string="Activate Version"
                                 class="oe_highlight"
-                                attrs="{'invisible': [('is_active', '=', True)]}"/>
+                                invisible="is_active == True"/>
                         <button name="action_approve"
                                 type="object"
                                 string="Approve"
                                 class="oe_highlight"
-                                attrs="{'invisible': [('approval_status', '!=', 'pending')]}"/>
+                                invisible="approval_status != 'pending'"/>
                         <button name="action_reject"
                                 type="object"
                                 string="Reject"
-                                attrs="{'invisible': [('approval_status', '!=', 'pending')]}"/>
+                                invisible="approval_status != 'pending'"/>
                         <field name="approval_status" widget="statusbar" statusbar_visible="draft,pending,approved,rejected"/>
                     </header>
                     <sheet>
@@ -102,14 +102,15 @@
                                 <field name="effective_date" required="1"/>
                                 <field name="expiration_date"/>
                                 <field name="is_active" readonly="1"/>
-                                <field name="superseded_by" readonly="1" attrs="{'invisible': [('superseded_by', '=', False)]}"/>
+                                <field name="superseded_by" readonly="1" invisible="superseded_by == False"/>
                             </group>
                             <group name="approval_info">
                                 <field name="created_by" readonly="1"/>
-                                <field name="approved_by" readonly="1" attrs="{'invisible': [('approved_by', '=', False)]}"/>
-                                <field name="approval_date" readonly="1" attrs="{'invisible': [('approval_date', '=', False)]}"/>
+                                <field name="approved_by" readonly="1" invisible="approved_by == False"/>
+                                <field name="approval_date" readonly="1" invisible="approval_date == False"/>
                                 <field name="rejection_reason"
-                                       attrs="{'invisible': [('approval_status', '!=', 'rejected')], 'required': [('approval_status', '=', 'rejected')]}"/>
+                                       invisible="approval_status != 'rejected'"
+                                       required="approval_status == 'rejected'"/>
                             </group>
                         </group>
                         <notebook>

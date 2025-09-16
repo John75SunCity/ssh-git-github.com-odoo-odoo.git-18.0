@@ -26,7 +26,7 @@
                             string="Activate"
                             icon="fa-play"
                             class="btn-link"
-                            attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                            invisible="state != 'draft'"/>
                     <button name="action_view_rules"
                             type="object"
                             string="View Rules"
@@ -48,16 +48,16 @@
                                 type="object"
                                 string="Activate Policy"
                                 class="oe_highlight"
-                                attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                                invisible="state != 'draft'"/>
                         <button name="action_archive"
                                 type="object"
                                 string="Archive Policy"
-                                attrs="{'invisible': [('state', '!=', 'active')]}"/>
+                                invisible="state != 'active'"/>
                         <button name="action_review"
                                 type="object"
                                 string="Review Policy"
                                 class="oe_highlight"
-                                attrs="{'invisible': [('state', '!=', 'active')]}"/>
+                                invisible="state != 'active'"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,active,under_review,archived"/>
                     </header>
                     <sheet>
