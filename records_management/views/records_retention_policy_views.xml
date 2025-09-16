@@ -28,6 +28,7 @@
                 </tree>
             </field>
         </record>
+
         <record id="records_retention_policy_view_form" model="ir.ui.view">
             <field name="name">records.retention.policy.view.form</field>
             <field name="model">records.retention.policy</field>
@@ -250,7 +251,8 @@
                             </page>
                             <page string="Regulatory Requirements" name="regulatory">
                                 <field name="related_regulation"/>
-                                <field name="regulatory_requirements" placeholder="Specific regulatory requirements and compliance notes..."/>
+                                <field name="regulatory_requirements"
+                                       placeholder="Specific regulatory requirements and compliance notes..."/>
                             </page>
                         </notebook>
                     </sheet>
@@ -262,6 +264,7 @@
                 </form>
             </field>
         </record>
+
         <record id="records_retention_policy_view_kanban" model="ir.ui.view">
             <field name="name">records.retention.policy.view.kanban</field>
             <field name="model">records.retention.policy</field>
@@ -283,11 +286,18 @@
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="oe_button_box" name="button_box">
-                                    <button class="oe_stat_button" type="object" name="action_view_rules" icon="fa-list">
-                                        <field name="rule_count" string="Rules" widget="statinfo"/>
+                                    <button class="oe_stat_button"
+                                            type="object"
+                                            name="action_view_rules"
+                                            icon="fa-list">
+                                        <field name="rule_count"
+                                               string="Rules"
+                                               widget="statinfo"/>
                                     </button>
                                     <button class="oe_stat_button" icon="fa-file">
-                                        <field name="document_count" string="Documents" widget="statinfo"/>
+                                        <field name="document_count"
+                                               string="Documents"
+                                               widget="statinfo"/>
                                     </button>
                                 </div>
                                 <div class="oe_kanban_card_header">
@@ -302,12 +312,19 @@
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
-                                        <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-                                            <i class="fa fa-ellipsis-v" role="img" aria-label="More options"/>
+                                        <a class="o_kanban_manage_toggle_button"
+                                           href="#"
+                                           title="More options">
+                                            <i class="fa fa-ellipsis-v"
+                                               role="img"
+                                               aria-label="More options"/>
                                         </a>
                                     </div>
                                 </div>
-                                <div class="oe_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                <div class="oe_kanban_card_content"
+                                     t-att-title="record.display_name.raw_value"
+                                     t-att-aria-label="record.display_name.raw_value"
+                                     role="group">
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="text-center">
@@ -341,28 +358,48 @@
                                             </small>
                                         </div>
                                     </div>
-                                    <div class="row mt-1" invisible="is_legal_hold == False">
+                                    <div class="row mt-1"
+                                         invisible="is_legal_hold == False">
                                         <div class="col-12">
                                             <span class="badge badge-danger">
-                                                <i class="fa fa-gavel" aria-hidden="true"/> Legal Hold
+                                                <i class="fa fa-gavel" aria-hidden="true"/>
+                                                Legal Hold
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="row mt-1" invisible="is_expired == False">
+                                    <div class="row mt-1"
+                                         invisible="is_expired == False">
                                         <div class="col-12">
                                             <span class="badge badge-warning">
-                                                <i class="fa fa-exclamation-triangle" aria-hidden="true"/> Expired
+                                                <i class="fa fa-exclamation-triangle" aria-hidden="true"/>
+                                                Expired
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                    <a role="menuitem" type="edit" class="dropdown-item">Edit Policy</a>
-                                    <a role="menuitem" type="object" name="action_view_rules" class="dropdown-item">View Rules</a>
-                                    <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">Activate</a>
-                                    <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state not in ('draft', 'active')">Archive</a>
+                                    <a role="menuitem"
+                                       type="edit"
+                                       class="dropdown-item">Edit Policy</a>
+                                    <a role="menuitem"
+                                       type="object"
+                                       name="action_view_rules"
+                                       class="dropdown-item">View Rules</a>
+                                    <a role="menuitem"
+                                       type="object"
+                                       name="action_activate"
+                                       class="dropdown-item"
+                                       invisible="state != 'draft'">Activate</a>
+                                    <a role="menuitem"
+                                       type="object"
+                                       name="action_archive"
+                                       class="dropdown-item"
+                                       invisible="state not in ('draft', 'active')">Archive</a>
                                     <div class="dropdown-divider"/>
-                                    <a role="menuitem" type="object" name="action_create_new_version" class="dropdown-item">
+                                    <a role="menuitem"
+                                       type="object"
+                                       name="action_create_new_version"
+                                       class="dropdown-item">
                                         <i class="fa fa-pencil"/> New Version
                                     </a>
                                 </div>
@@ -372,12 +409,15 @@
                 </kanban>
             </field>
         </record>
+
         <record id="records_retention_policy_view_search" model="ir.ui.view">
             <field name="name">records.retention.policy.view.search</field>
             <field name="model">records.retention.policy</field>
             <field name="arch" type="xml">
                 <search string="Search Retention Policies">
-                    <field name="name" string="Policy Name" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
+                    <field name="name"
+                           string="Policy Name"
+                           filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
                     <field name="code"/>
                     <field name="retention_unit"/>
                     <field name="destruction_method"/>
@@ -388,52 +428,123 @@
                     <field name="document_type_id"/>
                     <field name="user_id"/>
                     <field name="tag_ids"/>
-                    <filter string="Active Policies" name="active" domain="[('active', '=', True)]"/>
-                    <filter string="Archived Policies" name="inactive" domain="[('active', '=', False)]"/>
+                    <filter string="Active Policies"
+                            name="active"
+                            domain="[('active', '=', True)]"/>
+                    <filter string="Archived Policies"
+                            name="inactive"
+                            domain="[('active', '=', False)]"/>
                     <separator/>
-                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                    <filter string="Active" name="active_state" domain="[('state', '=', 'active')]"/>
-                    <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]"/>
+                    <filter string="Draft"
+                            name="draft"
+                            domain="[('state', '=', 'draft')]"/>
+                    <filter string="Active"
+                            name="active_state"
+                            domain="[('state', '=', 'active')]"/>
+                    <filter string="Archived"
+                            name="archived"
+                            domain="[('state', '=', 'archived')]"/>
                     <separator/>
-                    <filter string="Compliant" name="compliant" domain="[('compliance_status', '=', 'compliant')]"/>
-                    <filter string="Non-Compliant" name="non_compliant" domain="[('compliance_status', '=', 'non_compliant')]"/>
-                    <filter string="Unknown Compliance" name="unknown_compliance" domain="[('compliance_status', '=', 'unknown')]"/>
+                    <filter string="Compliant"
+                            name="compliant"
+                            domain="[('compliance_status', '=', 'compliant')]"/>
+                    <filter string="Non-Compliant"
+                            name="non_compliant"
+                            domain="[('compliance_status', '=', 'non_compliant')]"/>
+                    <filter string="Unknown Compliance"
+                            name="unknown_compliance"
+                            domain="[('compliance_status', '=', 'unknown')]"/>
                     <separator/>
-                    <filter string="Legal Hold" name="legal_hold" domain="[('is_legal_hold', '=', True)]"/>
-                    <filter string="Is Template" name="is_template" domain="[('is_template', '=', True)]"/>
-                    <filter string="Is Global" name="is_global" domain="[('is_global', '=', True)]"/>
-                    <filter string="Expired" name="expired" domain="[('is_expired', '=', True)]"/>
-                    <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                    <filter string="Legal Hold"
+                            name="legal_hold"
+                            domain="[('is_legal_hold', '=', True)]"/>
+                    <filter string="Is Template"
+                            name="is_template"
+                            domain="[('is_template', '=', True)]"/>
+                    <filter string="Is Global"
+                            name="is_global"
+                            domain="[('is_global', '=', True)]"/>
+                    <filter string="Expired"
+                            name="expired"
+                            domain="[('is_expired', '=', True)]"/>
+                    <filter string="Overdue"
+                            name="overdue"
+                            domain="[('is_overdue', '=', True)]"/>
                     <separator/>
-                    <filter string="Has Documents" name="has_documents" domain="[('document_count', '&gt;', 0)]"/>
-                    <filter string="Has Rules" name="has_rules" domain="[('rule_count', '&gt;', 0)]"/>
-                    <filter string="Has Children" name="has_children" domain="[('child_policy_ids', '!=', [])]"/>
-                    <filter string="Has Tags" name="has_tags" domain="[('tag_ids', '!=', [])]"/>
+                    <filter string="Has Documents"
+                            name="has_documents"
+                            domain="[('document_count', '&gt;', 0)]"/>
+                    <filter string="Has Rules"
+                            name="has_rules"
+                            domain="[('rule_count', '&gt;', 0)]"/>
+                    <filter string="Has Children"
+                            name="has_children"
+                            domain="[('child_policy_ids', '!=', [])]"/>
+                    <filter string="Has Tags"
+                            name="has_tags"
+                            domain="[('tag_ids', '!=', [])]"/>
                     <separator/>
-                    <filter string="Shredding" name="shredding" domain="[('destruction_method', '=', 'shred')]"/>
-                    <filter string="Pulping" name="pulping" domain="[('destruction_method', '=', 'pulp')]"/>
-                    <filter string="Incineration" name="incineration" domain="[('destruction_method', '=', 'incinerate')]"/>
-                    <filter string="Disintegration" name="disintegration" domain="[('destruction_method', '=', 'disintegrate')]"/>
+                    <filter string="Shredding"
+                            name="shredding"
+                            domain="[('destruction_method', '=', 'shred')]"/>
+                    <filter string="Pulping"
+                            name="pulping"
+                            domain="[('destruction_method', '=', 'pulp')]"/>
+                    <filter string="Incineration"
+                            name="incineration"
+                            domain="[('destruction_method', '=', 'incinerate')]"/>
+                    <filter string="Disintegration"
+                            name="disintegration"
+                            domain="[('destruction_method', '=', 'disintegrate')]"/>
                     <separator/>
-                    <filter string="Quarterly Review" name="quarterly_review" domain="[('review_frequency', '=', 'quarterly')]"/>
-                    <filter string="Biannual Review" name="biannual_review" domain="[('review_frequency', '=', 'biannual')]"/>
-                    <filter string="Annual Review" name="annual_review" domain="[('review_frequency', '=', 'annual')]"/>
+                    <filter string="Quarterly Review"
+                            name="quarterly_review"
+                            domain="[('review_frequency', '=', 'quarterly')]"/>
+                    <filter string="Biannual Review"
+                            name="biannual_review"
+                            domain="[('review_frequency', '=', 'biannual')]"/>
+                    <filter string="Annual Review"
+                            name="annual_review"
+                            domain="[('review_frequency', '=', 'annual')]"/>
                     <group expand="0" string="Group By">
-                        <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
-                        <filter string="Compliance Status" name="group_compliance" context="{'group_by': 'compliance_status'}"/>
-                        <filter string="Retention Unit" name="group_unit" context="{'group_by': 'retention_unit'}"/>
-                        <filter string="Destruction Method" name="group_destruction" context="{'group_by': 'destruction_method'}"/>
-                        <filter string="Parent Policy" name="group_parent" context="{'group_by': 'parent_policy_id'}"/>
-                        <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
-                        <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
-                        <filter string="Document Type" name="group_doc_type" context="{'group_by': 'document_type_id'}"/>
-                        <filter string="Owner" name="group_owner" context="{'group_by': 'user_id'}"/>
-                        <filter string="Review Frequency" name="group_review" context="{'group_by': 'review_frequency'}"/>
-                        <filter string="Retention Years" name="group_retention" context="{'group_by': 'retention_years'}"/>
+                        <filter string="Status"
+                                name="group_state"
+                                context="{'group_by': 'state'}"/>
+                        <filter string="Compliance Status"
+                                name="group_compliance"
+                                context="{'group_by': 'compliance_status'}"/>
+                        <filter string="Retention Unit"
+                                name="group_unit"
+                                context="{'group_by': 'retention_unit'}"/>
+                        <filter string="Destruction Method"
+                                name="group_destruction"
+                                context="{'group_by': 'destruction_method'}"/>
+                        <filter string="Parent Policy"
+                                name="group_parent"
+                                context="{'group_by': 'parent_policy_id'}"/>
+                        <filter string="Customer"
+                                name="group_customer"
+                                context="{'group_by': 'partner_id'}"/>
+                        <filter string="Department"
+                                name="group_department"
+                                context="{'group_by': 'department_id'}"/>
+                        <filter string="Document Type"
+                                name="group_doc_type"
+                                context="{'group_by': 'document_type_id'}"/>
+                        <filter string="Owner"
+                                name="group_owner"
+                                context="{'group_by': 'user_id'}"/>
+                        <filter string="Review Frequency"
+                                name="group_review"
+                                context="{'group_by': 'review_frequency'}"/>
+                        <filter string="Retention Years"
+                                name="group_retention"
+                                context="{'group_by': 'retention_years'}"/>
                     </group>
                 </search>
             </field>
         </record>
+
         <record id="action_records_retention_policy" model="ir.actions.act_window">
             <field name="name">
                 <i class="fas fa-clipboard" aria-hidden="true"/> Retention Policies
@@ -449,17 +560,23 @@
                 <p>
                     <b>Retention Policy Management:</b>
                     <br/>
-                • <i class="fas fa-calendar" aria-hidden="true"/> Define retention periods and destruction methods
+                • <i class="fas fa-calendar" aria-hidden="true"/>
+                  Define retention periods and destruction methods
                     <br/>
-                • <i class="fas fa-lock" aria-hidden="true"/> Configure compliance requirements and legal holds
+                • <i class="fas fa-lock" aria-hidden="true"/>
+                  Configure compliance requirements and legal holds
                     <br/>
-                • <i class="fas fa-clipboard" aria-hidden="true"/> Create retention rules and version control
+                • <i class="fas fa-clipboard" aria-hidden="true"/>
+                  Create retention rules and version control
                     <br/>
-                • <i class="fas fa-trophy" aria-hidden="true"/> NAID AAA certified policy management system
+                • <i class="fas fa-trophy" aria-hidden="true"/>
+                  NAID AAA certified policy management system
                     <br/>
-                • <i class="fas fa-bar-chart" aria-hidden="true"/> Track compliance status and review cycles
+                • <i class="fas fa-bar-chart" aria-hidden="true"/>
+                  Track compliance status and review cycles
                     <br/>
-                • <i class="fas fa-globe" aria-hidden="true"/> Support global and regional policy variations
+                • <i class="fas fa-globe" aria-hidden="true"/>
+                  Support global and regional policy variations
                 </p>
             </field>
         </record>
