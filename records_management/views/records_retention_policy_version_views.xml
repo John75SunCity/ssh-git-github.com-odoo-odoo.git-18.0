@@ -49,7 +49,7 @@
                         <div class="oe_title">
                             <div class="o_row">
                                 <h1>
-                                    <field name="policy_id" required="1" options="{'no_create': True}"/>
+                                    <field name="policy_id" required="1" options="{'no_create': True, 'no_create_edit': True}"/>
                                 </h1>
                                 <div class="o_row" style="margin-left: 20px;">
                                     <h3>
@@ -64,15 +64,14 @@
                                 <field name="effective_date" required="1"/>
                                 <field name="expiration_date"/>
                                 <field name="is_active" readonly="1"/>
-                                <field name="superseded_by" readonly="1"/>
+                                <field name="superseded_by" readonly="1" invisible="superseded_by == False"/>
                             </group>
                             <group name="approval_info">
                                 <field name="created_by" readonly="1"/>
-                                <field name="approved_by" readonly="1"/>
-                                <field name="approval_date" readonly="1"/>
+                                <field name="approved_by" readonly="1" invisible="approved_by == False"/>
+                                <field name="approval_date" readonly="1" invisible="approval_date == False"/>
                                 <field name="rejection_reason"
-                                       invisible="approval_status != 'rejected'"
-                                       required="approval_status == 'rejected'"/>
+                                       invisible="approval_status != 'rejected'" required="approval_status == 'rejected'"/>
                             </group>
                         </group>
                         <notebook>
