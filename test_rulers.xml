@@ -1,0 +1,20 @@
+<!-- Test XML file to verify ruler visibility for XML files -->
+<odoo>
+    <data>
+        <!-- This line should be right at the 100-character ruler mark ✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓ -->
+        <!-- This line should extend well past the 120-character ruler to show you where the hard limit is ✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓ -->
+
+        <record id="test_record" model="test.model">
+            <field name="name">Short field</field>
+            <field name="description">This field should approach the 100-char ruler mark</field>
+            <field name="long_description">This field content should extend past the 120-character ruler to demonstrate the hard limit for XML formatting in Odoo development</field>
+        </record>
+
+        <!--
+        If rulers are visible, you should see:
+        - 100-character ruler (XML attribute alignment guide)
+        - 120-character ruler (hard limit for all files)
+        -->
+
+    </data>
+</odoo>
