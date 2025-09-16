@@ -143,9 +143,9 @@
                                     <tree>
                                         <field name="name"/>
                                         <field name="reference"/>
-                                        <field name="document_type"/>
-                                        <field name="creation_date"/>
-                                        <field name="retention_until"/>
+                                        <field name="document_type_id"/>
+                                        <field name="create_date"/>
+                                        <field name="destruction_eligible_date"/>
                                     </tree>
                                 </field>
                             </page>
