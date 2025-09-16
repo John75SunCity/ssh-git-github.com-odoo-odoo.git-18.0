@@ -53,11 +53,10 @@
                                 type="object"
                                 string="Archive Policy"
                                 invisible="state != 'active'"/>
-                        <button name="action_review"
+                        <button name="action_set_to_draft"
                                 type="object"
-                                string="Review Policy"
-                                class="oe_highlight"
-                                invisible="state != 'active'"/>
+                                string="Set to Draft"
+                                invisible="state == 'draft'"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,active,under_review,archived"/>
                     </header>
                     <sheet>
