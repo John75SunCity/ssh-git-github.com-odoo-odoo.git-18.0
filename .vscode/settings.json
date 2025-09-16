@@ -279,7 +279,16 @@
         "editorError.foreground": "#ff6b6b",
         "editorWarning.foreground": "#ffd93d",
         "editorInfo.foreground": "#4ecdc4",
-        "editorHint.foreground": "#a8e6cf"
+        "editorHint.foreground": "#a8e6cf",
+        "editorRuler.foreground": "#4f4f4f",
+        "editorLineNumber.foreground": "#5a5a5a",
+        "editorLineNumber.activeForeground": "#ffab00",
+        "editor.background": "#1e1e1e",
+        "editor.lineHighlightBackground": "#2d2d30",
+        "editorIndentGuide.background1": "#404040",
+        "editorIndentGuide.activeBackground1": "#707070",
+        "editorOverviewRuler.border": "#007acc",
+        "editorGutter.background": "#1e1e1e"
     },
     "search.exclude": {
         "**/node_modules": true,
@@ -395,6 +404,10 @@
     "task.quickOpen.detail": true,
     "task.quickOpen.skip": false,
     "editor.minimap.enabled": true,
+    "editor.minimap.showSlider": "always",
+    "editor.minimap.renderCharacters": false,
+    "editor.overviewRulerBorder": true,
+    "editor.hideCursorInOverviewRuler": false,
     "editor.bracketPairColorization.enabled": true,
     "editor.guides.bracketPairs": true,
     "editor.guides.bracketPairsHorizontal": true,
