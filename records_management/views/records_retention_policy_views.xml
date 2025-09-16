@@ -5,7 +5,7 @@
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
             <field name="arch" type="xml">
-                <list decoration-success="state == 'active'"
+                <tree decoration-success="state == 'active'"
                       decoration-muted="state == 'archived'"
                       decoration-warning="is_expired == True"
                       decoration-info="state == 'draft'">
@@ -25,7 +25,7 @@
                             string="View Rules"
                             icon="fa-list"
                             class="btn-link"/>
-                </list>
+                </tree>
             </field>
         </record>
         <record id="records_retention_policy_view_form" model="ir.ui.view">
