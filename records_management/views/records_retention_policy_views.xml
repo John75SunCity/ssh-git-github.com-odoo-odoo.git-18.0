@@ -5,7 +5,6 @@
         <record id="records_retention_policy_view_tree" model="ir.ui.view">
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
-            <field name="type">list</field>
             <field name="arch" type="xml">
                 <list decoration-success="state == 'active'"
                       decoration-muted="state == 'archived'"
@@ -19,8 +18,9 @@
                     <field name="destruction_method" string="Destruction"/>
                     <field name="state" string="Status" widget="badge"/>
                     <field name="compliance_status" string="Compliance" widget="badge"/>
-                    <field name="document_count" string="Documents" widget="integer"/>
-                    <field name="rule_count" string="Rules" widget="integer"/>
+                    <field name="document_count" string="Documents"/>
+                    <field name="rule_count" string="Rules"/>
+                    <field name="is_expired" invisible="1"/>
                 </list>
             </field>
         </record>
@@ -29,18 +29,17 @@
         <record id="records_retention_policy_view_form" model="ir.ui.view">
             <field name="name">records.retention.policy.view.form</field>
             <field name="model">records.retention.policy</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Records Retention Policy">
                     <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,active,under_review,archived" clickable="1"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,active,under_review,archived"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button class="oe_stat_button"
-                                    type="action"
-                                    name="records_management.action_retention_rules"
-                                    icon="fas fa-gavel">
+                                    type="object"
+                                    name="action_view_retention_rules"
+                                    icon="fa-gavel">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="rule_count"/>
@@ -49,12 +48,12 @@
                                 </div>
                             </button>
                             <button class="oe_stat_button"
-                                    type="action"
-                                    name="records_management.action_retention_policy_versions"
-                                    icon="fas fa-history">
+                                    type="object"
+                                    name="action_view_policy_versions"
+                                    icon="fa-history">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
-                                        <field name="document_count"/>
+                                        <field name="version_count"/>
                                     </span>
                                     <span class="o_stat_text">Versions</span>
                                 </div>
@@ -90,10 +89,6 @@
                         </group>
                         <notebook>
                             <page string="Policy Details" name="details">
-                                <group>
-                                    <field name="description" widget="html"
-                                           placeholder="Detailed description of the retention policy..."/>
-                                </group>
                                 <group string="Policy Description">
                                     <field name="description" widget="html"
                                            placeholder="Detailed description of the retention policy including legal and regulatory requirements..."/>
@@ -104,7 +99,7 @@
                                 </group>
                             </page>
                             <page string="Retention Rules" name="rules">
-                                <field name="rule_ids" mode="tree" limit="20">
+                                <field name="rule_ids" mode="list">
                                     <list>
                                         <field name="name"/>
                                         <field name="retention_years"/>
@@ -114,21 +109,8 @@
                                     </list>
                                 </field>
                             </page>
-                            <!--
-                            <page string="Documents" name="documents">
-                                <field name="document_ids" mode="tree" limit="20">
-                                    <list>
-                                        <field name="name"/>
-                                        <field name="reference"/>
-                                        <field name="document_type_id"/>
-                                        <field name="create_date"/>
-                                        <field name="destruction_eligible_date"/>
-                                    </list>
-                                </field>
-                            </page>
-                            -->
                             <page string="Child Policies" name="children">
-                                <field name="child_policy_ids" mode="tree">
+                                <field name="child_policy_ids" mode="list">
                                     <list>
                                         <field name="name"/>
                                         <field name="code"/>
@@ -138,7 +120,7 @@
                                 </field>
                             </page>
                             <page string="Policy Versions" name="versions">
-                                <field name="version_ids" mode="tree">
+                                <field name="version_ids" mode="list">
                                     <list>
                                         <field name="name"/>
                                         <field name="version"/>
@@ -161,16 +143,14 @@
                                     </group>
                                 </group>
                                 <separator string="Audit History"/>
-                                <group string="Audit Log">
-                                    <field name="audit_log_ids" mode="tree" limit="10">
-                                        <list>
-                                            <field name="event_type"/>
-                                            <field name="timestamp"/>
-                                            <field name="user_id"/>
-                                            <field name="description"/>
-                                        </list>
-                                    </field>
-                                </group>
+                                <field name="audit_log_ids" mode="list">
+                                    <list>
+                                        <field name="event_type"/>
+                                        <field name="timestamp"/>
+                                        <field name="user_id"/>
+                                        <field name="description"/>
+                                    </list>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>
@@ -187,13 +167,11 @@
         <record id="records_retention_policy_view_search" model="ir.ui.view">
             <field name="name">records.retention.policy.view.search</field>
             <field name="model">records.retention.policy</field>
-            <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Search Retention Policies">
                     <field name="name"/>
                     <field name="code"/>
                     <field name="destruction_method"/>
-                    <field name="user_id"/>
                     <separator/>
                     <filter string="Active Policies" name="active" domain="[('state', '=', 'active')]"/>
                     <filter string="Draft Policies" name="draft" domain="[('state', '=', 'draft')]"/>
@@ -219,7 +197,6 @@
         <record id="records_retention_policy_view_kanban" model="ir.ui.view">
             <field name="name">records.retention.policy.view.kanban</field>
             <field name="model">records.retention.policy</field>
-            <field name="type">kanban</field>
             <field name="arch" type="xml">
                 <kanban class="o_kanban_mobile">
                     <field name="name"/>
@@ -251,13 +228,13 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <span>
-                                            <i class="fas fa-clock" aria-hidden="true"/>
+                                            <i class="fa fa-clock-o" aria-hidden="true"/>
                                             <t t-esc="record.retention_years.value"/> years
                                         </span>
                                     </div>
                                     <div class="col-6">
                                         <span>
-                                            <i class="fas fa-shield-alt" aria-hidden="true"/>
+                                            <i class="fa fa-shield" aria-hidden="true"/>
                                             <t t-esc="record.compliance_status.value"/>
                                         </span>
                                     </div>
@@ -265,13 +242,13 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <span>
-                                            <i class="fas fa-file-alt" aria-hidden="true"/>
+                                            <i class="fa fa-file-text-o" aria-hidden="true"/>
                                             <t t-esc="record.document_count.value"/> docs
                                         </span>
                                     </div>
                                     <div class="col-6">
                                         <span>
-                                            <i class="fas fa-gavel" aria-hidden="true"/>
+                                            <i class="fa fa-gavel" aria-hidden="true"/>
                                             <t t-esc="record.rule_count.value"/> rules
                                         </span>
                                     </div>
@@ -287,12 +264,11 @@
         <record id="action_records_retention_policy" model="ir.actions.act_window">
             <field name="name">Retention Policies</field>
             <field name="res_model">records.retention.policy</field>
-            <field name="view_mode">list,form,kanban</field>
+            <field name="view_mode">tree,form,kanban</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fas fa-gavel" aria-hidden="true"/>
                     No retention policies found!
                 </p>
                 <p>
@@ -302,6 +278,30 @@
                 </p>
                 <p>
                     <strong>Key Features:</strong>
+                    <br/>
+                    <i class="fas fa-clock" aria-hidden="true"/>
+                    Define retention periods and destruction methods
+                    <br/>
+                    <i class="fas fa-shield-alt" aria-hidden="true"/>
+                    Ensure compliance with legal requirements
+                    <br/>
+                    <i class="fas fa-bar-chart" aria-hidden="true"/>
+                    Track compliance status and review cycles
+                    <br/>
+                    <i class="fas fa-globe" aria-hidden="true"/>
+                    Support global and regional policy variations
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Item for Records Retention Policy -->
+        <menuitem id="menu_retention_policies"
+                  name="Retention Policies"
+                  parent="records_management.menu_records_management_config"
+                  action="action_records_retention_policy"
+                  sequence="10"/>
+    </data>
+</odoo>
                     <br/>
                     <i class="fas fa-clock" aria-hidden="true"/>
                     Define retention periods and destruction methods
