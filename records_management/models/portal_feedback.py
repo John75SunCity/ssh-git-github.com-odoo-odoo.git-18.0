@@ -27,7 +27,7 @@ class PortalFeedback(models.Model):
         ('resolved', 'Resolved'),
         ('closed', 'Closed'),
         ('cancelled', 'Cancelled'),
-    ], string='Status', default='new', readonly=True, tracking=True)
+    ], string='Status', default='new', tracking=True)
 
     # ============================================================================
     # CATEGORIZATION & RATING
@@ -82,8 +82,18 @@ class PortalFeedback(models.Model):
     # ============================================================================
     # COMPUTE & ONCHANGE
     # ============================================================================
-    @api.depends('description', 'rating')
-    def _compute_sentiment(self):
+    @api.onchange('state')
+    def _onchange_state(self):
+        """Handle state transitions and add chatter messages"""
+        if self.state == 'in_progress':
+            self.message_post(body=_("Feedback is now in progress."))
+        elif self.state == 'resolved':
+            self.resolution_date = fields.Datetime.now()
+            self.message_post(body=_("Feedback has been marked as resolved."))
+        elif self.state == 'closed':
+            self.message_post(body=_("Feedback has been closed."))
+        elif self.state == 'cancelled':
+            self.message_post(body=_("Feedback has been cancelled."))
         """
         Placeholder for AI-driven sentiment analysis.
         A real implementation would use a library like NLTK, TextBlob, or an external API.
@@ -123,34 +133,19 @@ class PortalFeedback(models.Model):
         return super().create(vals_list)
 
     # ============================================================================
-    # ACTION METHODS
+    # ACTION METHODS - REPLACED WITH STATUSBAR WIDGET
     # ============================================================================
-    def action_start_progress(self):
-        self.ensure_one()
-        self.write({'state': 'in_progress'})
-        self.message_post(body=_("Feedback is now in progress."))
-
-    def action_resolve(self):
-        self.ensure_one()
-        self.write({
-            'state': 'resolved',
-            'resolution_date': fields.Datetime.now()
-        })
-        self.message_post(body=_("Feedback has been marked as resolved."))
-
-    def action_close(self):
-        self.ensure_one()
-        if self.state != 'resolved':
-            raise UserError(_("Only resolved feedback can be closed."))
-        self.write({'state': 'closed'})
-        self.message_post(body=_("Feedback has been closed."))
-
-    def action_cancel(self):
-        self.ensure_one()
-        self.write({'state': 'cancelled'})
-        self.message_post(body=_("Feedback has been cancelled."))
+    # Removed action_start_progress, action_resolve, action_close, action_cancel
+    # State transitions now handled via clickable statusbar widget (Pattern A)
 
     # Placeholder XML button
     def action_view_related_records(self):
         self.ensure_one()
-        return False
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Related Records'),
+            'res_model': 'portal.feedback',
+            'view_mode': 'tree,form',
+            'domain': [('partner_id', '=', self.partner_id.id), ('id', '!=', self.id)],
+            'context': {'default_partner_id': self.partner_id.id},
+        }

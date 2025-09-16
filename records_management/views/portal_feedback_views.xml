@@ -88,13 +88,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-<!-- Using correct action methods that exist in the model -->
-<button name="action_start_progress" type="object" string="Start Progress" class="btn-primary" invisible="state != 'new'"/>
-<button name="action_resolve" type="object" string="Resolve" class="btn-success" invisible="state not in ['new','in_progress']"/>
-<button name="action_close" type="object" string="Close" class="btn-secondary" invisible="state != 'resolved'"/>
-<button name="action_cancel" type="object" string="Cancel" class="btn-warning" invisible="state in ['closed','cancelled']"/>
-
-                    <field name="state" widget="statusbar" statusbar_visible="new,in_progress,resolved,closed"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,in_progress,resolved,closed,cancelled" clickable="true"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
