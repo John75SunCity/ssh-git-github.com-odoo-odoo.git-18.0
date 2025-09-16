@@ -5,6 +5,7 @@
         <record id="records_retention_policy_view_tree" model="ir.ui.view">
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
+            <field name="type">list</field>
             <field name="arch" type="xml">
                 <tree decoration-success="state == 'active'"
                       decoration-muted="state == 'archived'"
@@ -39,6 +40,7 @@
         <record id="records_retention_policy_view_form" model="ir.ui.view">
             <field name="name">records.retention.policy.view.form</field>
             <field name="model">records.retention.policy</field>
+            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Records Retention Policy">
                     <header>
@@ -216,6 +218,7 @@
         <record id="records_retention_policy_view_search" model="ir.ui.view">
             <field name="name">records.retention.policy.view.search</field>
             <field name="model">records.retention.policy</field>
+            <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Search Retention Policies">
                     <field name="name"/>
@@ -247,6 +250,7 @@
         <record id="records_retention_policy_view_kanban" model="ir.ui.view">
             <field name="name">records.retention.policy.view.kanban</field>
             <field name="model">records.retention.policy</field>
+            <field name="type">kanban</field>
             <field name="arch" type="xml">
                 <kanban class="o_kanban_mobile">
                     <field name="name"/>
