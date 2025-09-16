@@ -9,15 +9,15 @@
             <field name="arch" type="xml">
                 <list decoration-success="is_active == True"
                       decoration-muted="is_active == False"
-                      decoration-info="approval_status == 'pending'"
-                      decoration-warning="approval_status == 'rejected'">
+                      decoration-info="state == 'draft'"
+                      decoration-warning="state == 'archived'">
                     <field name="policy_id" string="Policy"/>
                     <field name="version_number" string="Version"/>
                     <field name="effective_date" string="Effective"/>
                     <field name="expiration_date" string="Expires"/>
                     <field name="is_active" string="Active" widget="boolean_toggle"/>
                     <field name="created_by" string="Created By"/>
-                    <field name="approval_status" string="Status" widget="badge"/>
+                    <field name="state" string="Status" widget="badge"/>
                     <field name="create_date" string="Created On"/>
                     <button name="action_activate"
                             type="object"
@@ -47,16 +47,7 @@
                                 string="Activate Version"
                                 class="oe_highlight"
                                 invisible="is_active == True"/>
-                        <button name="action_approve"
-                                type="object"
-                                string="Approve"
-                                class="oe_highlight"
-                                invisible="approval_status != 'pending'"/>
-                        <button name="action_reject"
-                                type="object"
-                                string="Reject"
-                                invisible="approval_status != 'pending'"/>
-                        <field name="approval_status" widget="statusbar" statusbar_visible="draft,pending,approved,rejected"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,active,superseded,archived"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -74,14 +65,6 @@
                                     icon="fas fa-code-fork">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_text">Compare Versions</span>
-                                </div>
-                            </button>
-                            <button class="oe_stat_button"
-                                    type="object"
-                                    name="action_view_policy"
-                                    icon="fas fa-gavel">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_text">Parent Policy</span>
                                 </div>
                             </button>
                         </div>
@@ -109,8 +92,8 @@
                                 <field name="approved_by" readonly="1" invisible="approved_by == False"/>
                                 <field name="approval_date" readonly="1" invisible="approval_date == False"/>
                                 <field name="rejection_reason"
-                                       invisible="approval_status != 'rejected'"
-                                       required="approval_status == 'rejected'"/>
+                                       invisible="state != 'archived'"
+                                       required="state == 'archived'"/>
                             </group>
                         </group>
                         <notebook>
@@ -160,7 +143,7 @@
                                         <field name="effective_date"/>
                                         <field name="expiration_date"/>
                                         <field name="created_by"/>
-                                        <field name="approval_status" widget="badge"/>
+                                        <field name="state" widget="badge"/>
                                         <field name="is_active" widget="boolean_toggle"/>
                                     </tree>
                                 </field>
@@ -191,9 +174,9 @@
                     <filter string="Active Versions" name="active" domain="[('is_active', '=', True)]"/>
                     <filter string="Inactive Versions" name="inactive" domain="[('is_active', '=', False)]"/>
                     <separator/>
-                    <filter string="Pending Approval" name="pending" domain="[('approval_status', '=', 'pending')]"/>
-                    <filter string="Approved" name="approved" domain="[('approval_status', '=', 'approved')]"/>
-                    <filter string="Rejected" name="rejected" domain="[('approval_status', '=', 'rejected')]"/>
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
+                    <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]"/>
                     <separator/>
                     <filter string="Current" name="current"
                             domain="[('effective_date', '&lt;=', context_today()), '|', ('expiration_date', '&gt;=', context_today()), ('expiration_date', '=', False)]"/>
@@ -203,7 +186,7 @@
                             domain="[('expiration_date', '&lt;', context_today()), ('expiration_date', '!=', False)]"/>
                     <group expand="1" string="Group By">
                         <filter string="Policy" name="group_policy" domain="[]" context="{'group_by': 'policy_id'}"/>
-                        <filter string="Approval Status" name="group_status" domain="[]" context="{'group_by': 'approval_status'}"/>
+                        <filter string="State" name="group_status" domain="[]" context="{'group_by': 'state'}"/>
                         <filter string="Created By" name="group_creator" domain="[]" context="{'group_by': 'created_by'}"/>
                         <filter string="Effective Date" name="group_date" domain="[]" context="{'group_by': 'effective_date:month'}"/>
                     </group>
@@ -220,7 +203,7 @@
                 <kanban class="o_kanban_mobile">
                     <field name="policy_id"/>
                     <field name="version_number"/>
-                    <field name="approval_status"/>
+                    <field name="state"/>
                     <field name="is_active"/>
                     <field name="effective_date"/>
                     <field name="expiration_date"/>
@@ -265,7 +248,7 @@
                                     </div>
                                     <div class="col-6">
                                         <span class="float-right">
-                                            <t t-esc="record.approval_status.value"/>
+                                            <t t-esc="record.state.value"/>
                                         </span>
                                     </div>
                                 </div>

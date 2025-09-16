@@ -63,17 +63,6 @@
                         <div class="oe_button_box" name="button_box">
                             <button class="oe_stat_button"
                                     type="object"
-                                    name="action_view_documents"
-                                    icon="fas fa-file-alt">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="document_count"/>
-                                    </span>
-                                    <span class="o_stat_text">Documents</span>
-                                </div>
-                            </button>
-                            <button class="oe_stat_button"
-                                    type="object"
                                     name="action_view_rules"
                                     icon="fas fa-gavel">
                                 <div class="o_field_widget o_stat_info">
@@ -85,10 +74,13 @@
                             </button>
                             <button class="oe_stat_button"
                                     type="object"
-                                    name="action_view_compliance"
-                                    icon="fas fa-shield-alt">
+                                    name="action_view_versions"
+                                    icon="fas fa-history">
                                 <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_text">Compliance</span>
+                                    <span class="o_stat_value">
+                                        <field name="document_count"/>
+                                    </span>
+                                    <span class="o_stat_text">Versions</span>
                                 </div>
                             </button>
                         </div>
@@ -173,7 +165,7 @@
                                         <field name="name"/>
                                         <field name="version"/>
                                         <field name="effective_date"/>
-                                        <field name="approval_status"/>
+                                        <field name="state"/>
                                     </tree>
                                 </field>
                             </page>
