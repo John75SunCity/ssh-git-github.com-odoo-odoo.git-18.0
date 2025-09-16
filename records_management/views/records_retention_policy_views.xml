@@ -1,435 +1,435 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="records_retention_policy_view_tree" model="ir.ui.view">
-            <field name="name">records.retention.policy.view.tree</field>
-            <field name="model">records.retention.policy</field>
-            <field name="arch" type="xml">
-                <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="is_expired == True" decoration-info="state == 'draft'">
-                    <field name="sequence" widget="handle"/>
-                    <field name="name" string="Policy Name"/>
-                    <field name="code" string="Code"/>
-                    <field name="retention_years" string="Retention (Years)"/>
-                    <field name="retention_unit" string="Unit"/>
-                    <field name="destruction_method" string="Destruction"/>
-                    <field name="state" string="Status" widget="badge"/>
-                    <field name="compliance_status" string="Compliance" widget="badge"/>
-                    <field name="document_count" string="Documents" widget="integer"/>
-                    <field name="rule_count" string="Rules" widget="integer"/>
-                    <field name="active" string="Active"/>
-                    <button name="action_view_rules" type="object" string="View Rules" icon="fa-list" class="btn-link"/>
-                </list>
-            </field>
-        </record>
-        <record id="records_retention_policy_view_form" model="ir.ui.view">
-            <field name="name">records.retention.policy.view.form</field>
-            <field name="model">records.retention.policy</field>
-            <field name="arch" type="xml">
-                <form string="Retention Policy Configuration">
-                    <header>
-                        <button name="action_activate" string="Activate" type="object" class="btn-success" invisible="state != 'draft'" groups="records_management.group_records_user"/>
-                        <button name="action_archive" string="Archive" type="object" class="btn-secondary" invisible="state not in ('draft', 'active')" groups="records_management.group_records_manager"/>
-                        <button name="action_set_to_draft" string="Set to Draft" type="object" class="btn-warning" invisible="state != 'archived'" groups="records_management.group_records_manager"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
-                    </header>
-                    <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" type="object" name="action_view_rules" icon="fa-list">
-                                <field name="rule_count" string="Rules" widget="statinfo"/>
-                            </button>
-                            <button class="oe_stat_button" icon="fa-file">
-                                <field name="document_count" string="Documents" widget="statinfo"/>
-                            </button>
-                            <button class="oe_stat_button" icon="fa-clock">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="retention_years"/>
-                                    </span>
-                                    <span class="o_stat_text">Retention Years</span>
-                                </div>
-                            </button>
-                            <button class="oe_stat_button" icon="fa-shield">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="compliance_status"/>
-                                    </span>
-                                    <span class="o_stat_text">Compliance</span>
-                                </div>
-                            </button>
-                        </div>
-                        <div class="oe_title">
-                            <label for="name"/>
-                            <h1>
-                                <field name="name" placeholder="Retention Policy Name..."/>
-                            </h1>
-                        </div>
-                        <group>
-                            <group string="Basic Information">
-                                <field name="name" required="1"/>
-                                <field name="code" required="1"/>
-                                <field name="display_name" readonly="1"/>
-                                <field name="description"/>
-                                <field name="sequence"/>
-                                <field name="active" widget="boolean_toggle"/>
-                            </group>
-                            <group string="Organization">
-                                <field name="company_id" groups="base.group_multi_company"/>
-                                <field name="user_id"/>
-                                <field name="partner_id"/>
-                                <field name="department_id"/>
-                                <field name="document_type_id"/>
-                                <field name="category_id"/>
-                            </group>
-                        </group>
-                        <group>
-                            <group string="Retention &amp; Destruction">
-                                <field name="retention_unit" required="1"/>
-                                <field name="retention_period"/>
-                                <field name="retention_years" readonly="1"/>
-                                <field name="destruction_method" required="1"/>
-                                <field name="is_legal_hold" widget="boolean_toggle"/>
-                                <field name="legal_hold_reason"/>
-                            </group>
-                            <group string="Review &amp; Compliance">
-                                <field name="review_frequency"/>
-                                <field name="last_review_date"/>
-                                <field name="next_review_date" readonly="1"/>
-                                <field name="compliance_status"/>
-                                <field name="compliance_notes"/>
-                                <field name="is_compliant" widget="boolean_toggle"/>
-                            </group>
-                        </group>
-                        <group>
-                            <group string="Policy Settings">
-                                <field name="is_default" widget="boolean_toggle"/>
-                                <field name="is_template" widget="boolean_toggle"/>
-                                <field name="is_global" widget="boolean_toggle"/>
-                                <field name="is_approved" widget="boolean_toggle"/>
-                                <field name="is_expired" widget="boolean_toggle"/>
-                                <field name="is_overdue" widget="boolean_toggle"/>
-                            </group>
-                            <group string="Relationships">
-                                <field name="parent_policy_id"/>
-                                <field name="template_id"/>
-                                <field name="storage_location_id"/>
-                                <field name="branch_id"/>
-                            </group>
-                        </group>
-                        <notebook>
-                            <page string="Retention Rules" name="rules">
-                                <field name="rule_ids" mode="list" limit="20">
-                                    <list>
-                                        <field name="name"/>
-                                        <field name="retention_years"/>
-                                        <field name="destruction_trigger"/>
-                                        <field name="active"/>
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Documents" name="documents">
-                                <field name="document_ids" mode="list" limit="20">
-                                    <list>
-                                        <field name="name"/>
-                                        <field name="reference"/>
-                                        <field name="state"/>
-                                        <field name="received_date"/>
-                                        <field name="destruction_eligible_date"/>
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Child Policies" name="children">
-                                <field name="child_policy_ids" mode="list">
-                                    <list>
-                                        <field name="name"/>
-                                        <field name="code"/>
-                                        <field name="state"/>
-                                        <field name="retention_years"/>
-                                        <field name="document_count"/>
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Policy Versions" name="versions">
-                                <field name="version_ids" mode="list">
-                                    <list>
-                                        <field name="name"/>
-                                        <field name="version"/>
-                                        <field name="state"/>
-                                        <field name="effective_date"/>
-                                        <field name="created_date"/>
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Tags &amp; Approvers" name="tags">
-                                <group>
-                                    <group string="Tags">
-                                        <field name="tag_ids" widget="many2many_tags"/>
-                                    </group>
-                                    <group string="Approvers">
-                                        <field name="destruction_approver_ids" widget="many2many_tags"/>
-                                    </group>
-                                </group>
-                                <group>
-                                    <group string="Geographic Scope">
-                                        <field name="country_ids" widget="many2many_tags"/>
-                                        <field name="state_ids" widget="many2many_tags"/>
-                                    </group>
-                                    <group string="Audit Log">
-                                        <field name="audit_log_ids" mode="list" limit="10">
-                                            <list>
-                                                <field name="action"/>
-                                                <field name="action_date"/>
-                                                <field name="user_id"/>
-                                                <field name="notes"/>
-                                            </list>
-                                        </field>
-                                    </group>
-                                </group>
-                            </page>
-                            <page string="Important Dates" name="dates">
-                                <group>
-                                    <group string="Key Dates">
-                                        <field name="effective_date"/>
-                                        <field name="expiration_date"/>
-                                        <field name="next_action_date"/>
-                                        <field name="next_action"/>
-                                    </group>
-                                    <group string="Review Information">
-                                        <field name="last_review_by_id"/>
-                                        <field name="next_reviewer_id"/>
-                                        <field name="compliance_check_date"/>
-                                        <field name="compliance_checker_id"/>
-                                    </group>
-                                </group>
-                                <group>
-                                    <group string="Approval Tracking">
-                                        <field name="approved_by_id"/>
-                                        <field name="approval_date"/>
-                                        <field name="rejected_by_id"/>
-                                        <field name="rejection_date"/>
-                                        <field name="rejection_reason"/>
-                                    </group>
-                                    <group string="Archive Tracking">
-                                        <field name="archived_by_id"/>
-                                        <field name="archived_date"/>
-                                        <field name="restored_by_id"/>
-                                        <field name="restored_date"/>
-                                    </group>
-                                </group>
-                            </page>
-                            <page string="Regulatory Requirements" name="regulatory">
-                                <field name="related_regulation"/>
-                                <field name="regulatory_requirements" placeholder="Specific regulatory requirements and compliance notes..."/>
-                            </page>
-                        </notebook>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
+    <record id="records_retention_policy_view_tree" model="ir.ui.view">
+        <field name="name">records.retention.policy.view.tree</field>
+        <field name="model">records.retention.policy</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="is_expired == True" decoration-info="state == 'draft'">
+                <field name="sequence" widget="handle"/>
+                <field name="name" string="Policy Name"/>
+                <field name="code" string="Code"/>
+                <field name="retention_years" string="Retention (Years)"/>
+                <field name="retention_unit" string="Unit"/>
+                <field name="destruction_method" string="Destruction"/>
+                <field name="state" string="Status" widget="badge"/>
+                <field name="compliance_status" string="Compliance" widget="badge"/>
+                <field name="document_count" string="Documents" widget="integer"/>
+                <field name="rule_count" string="Rules" widget="integer"/>
+                <field name="active" string="Active"/>
+                <button name="action_view_rules" type="object" string="View Rules" icon="fa-list" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+    <record id="records_retention_policy_view_form" model="ir.ui.view">
+        <field name="name">records.retention.policy.view.form</field>
+        <field name="model">records.retention.policy</field>
+        <field name="arch" type="xml">
+            <form string="Retention Policy Configuration">
+                <header>
+                    <button name="action_activate" string="Activate" type="object" class="btn-success" invisible="state != 'draft'" groups="records_management.group_records_user"/>
+                    <button name="action_archive" string="Archive" type="object" class="btn-secondary" invisible="state not in ('draft', 'active')" groups="records_management.group_records_manager"/>
+                    <button name="action_set_to_draft" string="Set to Draft" type="object" class="btn-warning" invisible="state != 'archived'" groups="records_management.group_records_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_rules" icon="fa-list">
+                            <field name="rule_count" string="Rules" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-file">
+                            <field name="document_count" string="Documents" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-clock">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="retention_years"/>
+                                </span>
+                                <span class="o_stat_text">Retention Years</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-shield">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="compliance_status"/>
+                                </span>
+                                <span class="o_stat_text">Compliance</span>
+                            </div>
+                        </button>
                     </div>
-                </form>
-            </field>
-        </record>
-        <record id="records_retention_policy_view_kanban" model="ir.ui.view">
-            <field name="name">records.retention.policy.view.kanban</field>
-            <field name="model">records.retention.policy</field>
-            <field name="arch" type="xml">
-                <kanban default_group_by="state" class="o_kanban_retention_policy">
-                    <field name="name"/>
-                    <field name="code"/>
-                    <field name="state"/>
-                    <field name="active"/>
-                    <field name="retention_years"/>
-                    <field name="retention_unit"/>
-                    <field name="destruction_method"/>
-                    <field name="compliance_status"/>
-                    <field name="document_count"/>
-                    <field name="rule_count"/>
-                    <field name="is_legal_hold"/>
-                    <field name="is_expired"/>
-                    <templates>
-                        <t t-name="card">
-                            <div class="oe_kanban_card oe_kanban_global_click">
-                                <div class="oe_button_box" name="button_box">
-                                    <button class="oe_stat_button" type="object" name="action_view_rules" icon="fa-list">
-                                        <field name="rule_count" string="Rules" widget="statinfo"/>
-                                    </button>
-                                    <button class="oe_stat_button" icon="fa-file">
-                                        <field name="document_count" string="Documents" widget="statinfo"/>
-                                    </button>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Retention Policy Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Basic Information">
+                            <field name="name" required="1"/>
+                            <field name="code" required="1"/>
+                            <field name="display_name" readonly="1"/>
+                            <field name="description"/>
+                            <field name="sequence"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group string="Organization">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="user_id"/>
+                            <field name="partner_id"/>
+                            <field name="department_id"/>
+                            <field name="document_type_id"/>
+                            <field name="category_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Retention &amp; Destruction">
+                            <field name="retention_unit" required="1"/>
+                            <field name="retention_period"/>
+                            <field name="retention_years" readonly="1"/>
+                            <field name="destruction_method" required="1"/>
+                            <field name="is_legal_hold" widget="boolean_toggle"/>
+                            <field name="legal_hold_reason"/>
+                        </group>
+                        <group string="Review &amp; Compliance">
+                            <field name="review_frequency"/>
+                            <field name="last_review_date"/>
+                            <field name="next_review_date" readonly="1"/>
+                            <field name="compliance_status"/>
+                            <field name="compliance_notes"/>
+                            <field name="is_compliant" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Policy Settings">
+                            <field name="is_default" widget="boolean_toggle"/>
+                            <field name="is_template" widget="boolean_toggle"/>
+                            <field name="is_global" widget="boolean_toggle"/>
+                            <field name="is_approved" widget="boolean_toggle"/>
+                            <field name="is_expired" widget="boolean_toggle"/>
+                            <field name="is_overdue" widget="boolean_toggle"/>
+                        </group>
+                        <group string="Relationships">
+                            <field name="parent_policy_id"/>
+                            <field name="template_id"/>
+                            <field name="storage_location_id"/>
+                            <field name="branch_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Retention Rules" name="rules">
+                            <field name="rule_ids" mode="list" limit="20">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="retention_years"/>
+                                    <field name="destruction_trigger"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Documents" name="documents">
+                            <field name="document_ids" mode="list" limit="20">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="reference"/>
+                                    <field name="state"/>
+                                    <field name="received_date"/>
+                                    <field name="destruction_eligible_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Child Policies" name="children">
+                            <field name="child_policy_ids" mode="list">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="state"/>
+                                    <field name="retention_years"/>
+                                    <field name="document_count"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Policy Versions" name="versions">
+                            <field name="version_ids" mode="list">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="version"/>
+                                    <field name="state"/>
+                                    <field name="effective_date"/>
+                                    <field name="created_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Tags &amp; Approvers" name="tags">
+                            <group>
+                                <group string="Tags">
+                                    <field name="tag_ids" widget="many2many_tags"/>
+                                </group>
+                                <group string="Approvers">
+                                    <field name="destruction_approver_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Geographic Scope">
+                                    <field name="country_ids" widget="many2many_tags"/>
+                                    <field name="state_ids" widget="many2many_tags"/>
+                                </group>
+                                <group string="Audit Log">
+                                    <field name="audit_log_ids" mode="list" limit="10">
+                                        <list>
+                                            <field name="action"/>
+                                            <field name="action_date"/>
+                                            <field name="user_id"/>
+                                            <field name="notes"/>
+                                        </field>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Important Dates" name="dates">
+                            <group>
+                                <group string="Key Dates">
+                                    <field name="effective_date"/>
+                                    <field name="expiration_date"/>
+                                    <field name="next_action_date"/>
+                                    <field name="next_action"/>
+                                </group>
+                                <group string="Review Information">
+                                    <field name="last_review_by_id"/>
+                                    <field name="next_reviewer_id"/>
+                                    <field name="compliance_check_date"/>
+                                    <field name="compliance_checker_id"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Approval Tracking">
+                                    <field name="approved_by_id"/>
+                                    <field name="approval_date"/>
+                                    <field name="rejected_by_id"/>
+                                    <field name="rejection_date"/>
+                                    <field name="rejection_reason"/>
+                                </group>
+                                <group string="Archive Tracking">
+                                    <field name="archived_by_id"/>
+                                    <field name="archived_date"/>
+                                    <field name="restored_by_id"/>
+                                    <field name="restored_date"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Regulatory Requirements" name="regulatory">
+                            <field name="related_regulation"/>
+                            <field name="regulatory_requirements" placeholder="Specific regulatory requirements and compliance notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="records_retention_policy_view_kanban" model="ir.ui.view">
+        <field name="name">records.retention.policy.view.kanban</field>
+        <field name="model">records.retention.policy</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_retention_policy">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="state"/>
+                <field name="active"/>
+                <field name="retention_years"/>
+                <field name="retention_unit"/>
+                <field name="destruction_method"/>
+                <field name="compliance_status"/>
+                <field name="document_count"/>
+                <field name="rule_count"/>
+                <field name="is_legal_hold"/>
+                <field name="is_expired"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_button_box" name="button_box">
+                                <button class="oe_stat_button" type="object" name="action_view_rules" icon="fa-list">
+                                    <field name="rule_count" string="Rules" widget="statinfo"/>
+                                </button>
+                                <button class="oe_stat_button" icon="fa-file">
+                                    <field name="document_count" string="Documents" widget="statinfo"/>
+                                </button>
+                            </div>
+                            <div class="oe_kanban_card_header">
+                                <div class="oe_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <strong>
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <div class="o_secondary">
+                                        <field name="code"/>
+                                    </div>
                                 </div>
-                                <div class="oe_kanban_card_header">
-                                    <div class="oe_kanban_card_header_title">
-                                        <div class="o_primary">
-                                            <strong>
-                                                <field name="name"/>
-                                            </strong>
-                                        </div>
-                                        <div class="o_secondary">
-                                            <field name="code"/>
-                                        </div>
-                                    </div>
-                                    <div class="o_kanban_manage_button_section">
-                                        <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-                                            <i class="fa fa-ellipsis-v" role="img" aria-label="More options"/>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="oe_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="text-center">
-                                                <span class="badge badge-primary">
-                                                    <field name="retention_years"/>
-                                                    <field name="retention_unit"/>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="text-center">
-                                                <span class="badge badge-info">
-                                                    <field name="destruction_method"/>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-12">
-                                            <small class="text-muted">
-                                                <i class="fa fa-shield" aria-hidden="true"/>
-                                                <field name="compliance_status"/>
-                                            </small>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-1">
-                                        <div class="col-12">
-                                            <small class="text-muted">
-                                                <i class="fa fa-file" aria-hidden="true"/>
-                                                <field name="document_count"/> documents
-                                            </small>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-1" invisible="is_legal_hold == False">
-                                        <div class="col-12">
-                                            <span class="badge badge-danger">
-                                                <i class="fa fa-gavel" aria-hidden="true"/> Legal Hold
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-1" invisible="is_expired == False">
-                                        <div class="col-12">
-                                            <span class="badge badge-warning">
-                                                <i class="fa fa-exclamation-triangle" aria-hidden="true"/> Expired
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                    <a role="menuitem" type="edit" class="dropdown-item">Edit Policy</a>
-                                    <a role="menuitem" type="object" name="action_view_rules" class="dropdown-item">View Rules</a>
-                                    <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">Activate</a>
-                                    <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state not in ('draft', 'active')">Archive</a>
-                                    <div class="dropdown-divider"/>
-                                    <a role="menuitem" type="object" name="action_create_new_version" class="dropdown-item">
-                                        <i class="fa fa-pencil"/> New Version
+                                <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#" title="More options">
+                                        <i class="fa fa-ellipsis-v" role="img" aria-label="More options"/>
                                     </a>
                                 </div>
                             </div>
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
-        <record id="records_retention_policy_view_search" model="ir.ui.view">
-            <field name="name">records.retention.policy.view.search</field>
-            <field name="model">records.retention.policy</field>
-            <field name="arch" type="xml">
-                <search string="Search Retention Policies">
-                    <field name="name" string="Policy Name" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
-                    <field name="code"/>
-                    <field name="retention_unit"/>
-                    <field name="destruction_method"/>
-                    <field name="compliance_status"/>
-                    <field name="parent_policy_id"/>
-                    <field name="partner_id"/>
-                    <field name="department_id"/>
-                    <field name="document_type_id"/>
-                    <field name="user_id"/>
-                    <field name="tag_ids"/>
-                    <filter string="Active Policies" name="active" domain="[('active', '=', True)]"/>
-                    <filter string="Archived Policies" name="inactive" domain="[('active', '=', False)]"/>
-                    <separator/>
-                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                    <filter string="Active" name="active_state" domain="[('state', '=', 'active')]"/>
-                    <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]"/>
-                    <separator/>
-                    <filter string="Compliant" name="compliant" domain="[('compliance_status', '=', 'compliant')]"/>
-                    <filter string="Non-Compliant" name="non_compliant" domain="[('compliance_status', '=', 'non_compliant')]"/>
-                    <filter string="Unknown Compliance" name="unknown_compliance" domain="[('compliance_status', '=', 'unknown')]"/>
-                    <separator/>
-                    <filter string="Legal Hold" name="legal_hold" domain="[('is_legal_hold', '=', True)]"/>
-                    <filter string="Is Template" name="is_template" domain="[('is_template', '=', True)]"/>
-                    <filter string="Is Global" name="is_global" domain="[('is_global', '=', True)]"/>
-                    <filter string="Expired" name="expired" domain="[('is_expired', '=', True)]"/>
-                    <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
-                    <separator/>
-                    <filter string="Has Documents" name="has_documents" domain="[('document_count', '&gt;', 0)]"/>
-                    <filter string="Has Rules" name="has_rules" domain="[('rule_count', '&gt;', 0)]"/>
-                    <filter string="Has Children" name="has_children" domain="[('child_policy_ids', '!=', [])]"/>
-                    <filter string="Has Tags" name="has_tags" domain="[('tag_ids', '!=', [])]"/>
-                    <separator/>
-                    <filter string="Shredding" name="shredding" domain="[('destruction_method', '=', 'shred')]"/>
-                    <filter string="Pulping" name="pulping" domain="[('destruction_method', '=', 'pulp')]"/>
-                    <filter string="Incineration" name="incineration" domain="[('destruction_method', '=', 'incinerate')]"/>
-                    <filter string="Disintegration" name="disintegration" domain="[('destruction_method', '=', 'disintegrate')]"/>
-                    <separator/>
-                    <filter string="Quarterly Review" name="quarterly_review" domain="[('review_frequency', '=', 'quarterly')]"/>
-                    <filter string="Biannual Review" name="biannual_review" domain="[('review_frequency', '=', 'biannual')]"/>
-                    <filter string="Annual Review" name="annual_review" domain="[('review_frequency', '=', 'annual')]"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
-                        <filter string="Compliance Status" name="group_compliance" context="{'group_by': 'compliance_status'}"/>
-                        <filter string="Retention Unit" name="group_unit" context="{'group_by': 'retention_unit'}"/>
-                        <filter string="Destruction Method" name="group_destruction" context="{'group_by': 'destruction_method'}"/>
-                        <filter string="Parent Policy" name="group_parent" context="{'group_by': 'parent_policy_id'}"/>
-                        <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
-                        <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
-                        <filter string="Document Type" name="group_doc_type" context="{'group_by': 'document_type_id'}"/>
-                        <filter string="Owner" name="group_owner" context="{'group_by': 'user_id'}"/>
-                        <filter string="Review Frequency" name="group_review" context="{'group_by': 'review_frequency'}"/>
-                        <filter string="Retention Years" name="group_retention" context="{'group_by': 'retention_years'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
-        <record id="action_records_retention_policy" model="ir.actions.act_window">
-            <field name="name">
-                <i class="fas fa-clipboard" aria-hidden="true"/> Retention Policies
-            </field>
-            <field name="res_model">records.retention.policy</field>
-            <field name="view_mode">kanban,list,form</field>
-            <field name="search_view_id" ref="records_retention_policy_view_search"/>
-            <field name="context">{'search_default_active': 1, 'search_default_active_state': 1}</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    <i class="fas fa-clipboard" aria-hidden="true"/> Create your first retention policy!
-                </p>
-                <p>
-                    <b>Retention Policy Management:</b>
-                    <br/>
-                • <i class="fas fa-calendar" aria-hidden="true"/> Define retention periods and destruction methods
-                    <br/>
-                • <i class="fas fa-lock" aria-hidden="true"/> Configure compliance requirements and legal holds
-                    <br/>
-                • <i class="fas fa-clipboard" aria-hidden="true"/> Create retention rules and version control
-                    <br/>
-                • <i class="fas fa-trophy" aria-hidden="true"/> NAID AAA certified policy management system
-                    <br/>
-                • <i class="fas fa-bar-chart" aria-hidden="true"/> Track compliance status and review cycles
-                    <br/>
-                • <i class="fas fa-globe" aria-hidden="true"/> Support global and regional policy variations
-                </p>
-            </field>
-        </record>
+                            <div class="oe_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <span class="badge badge-primary">
+                                                <field name="retention_years"/>
+                                                <field name="retention_unit"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <span class="badge badge-info">
+                                                <field name="destruction_method"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <small class="text-muted">
+                                            <i class="fa fa-shield" aria-hidden="true"/>
+                                            <field name="compliance_status"/>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col-12">
+                                        <small class="text-muted">
+                                            <i class="fa fa-file" aria-hidden="true"/>
+                                            <field name="document_count"/> documents
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="row mt-1" invisible="is_legal_hold == False">
+                                    <div class="col-12">
+                                        <span class="badge badge-danger">
+                                            <i class="fa fa-gavel" aria-hidden="true"/> Legal Hold
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row mt-1" invisible="is_expired == False">
+                                    <div class="col-12">
+                                        <span class="badge badge-warning">
+                                            <i class="fa fa-exclamation-triangle" aria-hidden="true"/> Expired
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                <a role="menuitem" type="edit" class="dropdown-item">Edit Policy</a>
+                                <a role="menuitem" type="object" name="action_view_rules" class="dropdown-item">View Rules</a>
+                                <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">Activate</a>
+                                <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state not in ('draft', 'active')">Archive</a>
+                                <div class="dropdown-divider"/>
+                                <a role="menuitem" type="object" name="action_create_new_version" class="dropdown-item">
+                                    <i class="fa fa-pencil"/> New Version
+                                </a>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="records_retention_policy_view_search" model="ir.ui.view">
+        <field name="name">records.retention.policy.view.search</field>
+        <field name="model">records.retention.policy</field>
+        <field name="arch" type="xml">
+            <search string="Search Retention Policies">
+                <field name="name" string="Policy Name" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
+                <field name="code"/>
+                <field name="retention_unit"/>
+                <field name="destruction_method"/>
+                <field name="compliance_status"/>
+                <field name="parent_policy_id"/>
+                <field name="partner_id"/>
+                <field name="department_id"/>
+                <field name="document_type_id"/>
+                <field name="user_id"/>
+                <field name="tag_ids"/>
+                <filter string="Active Policies" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived Policies" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Active" name="active_state" domain="[('state', '=', 'active')]"/>
+                <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]"/>
+                <separator/>
+                <filter string="Compliant" name="compliant" domain="[('compliance_status', '=', 'compliant')]"/>
+                <filter string="Non-Compliant" name="non_compliant" domain="[('compliance_status', '=', 'non_compliant')]"/>
+                <filter string="Unknown Compliance" name="unknown_compliance" domain="[('compliance_status', '=', 'unknown')]"/>
+                <separator/>
+                <filter string="Legal Hold" name="legal_hold" domain="[('is_legal_hold', '=', True)]"/>
+                <filter string="Is Template" name="is_template" domain="[('is_template', '=', True)]"/>
+                <filter string="Is Global" name="is_global" domain="[('is_global', '=', True)]"/>
+                <filter string="Expired" name="expired" domain="[('is_expired', '=', True)]"/>
+                <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                <separator/>
+                <filter string="Has Documents" name="has_documents" domain="[('document_count', '&gt;', 0)]"/>
+                <filter string="Has Rules" name="has_rules" domain="[('rule_count', '&gt;', 0)]"/>
+                <filter string="Has Children" name="has_children" domain="[('child_policy_ids', '!=', [])]"/>
+                <filter string="Has Tags" name="has_tags" domain="[('tag_ids', '!=', [])]"/>
+                <separator/>
+                <filter string="Shredding" name="shredding" domain="[('destruction_method', '=', 'shred')]"/>
+                <filter string="Pulping" name="pulping" domain="[('destruction_method', '=', 'pulp')]"/>
+                <filter string="Incineration" name="incineration" domain="[('destruction_method', '=', 'incinerate')]"/>
+                <filter string="Disintegration" name="disintegration" domain="[('destruction_method', '=', 'disintegrate')]"/>
+                <separator/>
+                <filter string="Quarterly Review" name="quarterly_review" domain="[('review_frequency', '=', 'quarterly')]"/>
+                <filter string="Biannual Review" name="biannual_review" domain="[('review_frequency', '=', 'biannual')]"/>
+                <filter string="Annual Review" name="annual_review" domain="[('review_frequency', '=', 'annual')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Compliance Status" name="group_compliance" context="{'group_by': 'compliance_status'}"/>
+                    <filter string="Retention Unit" name="group_unit" context="{'group_by': 'retention_unit'}"/>
+                    <filter string="Destruction Method" name="group_destruction" context="{'group_by': 'destruction_method'}"/>
+                    <filter string="Parent Policy" name="group_parent" context="{'group_by': 'parent_policy_id'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Document Type" name="group_doc_type" context="{'group_by': 'document_type_id'}"/>
+                    <filter string="Owner" name="group_owner" context="{'group_by': 'user_id'}"/>
+                    <filter string="Review Frequency" name="group_review" context="{'group_by': 'review_frequency'}"/>
+                    <filter string="Retention Years" name="group_retention" context="{'group_by': 'retention_years'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_records_retention_policy" model="ir.actions.act_window">
+        <field name="name">
+            <i class="fas fa-clipboard" aria-hidden="true"/> Retention Policies
+        </field>
+        <field name="res_model">records.retention.policy</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="records_retention_policy_view_search"/>
+        <field name="context">{'search_default_active': 1, 'search_default_active_state': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fas fa-clipboard" aria-hidden="true"/> Create your first retention policy!
+            </p>
+            <p>
+                <b>Retention Policy Management:</b>
+                <br/>
+            • <i class="fas fa-calendar" aria-hidden="true"/> Define retention periods and destruction methods
+                <br/>
+            • <i class="fas fa-lock" aria-hidden="true"/> Configure compliance requirements and legal holds
+                <br/>
+            • <i class="fas fa-clipboard" aria-hidden="true"/> Create retention rules and version control
+                <br/>
+            • <i class="fas fa-trophy" aria-hidden="true"/> NAID AAA certified policy management system
+                <br/>
+            • <i class="fas fa-bar-chart" aria-hidden="true"/> Track compliance status and review cycles
+                <br/>
+            • <i class="fas fa-globe" aria-hidden="true"/> Support global and regional policy variations
+            </p>
+        </field>
+    </record>
+</odoo>
     </data>
 </odoo>
