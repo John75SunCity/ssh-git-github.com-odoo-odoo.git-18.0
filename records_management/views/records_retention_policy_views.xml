@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="records_retention_policy_view_tree" model="ir.ui.view">
+    <record id="records_retention_policy_view_tree" model="ir.ui.view">
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
             <field name="arch" type="xml">
@@ -423,23 +422,23 @@
                 <p>
                     <b>Retention Policy Management:</b>
                     <br/>
-                • 
+                •
                     <i class="fa fa-calendar"/>
                      Define retention periods and destruction methods
                     <br/>
-                • 
+                •
                     <i class="fa fa-lock"/>
                      Configure compliance requirements and legal holds
                     <br/>
-                • 
+                •
                     <i class="fa fa-clipboard"/>
                      Create retention rules and version control
                     <br/>
-                • 
+                •
                     <i class="fa fa-trophy"/>
                      NAID AAA certified policy management system
                     <br/>
-                • 
+                •
                     <i class="fa fa-bar-chart"/>
                      Track compliance status and review cycles
                     <br/>
@@ -447,5 +446,4 @@
                 </p>
             </field>
         </record>
-    </data>
 </odoo>
