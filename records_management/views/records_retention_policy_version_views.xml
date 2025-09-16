@@ -1,48 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Tree View for Records Retention Policy Version -->
         <record id="records_retention_policy_version_view_tree" model="ir.ui.view">
             <field name="name">records.retention.policy.version.view.tree</field>
             <field name="model">records.retention.policy.version</field>
             <field name="arch" type="xml">
-                <tree string="Retention Policy Versions" decoration-success="is_active==True" decoration-muted="is_active==False">
-                    <field name="policy_id"/>
-                    <field name="version_number"/>
-                    <field name="effective_date"/>
-                    <field name="is_active"/>
-                    <field name="created_by"/>
-                    <field name="approval_status"/>
-                    <field name="create_date" string="Created"/>
+                <tree decoration-success="is_active == True"
+                      decoration-muted="is_active == False"
+                      decoration-info="approval_status == 'pending'"
+                      decoration-warning="approval_status == 'rejected'">
+                    <field name="policy_id" string="Policy"/>
+                    <field name="version_number" string="Version"/>
+                    <field name="effective_date" string="Effective"/>
+                    <field name="expiration_date" string="Expires"/>
+                    <field name="is_active" string="Active" widget="boolean_toggle"/>
+                    <field name="created_by" string="Created By"/>
+                    <field name="approval_status" string="Status" widget="badge"/>
+                    <field name="create_date" string="Created On"/>
+                    <button name="action_activate"
+                            type="object"
+                            string="Activate"
+                            icon="fa-play"
+                            class="btn-link"
+                            attrs="{'invisible': [('is_active', '=', True)]}"/>
+                    <button name="action_compare_versions"
+                            type="object"
+                            string="Compare"
+                            icon="fa-code-fork"
+                            class="btn-link"/>
                 </tree>
             </field>
         </record>
 
+        <!-- Form View for Records Retention Policy Version -->
         <record id="records_retention_policy_version_view_form" model="ir.ui.view">
             <field name="name">records.retention.policy.version.view.form</field>
             <field name="model">records.retention.policy.version</field>
             <field name="arch" type="xml">
                 <form string="Retention Policy Version">
                     <header>
-                        <button name="action_activate" type="object" string="Activate Version"
-                                class="oe_highlight" invisible="is_active == True"/>
-                        <button name="action_approve" type="object" string="Approve"
-                                class="oe_highlight" invisible="approval_status != 'pending'"/>
-                        <button name="action_reject" type="object" string="Reject"
-                                invisible="approval_status != 'pending'"/>
+                        <button name="action_activate"
+                                type="object"
+                                string="Activate Version"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('is_active', '=', True)]}"/>
+                        <button name="action_approve"
+                                type="object"
+                                string="Approve"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('approval_status', '!=', 'pending')]}"/>
+                        <button name="action_reject"
+                                type="object"
+                                string="Reject"
+                                attrs="{'invisible': [('approval_status', '!=', 'pending')]}"/>
                         <field name="approval_status" widget="statusbar" statusbar_visible="draft,pending,approved,rejected"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" type="object" name="action_view_audit_trail"
-                                    icon="fa-history">
+                            <button class="oe_stat_button"
+                                    type="object"
+                                    name="action_view_audit_trail"
+                                    icon="fas fa-history">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_text">Audit Trail</span>
                                 </div>
                             </button>
-                            <button class="oe_stat_button" type="object" name="action_compare_versions"
-                                    icon="fa-code-fork">
+                            <button class="oe_stat_button"
+                                    type="object"
+                                    name="action_compare_versions"
+                                    icon="fas fa-code-fork">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_text">Compare Versions</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button"
+                                    type="object"
+                                    name="action_view_policy"
+                                    icon="fas fa-gavel">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Parent Policy</span>
                                 </div>
                             </button>
                         </div>
@@ -53,8 +90,7 @@
                                 </h1>
                                 <div class="o_row" style="margin-left: 20px;">
                                     <h3>
-                                        Version
-                                        <field name="version_number" required="1" class="oe_inline"/>
+                                        Version <field name="version_number" required="1" class="oe_inline"/>
                                     </h3>
                                 </div>
                             </div>
@@ -64,23 +100,29 @@
                                 <field name="effective_date" required="1"/>
                                 <field name="expiration_date"/>
                                 <field name="is_active" readonly="1"/>
-                                <field name="superseded_by" readonly="1" invisible="superseded_by == False"/>
+                                <field name="superseded_by" readonly="1" attrs="{'invisible': [('superseded_by', '=', False)]}"/>
                             </group>
                             <group name="approval_info">
                                 <field name="created_by" readonly="1"/>
-                                <field name="approved_by" readonly="1" invisible="approved_by == False"/>
-                                <field name="approval_date" readonly="1" invisible="approval_date == False"/>
+                                <field name="approved_by" readonly="1" attrs="{'invisible': [('approved_by', '=', False)]}"/>
+                                <field name="approval_date" readonly="1" attrs="{'invisible': [('approval_date', '=', False)]}"/>
                                 <field name="rejection_reason"
-                                       invisible="approval_status != 'rejected'" required="0"/>
+                                       attrs="{'invisible': [('approval_status', '!=', 'rejected')], 'required': [('approval_status', '=', 'rejected')]}"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Policy Content" name="content">
                                 <group>
-                                    <field name="retention_period_years" required="1"/>
-                                    <field name="destruction_method" required="1"/>
-                                    <field name="legal_hold_applicable"/>
-                                    <field name="compliance_requirements"/>
+                                    <group name="retention_info">
+                                        <field name="retention_period_years" required="1"/>
+                                        <field name="destruction_method" required="1"/>
+                                        <field name="legal_hold_applicable"/>
+                                    </group>
+                                    <group name="compliance_info">
+                                        <field name="compliance_requirements"/>
+                                        <field name="regulatory_framework"/>
+                                        <field name="industry_standards"/>
+                                    </group>
                                 </group>
                                 <separator string="Policy Description"/>
                                 <field name="policy_description" widget="html"
@@ -97,19 +139,16 @@
                             </page>
                             <page string="Compliance" name="compliance">
                                 <group>
-                                    <group>
-                                        <field name="regulatory_framework"/>
-                                        <field name="industry_standards"/>
+                                    <group string="Compliance Information">
                                         <field name="certification_required"/>
-                                    </group>
-                                    <group>
                                         <field name="review_frequency"/>
                                         <field name="next_review_date"/>
                                         <field name="compliance_officer"/>
                                     </group>
+                                    <group string="Audit Information">
+                                        <field name="audit_requirements" widget="text"/>
+                                    </group>
                                 </group>
-                                <separator string="Audit Requirements"/>
-                                <field name="audit_requirements" widget="text"/>
                             </page>
                             <page string="Version History" name="history">
                                 <field name="previous_versions" readonly="1">
@@ -118,7 +157,8 @@
                                         <field name="effective_date"/>
                                         <field name="expiration_date"/>
                                         <field name="created_by"/>
-                                        <field name="approval_status"/>
+                                        <field name="approval_status" widget="badge"/>
+                                        <field name="is_active" widget="boolean_toggle"/>
                                     </tree>
                                 </field>
                             </page>
@@ -133,6 +173,7 @@
             </field>
         </record>
 
+        <!-- Search View for Records Retention Policy Version -->
         <record id="records_retention_policy_version_view_search" model="ir.ui.view">
             <field name="name">records.retention.policy.version.view.search</field>
             <field name="model">records.retention.policy.version</field>
@@ -166,23 +207,106 @@
             </field>
         </record>
 
+        <!-- Kanban View for Records Retention Policy Version -->
+        <record id="records_retention_policy_version_view_kanban" model="ir.ui.view">
+            <field name="name">records.retention.policy.version.view.kanban</field>
+            <field name="model">records.retention.policy.version</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="policy_id"/>
+                    <field name="version_number"/>
+                    <field name="approval_status"/>
+                    <field name="is_active"/>
+                    <field name="effective_date"/>
+                    <field name="expiration_date"/>
+                    <field name="created_by"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <strong><span><t t-esc="record.policy_id.value"/></span></strong>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="float-right badge badge-pill">
+                                            v<t t-esc="record.version_number.value"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <span>
+                                            <i class="fas fa-calendar" aria-hidden="true"/>
+                                            <t t-esc="record.effective_date.value"/>
+                                        </span>
+                                    </div>
+                                    <div class="col-6">
+                                        <span>
+                                            <i class="fas fa-user" aria-hidden="true"/>
+                                            <t t-esc="record.created_by.value"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <span t-if="record.is_active.raw_value">
+                                            <i class="fas fa-check-circle text-success" aria-hidden="true"/>
+                                            Active
+                                        </span>
+                                        <span t-if="!record.is_active.raw_value">
+                                            <i class="fas fa-circle text-muted" aria-hidden="true"/>
+                                            Inactive
+                                        </span>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="float-right">
+                                            <t t-esc="record.approval_status.value"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Action for Records Retention Policy Version -->
         <record id="action_records_retention_policy_version" model="ir.actions.act_window">
             <field name="name">Retention Policy Versions</field>
             <field name="res_model">records.retention.policy.version</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,kanban</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
+                    <i class="fas fa-code-branch" aria-hidden="true"/>
                     No retention policy versions found!
                 </p>
                 <p>
+                    <i class="fas fa-info-circle" aria-hidden="true"/>
                     Retention policy versions track changes to document retention requirements over time.
                     Create new versions when policies need to be updated to maintain compliance history.
+                </p>
+                <p>
+                    <strong>Version Management:</strong>
+                    <br/>
+                    <i class="fas fa-play" aria-hidden="true"/>
+                    Activate new policy versions with approval workflow
+                    <br/>
+                    <i class="fas fa-code-fork" aria-hidden="true"/>
+                    Compare versions to track policy changes
+                    <br/>
+                    <i class="fas fa-history" aria-hidden="true"/>
+                    Maintain complete audit trail of policy evolution
+                    <br/>
+                    <i class="fas fa-shield-alt" aria-hidden="true"/>
+                    Ensure compliance with versioned policy requirements
                 </p>
             </field>
         </record>
 
+        <!-- Menu Item for Records Retention Policy Version -->
         <menuitem id="menu_retention_policy_versions"
                   name="Policy Versions"
                   parent="records_management.menu_records_management_config"
