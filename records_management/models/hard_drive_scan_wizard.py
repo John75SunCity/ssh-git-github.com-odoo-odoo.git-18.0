@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, _
+from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 
 class HardDriveScanWizard(models.TransientModel):
@@ -22,20 +22,20 @@ class HardDriveScanWizard(models.TransientModel):
         help="The Field Service work order for hard drive destruction."
     )
     partner_id = fields.Many2one(related='fsm_task_id.partner_id', string="Customer", readonly=True)
-    
+
     # Workflow control
     scan_step = fields.Selection([
         ('pickup', 'Pickup at Customer'),
         ('verification', 'Verification at Facility'),
         ('single_step', 'Single Step (Manager Override)')
     ], string="Scan Step", default='pickup', required=True)
-    
+
     two_step_verification = fields.Boolean(
-        string="Two-Step Verification", 
+        string="Two-Step Verification",
         default=True,
         help="Enable two-step verification (pickup + facility verification)"
     )
-    
+
     # Manager override
     manager_bypass = fields.Boolean(
         string="Manager Bypass",
@@ -60,11 +60,11 @@ class HardDriveScanWizard(models.TransientModel):
         string="Scan or Enter Serial Numbers",
         help="Scan barcodes or enter serial numbers, one per line. Click 'Add to List' to process."
     )
-    
+
     # Summary fields
     total_drives_count = fields.Integer(string="Total Drives", compute="_compute_drive_counts")
     verified_drives_count = fields.Integer(string="Verified Drives", compute="_compute_drive_counts")
-    
+
     @api.depends('scan_line_ids')
     def _compute_drive_counts(self):
         for wizard in self:
@@ -192,13 +192,13 @@ class HardDriveScanWizard(models.TransientModel):
             'scanned_at_facility': fields.Datetime.now()
         })
         return {'type': 'ir.actions.do_nothing'}
-    
+
     def action_manager_bypass(self):
         """Manager bypass for single-step verification."""
         self.ensure_one()
         if not self.env.user.has_group('records_management.group_records_manager'):
             raise UserError(_("Only managers can bypass two-step verification."))
-            
+
         self.write({
             'manager_bypass': True,
             'scan_step': 'single_step',
@@ -217,13 +217,13 @@ class HardDriveScanWizardLine(models.TransientModel):
     wizard_id = fields.Many2one('hard.drive.scan.wizard', string="Wizard", required=True, ondelete='cascade')
     serial_number = fields.Char(string="Serial Number", required=True)
     verified = fields.Boolean(
-        string="Verified", 
+        string="Verified",
         default=False,
         help="Check when this drive is verified at facility (two-step verification)"
     )
     scanned_at_pickup = fields.Datetime(string="Pickup Scan Time", readonly=True)
     scanned_at_facility = fields.Datetime(string="Facility Scan Time", readonly=True)
-    
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
