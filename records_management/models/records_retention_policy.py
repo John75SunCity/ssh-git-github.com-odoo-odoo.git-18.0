@@ -260,9 +260,17 @@ class RecordsRetentionPolicy(models.Model):
     is_historical = fields.Boolean(string='Is Historical', compute='_compute_timeline_booleans', store=False)
     is_future = fields.Boolean(string='Is Future', compute='_compute_timeline_booleans', store=False)
 
-    # Legal hold compatibility
+    # Legal hold compatibility - ensures full backward compatibility
     is_under_legal_hold = fields.Boolean(string='Under Legal Hold', compute='_compute_legal_hold_booleans', store=False)
-    is_future = fields.Boolean(string='Is Future', compute='_compute_timeline_booleans', store=False)
+
+    # Additional compatibility fields for lifecycle states
+    is_restored = fields.Boolean(string='Is Restored', compute='_compute_lifecycle_extended_booleans', store=False)
+    is_purged = fields.Boolean(string='Is Purged', compute='_compute_lifecycle_extended_booleans', store=False)
+    is_unlocked = fields.Boolean(string='Is Unlocked', compute='_compute_lifecycle_extended_booleans', store=False)
+
+    # Additional compatibility fields for publishing states
+    is_unpublished = fields.Boolean(string='Is Unpublished', compute='_compute_publication_extended_booleans', store=False)
+    is_ineffective = fields.Boolean(string='Is Ineffective', compute='_compute_publication_extended_booleans', store=False)
 
     @api.depends('approval_state')
     def _compute_approval_booleans(self):
@@ -312,6 +320,21 @@ class RecordsRetentionPolicy(models.Model):
         for record in self:
             # is_under_legal_hold is the same as is_legal_hold for backward compatibility
             record.is_under_legal_hold = record.is_legal_hold
+
+    @api.depends('lifecycle_state')
+    def _compute_lifecycle_extended_booleans(self):
+        """Compute extended lifecycle-related boolean flags based on lifecycle_state."""
+        for record in self:
+            record.is_restored = record.lifecycle_state == 'restored'
+            record.is_purged = record.lifecycle_state == 'purged'
+            record.is_unlocked = record.lifecycle_state == 'unlocked'
+
+    @api.depends('publication_state')
+    def _compute_publication_extended_booleans(self):
+        """Compute extended publication-related boolean flags based on publication_state."""
+        for record in self:
+            record.is_unpublished = record.publication_state == 'unpublished'
+            record.is_ineffective = record.publication_state == 'ineffective'
 
     # === DATES & AUDIT TRAIL ===
     expiration_date = fields.Date(string='Expiration Date')
