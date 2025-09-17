@@ -6,10 +6,7 @@
             <field name="model">service.item</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="category" class="o_kanban_service_items">
-                               <field name="domain">[('purchase_cost','>',0)]</field>
-            <field name="context">{'pivot_measures':['purchase_cost','current_value','maintenance_cost']}</field>ield name            <field name="domain">[('current_value', '>', 0)]</field>
-            <field name="context">{'pivot_measures':['purchase_cost','current_value']}</field>domain">[('service_request_count','>',0)]</field>
-            <field name="context">{'pivot_measures':['service_request_count','maintenance_request_count','utilization_rate']}</field>           <field name="name" />
+                    <field name="name" />
                     <field name="category" />
                     <field name="purchase_cost" />
                     <field name="currency_id" />
