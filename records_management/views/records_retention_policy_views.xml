@@ -149,7 +149,9 @@
                                         <field name="storage_location_id"/>
                                     </group>
                                     <group name="policy_hierarchy">
-                                        <field name="parent_policy_id" domain="[('id','!=', active_id)]"/>
+                                <!-- Removed invalid domain referencing active_id (not a field on this model).
+                                    Self-parent prevention enforced via Python constraint. -->
+                                <field name="parent_policy_id"/>
                                         <field name="template_id"/>
                                         <field name="policy_level"/>
                                     </group>

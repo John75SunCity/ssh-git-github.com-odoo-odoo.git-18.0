@@ -198,15 +198,7 @@ class RecordsRetentionPolicy(models.Model):
     ], string="Lifecycle State", default='active', tracking=True,
        help="Current lifecycle status of the retention policy")
 
-    # Review and compliance state
-    review_state = fields.Selection([
-        ('current', 'Current'),
-        ('pending_review', 'Pending Review'),
-        ('under_review', 'Under Review'),
-        ('overdue', 'Overdue'),
-        ('expired', 'Expired'),
-    ], string="Review State", default='current', tracking=True,
-       help="Current review status of the retention policy")
+    # Review and compliance state: see computed definition below; removed duplicate non-computed field.
 
     # Publication status
     publication_state = fields.Selection([
@@ -656,6 +648,10 @@ class RecordsRetentionPolicy(models.Model):
     def _check_policy_hierarchy(self):
         if not self._check_recursion():
             raise ValidationError(_('You cannot create recursive retention policies.'))
+        # Explicit self-parent guard (UI domain removed to avoid active_id access issue)
+        for rec in self:
+            if rec.parent_policy_id and rec.parent_policy_id.id == rec.id:
+                raise ValidationError(_('A policy cannot be its own parent.'))
 
 class RecordsRetentionPolicyVersion(models.Model):
     _name = 'records.retention.policy.version'
