@@ -286,7 +286,8 @@
                     <field name="document_count"/>
                     <field name="rule_count"/>
                     <templates>
-                        <t t-name="kanban-box">
+                        <!-- Updated deprecated 'kanban-box' template name to 'card' for Odoo 18 compliance -->
+                        <t t-name="card">
                             <div class="oe_kanban_global_click">
                                 <div class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
@@ -334,7 +335,8 @@
             <field name="res_model">records.retention.policy</field>
             <field name="view_mode">pivot,kanban,tree,form</field>
             <field name="view_id" ref="records_retention_policy_view_form"/>
-            <field name="priority" eval="20"/>
+            <!-- 'priority' field deprecated/invalid on ir.actions.act_window in Odoo 17+/18. Using 'sequence' for ordering if needed. -->
+            <field name="sequence" eval="20"/>
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
