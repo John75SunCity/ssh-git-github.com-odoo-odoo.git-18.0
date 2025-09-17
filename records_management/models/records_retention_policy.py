@@ -20,9 +20,11 @@ Key Features:
 import calendar
 from datetime import date
 import logging
+from dateutil.relativedelta import relativedelta
+
 # Odoo core imports next
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -672,3 +674,19 @@ class RecordsRetentionPolicy(models.Model):
             'domain': [('policy_id', '=', self.id)],
             'context': {'default_policy_id': self.id}
         }
+
+    @api.constrains('parent_policy_id')
+    def _check_policy_hierarchy(self):
+        if not self._check_recursion():
+            raise ValidationError(_('You cannot create recursive retention policies.'))
+
+class RecordsRetentionPolicyVersion(models.Model):
+    _name = 'records.retention.policy.version'
+    _description = 'Records Retention Policy Version'
+    _order = 'version desc'
+
+    policy_id = fields.Many2one('records.retention.policy', string='Policy', required=True, ondelete='cascade')
+    version = fields.Char(string='Version', required=True)
+    state = fields.Selection(related='policy_id.state', store=True)
+    create_date = fields.Datetime(string='Creation Date', readonly=True)
+    create_uid = fields.Many2one('res.users', string='Created By', readonly=True)
