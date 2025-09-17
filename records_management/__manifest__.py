@@ -203,7 +203,6 @@
         "views/records_tag_category_views.xml",
         "views/records_tag_views.xml",
         "views/records_usage_tracking_views.xml",
-        "views/reference_views.xml",
         "views/revenue_analytic_views.xml",
         "views/revenue_forecast_line_views.xml",
         "views/revenue_forecast_views.xml",
