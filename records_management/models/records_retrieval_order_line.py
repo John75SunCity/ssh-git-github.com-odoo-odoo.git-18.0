@@ -38,16 +38,20 @@ class RecordsRetrievalOrderLine(models.Model):
     estimated_pages = fields.Integer(string='Est. Pages', default=0)
     status = fields.Selection([
         ('pending', 'Pending'),
-        ('searching', 'Searching'),
+        ('locating', 'Locating'),
         ('located', 'Located'),
+        ('retrieving', 'Retrieving'),
         ('retrieved', 'Retrieved'),
-        ('packaged', 'Packaged'),
-        ('delivered', 'Delivered'),
-        ('returned', 'Returned'),
-        ('completed', 'Completed'),
         ('not_found', 'Not Found'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='pending', tracking=True, required=True)
+        ('partial', 'Partial'),
+        ('delivered', 'Delivered'),
+        ('completed', 'Completed')
+    ], string='Status', default='pending', tracking=True, help="Processing status of this specific line item")
+    
+    # Alias for compatibility with views that expect 'state' field
+    state = fields.Selection(related='status', string='State', store=False, 
+                           help="Alias for status field to maintain view compatibility")
+    
     priority = fields.Selection([
         ('0', 'Low'),
         ('1', 'Normal'),

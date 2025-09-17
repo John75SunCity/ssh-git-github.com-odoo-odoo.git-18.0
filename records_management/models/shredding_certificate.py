@@ -50,6 +50,13 @@ class ShreddingCertificate(models.Model):
         required=True,
         readonly=True
     )
+    
+    # Hard Drive Verification Fields
+    verification_method = fields.Selection([
+        ('single_step', 'Single Step (Manager Override)'),
+        ('two_step', 'Two-Step Verification'),
+    ], string="Verification Method", help="Method used for hard drive verification during destruction")
+    total_drives_destroyed = fields.Integer(string="Total Drives Destroyed", help="Total number of hard drives destroyed")
     user_id = fields.Many2one(
         'res.users',
         string='Issued By',

@@ -4,32 +4,45 @@ from odoo.exceptions import UserError
 
 class HardDriveScanWizard(models.TransientModel):
     """
-    A wizard to facilitate the bulk scanning of hard drive serial numbers,
-    associating them with a specific Field Service task, and automating
-    the creation of a Certificate of Destruction upon completion.
+    A streamlined wizard for barcode scanning of hard drives during pickup and verification.
+    Supports both one-step (manager bypass) and two-step verification workflows.
+    Focuses on user-friendly scanning rather than complex inventory management.
     """
     _name = 'hard.drive.scan.wizard'
     _description = 'Hard Drive Scanning Wizard'
-    # NOTE: Single authoritative implementation. A duplicate lightweight
-    # definition existed in wizards/hard_drive_scan_wizard.py and was removed
-    # because it re-declared the model without required FSM fields, causing
-    # the system to see an incomplete schema (missing fsm_task_id). Keeping
-    # only this version ensures the domain/relations load correctly when
-    # FSM features are enabled. If FSM is disabled via configurator, launch
-    # of this wizard should be hidden at the UI/menu level instead of using
-    # a stub model.
 
     # ============================================================================
     # WIZARD FIELDS
     # ============================================================================
     fsm_task_id = fields.Many2one(
         'project.task',
-        string="FSM Task",
+        string="Work Order",
         required=True,
-        domain="[('is_fsm', '=', True), ('allow_hard_drive_destruction', '=', True)]",
-        help="The Field Service task for hard drive destruction."
+        domain="[('is_fsm', '=', True)]",
+        help="The Field Service work order for hard drive destruction."
     )
     partner_id = fields.Many2one(related='fsm_task_id.partner_id', string="Customer", readonly=True)
+    
+    # Workflow control
+    scan_step = fields.Selection([
+        ('pickup', 'Pickup at Customer'),
+        ('verification', 'Verification at Facility'),
+        ('single_step', 'Single Step (Manager Override)')
+    ], string="Scan Step", default='pickup', required=True)
+    
+    two_step_verification = fields.Boolean(
+        string="Two-Step Verification", 
+        default=True,
+        help="Enable two-step verification (pickup + facility verification)"
+    )
+    
+    # Manager override
+    manager_bypass = fields.Boolean(
+        string="Manager Bypass",
+        default=False,
+        help="Managers can bypass two-step verification for faster processing"
+    )
+
     destruction_method = fields.Selection([
         ('shredding', 'Shredding'),
         ('degaussing', 'Degaussing'),
@@ -44,9 +57,19 @@ class HardDriveScanWizard(models.TransientModel):
 
     # Text area for bulk serial number entry
     serial_numbers_text = fields.Text(
-        string="Enter Serial Numbers",
-        help="Enter one serial number per line. Click 'Process Scanned Serials' to add them to the list below."
+        string="Scan or Enter Serial Numbers",
+        help="Scan barcodes or enter serial numbers, one per line. Click 'Add to List' to process."
     )
+    
+    # Summary fields
+    total_drives_count = fields.Integer(string="Total Drives", compute="_compute_drive_counts")
+    verified_drives_count = fields.Integer(string="Verified Drives", compute="_compute_drive_counts")
+    
+    @api.depends('scan_line_ids')
+    def _compute_drive_counts(self):
+        for wizard in self:
+            wizard.total_drives_count = len(wizard.scan_line_ids)
+            wizard.verified_drives_count = len(wizard.scan_line_ids.filtered('verified'))
 
     # ============================================================================
     # ACTION METHODS
@@ -159,6 +182,32 @@ class HardDriveScanWizard(models.TransientModel):
             'context': {'default_wizard_id': self.id},
         }
 
+    def action_verify_selected(self):
+        """Mark selected drives as verified (for two-step verification)."""
+        self.ensure_one()
+        # Mark all unverified drives as verified
+        unverified_lines = self.scan_line_ids.filtered(lambda l: not l.verified)
+        unverified_lines.write({
+            'verified': True,
+            'scanned_at_facility': fields.Datetime.now()
+        })
+        return {'type': 'ir.actions.do_nothing'}
+    
+    def action_manager_bypass(self):
+        """Manager bypass for single-step verification."""
+        self.ensure_one()
+        if not self.env.user.has_group('records_management.group_records_manager'):
+            raise UserError(_("Only managers can bypass two-step verification."))
+            
+        self.write({
+            'manager_bypass': True,
+            'scan_step': 'single_step',
+            'two_step_verification': False
+        })
+        # Mark all drives as verified
+        self.scan_line_ids.write({'verified': True})
+        return {'type': 'ir.actions.do_nothing'}
+
 
 class HardDriveScanWizardLine(models.TransientModel):
     """Lines for the Hard Drive Scanning Wizard."""
@@ -167,6 +216,25 @@ class HardDriveScanWizardLine(models.TransientModel):
 
     wizard_id = fields.Many2one('hard.drive.scan.wizard', string="Wizard", required=True, ondelete='cascade')
     serial_number = fields.Char(string="Serial Number", required=True)
+    verified = fields.Boolean(
+        string="Verified", 
+        default=False,
+        help="Check when this drive is verified at facility (two-step verification)"
+    )
+    scanned_at_pickup = fields.Datetime(string="Pickup Scan Time", readonly=True)
+    scanned_at_facility = fields.Datetime(string="Facility Scan Time", readonly=True)
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            # Auto-timestamp based on wizard context
+            wizard = self.env['hard.drive.scan.wizard'].browse(vals.get('wizard_id'))
+            if wizard.scan_step == 'pickup':
+                vals['scanned_at_pickup'] = fields.Datetime.now()
+            elif wizard.scan_step == 'verification':
+                vals['scanned_at_facility'] = fields.Datetime.now()
+                vals['verified'] = True
+        return super().create(vals_list)
 
     _sql_constraints = [
         ('serial_number_wizard_uniq', 'unique(wizard_id, serial_number)', 'Serial numbers must be unique within a single scan session.')

@@ -162,20 +162,18 @@
             </field>
         </record>
         <record id="action_hard_drive_scan_customer" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model shredding.hard_drive has state field - consider using default search filters -->
-            <field name="name">Scan at Customer Location</field>
-            <field name="res_model">shredding.hard_drive</field>
+            <field name="name">Scan Hard Drives at Customer</field>
+            <field name="res_model">hard.drive.scan.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-            <field name="context">{'default_scan_location': 'customer'}</field>
+            <field name="context">{'default_scan_step': 'pickup', 'default_two_step_verification': True}</field>
         </record>
         <record id="action_hard_drive_scan_facility" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model shredding.hard_drive has state field - consider using default search filters -->
-            <field name="name">Verify at Facility</field>
-            <field name="res_model">shredding.hard_drive</field>
+            <field name="name">Verify Hard Drives at Facility</field>
+            <field name="res_model">hard.drive.scan.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-            <field name="context">{'default_scan_location': 'facility'}</field>
+            <field name="context">{'default_scan_step': 'verification', 'default_two_step_verification': True}</field>
         </record>
     </data>
 </odoo>

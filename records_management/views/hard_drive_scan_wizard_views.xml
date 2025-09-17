@@ -5,35 +5,81 @@
     <record id="hard_drive_scan_wizard_view_form" model="ir.ui.view">
         <field name="name">hard.drive.scan.wizard.form</field>
         <field name="model">hard.drive.scan.wizard</field>
-    <field name="arch" type="xml">
-            <form string="Scan Hard Drives for Destruction">
-                <group>
-                    <field name="fsm_task_id" options="{'no_create': True, 'no_open': True}"/>
-                    <field name="partner_id"/>
-                    <field name="destruction_method"/>
-                </group>
-                <group string="Bulk Scan">
-                    <field name="serial_numbers_text" placeholder="Scan or paste serial numbers here, one per line..."/>
-                    <button name="action_process_scanned_serials" string="Process Scanned Serials" type="object" class="btn-primary"/>
-                </group>
-                <notebook>
-                    <page string="Scanned Serials" name="scanned_serials">
-                        <field name="scan_line_ids" nolabel="1">
-                            <list editable="bottom">
-                                <field name="serial_number"/>
-                            </list>
-                        </field>
-                    </page>
-                </notebook>
+        <field name="arch" type="xml">
+            <form string="Hard Drive Scanner">
+                <header>
+                    <field name="scan_step" widget="statusbar" statusbar_visible="pickup,verification,single_step"/>
+                    <button name="action_manager_bypass" string="Manager Bypass" type="object" 
+                            class="btn-warning" groups="records_management.group_records_manager"
+                            invisible="manager_bypass or scan_step == 'single_step'"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <span invisible="scan_step != 'pickup'">📱 Pickup Scan</span>
+                            <span invisible="scan_step != 'verification'">✅ Facility Verification</span>
+                            <span invisible="scan_step != 'single_step'">⚡ Single Step (Manager)</span>
+                        </h1>
+                        <div class="o_row">
+                            <label for="fsm_task_id" string="Work Order:"/>
+                            <field name="fsm_task_id" options="{'no_create': True}"/>
+                        </div>
+                        <div class="o_row">
+                            <label for="partner_id" string="Customer:"/>
+                            <field name="partner_id" readonly="1"/>
+                        </div>
+                    </div>
+                    
+                    <group>
+                        <group string="Scan Settings">
+                            <field name="destruction_method"/>
+                            <field name="two_step_verification" readonly="1"/>
+                            <field name="manager_bypass" readonly="1" invisible="not manager_bypass"/>
+                        </group>
+                        <group string="Summary">
+                            <field name="total_drives_count" readonly="1"/>
+                            <field name="verified_drives_count" readonly="1" 
+                                   invisible="not two_step_verification or manager_bypass"/>
+                        </group>
+                    </group>
+
+                    <group string="📱 Quick Scan Entry">
+                        <field name="serial_numbers_text" placeholder="Scan barcodes or type serial numbers here (one per line)..." 
+                               nolabel="1" widget="text"/>
+                        <button name="action_process_scanned_serials" string="➕ Add to List" type="object" 
+                                class="btn-primary" invisible="not serial_numbers_text"/>
+                    </group>
+
+                    <separator string="📋 Scanned Hard Drives"/>
+                    <field name="scan_line_ids" nolabel="1">
+                        <list editable="bottom">
+                            <field name="serial_number" readonly="1"/>
+                            <field name="verified" widget="boolean_toggle" 
+                                   invisible="context.get('default_scan_step') == 'pickup' or parent.manager_bypass"/>
+                            <field name="scanned_at_pickup" readonly="1" optional="hide"/>
+                            <field name="scanned_at_facility" readonly="1" optional="hide"/>
+                        </list>
+                    </field>
+
+                    <div class="oe_button_box" invisible="not scan_line_ids">
+                        <div class="alert alert-info" invisible="scan_step != 'verification' or manager_bypass">
+                            <strong>Two-Step Verification:</strong> Check off each drive as you verify it at the facility.
+                        </div>
+                        <div class="alert alert-success" invisible="scan_step != 'single_step'">
+                            <strong>Manager Override:</strong> Single-step processing enabled.
+                        </div>
+                    </div>
+                </sheet>
                 <footer>
-                    <button name="action_confirm_destruction" string="Confirm Destruction" type="object" class="btn-primary" data-hotkey="q"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                    <button name="action_verify_selected" string="✅ Verify All" type="object" 
+                            class="btn-success" invisible="scan_step != 'verification' or manager_bypass"/>
+                    <button name="action_confirm_destruction" string="🎯 Complete & Generate Certificate" type="object" 
+                            class="btn-primary" invisible="not scan_line_ids"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
-    </record>
-
-    <!-- Action to open the hard drive scan wizard -->
+    </record>    <!-- Action to open the hard drive scan wizard -->
     <record id="action_hard_drive_scan_wizard" model="ir.actions.act_window">
         <field name="name">Scan Hard Drives</field>
         <field name="res_model">hard.drive.scan.wizard</field>
