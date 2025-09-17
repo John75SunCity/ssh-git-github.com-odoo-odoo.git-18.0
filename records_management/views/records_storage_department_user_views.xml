@@ -10,6 +10,9 @@
                     <field name="user_id" />
                     <field name="department_id" />
                     <field name="role" />
+                    <field name="priority" widget="badge" />
+                    <field name="access_level" widget="badge" />
+                    <field name="assignment_count" />
                     <field name="start_date" />
                     <field name="end_date" />
                     <field name="state" widget="badge" decoration-success="state=='active'" decoration-muted="state=='inactive'" />
@@ -38,13 +41,46 @@
                                 <field name="user_id" required="1" />
                                 <field name="department_id" required="1" />
                                 <field name="role" required="1" />
+                                <field name="priority" />
                                 <field name="active" />
                             </group>
                             <group name="assignment_info" string="Assignment Details">
                                 <field name="start_date" />
                                 <field name="end_date" />
+                                <field name="assignment_count" readonly="1" />
+                                <field name="access_level" />
                             </group>
                         </group>
+                        <group name="description_info" string="Description &amp; Notes">
+                            <field name="description" placeholder="Brief description of role and responsibilities..." />
+                            <field name="notes" placeholder="Internal notes about this assignment..." />
+                        </group>
+                        <notebook>
+                            <page string="Permissions" name="permissions">
+                                <group string="Record Permissions">
+                                    <group>
+                                        <field name="can_view_records" />
+                                        <field name="can_edit_records" />
+                                        <field name="can_delete_records" />
+                                    </group>
+                                    <group>
+                                        <field name="can_export_records" />
+                                        <field name="can_manage_users" />
+                                        <field name="can_approve_requests" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="History" name="history">
+                                <field name="history_ids" readonly="1">
+                                    <list>
+                                        <field name="change_date" />
+                                        <field name="change_type" widget="badge" />
+                                        <field name="change_summary" />
+                                        <field name="changed_by_id" />
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
                         <group name="company_info" string="Company Information">
                             <field name="company_id" groups="base.group_multi_company" readonly="1" />
                         </group>
