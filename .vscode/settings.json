@@ -109,8 +109,8 @@
   "editor.wordWrap": "off",
   "editor.wordWrapColumn": 120,
   "editor.rulers": [
-    88,
-    120
+    110,
+    140
   ],
   "editor.codeActionsOnSave": {
     "source.organizeImports": "never",
@@ -219,12 +219,12 @@
     "*.yml": "yaml",
     "*.md": "markdown"
   },
-  "files.autoSave": "afterDelay",
+  "files.autoSave": "off",
   "files.autoSaveDelay": 2000,
   "files.trimTrailingWhitespace": true,
   "files.trimFinalNewlines": true,
   "files.insertFinalNewline": true,
-  "files.eol": "\n",
+  "files.eol": "\\n",
   "security.workspace.trust.enabled": true,
   "problems.showCurrentInStatus": true,
   "problems.decorations.enabled": true,

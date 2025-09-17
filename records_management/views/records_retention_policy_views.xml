@@ -6,10 +6,11 @@
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
             <field name="arch" type="xml">
-                <list decoration-success="state == 'active'"
-                      decoration-muted="state == 'archived'"
-                      decoration-warning="review_state in ('overdue','expired')"
-                      decoration-info="state == 'draft'">
+            <list decoration-success="state == 'active'"
+                decoration-muted="state == 'archived'"
+                decoration-danger="review_state == 'expired'"
+                decoration-warning="review_state == 'overdue'"
+                decoration-info="state == 'draft'">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="code"/>
@@ -273,7 +274,7 @@
             <field name="name">records.retention.policy.view.kanban</field>
             <field name="model">records.retention.policy</field>
             <field name="arch" type="xml">
-                <kanban default_group_by="approval_state" class="o_kanban_small_column">
+                <kanban default_group_by="approval_state" class="o_kanban_small_column o_retention_policy_kanban">
                     <field name="id"/>
                     <field name="name"/>
                     <field name="code"/>
@@ -305,10 +306,10 @@
                                                 <field name="compliance_status"/>
                                             </span>
                                             <t t-if="record.review_state.raw_value == 'expired'">
-                                                <span class="badge badge-danger">Expired</span>
+                                                <span class="badge badge-danger" title="Policy expired">Expired</span>
                                             </t>
                                             <t t-elif="record.review_state.raw_value == 'overdue'">
-                                                <span class="badge badge-warning">Overdue</span>
+                                                <span class="badge badge-warning" title="Review overdue">Overdue</span>
                                             </t>
                                         </div>
                                     </div>

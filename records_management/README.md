@@ -43,6 +43,35 @@ Rationale:
 The consolidation reduces field proliferation, avoids divergent truth sources, and simplifies UI logic while
 retaining full analytical capability via multi-axis workflow states.
 
+### Migration Helper Script
+
+A migration utility is provided to locate deprecated boolean mirror usages removed during the refactor:
+
+Run:
+
+```bash
+python3 development-tools/migration/migration_scan_retention_policy_booleans.py --root records_management
+```
+
+Output columns:
+
+* File – truncated path
+* Line – line number of occurrence
+* Token – deprecated boolean found
+* Suggestion – recommended replacement expression or field
+
+Common replacements:
+
+* `is_expired` -> `review_state = 'expired'`
+* `is_overdue` -> `review_state = 'overdue'`
+* `is_pending_review` -> `review_state = 'pending_review'`
+* `is_approved` -> `approval_state = 'approved'`
+* `is_published` -> `publication_state = 'published'`
+* `is_locked` -> `lifecycle_state = 'locked'`
+* `is_under_legal_hold` -> `is_legal_hold`
+
+If no results are reported, the codebase is free of legacy retention policy boolean dependencies.
+
 # Records Management System - Enterprise Edition for Odoo 18.0
 
 ## 🏆 **ENTERPRISE-GRADE DOCUMENT MANAGEMENT SYSTEM** 🏆

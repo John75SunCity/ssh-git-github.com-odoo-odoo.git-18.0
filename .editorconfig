@@ -9,22 +9,12 @@ charset = utf-8
 end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
-
-# Python files - Odoo standards
-[*.py]
 indent_style = space
 indent_size = 4
-max_line_length = 120
-# Preserve Odoo-specific patterns:
-# - Allow long lines for field definitions
-# - Allow single-line if statements
-# - Preserve existing indentation for One2many/Many2one chains
 
-# XML files - Odoo standards  
+# XML files - Odoo standards
 [*.xml]
-indent_style = space
 indent_size = 4
-max_line_length = 120
 
 # YAML files
 [*.{yml,yaml}]
