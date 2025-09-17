@@ -1,60 +1,54 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List view for portal.feedback.resolution -->
-    <record id="portal_feedback_resolution_view_tree" model="ir.ui.view">
-        <field name="name">portal.feedback.resolution.view.tree</field>
-        <field name="model">portal.feedback.resolution</field>
-        <field name="arch" type="xml">
-        <list>
-        <field name="name"/>
-        </list>
-    </field>
-    </record>
-
-<!-- Form view for portal.feedback.resolution -->
-    <record id="portal_feedback_resolution_view_form" model="ir.ui.view">
-        <field name="name">portal.feedback.resolution.view.form</field>
-        <field name="model">portal.feedback.resolution</field>
-        <field name="arch" type="xml">
-        <form string="Portal.Feedback.Resolution">
-            <sheet>
-                <div class="oe_title">
-                    <label for="name"/>
-                    <h1>
-        <field name="name" placeholder="Name..."/>
-                    </h1>
-                </div>
-            </sheet>
-        </form>
-    </field>
-    </record>
-
-<!-- Search view for portal.feedback.resolution -->
-    <record id="portal_feedback_resolution_view_search" model="ir.ui.view">
-        <field name="name">portal.feedback.resolution.view.search</field>
-        <field name="model">portal.feedback.resolution</field>
-        <field name="arch" type="xml">
-        <search>
-            <group expand="1" string="Group By">
-                <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
-            </group>
-        </search>
-    </field>
-    </record>
-
-<!-- Action for portal.feedback.resolution -->
-    <record id="action_portal_feedback_resolution" model="ir.actions.act_window">
-        <field name="name">Portal.Feedback.Resolution</field>
-        <field name="res_model">portal.feedback.resolution</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
+        <record id="portal_feedback_resolution_view_tree" model="ir.ui.view">
+            <field name="name">portal.feedback.resolution.view.tree</field>
+            <field name="model">portal.feedback.resolution</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name" />
+                </list>
+            </field>
+        </record>
+        <record id="portal_feedback_resolution_view_form" model="ir.ui.view">
+            <field name="name">portal.feedback.resolution.view.form</field>
+            <field name="model">portal.feedback.resolution</field>
+            <field name="arch" type="xml">
+                <form string="Portal.Feedback.Resolution">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" />
+                            <h1>
+                                <field name="name" placeholder="Name..." />
+                            </h1>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="portal_feedback_resolution_view_search" model="ir.ui.view">
+            <field name="name">portal.feedback.resolution.view.search</field>
+            <field name="model">portal.feedback.resolution</field>
+            <field name="arch" type="xml">
+                <search>
+                    <group expand="1" string="Group By">
+                        <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="action_portal_feedback_resolution" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model portal.feedback.resolution has state field - consider using default search filters -->
+            <field name="name">Portal.Feedback.Resolution</field>
+            <field name="res_model">portal.feedback.resolution</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
             Click to add a new portal.feedback.resolution.
         </p>
-    </field>
-    </record>
+            </field>
+        </record>
     </data>
 </odoo>

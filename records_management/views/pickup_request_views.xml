@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List view for Minimal -->
-    <record id="action_pickup_request" model="ir.actions.act_window">
-        <field name="name">Pickup Requests</field>
-        <field name="res_model">pickup.request</field>
-        <field name="view_mode">list,form</field>
-        <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
+        <record id="action_pickup_request" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model pickup.request has state field - consider using default search filters -->
+            <field name="name">Pickup Requests</field>
+            <field name="res_model">pickup.request</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
             Create your first record
         </p>
-        <p>
+                <p>
             Schedule and manage document pickup services.
         </p>
-    </field>
-    </record>
+            </field>
+        </record>
     </data>
 </odoo>

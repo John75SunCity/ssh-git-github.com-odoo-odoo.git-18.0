@@ -1,71 +1,65 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List View -->
         <record id="records_container_content_view_tree" model="ir.ui.view">
             <field name="name">container.content.view.tree</field>
             <field name="model">container.content</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <list string="Container Content">
-                    <field name="name"/>
-                    <field name="container_id"/>
-                    <field name="document_type_id"/>
-                    <field name="content_type"/>
-                    <field name="state"/>
-                    <field name="confidentiality_level"/>
-                    <field name="document_count"/>
-                    <field name="retention_until"/>
-                    <field name="is_overdue"/>
+                    <field name="name" />
+                    <field name="container_id" />
+                    <field name="document_type_id" />
+                    <field name="content_type" />
+                    <field name="state" />
+                    <field name="confidentiality_level" />
+                    <field name="document_count" />
+                    <field name="retention_until" />
+                    <field name="is_overdue" />
                 </list>
             </field>
         </record>
-
-        <!-- Form View -->
         <record id="records_container_content_view_form" model="ir.ui.view">
             <field name="name">container.content.view.form</field>
             <field name="model">container.content</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <form string="Container Content">
                     <sheet>
                         <group>
-                            <field name="name"/>
-                            <field name="container_id"/>
-                            <field name="document_type_id"/>
-                            <field name="content_type"/>
-                            <field name="state"/>
-                            <field name="confidentiality_level"/>
-                            <field name="document_count"/>
-                            <field name="estimated_pages"/>
-                            <field name="weight_kg"/>
-                            <field name="retention_until"/>
-                            <field name="destruction_required"/>
-                            <field name="destruction_method"/>
-                            <field name="description"/>
-                            <field name="notes"/>
-                            <field name="active"/>
+                            <field name="name" />
+                            <field name="container_id" />
+                            <field name="document_type_id" />
+                            <field name="content_type" />
+                            <field name="state" />
+                            <field name="confidentiality_level" />
+                            <field name="document_count" />
+                            <field name="estimated_pages" />
+                            <field name="weight_kg" />
+                            <field name="retention_until" />
+                            <field name="destruction_required" />
+                            <field name="destruction_method" />
+                            <field name="description" />
+                            <field name="notes" />
+                            <field name="active" />
                         </group>
                     </sheet>
                 </form>
             </field>
         </record>
-
-        <!-- Search View -->
         <record id="records_container_content_view_search" model="ir.ui.view">
             <field name="name">container.content.view.search</field>
             <field name="model">container.content</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <search string="Search Container Content">
-                    <field name="name"/>
-                    <field name="container_id"/>
-                    <field name="document_type_id"/>
-                    <field name="content_type"/>
-                    <field name="state"/>
+                    <field name="name" />
+                    <field name="container_id" />
+                    <field name="document_type_id" />
+                    <field name="content_type" />
+                    <field name="state" />
                 </search>
             </field>
         </record>
-
-        <!-- Action -->
         <record id="action_records_container_content" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model container.content has state field - consider using default search filters -->
             <field name="name">Container Content</field>
             <field name="res_model">container.content</field>
             <field name="view_mode">list,form</field>

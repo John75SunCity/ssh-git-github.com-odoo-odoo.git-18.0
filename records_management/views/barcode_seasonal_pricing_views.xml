@@ -1,62 +1,60 @@
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<record id="barcode_seasonal_pricing_view_tree" model="ir.ui.view">
-        <field name="name">barcode.seasonal.pricing.view.tree</field>
-        <field name="model">barcode.seasonal.pricing</field>
-        <field name="arch" type="xml">
-            <list string="Seasonal Pricing" create="true" edit="true">
-                <field name="name"/>
-                <field name="season_name"/>
-                <field name="product_id"/>
-                <field name="start_date"/>
-                <field name="end_date"/>
-                <field name="price_multiplier"/>
-                <field name="state"/>
-                <field name="active"/>
-            </list>
-        </field>
-    </record>
-
-    <record id="barcode_seasonal_pricing_view_form" model="ir.ui.view">
-        <field name="name">barcode.seasonal.pricing.view.form</field>
-        <field name="model">barcode.seasonal.pricing</field>
-        <field name="arch" type="xml">
-            <form string="Seasonal Pricing" create="true" edit="true">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="product_id"/>
-                        <field name="season_name"/>
-                    </group>
-                    <group>
-                        <field name="start_date"/>
-                        <field name="end_date"/>
-                        <field name="price_multiplier"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,expired"/>
-                        <field name="active"/>
-                    </group>
-                    <notebook>
-                        <page string="Notes">
-                            <field name="notes" nolabel="1" widget="html"/>
-                        </page>
-                    </notebook>
-                    <footer>
-<button name="action_confirm" type="object" string="Confirm" invisible="state != 'draft'" class="btn-primary"/>
-<button name="action_expire" type="object" string="Expire" invisible="state != 'confirmed'"/>
-
-                        <button string="Close" class="btn-secondary" special="cancel"/>
-                    </footer>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <record id="barcode_seasonal_pricing_action" model="ir.actions.act_window">
-        <field name="name">Seasonal Pricing</field>
-        <field name="res_model">barcode.seasonal.pricing</field>
-        <field name="view_mode">list,form</field>
-    </record>
-
-<menuitem id="barcode_seasonal_pricing_menu" name="Seasonal Pricing" parent="menu_barcode_config" action="barcode_seasonal_pricing_action" sequence="95"/>
+        <record id="barcode_seasonal_pricing_view_tree" model="ir.ui.view">
+            <field name="name">barcode.seasonal.pricing.view.tree</field>
+            <field name="model">barcode.seasonal.pricing</field>
+            <field name="arch" type="xml">
+                <list string="Seasonal Pricing" create="true" edit="true">
+                    <field name="name" />
+                    <field name="season_name" />
+                    <field name="product_id" />
+                    <field name="start_date" />
+                    <field name="end_date" />
+                    <field name="price_multiplier" />
+                    <field name="state" />
+                    <field name="active" />
+                </list>
+            </field>
+        </record>
+        <record id="barcode_seasonal_pricing_view_form" model="ir.ui.view">
+            <field name="name">barcode.seasonal.pricing.view.form</field>
+            <field name="model">barcode.seasonal.pricing</field>
+            <field name="arch" type="xml">
+                <form string="Seasonal Pricing" create="true" edit="true">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="product_id" />
+                            <field name="season_name" />
+                        </group>
+                        <group>
+                            <field name="start_date" />
+                            <field name="end_date" />
+                            <field name="price_multiplier" />
+                            <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,expired" />
+                            <field name="active" />
+                        </group>
+                        <notebook>
+                            <page string="Notes">
+                                <field name="notes" nolabel="1" widget="html" />
+                            </page>
+                        </notebook>
+                        <footer>
+                            <button name="action_confirm" type="object" string="Confirm" invisible="state != 'draft'" class="btn-primary" />
+                            <button name="action_expire" type="object" string="Expire" invisible="state != 'confirmed'" />
+                            <button string="Close" class="btn-secondary" special="cancel" />
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="barcode_seasonal_pricing_action" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model barcode.seasonal.pricing has state field - consider using default search filters -->
+            <field name="name">Seasonal Pricing</field>
+            <field name="res_model">barcode.seasonal.pricing</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <menuitem id="barcode_seasonal_pricing_menu" name="Seasonal Pricing" parent="menu_barcode_config" action="barcode_seasonal_pricing_action" sequence="95" />
     </data>
 </odoo>

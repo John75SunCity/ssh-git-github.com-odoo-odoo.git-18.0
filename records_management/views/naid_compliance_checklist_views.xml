@@ -1,108 +1,98 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List view for naid.compliance.checklist -->
-    <record id="naid_compliance_checklist_view_tree" model="ir.ui.view">
-        <field name="name">naid.compliance.checklist.view.tree</field>
-        <field name="model">naid.compliance.checklist</field>
-        <field name="arch" type="xml">
-        <list decoration-muted="active == False">
-        <field name="name"/>
-        <field name="category"/>
-        <field name="active" widget="boolean_toggle"/>
-        <field name="company_id" groups="base.group_multi_company"/>
-
-        </list>
-    </field>
-    </record>
-
-<!-- Form view for naid.compliance.checklist -->
-    <record id="naid_compliance_checklist_view_form" model="ir.ui.view">
-        <field name="name">naid.compliance.checklist.view.form</field>
-        <field name="model">naid.compliance.checklist</field>
-        <field name="arch" type="xml">
-        <form string="NAID Compliance Checklist">
-<header>
-        <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
-</header>
-            <sheet>
-        <div class="oe_button_box" name="button_box">
-<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
-        <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
-</button>
-</div>
-                <div class="oe_title">
-                    <label for="name"/>
-                    <h1>
-        <field name="name" placeholder="e.g. Facility Security Checklist"/>
-
-                    </h1>
-                </div>
-        <group>
-        <group>
-        <field name="category"/>
-</group>
-        <group>
-        <field name="company_id" groups="base.group_multi_company"/>
-</group>
-</group>
-<notebook>
-        <page string="Checklist Items" name="checklist_items">
-        <field name="checklist_item_ids">
-        <list editable="bottom">
-        <field name="sequence" widget="handle"/>
-        <field name="name"/>
-        <field name="description"/>
-        <field name="is_required"/>
-        </list>
-    </field>
-</page>
-</notebook>
-            </sheet>
-        <div class="oe_chatter">
-        <field name="message_follower_ids"/>
-        <field name="activity_ids"/>
-        <field name="message_ids"/>
-</div>
-        </form>
-    </field>
-    </record>
-
-<!-- Search view for naid.compliance.checklist -->
-    <record id="naid_compliance_checklist_view_search" model="ir.ui.view">
-        <field name="name">naid.compliance.checklist.view.search</field>
-        <field name="model">naid.compliance.checklist</field>
-        <field name="arch" type="xml">
-        <search>
-        <field name="name" string="Checklist Name"/>
-<separator/>
-<filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
-        <group expand="0" string="Group By">
-<filter string="Category" name="group_by_category" context="{'group_by':'category'}"/>
-
-            </group>
-        </search>
-    </field>
-    </record>
-
-<!-- Action for naid.compliance.checklist -->
-    <record id="action_naid_compliance_checklist" model="ir.actions.act_window">
-        <field name="name">NAID Compliance Checklists</field>
-        <field name="res_model">naid.compliance.checklist</field>
-        <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="naid_compliance_checklist_view_search"/>
-
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-<p class="o_view_nocontent_smiling_face">
+        <record id="naid_compliance_checklist_view_tree" model="ir.ui.view">
+            <field name="name">naid.compliance.checklist.view.tree</field>
+            <field name="model">naid.compliance.checklist</field>
+            <field name="arch" type="xml">
+                <list decoration-muted="active == False">
+                    <field name="name" />
+                    <field name="category" />
+                    <field name="active" widget="boolean_toggle" />
+                    <field name="company_id" groups="base.group_multi_company" />
+                </list>
+            </field>
+        </record>
+        <record id="naid_compliance_checklist_view_form" model="ir.ui.view">
+            <field name="name">naid.compliance.checklist.view.form</field>
+            <field name="model">naid.compliance.checklist</field>
+            <field name="arch" type="xml">
+                <form string="NAID Compliance Checklist">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,active,archived" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}" />
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" />
+                            <h1>
+                                <field name="name" placeholder="e.g. Facility Security Checklist" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="category" />
+                            </group>
+                            <group>
+                                <field name="company_id" groups="base.group_multi_company" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Checklist Items" name="checklist_items">
+                                <field name="checklist_item_ids">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle" />
+                                        <field name="name" />
+                                        <field name="description" />
+                                        <field name="is_required" />
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="naid_compliance_checklist_view_search" model="ir.ui.view">
+            <field name="name">naid.compliance.checklist.view.search</field>
+            <field name="model">naid.compliance.checklist</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Checklist Name" />
+                    <separator />
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]" />
+                    <group expand="0" string="Group By">
+                        <filter string="Category" name="group_by_category" context="{'group_by':'category'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="action_naid_compliance_checklist" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model naid.compliance.checklist has state field - consider using default search filters -->
+            <field name="name">NAID Compliance Checklists</field>
+            <field name="res_model">naid.compliance.checklist</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="naid_compliance_checklist_view_search" />
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
             Create a new NAID Compliance Checklist.
 </p>
-<p>
+                <p>
             Checklists help ensure all compliance points are verified during audits and operations.
             You can define templates for different processes like facility security, employee training, or vehicle checks.
         </p>
-    </field>
-    </record>
+            </field>
+        </record>
     </data>
 </odoo>

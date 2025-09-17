@@ -1,60 +1,54 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List view for records.installer -->
-    <record id="records_installer_view_tree" model="ir.ui.view">
-        <field name="name">records.installer.view.tree</field>
-        <field name="model">records.installer</field>
-        <field name="arch" type="xml">
-            <list>
-                <field name="name"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Form view for records.installer -->
-    <record id="records_installer_view_form" model="ir.ui.view">
-        <field name="name">records.installer.view.form</field>
-        <field name="model">records.installer</field>
-        <field name="arch" type="xml">
-            <form string="Records.Installer">
-                <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Name..."/>
-                        </h1>
-                    </div>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- Search view for records.installer -->
-    <record id="records_installer_view_search" model="ir.ui.view">
-        <field name="name">records.installer.view.search</field>
-        <field name="model">records.installer</field>
-        <field name="arch" type="xml">
-            <search>
-                <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- Action for records.installer -->
-    <record id="action_records_installer" model="ir.actions.act_window">
-        <field name="name">Records.Installer</field>
-        <field name="res_model">records.installer</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
+        <record id="records_installer_view_tree" model="ir.ui.view">
+            <field name="name">records.installer.view.tree</field>
+            <field name="model">records.installer</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name" />
+                </list>
+            </field>
+        </record>
+        <record id="records_installer_view_form" model="ir.ui.view">
+            <field name="name">records.installer.view.form</field>
+            <field name="model">records.installer</field>
+            <field name="arch" type="xml">
+                <form string="Records.Installer">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" />
+                            <h1>
+                                <field name="name" placeholder="Name..." />
+                            </h1>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="records_installer_view_search" model="ir.ui.view">
+            <field name="name">records.installer.view.search</field>
+            <field name="model">records.installer</field>
+            <field name="arch" type="xml">
+                <search>
+                    <group expand="1" string="Group By">
+                        <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="action_records_installer" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model records.installer has state field - consider using default search filters -->
+            <field name="name">Records.Installer</field>
+            <field name="res_model">records.installer</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
                 Click to add a new records.installer.
             </p>
-        </field>
-    </record>
+            </field>
+        </record>
     </data>
 </odoo>

@@ -1,151 +1,145 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List view for records.deletion.request -->
-    <record id="records_deletion_request_enhanced_view_tree" model="ir.ui.view">
-        <field name="name">records.deletion.request.enhanced.view.tree</field>
-        <field name="model">records.deletion.request</field>
-        <field name="arch" type="xml">
-            <list>
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="request_date"/>
-                <field name="state"/>
-                <field name="priority"/>
-                <field name="total_items_count"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Form view for records.deletion.request -->
-    <record id="records_deletion_request_enhanced_view_form" model="ir.ui.view">
-        <field name="name">records.deletion.request.enhanced.view.form</field>
-        <field name="model">records.deletion.request</field>
-        <field name="arch" type="xml">
-            <form string="Records Deletion Request Enhanced">
-                <header>
-                    <button name="action_submit" type="object" string="Submit" invisible="state != 'draft'" class="oe_highlight"/>
-                    <button name="action_approve" type="object" string="Approve" invisible="state != 'submitted'" class="oe_highlight" groups="records_management.group_records_manager"/>
-                    <button name="action_reject" type="object" string="Reject" invisible="state not in ['submitted', 'approved']" groups="records_management.group_records_manager"/>
-                    <button name="action_schedule" type="object" string="Schedule" invisible="state != 'approved'" class="oe_highlight"/>
-                    <button name="action_start_deletion" type="object" string="Start Deletion" invisible="state != 'scheduled'" class="oe_highlight"/>
-                    <button name="action_complete_deletion" type="object" string="Complete" invisible="state != 'in_progress'" class="oe_highlight"/>
-                    <button name="action_cancel" type="object" string="Cancel" invisible="state not in ['draft', 'submitted', 'approved', 'scheduled']"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,scheduled,in_progress,completed"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Request ID..."/>
-                        </h1>
+        <record id="records_deletion_request_enhanced_view_tree" model="ir.ui.view">
+            <field name="name">records.deletion.request.enhanced.view.tree</field>
+            <field name="model">records.deletion.request</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name" />
+                    <field name="partner_id" />
+                    <field name="request_date" />
+                    <field name="state" />
+                    <field name="priority" />
+                    <field name="total_items_count" />
+                </list>
+            </field>
+        </record>
+        <record id="records_deletion_request_enhanced_view_form" model="ir.ui.view">
+            <field name="name">records.deletion.request.enhanced.view.form</field>
+            <field name="model">records.deletion.request</field>
+            <field name="arch" type="xml">
+                <form string="Records Deletion Request Enhanced">
+                    <header>
+                        <button name="action_submit" type="object" string="Submit" invisible="state != 'draft'" class="oe_highlight" />
+                        <button name="action_approve" type="object" string="Approve" invisible="state != 'submitted'" class="oe_highlight" groups="records_management.group_records_manager" />
+                        <button name="action_reject" type="object" string="Reject" invisible="state not in ['submitted', 'approved']" groups="records_management.group_records_manager" />
+                        <button name="action_schedule" type="object" string="Schedule" invisible="state != 'approved'" class="oe_highlight" />
+                        <button name="action_start_deletion" type="object" string="Start Deletion" invisible="state != 'scheduled'" class="oe_highlight" />
+                        <button name="action_complete_deletion" type="object" string="Complete" invisible="state != 'in_progress'" class="oe_highlight" />
+                        <button name="action_cancel" type="object" string="Cancel" invisible="state not in ['draft', 'submitted', 'approved', 'scheduled']" />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,scheduled,in_progress,completed" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" />
+                            <h1>
+                                <field name="name" placeholder="Request ID..." />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id" />
+                                <field name="user_id" />
+                                <field name="request_date" />
+                                <field name="priority" />
+                                <field name="deletion_type" />
+                            </group>
+                            <group>
+                                <field name="scheduled_deletion_date" />
+                                <field name="actual_deletion_date" />
+                                <field name="days_since_request" />
+                                <field name="total_items_count" />
+                                <field name="billable" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Details">
+                                <group>
+                                    <field name="reason" required="1" />
+                                    <field name="description" />
+                                    <field name="special_instructions" />
+                                    <field name="notes" />
+                                </group>
+                            </page>
+                            <page string="Items">
+                                <group>
+                                    <field name="container_ids" widget="many2many_tags" invisible="deletion_type == 'document'" />
+                                    <field name="document_ids" widget="many2many_tags" invisible="deletion_type == 'container'" />
+                                </group>
+                            </page>
+                            <page string="Compliance">
+                                <group>
+                                    <field name="legal_hold_check" />
+                                    <field name="retention_policy_verified" />
+                                    <field name="customer_authorization" />
+                                    <field name="naid_compliant" />
+                                    <field name="chain_of_custody_id" />
+                                    <field name="certificate_of_deletion_id" />
+                                </group>
+                            </page>
+                            <page string="Billing">
+                                <group>
+                                    <field name="estimated_cost" />
+                                    <field name="actual_cost" />
+                                </group>
+                            </page>
+                            <page string="Approval">
+                                <group>
+                                    <field name="approved_by_id" />
+                                    <field name="approval_date" />
+                                    <field name="rejection_reason" />
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
                     </div>
-                    <group>
-                        <group>
-                            <field name="partner_id"/>
-                            <field name="user_id"/>
-                            <field name="request_date"/>
-                            <field name="priority"/>
-                            <field name="deletion_type"/>
-                        </group>
-                        <group>
-                            <field name="scheduled_deletion_date"/>
-                            <field name="actual_deletion_date"/>
-                            <field name="days_since_request"/>
-                            <field name="total_items_count"/>
-                            <field name="billable"/>
-                        </group>
+                </form>
+            </field>
+        </record>
+        <record id="records_deletion_request_enhanced_view_search" model="ir.ui.view">
+            <field name="name">records.deletion.request.enhanced.view.search</field>
+            <field name="model">records.deletion.request</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <field name="partner_id" />
+                    <field name="user_id" />
+                    <field name="state" />
+                    <field name="deletion_type" />
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
+                    <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]" />
+                    <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]" />
+                    <filter string="Scheduled" name="scheduled" domain="[('state', '=', 'scheduled')]" />
+                    <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]" />
+                    <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]" />
+                    <filter string="High Priority" name="high_priority" domain="[('priority', 'in', ['1', '2'])]" />
+                    <filter string="Billable" name="billable" domain="[('billable', '=', True)]" />
+                    <group expand="1" string="Group By">
+                        <filter string="State" name="state" domain="[]" context="{'group_by':'state'}" />
+                        <filter string="Customer" name="partner" domain="[]" context="{'group_by':'partner_id'}" />
+                        <filter string="Priority" name="priority" domain="[]" context="{'group_by':'priority'}" />
+                        <filter string="Request Date" name="request_date" domain="[]" context="{'group_by':'request_date'}" />
                     </group>
-                    <notebook>
-                        <page string="Details">
-                            <group>
-                                <field name="reason" required="1"/>
-                                <field name="description"/>
-                                <field name="special_instructions"/>
-                                <field name="notes"/>
-                            </group>
-                        </page>
-                        <page string="Items">
-                            <group>
-                                <field name="container_ids" widget="many2many_tags" invisible="deletion_type == 'document'"/>
-                                <field name="document_ids" widget="many2many_tags" invisible="deletion_type == 'container'"/>
-                            </group>
-                        </page>
-                        <page string="Compliance">
-                            <group>
-                                <field name="legal_hold_check"/>
-                                <field name="retention_policy_verified"/>
-                                <field name="customer_authorization"/>
-                                <field name="naid_compliant"/>
-                                <field name="chain_of_custody_id"/>
-                                <field name="certificate_of_deletion_id"/>
-                            </group>
-                        </page>
-                        <page string="Billing">
-                            <group>
-                                <field name="estimated_cost"/>
-                                <field name="actual_cost"/>
-                            </group>
-                        </page>
-                        <page string="Approval">
-                            <group>
-                                <field name="approved_by_id"/>
-                                <field name="approval_date"/>
-                                <field name="rejection_reason"/>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <!-- Search view for records.deletion.request -->
-    <record id="records_deletion_request_enhanced_view_search" model="ir.ui.view">
-        <field name="name">records.deletion.request.enhanced.view.search</field>
-        <field name="model">records.deletion.request</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="user_id"/>
-                <field name="state"/>
-                <field name="deletion_type"/>
-                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
-                <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
-                <filter string="Scheduled" name="scheduled" domain="[('state', '=', 'scheduled')]"/>
-                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
-                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
-                <filter string="High Priority" name="high_priority" domain="[('priority', 'in', ['1', '2'])]"/>
-                <filter string="Billable" name="billable" domain="[('billable', '=', True)]"/>
-                <group expand="1" string="Group By">
-                    <filter string="State" name="state" domain="[]" context="{'group_by':'state'}"/>
-                    <filter string="Customer" name="partner" domain="[]" context="{'group_by':'partner_id'}"/>
-                    <filter string="Priority" name="priority" domain="[]" context="{'group_by':'priority'}"/>
-                    <filter string="Request Date" name="request_date" domain="[]" context="{'group_by':'request_date'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- Action for Records Deletion Request -->
-    <record id="action_records_deletion_request_enhanced" model="ir.actions.act_window">
-        <field name="name">Records Deletion Request Enhanced</field>
-        <field name="res_model">records.deletion.request</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
+                </search>
+            </field>
+        </record>
+        <record id="action_records_deletion_request_enhanced" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model records.deletion.request has state field - consider using default search filters -->
+            <field name="name">Records Deletion Request Enhanced</field>
+            <field name="res_model">records.deletion.request</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
                 There is no examples click here to add new Records Deletion Request Enhanced.
             </p>
-        </field>
-    </record>
+            </field>
+        </record>
     </data>
 </odoo>

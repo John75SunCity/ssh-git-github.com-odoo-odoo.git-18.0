@@ -1,212 +1,181 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List view for base.rate -->
-    <record id="shredding_hard_drive_view_tree" model="ir.ui.view">
-        <field name="name">shredding.hard_drive.view.tree</field>
-        <field name="model">shredding.hard_drive</field>
-        <field name="arch" type="xml">
-        <list>
-        <field name="name"/>
-        </list>
-    </field>
-    </record>
-
-<!-- Form view for base.rate -->
-    <record id="shredding_hard_drive_view_form" model="ir.ui.view">
-        <field name="name">shredding.hard_drive.view.form</field>
-        <field name="model">shredding.hard_drive</field>
-        <field name="arch" type="xml">
-        <form string="Shredding Hard_drive">
-            <sheet>
-                <div class="oe_title">
-                    <label for="name"/>
-                    <h1>
-        <field name="name" placeholder="Name..."/>
-                    </h1>
-                </div>
-            </sheet>
-        </form>
-    </field>
-    </record>
-
-<!-- Search view for base.rate -->
-    <record id="shredding_hard_drive_view_search" model="ir.ui.view">
-        <field name="name">shredding.hard_drive.view.search</field>
-        <field name="model">shredding.hard_drive</field>
-        <field name="arch" type="xml">
-        <search>
-            <group expand="1" string="Group By">
-                <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
-            </group>
-        </search>
-    </field>
-    </record>
-
-<!-- List view for Action -->
-    <record id="action_shredding_hard_drive" model="ir.actions.act_window">
-        <field name="name">Shredding Hard_drive</field>
-        <field name="res_model">shredding.hard_drive</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
+        <record id="shredding_hard_drive_view_tree" model="ir.ui.view">
+            <field name="name">shredding.hard_drive.view.tree</field>
+            <field name="model">shredding.hard_drive</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name" />
+                </list>
+            </field>
+        </record>
+        <record id="shredding_hard_drive_view_form" model="ir.ui.view">
+            <field name="name">shredding.hard_drive.view.form</field>
+            <field name="model">shredding.hard_drive</field>
+            <field name="arch" type="xml">
+                <form string="Shredding Hard_drive">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" />
+                            <h1>
+                                <field name="name" placeholder="Name..." />
+                            </h1>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="shredding_hard_drive_view_search" model="ir.ui.view">
+            <field name="name">shredding.hard_drive.view.search</field>
+            <field name="model">shredding.hard_drive</field>
+            <field name="arch" type="xml">
+                <search>
+                    <group expand="1" string="Group By">
+                        <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="action_shredding_hard_drive" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model shredding.hard_drive has state field - consider using default search filters -->
+            <field name="name">Shredding Hard_drive</field>
+            <field name="res_model">shredding.hard_drive</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
             There is no examples click here to add new Shredding Hard_drive.
         </p>
-    </field>
-    </record>
-
-<!-- Form view for Hard -->
-    <record id="hard_drive_scan_wizard_view_form" model="ir.ui.view">
-        <field name="name">hard_drive.scan.wizard.view.form</field>
-        <field name="model">hard.drive.scan.wizard</field>
-        <field name="arch" type="xml">
-        <form string="Hard Drive Serial Number Scanner">
-            <header>
-<button name="action_confirm_destruction" string="Finish Scanning" type="object" class="btn-primary" invisible="not scan_line_ids"/>
-<button name="action_process_scanned_serials" string="Process Text Input" type="object"
-                        class="btn-secondary"/>
-            </header>
-
-            <sheet>
-                <div class="oe_title">
-        <h1>Hard Drive Destruction Wizard</h1>
-                    <div class="o_row">
-        <label for="fsm_task_id" string="FSM Task:"/>
-        <field name="fsm_task_id"/>
-</div>
-        <div class="o_row">
-        <label for="partner_id" string="Customer:"/>
-        <field name="partner_id"/>
-
-                    </div>
-                </div>
-
-                <group>
-        <group string="Destruction Settings">
-        <field name="destruction_method"/>
-
-                    </group>
-        <group string="Serial Number Entry">
-        <field name="serial_numbers_text" placeholder="Enter serial numbers, one per line..."/>
-<button name="action_process_scanned_serials" string="Add Serial Numbers" type="object" class="btn-success" invisible="not serial_numbers_text"/>
-
-
-</group>
-                </group>
-
-<separator string="Scanned Hard Drives"/>
-        <field name="scan_line_ids">
-        <list editable="bottom">
-        <field name="serial_number"/>
-</list>
-</field>
-            </sheet>
-        </form>
-    </field>
-    </record>
-
-<!-- List view for Hard -->
-    <record id="shredding_hard_drive_view_tree" model="ir.ui.view">
-        <field name="name">shredding.hard_drive.view.tree</field>
-        <field name="model">shredding.hard_drive</field>
-        <field name="arch" type="xml">
-        <list string="Hard Drives for Shredding" decoration-success="destroyed"
-                decoration-warning="verified_before_destruction and not destroyed"
-                decoration-info="scanned_at_customer and not verified_before_destruction">
-        <field name="serial_number"/>
-        <field name="scanned_at_customer" widget="boolean_toggle"/>
-        <field name="scanned_at_customer_date"/>
-        <field name="scanned_at_customer_by"/>
-        <field name="verified_before_destruction" widget="boolean_toggle"/>
-        <field name="verified_at_facility_date"/>
-        <field name="verified_at_facility_by"/>
-        <field name="destroyed" widget="boolean_toggle"/>
-        <field name="destruction_date"/>
-        <field name="destruction_method"/>
-        <field name="included_in_certificate" widget="boolean_toggle"/>
-        </list>
-    </field>
-    </record>
-
-<!-- Form view for Hard -->
-    <record id="shredding_hard_drive_view_form" model="ir.ui.view">
-        <field name="name">shredding.hard_drive.view.form</field>
-        <field name="model">shredding.hard_drive</field>
-        <field name="arch" type="xml">
-        <form string="Hard Drive Details">
-            <header>
-        <field name="state" widget="statusbar" statusbar_visible="draft,scanned,destroyed,certified"/>
-
-            </header>
-
-            <sheet>
-                <div class="oe_title">
-                    <h1>
-        <field name="serial_number" placeholder="Serial Number"/>
-                    </h1>
-                    <div class="o_row">
-        <label for="name" string="Reference:"/>
-        <field name="name"/>
-
-                    </div>
-                </div>
-
-                <group>
-        <group string="Drive Information">
-        <field name="fsm_task_id"/>
-        <field name="partner_id"/>
-        <field name="destruction_method"/>
-
-</group>
-                    <group string="Destruction Details">
-        <field name="destruction_date"/>
-        <field name="destruction_technician_id"/>
-        <field name="certificate_id"/>
-</group>
-</group>
-
-        <group string="Security">
-        <field name="hashed_serial" readonly="1"/>
-
-                </group>
-            </sheet>
-        </form>
-    </field>
-    </record>
-
-<!-- List view for Hard -->
-    <record id="action_shredding_hard_drive" model="ir.actions.act_window">
-        <field name="name">Hard Drives</field>
-        <field name="res_model">shredding.hard_drive</field>
-        <field name="view_mode">list,form</field>
-        <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
+            </field>
+        </record>
+        <record id="hard_drive_scan_wizard_view_form" model="ir.ui.view">
+            <field name="name">hard_drive.scan.wizard.view.form</field>
+            <field name="model">hard.drive.scan.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Hard Drive Serial Number Scanner">
+                    <header>
+                        <button name="action_confirm_destruction" string="Finish Scanning" type="object" class="btn-primary" invisible="not scan_line_ids" />
+                        <button name="action_process_scanned_serials" string="Process Text Input" type="object" class="btn-secondary" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Hard Drive Destruction Wizard</h1>
+                            <div class="o_row">
+                                <label for="fsm_task_id" string="FSM Task:" />
+                                <field name="fsm_task_id" />
+                            </div>
+                            <div class="o_row">
+                                <label for="partner_id" string="Customer:" />
+                                <field name="partner_id" />
+                            </div>
+                        </div>
+                        <group>
+                            <group string="Destruction Settings">
+                                <field name="destruction_method" />
+                            </group>
+                            <group string="Serial Number Entry">
+                                <field name="serial_numbers_text" placeholder="Enter serial numbers, one per line..." />
+                                <button name="action_process_scanned_serials" string="Add Serial Numbers" type="object" class="btn-success" invisible="not serial_numbers_text" />
+                            </group>
+                        </group>
+                        <separator string="Scanned Hard Drives" />
+                        <field name="scan_line_ids">
+                            <list editable="bottom">
+                                <field name="serial_number" />
+                            </list>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="shredding_hard_drive_view_tree" model="ir.ui.view">
+            <field name="name">shredding.hard_drive.view.tree</field>
+            <field name="model">shredding.hard_drive</field>
+            <field name="arch" type="xml">
+                <list string="Hard Drives for Shredding" decoration-success="destroyed" decoration-warning="verified_before_destruction and not destroyed" decoration-info="scanned_at_customer and not verified_before_destruction">
+                    <field name="serial_number" />
+                    <field name="scanned_at_customer" widget="boolean_toggle" />
+                    <field name="scanned_at_customer_date" />
+                    <field name="scanned_at_customer_by" />
+                    <field name="verified_before_destruction" widget="boolean_toggle" />
+                    <field name="verified_at_facility_date" />
+                    <field name="verified_at_facility_by" />
+                    <field name="destroyed" widget="boolean_toggle" />
+                    <field name="destruction_date" />
+                    <field name="destruction_method" />
+                    <field name="included_in_certificate" widget="boolean_toggle" />
+                </list>
+            </field>
+        </record>
+        <record id="shredding_hard_drive_view_form" model="ir.ui.view">
+            <field name="name">shredding.hard_drive.view.form</field>
+            <field name="model">shredding.hard_drive</field>
+            <field name="arch" type="xml">
+                <form string="Hard Drive Details">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,scanned,destroyed,certified" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="serial_number" placeholder="Serial Number" />
+                            </h1>
+                            <div class="o_row">
+                                <label for="name" string="Reference:" />
+                                <field name="name" />
+                            </div>
+                        </div>
+                        <group>
+                            <group string="Drive Information">
+                                <field name="fsm_task_id" />
+                                <field name="partner_id" />
+                                <field name="destruction_method" />
+                            </group>
+                            <group string="Destruction Details">
+                                <field name="destruction_date" />
+                                <field name="destruction_technician_id" />
+                                <field name="certificate_id" />
+                            </group>
+                        </group>
+                        <group string="Security">
+                            <field name="hashed_serial" readonly="1" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_shredding_hard_drive" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model shredding.hard_drive has state field - consider using default search filters -->
+            <field name="name">Hard Drives</field>
+            <field name="res_model">shredding.hard_drive</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
             Create a hard drive record for tracking serial numbers through the destruction process.
         </p>
-        <p>
+                <p>
             Hard drives are scanned at customer locations, verified at the facility before destruction,
             and tracked for NAID compliance certificates.
         </p>
-    </field>
-    </record>
-
-<!-- List view for Scanner -->
-    <record id="action_hard_drive_scan_customer" model="ir.actions.act_window">
-        <field name="name">Scan at Customer Location</field>
-        <field name="res_model">shredding.hard_drive</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="context">{'default_scan_location': 'customer'}</field>
-    </record>
-
-    <record id="action_hard_drive_scan_facility" model="ir.actions.act_window">
-        <field name="name">Verify at Facility</field>
-        <field name="res_model">shredding.hard_drive</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="context">{'default_scan_location': 'facility'}</field>
-    </record>
+            </field>
+        </record>
+        <record id="action_hard_drive_scan_customer" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model shredding.hard_drive has state field - consider using default search filters -->
+            <field name="name">Scan at Customer Location</field>
+            <field name="res_model">shredding.hard_drive</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_scan_location': 'customer'}</field>
+        </record>
+        <record id="action_hard_drive_scan_facility" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model shredding.hard_drive has state field - consider using default search filters -->
+            <field name="name">Verify at Facility</field>
+            <field name="res_model">shredding.hard_drive</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_scan_location': 'facility'}</field>
+        </record>
     </data>
 </odoo>

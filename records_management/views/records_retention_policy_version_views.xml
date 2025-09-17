@@ -1,40 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-        <!-- Tree View for Records Retention Policy Version -->
         <record id="records_retention_policy_version_view_tree" model="ir.ui.view">
             <field name="name">records.retention.policy.version.view.tree</field>
             <field name="model">records.retention.policy.version</field>
             <field name="type">list</field>
             <field name="arch" type="xml">
-                <list decoration-success="is_current == True"
-                      decoration-muted="active == False"
-                      decoration-info="state == 'draft'"
-                      decoration-warning="state == 'archived'">
-                    <field name="policy_id" string="Policy"/>
-                    <field name="version" string="Version"/>
-                    <field name="effective_date" string="Effective"/>
-                    <field name="expiry_date" string="Expires"/>
-                    <field name="is_current" string="Current" widget="boolean_toggle"/>
-                    <field name="created_by_id" string="Created By"/>
-                    <field name="state" string="Status" widget="badge"/>
-                    <field name="created_date" string="Created On"/>
-                    <button name="action_activate"
-                            type="object"
-                            string="Activate"
-                            icon="fa-play"
-                            class="btn-link"
-                            invisible="is_current == True"/>
-                    <button name="action_compare_versions"
-                            type="object"
-                            string="Compare"
-                            icon="fa-code-fork"
-                            class="btn-link"/>
+                <list decoration-success="is_current == True" decoration-muted="active == False" decoration-info="state == 'draft'" decoration-warning="state == 'archived'">
+                    <field name="policy_id" string="Policy" />
+                    <field name="version" string="Version" />
+                    <field name="effective_date" string="Effective" />
+                    <field name="expiry_date" string="Expires" />
+                    <field name="is_current" string="Current" widget="boolean_toggle" />
+                    <field name="created_by_id" string="Created By" />
+                    <field name="state" string="Status" widget="badge" />
+                    <field name="created_date" string="Created On" />
+                    <button name="action_activate" type="object" string="Activate" icon="fa-play" class="btn-link" invisible="is_current == True" />
+                    <button name="action_compare_versions" type="object" string="Compare" icon="fa-code-fork" class="btn-link" />
                 </list>
             </field>
         </record>
-
-        <!-- Form View for Records Retention Policy Version -->
         <record id="records_retention_policy_version_view_form" model="ir.ui.view">
             <field name="name">records.retention.policy.version.view.form</field>
             <field name="model">records.retention.policy.version</field>
@@ -42,27 +27,17 @@
             <field name="arch" type="xml">
                 <form string="Retention Policy Version">
                     <header>
-                        <button name="action_activate"
-                                type="object"
-                                string="Activate Version"
-                                class="oe_highlight"
-                                invisible="is_active == True"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,active,superseded,archived"/>
+                        <button name="action_activate" type="object" string="Activate Version" class="oe_highlight" invisible="is_active == True" />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,active,superseded,archived" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button"
-                                    type="object"
-                                    name="action_view_audit_trail"
-                                    icon="fas fa-history">
+                            <button class="oe_stat_button" type="object" name="action_view_audit_trail" icon="fas fa-history">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_text">Audit Trail</span>
                                 </div>
                             </button>
-                            <button class="oe_stat_button"
-                                    type="object"
-                                    name="action_compare_versions"
-                                    icon="fas fa-code-fork">
+                            <button class="oe_stat_button" type="object" name="action_compare_versions" icon="fas fa-code-fork">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_text">Compare Versions</span>
                                 </div>
@@ -71,185 +46,177 @@
                         <div class="oe_title">
                             <div class="o_row">
                                 <h1>
-                                    <field name="policy_id" required="1" options="{'no_create': True, 'no_create_edit': True}"/>
+                                    <field name="policy_id" required="1" options="{'no_create': True, 'no_create_edit': True}" />
                                 </h1>
                                 <div class="o_row" style="margin-left: 20px;">
                                     <h3>
-                                        Version <field name="version_number" required="1" class="oe_inline"/>
+                                        Version <field name="version_number" required="1" class="oe_inline" />
                                     </h3>
                                 </div>
                             </div>
                         </div>
                         <group>
                             <group name="version_info">
-                                <field name="effective_date" required="1"/>
-                                <field name="expiration_date"/>
-                                <field name="is_active" readonly="1"/>
-                                <field name="superseded_by" readonly="1" invisible="superseded_by == False"/>
+                                <field name="effective_date" required="1" />
+                                <field name="expiration_date" />
+                                <field name="is_active" readonly="1" />
+                                <field name="superseded_by" readonly="1" invisible="superseded_by == False" />
                             </group>
                             <group name="approval_info">
-                                <field name="created_by" readonly="1"/>
-                                <field name="approved_by" readonly="1" invisible="approved_by == False"/>
-                                <field name="approval_date" readonly="1" invisible="approval_date == False"/>
-                                <field name="rejection_reason"
-                                       invisible="state != 'archived'"
-                                       required="state == 'archived'"/>
+                                <field name="created_by" readonly="1" />
+                                <field name="approved_by" readonly="1" invisible="approved_by == False" />
+                                <field name="approval_date" readonly="1" invisible="approval_date == False" />
+                                <field name="rejection_reason" invisible="state != 'archived'" required="state == 'archived'" />
                             </group>
                         </group>
                         <notebook>
                             <page string="Policy Content" name="content">
                                 <group>
                                     <group name="retention_info">
-                                        <field name="version" required="1"/>
-                                        <field name="state" required="1"/>
-                                        <field name="active"/>
+                                        <field name="version" required="1" />
+                                        <field name="state" required="1" />
+                                        <field name="active" />
                                     </group>
                                     <group name="compliance_info">
-                                        <field name="is_current"/>
-                                        <field name="effective_date"/>
-                                        <field name="expiry_date"/>
+                                        <field name="is_current" />
+                                        <field name="effective_date" />
+                                        <field name="expiry_date" />
                                     </group>
                                 </group>
-                                <separator string="Policy Description"/>
-                                <field name="description" widget="html"
-                                       placeholder="Detailed description of retention policy requirements..."/>
-                                <separator string="Changes from Previous Version"/>
-                                <field name="changes" widget="html"
-                                       placeholder="Summary of changes made in this version..."/>
+                                <separator string="Policy Description" />
+                                <field name="description" widget="html" placeholder="Detailed description of retention policy requirements..." />
+                                <separator string="Changes from Previous Version" />
+                                <field name="changes" widget="html" placeholder="Summary of changes made in this version..." />
                             </page>
                             <page string="Document Types" name="document_types">
-                                <field name="applicable_document_types" widget="many2many_tags"/>
-                                <separator string="Special Handling"/>
-                                <field name="special_handling_notes" widget="text"
-                                       placeholder="Special handling requirements for specific document types..."/>
+                                <field name="applicable_document_types" widget="many2many_tags" />
+                                <separator string="Special Handling" />
+                                <field name="special_handling_notes" widget="text" placeholder="Special handling requirements for specific document types..." />
                             </page>
                             <page string="Compliance" name="compliance">
                                 <group>
                                     <group string="Compliance Information">
-                                        <field name="created_date"/>
-                                        <field name="approved_date"/>
-                                        <field name="effective_date"/>
-                                        <field name="expiry_date"/>
+                                        <field name="created_date" />
+                                        <field name="approved_date" />
+                                        <field name="effective_date" />
+                                        <field name="expiry_date" />
                                     </group>
                                     <group string="Audit Information">
-                                        <field name="created_by_id"/>
-                                        <field name="approved_by_id"/>
+                                        <field name="created_by_id" />
+                                        <field name="approved_by_id" />
                                     </group>
                                 </group>
                             </page>
                             <page string="Version History" name="history">
                                 <field name="superseded_by_id" readonly="1">
                                     <tree>
-                                        <field name="version"/>
-                                        <field name="effective_date"/>
-                                        <field name="expiry_date"/>
-                                        <field name="created_by_id"/>
-                                        <field name="state" widget="badge"/>
-                                        <field name="is_current" widget="boolean_toggle"/>
+                                        <field name="version" />
+                                        <field name="effective_date" />
+                                        <field name="expiry_date" />
+                                        <field name="created_by_id" />
+                                        <field name="state" widget="badge" />
+                                        <field name="is_current" widget="boolean_toggle" />
                                     </tree>
                                 </field>
                             </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
                     </div>
                 </form>
             </field>
         </record>
-
-        <!-- Search View for Records Retention Policy Version -->
         <record id="records_retention_policy_version_view_search" model="ir.ui.view">
             <field name="name">records.retention.policy.version.view.search</field>
             <field name="model">records.retention.policy.version</field>
             <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Search Retention Policy Versions">
-                    <field name="policy_id"/>
-                    <field name="version_number"/>
-                    <field name="created_by"/>
-                    <field name="approved_by"/>
-                    <separator/>
-                    <filter string="Active Versions" name="active" domain="[('is_active', '=', True)]"/>
-                    <filter string="Inactive Versions" name="inactive" domain="[('is_active', '=', False)]"/>
-                    <separator/>
-                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                    <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
-                    <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]"/>
-                    <separator/>
-                    <filter string="Current" name="current"
-                            domain="[('effective_date', '&lt;=', context_today()), '|', ('expiration_date', '&gt;=', context_today()), ('expiration_date', '=', False)]"/>
-                    <filter string="Future" name="future"
-                            domain="[('effective_date', '&gt;', context_today())]"/>
-                    <filter string="Expired" name="expired"
-                            domain="[('expiration_date', '&lt;', context_today()), ('expiration_date', '!=', False)]"/>
+                    <field name="policy_id" />
+                    <field name="version_number" />
+                    <field name="created_by" />
+                    <field name="approved_by" />
+                    <separator />
+                    <filter string="Active Versions" name="active" domain="[('is_active', '=', True)]" />
+                    <filter string="Inactive Versions" name="inactive" domain="[('is_active', '=', False)]" />
+                    <separator />
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
+                    <filter string="Active" name="active" domain="[('state', '=', 'active')]" />
+                    <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]" />
+                    <separator />
+                    <filter string="Current" name="current" domain="[('effective_date', '&lt;=', context_today()), '|', ('expiration_date', '&gt;=', context_today()), ('expiration_date', '=', False)]" />
+                    <filter string="Future" name="future" domain="[('effective_date', '&gt;', context_today())]" />
+                    <filter string="Expired" name="expired" domain="[('expiration_date', '&lt;', context_today()), ('expiration_date', '!=', False)]" />
                     <group expand="1" string="Group By">
-                        <filter string="Policy" name="group_policy" domain="[]" context="{'group_by': 'policy_id'}"/>
-                        <filter string="State" name="group_status" domain="[]" context="{'group_by': 'state'}"/>
-                        <filter string="Created By" name="group_creator" domain="[]" context="{'group_by': 'created_by'}"/>
-                        <filter string="Effective Date" name="group_date" domain="[]" context="{'group_by': 'effective_date:month'}"/>
+                        <filter string="Policy" name="group_policy" domain="[]" context="{'group_by': 'policy_id'}" />
+                        <filter string="State" name="group_status" domain="[]" context="{'group_by': 'state'}" />
+                        <filter string="Created By" name="group_creator" domain="[]" context="{'group_by': 'created_by'}" />
+                        <filter string="Effective Date" name="group_date" domain="[]" context="{'group_by': 'effective_date:month'}" />
                     </group>
                 </search>
             </field>
         </record>
-
-        <!-- Kanban View for Records Retention Policy Version -->
         <record id="records_retention_policy_version_view_kanban" model="ir.ui.view">
             <field name="name">records.retention.policy.version.view.kanban</field>
             <field name="model">records.retention.policy.version</field>
             <field name="type">kanban</field>
             <field name="arch" type="xml">
                 <kanban class="o_kanban_mobile">
-                    <field name="policy_id"/>
-                    <field name="version_number"/>
-                    <field name="state"/>
-                    <field name="is_active"/>
-                    <field name="effective_date"/>
-                    <field name="expiration_date"/>
-                    <field name="created_by"/>
+                    <field name="policy_id" />
+                    <field name="version_number" />
+                    <field name="state" />
+                    <field name="is_active" />
+                    <field name="effective_date" />
+                    <field name="expiration_date" />
+                    <field name="created_by" />
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="row">
                                     <div class="col-8">
-                                        <strong><span><t t-esc="record.policy_id.value"/></span></strong>
+                                        <strong>
+                                            <span>
+                                                <t t-esc="record.policy_id.value" />
+                                            </span>
+                                        </strong>
                                     </div>
                                     <div class="col-4">
                                         <span class="float-right badge badge-pill">
-                                            v<t t-esc="record.version_number.value"/>
+                                            v<t t-esc="record.version_number.value" />
                                         </span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
                                         <span>
-                                            <i class="fas fa-calendar" aria-hidden="true"/>
-                                            <t t-esc="record.effective_date.value"/>
+                                            <i class="fas fa-calendar" aria-hidden="true" />
+                                            <t t-esc="record.effective_date.value" />
                                         </span>
                                     </div>
                                     <div class="col-6">
                                         <span>
-                                            <i class="fas fa-user" aria-hidden="true"/>
-                                            <t t-esc="record.created_by.value"/>
+                                            <i class="fas fa-user" aria-hidden="true" />
+                                            <t t-esc="record.created_by.value" />
                                         </span>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
                                         <span t-if="record.is_active.raw_value">
-                                            <i class="fas fa-check-circle text-success" aria-hidden="true"/>
+                                            <i class="fas fa-check-circle text-success" aria-hidden="true" />
                                             Active
                                         </span>
                                         <span t-if="!record.is_active.raw_value">
-                                            <i class="fas fa-circle text-muted" aria-hidden="true"/>
+                                            <i class="fas fa-circle text-muted" aria-hidden="true" />
                                             Inactive
                                         </span>
                                     </div>
                                     <div class="col-6">
                                         <span class="float-right">
-                                            <t t-esc="record.state.value"/>
+                                            <t t-esc="record.state.value" />
                                         </span>
                                     </div>
                                 </div>
@@ -259,9 +226,8 @@
                 </kanban>
             </field>
         </record>
-
-        <!-- Action for Records Retention Policy Version -->
         <record id="action_records_retention_policy_version" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model records.retention.policy.version has state field - consider using default search filters -->
             <field name="name">Retention Policy Versions</field>
             <field name="res_model">records.retention.policy.version</field>
             <field name="view_mode">tree,form,kanban</field>
@@ -269,37 +235,31 @@
             <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fas fa-code-branch" aria-hidden="true"/>
+                    <i class="fas fa-code-branch" aria-hidden="true" />
                     No retention policy versions found!
                 </p>
                 <p>
-                    <i class="fas fa-info-circle" aria-hidden="true"/>
+                    <i class="fas fa-info-circle" aria-hidden="true" />
                     Retention policy versions track changes to document retention requirements over time.
                     Create new versions when policies need to be updated to maintain compliance history.
                 </p>
                 <p>
                     <strong>Version Management:</strong>
-                    <br/>
-                    <i class="fas fa-play" aria-hidden="true"/>
+                    <br />
+                    <i class="fas fa-play" aria-hidden="true" />
                     Activate new policy versions with approval workflow
-                    <br/>
-                    <i class="fas fa-code-fork" aria-hidden="true"/>
+                    <br />
+                    <i class="fas fa-code-fork" aria-hidden="true" />
                     Compare versions to track policy changes
-                    <br/>
-                    <i class="fas fa-history" aria-hidden="true"/>
+                    <br />
+                    <i class="fas fa-history" aria-hidden="true" />
                     Maintain complete audit trail of policy evolution
-                    <br/>
-                    <i class="fas fa-shield-alt" aria-hidden="true"/>
+                    <br />
+                    <i class="fas fa-shield-alt" aria-hidden="true" />
                     Ensure compliance with versioned policy requirements
                 </p>
             </field>
         </record>
-
-        <!-- Menu Item for Records Retention Policy Version -->
-        <menuitem id="menu_retention_policy_versions"
-                  name="Policy Versions"
-                  parent="records_management.menu_records_management_config"
-                  action="action_records_retention_policy_version"
-                  sequence="15"/>
+        <menuitem id="menu_retention_policy_versions" name="Policy Versions" parent="records_management.menu_records_management_config" action="action_records_retention_policy_version" sequence="15" />
     </data>
 </odoo>

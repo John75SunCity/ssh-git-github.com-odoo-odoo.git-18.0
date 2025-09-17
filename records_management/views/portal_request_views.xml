@@ -1,296 +1,279 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- Enhanced Kanban view for Portal Requests -->
-    <record id="portal_request_view_kanban" model="ir.ui.view">
-        <field name="name">portal.request.view.kanban</field>
-        <field name="model">portal.request</field>
-        <field name="arch" type="xml">
-        <kanban default_group_by="state" class="o_kanban_portal_request">
-        <field name="name"/>
-        <field name="request_type"/>
-        <field name="partner_id"/>
-        <field name="state"/>
-        <field name="priority"/>
-        <field name="requested_date"/>
-        <field name="user_id"/>
-        <field name="active"/>
-        <field name="deadline"/>
-        <field name="estimated_cost"/>
-        <field name="billing_status"/>
-        <field name="requires_naid_compliance"/>
-            <templates>
-<t t-name="card">
-                    <div class="oe_kanban_card oe_kanban_global_click">
-                        <div class="o_kanban_card_header">
-                            <strong><i class='fa fa-clipboard'/> <field name="name"/></strong>
-                            <span class="float-end">
-        <field name="priority" widget="priority"/>
-                            </span>
-                            <div class="text-muted"><i class='fa fa-user'/> <field name="partner_id"/></div>
+        <record id="portal_request_view_kanban" model="ir.ui.view">
+            <field name="name">portal.request.view.kanban</field>
+            <field name="model">portal.request</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_portal_request">
+                    <field name="name" />
+                    <field name="request_type" />
+                    <field name="partner_id" />
+                    <field name="state" />
+                    <field name="priority" />
+                    <field name="requested_date" />
+                    <field name="user_id" />
+                    <field name="active" />
+                    <field name="deadline" />
+                    <field name="estimated_cost" />
+                    <field name="billing_status" />
+                    <field name="requires_naid_compliance" />
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_card_header">
+                                    <strong>
+                                        <i class="fa fa-clipboard" />
+                                        <field name="name" />
+                                    </strong>
+                                    <span class="float-end">
+                                        <field name="priority" widget="priority" />
+                                    </span>
+                                    <div class="text-muted">
+                                        <i class="fa fa-user" />
+                                        <field name="partner_id" />
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                    <div class="mb-2">
+                                        <strong>Type:</strong>
+                                        <field name="request_type" />
+                                        <br />
+                                        <strong>Requested:</strong>
+                                        <field name="requested_date" widget="date" />
+                                        <br />
+                                        <strong>Deadline:</strong>
+                                        <field name="deadline" widget="date" />
+                                        <br />
+                                        <strong>Assigned:</strong>
+                                        <field name="user_id" />
+                                        <br />
+                                        <strong>Cost:</strong>
+                                        <field name="estimated_cost" widget="monetary" />
+                                    </div>
+                                    <div t-if="record.priority.raw_value == '3'">
+                                        <span class="badge badge-danger">
+                                            <i class="fa fa-fire" /> Urgent Priority</span>
+                                    </div>
+                                    <div t-if="record.priority.raw_value == '2'">
+                                        <span class="badge badge-warning">
+                                            <i class="fa fa-bolt" /> High Priority</span>
+                                    </div>
+                                    <div t-if="record.state.raw_value == 'submitted'">
+                                        <span class="badge badge-info">⏳ Awaiting Approval</span>
+                                    </div>
+                                    <div t-if="record.state.raw_value == 'approved'">
+                                        <span class="badge badge-success">
+                                            <i class="fa fa-check-circle text-success" /> Approved</span>
+                                    </div>
+                                    <div t-if="record.requires_naid_compliance.raw_value">
+                                        <span class="badge badge-primary">
+                                            <i class="fa fa-lock" /> NAID Compliant</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="portal_request_view_tree" model="ir.ui.view">
+            <field name="name">portal.request.view.tree</field>
+            <field name="model">portal.request</field>
+            <field name="arch" type="xml">
+                <list string="Portal Requests" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
+                    <field name="name" />
+                    <field name="request_type" />
+                    <field name="partner_id" />
+                    <field name="create_date" />
+                    <field name="priority" />
+                    <field name="state" />
+                    <field name="assigned_to_id" />
+                </list>
+            </field>
+        </record>
+        <record id="portal_request_view_form" model="ir.ui.view">
+            <field name="name">portal.request.view.form</field>
+            <field name="model">portal.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_submit" string="Submit Request" type="object" class="oe_highlight" invisible="state != 'draft'" />
+                        <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state != 'submitted'" groups="records_management.group_records_manager" />
+                        <button name="action_reject" string="Reject" type="object" invisible="state != 'submitted'" groups="records_management.group_records_manager" />
+                        <button name="action_start_progress" string="Start Progress" type="object" invisible="state != 'approved'" groups="records_management.group_records_manager" />
+                        <button name="action_complete" string="Mark Complete" type="object" invisible="state != 'in_progress'" groups="records_management.group_records_manager" />
+                        <button name="action_cancel" string="Cancel" type="object" invisible="state in ['completed', 'cancelled']" groups="records_management.group_records_manager" />
+                        <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state in ['draft', 'approved']" groups="records_management.group_records_manager" />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,in_progress,completed" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_attachments" icon="fa-paperclip">
+                                <div class="o_stat_info">
+                                    <field name="attachment_count" class="o_stat_value" />
+                                    <span class="o_stat_text">Attachments</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_view_work_order" icon="fa-tasks" invisible="work_order_id == False">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value">FSM</span>
+                                    <span class="o_stat_text">Work Order</span>
+                                </div>
+                            </button>
                         </div>
-        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
-                            <div class="mb-2">
-                                <strong>Type:</strong> <field name="request_type"/><br/>
-                                <strong>Requested:</strong> <field name="requested_date" widget="date"/><br/>
-                                <strong>Deadline:</strong> <field name="deadline" widget="date"/><br/>
-                                <strong>Assigned:</strong> <field name="user_id"/><br/>
-                                <strong>Cost:</strong> <field name="estimated_cost" widget="monetary"/>
-                            </div>
-                            <div t-if="record.priority.raw_value == '3'">
-                                <span class="badge badge-danger"><i class='fa fa-fire'/> Urgent Priority</span>
-                            </div>
-                            <div t-if="record.priority.raw_value == '2'">
-                                <span class="badge badge-warning"><i class='fa fa-bolt'/> High Priority</span>
-                            </div>
-                            <div t-if="record.state.raw_value == 'submitted'">
-                                <span class="badge badge-info">⏳ Awaiting Approval</span>
-                            </div>
-                            <div t-if="record.state.raw_value == 'approved'">
-                                <span class="badge badge-success"><i class='fa fa-check-circle text-success'/> Approved</span>
-                            </div>
-                            <div t-if="record.requires_naid_compliance.raw_value">
-                                <span class="badge badge-primary"><i class='fa fa-lock'/> NAID Compliant</span>
-                            </div>
+                        <div class="oe_title">
+                            <label for="name" />
+                            <h1>
+                                <field name="name" placeholder="Portal Request Title..." />
+                            </h1>
                         </div>
+                        <group>
+                            <group string="Request Information">
+                                <field name="partner_id" options="{'no_create': True, 'no_create_edit': True}" />
+                                <field name="request_type" />
+                                <field name="priority" widget="priority" />
+                                <field name="requires_naid_compliance" />
+                                <field name="shredding_service_id" />
+                            </group>
+                            <group string="Assignment &amp; Timeline">
+                                <field name="user_id" options="{'no_create': True, 'no_create_edit': True}" />
+                                <field name="requested_date" />
+                                <field name="deadline" />
+                                <field name="completion_date" invisible="state != 'completed'" />
+                                <field name="is_overdue" invisible="is_overdue == False" />
+                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" />
+                                <field name="active" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string=" Request Details">
+                                <group>
+                                    <group string="Description">
+                                        <field name="description" placeholder="Detailed description of the request..." nolabel="1" />
+                                    </group>
+                                    <group string="Time &amp; Cost Estimation">
+                                        <field name="estimated_hours" />
+                                        <field name="actual_hours" invisible="state not in ['completed']" />
+                                        <field name="estimated_cost" />
+                                        <field name="actual_cost" invisible="state not in ['completed']" />
+                                        <field name="billing_status" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string=" Compliance &amp; Signatures">
+                                <group>
+                                    <group string="Customer Signature">
+                                        <field name="customer_signature" widget="signature" />
+                                        <field name="customer_signature_date" invisible="customer_signature == False" />
+                                    </group>
+                                    <group string="Technician Signature">
+                                        <field name="technician_signature" widget="signature" />
+                                        <field name="technician_signature_date" invisible="technician_signature == False" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Compliance Tracking">
+                                        <field name="certificate_of_destruction_id" invisible="certificate_of_destruction_id == False" />
+                                        <field name="work_order_id" invisible="work_order_id == False" />
+                                    </group>
+                                    <group string="Audit Information">
+                                        <field name="create_date" readonly="1" />
+                                        <field name="write_date" readonly="1" />
+                                        <field name="create_uid" readonly="1" />
+                                        <field name="write_uid" readonly="1" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
                     </div>
-                </t>
-            </templates>
-        </kanban>
-    </field>
-    </record>
-
-<!-- Enhanced List view for Portal Requests -->
-    <record id="portal_request_view_tree" model="ir.ui.view">
-        <field name="name">portal.request.view.tree</field>
-        <field name="model">portal.request</field>
-        <field name="arch" type="xml">
-        <list string="Portal Requests" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
-        <field name="name"/>
-        <field name="request_type"/>
-        <field name="partner_id"/>
-        <field name="create_date"/>
-        <field name="priority"/>
-        <field name="state"/>
-        <field name="assigned_to_id"/>
-        </list>
-    </field>
-    </record>
-
-<!-- Enhanced Form view for Portal Requests -->
-    <record id="portal_request_view_form" model="ir.ui.view">
-        <field name="name">portal.request.view.form</field>
-        <field name="model">portal.request</field>
-        <field name="arch" type="xml">
-        <form>
-            <header>
-<button name="action_submit" string="Submit Request" type="object" class="oe_highlight" invisible="state != 'draft'"/>
-
-<button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state != 'submitted'" groups="records_management.group_records_manager"/>
-
-<button name="action_reject" string="Reject" type="object" invisible="state != 'submitted'" groups="records_management.group_records_manager"/>
-
-<button name="action_start_progress" string="Start Progress" type="object" invisible="state != 'approved'" groups="records_management.group_records_manager"/>
-
-<button name="action_complete" string="Mark Complete" type="object" invisible="state != 'in_progress'" groups="records_management.group_records_manager"/>
-
-<button name="action_cancel" string="Cancel" type="object" invisible="state in ['completed', 'cancelled']" groups="records_management.group_records_manager"/>
-
-<button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state in ['draft', 'approved']" groups="records_management.group_records_manager"/>
-
-        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,in_progress,completed"/>
-            </header>
-            <sheet>
-                <div class="oe_button_box" name="button_box">
-                    <button class="oe_stat_button" type="object" name="action_view_attachments" icon="fa-paperclip">
-                        <div class="o_stat_info">
-        <field name="attachment_count" class="o_stat_value"/>
-                            <span class="o_stat_text">Attachments</span>
-                        </div>
-                    </button>
-<button class="oe_stat_button" type="object" name="action_view_work_order" icon="fa-tasks" invisible="work_order_id == False">
-                        <div class="o_stat_info">
-                            <span class="o_stat_value">FSM</span>
-                            <span class="o_stat_text">Work Order</span>
-                        </div>
-                    </button>
-                </div>
-
-                <div class="oe_title">
-                    <label for="name"/>
-                    <h1>
-        <field name="name" placeholder="Portal Request Title..."/>
-                    </h1>
-                </div>
-
-                <group>
-                    <group string="Request Information">
-        <field name="partner_id" options="{'no_create': True, 'no_create_edit': True}"/>
-        <field name="request_type"/>
-        <field name="priority" widget="priority"/>
-        <field name="requires_naid_compliance"/>
-        <field name="shredding_service_id"/>
+                </form>
+            </field>
+        </record>
+        <record id="portal_request_view_search" model="ir.ui.view">
+            <field name="name">portal.request.view.search</field>
+            <field name="model">portal.request</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <field name="partner_id" />
+                    <field name="request_type" />
+                    <field name="user_id" />
+                    <field name="description" />
+                    <separator />
+                    <filter string="Active" name="active" domain="[('active', '=', True)]" />
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
+                    <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]" />
+                    <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]" />
+                    <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]" />
+                    <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]" />
+                    <filter string="Rejected" name="rejected" domain="[('state', '=', 'rejected')]" />
+                    <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]" />
+                    <separator />
+                    <filter string="High Priority" name="high_priority" domain="[('priority', '=', '2')]" />
+                    <filter string="Urgent Priority" name="urgent_priority" domain="[('priority', '=', '3')]" />
+                    <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]" />
+                    <filter string="NAID Compliant" name="naid_compliant" domain="[('requires_naid_compliance', '=', True)]" />
+                    <filter string="My Requests" name="my_requests" domain="[('user_id', '=', uid)]" />
+                    <separator />
+                    <filter string="This Week" name="week" domain="[('requested_date', '&gt;=', (context_today - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]" />
+                    <filter string="This Month" name="month" domain="[('requested_date', '&gt;=', (context_today - relativedelta(months=1)).strftime('%Y-%m-%d'))]" />
+                    <separator />
+                    <filter invisible="1" string="Late Activities" name="activities_overdue" domain="[('activity_ids.date_deadline', '&lt;', context_today.strftime('%Y-%m-%d'))]" help="Show requests with overdue activities" />
+                    <filter invisible="1" string="Today Activities" name="activities_today" domain="[('activity_ids.date_deadline', '=', context_today.strftime('%Y-%m-%d'))]" />
+                    <separator />
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]" />
+                    <group expand="0" string="Group By">
+                        <filter string="Customer" name="customer" context="{'group_by': 'partner_id'}" />
+                        <filter string="Request Type" name="request_type" context="{'group_by': 'request_type'}" />
+                        <filter string="Status" name="state" context="{'group_by': 'state'}" />
+                        <filter string="Priority" name="priority" context="{'group_by': 'priority'}" />
+                        <filter string="Assigned User" name="user" context="{'group_by': 'user_id'}" />
+                        <filter string="Billing Status" name="billing_status" context="{'group_by': 'billing_status'}" />
+                        <separator />
+                        <filter string="Request Date" name="request_date" context="{'group_by': 'requested_date:month'}" />
+                        <filter string="Deadline" name="deadline" context="{'group_by': 'deadline:month'}" />
                     </group>
-                    <group string="Assignment &amp; Timeline">
-        <field name="user_id" options="{'no_create': True, 'no_create_edit': True}"/>
-        <field name="requested_date"/>
-        <field name="deadline"/>
-        <field name="completion_date" invisible="state != 'completed'"/>
-
-        <field name="is_overdue" invisible="is_overdue == False"/>
-
-        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
-        <field name="active"/>
-                    </group>
-                </group>
-
-                <notebook>
-                    <page string=" Request Details">
-                        <group>
-                            <group string="Description">
-        <field name="description" placeholder="Detailed description of the request..." nolabel="1"/>
-                            </group>
-                            <group string="Time &amp; Cost Estimation">
-        <field name="estimated_hours"/>
-        <field name="actual_hours" invisible="state not in ['completed']"/>
-
-        <field name="estimated_cost"/>
-        <field name="actual_cost" invisible="state not in ['completed']"/>
-
-        <field name="billing_status"/>
-                            </group>
-                        </group>
-                    </page>
-                    <page string=" Compliance &amp; Signatures">
-                        <group>
-                            <group string="Customer Signature">
-        <field name="customer_signature" widget="signature"/>
-        <field name="customer_signature_date" invisible="customer_signature == False"/>
-
-                            </group>
-                            <group string="Technician Signature">
-        <field name="technician_signature" widget="signature"/>
-        <field name="technician_signature_date" invisible="technician_signature == False"/>
-
-                            </group>
-                        </group>
-                        <group>
-                            <group string="Compliance Tracking">
-        <field name="certificate_of_destruction_id" invisible="certificate_of_destruction_id == False"/>
-
-        <field name="work_order_id" invisible="work_order_id == False"/>
-
-                            </group>
-                            <group string="Audit Information">
-        <field name="create_date" readonly="1"/>
-        <field name="write_date" readonly="1"/>
-        <field name="create_uid" readonly="1"/>
-        <field name="write_uid" readonly="1"/>
-                            </group>
-                        </group>
-                    </page>
-                </notebook>
-            </sheet>
-            <!-- Mail Thread Integration -->
-            <div class="oe_chatter">
-        <field name="message_follower_ids"/>
-        <field name="activity_ids"/>
-        <field name="message_ids"/>
-            </div>
-        </form>
-    </field>
-    </record>
-
-<!-- Enhanced Search view for Portal Requests -->
-    <record id="portal_request_view_search" model="ir.ui.view">
-        <field name="name">portal.request.view.search</field>
-        <field name="model">portal.request</field>
-        <field name="arch" type="xml">
-        <search>
-        <field name="name"/>
-        <field name="partner_id"/>
-        <field name="request_type"/>
-        <field name="user_id"/>
-        <field name="description"/>
-            <separator/>
-            <filter string="Active" name="active" domain="[('active', '=', True)]"/>
-            <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-            <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
-            <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
-            <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
-            <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
-            <filter string="Rejected" name="rejected" domain="[('state', '=', 'rejected')]"/>
-            <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
-            <separator/>
-            <filter string="High Priority" name="high_priority" domain="[('priority', '=', '2')]"/>
-            <filter string="Urgent Priority" name="urgent_priority" domain="[('priority', '=', '3')]"/>
-            <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
-            <filter string="NAID Compliant" name="naid_compliant" domain="[('requires_naid_compliance', '=', True)]"/>
-            <filter string="My Requests" name="my_requests" domain="[('user_id', '=', uid)]"/>
-            <separator/>
-            <filter string="This Week" name="week" domain="[('requested_date', '&gt;=', (context_today - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
-            <filter string="This Month" name="month" domain="[('requested_date', '&gt;=', (context_today - relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
-            <separator/>
-            <filter invisible="1" string="Late Activities" name="activities_overdue" domain="[('activity_ids.date_deadline', '&lt;', context_today.strftime('%Y-%m-%d'))]" help="Show requests with overdue activities"/>
-            <filter invisible="1" string="Today Activities" name="activities_today" domain="[('activity_ids.date_deadline', '=', context_today.strftime('%Y-%m-%d'))]"/>
-            <separator/>
-            <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
-            <group expand="0" string="Group By">
-                <filter string="Customer" name="customer" context="{'group_by': 'partner_id'}"/>
-                <filter string="Request Type" name="request_type" context="{'group_by': 'request_type'}"/>
-                <filter string="Status" name="state" context="{'group_by': 'state'}"/>
-                <filter string="Priority" name="priority" context="{'group_by': 'priority'}"/>
-                <filter string="Assigned User" name="user" context="{'group_by': 'user_id'}"/>
-                <filter string="Billing Status" name="billing_status" context="{'group_by': 'billing_status'}"/>
-                <separator/>
-                <filter string="Request Date" name="request_date" context="{'group_by': 'requested_date:month'}"/>
-                <filter string="Deadline" name="deadline" context="{'group_by': 'deadline:month'}"/>
-            </group>
-        </search>
-    </field>
-    </record>
-
-<!-- Enhanced Action for Portal Requests -->
-    <record id="action_portal_request" model="ir.actions.act_window">
-        <field name="name">Portal Requests</field>
-        <field name="res_model">portal.request</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{
+                </search>
+            </field>
+        </record>
+        <record id="action_portal_request" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model portal.request has state field - consider using default search filters -->
+            <field name="name">Portal Requests</field>
+            <field name="res_model">portal.request</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{
         'default_user_id': uid,
         'search_default_active': 1,
         'search_default_my_requests': 1
     }</field>
-        <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-            <i class='fa fa-globe'/> Create your first Portal Request!
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-globe" /> Create your first Portal Request!
         </p>
-        <p>
-            <b>Enterprise Portal Request Management:</b>
-            <br/>
-            • <i class='fa fa-pencil'/> Streamlined customer request processing<br/>
-            • <i class='fa fa-exchange'/> Advanced workflow automation and approvals<br/>
-            • <i class='fa fa-bar-chart'/> Real-time status tracking and notifications<br/>
-            • <i class='fa fa-link'/> Full integration with Records Management system<br/>
-            • <i class='fa fa-users'/> Collaborative request handling with activity tracking<br/>
-            • <i class='fa fa-line-chart'/> Comprehensive analytics and reporting<br/>
-            • <i class='fa fa-bolt'/> Automated notifications and escalations<br/>
-            • <i class='fa fa-lock'/> NAID compliance and audit trail management<br/>
-            • <i class='fa fa-mobile'/> Mobile-friendly portal access and management
+                <p>
+                    <b>Enterprise Portal Request Management:</b>
+                    <br />
+            • <i class="fa fa-pencil" /> Streamlined customer request processing<br />
+            • <i class="fa fa-exchange" /> Advanced workflow automation and approvals<br />
+            • <i class="fa fa-bar-chart" /> Real-time status tracking and notifications<br />
+            • <i class="fa fa-link" /> Full integration with Records Management system<br />
+            • <i class="fa fa-users" /> Collaborative request handling with activity tracking<br />
+            • <i class="fa fa-line-chart" /> Comprehensive analytics and reporting<br />
+            • <i class="fa fa-bolt" /> Automated notifications and escalations<br />
+            • <i class="fa fa-lock" /> NAID compliance and audit trail management<br />
+            • <i class="fa fa-mobile" /> Mobile-friendly portal access and management
         </p>
-    </field>
-    </record>
-
-<!-- Enhanced Menu Structure -->
-    <menuitem id="portal_request_menu"
-          name="Portal Requests"
-          parent="records_management.menu_records_management_root"
-          action="action_portal_request"
-          sequence="10"
-          groups="records_management.group_records_manager"/>
-
-<!-- Additional Menu Items for Better Navigation -->
-    <menuitem id="portal_request_draft_menu" name="Draft Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="1" groups="records_management.group_records_user"/>
-    <menuitem id="portal_request_submitted_menu" name="Submitted Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="2" groups="records_management.group_records_manager"/>
+            </field>
+        </record>
+        <menuitem id="portal_request_menu" name="Portal Requests" parent="records_management.menu_records_management_root" action="action_portal_request" sequence="10" groups="records_management.group_records_manager" />
+        <menuitem id="portal_request_draft_menu" name="Draft Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="1" groups="records_management.group_records_user" />
+        <menuitem id="portal_request_submitted_menu" name="Submitted Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="2" groups="records_management.group_records_manager" />
     </data>
 </odoo>

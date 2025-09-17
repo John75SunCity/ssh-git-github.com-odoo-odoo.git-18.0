@@ -1,491 +1,472 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- ============================================================================ -->
-<!-- SERVICE ITEM - KANBAN VIEW -->
-<!-- ============================================================================ -->
-    <record id="service_item_view_kanban" model="ir.ui.view">
-        <field name="name">service.item.view.kanban</field>
-        <field name="model">service.item</field>
-        <field name="arch" type="xml">
-        <kanban default_group_by="service_category" class="o_kanban_service_items">
-        <field name="name"/>
-        <field name="service_category"/>
-        <field name="base_price"/>
-        <field name="currency_id"/>
-        <field name="active"/>
-        <field name="activity_state"/>
-            <templates>
-<t t-name="card">
-                    <div class="oe_kanban_card oe_kanban_global_click">
-                        <div class="o_kanban_card_header">
-                            <div class="o_kanban_card_header_title">
-                                <div class="o_primary">
-                                    <strong><field name="name"/></strong>
+        <record id="service_item_view_kanban" model="ir.ui.view">
+            <field name="name">service.item.view.kanban</field>
+            <field name="model">service.item</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="service_category" class="o_kanban_service_items">
+                    <field name="name" />
+                    <field name="service_category" />
+                    <field name="base_price" />
+                    <field name="currency_id" />
+                    <field name="active" />
+                    <field name="activity_state" />
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary">
+                                            <strong>
+                                                <field name="name" />
+                                            </strong>
+                                        </div>
+                                        <div class="o_secondary">
+                                            <field name="service_category" />
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section">
+                                        <a class="o_kanban_manage_toggle_button" href="#">
+                                            <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage" />
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="o_secondary">
-        <field name="service_category"/>
+                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Price: </strong>
+                                            <field name="base_price" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                                        </div>
+                                        <div class="col-6">
+                                            <field name="active" widget="boolean_toggle" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                    <a t-if="widget.editable" type="edit" role="menuitem" class="dropdown-item">Edit</a>
+                                    <a t-if="widget.deletable" type="delete" role="menuitem" class="dropdown-item">Delete</a>
                                 </div>
                             </div>
-                            <div class="o_kanban_manage_button_section">
-                                <a class="o_kanban_manage_toggle_button" href="#">
-                                    <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/>
-                                </a>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="service_item_view_tree" model="ir.ui.view">
+            <field name="name">service.item.view.tree</field>
+            <field name="model">service.item</field>
+            <field name="arch" type="xml">
+                <list string="Service Items" decoration-muted="not active">
+                    <field name="sequence" widget="handle" />
+                    <field name="name" />
+                    <field name="service_category" />
+                    <field name="service_type" />
+                    <field name="base_price" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                    <field name="currency_id" column_invisible="1" />
+                    <field name="unit_of_measure" />
+                    <field name="requires_approval" widget="boolean_toggle" />
+                    <field name="naid_compliant" widget="boolean_toggle" />
+                    <field name="active" widget="boolean_toggle" />
+                    <field name="activity_ids" widget="list_activity" />
+                    <field name="company_id" column_invisible="1" />
+                </list>
+            </field>
+        </record>
+        <record id="service_item_view_form" model="ir.ui.view">
+            <field name="name">service.item.view.form</field>
+            <field name="model">service.item</field>
+            <field name="arch" type="xml">
+                <form string="Service Item">
+                    <header>
+                        <button name="action_activate" string="Activate" type="object" class="btn-success" invisible="active == True" />
+                        <button name="action_deactivate" string="Deactivate" type="object" class="btn-warning" invisible="active == False" />
+                        <button name="action_duplicate_service" string="Duplicate" type="object" class="btn-secondary" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_related_requests" icon="fa-tasks">
+                                <field name="request_count" string="Requests" widget="statinfo" />
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_view_pricing_history" icon="fa-line-chart">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Pricing</span>
+                                    <span class="o_stat_text">History</span>
+                                </div>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Inactive" bg_color="bg-danger" invisible="active == True" />
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" placeholder="e.g., Document Shredding, Secure Storage, Pickup Service" />
+                            </h1>
+                            <div class="o_row">
+                                <field name="active" widget="boolean_toggle" />
+                                <label for="active" />
                             </div>
                         </div>
-        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
-                            <div class="row">
-                                <div class="col-6">
-                                    <strong>Price: </strong>
-        <field name="base_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                                </div>
-                                <div class="col-6">
-        <field name="active" widget="boolean_toggle"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                            <a t-if="widget.editable" type="edit" role="menuitem" class="dropdown-item">Edit</a>
-                            <a t-if="widget.deletable" type="delete" role="menuitem" class="dropdown-item">Delete</a>
-                        </div>
+                        <group>
+                            <group name="service_details" string="Service Details">
+                                <field name="service_category" widget="selection" options="{'no_create': True}" />
+                                <field name="service_type" widget="selection" />
+                                <field name="service_code" placeholder="e.g., SHRED-001, STOR-002" />
+                                <field name="unit_of_measure" placeholder="e.g., per box, per pound, per hour" />
+                                <field name="sequence" groups="base.group_no_one" />
+                            </group>
+                            <group name="pricing" string="Pricing">
+                                <field name="base_price" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                                <field name="currency_id" options="{'no_create': True}" />
+                                <field name="cost_price" widget="monetary" options="{'currency_field': 'currency_id'}" groups="records_management.group_records_manager" />
+                                <field name="margin_percent" widget="percentage" readonly="1" />
+                            </group>
+                        </group>
+                        <group>
+                            <group name="operational_settings" string="Operational Settings">
+                                <field name="requires_approval" />
+                                <field name="approval_level" invisible="requires_approval == False" />
+                                <field name="estimated_duration" widget="float_time" placeholder="Hours" />
+                                <field name="requires_witness" />
+                                <field name="requires_equipment" />
+                            </group>
+                            <group name="compliance" string="Compliance &amp; Quality">
+                                <field name="naid_compliant" />
+                                <field name="iso_compliant" />
+                                <field name="certificate_required" />
+                                <field name="audit_trail_required" />
+                                <field name="quality_check_required" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description" name="description">
+                                <group>
+                                    <field name="description" nolabel="1" placeholder="Detailed service description for customers and technicians..." />
+                                    <separator string="Internal Notes" />
+                                    <field name="internal_notes" nolabel="1" placeholder="Internal operational notes, procedures, safety requirements..." />
+                                </group>
+                            </page>
+                            <page string="Equipment &amp; Resources" name="resources">
+                                <group>
+                                    <group string="Required Equipment">
+                                        <field name="equipment_ids" widget="many2many_tags" invisible="requires_equipment == False" />
+                                        <field name="vehicle_type_required" />
+                                        <field name="special_tools_required" />
+                                    </group>
+                                    <group string="Staffing Requirements">
+                                        <field name="min_technicians" placeholder="1" />
+                                        <field name="max_technicians" placeholder="3" />
+                                        <field name="skill_level_required" widget="selection" />
+                                        <field name="certification_required" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Pricing Rules" name="pricing_rules">
+                                <field name="pricing_rule_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="name" />
+                                        <field name="condition_field" />
+                                        <field name="condition_operator" />
+                                        <field name="condition_value" />
+                                        <field name="price_adjustment" widget="monetary" />
+                                        <field name="adjustment_type" />
+                                        <field name="active" widget="boolean_toggle" />
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Customer Portal" name="portal_settings">
+                                <group>
+                                    <group string="Portal Visibility">
+                                        <field name="portal_visible" />
+                                        <field name="portal_category" invisible="portal_visible == False" />
+                                        <field name="portal_description" invisible="portal_visible == False" />
+                                        <field name="customer_can_request" invisible="portal_visible == False" />
+                                    </group>
+                                    <group string="Request Settings">
+                                        <field name="require_customer_approval" />
+                                        <field name="auto_create_task" />
+                                        <field name="notification_template_id" options="{'no_create': True}" />
+                                        <field name="email_confirmation_required" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Analytics" name="analytics">
+                                <group>
+                                    <group string="Performance Metrics">
+                                        <field name="request_count" readonly="1" />
+                                        <field name="completed_count" readonly="1" />
+                                        <field name="average_completion_time" readonly="1" widget="float_time" />
+                                        <field name="customer_satisfaction" readonly="1" widget="percentage" />
+                                    </group>
+                                    <group string="Revenue Analytics">
+                                        <field name="total_revenue" readonly="1" widget="monetary" />
+                                        <field name="monthly_revenue" readonly="1" widget="monetary" />
+                                        <field name="last_revenue_date" readonly="1" />
+                                        <field name="revenue_trend" readonly="1" widget="selection" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
                     </div>
-                </t>
-            </templates>
-        </kanban>
-    </field>
-    </record>
-
-<!-- ============================================================================ -->
-<!-- SERVICE ITEM - LIST VIEW -->
-<!-- ============================================================================ -->
-    <record id="service_item_view_tree" model="ir.ui.view">
-        <field name="name">service.item.view.tree</field>
-        <field name="model">service.item</field>
-        <field name="arch" type="xml">
-        <list string="Service Items" decoration-muted="not active">
-        <field name="sequence" widget="handle"/>
-        <field name="name"/>
-        <field name="service_category"/>
-        <field name="service_type"/>
-        <field name="base_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-        <field name="currency_id" column_invisible="1"/>
-        <field name="unit_of_measure"/>
-        <field name="requires_approval" widget="boolean_toggle"/>
-        <field name="naid_compliant" widget="boolean_toggle"/>
-        <field name="active" widget="boolean_toggle"/>
-        <field name="activity_ids" widget="list_activity"/>
-        <field name="company_id" column_invisible="1"/>
-        </list>
-    </field>
-    </record>
-
-<!-- ============================================================================ -->
-<!-- SERVICE ITEM - FORM VIEW -->
-<!-- ============================================================================ -->
-    <record id="service_item_view_form" model="ir.ui.view">
-        <field name="name">service.item.view.form</field>
-        <field name="model">service.item</field>
-        <field name="arch" type="xml">
-        <form string="Service Item">
-            <header>
-<button name="action_activate" string="Activate" type="object" class="btn-success" invisible="active == True"/>
-
-<button name="action_deactivate" string="Deactivate" type="object" class="btn-warning" invisible="active == False"/>
-
-                <button name="action_duplicate_service" string="Duplicate" type="object" class="btn-secondary"/>
-            </header>
-            <sheet>
-                <div class="oe_button_box" name="button_box">
-                    <button class="oe_stat_button" type="object" name="action_view_related_requests" icon="fa-tasks">
-        <field name="request_count" string="Requests" widget="statinfo"/>
-                    </button>
-                    <button class="oe_stat_button" type="object" name="action_view_pricing_history" icon="fa-line-chart">
-                        <div class="o_field_widget o_stat_info">
-                            <span class="o_stat_text">Pricing</span>
-                            <span class="o_stat_text">History</span>
-                        </div>
-                    </button>
-                </div>
-<widget name="web_ribbon" title="Inactive" bg_color="bg-danger" invisible="active == True"/>
-
-                <div class="oe_title">
-                    <label for="name" class="oe_edit_only"/>
-                    <h1>
-        <field name="name" placeholder="e.g., Document Shredding, Secure Storage, Pickup Service"/>
-                    </h1>
-                    <div class="o_row">
-        <field name="active" widget="boolean_toggle"/>
-                        <label for="active"/>
-                    </div>
-                </div>
-                <group>
-                    <group name="service_details" string="Service Details">
-        <field name="service_category" widget="selection" options="{'no_create': True}"/>
-        <field name="service_type" widget="selection"/>
-        <field name="service_code" placeholder="e.g., SHRED-001, STOR-002"/>
-        <field name="unit_of_measure" placeholder="e.g., per box, per pound, per hour"/>
-        <field name="sequence" groups="base.group_no_one"/>
+                </form>
+            </field>
+        </record>
+        <record id="service_item_view_search" model="ir.ui.view">
+            <field name="name">service.item.view.search</field>
+            <field name="model">service.item</field>
+            <field name="arch" type="xml">
+                <search string="Service Items">
+                    <field name="name" string="Service Name" filter_domain="['|', ('name', 'ilike', self), ('service_code', 'ilike', self)]" />
+                    <field name="service_category" />
+                    <field name="service_type" />
+                    <field name="service_code" />
+                    <field name="description" />
+                    <separator />
+                    <filter string="Active Services" name="active" domain="[('active', '=', True)]" />
+                    <filter string="Inactive Services" name="inactive" domain="[('active', '=', False)]" />
+                    <separator />
+                    <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]" />
+                    <filter string="Requires Approval" name="requires_approval" domain="[('requires_approval', '=', True)]" />
+                    <filter string="Portal Visible" name="portal_visible" domain="[('portal_visible', '=', True)]" />
+                    <filter string="Certificate Required" name="certificate_required" domain="[('certificate_required', '=', True)]" />
+                    <separator />
+                    <filter string="High Demand" name="high_demand" domain="[('request_count', '&gt;', 10)]" />
+                    <filter string="Low Revenue" name="low_revenue" domain="[('monthly_revenue', '&lt;', 1000)]" />
+                    <separator />
+                    <filter string="Activities" name="activities" domain="[('activity_ids', '!=', False)]" />
+                    <filter string="My Services" name="my_services" domain="[('create_uid', '=', uid)]" />
+                    <group expand="1" string="Group By">
+                        <filter string="Category" name="group_category" domain="[]" context="{'group_by': 'service_category'}" />
+                        <filter string="Type" name="group_type" domain="[]" context="{'group_by': 'service_type'}" />
+                        <filter string="Active Status" name="group_active" domain="[]" context="{'group_by': 'active'}" />
+                        <filter string="NAID Compliance" name="group_naid" domain="[]" context="{'group_by': 'naid_compliant'}" />
+                        <filter string="Approval Level" name="group_approval" domain="[]" context="{'group_by': 'approval_level'}" />
+                        <filter string="Company" name="group_company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company" />
+                        <separator />
+                        <filter string="Creation Date" name="group_create_date" domain="[]" context="{'group_by': 'create_date:month'}" />
                     </group>
-                    <group name="pricing" string="Pricing">
-        <field name="base_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-        <field name="currency_id" options="{'no_create': True}"/>
-        <field name="cost_price" widget="monetary" options="{'currency_field': 'currency_id'}" groups="records_management.group_records_manager"/>
-        <field name="margin_percent" widget="percentage" readonly="1"/>
-                    </group>
-                </group>
-                <group>
-                    <group name="operational_settings" string="Operational Settings">
-        <field name="requires_approval"/>
-        <field name="approval_level" invisible="requires_approval == False"/>
-
-        <field name="estimated_duration" widget="float_time" placeholder="Hours"/>
-        <field name="requires_witness"/>
-        <field name="requires_equipment"/>
-                    </group>
-                    <group name="compliance" string="Compliance &amp; Quality">
-        <field name="naid_compliant"/>
-        <field name="iso_compliant"/>
-        <field name="certificate_required"/>
-        <field name="audit_trail_required"/>
-        <field name="quality_check_required"/>
-                    </group>
-                </group>
-                <notebook>
-                    <page string="Description" name="description">
-                        <group>
-        <field name="description" nolabel="1" placeholder="Detailed service description for customers and technicians..."/>
-                            <separator string="Internal Notes"/>
-        <field name="internal_notes" nolabel="1" placeholder="Internal operational notes, procedures, safety requirements..."/>
-                        </group>
-                    </page>
-                    <page string="Equipment &amp; Resources" name="resources">
-                        <group>
-                            <group string="Required Equipment">
-        <field name="equipment_ids" widget="many2many_tags" invisible="requires_equipment == False"/>
-
-        <field name="vehicle_type_required"/>
-        <field name="special_tools_required"/>
-                            </group>
-                            <group string="Staffing Requirements">
-        <field name="min_technicians" placeholder="1"/>
-        <field name="max_technicians" placeholder="3"/>
-        <field name="skill_level_required" widget="selection"/>
-        <field name="certification_required"/>
-                            </group>
-                        </group>
-                    </page>
-                    <page string="Pricing Rules" name="pricing_rules">
-        <field name="pricing_rule_ids" nolabel="1">
-                            <list editable="bottom">
-        <field name="name"/>
-        <field name="condition_field"/>
-        <field name="condition_operator"/>
-        <field name="condition_value"/>
-        <field name="price_adjustment" widget="monetary"/>
-        <field name="adjustment_type"/>
-        <field name="active" widget="boolean_toggle"/>
-                            </list>
-                        </field>
-                    </page>
-                    <page string="Customer Portal" name="portal_settings">
-                        <group>
-                            <group string="Portal Visibility">
-        <field name="portal_visible"/>
-        <field name="portal_category" invisible="portal_visible == False"/>
-
-        <field name="portal_description" invisible="portal_visible == False"/>
-
-        <field name="customer_can_request" invisible="portal_visible == False"/>
-
-                            </group>
-                            <group string="Request Settings">
-        <field name="require_customer_approval"/>
-        <field name="auto_create_task"/>
-        <field name="notification_template_id" options="{'no_create': True}"/>
-        <field name="email_confirmation_required"/>
-                            </group>
-                        </group>
-                    </page>
-                    <page string="Analytics" name="analytics">
-                        <group>
-                            <group string="Performance Metrics">
-        <field name="request_count" readonly="1"/>
-        <field name="completed_count" readonly="1"/>
-        <field name="average_completion_time" readonly="1" widget="float_time"/>
-        <field name="customer_satisfaction" readonly="1" widget="percentage"/>
-                            </group>
-                            <group string="Revenue Analytics">
-        <field name="total_revenue" readonly="1" widget="monetary"/>
-        <field name="monthly_revenue" readonly="1" widget="monetary"/>
-        <field name="last_revenue_date" readonly="1"/>
-        <field name="revenue_trend" readonly="1" widget="selection"/>
-                            </group>
-                        </group>
-                    </page>
-                </notebook>
-            </sheet>
-            <div class="oe_chatter">
-        <field name="message_follower_ids"/>
-        <field name="activity_ids"/>
-        <field name="message_ids"/>
-            </div>
-        </form>
-    </field>
-    </record>
-
-<!-- ============================================================================ -->
-<!-- SERVICE ITEM - SEARCH VIEW -->
-<!-- ============================================================================ -->
-    <record id="service_item_view_search" model="ir.ui.view">
-        <field name="name">service.item.view.search</field>
-        <field name="model">service.item</field>
-        <field name="arch" type="xml">
-        <search string="Service Items">
-        <field name="name" string="Service Name" filter_domain="['|', ('name', 'ilike', self), ('service_code', 'ilike', self)]"/>
-        <field name="service_category"/>
-        <field name="service_type"/>
-        <field name="service_code"/>
-        <field name="description"/>
-            <separator/>
-            <filter string="Active Services" name="active" domain="[('active', '=', True)]"/>
-            <filter string="Inactive Services" name="inactive" domain="[('active', '=', False)]"/>
-            <separator/>
-            <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
-            <filter string="Requires Approval" name="requires_approval" domain="[('requires_approval', '=', True)]"/>
-            <filter string="Portal Visible" name="portal_visible" domain="[('portal_visible', '=', True)]"/>
-            <filter string="Certificate Required" name="certificate_required" domain="[('certificate_required', '=', True)]"/>
-            <separator/>
-            <filter string="High Demand" name="high_demand" domain="[('request_count', '>', 10)]"/>
-            <filter string="Low Revenue" name="low_revenue" domain="[('monthly_revenue', '&lt;', 1000)]"/>
-            <separator/>
-            <filter string="Activities" name="activities" domain="[('activity_ids', '!=', False)]"/>
-            <filter string="My Services" name="my_services" domain="[('create_uid', '=', uid)]"/>
-            <group expand="1" string="Group By">
-                <filter string="Category" name="group_category" domain="[]" context="{'group_by': 'service_category'}"/>
-                <filter string="Type" name="group_type" domain="[]" context="{'group_by': 'service_type'}"/>
-                <filter string="Active Status" name="group_active" domain="[]" context="{'group_by': 'active'}"/>
-                <filter string="NAID Compliance" name="group_naid" domain="[]" context="{'group_by': 'naid_compliant'}"/>
-                <filter string="Approval Level" name="group_approval" domain="[]" context="{'group_by': 'approval_level'}"/>
-                <filter string="Company" name="group_company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
-                <separator/>
-                <filter string="Creation Date" name="group_create_date" domain="[]" context="{'group_by': 'create_date:month'}"/>
-            </group>
-        </search>
-    </field>
-    </record>
-
-<!-- ============================================================================ -->
-<!-- SERVICE ITEM - ACTION WINDOWS -->
-<!-- ============================================================================ -->
-
-<!-- Main Action -->
-    <record id="action_service_item" model="ir.actions.act_window">
-        <field name="name">Service Items</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{
+                </search>
+            </field>
+        </record>
+        <record id="action_service_item" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Service Items</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{
         'search_default_active': 1,
         'default_active': True,
     }</field>
-        <field name="help" type="html">
-        <p class="o_view_nocontent_create">
+            <field name="help" type="html">
+                <p class="o_view_nocontent_create">
             Click to create a new service item.
         </p>
-        <p>
+                <p>
             Service items define the various services your Records Management business offers,
             including shredding services, storage solutions, pickup requests, and compliance auditing.
             Each service item includes pricing, operational requirements, compliance settings, and portal visibility.
         </p>
-    </field>
-    </record>
-
-<!-- Active Services Action -->
-    <record id="action_service_item_active" model="ir.actions.act_window">
-        <field name="name">Active Services</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[('active', '=', True)]</field>
-        <field name="context">{
+            </field>
+        </record>
+        <record id="action_service_item_active" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Active Services</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[('active', '=', True)]</field>
+            <field name="context">{
         'search_default_portal_visible': 1,
         'search_default_group_category': 1,
     }</field>
-    </record>
-
-<!-- NAID Compliant Services Action -->
-    <record id="action_service_item_naid" model="ir.actions.act_window">
-        <field name="name">NAID Compliant Services</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('naid_compliant', '=', True), ('active', '=', True)]</field>
-        <field name="context">{
+        </record>
+        <record id="action_service_item_naid" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">NAID Compliant Services</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('naid_compliant', '=', True), ('active', '=', True)]</field>
+            <field name="context">{
         'search_default_group_category': 1,
     }</field>
-    </record>
-
-<!-- Portal Services Action -->
-    <record id="action_service_item_portal" model="ir.actions.act_window">
-        <field name="name">Portal Services</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[('portal_visible', '=', True), ('active', '=', True)]</field>
-        <field name="context">{
+        </record>
+        <record id="action_service_item_portal" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Portal Services</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[('portal_visible', '=', True), ('active', '=', True)]</field>
+            <field name="context">{
         'search_default_customer_can_request': 1,
         'search_default_group_portal_category': 1,
     }</field>
-    </record>
-<!-- ============================================ -->
-<!-- PLACEHOLDER / FUTURE ACTIONS (Added to satisfy menu references) -->
-<!-- These actions can be enhanced later with custom domains/views -->
-<!-- ============================================ -->
-
-    <record id="action_service_item_dashboard" model="ir.actions.act_window">
-        <field name="name">Service Dashboard</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[('active', '=', True)]</field>
-        <field name="context">{
+        </record>
+        <record id="action_service_item_dashboard" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Service Dashboard</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[('active', '=', True)]</field>
+            <field name="context">{
     'search_default_active': 1,
     'search_default_group_category': 1,
     'pivot_measures': ['request_count','total_revenue']
 }</field>
-        <field name="help" type="html">
-<p>Overview of all active services with quick access to categories and key metrics.</p>
-</field>
-    </record>
-    <record id="action_service_item_category" model="ir.actions.act_window">
-        <field name="name">Service Categories</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('service_category','!=',False)]</field>
-        <field name="context">{
+            <field name="help" type="html">
+                <p>Overview of all active services with quick access to categories and key metrics.</p>
+            </field>
+        </record>
+        <record id="action_service_item_category" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Service Categories</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('service_category','!=',False)]</field>
+            <field name="context">{
     'search_default_group_category': 1,
     'searchpanel_default_groupby': 'service_category'
 }</field>
-        <field name="help" type="html">
-<p>List of services grouped by category for mass maintenance.</p>
-</field>
-    </record>
-    <record id="action_service_item_template" model="ir.actions.act_window">
-        <field name="name">Service Templates</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('active', '=', True), ('portal_visible','=',False), ('customer_can_request','=',False)]</field>
-        <field name="help" type="html">
-<p>Internal reusable templates not exposed on the portal.</p>
-</field>
-    </record>
-    <record id="action_service_item_request" model="ir.actions.act_window">
-        <field name="name">Service Requests</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('customer_can_request', '=', True), ('active','=',True)]</field>
-        <field name="context">{'search_default_customer_can_request': 1}</field>
-        <field name="help" type="html">
-<p>Services that customers are allowed to request directly.</p>
-</field>
-    </record>
-    <record id="action_service_item_schedule" model="ir.actions.act_window">
-        <field name="name">Service Scheduling</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('auto_create_task', '=', True), ('active','=',True)]</field>
-        <field name="help" type="html">
-<p>Services that automatically create tasks when requested.</p>
-</field>
-    </record>
-    <record id="action_service_item_billing" model="ir.actions.act_window">
-        <field name="name">Service Billing</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('pricing_rule_ids','!=',False)]</field>
-        <field name="help" type="html">
-<p>Billable services with at least one pricing rule.</p>
-</field>
-    </record>
-    <record id="action_service_item_performance_report" model="ir.actions.act_window">
-        <field name="name">Performance Report</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">pivot,graph,list</field>
-        <field name="domain">[('request_count','>',0)]</field>
-        <field name="context">{'pivot_measures':['request_count','completed_count','average_completion_time','customer_satisfaction']}</field>
-        <field name="help" type="html">
-<p>Analyze operational performance metrics of active services.</p>
-</field>
-    </record>
-    <record id="action_service_item_analytics" model="ir.actions.act_window">
-        <field name="name">Usage Analytics</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">pivot,graph,list</field>
-        <field name="domain">[('total_revenue','>',0)]</field>
-        <field name="context">{'pivot_measures':['total_revenue','monthly_revenue','request_count']}</field>
-        <field name="help" type="html">
-<p>Revenue and demand analytics for monetized services.</p>
-</field>
-    </record>
-    <record id="action_service_item_revenue_report" model="ir.actions.act_window">
-        <field name="name">Revenue Report</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">pivot,graph,list</field>
-        <field name="domain">[('total_revenue', '>', 0)]</field>
-        <field name="context">{'pivot_measures':['total_revenue','monthly_revenue']}</field>
-        <field name="help" type="html">
-<p>Focused revenue reporting view.</p>
-</field>
-    </record>
-    <record id="action_service_item_pricing_rules" model="ir.actions.act_window">
-        <field name="name">Pricing Rules</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('pricing_rule_ids', '!=', False)]</field>
-        <field name="help" type="html">
-<p>Services with conditional pricing logic.</p>
-</field>
-    </record>
-    <record id="action_service_item_quality_control" model="ir.actions.act_window">
-        <field name="name">Quality Controls</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('quality_check_required', '=', True)]</field>
-        <field name="help" type="html">
-<p>Services that require quality checks or audit trails.</p>
-</field>
-    </record>
-    <record id="action_service_item_mobile_tasks" model="ir.actions.act_window">
-        <field name="name">Mobile Service Tasks</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[('portal_visible', '=', True), ('auto_create_task','=',True)]</field>
-        <field name="help" type="html">
-<p>Portal-visible services that also generate tasks for mobile/FSM workflows.</p>
-</field>
-    </record>
-    <record id="action_service_item_fsm_integration" model="ir.actions.act_window">
-        <field name="name">FSM Integration</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[('auto_create_task', '=', True)]</field>
-        <field name="help" type="html">
-<p>Services configured for Field Service task automation.</p>
-</field>
-    </record>
-    <record id="action_portal_service_requests" model="ir.actions.act_window">
-        <field name="name">Portal Service Requests</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[('customer_can_request', '=', True), ('portal_visible','=',True)]</field>
-        <field name="help" type="html">
-<p>Portal-visible services that customers may request.</p>
-</field>
-    </record>
-    <record id="action_service_item_self_service" model="ir.actions.act_window">
-        <field name="name">Self-Service Setup</field>
-        <field name="res_model">service.item</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('portal_visible', '=', True), ('customer_can_request','=',False)]</field>
-        <field name="help" type="html">
-<p>Portal-visible informational services not requestable directly.</p>
-</field>
-    </record>
+            <field name="help" type="html">
+                <p>List of services grouped by category for mass maintenance.</p>
+            </field>
+        </record>
+        <record id="action_service_item_template" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Service Templates</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('active', '=', True), ('portal_visible','=',False), ('customer_can_request','=',False)]</field>
+            <field name="help" type="html">
+                <p>Internal reusable templates not exposed on the portal.</p>
+            </field>
+        </record>
+        <record id="action_service_item_request" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Service Requests</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('customer_can_request', '=', True), ('active','=',True)]</field>
+            <field name="context">{'search_default_customer_can_request': 1}</field>
+            <field name="help" type="html">
+                <p>Services that customers are allowed to request directly.</p>
+            </field>
+        </record>
+        <record id="action_service_item_schedule" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Service Scheduling</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('auto_create_task', '=', True), ('active','=',True)]</field>
+            <field name="help" type="html">
+                <p>Services that automatically create tasks when requested.</p>
+            </field>
+        </record>
+        <record id="action_service_item_billing" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Service Billing</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('pricing_rule_ids','!=',False)]</field>
+            <field name="help" type="html">
+                <p>Billable services with at least one pricing rule.</p>
+            </field>
+        </record>
+        <record id="action_service_item_performance_report" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Performance Report</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">pivot,graph,list</field>
+            <field name="domain">[('request_count','&gt;',0)]</field>
+            <field name="context">{'pivot_measures':['request_count','completed_count','average_completion_time','customer_satisfaction']}</field>
+            <field name="help" type="html">
+                <p>Analyze operational performance metrics of active services.</p>
+            </field>
+        </record>
+        <record id="action_service_item_analytics" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Usage Analytics</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">pivot,graph,list</field>
+            <field name="domain">[('total_revenue','&gt;',0)]</field>
+            <field name="context">{'pivot_measures':['total_revenue','monthly_revenue','request_count']}</field>
+            <field name="help" type="html">
+                <p>Revenue and demand analytics for monetized services.</p>
+            </field>
+        </record>
+        <record id="action_service_item_revenue_report" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Revenue Report</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">pivot,graph,list</field>
+            <field name="domain">[('total_revenue', '&gt;', 0)]</field>
+            <field name="context">{'pivot_measures':['total_revenue','monthly_revenue']}</field>
+            <field name="help" type="html">
+                <p>Focused revenue reporting view.</p>
+            </field>
+        </record>
+        <record id="action_service_item_pricing_rules" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Pricing Rules</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('pricing_rule_ids', '!=', False)]</field>
+            <field name="help" type="html">
+                <p>Services with conditional pricing logic.</p>
+            </field>
+        </record>
+        <record id="action_service_item_quality_control" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Quality Controls</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('quality_check_required', '=', True)]</field>
+            <field name="help" type="html">
+                <p>Services that require quality checks or audit trails.</p>
+            </field>
+        </record>
+        <record id="action_service_item_mobile_tasks" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Mobile Service Tasks</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[('portal_visible', '=', True), ('auto_create_task','=',True)]</field>
+            <field name="help" type="html">
+                <p>Portal-visible services that also generate tasks for mobile/FSM workflows.</p>
+            </field>
+        </record>
+        <record id="action_service_item_fsm_integration" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">FSM Integration</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[('auto_create_task', '=', True)]</field>
+            <field name="help" type="html">
+                <p>Services configured for Field Service task automation.</p>
+            </field>
+        </record>
+        <record id="action_portal_service_requests" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Portal Service Requests</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[('customer_can_request', '=', True), ('portal_visible','=',True)]</field>
+            <field name="help" type="html">
+                <p>Portal-visible services that customers may request.</p>
+            </field>
+        </record>
+        <record id="action_service_item_self_service" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
+            <field name="name">Self-Service Setup</field>
+            <field name="res_model">service.item</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('portal_visible', '=', True), ('customer_can_request','=',False)]</field>
+            <field name="help" type="html">
+                <p>Portal-visible informational services not requestable directly.</p>
+            </field>
+        </record>
     </data>
 </odoo>

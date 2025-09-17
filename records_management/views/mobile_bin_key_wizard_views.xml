@@ -1,130 +1,92 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- Form view for Mobile Bin Key Wizard -->
-    <record id="mobile_bin_key_wizard_view_form" model="ir.ui.view">
-        <field name="name">mobile.bin.key.wizard.view.form</field>
-        <field name="model">mobile.bin.key.wizard</field>
-        <field name="arch" type="xml">
-        <form string="Mobile Bin Key Management">
-            <div class="o_form_sheet" style="max-width: 100%; padding: 10px;">
-
-                <!-- Header section -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="alert alert-info o_alert" role="status" aria-live="polite">
-                            <strong>Mobile Key Management</strong>
-                            <span class="d-block">Quick access for field technicians to manage bin keys and services</span>
+        <record id="mobile_bin_key_wizard_view_form" model="ir.ui.view">
+            <field name="name">mobile.bin.key.wizard.view.form</field>
+            <field name="model">mobile.bin.key.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Mobile Bin Key Management">
+                    <div class="o_form_sheet" style="max-width: 100%; padding: 10px;">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="alert alert-info o_alert" role="status" aria-live="polite">
+                                    <strong>Mobile Key Management</strong>
+                                    <span class="d-block">Quick access for field technicians to manage bin keys and services</span>
+                                </div>
+                            </div>
                         </div>
+                        <group string="Select Action">
+                            <field name="action_type" widget="radio" options="{'horizontal': false}" />
+                        </group>
+                        <group string="Operation Details" invisible="action_type in [False, 'quick_lookup']">
+                            <field name="partner_id" options="{'no_create_edit': True}" placeholder="Select customer..." />
+                            <field name="customer_company_id" options="{'no_create_edit': True}" placeholder="Select customer company..." />
+                            <field name="unlock_reason" invisible="action_type != 'create_unlock_service'" />
+                        </group>
+                        <group string="Bin Key Information" invisible="action_type in [False, 'quick_lookup']">
+                            <field name="issue_location" invisible="action_type not in ['issue_new', 'update_existing']" />
+                            <field name="bin_locations" invisible="action_type not in ['issue_new', 'update_existing']" />
+                            <field name="unlock_bin_location" invisible="action_type != 'create_unlock_service'" />
+                            <field name="emergency_contact" invisible="action_type not in ['issue_new', 'update_existing']" />
+                        </group>
+                        <group string="Quick Lookup" invisible="action_type != 'quick_lookup'">
+                            <field name="customer_company_id" string="Lookup Customer" options="{'no_create_edit': True}" placeholder="Select customer to lookup..." />
+                        </group>
+                        <group string="Operation Details" invisible="action_type == 'quick_lookup'">
+                            <field name="unlock_reason_description" invisible="action_type != 'create_unlock_service'" placeholder="Describe the unlock reason..." />
+                            <field name="key_notes" invisible="action_type not in ['issue_new', 'update_existing']" placeholder="Add key notes..." />
+                            <field name="billable" invisible="action_type != 'create_unlock_service'" />
+                            <field name="unlock_charge" invisible="action_type != 'create_unlock_service' or not billable" />
+                        </group>
+                        <group string="New Contact" invisible="not show_contact_creation">
+                            <field name="create_new_contact" />
+                            <field name="contact_name" invisible="not create_new_contact" required="create_new_contact" />
+                            <field name="contact_email" invisible="not create_new_contact" />
+                            <field name="contact_phone" invisible="not create_new_contact" />
+                            <field name="contact_mobile" invisible="not create_new_contact" />
+                            <field name="contact_title" invisible="not create_new_contact" />
+                        </group>
+                        <div invisible="not show_lookup_results">
+                            <separator string="Lookup Results" />
+                            <field name="key_lookup_results" readonly="1" widget="html" />
+                        </div>
+                        <group string="Service Documentation" invisible="action_type != 'create_unlock_service'">
+                            <field name="items_retrieved" placeholder="List items retrieved..." />
+                            <field name="service_notes" placeholder="Add service notes..." />
+                            <field name="photo_ids" widget="many2many_binary" />
+                        </group>
+                        <field name="show_contact_creation" invisible="1" />
+                        <field name="show_key_assignment" invisible="1" />
+                        <field name="show_unlock_service" invisible="1" />
+                        <field name="show_lookup_results" invisible="1" />
                     </div>
-                </div>
-
-                <!-- Action selection -->
-                <group string="Select Action">
-        <field name="action_type" widget="radio" options="{'horizontal': false}"/>
-                </group>
-
-                <!-- Operation details -->
-                <group string="Operation Details" invisible="action_type in [False, 'quick_lookup']">
-        <field name="partner_id" options="{'no_create_edit': True}" placeholder="Select customer..."/>
-        <field name="customer_company_id" options="{'no_create_edit': True}" placeholder="Select customer company..."/>
-        <field name="unlock_reason" invisible="action_type != 'create_unlock_service'"/>
-
-                </group>
-
-                <!-- Bin key details -->
-                <group string="Bin Key Information" invisible="action_type in [False, 'quick_lookup']">
-        <field name="issue_location" invisible="action_type not in ['issue_new', 'update_existing']"/>
-        <field name="bin_locations" invisible="action_type not in ['issue_new', 'update_existing']"/>
-        <field name="unlock_bin_location" invisible="action_type != 'create_unlock_service'"/>
-        <field name="emergency_contact" invisible="action_type not in ['issue_new', 'update_existing']"/>
-
-                </group>
-
-                <!-- Quick lookup section -->
-                <group string="Quick Lookup" invisible="action_type != 'quick_lookup'">
-        <field name="customer_company_id" string="Lookup Customer" options="{'no_create_edit': True}" placeholder="Select customer to lookup..."/>
-
-                </group>
-
-                <!-- Operation description -->
-                <group string="Operation Details" invisible="action_type == 'quick_lookup'">
-        <field name="unlock_reason_description" invisible="action_type != 'create_unlock_service'" placeholder="Describe the unlock reason..."/>
-        <field name="key_notes" invisible="action_type not in ['issue_new', 'update_existing']" placeholder="Add key notes..."/>
-        <field name="billable" invisible="action_type != 'create_unlock_service'"/>
-        <field name="unlock_charge" invisible="action_type != 'create_unlock_service' or not billable"/>
-
-                </group>
-
-<!-- Contact creation -->
-        <group string="New Contact" invisible="not show_contact_creation">
-        <field name="create_new_contact"/>
-        <field name="contact_name" invisible="not create_new_contact" required="create_new_contact"/>
-        <field name="contact_email" invisible="not create_new_contact"/>
-        <field name="contact_phone" invisible="not create_new_contact"/>
-        <field name="contact_mobile" invisible="not create_new_contact"/>
-        <field name="contact_title" invisible="not create_new_contact"/>
-
-                </group>
-
-                <!-- Lookup results -->
-                <div invisible="not show_lookup_results">
-                    <separator string="Lookup Results"/>
-        <field name="key_lookup_results" readonly="1" widget="html"/>
-
-                </div>
-
-<!-- Service documentation -->
-        <group string="Service Documentation" invisible="action_type != 'create_unlock_service'">
-        <field name="items_retrieved" placeholder="List items retrieved..."/>
-        <field name="service_notes" placeholder="Add service notes..."/>
-        <field name="photo_ids" widget="many2many_binary"/>
-
-                </group>
-
-                <!-- Hidden visibility control fields -->
-        <field name="show_contact_creation" invisible="1"/>
-        <field name="show_key_assignment" invisible="1"/>
-        <field name="show_unlock_service" invisible="1"/>
-
-        <field name="show_lookup_results" invisible="1"/>
-
-            </div>
-
-            <!-- Footer buttons -->
-            <footer>
-                <div class="row">
-                    <div class="col-6">
-                        <button string="Cancel" class="btn btn-secondary btn-block" special="cancel"/>
-                    </div>
-                    <div class="col-6">
-<button string="Execute" class="btn btn-primary btn-block" name="action_execute" type="object" invisible="action_type == False"/>
-
-                    </div>
-                </div>
-            </footer>
-        </form>
-    </field>
-    </record>
-
-<!-- Action for mobile wizard -->
-    <record id="action_mobile_bin_key_wizard" model="ir.actions.act_window">
-        <field name="name">Mobile Key Management</field>
-        <field name="res_model">mobile.bin.key.wizard</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="context">{}</field>
-    </record>
-
-<!-- Menu item -->
-    <menuitem id="menu_mobile_bin_key_wizard" name="Mobile Key Manager" parent="records_management.menu_records_management_root" action="action_mobile_bin_key_wizard" sequence="5" groups="records_management.group_records_user"/>
-
-<!-- Quick access shortcut -->
-    <record id="action_mobile_key_shortcut" model="ir.actions.server">
-        <field name="name">Quick Key Access</field>
-        <field name="model_id" ref="records_management.model_mobile_bin_key_wizard"/>
-        <field name="state">code</field>
-        <field name="code">
+                    <footer>
+                        <div class="row">
+                            <div class="col-6">
+                                <button string="Cancel" class="btn btn-secondary btn-block" special="cancel" />
+                            </div>
+                            <div class="col-6">
+                                <button string="Execute" class="btn btn-primary btn-block" name="action_execute" type="object" invisible="action_type == False" />
+                            </div>
+                        </div>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_mobile_bin_key_wizard" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model mobile.bin.key.wizard has state field - consider using default search filters -->
+            <field name="name">Mobile Key Management</field>
+            <field name="res_model">mobile.bin.key.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{}</field>
+        </record>
+        <menuitem id="menu_mobile_bin_key_wizard" name="Mobile Key Manager" parent="records_management.menu_records_management_root" action="action_mobile_bin_key_wizard" sequence="5" groups="records_management.group_records_user" />
+        <record id="action_mobile_key_shortcut" model="ir.actions.server">
+            <field name="name">Quick Key Access</field>
+            <field name="model_id" ref="records_management.model_mobile_bin_key_wizard" />
+            <field name="state">code</field>
+            <field name="code">
 action = {
 'type': 'ir.actions.act_window',
 'name': 'Mobile Key Management',
@@ -134,6 +96,6 @@ action = {
 'context': {'default_action_type': 'access'}
 }
     </field>
-    </record>
+        </record>
     </data>
 </odoo>

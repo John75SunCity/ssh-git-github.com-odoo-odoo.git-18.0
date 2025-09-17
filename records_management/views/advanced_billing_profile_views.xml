@@ -1,123 +1,104 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List view for advanced.billing.profile -->
-    <record id="advanced_billing_profile_view_tree" model="ir.ui.view">
-        <field name="name">advanced.billing.profile.view.tree</field>
-        <field name="model">advanced.billing.profile</field>
-        <field name="arch" type="xml">
-            <list string="Billing Profiles">
-        <field name="name"/>
-        <field name="partner_id"/>
-        <field name="billing_frequency"/>
-        <field name="state"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Form view for advanced.billing.profile -->
-    <record id="advanced_billing_profile_view_form" model="ir.ui.view">
-        <field name="name">advanced.billing.profile.view.form</field>
-        <field name="model">advanced.billing.profile</field>
-        <field name="arch" type="xml">
-            <form string="Billing Profile">
-                <header>
-<button name="action_activate" type="object" string="Activate" class="oe_highlight" invisible="state != 'draft'"/>
-<button name="action_suspend" type="object" string="Suspend" invisible="state != 'active'"/>
-<button name="action_close" type="object" string="Close" invisible="state not in ['active', 'suspended']"/>
-
-        <field name="state" widget="statusbar" statusbar_visible="draft,active,closed"/>
-                </header>
-                <sheet>
-                    <group>
+        <record id="advanced_billing_profile_view_tree" model="ir.ui.view">
+            <field name="name">advanced.billing.profile.view.tree</field>
+            <field name="model">advanced.billing.profile</field>
+            <field name="arch" type="xml">
+                <list string="Billing Profiles">
+                    <field name="name" />
+                    <field name="partner_id" />
+                    <field name="billing_frequency" />
+                    <field name="state" />
+                </list>
+            </field>
+        </record>
+        <record id="advanced_billing_profile_view_form" model="ir.ui.view">
+            <field name="name">advanced.billing.profile.view.form</field>
+            <field name="model">advanced.billing.profile</field>
+            <field name="arch" type="xml">
+                <form string="Billing Profile">
+                    <header>
+                        <button name="action_activate" type="object" string="Activate" class="oe_highlight" invisible="state != 'draft'" />
+                        <button name="action_suspend" type="object" string="Suspend" invisible="state != 'active'" />
+                        <button name="action_close" type="object" string="Close" invisible="state not in ['active', 'suspended']" />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,active,closed" />
+                    </header>
+                    <sheet>
                         <group>
-        <field name="name"/>
-        <field name="partner_id"/>
-        <field name="primary_contact_id"/>
-
-                        </group>
-                        <group>
-        <field name="active"/>
-        <field name="company_id" groups="base.group_multi_company"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Billing Configuration">
                             <group>
-        <field name="billing_frequency"/>
-        <field name="billing_cycle_day"/>
-
-
-        <field name="auto_billing"/>
-        <field name="discount_percentage"/>
-        <field name="total_monthly_amount"/>
-
+                                <field name="name" />
+                                <field name="partner_id" />
+                                <field name="primary_contact_id" />
                             </group>
-                        </page>
-                        <page string="Contacts">
-        <field name="contact_ids">
-                                <list>
-        <field name="name"/>
-        <field name="email"/>
-        <field name="phone"/>
-                                </list>
-                            </field>
-                        </page>
-        <page string="Services">
-        <field name="billing_line_ids">
-    <list>
-        <field name="name"/>
-        <field name="type"/>
-        <field name="amount"/>
-        <field name="quantity"/>
-    </list>
-</field>
-                        </page>
-                    </notebook>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-<!-- List view for advanced.billing.profile -->
-    <record id="advanced_billing_profile_view_tree" model="ir.ui.view">
-        <field name="name">advanced.billing.profile.view.tree</field>
-        <field name="model">advanced.billing.profile</field>
-        <field name="arch" type="xml">
-        <list>
-        <field name="name"/>
-        <field name="primary_contact_id"/>
-</list>
-        </field>
-    </record>
-
-    <!-- Search view for advanced.billing.profile -->
-    <record id="advanced_billing_profile_view_search" model="ir.ui.view">
-        <field name="name">advanced.billing.profile.view.search</field>
-        <field name="model">advanced.billing.profile</field>
-        <field name="arch" type="xml">
-            <search>
-        <field name="name"/>
-            </search>
-        </field>
-    </record>
-
-    <!-- Action for advanced.billing.profile -->
-    <record id="advanced_billing_profile_action" model="ir.actions.act_window">
-        <field name="name">Billing Profiles</field>
-        <field name="res_model">advanced.billing.profile</field>
-        <field name="view_mode">list,form</field>
-        <field name="view_id" ref="advanced_billing_profile_view_tree"/>
-        <field name="search_view_id" ref="advanced_billing_profile_view_search"/>
-        <field name="context">{'search_default_filter_active': 1}</field>
-        <field name="help">Manage customer billing profiles</field>
-    </record>
-
-    <!-- Menu item for advanced.billing.profile -->
-    <menuitem id="advanced_billing_profile_menu"
-              name="Billing Profiles"
-              parent="records_management.menu_records_billing"
-              action="advanced_billing_profile_action"
-              sequence="21"/>
+                            <group>
+                                <field name="active" />
+                                <field name="company_id" groups="base.group_multi_company" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Billing Configuration">
+                                <group>
+                                    <field name="billing_frequency" />
+                                    <field name="billing_cycle_day" />
+                                    <field name="auto_billing" />
+                                    <field name="discount_percentage" />
+                                    <field name="total_monthly_amount" />
+                                </group>
+                            </page>
+                            <page string="Contacts">
+                                <field name="contact_ids">
+                                    <list>
+                                        <field name="name" />
+                                        <field name="email" />
+                                        <field name="phone" />
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Services">
+                                <field name="billing_line_ids">
+                                    <list>
+                                        <field name="name" />
+                                        <field name="type" />
+                                        <field name="amount" />
+                                        <field name="quantity" />
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="advanced_billing_profile_view_tree" model="ir.ui.view">
+            <field name="name">advanced.billing.profile.view.tree</field>
+            <field name="model">advanced.billing.profile</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name" />
+                    <field name="primary_contact_id" />
+                </list>
+            </field>
+        </record>
+        <record id="advanced_billing_profile_view_search" model="ir.ui.view">
+            <field name="name">advanced.billing.profile.view.search</field>
+            <field name="model">advanced.billing.profile</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+        <record id="advanced_billing_profile_action" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model advanced.billing.profile has state field - consider using default search filters -->
+            <field name="name">Billing Profiles</field>
+            <field name="res_model">advanced.billing.profile</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="advanced_billing_profile_view_tree" />
+            <field name="search_view_id" ref="advanced_billing_profile_view_search" />
+            <field name="context">{'search_default_filter_active': 1}</field>
+            <field name="help">Manage customer billing profiles</field>
+        </record>
+        <menuitem id="advanced_billing_profile_menu" name="Billing Profiles" parent="records_management.menu_records_billing" action="advanced_billing_profile_action" sequence="21" />
     </data>
 </odoo>

@@ -1,142 +1,122 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- Window actions + basic views to back previously commented reporting menus -->
-    <!-- Storage Reports: Browse Containers -->
-    <record id="records_container_view_tree" model="ir.ui.view">
-        <field name="name">records.container.view.list.storage</field>
-        <field name="model">records.container</field>
-        <field name="arch" type="xml">
-        <list string="Containers" create="false" edit="false" delete="false">
-        <field name="name"/>
-        <field name="state"/>
-        <field name="location_id"/>
-        <field name="cubic_feet"/>
-        <field name="document_count"/>
-
-        <field name="partner_id"/>
-
-</list>
-        </field>
-    </record>
-
-    <record id="records_container_view_search" model="ir.ui.view">
-        <field name="name">records.container.view.search.storage</field>
-        <field name="model">records.container</field>
-        <field name="arch" type="xml">
-            <search string="Search Containers">
-        <field name="name"/>
-        <field name="location_id"/>
-        <field name="partner_id"/>
-
-                <filter name="state_active" string="Active" domain="[('state','=','active')]"/>
-<filter name="state_destroyed" string="Destroyed" domain="[('state','=','destroyed')]"/>
-
-                <group expand="0" string="Group By">
-                    <filter name="group_location" string="Location" context="{'group_by':'location_id'}"/>
-<filter name="group_partner" string="Customer" context="{'group_by':'partner_id'}"/>
-
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <record id="action_storage_reports" model="ir.actions.act_window">
-        <field name="name">Storage Reports</field>
-        <field name="res_model">records.container</field>
-        <field name="view_mode">list</field>
-        <field name="view_id" ref="records_management.records_container_view_tree"/>
-
-
-        <field name="search_view_id" ref="records_management.records_container_view_search"/>
-        <field name="context">{"search_default_state_active": 1}</field>
-        <field name="domain">[]</field>
-    </record>
-
-    <!-- Compliance Reports: Browse Policies (source for report generation) -->
-    <record id="naid_compliance_policy_view_tree" model="ir.ui.view">
-        <field name="name">naid.compliance.policy.view.list.report</field>
-        <field name="model">naid.compliance.policy</field>
-        <field name="arch" type="xml">
-        <list string="Compliance Policies" create="false" edit="false" delete="false">
-        <field name="name"/>
-        <field name="state"/>
-        <field name="responsible_id"/>
-        <field name="last_review_date"/>
-        <field name="next_review_date"/>
-</list>
-        </field>
-    </record>
-
-    <record id="naid_compliance_policy_view_search" model="ir.ui.view">
-        <field name="name">naid.compliance.policy.view.search.report</field>
-        <field name="model">naid.compliance.policy</field>
-        <field name="arch" type="xml">
-            <search string="Search Compliance Policies">
-        <field name="name"/>
-        <field name="responsible_id"/>
-                <filter name="state_active" string="Active" domain="[('state','=','active')]"/>
-                <filter name="state_draft" string="Draft" domain="[('state','=','draft')]"/>
-                <group expand="0" string="Group By">
-                    <filter name="group_responsible" string="Responsible" context="{'group_by':'responsible_id'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <record id="action_compliance_reports" model="ir.actions.act_window">
-        <field name="name">Compliance Reports</field>
-        <field name="res_model">naid.compliance.policy</field>
-        <field name="view_mode">list</field>
-        <field name="view_id" ref="records_management.naid_compliance_policy_view_tree"/>
-
-
-        <field name="search_view_id" ref="records_management.naid_compliance_policy_view_search"/>
-        <field name="context">{"search_default_state_active": 1}</field>
-        <field name="domain">[]</field>
-    </record>
-
-    <!-- Customer Inventory Browser (partners with inventory) -->
-    <record id="res_partner_view_tree" model="ir.ui.view">
-        <field name="name">res.partner.view.list</field>
-        <field name="model">res.partner</field>
-        <field name="arch" type="xml">
-        <list string="Customer Inventory" create="false" edit="false" delete="false">
-        <field name="name"/>
-        <field name="company_type"/>
-        <field name="parent_id"/>
-        <field name="user_id"/>
-        <field name="phone"/>
-        <field name="email"/>
-</list>
-        </field>
-    </record>
-
-    <record id="res_partner_view_search" model="ir.ui.view">
-        <field name="name">res.partner.view.search</field>
-        <field name="model">res.partner</field>
-        <field name="arch" type="xml">
-            <search string="Search Customers">
-        <field name="name"/>
-        <field name="user_id"/>
-                <filter name="is_company_filter" string="Companies" domain="[('is_company','=',True)]"/>
-                <filter name="has_email" string="Has Email" domain="[('email','!=',False)]"/>
-                <group expand="0" string="Group By">
-                    <filter name="group_user" string="Account Manager" context="{'group_by':'user_id'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <record id="action_customer_inventory_browser" model="ir.actions.act_window">
-        <field name="name">Customer Inventory</field>
-        <field name="res_model">res.partner</field>
-        <field name="view_mode">list</field>
-        <field name="view_id" ref="records_management.res_partner_view_tree"/>
-
-        <field name="search_view_id" ref="records_management.res_partner_view_search"/>
-
-        <field name="domain">['|', ('is_company','=',True), ('company_type','=','company')]</field>
-    </record>
+        <record id="records_container_view_tree" model="ir.ui.view">
+            <field name="name">records.container.view.list.storage</field>
+            <field name="model">records.container</field>
+            <field name="arch" type="xml">
+                <list string="Containers" create="false" edit="false" delete="false">
+                    <field name="name" />
+                    <field name="state" />
+                    <field name="location_id" />
+                    <field name="cubic_feet" />
+                    <field name="document_count" />
+                    <field name="partner_id" />
+                </list>
+            </field>
+        </record>
+        <record id="records_container_view_search" model="ir.ui.view">
+            <field name="name">records.container.view.search.storage</field>
+            <field name="model">records.container</field>
+            <field name="arch" type="xml">
+                <search string="Search Containers">
+                    <field name="name" />
+                    <field name="location_id" />
+                    <field name="partner_id" />
+                    <filter name="state_active" string="Active" domain="[('state','=','active')]" />
+                    <filter name="state_destroyed" string="Destroyed" domain="[('state','=','destroyed')]" />
+                    <group expand="0" string="Group By">
+                        <filter name="group_location" string="Location" context="{'group_by':'location_id'}" />
+                        <filter name="group_partner" string="Customer" context="{'group_by':'partner_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="action_storage_reports" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model records.container has state field - consider using default search filters -->
+            <field name="name">Storage Reports</field>
+            <field name="res_model">records.container</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="records_management.records_container_view_tree" />
+            <field name="search_view_id" ref="records_management.records_container_view_search" />
+            <field name="context">{"search_default_state_active": 1}</field>
+            <field name="domain">[]</field>
+        </record>
+        <record id="naid_compliance_policy_view_tree" model="ir.ui.view">
+            <field name="name">naid.compliance.policy.view.list.report</field>
+            <field name="model">naid.compliance.policy</field>
+            <field name="arch" type="xml">
+                <list string="Compliance Policies" create="false" edit="false" delete="false">
+                    <field name="name" />
+                    <field name="state" />
+                    <field name="responsible_id" />
+                    <field name="last_review_date" />
+                    <field name="next_review_date" />
+                </list>
+            </field>
+        </record>
+        <record id="naid_compliance_policy_view_search" model="ir.ui.view">
+            <field name="name">naid.compliance.policy.view.search.report</field>
+            <field name="model">naid.compliance.policy</field>
+            <field name="arch" type="xml">
+                <search string="Search Compliance Policies">
+                    <field name="name" />
+                    <field name="responsible_id" />
+                    <filter name="state_active" string="Active" domain="[('state','=','active')]" />
+                    <filter name="state_draft" string="Draft" domain="[('state','=','draft')]" />
+                    <group expand="0" string="Group By">
+                        <filter name="group_responsible" string="Responsible" context="{'group_by':'responsible_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="action_compliance_reports" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model naid.compliance.policy has state field - consider using default search filters -->
+            <field name="name">Compliance Reports</field>
+            <field name="res_model">naid.compliance.policy</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="records_management.naid_compliance_policy_view_tree" />
+            <field name="search_view_id" ref="records_management.naid_compliance_policy_view_search" />
+            <field name="context">{"search_default_state_active": 1}</field>
+            <field name="domain">[]</field>
+        </record>
+        <record id="res_partner_view_tree" model="ir.ui.view">
+            <field name="name">res.partner.view.list</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <list string="Customer Inventory" create="false" edit="false" delete="false">
+                    <field name="name" />
+                    <field name="company_type" />
+                    <field name="parent_id" />
+                    <field name="user_id" />
+                    <field name="phone" />
+                    <field name="email" />
+                </list>
+            </field>
+        </record>
+        <record id="res_partner_view_search" model="ir.ui.view">
+            <field name="name">res.partner.view.search</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <search string="Search Customers">
+                    <field name="name" />
+                    <field name="user_id" />
+                    <filter name="is_company_filter" string="Companies" domain="[('is_company','=',True)]" />
+                    <filter name="has_email" string="Has Email" domain="[('email','!=',False)]" />
+                    <group expand="0" string="Group By">
+                        <filter name="group_user" string="Account Manager" context="{'group_by':'user_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="action_customer_inventory_browser" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model res.partner has sequence field - consider adding _order="sequence" to model -->
+            <field name="name">Customer Inventory</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="records_management.res_partner_view_tree" />
+            <field name="search_view_id" ref="records_management.res_partner_view_search" />
+            <field name="domain">['|', ('is_company','=',True), ('company_type','=','company')]</field>
+        </record>
     </data>
 </odoo>

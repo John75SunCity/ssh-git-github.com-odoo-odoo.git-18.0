@@ -1,95 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List View -->
-    <record id="records_storage_box_view_tree" model="ir.ui.view">
-        <field name="name">records.storage.box.view.tree</field>
-        <field name="model">records.storage.box</field>
-        <field name="arch" type="xml">
-            <list string="Storage Boxes">
-                <field name="name"/>
-                <field name="box_size"/>
-                <field name="location_id"/>
-                <field name="state"/>
-                <field name="document_count"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Form View -->
-    <record id="records_storage_box_view_form" model="ir.ui.view">
-        <field name="name">records.storage.box.view.form</field>
-        <field name="model">records.storage.box</field>
-        <field name="arch" type="xml">
-            <form string="Storage Box">
-                <header>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,in_use,archived"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <h1><field name="name" readonly="1"/></h1>
+        <record id="records_storage_box_view_tree" model="ir.ui.view">
+            <field name="name">records.storage.box.view.tree</field>
+            <field name="model">records.storage.box</field>
+            <field name="arch" type="xml">
+                <list string="Storage Boxes">
+                    <field name="name" />
+                    <field name="box_size" />
+                    <field name="location_id" />
+                    <field name="state" />
+                    <field name="document_count" />
+                </list>
+            </field>
+        </record>
+        <record id="records_storage_box_view_form" model="ir.ui.view">
+            <field name="name">records.storage.box.view.form</field>
+            <field name="model">records.storage.box</field>
+            <field name="arch" type="xml">
+                <form string="Storage Box">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,in_use,archived" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="box_size" />
+                                <field name="location_id" />
+                            </group>
+                            <group>
+                                <field name="user_id" />
+                                <field name="company_id" groups="base.group_multi_company" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Documents">
+                                <field name="document_ids" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
                     </div>
-                    <group>
-                        <group>
-                            <field name="box_size"/>
-                            <field name="location_id"/>
-                        </group>
-                        <group>
-                            <field name="user_id"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
-                        </group>
+                </form>
+            </field>
+        </record>
+        <record id="records_storage_box_view_search" model="ir.ui.view">
+            <field name="name">records.storage.box.view.search</field>
+            <field name="model">records.storage.box</field>
+            <field name="arch" type="xml">
+                <search string="Search Storage Boxes">
+                    <field name="name" />
+                    <field name="box_size" />
+                    <field name="location_id" />
+                    <field name="state" />
+                    <filter string="In Use" name="in_use" domain="[('state', '=', 'in_use')]" />
+                    <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]" />
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="group_by_state" context="{'group_by': 'state'}" />
+                        <filter string="Location" name="group_by_location" context="{'group_by': 'location_id'}" />
                     </group>
-                    <notebook>
-                        <page string="Documents">
-                            <field name="document_ids"/>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <!-- Search View -->
-    <record id="records_storage_box_view_search" model="ir.ui.view">
-        <field name="name">records.storage.box.view.search</field>
-        <field name="model">records.storage.box</field>
-        <field name="arch" type="xml">
-            <search string="Search Storage Boxes">
-                <field name="name"/>
-                <field name="box_size"/>
-                <field name="location_id"/>
-                <field name="state"/>
-                <filter string="In Use" name="in_use" domain="[('state', '=', 'in_use')]"/>
-                <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
-                    <filter string="Location" name="group_by_location" context="{'group_by': 'location_id'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- Action -->
-    <record id="records_storage_box_action" model="ir.actions.act_window">
-        <field name="name">Storage Boxes</field>
-        <field name="res_model">records.storage.box</field>
-        <field name="view_mode">list,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
+                </search>
+            </field>
+        </record>
+        <record id="records_storage_box_action" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model records.storage.box has state field - consider using default search filters -->
+            <field name="name">Storage Boxes</field>
+            <field name="res_model">records.storage.box</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
                 Create a new storage box.
             </p>
-        </field>
-    </record>
-
-    <!-- Menu -->
-    <menuitem id="records_storage_box_menu"
-                name="Storage Boxes"
-                parent="records_management.menu_records_inventory"
-                action="records_storage_box_action"
-                sequence="20"/>
+            </field>
+        </record>
+        <menuitem id="records_storage_box_menu" name="Storage Boxes" parent="records_management.menu_records_inventory" action="records_storage_box_action" sequence="20" />
     </data>
 </odoo>

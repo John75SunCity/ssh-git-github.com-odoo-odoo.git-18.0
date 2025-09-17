@@ -1,64 +1,48 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List View -->
-    <record id="discount_rule_view_tree" model="ir.ui.view">
-        <field name="name">discount.rule.view.tree</field>
-        <field name="model">discount.rule</field>
-    <field name="arch" type="xml">
-            <list string="Discount Rule">
-                <field name="name"/>
-                <field name="config_id"/>
-                <field name="priority"/>
-                <field name="active"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Form View -->
-    <record id="discount_rule_view_form" model="ir.ui.view">
-        <field name="name">discount.rule.view.form</field>
-        <field name="model">discount.rule</field>
-    <field name="arch" type="xml">
-            <form string="Discount Rule">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="config_id"/>
-                        <field name="priority"/>
-                        <field name="active"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- Search View -->
-    <record id="discount_rule_view_search" model="ir.ui.view">
-        <field name="name">discount.rule.view.search</field>
-        <field name="model">discount.rule</field>
-    <field name="arch" type="xml">
-            <search string="Search Discount Rule">
-                <!-- Add search fields here -->
+        <record id="discount_rule_view_tree" model="ir.ui.view">
+            <field name="name">discount.rule.view.tree</field>
+            <field name="model">discount.rule</field>
+            <field name="arch" type="xml">
+                <list string="Discount Rule">
+                    <field name="name" />
+                    <field name="config_id" />
+                    <field name="priority" />
+                    <field name="active" />
+                </list>
+            </field>
+        </record>
+        <record id="discount_rule_view_form" model="ir.ui.view">
+            <field name="name">discount.rule.view.form</field>
+            <field name="model">discount.rule</field>
+            <field name="arch" type="xml">
+                <form string="Discount Rule">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="config_id" />
+                            <field name="priority" />
+                            <field name="active" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="discount_rule_view_search" model="ir.ui.view">
+            <field name="name">discount.rule.view.search</field>
+            <field name="model">discount.rule</field>
+            <field name="arch" type="xml">
+                <search string="Search Discount Rule">
+                
             </search>
-        </field>
-    </record>
-
-    <!-- Action -->
-    <record id="action_discount_rule" model="ir.actions.act_window">
-        <field name="name">Discount Rule</field>
-        <field name="res_model">discount.rule</field>
-        <field name="view_mode">list,form</field>
-    </record>
-
-    <!-- Menu -->
-    <!--
-    <menuitem
-        id="menu_discount_rule"
-        name="Discount Rule"
-        action="action_discount_rule"
-        parent="REPLACE_WITH_PARENT_MENU_ID"
-        sequence="10"/>
-    -->
+            </field>
+        </record>
+        <record id="action_discount_rule" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model discount.rule has state field - consider using default search filters -->
+            <field name="name">Discount Rule</field>
+            <field name="res_model">discount.rule</field>
+            <field name="view_mode">list,form</field>
+        </record>
     </data>
 </odoo>

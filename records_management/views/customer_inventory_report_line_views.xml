@@ -1,66 +1,65 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<record id="customer_inventory_report_line_view_tree" model="ir.ui.view">
-        <field name="name">customer.inventory.report.line.view.tree</field>
-        <field name="model">customer.inventory.report.line</field>
-    <field name="arch" type="xml">
-            <list string="Customer Inventory Report Line">
-                <field name="name" />
-                <field name="container_id" />
-                <field name="container_type" />
-                <field name="container_barcode" />
-                <field name="container_volume_cf" />
-                <field name="container_weight_lbs" />
-                <field name="document_type" />
-                <field name="document_count" />
-                <field name="document_count_verified" />
-                <field name="line_status" />
-                <field name="billing_status" />
-                <field name="report_date" />
-                <field name="retention_date" />
-                <field name="active" />
-            </list>
-        </field>
-    </record>
-
-    <record id="customer_inventory_report_line_view_form" model="ir.ui.view">
-        <field name="name">customer.inventory.report.line.view.form</field>
-        <field name="model">customer.inventory.report.line</field>
-    <field name="arch" type="xml">
-            <form string="Customer Inventory Report Line">
-                <sheet>
-                    <group>
-                        <field name="name" />
-                        <field name="container_id" />
-                        <field name="container_type" />
-                        <field name="container_barcode" />
-                        <field name="container_volume_cf" />
-                        <field name="container_weight_lbs" />
-                        <field name="document_type_id" />
-                        <field name="document_count" />
-                        <field name="document_count_verified" />
-                        <field name="verification_date" />
-                        <field name="verified_by_id" />
-                        <field name="line_status" />
-                        <field name="billing_status" />
-                        <field name="report_id" />
-                        <field name="partner_id" />
-                        <field name="report_date" />
-                        <field name="storage_date" />
-                        <field name="last_access_date" />
-                        <field name="retention_date" />
-                        <field name="active" />
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <record id="action_customer_inventory_report_line" model="ir.actions.act_window">
-        <field name="name">Customer Inventory Report Line</field>
-        <field name="res_model">customer.inventory.report.line</field>
-        <field name="view_mode">list,form</field>
-    </record>
+        <record id="customer_inventory_report_line_view_tree" model="ir.ui.view">
+            <field name="name">customer.inventory.report.line.view.tree</field>
+            <field name="model">customer.inventory.report.line</field>
+            <field name="arch" type="xml">
+                <list string="Customer Inventory Report Line">
+                    <field name="name" />
+                    <field name="container_id" />
+                    <field name="container_type" />
+                    <field name="container_barcode" />
+                    <field name="container_volume_cf" />
+                    <field name="container_weight_lbs" />
+                    <field name="document_type" />
+                    <field name="document_count" />
+                    <field name="document_count_verified" />
+                    <field name="line_status" />
+                    <field name="billing_status" />
+                    <field name="report_date" />
+                    <field name="retention_date" />
+                    <field name="active" />
+                </list>
+            </field>
+        </record>
+        <record id="customer_inventory_report_line_view_form" model="ir.ui.view">
+            <field name="name">customer.inventory.report.line.view.form</field>
+            <field name="model">customer.inventory.report.line</field>
+            <field name="arch" type="xml">
+                <form string="Customer Inventory Report Line">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="container_id" />
+                            <field name="container_type" />
+                            <field name="container_barcode" />
+                            <field name="container_volume_cf" />
+                            <field name="container_weight_lbs" />
+                            <field name="document_type_id" />
+                            <field name="document_count" />
+                            <field name="document_count_verified" />
+                            <field name="verification_date" />
+                            <field name="verified_by_id" />
+                            <field name="line_status" />
+                            <field name="billing_status" />
+                            <field name="report_id" />
+                            <field name="partner_id" />
+                            <field name="report_date" />
+                            <field name="storage_date" />
+                            <field name="last_access_date" />
+                            <field name="retention_date" />
+                            <field name="active" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_customer_inventory_report_line" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model customer.inventory.report.line has sequence field - consider adding _order="sequence" to model -->
+            <field name="name">Customer Inventory Report Line</field>
+            <field name="res_model">customer.inventory.report.line</field>
+            <field name="view_mode">list,form</field>
+        </record>
     </data>
 </odoo>

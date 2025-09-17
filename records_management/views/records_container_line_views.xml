@@ -1,93 +1,87 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List View -->
         <record id="records_container_line_view_tree" model="ir.ui.view">
             <field name="name">records.container.line.view.tree</field>
             <field name="model">records.container.line</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <list string="Records Container Line">
-                    <field name="sequence" widget="handle"/>
-                    <field name="name"/>
-                    <field name="container_id"/>
-                    <field name="document_type_id"/>
-                    <field name="quantity"/>
-                    <field name="unit_id"/>
-                    <field name="state"/>
-                    <field name="date_added"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="sequence" widget="handle" />
+                    <field name="name" />
+                    <field name="container_id" />
+                    <field name="document_type_id" />
+                    <field name="quantity" />
+                    <field name="unit_id" />
+                    <field name="state" />
+                    <field name="date_added" />
+                    <field name="company_id" groups="base.group_multi_company" />
                 </list>
             </field>
         </record>
-
-        <!-- Form View -->
         <record id="records_container_line_view_form" model="ir.ui.view">
             <field name="name">records.container.line.view.form</field>
             <field name="model">records.container.line</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <form string="Records Container Line">
                     <sheet>
                         <group>
                             <group>
-                                <field name="name"/>
-                                <field name="container_id"/>
-                                <field name="document_type_id"/>
-                                <field name="sequence"/>
+                                <field name="name" />
+                                <field name="container_id" />
+                                <field name="document_type_id" />
+                                <field name="sequence" />
                             </group>
                             <group>
-                                <field name="quantity"/>
-                                <field name="unit_id"/>
-                                <field name="state"/>
-                                <field name="active"/>
+                                <field name="quantity" />
+                                <field name="unit_id" />
+                                <field name="state" />
+                                <field name="active" />
                             </group>
                         </group>
                         <group string="Additional Information">
                             <group>
-                                <field name="reference"/>
-                                <field name="barcode"/>
-                                <field name="date_added"/>
+                                <field name="reference" />
+                                <field name="barcode" />
+                                <field name="date_added" />
                             </group>
                             <group>
-                                <field name="date_removed"/>
-                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="date_removed" />
+                                <field name="company_id" groups="base.group_multi_company" />
                             </group>
                         </group>
                         <group string="Notes">
-                            <field name="notes" nolabel="1"/>
+                            <field name="notes" nolabel="1" />
                         </group>
                     </sheet>
                 </form>
             </field>
         </record>
-
-        <!-- Search View -->
         <record id="records_container_line_view_search" model="ir.ui.view">
             <field name="name">records.container.line.view.search</field>
             <field name="model">records.container.line</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <search string="Search Records Container Line">
-                    <field name="name"/>
-                    <field name="container_id"/>
-                    <field name="document_type_id"/>
-                    <field name="reference"/>
-                    <field name="barcode"/>
-                    <filter name="active_filter" string="Active" domain="[('active', '=', True)]"/>
-                    <filter name="inactive_filter" string="Inactive" domain="[('active', '=', False)]"/>
-                    <separator/>
-                    <filter name="state_active" string="Active" domain="[('state', '=', 'active')]"/>
-                    <filter name="state_removed" string="Removed" domain="[('state', '=', 'removed')]"/>
-                    <filter name="state_archived" string="Archived" domain="[('state', '=', 'archived')]"/>
+                    <field name="name" />
+                    <field name="container_id" />
+                    <field name="document_type_id" />
+                    <field name="reference" />
+                    <field name="barcode" />
+                    <filter name="active_filter" string="Active" domain="[('active', '=', True)]" />
+                    <filter name="inactive_filter" string="Inactive" domain="[('active', '=', False)]" />
+                    <separator />
+                    <filter name="state_active" string="Active" domain="[('state', '=', 'active')]" />
+                    <filter name="state_removed" string="Removed" domain="[('state', '=', 'removed')]" />
+                    <filter name="state_archived" string="Archived" domain="[('state', '=', 'archived')]" />
                     <group expand="0" string="Group By">
-                        <filter name="group_container" string="Container" context="{'group_by': 'container_id'}"/>
-                        <filter name="group_document_type" string="Document Type" context="{'group_by': 'document_type_id'}"/>
-                        <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                        <filter name="group_container" string="Container" context="{'group_by': 'container_id'}" />
+                        <filter name="group_document_type" string="Document Type" context="{'group_by': 'document_type_id'}" />
+                        <filter name="group_state" string="Status" context="{'group_by': 'state'}" />
                     </group>
                 </search>
             </field>
         </record>
-
-        <!-- Action -->
         <record id="action_records_container_line" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model records.container.line has state field - consider using default search filters -->
             <field name="name">Records Container Line</field>
             <field name="res_model">records.container.line</field>
             <field name="view_mode">list,form</field>

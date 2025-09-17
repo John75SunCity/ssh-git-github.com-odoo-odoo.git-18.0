@@ -1,252 +1,236 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List view for records.department -->
-    <record id="records_department_view_tree" model="ir.ui.view">
-        <field name="name">records.department.view.tree</field>
-        <field name="model">records.department</field>
-        <field name="arch" type="xml">
-            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
-                <field name="display_name" string="Department"/>
-                <field name="partner_id" string="Customer"/>
-                <field name="code" string="🔢 Code"/>
-                <field name="container_count" string="Containers" widget="integer"/>
-                <field name="document_count" string="Documents" widget="integer"/>
-                <field name="state" string="Status" widget="badge"/>
-                <field name="user_id" string="👨‍ Responsible"/>
-                <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
-                <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Form view for records.department -->
-    <record id="records_department_view_form" model="ir.ui.view">
-        <field name="name">records.department.view.form</field>
-        <field name="model">records.department</field>
-        <field name="arch" type="xml">
-            <form string="Customer Department">
-                <header>
-                    <button name="action_activate" string="Activate" type="object" class="btn-success"
-invisible="state != 'draft'" groups="records_management.group_records_user"/>
-                    <button name="action_archive" string="Archive" type="object" class="btn-warning"
-invisible="state != 'active'" groups="records_management.group_records_manager"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
-                </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-cube">
-                            <field name="container_count" string="Containers" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file">
-                            <field name="document_count" string="Documents" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button" icon="fa-users">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="user_ids" widget="many2many_tags"/>
-                                </span>
-                                <span class="o_stat_text">Users</span>
-                            </div>
-                        </button>
-                    </div>
-
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Department Name..."/>
-                        </h1>
-                    </div>
-
-                    <group>
-                        <group string="Department Information">
-                            <field name="name" required="1"/>
-                            <field name="code" required="1"/>
-                            <field name="partner_id" required="1"/>
-                            <field name="user_id"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
-                        </group>
-                        <group string="Analytics &amp; Status">
-                            <field name="state"/>
-                            <field name="active" widget="boolean_toggle"/>
-                            <field name="container_count" readonly="1"/>
-                            <field name="document_count" readonly="1"/>
-                        </group>
-                    </group>
-
-                    <notebook>
-                        <page string="Users &amp; Access" name="users">
-                            <field name="user_ids" widget="many2many_tags" nolabel="1"/>
-                        </page>
-                        <page string="Billing Contacts" name="billing">
-                            <field name="billing_contact_ids">
-                                <list>
-                                    <field name="name"/>
-                                    <field name="email"/>
-                                    <field name="phone"/>
-                                    <field name="billing_role"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Recent Containers" name="containers">
-                            <field name="container_ids" mode="list" limit="10">
-                                <list>
-                                    <field name="name"/>
-                                    <field name="state"/>
-                                    <field name="storage_start_date"/>
-                                    <field name="location_id"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Recent Documents" name="documents">
-                            <field name="document_ids" mode="list" limit="10">
-                                <list>
-                                    <field name="name"/>
-                                    <field name="reference"/>
-                                    <field name="state"/>
-                                    <field name="received_date"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <!-- Search view for records.department -->
-    <record id="records_department_view_search" model="ir.ui.view">
-        <field name="name">records.department.view.search</field>
-        <field name="model">records.department</field>
-        <field name="arch" type="xml">
-            <search string="Search Departments">
-                <field name="name" string="Department" filter_domain="['|', ('name', 'ilike', self), ('display_name', 'ilike', self)]"/>
-                <field name="partner_id"/>
-                <field name="code"/>
-                <field name="user_id"/>
-                <field name="state"/>
-
-                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
-                <filter string="📁 Archived" name="archived" domain="[('state', '=', 'archived')]"/>
-
-                <separator/>
-                <filter string="Has Containers" name="has_containers" domain="[('container_count', '>', 0)]"/>
-                <filter string="Has Documents" name="has_documents" domain="[('document_count', '>', 0)]"/>
-                <filter string="Has Users" name="has_users" domain="[('user_ids', '!=', False)]"/>
-
-                <group expand="0" string="Group By">
-                    <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
-                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
-                    <filter string="Responsible" name="group_by_user" context="{'group_by': 'user_id'}"/>
-                    <filter string="Container Count" name="group_by_containers" context="{'group_by': 'container_count'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- Kanban view for records.department -->
-    <record id="records_department_view_kanban" model="ir.ui.view">
-        <field name="name">records.department.view.kanban</field>
-        <field name="model">records.department</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="state" class="o_kanban_department_dashboard">
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="code"/>
-                <field name="container_count"/>
-                <field name="document_count"/>
-                <field name="state"/>
-                <field name="user_id"/>
-                <templates>
-                    <t t-name="card">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="o_kanban_card_header">
-                                <div class="o_kanban_card_header_title">
-                                    <div class="o_primary">
-                                        <strong>
-                                            <field name="name"/>
-                                        </strong>
-                                    </div>
-                                    <div class="o_secondary">
-                                        <field name="partner_id"/>
-                                    </div>
+        <record id="records_department_view_tree" model="ir.ui.view">
+            <field name="name">records.department.view.tree</field>
+            <field name="model">records.department</field>
+            <field name="arch" type="xml">
+                <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
+                    <field name="display_name" string="Department" />
+                    <field name="partner_id" string="Customer" />
+                    <field name="code" string="🔢 Code" />
+                    <field name="container_count" string="Containers" widget="integer" />
+                    <field name="document_count" string="Documents" widget="integer" />
+                    <field name="state" string="Status" widget="badge" />
+                    <field name="user_id" string="👨‍ Responsible" />
+                    <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link" />
+                    <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link" />
+                </list>
+            </field>
+        </record>
+        <record id="records_department_view_form" model="ir.ui.view">
+            <field name="name">records.department.view.form</field>
+            <field name="model">records.department</field>
+            <field name="arch" type="xml">
+                <form string="Customer Department">
+                    <header>
+                        <button name="action_activate" string="Activate" type="object" class="btn-success" invisible="state != 'draft'" groups="records_management.group_records_user" />
+                        <button name="action_archive" string="Archive" type="object" class="btn-warning" invisible="state != 'active'" groups="records_management.group_records_manager" />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,active,archived" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-cube">
+                                <field name="container_count" string="Containers" widget="statinfo" />
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file">
+                                <field name="document_count" string="Documents" widget="statinfo" />
+                            </button>
+                            <button class="oe_stat_button" icon="fa-users">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="user_ids" widget="many2many_tags" />
+                                    </span>
+                                    <span class="o_stat_text">Users</span>
                                 </div>
-                                <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-<i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
-
-                                    </a>
-                                </div>
-                            </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="text-center">
-                                            <span class="badge badge-primary">
-                                                <field name="container_count"/> <i class='fa fa-box'/>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="text-center">
-                                            <span class="badge badge-info">
-                                                <field name="document_count"/> <i class='fa fa-file-o'/>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-12">
-                                        <small class="text-muted">
-<i class='fa fa-user' aria-hidden="true"/>
-
-                                            <field name="user_id"/>
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item">Edit Department</a>
-                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">View Containers</a>
-                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">View Documents</a>
-                                <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">Activate</a>
-                                <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state != 'active'">Archive</a>
-                            </div>
+                            </button>
                         </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <!-- Action for records.department -->
-    <record id="action_records_department" model="ir.actions.act_window">
-        <field name="name">Customer Departments</field>
-        <field name="res_model">records.department</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="search_view_id" ref="records_department_view_search"/>
-        <field name="context">{'search_default_active': 1}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                <i class='fa fa-building'/> Create your first customer department!
+                        <div class="oe_title">
+                            <label for="name" />
+                            <h1>
+                                <field name="name" placeholder="Department Name..." />
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Department Information">
+                                <field name="name" required="1" />
+                                <field name="code" required="1" />
+                                <field name="partner_id" required="1" />
+                                <field name="user_id" />
+                                <field name="company_id" groups="base.group_multi_company" />
+                            </group>
+                            <group string="Analytics &amp; Status">
+                                <field name="state" />
+                                <field name="active" widget="boolean_toggle" />
+                                <field name="container_count" readonly="1" />
+                                <field name="document_count" readonly="1" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Users &amp; Access" name="users">
+                                <field name="user_ids" widget="many2many_tags" nolabel="1" />
+                            </page>
+                            <page string="Billing Contacts" name="billing">
+                                <field name="billing_contact_ids">
+                                    <list>
+                                        <field name="name" />
+                                        <field name="email" />
+                                        <field name="phone" />
+                                        <field name="billing_role" />
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Recent Containers" name="containers">
+                                <field name="container_ids" mode="list" limit="10">
+                                    <list>
+                                        <field name="name" />
+                                        <field name="state" />
+                                        <field name="storage_start_date" />
+                                        <field name="location_id" />
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Recent Documents" name="documents">
+                                <field name="document_ids" mode="list" limit="10">
+                                    <list>
+                                        <field name="name" />
+                                        <field name="reference" />
+                                        <field name="state" />
+                                        <field name="received_date" />
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="records_department_view_search" model="ir.ui.view">
+            <field name="name">records.department.view.search</field>
+            <field name="model">records.department</field>
+            <field name="arch" type="xml">
+                <search string="Search Departments">
+                    <field name="name" string="Department" filter_domain="['|', ('name', 'ilike', self), ('display_name', 'ilike', self)]" />
+                    <field name="partner_id" />
+                    <field name="code" />
+                    <field name="user_id" />
+                    <field name="state" />
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
+                    <filter string="Active" name="active" domain="[('state', '=', 'active')]" />
+                    <filter string="📁 Archived" name="archived" domain="[('state', '=', 'archived')]" />
+                    <separator />
+                    <filter string="Has Containers" name="has_containers" domain="[('container_count', '&gt;', 0)]" />
+                    <filter string="Has Documents" name="has_documents" domain="[('document_count', '&gt;', 0)]" />
+                    <filter string="Has Users" name="has_users" domain="[('user_ids', '!=', False)]" />
+                    <group expand="0" string="Group By">
+                        <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}" />
+                        <filter string="Status" name="group_by_state" context="{'group_by': 'state'}" />
+                        <filter string="Responsible" name="group_by_user" context="{'group_by': 'user_id'}" />
+                        <filter string="Container Count" name="group_by_containers" context="{'group_by': 'container_count'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="records_department_view_kanban" model="ir.ui.view">
+            <field name="name">records.department.view.kanban</field>
+            <field name="model">records.department</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_department_dashboard">
+                    <field name="name" />
+                    <field name="partner_id" />
+                    <field name="code" />
+                    <field name="container_count" />
+                    <field name="document_count" />
+                    <field name="state" />
+                    <field name="user_id" />
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary">
+                                            <strong>
+                                                <field name="name" />
+                                            </strong>
+                                        </div>
+                                        <div class="o_secondary">
+                                            <field name="partner_id" />
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section">
+                                        <a class="o_kanban_manage_toggle_button" href="#" title="More options">
+                                            <i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options" />
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="text-center">
+                                                <span class="badge badge-primary">
+                                                    <field name="container_count" />
+                                                    <i class="fa fa-box" />
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-center">
+                                                <span class="badge badge-info">
+                                                    <field name="document_count" />
+                                                    <i class="fa fa-file-o" />
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <small class="text-muted">
+                                                <i class="fa fa-user" aria-hidden="true" />
+                                                <field name="user_id" />
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                    <a role="menuitem" type="edit" class="dropdown-item">Edit Department</a>
+                                    <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">View Containers</a>
+                                    <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">View Documents</a>
+                                    <div class="dropdown-divider" />
+                                    <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">Activate</a>
+                                    <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state != 'active'">Archive</a>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="action_records_department" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model records.department has state field - consider using default search filters -->
+            <field name="name">Customer Departments</field>
+            <field name="res_model">records.department</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="records_department_view_search" />
+            <field name="context">{'search_default_active': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-building" /> Create your first customer department!
             </p>
-            <p>
-                <b>Department Management:</b>
-                <br/>
-                • <i class='fa fa-users'/> Organize customer departments with user access control<br/>
-                • <i class='fa fa-box'/> Track containers and documents by department<br/>
-                • <i class='fa fa-money'/> Manage billing contacts and approval workflows<br/>
-                • <i class='fa fa-bar-chart'/> Monitor department activity and analytics<br/>
-                • <i class='fa fa-unlock'/> Control access with granular permissions
+                <p>
+                    <b>Department Management:</b>
+                    <br />
+                • <i class="fa fa-users" /> Organize customer departments with user access control<br />
+                • <i class="fa fa-box" /> Track containers and documents by department<br />
+                • <i class="fa fa-money" /> Manage billing contacts and approval workflows<br />
+                • <i class="fa fa-bar-chart" /> Monitor department activity and analytics<br />
+                • <i class="fa fa-unlock" /> Control access with granular permissions
             </p>
-        </field>
-    </record>
+            </field>
+        </record>
     </data>
 </odoo>

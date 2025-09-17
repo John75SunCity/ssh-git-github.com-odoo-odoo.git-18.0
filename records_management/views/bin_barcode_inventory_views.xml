@@ -1,347 +1,287 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- Bin Barcode Inventory Form View -->
-    <record id="bin_barcode_inventory_view_form" model="ir.ui.view">
-        <field name="name">bin.barcode.inventory.view.form</field>
-        <field name="model">bin.barcode.inventory</field>
-        <field name="arch" type="xml">
-            <form string="Bin Barcode Inventory">
-                <header>
-                    <button name="action_set_available" type="object" string="Set Available"
-                            class="oe_highlight"
-invisible="state == 'available'"/>
-                    <button name="action_set_full" type="object" string="Mark Full"
-                            class="btn-warning"
-invisible="state in ['full', 'retired']"/>
-                    <button name="action_service_complete" type="object" string="Service Complete"
-                            class="btn-success"
-invisible="state != 'full'"/>
-                    <button name="action_print_barcode_label" type="object" string="Print Label"
-                            class="btn-secondary"/>
-        <field name="state" widget="statusbar" statusbar_visible="available,in_use,full,maintenance"/>
-                </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="update_sequences_from_import" type="object"
-                                string="Update Sequences" class="oe_stat_button" icon="fa-refresh"
-                                groups="records_management.group_records_manager"
-                                help="Update all sequences based on imported bins"/>
+        <record id="bin_barcode_inventory_view_form" model="ir.ui.view">
+            <field name="name">bin.barcode.inventory.view.form</field>
+            <field name="model">bin.barcode.inventory</field>
+            <field name="arch" type="xml">
+                <form string="Bin Barcode Inventory">
+                    <header>
+                        <button name="action_set_available" type="object" string="Set Available" class="oe_highlight" invisible="state == 'available'" />
+                        <button name="action_set_full" type="object" string="Mark Full" class="btn-warning" invisible="state in ['full', 'retired']" />
+                        <button name="action_service_complete" type="object" string="Service Complete" class="btn-success" invisible="state != 'full'" />
+                        <button name="action_print_barcode_label" type="object" string="Print Label" class="btn-secondary" />
+                        <field name="state" widget="statusbar" statusbar_visible="available,in_use,full,maintenance" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="update_sequences_from_import" type="object" string="Update Sequences" class="oe_stat_button" icon="fa-refresh" groups="records_management.group_records_manager" help="Update all sequences based on imported bins" />
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="identification">
+                                <field name="barcode" required="1" />
+                                <field name="bin_size" required="1" />
+                                <field name="bin_type" readonly="1" />
+                                <field name="state" />
+                                <field name="active" />
+                            </group>
+                            <group name="capacity">
+                                <field name="capacity_pounds" readonly="1" />
+                                <field name="current_weight" />
+                                <field name="fill_percentage" readonly="1" widget="percentage" />
+                                <field name="fill_level" />
+                                <field name="estimated_weight_lbs" readonly="1" />
+                                <field name="location" />
+                            </group>
+                        </group>
+                        <group>
+                            <group name="assignment">
+                                <field name="customer_id" />
+                                <field name="service_route" />
+                            </group>
+                            <group name="tracking">
+                                <field name="date_created" readonly="1" />
+                                <field name="last_service_date" readonly="1" />
+                                <field name="next_service_date" />
+                            </group>
+                        </group>
+                        <group>
+                            <group name="flags">
+                                <field name="is_imported" readonly="1" />
+                                <field name="is_generated" readonly="1" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Notes" name="notes">
+                                <field name="notes" placeholder="Additional notes about this bin..." />
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
                     </div>
-
-                    <div class="oe_title">
-                        <h1>
-        <field name="name" readonly="1"/>
-                        </h1>
-                    </div>
-
-                    <group>
-                        <group name="identification">
-        <field name="barcode" required="1"/>
-        <field name="bin_size" required="1"/>
-        <field name="bin_type" readonly="1"/>
-        <field name="state"/>
-        <field name="active"/>
-                        </group>
-                        <group name="capacity">
-        <field name="capacity_pounds" readonly="1"/>
-        <field name="current_weight"/>
-        <field name="fill_percentage" readonly="1" widget="percentage"/>
-        <field name="fill_level"/>
-        <field name="estimated_weight_lbs" readonly="1"/>
-
-        <field name="location"/>
-                        </group>
-                    </group>
-
-                    <group>
-                        <group name="assignment">
-        <field name="customer_id"/>
-        <field name="service_route"/>
-                        </group>
-                        <group name="tracking">
-        <field name="date_created" readonly="1"/>
-        <field name="last_service_date" readonly="1"/>
-        <field name="next_service_date"/>
-                        </group>
-                    </group>
-
-                    <group>
-                        <group name="flags">
-        <field name="is_imported" readonly="1"/>
-        <field name="is_generated" readonly="1"/>
-                        </group>
-                    </group>
-
-                    <notebook>
-                        <page string="Notes" name="notes">
-        <field name="notes" placeholder="Additional notes about this bin..."/>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-        <field name="message_follower_ids"/>
-        <field name="activity_ids"/>
-        <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <!-- Bin Barcode Inventory List View -->
-    <record id="bin_barcode_inventory_view_tree" model="ir.ui.view">
-        <field name="name">bin.barcode.inventory.view.tree</field>
-        <field name="model">bin.barcode.inventory</field>
-        <field name="arch" type="xml">
-            <list string="Bin Barcode Inventory"
-                  decoration-success="state == 'available'"
-                  decoration-warning="state == 'in_use'"
-                  decoration-danger="state == 'full'"
-                  decoration-muted="state == 'retired'">
-        <field name="barcode"/>
-        <field name="bin_size"/>
-        <field name="bin_type"/>
-        <field name="state" widget="badge"
-                       decoration-success="state == 'available'"
-                       decoration-warning="state == 'in_use'"
-                       decoration-danger="state == 'full'"/>
-        <field name="customer_id"/>
-        <field name="technician_id"/>
-        <field name="vehicle_id"/>
-        <field name="fsm_task_id"/>
-
-        <field name="location"/>
-        <field name="capacity_pounds"/>
-        <field name="current_weight"/>
-        <field name="fill_level"/>
-
-        <field name="fill_percentage" widget="percentage"/>
-        <field name="estimated_weight_lbs"/>
-
-        <field name="last_service_date"/>
-        <field name="is_imported" widget="boolean_toggle"/>
-        <field name="is_generated" widget="boolean_toggle"/>
-            </list>
-        </field>
-    </record>
-
-<!-- Bin Barcode Inventory Kanban View -->
-    <record id="bin_barcode_inventory_view_kanban" model="ir.ui.view">
-        <field name="name">bin.barcode.inventory.view.kanban</field>
-        <field name="model">bin.barcode.inventory</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="state" class="o_kanban_small_column">
-        <field name="id"/>
-        <field name="barcode"/>
-        <field name="bin_size"/>
-        <field name="state"/>
-        <field name="customer_id"/>
-        <field name="location"/>
-        <field name="fill_percentage"/>
-        <field name="capacity_pounds"/>
-        <field name="current_weight"/>
-        <field name="estimated_weight_lbs"/>
-        <field name="fill_level"/>
-
-                <templates>
-<!-- Modernized card template replacing deprecated kanban-box -->
-<t t-name="card">
-        <div class="o_kanban_record o_kanban_global_click o_rm_bin_card">
-    <div class="o_kanban_primary_bottom">
-        <div class="d-flex justify-content-between align-items-start mb-1">
-            <div>
-                <strong class="o_rm_bin_barcode">
-        <field name="barcode"/>
-                </strong>
-                <span class="text-muted small ms-2">
-        <field name="bin_size"/>
-                </span>
+                </form>
+            </field>
+        </record>
+        <record id="bin_barcode_inventory_view_tree" model="ir.ui.view">
+            <field name="name">bin.barcode.inventory.view.tree</field>
+            <field name="model">bin.barcode.inventory</field>
+            <field name="arch" type="xml">
+                <list string="Bin Barcode Inventory" decoration-success="state == 'available'" decoration-warning="state == 'in_use'" decoration-danger="state == 'full'" decoration-muted="state == 'retired'">
+                    <field name="barcode" />
+                    <field name="bin_size" />
+                    <field name="bin_type" />
+                    <field name="state" widget="badge" decoration-success="state == 'available'" decoration-warning="state == 'in_use'" decoration-danger="state == 'full'" />
+                    <field name="customer_id" />
+                    <field name="technician_id" />
+                    <field name="vehicle_id" />
+                    <field name="fsm_task_id" />
+                    <field name="location" />
+                    <field name="capacity_pounds" />
+                    <field name="current_weight" />
+                    <field name="fill_level" />
+                    <field name="fill_percentage" widget="percentage" />
+                    <field name="estimated_weight_lbs" />
+                    <field name="last_service_date" />
+                    <field name="is_imported" widget="boolean_toggle" />
+                    <field name="is_generated" widget="boolean_toggle" />
+                </list>
+            </field>
+        </record>
+        <record id="bin_barcode_inventory_view_kanban" model="ir.ui.view">
+            <field name="name">bin.barcode.inventory.view.kanban</field>
+            <field name="model">bin.barcode.inventory</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="id" />
+                    <field name="barcode" />
+                    <field name="bin_size" />
+                    <field name="state" />
+                    <field name="customer_id" />
+                    <field name="location" />
+                    <field name="fill_percentage" />
+                    <field name="capacity_pounds" />
+                    <field name="current_weight" />
+                    <field name="estimated_weight_lbs" />
+                    <field name="fill_level" />
+                    <templates>
+                        <t t-name="card">
+                            <div class="o_kanban_record o_kanban_global_click o_rm_bin_card">
+                                <div class="o_kanban_primary_bottom">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <div>
+                                            <strong class="o_rm_bin_barcode">
+                                                <field name="barcode" />
+                                            </strong>
+                                            <span class="text-muted small ms-2">
+                                                <field name="bin_size" />
+                                            </span>
+                                        </div>
+                                        <div class="text-end">
+                                            <span t-if="record.is_imported.raw_value" class="badge bg-info me-1">Imported</span>
+                                            <span t-if="record.is_generated.raw_value" class="badge bg-success">Generated</span>
+                                        </div>
                                     </div>
-        <div class="text-end">
-<span t-if="record.is_imported.raw_value" class="badge bg-info me-1">Imported</span>
-<span t-if="record.is_generated.raw_value" class="badge bg-success">Generated</span>
+                                    <div class="o_rm_bin_meta small mb-2">
+                                        <span t-if="record.customer_id.raw_value" class="me-3">
+                                            <i class="fa fa-user" title="Customer" aria-label="Customer" />
+                                            <field name="customer_id" />
+                                        </span>
+                                        <span t-if="record.location.raw_value">
+                                            <i class="fa fa-map-marker" title="Location" aria-label="Location" />
+                                            <field name="location" />
+                                        </span>
                                     </div>
-                                </div>
-        <div class="o_rm_bin_meta small mb-2">
-<span t-if="record.customer_id.raw_value" class="me-3">
-    <i class="fa fa-user" title="Customer" aria-label="Customer"/>
-        <field name="customer_id"/>
-</span>
-<span t-if="record.location.raw_value">
-    <i class="fa fa-map-marker" title="Location" aria-label="Location"/>
-        <field name="location"/>
-</span>
-</div>
-        <div class="o_rm_bin_progress">
-        <div class="progress" style="height:6px;">
-    <div class="progress-bar" role="progressbar" t-attf-style="width: #{record.fill_percentage.raw_value}%" t-attf-class="progress-bar #{record.fill_percentage.raw_value > 80 and 'bg-danger' or record.fill_percentage.raw_value > 60 and 'bg-warning' or 'bg-success'}">
+                                    <div class="o_rm_bin_progress">
+                                        <div class="progress" style="height:6px;">
+                                            <div class="progress-bar" role="progressbar" t-attf-style="width: #{record.fill_percentage.raw_value}%" t-attf-class="progress-bar #{record.fill_percentage.raw_value &gt; 80 and 'bg-danger' or record.fill_percentage.raw_value &gt; 60 and 'bg-warning' or 'bg-success'}">
     </div>
-</div>
-<small class="text-muted">
-        <field name="current_weight"/>
- /        <field name="capacity_pounds"/>
+                                        </div>
+                                        <small class="text-muted">
+                                            <field name="current_weight" />
+ /        <field name="capacity_pounds" />
  lbs
 </small>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <!-- Bin Barcode Inventory Search View -->
-    <record id="bin_barcode_inventory_view_search" model="ir.ui.view">
-        <field name="name">bin.barcode.inventory.view.search</field>
-        <field name="model">bin.barcode.inventory</field>
-        <field name="arch" type="xml">
-            <search string="Bin Barcode Inventory">
-        <field name="barcode" string="Barcode"/>
-        <field name="customer_id" string="Customer"/>
-        <field name="location" string="Location"/>
-        <field name="bin_size" string="Bin Size"/>
-        <field name="technician_id" string="Technician"/>
-        <field name="vehicle_id" string="Vehicle"/>
-        <field name="fill_level" string="Fill Level"/>
-
-
-                <filter string="Available" name="available" domain="[('state', '=', 'available')]"/>
-                <filter string="In Use" name="in_use" domain="[('state', '=', 'in_use')]"/>
-                <filter string="Full" name="full" domain="[('state', '=', 'full')]"/>
-                <filter string="Maintenance" name="maintenance" domain="[('state', '=', 'maintenance')]"/>
-
-                <separator/>
-                <filter string="23 Gallon" name="size_23" domain="[('bin_size', '=', '23_gallon')]"/>
-                <filter string="32 Gallon" name="size_32" domain="[('bin_size', '=', '32_gallon')]"/>
-                <filter string="32 Console" name="size_32c" domain="[('bin_size', '=', '32_console')]"/>
-                <filter string="64 Gallon" name="size_64" domain="[('bin_size', '=', '64_gallon')]"/>
-                <filter string="96 Gallon" name="size_96" domain="[('bin_size', '=', '96_gallon')]"/>
-
-                <separator/>
-                <filter string="Imported Bins" name="imported" domain="[('is_imported', '=', True)]"/>
-                <filter string="Generated Bins" name="generated" domain="[('is_generated', '=', True)]"/>
-                <filter string="Needs Service" name="needs_service" domain="[('state', '=', 'full')]"/>
-
-                <separator/>
-                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
-
-                <group expand="0" string="Group By">
-                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Bin Size" name="group_size" context="{'group_by': 'bin_size'}"/>
-                    <filter string="Bin Type" name="group_type" context="{'group_by': 'bin_type'}"/>
-                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
-                    <filter string="Location" name="group_location" context="{'group_by': 'location'}"/>
-                    <filter string="Service Route" name="group_route" context="{'group_by': 'service_route'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- Bin Barcode Inventory Action -->
-    <record id="action_bin_barcode_inventory" model="ir.actions.act_window">
-        <field name="name">Bin Barcode Inventory</field>
-        <field name="res_model">bin.barcode.inventory</field>
-        <field name="view_mode">kanban,list,form,graph,pivot</field>
-        <field name="context">{
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="bin_barcode_inventory_view_search" model="ir.ui.view">
+            <field name="name">bin.barcode.inventory.view.search</field>
+            <field name="model">bin.barcode.inventory</field>
+            <field name="arch" type="xml">
+                <search string="Bin Barcode Inventory">
+                    <field name="barcode" string="Barcode" />
+                    <field name="customer_id" string="Customer" />
+                    <field name="location" string="Location" />
+                    <field name="bin_size" string="Bin Size" />
+                    <field name="technician_id" string="Technician" />
+                    <field name="vehicle_id" string="Vehicle" />
+                    <field name="fill_level" string="Fill Level" />
+                    <filter string="Available" name="available" domain="[('state', '=', 'available')]" />
+                    <filter string="In Use" name="in_use" domain="[('state', '=', 'in_use')]" />
+                    <filter string="Full" name="full" domain="[('state', '=', 'full')]" />
+                    <filter string="Maintenance" name="maintenance" domain="[('state', '=', 'maintenance')]" />
+                    <separator />
+                    <filter string="23 Gallon" name="size_23" domain="[('bin_size', '=', '23_gallon')]" />
+                    <filter string="32 Gallon" name="size_32" domain="[('bin_size', '=', '32_gallon')]" />
+                    <filter string="32 Console" name="size_32c" domain="[('bin_size', '=', '32_console')]" />
+                    <filter string="64 Gallon" name="size_64" domain="[('bin_size', '=', '64_gallon')]" />
+                    <filter string="96 Gallon" name="size_96" domain="[('bin_size', '=', '96_gallon')]" />
+                    <separator />
+                    <filter string="Imported Bins" name="imported" domain="[('is_imported', '=', True)]" />
+                    <filter string="Generated Bins" name="generated" domain="[('is_generated', '=', True)]" />
+                    <filter string="Needs Service" name="needs_service" domain="[('state', '=', 'full')]" />
+                    <separator />
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]" />
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="group_state" context="{'group_by': 'state'}" />
+                        <filter string="Bin Size" name="group_size" context="{'group_by': 'bin_size'}" />
+                        <filter string="Bin Type" name="group_type" context="{'group_by': 'bin_type'}" />
+                        <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}" />
+                        <filter string="Location" name="group_location" context="{'group_by': 'location'}" />
+                        <filter string="Service Route" name="group_route" context="{'group_by': 'service_route'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="action_bin_barcode_inventory" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model bin.barcode.inventory has state field - consider using default search filters -->
+            <field name="name">Bin Barcode Inventory</field>
+            <field name="res_model">bin.barcode.inventory</field>
+            <field name="view_mode">kanban,list,form,graph,pivot</field>
+            <field name="context">{
             'search_default_available': 1,
         }</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
                 Create your first bin barcode inventory record!
             </p>
-            <p>
+                <p>
                 Manage your shredding bin inventory with sophisticated barcode sequencing,
                 capacity tracking, and customer assignments.
             </p>
-        </field>
-    </record>
-
-<!-- Pivot View -->
-    <record id="bin_barcode_inventory_view_pivot" model="ir.ui.view">
-        <field name="name">bin.barcode.inventory.view.pivot</field>
-        <field name="model">bin.barcode.inventory</field>
-        <field name="arch" type="xml">
-    <pivot string="Bin Weights (Estimated)" disable_linking="True">
-        <field name="service_route" type="row"/>
-        <field name="technician_id" type="col"/>
-        <field name="estimated_weight_lbs" type="measure" sum="True"/>
-        <field name="fill_percentage" type="measure" avg="True"/>
-    </pivot>
-</field>
-    </record>
-
-<!-- Graph View -->
-    <record id="bin_barcode_inventory_view_graph" model="ir.ui.view">
-        <field name="name">bin.barcode.inventory.view.graph</field>
-        <field name="model">bin.barcode.inventory</field>
-        <field name="arch" type="xml">
-    <graph string="Route Load" type="bar">
-        <field name="service_route" type="row"/>
-        <field name="estimated_weight_lbs" type="measure"/>
-    </graph>
-</field>
-    </record>
-
-<!-- Dashboard Action (Route Focus) -->
-    <record id="action_bin_route_dashboard" model="ir.actions.act_window">
-        <field name="name">Route Load Dashboard</field>
-        <field name="res_model">bin.barcode.inventory</field>
-        <field name="view_mode">pivot,graph</field>
-        <field name="context">{
+            </field>
+        </record>
+        <record id="bin_barcode_inventory_view_pivot" model="ir.ui.view">
+            <field name="name">bin.barcode.inventory.view.pivot</field>
+            <field name="model">bin.barcode.inventory</field>
+            <field name="arch" type="xml">
+                <pivot string="Bin Weights (Estimated)" disable_linking="True">
+                    <field name="service_route" type="row" />
+                    <field name="technician_id" type="col" />
+                    <field name="estimated_weight_lbs" type="measure" sum="True" />
+                    <field name="fill_percentage" type="measure" avg="True" />
+                </pivot>
+            </field>
+        </record>
+        <record id="bin_barcode_inventory_view_graph" model="ir.ui.view">
+            <field name="name">bin.barcode.inventory.view.graph</field>
+            <field name="model">bin.barcode.inventory</field>
+            <field name="arch" type="xml">
+                <graph string="Route Load" type="bar">
+                    <field name="service_route" type="row" />
+                    <field name="estimated_weight_lbs" type="measure" />
+                </graph>
+            </field>
+        </record>
+        <record id="action_bin_route_dashboard" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model bin.barcode.inventory has state field - consider using default search filters -->
+            <field name="name">Route Load Dashboard</field>
+            <field name="res_model">bin.barcode.inventory</field>
+            <field name="view_mode">pivot,graph</field>
+            <field name="context">{
             'search_default_group_route': 1,
         }</field>
-    </record>
-
-<!-- Menu for Dashboard (moved below after root menu definition for safer load order) -->
-
-    <!-- Sequence Reset Wizard View -->
-    <record id="shredding_bin_sequence_reset_wizard_view_form" model="ir.ui.view">
-        <field name="name">shredding.bin.sequence.reset.wizard.view.form</field>
-        <field name="model">shredding.bin.sequence.reset.wizard</field>
-        <field name="arch" type="xml">
-            <form string="Reset Bin Sequence">
-                <div class="alert alert-warning" role="alert">
-                    <strong>Warning:</strong> This action will reset the sequence number for new bin barcodes.
+        </record>
+        <record id="shredding_bin_sequence_reset_wizard_view_form" model="ir.ui.view">
+            <field name="name">shredding.bin.sequence.reset.wizard.view.form</field>
+            <field name="model">shredding.bin.sequence.reset.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Reset Bin Sequence">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Warning:</strong> This action will reset the sequence number for new bin barcodes.
                     This should only be done by administrators for specific reasons like misprints or reorganization.
                 </div>
-
-                <group>
                     <group>
-        <field name="bin_size" required="1"/>
-        <field name="current_sequence_number" readonly="1"/>
+                        <group>
+                            <field name="bin_size" required="1" />
+                            <field name="current_sequence_number" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="new_sequence_number" required="1" />
+                        </group>
                     </group>
                     <group>
-        <field name="new_sequence_number" required="1"/>
+                        <field name="reset_reason" required="1" placeholder="Please provide a detailed reason for resetting the sequence..." />
                     </group>
-                </group>
-
-                <group>
-        <field name="reset_reason" required="1" placeholder="Please provide a detailed reason for resetting the sequence..."/>
-                </group>
-
-                <footer>
-                    <button name="action_reset_sequence" type="object" string="Reset Sequence" class="btn-primary"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel"/>
-                </footer>
-            </form>
-        </field>
-    </record>
-
-    <!-- Sequence Reset Wizard Action -->
-    <record id="action_shredding_bin_sequence_reset_wizard" model="ir.actions.act_window">
-        <field name="name">Reset Bin Sequence</field>
-        <field name="res_model">shredding.bin.sequence.reset.wizard</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-    </record>
-
-<!-- Menu Items -->
-    <menuitem id="menu_bin_barcode_inventory_root" name="Bin Inventory" parent="menu_records_operations" sequence="30" groups="records_management.group_records_user"/>
-
-    <menuitem id="menu_bin_barcode_inventory" name="Bin Barcode Inventory" parent="menu_bin_barcode_inventory_root" action="action_bin_barcode_inventory" sequence="10"/>
-
-    <menuitem id="menu_bin_sequence_reset" name="Reset Bin Sequences" parent="menu_bin_barcode_inventory_root" action="action_shredding_bin_sequence_reset_wizard" groups="records_management.group_records_manager" sequence="20"/>
-    <menuitem id="menu_bin_route_dashboard" name="Route Dashboard" parent="menu_bin_barcode_inventory_root" action="action_bin_route_dashboard" sequence="40"/>
+                    <footer>
+                        <button name="action_reset_sequence" type="object" string="Reset Sequence" class="btn-primary" />
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_shredding_bin_sequence_reset_wizard" model="ir.actions.act_window">
+            <field name="name">Reset Bin Sequence</field>
+            <field name="res_model">shredding.bin.sequence.reset.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="menu_bin_barcode_inventory_root" name="Bin Inventory" parent="menu_records_operations" sequence="30" groups="records_management.group_records_user" />
+        <menuitem id="menu_bin_barcode_inventory" name="Bin Barcode Inventory" parent="menu_bin_barcode_inventory_root" action="action_bin_barcode_inventory" sequence="10" />
+        <menuitem id="menu_bin_sequence_reset" name="Reset Bin Sequences" parent="menu_bin_barcode_inventory_root" action="action_shredding_bin_sequence_reset_wizard" groups="records_management.group_records_manager" sequence="20" />
+        <menuitem id="menu_bin_route_dashboard" name="Route Dashboard" parent="menu_bin_barcode_inventory_root" action="action_bin_route_dashboard" sequence="40" />
     </data>
 </odoo>

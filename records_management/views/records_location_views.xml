@@ -1,16 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-        <!-- Kanban view for Enhanced -->
         <record id="records_location_view_kanban" model="ir.ui.view">
             <field name="name">records.location.view.kanban</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="location_type" class="o_kanban_location_dashboard">
-                    <field name="name"/>
-                    <field name="location_type"/>
-                    <field name="storage_capacity"/>
-                    <field name="active"/>
+                    <field name="name" />
+                    <field name="location_type" />
+                    <field name="storage_capacity" />
+                    <field name="active" />
                     <templates>
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
@@ -18,17 +17,17 @@
                                     <div class="o_kanban_card_header_title">
                                         <div class="o_primary">
                                             <strong>
-                                                <field name="name"/>
+                                                <field name="name" />
                                             </strong>
                                         </div>
                                         <div class="o_secondary">
-                                            <i class="fa fa-building-o" title="Location Type"/>
-                                            <field name="location_type"/>
+                                            <i class="fa fa-building-o" title="Location Type" />
+                                            <field name="location_type" />
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
                                         <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-                                            <i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
+                                            <i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options" />
                                         </a>
                                     </div>
                                 </div>
@@ -37,7 +36,7 @@
                                         <div class="row">
                                             <div class="col-6">
                                                 <button name="action_view_containers" type="object" class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-cube" aria-hidden="true"/>
+                                                    <i class="fa fa-cube" aria-hidden="true" />
                                                     View Containers
                                                 </button>
                                             </div>
@@ -45,7 +44,7 @@
                                                 <div class="text-right">
                                                     <span class="badge badge-info">
                                                         Capacity:
-                                                        <field name="storage_capacity"/>
+                                                        <field name="storage_capacity" />
                                                     </span>
                                                 </div>
                                             </div>
@@ -54,21 +53,21 @@
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                     <a role="menuitem" type="edit" class="dropdown-item">
-                                        <i class="fa fa-edit" title="Edit"/>
+                                        <i class="fa fa-edit" title="Edit" />
                                         Edit Location
                                     </a>
                                     <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">
-                                        <i class="fa fa-cube" title="Containers"/>
+                                        <i class="fa fa-cube" title="Containers" />
                                         View Containers
                                     </a>
-                                    <div class="dropdown-divider"/>
+                                    <div class="dropdown-divider" />
                                     <a role="menuitem" type="object" name="toggle_active" class="dropdown-item">
-                                        <i class="fa fa-archive" title="Archive/Unarchive Location"/>
+                                        <i class="fa fa-archive" title="Archive/Unarchive Location" />
                                         <t t-if="record.active.raw_value">Archive</t>
                                         <t t-else="">Unarchive</t>
                                     </a>
                                     <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item">
-                                        <i class="fa fa-copy" title="Duplicate"/>
+                                        <i class="fa fa-copy" title="Duplicate" />
                                         Duplicate
                                     </a>
                                 </div>
@@ -78,31 +77,27 @@
                 </kanban>
             </field>
         </record>
-
-        <!-- List view for Enhanced -->
         <record id="records_location_view_tree" model="ir.ui.view">
             <field name="name">records.location.view.tree</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
                 <list>
-                    <field name="name" string="Location Name"/>
-                    <field name="location_type" string="Type"/>
-                    <field name="storage_capacity" string="Capacity"/>
-                    <field name="active" string="Active"/>
-                    <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
+                    <field name="name" string="Location Name" />
+                    <field name="location_type" string="Type" />
+                    <field name="storage_capacity" string="Capacity" />
+                    <field name="active" string="Active" />
+                    <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link" />
                 </list>
             </field>
         </record>
-
-        <!-- Form view for Enhanced -->
         <record id="records_location_view_form" model="ir.ui.view">
             <field name="name">records.location.view.form</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_view_containers" type="object" string="View Containers" class="btn-primary"/>
-                        <field name="active" widget="boolean_toggle"/>
+                        <button name="action_view_containers" type="object" string="View Containers" class="btn-primary" />
+                        <field name="active" widget="boolean_toggle" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -113,71 +108,66 @@
                                 </div>
                             </button>
                         </div>
-
                         <group>
                             <group string="Location Information">
-                                <field name="name" placeholder="e.g., Building A - Section 1"/>
-                                <field name="location_type"/>
-                                <field name="parent_location_id" string="Parent Location"/>
+                                <field name="name" placeholder="e.g., Building A - Section 1" />
+                                <field name="location_type" />
+                                <field name="parent_location_id" string="Parent Location" />
                             </group>
                             <group string="Capacity">
-                                <field name="storage_capacity"/>
+                                <field name="storage_capacity" />
                             </group>
                         </group>
-
                         <notebook>
                             <page name="containers" string="Stored Containers">
                                 <field name="container_ids" mode="tree">
                                     <list>
-                                        <field name="name"/>
-                                        <field name="partner_id"/>
-                                        <field name="state"/>
-                                        <field name="storage_start_date"/>
+                                        <field name="name" />
+                                        <field name="partner_id" />
+                                        <field name="state" />
+                                        <field name="storage_start_date" />
                                     </list>
                                 </field>
                             </page>
                             <page name="details" string="Details &amp; Notes">
                                 <group>
-                                    <field name="description" placeholder="Location description and special instructions..."/>
-                                    <field name="security_level"/>
+                                    <field name="description" placeholder="Location description and special instructions..." />
+                                    <field name="security_level" />
                                 </group>
                             </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
                     </div>
                 </form>
             </field>
         </record>
-
-        <!-- Search view for Enhanced -->
         <record id="records_location_view_search" model="ir.ui.view">
             <field name="name">records.location.view.search</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', '%s'), ('description', 'ilike', '%s')]"/>
-                    <field name="location_type"/>
-                    <separator/>
-                    <filter name="active" string="Active Locations" domain="[('active', '=', True)]"/>
-                    <filter name="inactive" string="Archived Locations" domain="[('active', '=', False)]"/>
+                    <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', '%s'), ('description', 'ilike', '%s')]" />
+                    <field name="location_type" />
+                    <separator />
+                    <filter name="active" string="Active Locations" domain="[('active', '=', True)]" />
+                    <filter name="inactive" string="Archived Locations" domain="[('active', '=', False)]" />
                     <group string="Group By" expand="0">
-                        <filter name="group_by_type" string="Type" context="{'group_by': 'location_type'}"/>
-                        <filter name="group_by_parent" string="Parent Location" context="{'group_by': 'parent_location_id'}"/>
+                        <filter name="group_by_type" string="Type" context="{'group_by': 'location_type'}" />
+                        <filter name="group_by_parent" string="Parent Location" context="{'group_by': 'parent_location_id'}" />
                     </group>
                 </search>
             </field>
         </record>
-
-        <!-- Action for ENTERPRISE -->
         <record id="action_records_location" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model records.location has state field - consider using default search filters -->
             <field name="name">Storage Locations</field>
             <field name="res_model">records.location</field>
             <field name="view_mode">kanban,tree,form</field>
-            <field name="search_view_id" ref="records_location_view_search"/>
+            <field name="search_view_id" ref="records_location_view_search" />
             <field name="context">{
                 'search_default_active': 1
             }</field>
@@ -187,29 +177,29 @@
                 </p>
                 <p>
                     <b>
-                        <i class="fa fa-building" aria-hidden="true"/>
+                        <i class="fa fa-building" aria-hidden="true" />
                         Enterprise Storage Management:
                     </b>
                 </p>
                 <ul>
                     <li>
-                        <i class="fa fa-cube" aria-hidden="true"/>
+                        <i class="fa fa-cube" aria-hidden="true" />
                         Track box locations with visual kanban boards
                     </li>
                     <li>
-                        <i class="fa fa-bar-chart" aria-hidden="true"/>
+                        <i class="fa fa-bar-chart" aria-hidden="true" />
                         Monitor capacity utilization in real-time
                     </li>
                     <li>
-                        <i class="fa fa-search" aria-hidden="true"/>
+                        <i class="fa fa-search" aria-hidden="true" />
                         Smart search with advanced filters
                     </li>
                     <li>
-                        <i class="fa fa-sitemap" aria-hidden="true"/>
+                        <i class="fa fa-sitemap" aria-hidden="true" />
                         Hierarchical location organization
                     </li>
                     <li>
-                        <i class="fa fa-mobile" aria-hidden="true"/>
+                        <i class="fa fa-mobile" aria-hidden="true" />
                         Mobile-optimized for facility operations
                     </li>
                 </ul>

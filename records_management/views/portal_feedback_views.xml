@@ -1,202 +1,199 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
-<!-- List view for PORTAL -->
-
-    <!-- Kanban view for Kanban -->
-    <record id="portal_feedback_view_kanban" model="ir.ui.view">
-        <field name="name">portal.feedback.view.kanban</field>
-        <field name="model">portal.feedback</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="state" quick_create="false" class="o_kanban_small_column">
-                <field name="name"/>
-                <field name="state"/>
-                <field name="partner_id"/>
-                <field name="feedback_type"/>
-                <field name="rating"/>
-                <field name="sentiment_category"/>
-                <field name="priority"/>
-                <field name="assigned_to_id"/>
-                <field name="activity_state"/>
-                <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
-                <templates>
-                    <t t-name="card">
-                        <div class="oe_kanban_global_click">
-                            <div class="o_kanban_record_top">
-                                <strong><field name="name"/></strong>
-                                <span class="float-end">
-                                    <field name="state" widget="label_selection" options="{'classes': {'new': 'primary', 'in_progress': 'info', 'resolved': 'success', 'closed': 'secondary'}}"/>
-                                </span>
-                                <div class="text-muted">
-                                    <i class="fa fa-user" title="Customer"/> <field name="partner_id"/> | <field name="feedback_type"/>
+        <record id="portal_feedback_view_kanban" model="ir.ui.view">
+            <field name="name">portal.feedback.view.kanban</field>
+            <field name="model">portal.feedback</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" quick_create="false" class="o_kanban_small_column">
+                    <field name="name" />
+                    <field name="state" />
+                    <field name="partner_id" />
+                    <field name="feedback_type" />
+                    <field name="rating" />
+                    <field name="sentiment_category" />
+                    <field name="priority" />
+                    <field name="assigned_to_id" />
+                    <field name="activity_state" />
+                    <progressbar field="activity_state" colors="{&quot;planned&quot;: &quot;success&quot;, &quot;today&quot;: &quot;warning&quot;, &quot;overdue&quot;: &quot;danger&quot;}" />
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <strong>
+                                        <field name="name" />
+                                    </strong>
+                                    <span class="float-end">
+                                        <field name="state" widget="label_selection" options="{'classes': {'new': 'primary', 'in_progress': 'info', 'resolved': 'success', 'closed': 'secondary'}}" />
+                                    </span>
+                                    <div class="text-muted">
+                                        <i class="fa fa-user" title="Customer" />
+                                        <field name="partner_id" /> | <field name="feedback_type" />
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="mb-2">
+                                        <strong>Rating:</strong>
+                                        <field name="rating" />
+                                        <span class="text-muted">(<field name="sentiment_category" />)</span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <small>Priority: <field name="priority" />
+                                            </small>
+                                        </div>
+                                        <div class="col-6">
+                                            <small>Assigned: <field name="assigned_to_id" />
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div t-if="record.priority.raw_value == 'high'" class="mt-2">
+                                        <span class="badge badge-danger">&lt;i class="fa fa-fire"&gt; High Priority</span>
+                                    </div>
+                                    <field name="activity_ids" widget="kanban_activity" />
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <span class="badge badge-pill badge-info">
+                                        <i class="fa fa-calendar" title="Created" />
+                                        <field name="create_date" widget="date" />
+                                    </span>
+                                    <div class="oe_kanban_bottom_right">
+                                        <img t-att-src="kanban_image('res.users', 'avatar_128', record.assigned_to_id.raw_value)" t-att-title="record.assigned_to_id.value" class="oe_kanban_avatar o_image_24_cover" t-if="record.assigned_to_id.raw_value" alt="Assigned User" />
+                                        <field name="activity_state" widget="kanban_activity" />
+                                    </div>
                                 </div>
                             </div>
-                            <div class="o_kanban_record_body">
-                                <div class="mb-2">
-                                    <strong>Rating:</strong> <field name="rating"/>
-                                    <span class="text-muted">(<field name="sentiment_category"/>)</span>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="portal_feedback_view_tree" model="ir.ui.view">
+            <field name="name">portal.feedback.view.tree</field>
+            <field name="model">portal.feedback</field>
+            <field name="arch" type="xml">
+                <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="state=='resolved'" decoration-muted="state=='closed'" multi_edit="1">
+                    <field name="name" />
+                    <field name="create_date" widget="date" />
+                    <field name="partner_id" />
+                    <field name="feedback_type" />
+                    <field name="rating" widget="priority" />
+                    <field name="sentiment_category" />
+                    <field name="sentiment_score" />
+                    <field name="priority" widget="priority" />
+                    <field name="state" widget="badge" />
+                    <field name="assigned_to_id" widget="many2one_avatar_user" />
+                    <field name="activity_exception_decoration" widget="activity_exception" />
+                </list>
+            </field>
+        </record>
+        <record id="portal_feedback_view_form" model="ir.ui.view">
+            <field name="name">portal.feedback.view.form</field>
+            <field name="model">portal.feedback</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="new,in_progress,resolved,closed,cancelled" clickable="true" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_related_records" icon="fa-file-text-o">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_text">Related Records</span>
                                 </div>
-                                <div class="row">
-                                    <div class="col-6"><small>Priority: <field name="priority"/></small></div>
-                                    <div class="col-6"><small>Assigned: <field name="assigned_to_id"/></small></div>
-                                </div>
-                                <div t-if="record.priority.raw_value == 'high'" class="mt-2">
-                                    <span class="badge badge-danger">&lt;i class="fa fa-fire"&gt; High Priority</span>
-                                </div>
-                                <field name="activity_ids" widget="kanban_activity"/>
-                            </div>
-                            <div class="o_kanban_record_bottom">
-                                <span class="badge badge-pill badge-info"><i class="fa fa-calendar" title="Created"/> <field name="create_date" widget="date"/></span>
-                                <div class="oe_kanban_bottom_right">
-<img t-att-src="kanban_image('res.users', 'avatar_128', record.assigned_to_id.raw_value)" t-att-title="record.assigned_to_id.value" class="oe_kanban_avatar o_image_24_cover" t-if="record.assigned_to_id.raw_value" alt="Assigned User"/>
-
-                                    <field name="activity_state" widget="kanban_activity"/>
-                                </div>
-                            </div>
+                            </button>
                         </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-    <!-- List view for List -->
-    <record id="portal_feedback_view_tree" model="ir.ui.view">
-        <field name="name">portal.feedback.view.tree</field>
-        <field name="model">portal.feedback</field>
-        <field name="arch" type="xml">
-            <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="state=='resolved'" decoration-muted="state=='closed'" multi_edit="1">
-                <field name="name"/>
-                <field name="create_date" widget="date"/>
-                <field name="partner_id"/>
-                <field name="feedback_type"/>
-                <field name="rating" widget="priority"/>
-                <field name="sentiment_category"/>
-                <field name="sentiment_score"/>
-                <field name="priority" widget="priority"/>
-                <field name="state" widget="badge"/>
-                <field name="assigned_to_id" widget="many2one_avatar_user"/>
-                <field name="activity_exception_decoration" widget="activity_exception"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Form view for base.rate -->
-    <record id="portal_feedback_view_form" model="ir.ui.view">
-        <field name="name">portal.feedback.view.form</field>
-        <field name="model">portal.feedback</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                    <field name="state" widget="statusbar" statusbar_visible="new,in_progress,resolved,closed,cancelled" clickable="true"/>
-                </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_related_records" icon="fa-file-text-o">
-                            <div class="o_stat_info">
-                                <span class="o_stat_text">Related Records</span>
-                            </div>
-                        </button>
-                    </div>
-
-                    <div class="oe_title">
-                        <h1><field name="name" readonly="1"/></h1>
-                    </div>
-
-                    <group>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1" />
+                            </h1>
+                        </div>
                         <group>
-                            <field name="partner_id"/>
-                            <field name="feedback_type"/>
-                            <field name="subject"/>
-                            <field name="priority"/>
-                            <field name="assigned_to_id"/>
+                            <group>
+                                <field name="partner_id" />
+                                <field name="feedback_type" />
+                                <field name="subject" />
+                                <field name="priority" />
+                                <field name="assigned_to_id" />
+                            </group>
+                            <group>
+                                <field name="rating" widget="priority" />
+                                <field name="sentiment_category" />
+                                <field name="sentiment_score" />
+                                <field name="active" />
+                                <field name="company_id" />
+                            </group>
                         </group>
-                        <group>
-                            <field name="rating" widget="priority"/>
-                            <field name="sentiment_category"/>
-                            <field name="sentiment_score"/>
-                            <field name="active"/>
-                            <field name="company_id"/>
-                        </group>
+                        <notebook>
+                            <page string="Feedback Details">
+                                <group>
+                                    <field name="description" nolabel="1" placeholder="Customer feedback details..." />
+                                </group>
+                            </page>
+                            <page string="Analysis">
+                                <group>
+                                    <field name="sentiment_score" />
+                                    <field name="sentiment_category" />
+                                    <field name="resolution_date" />
+                                    <field name="first_response_date" />
+                                    <field name="interaction_count" />
+                                </group>
+                            </page>
+                            <page string="Relations">
+                                <group>
+                                    <field name="resolution_ids" />
+                                    <field name="communication_ids" />
+                                    <field name="escalation_ids" />
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="portal_feedback_view_search" model="ir.ui.view">
+            <field name="name">portal.feedback.view.search</field>
+            <field name="model">portal.feedback</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <field name="partner_id" />
+                    <field name="feedback_type" />
+                    <field name="assigned_to_id" />
+                    <filter string="New" name="new" domain="[('state', '=', 'new')]" />
+                    <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]" />
+                    <filter string="Negative Sentiment" name="negative_sentiment" domain="[('sentiment_category', '=', 'negative')]" />
+                    <filter string="Needs Response" name="needs_response" domain="[('state', 'in', ['new', 'in_progress'])]" />
+                    <separator />
+                    <filter string="My Assignments" name="my_assignments" domain="[('assigned_to_id', '=', uid)]" />
+                    <group expand="0" string="Group By">
+                        <filter string="State" name="group_state" context="{'group_by': 'state'}" />
+                        <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}" />
+                        <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}" />
+                        <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to_id'}" />
+                        <filter string="Sentiment" name="group_sentiment" context="{'group_by': 'sentiment_category'}" />
                     </group>
-                    <notebook>
-                        <page string="Feedback Details">
-                            <group>
-                                <field name="description" nolabel="1" placeholder="Customer feedback details..."/>
-                            </group>
-                        </page>
-                        <page string="Analysis">
-                            <group>
-                                <field name="sentiment_score"/>
-                                <field name="sentiment_category"/>
-                                <field name="resolution_date"/>
-                                <field name="first_response_date"/>
-                                <field name="interaction_count"/>
-                            </group>
-                        </page>
-                        <page string="Relations">
-                            <group>
-                                <field name="resolution_ids"/>
-                                <field name="communication_ids"/>
-                                <field name="escalation_ids"/>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-    <!-- Search view for base.rate -->
-    <record id="portal_feedback_view_search" model="ir.ui.view">
-        <field name="name">portal.feedback.view.search</field>
-        <field name="model">portal.feedback</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="feedback_type"/>
-                <field name="assigned_to_id"/>
-
-                <filter string="New" name="new" domain="[('state', '=', 'new')]"/>
-                <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
-                <filter string="Negative Sentiment" name="negative_sentiment" domain="[('sentiment_category', '=', 'negative')]"/>
-                <filter string="Needs Response" name="needs_response" domain="[('state', 'in', ['new', 'in_progress'])]"/>
-
-                <separator/>
-                <filter string="My Assignments" name="my_assignments" domain="[('assigned_to_id', '=', uid)]"/>
-
-                <group expand="0" string="Group By">
-                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
-                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
-                    <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to_id'}"/>
-                    <filter string="Sentiment" name="group_sentiment" context="{'group_by': 'sentiment_category'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- List view for Action -->
-    <record id="action_portal_feedback" model="ir.actions.act_window">
-        <field name="name">Customer Feedback</field>
-        <field name="res_model">portal.feedback</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="search_view_id" ref="portal_feedback_view_search"/>
-        <field name="context">{'search_default_needs_response': 1}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                <i class="fa fa-pencil"/> No customer feedback yet!
+                </search>
+            </field>
+        </record>
+        <record id="action_portal_feedback" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model portal.feedback has state field - consider using default search filters -->
+            <field name="name">Customer Feedback</field>
+            <field name="res_model">portal.feedback</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="portal_feedback_view_search" />
+            <field name="context">{'search_default_needs_response': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-pencil" /> No customer feedback yet!
             </p>
-            <p>Customer feedback will appear here when submitted through the portal.</p>
-        </field>
-    </record>
-
-    <!-- Menu definition removed - already exists in records_management_menus.xml and portal_feedback_menus.xml -->
+                <p>Customer feedback will appear here when submitted through the portal.</p>
+            </field>
+        </record>
     </data>
 </odoo>
