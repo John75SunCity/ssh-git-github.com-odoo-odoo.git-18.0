@@ -5,10 +5,13 @@
             <field name="name">service.item.view.kanban</field>
             <field name="model">service.item</field>
             <field name="arch" type="xml">
-                <kanban default_group_by="service_category" class="o_kanban_service_items">
-                    <field name="name" />
-                    <field name="service_category" />
-                    <field name="base_price" />
+                <kanban default_group_by="category" class="o_kanban_service_items">
+                               <field name="domain">[('purchase_cost','>',0)]</field>
+            <field name="context">{'pivot_measures':['purchase_cost','current_value','maintenance_cost']}</field>ield name            <field name="domain">[('current_value', '>', 0)]</field>
+            <field name="context">{'pivot_measures':['purchase_cost','current_value']}</field>domain">[('service_request_count','>',0)]</field>
+            <field name="context">{'pivot_measures':['service_request_count','maintenance_request_count','utilization_rate']}</field>           <field name="name" />
+                    <field name="category" />
+                    <field name="purchase_cost" />
                     <field name="currency_id" />
                     <field name="active" />
                     <field name="activity_state" />
@@ -23,7 +26,7 @@
                                             </strong>
                                         </div>
                                         <div class="o_secondary">
-                                            <field name="service_category" />
+                                            <field name="category" />
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
@@ -36,7 +39,7 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <strong>Price: </strong>
-                                            <field name="base_price" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                                            <field name="purchase_cost" widget="monetary" options="{'currency_field': 'currency_id'}" />
                                         </div>
                                         <div class="col-6">
                                             <field name="active" widget="boolean_toggle" />
@@ -58,15 +61,12 @@
             <field name="model">service.item</field>
             <field name="arch" type="xml">
                 <list string="Service Items" decoration-muted="not active">
-                    <field name="sequence" widget="handle" />
                     <field name="name" />
-                    <field name="service_category" />
+                    <field name="category" />
                     <field name="service_type" />
-                    <field name="base_price" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                    <field name="purchase_cost" widget="monetary" options="{'currency_field': 'currency_id'}" />
                     <field name="currency_id" column_invisible="1" />
-                    <field name="unit_of_measure" />
-                    <field name="requires_approval" widget="boolean_toggle" />
-                    <field name="naid_compliant" widget="boolean_toggle" />
+                    <field name="state" />
                     <field name="active" widget="boolean_toggle" />
                     <field name="activity_ids" widget="list_activity" />
                     <field name="company_id" column_invisible="1" />
@@ -86,7 +86,7 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button class="oe_stat_button" type="object" name="action_view_related_requests" icon="fa-tasks">
-                                <field name="request_count" string="Requests" widget="statinfo" />
+                                <field name="service_request_count" string="Requests" widget="statinfo" />
                             </button>
                             <button class="oe_stat_button" type="object" name="action_view_pricing_history" icon="fa-line-chart">
                                 <div class="o_field_widget o_stat_info">
@@ -108,100 +108,98 @@
                         </div>
                         <group>
                             <group name="service_details" string="Service Details">
-                                <field name="service_category" widget="selection" options="{'no_create': True}" />
+                                <field name="category" widget="selection" options="{'no_create': True}" />
                                 <field name="service_type" widget="selection" />
                                 <field name="service_code" placeholder="e.g., SHRED-001, STOR-002" />
-                                <field name="unit_of_measure" placeholder="e.g., per box, per pound, per hour" />
-                                <field name="sequence" groups="base.group_no_one" />
+                                <field name="state" />
                             </group>
                             <group name="pricing" string="Pricing">
-                                <field name="base_price" widget="monetary" options="{'currency_field': 'currency_id'}" />
+                                <field name="purchase_cost" widget="monetary" options="{'currency_field': 'currency_id'}" />
                                 <field name="currency_id" options="{'no_create': True}" />
-                                <field name="cost_price" widget="monetary" options="{'currency_field': 'currency_id'}" groups="records_management.group_records_manager" />
-                                <field name="margin_percent" widget="percentage" readonly="1" />
+                                <field name="current_value" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1" />
                             </group>
                         </group>
                         <group>
                             <group name="operational_settings" string="Operational Settings">
-                                <field name="requires_approval" />
-                                <field name="approval_level" invisible="requires_approval == False" />
-                                <field name="estimated_duration" widget="float_time" placeholder="Hours" />
-                                <field name="requires_witness" />
-                                <field name="requires_equipment" />
+                                <field name="assigned_user_id" />
+                                <field name="department_id" />
+                                <field name="location_id" />
+                                <field name="maintenance_interval_days" />
                             </group>
-                            <group name="compliance" string="Compliance &amp; Quality">
-                                <field name="naid_compliant" />
-                                <field name="iso_compliant" />
-                                <field name="certificate_required" />
-                                <field name="audit_trail_required" />
-                                <field name="quality_check_required" />
+                            <group name="compliance" string="Maintenance &amp; Quality">
+                                <field name="last_maintenance_date" />
+                                <field name="next_maintenance_date" />
+                                <field name="is_maintenance_due" />
+                                <field name="efficiency_rating" />
                             </group>
                         </group>
                         <notebook>
                             <page string="Description" name="description">
                                 <group>
-                                    <field name="description" nolabel="1" placeholder="Detailed service description for customers and technicians..." />
-                                    <separator string="Internal Notes" />
-                                    <field name="internal_notes" nolabel="1" placeholder="Internal operational notes, procedures, safety requirements..." />
+                                    <field name="specifications" nolabel="1" placeholder="Technical specifications and detailed service description..." />
+                                    <separator string="Operating Instructions" />
+                                    <field name="operating_instructions" nolabel="1" placeholder="Operating procedures and safety requirements..." />
+                                    <separator string="Safety Notes" />
+                                    <field name="safety_notes" nolabel="1" placeholder="Safety requirements and precautions..." />
                                 </group>
                             </page>
-                            <page string="Equipment &amp; Resources" name="resources">
+                            <page string="Equipment &amp; Maintenance" name="maintenance">
                                 <group>
-                                    <group string="Required Equipment">
-                                        <field name="equipment_ids" widget="many2many_tags" invisible="requires_equipment == False" />
-                                        <field name="vehicle_type_required" />
-                                        <field name="special_tools_required" />
+                                    <group string="Equipment Details">
+                                        <field name="model_number" />
+                                        <field name="serial_number" />
+                                        <field name="manufacturer" />
+                                        <field name="capacity" />
+                                        <field name="capacity_unit" />
                                     </group>
-                                    <group string="Staffing Requirements">
-                                        <field name="min_technicians" placeholder="1" />
-                                        <field name="max_technicians" placeholder="3" />
-                                        <field name="skill_level_required" widget="selection" />
-                                        <field name="certification_required" />
+                                    <group string="Maintenance">
+                                        <field name="last_maintenance_date" />
+                                        <field name="next_maintenance_date" />
+                                        <field name="maintenance_interval_days" />
+                                        <field name="is_maintenance_due" />
                                     </group>
                                 </group>
                             </page>
-                            <page string="Pricing Rules" name="pricing_rules">
-                                <field name="pricing_rule_ids" nolabel="1">
+                            <page string="Maintenance Requests" name="maintenance_requests">
+                                <field name="maintenance_request_ids" nolabel="1">
                                     <list editable="bottom">
                                         <field name="name" />
-                                        <field name="condition_field" />
-                                        <field name="condition_operator" />
-                                        <field name="condition_value" />
-                                        <field name="price_adjustment" widget="monetary" />
-                                        <field name="adjustment_type" />
-                                        <field name="active" widget="boolean_toggle" />
+                                        <field name="maintenance_type" />
+                                        <field name="schedule_date" />
+                                        <field name="stage_id" />
+                                        <field name="cost" widget="monetary" />
                                     </list>
                                 </field>
                             </page>
-                            <page string="Customer Portal" name="portal_settings">
+                            <page string="Assignment &amp; Settings" name="assignment">
                                 <group>
-                                    <group string="Portal Visibility">
-                                        <field name="portal_visible" />
-                                        <field name="portal_category" invisible="portal_visible == False" />
-                                        <field name="portal_description" invisible="portal_visible == False" />
-                                        <field name="customer_can_request" invisible="portal_visible == False" />
+                                    <group string="Assignment">
+                                        <field name="user_id" />
+                                        <field name="assigned_user_id" />
+                                        <field name="department_id" />
+                                        <field name="company_id" />
                                     </group>
-                                    <group string="Request Settings">
-                                        <field name="require_customer_approval" />
-                                        <field name="auto_create_task" />
-                                        <field name="notification_template_id" options="{'no_create': True}" />
-                                        <field name="email_confirmation_required" />
+                                    <group string="Settings">
+                                        <field name="active" />
+                                        <field name="state" />
+                                        <field name="efficiency_rating" />
+                                        <field name="utilization_rate" />
                                     </group>
                                 </group>
                             </page>
-                            <page string="Analytics" name="analytics">
+                            <page string="Financial" name="financial">
                                 <group>
-                                    <group string="Performance Metrics">
-                                        <field name="request_count" readonly="1" />
-                                        <field name="completed_count" readonly="1" />
-                                        <field name="average_completion_time" readonly="1" widget="float_time" />
-                                        <field name="customer_satisfaction" readonly="1" widget="percentage" />
+                                    <group string="Cost Information">
+                                        <field name="purchase_cost" widget="monetary" readonly="1" />
+                                        <field name="current_value" widget="monetary" readonly="1" />
+                                        <field name="maintenance_cost" widget="monetary" readonly="1" />
+                                        <field name="depreciation_rate" widget="percentage" />
                                     </group>
-                                    <group string="Revenue Analytics">
-                                        <field name="total_revenue" readonly="1" widget="monetary" />
-                                        <field name="monthly_revenue" readonly="1" widget="monetary" />
-                                        <field name="last_revenue_date" readonly="1" />
-                                        <field name="revenue_trend" readonly="1" widget="selection" />
+                                    <group string="Dates">
+                                        <field name="purchase_date" readonly="1" />
+                                        <field name="warranty_expiry" readonly="1" />
+                                        <field name="last_maintenance_date" readonly="1" />
+                                        <field name="next_maintenance_date" readonly="1" />
                                     </group>
                                 </group>
                             </page>
@@ -221,30 +219,29 @@
             <field name="arch" type="xml">
                 <search string="Service Items">
                     <field name="name" string="Service Name" filter_domain="['|', ('name', 'ilike', self), ('service_code', 'ilike', self)]" />
-                    <field name="service_category" />
+                    <field name="category" />
                     <field name="service_type" />
                     <field name="service_code" />
-                    <field name="description" />
+                    <field name="specifications" />
                     <separator />
                     <filter string="Active Services" name="active" domain="[('active', '=', True)]" />
                     <filter string="Inactive Services" name="inactive" domain="[('active', '=', False)]" />
                     <separator />
-                    <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]" />
-                    <filter string="Requires Approval" name="requires_approval" domain="[('requires_approval', '=', True)]" />
-                    <filter string="Portal Visible" name="portal_visible" domain="[('portal_visible', '=', True)]" />
-                    <filter string="Certificate Required" name="certificate_required" domain="[('certificate_required', '=', True)]" />
+                    <filter string="Available" name="available" domain="[('state', '=', 'available')]" />
+                    <filter string="In Use" name="in_use" domain="[('state', '=', 'in_use')]" />
+                    <filter string="Maintenance Due" name="maintenance_due" domain="[('is_maintenance_due', '=', True)]" />
                     <separator />
-                    <filter string="High Demand" name="high_demand" domain="[('request_count', '&gt;', 10)]" />
-                    <filter string="Low Revenue" name="low_revenue" domain="[('monthly_revenue', '&lt;', 1000)]" />
+                    <filter string="Equipment Category" name="equipment" domain="[('category', '=', 'equipment')]" />
+                    <filter string="Service Category" name="service" domain="[('category', '=', 'service')]" />
                     <separator />
                     <filter string="Activities" name="activities" domain="[('activity_ids', '!=', False)]" />
                     <filter string="My Services" name="my_services" domain="[('create_uid', '=', uid)]" />
                     <group expand="1" string="Group By">
-                        <filter string="Category" name="group_category" domain="[]" context="{'group_by': 'service_category'}" />
+                        <filter string="Category" name="group_category" domain="[]" context="{'group_by': 'category'}" />
                         <filter string="Type" name="group_type" domain="[]" context="{'group_by': 'service_type'}" />
+                        <filter string="State" name="group_state" domain="[]" context="{'group_by': 'state'}" />
                         <filter string="Active Status" name="group_active" domain="[]" context="{'group_by': 'active'}" />
-                        <filter string="NAID Compliance" name="group_naid" domain="[]" context="{'group_by': 'naid_compliant'}" />
-                        <filter string="Approval Level" name="group_approval" domain="[]" context="{'group_by': 'approval_level'}" />
+                        <filter string="Department" name="group_department" domain="[]" context="{'group_by': 'department_id'}" />
                         <filter string="Company" name="group_company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company" />
                         <separator />
                         <filter string="Creation Date" name="group_create_date" domain="[]" context="{'group_by': 'create_date:month'}" />
@@ -280,7 +277,6 @@
             <field name="view_mode">kanban,list,form</field>
             <field name="domain">[('active', '=', True)]</field>
             <field name="context">{
-        'search_default_portal_visible': 1,
         'search_default_group_category': 1,
     }</field>
         </record>
@@ -289,7 +285,7 @@
             <field name="name">NAID Compliant Services</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('naid_compliant', '=', True), ('active', '=', True)]</field>
+            <field name="domain">[('category', '=', 'equipment'), ('active', '=', True)]</field>
             <field name="context">{
         'search_default_group_category': 1,
     }</field>
@@ -299,10 +295,9 @@
             <field name="name">Portal Services</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">kanban,list,form</field>
-            <field name="domain">[('portal_visible', '=', True), ('active', '=', True)]</field>
+            <field name="domain">[('state', '=', 'available'), ('active', '=', True)]</field>
             <field name="context">{
-        'search_default_customer_can_request': 1,
-        'search_default_group_portal_category': 1,
+        'search_default_group_category': 1,
     }</field>
         </record>
         <record id="action_service_item_dashboard" model="ir.actions.act_window">
@@ -325,10 +320,10 @@
             <field name="name">Service Categories</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('service_category','!=',False)]</field>
+            <field name="domain">[('category','!=',False)]</field>
             <field name="context">{
     'search_default_group_category': 1,
-    'searchpanel_default_groupby': 'service_category'
+    'searchpanel_default_groupby': 'category'
 }</field>
             <field name="help" type="html">
                 <p>List of services grouped by category for mass maintenance.</p>
@@ -339,7 +334,7 @@
             <field name="name">Service Templates</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('active', '=', True), ('portal_visible','=',False), ('customer_can_request','=',False)]</field>
+            <field name="domain">[('active', '=', True), ('state','=','draft')]</field>
             <field name="help" type="html">
                 <p>Internal reusable templates not exposed on the portal.</p>
             </field>
@@ -349,8 +344,8 @@
             <field name="name">Service Requests</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('customer_can_request', '=', True), ('active','=',True)]</field>
-            <field name="context">{'search_default_customer_can_request': 1}</field>
+            <field name="domain">[('state', '=', 'available'), ('active','=',True)]</field>
+            <field name="context">{'search_default_available': 1}</field>
             <field name="help" type="html">
                 <p>Services that customers are allowed to request directly.</p>
             </field>
@@ -360,7 +355,7 @@
             <field name="name">Service Scheduling</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('auto_create_task', '=', True), ('active','=',True)]</field>
+            <field name="domain">[('state', '=', 'in_use'), ('active','=',True)]</field>
             <field name="help" type="html">
                 <p>Services that automatically create tasks when requested.</p>
             </field>
@@ -370,7 +365,7 @@
             <field name="name">Service Billing</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('pricing_rule_ids','!=',False)]</field>
+            <field name="domain">[('maintenance_cost','>',0)]</field>
             <field name="help" type="html">
                 <p>Billable services with at least one pricing rule.</p>
             </field>
@@ -413,7 +408,7 @@
             <field name="name">Pricing Rules</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('pricing_rule_ids', '!=', False)]</field>
+            <field name="domain">[('maintenance_cost', '>', 0)]</field>
             <field name="help" type="html">
                 <p>Services with conditional pricing logic.</p>
             </field>
@@ -423,7 +418,7 @@
             <field name="name">Quality Controls</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('quality_check_required', '=', True)]</field>
+            <field name="domain">[('is_maintenance_due', '=', True)]</field>
             <field name="help" type="html">
                 <p>Services that require quality checks or audit trails.</p>
             </field>
@@ -433,7 +428,7 @@
             <field name="name">Mobile Service Tasks</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">kanban,list,form</field>
-            <field name="domain">[('portal_visible', '=', True), ('auto_create_task','=',True)]</field>
+            <field name="domain">[('state', '=', 'available'), ('category','=','service')]</field>
             <field name="help" type="html">
                 <p>Portal-visible services that also generate tasks for mobile/FSM workflows.</p>
             </field>
@@ -443,7 +438,7 @@
             <field name="name">FSM Integration</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">kanban,list,form</field>
-            <field name="domain">[('auto_create_task', '=', True)]</field>
+            <field name="domain">[('service_request_count', '>', 0)]</field>
             <field name="help" type="html">
                 <p>Services configured for Field Service task automation.</p>
             </field>
@@ -453,7 +448,7 @@
             <field name="name">Portal Service Requests</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">kanban,list,form</field>
-            <field name="domain">[('customer_can_request', '=', True), ('portal_visible','=',True)]</field>
+            <field name="domain">[('state', '=', 'available'), ('category','=','service')]</field>
             <field name="help" type="html">
                 <p>Portal-visible services that customers may request.</p>
             </field>
@@ -463,7 +458,7 @@
             <field name="name">Self-Service Setup</field>
             <field name="res_model">service.item</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('portal_visible', '=', True), ('customer_can_request','=',False)]</field>
+            <field name="domain">[('state', '=', 'draft'), ('category','!=','equipment')]</field>
             <field name="help" type="html">
                 <p>Portal-visible informational services not requestable directly.</p>
             </field>
