@@ -118,10 +118,10 @@
         <menuitem id="menu_revenue_forecasting" name="Revenue Forecasting" parent="records_management.menu_records_billing" sequence="30" />
         <menuitem id="menu_revenue_forecast_lines" name="Forecast Lines" parent="menu_revenue_forecasting" action="action_revenue_forecast_line" sequence="10" />
         <menuitem id="menu_billing_configuration" name="Billing Configuration" parent="records_management.menu_records_billing" sequence="40" />
-        <!-- Removed invalid menu for missing action_records_billing_config_line -->
-        <menuitem id="menu_billing_config_audit" name="Configuration Audit" parent="menu_billing_configuration" action="action_records_billing_config_audit" sequence="20" />
+        <!-- Billing configuration audit - using existing audit log action -->
+        <menuitem id="menu_billing_config_audit" name="Configuration Audit" parent="menu_billing_configuration" action="action_records_audit_log" sequence="20" />
         <menuitem id="menu_fsm_service_management" name="FSM Services" parent="menu_records_operations" sequence="50" />
-        <menuitem id="menu_fsm_service_lines" name="Service Lines" parent="menu_fsm_service_management" action="action_fsm_task_service_line" sequence="10" />
+        <menuitem id="menu_fsm_service_lines" name="Service Lines" parent="menu_fsm_service_management" action="action_service_item_fsm_integration" sequence="10" />
         <menuitem id="menu_performance_analytics" name="Performance Analytics" parent="records_management.menu_records_reporting" sequence="60" />
         <menuitem id="menu_document_retrieval_metrics" name="Retrieval Metrics" parent="menu_performance_analytics" action="action_document_retrieval_metrics" sequence="10" />
         <menuitem id="menu_payment_management" name="Payment Management" parent="records_management.menu_records_billing" sequence="50" />
