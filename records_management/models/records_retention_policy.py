@@ -156,69 +156,151 @@ class RecordsRetentionPolicy(models.Model):
     compliance_checker_id = fields.Many2one('res.users', string='Compliance Checker')
     is_compliant = fields.Boolean(string='Is Compliant')
 
-    # === POLICY FLAGS & STATUS TRACKING ===
-    is_default = fields.Boolean(string='Is Default Policy')
-    is_legal_hold = fields.Boolean(string='Legal Hold')
+    # === OPTIMIZED STATUS TRACKING WITH SELECTION FIELDS ===
+
+    # Approval workflow state
+    approval_state = fields.Selection([
+        ('draft', 'Draft'),
+        ('pending', 'Pending Approval'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('under_review', 'Under Review'),
+    ], string="Approval State", default='draft', tracking=True,
+       help="Current approval status of the retention policy")
+
+    # Version management
+    version_type = fields.Selection([
+        ('major', 'Major Version'),
+        ('minor', 'Minor Version'),
+        ('patch', 'Patch Version'),
+    ], string="Version Type", default='major',
+       help="Type of version change for this policy")
+
+    # Lifecycle management
+    lifecycle_state = fields.Selection([
+        ('active', 'Active'),
+        ('archived', 'Archived'),
+        ('deleted', 'Deleted'),
+        ('purged', 'Purged'),
+        ('restored', 'Restored'),
+        ('locked', 'Locked'),
+        ('unlocked', 'Unlocked'),
+    ], string="Lifecycle State", default='active', tracking=True,
+       help="Current lifecycle status of the retention policy")
+
+    # Review and compliance state
+    review_state = fields.Selection([
+        ('current', 'Current'),
+        ('pending_review', 'Pending Review'),
+        ('under_review', 'Under Review'),
+        ('overdue', 'Overdue'),
+        ('expired', 'Expired'),
+    ], string="Review State", default='current', tracking=True,
+       help="Current review status of the retention policy")
+
+    # Publication status
+    publication_state = fields.Selection([
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('unpublished', 'Unpublished'),
+        ('effective', 'Effective'),
+        ('ineffective', 'Ineffective'),
+        ('superseded', 'Superseded'),
+    ], string="Publication State", default='draft', tracking=True,
+       help="Current publication status of the retention policy")
+
+    # Timeline status
+    timeline_status = fields.Selection([
+        ('current', 'Current'),
+        ('historical', 'Historical'),
+        ('future', 'Future'),
+    ], string="Timeline Status", default='current',
+       help="Indicates the temporal relevance of the policy")
+
+    # Essential boolean flags (kept for critical functionality)
+    is_default = fields.Boolean(string='Is Default Policy',
+                               help="Indicates if this is the default policy for new documents")
+    is_template = fields.Boolean(string='Is Template',
+                                help="Indicates if this policy serves as a template for new policies")
+    is_global = fields.Boolean(string='Is Global',
+                              help="Indicates if this policy applies globally across all departments")
+    is_legal_hold = fields.Boolean(string='Legal Hold',
+                                  help="Indicates if documents under this policy are under legal hold")
     legal_hold_reason = fields.Text(string='Legal Hold Reason')
-    is_template = fields.Boolean(string='Is Template')
-    is_global = fields.Boolean(string='Is Global')
-    is_approved = fields.Boolean(string='Is Approved')
-    is_rejected = fields.Boolean(string='Is Rejected')
-    is_pending_approval = fields.Boolean(string='Pending Approval')
-    is_pending_review = fields.Boolean(string='Pending Review')
-    is_pending_destruction = fields.Boolean(string='Pending Destruction')
-    is_under_legal_hold = fields.Boolean(string='Under Legal Hold')
-    is_under_review = fields.Boolean(string='Under Review')
-    is_under_destruction = fields.Boolean(string='Under Destruction')
-    is_expired = fields.Boolean(string='Is Expired')
-    is_overdue = fields.Boolean(string='Is Overdue')
-    is_archived = fields.Boolean(string='Is Archived')
-    is_restored = fields.Boolean(string='Is Restored')
-    is_deleted = fields.Boolean(string='Is Deleted')
-    is_purged = fields.Boolean(string='Is Purged')
-    is_locked = fields.Boolean(string='Is Locked')
-    is_unlocked = fields.Boolean(string='Is Unlocked')
-    is_versioned = fields.Boolean(string='Is Versioned')
-    is_latest_version = fields.Boolean(string='Is Latest Version')
-    is_major_version = fields.Boolean(string='Is Major Version')
-    is_minor_version = fields.Boolean(string='Is Minor Version')
-    is_draft = fields.Boolean(string='Is Draft')
-    is_published = fields.Boolean(string='Is Published')
-    is_unpublished = fields.Boolean(string='Is Unpublished')
-    is_superseded = fields.Boolean(string='Is Superseded')
-    is_effective = fields.Boolean(string='Is Effective')
-    is_ineffective = fields.Boolean(string='Is Ineffective')
-    is_current = fields.Boolean(string='Is Current')
-    is_historical = fields.Boolean(string='Is Historical')
-    is_future = fields.Boolean(string='Is Future')
-    is_active_version = fields.Boolean(string='Is Active Version')
-    is_inactive_version = fields.Boolean(string='Is Inactive Version')
-    is_draft_version = fields.Boolean(string='Is Draft Version')
-    is_approved_version = fields.Boolean(string='Is Approved Version')
-    is_rejected_version = fields.Boolean(string='Is Rejected Version')
-    is_pending_approval_version = fields.Boolean(string='Is Pending Approval Version')
-    is_pending_review_version = fields.Boolean(string='Is Pending Review Version')
-    is_under_review_version = fields.Boolean(string='Is Under Review Version')
-    is_expired_version = fields.Boolean(string='Is Expired Version')
-    is_overdue_version = fields.Boolean(string='Is Overdue Version')
-    is_compliant_version = fields.Boolean(string='Is Compliant Version')
-    is_non_compliant_version = fields.Boolean(string='Is Non-Compliant Version')
-    is_unknown_compliance_version = fields.Boolean(string='Is Unknown Compliance Version')
-    is_locked_version = fields.Boolean(string='Is Locked Version')
-    is_unlocked_version = fields.Boolean(string='Is Unlocked Version')
-    is_versioned_version = fields.Boolean(string='Is Versioned Version')
-    is_latest_version_version = fields.Boolean(string='Is Latest Version Version')
-    is_major_version_version = fields.Boolean(string='Is Major Version Version')
-    is_minor_version_version = fields.Boolean(string='Is Minor Version Version')
-    is_draft_version_version = fields.Boolean(string='Is Draft Version Version')
-    is_published_version_version = fields.Boolean(string='Is Published Version Version')
-    is_unpublished_version_version = fields.Boolean(string='Is Unpublished Version Version')
-    is_superseded_version = fields.Boolean(string='Is Superseded Version')
-    is_effective_version = fields.Boolean(string='Is Effective Version')
-    is_ineffective_version = fields.Boolean(string='Is Ineffective Version')
-    is_current_version = fields.Boolean(string='Is Current Version')
-    is_historical_version = fields.Boolean(string='Is Historical Version')
-    is_future_version = fields.Boolean(string='Is Future Version')
+    is_versioned = fields.Boolean(string='Is Versioned', default=True,
+                                 help="Indicates if this policy supports versioning")
+    is_latest_version = fields.Boolean(string='Is Latest Version', default=True,
+                                      help="Indicates if this is the latest version of the policy")
+    is_pending_destruction = fields.Boolean(string='Pending Destruction',
+                                           help="Indicates if documents are pending destruction under this policy")
+
+        # === BACKWARD COMPATIBILITY COMPUTED FIELDS ===
+    # These computed fields maintain compatibility with existing views and logic
+    # while using the new optimized selection fields internally
+
+    is_approved = fields.Boolean(string='Is Approved', compute='_compute_approval_booleans', store=False)
+    is_rejected = fields.Boolean(string='Is Rejected', compute='_compute_approval_booleans', store=False)
+    is_pending_approval = fields.Boolean(string='Pending Approval', compute='_compute_approval_booleans', store=False)
+    is_under_review = fields.Boolean(string='Under Review', compute='_compute_approval_booleans', store=False)
+
+    is_archived = fields.Boolean(string='Is Archived', compute='_compute_lifecycle_booleans', store=False)
+    is_deleted = fields.Boolean(string='Is Deleted', compute='_compute_lifecycle_booleans', store=False)
+    is_locked = fields.Boolean(string='Is Locked', compute='_compute_lifecycle_booleans', store=False)
+
+    is_pending_review = fields.Boolean(string='Pending Review', compute='_compute_review_booleans', store=False)
+    is_overdue = fields.Boolean(string='Is Overdue', compute='_compute_review_booleans', store=False)
+    is_expired = fields.Boolean(string='Is Expired', compute='_compute_review_booleans', store=False)
+
+    is_published = fields.Boolean(string='Is Published', compute='_compute_publication_booleans', store=False)
+    is_draft = fields.Boolean(string='Is Draft', compute='_compute_publication_booleans', store=False)
+    is_effective = fields.Boolean(string='Is Effective', compute='_compute_publication_booleans', store=False)
+    is_superseded = fields.Boolean(string='Is Superseded', compute='_compute_publication_booleans', store=False)
+
+    is_current = fields.Boolean(string='Is Current', compute='_compute_timeline_booleans', store=False)
+    is_historical = fields.Boolean(string='Is Historical', compute='_compute_timeline_booleans', store=False)
+    is_future = fields.Boolean(string='Is Future', compute='_compute_timeline_booleans', store=False)
+
+    @api.depends('approval_state')
+    def _compute_approval_booleans(self):
+        """Compute approval-related boolean flags based on approval_state."""
+        for record in self:
+            record.is_approved = record.approval_state == 'approved'
+            record.is_rejected = record.approval_state == 'rejected'
+            record.is_pending_approval = record.approval_state == 'pending'
+            record.is_under_review = record.approval_state == 'under_review'
+
+    @api.depends('lifecycle_state')
+    def _compute_lifecycle_booleans(self):
+        """Compute lifecycle-related boolean flags based on lifecycle_state."""
+        for record in self:
+            record.is_archived = record.lifecycle_state == 'archived'
+            record.is_deleted = record.lifecycle_state == 'deleted'
+            record.is_locked = record.lifecycle_state == 'locked'
+
+    @api.depends('review_state')
+    def _compute_review_booleans(self):
+        """Compute review-related boolean flags based on review_state."""
+        for record in self:
+            record.is_pending_review = record.review_state == 'pending_review'
+            record.is_overdue = record.review_state == 'overdue'
+            record.is_expired = record.review_state == 'expired'
+
+    @api.depends('publication_state')
+    def _compute_publication_booleans(self):
+        """Compute publication-related boolean flags based on publication_state."""
+        for record in self:
+            record.is_published = record.publication_state == 'published'
+            record.is_draft = record.publication_state == 'draft'
+            record.is_effective = record.publication_state == 'effective'
+            record.is_superseded = record.publication_state == 'superseded'
+
+    @api.depends('timeline_status')
+    def _compute_timeline_booleans(self):
+        """Compute timeline-related boolean flags based on timeline_status."""
+        for record in self:
+            record.is_current = record.timeline_status == 'current'
+            record.is_historical = record.timeline_status == 'historical'
+            record.is_future = record.timeline_status == 'future'
 
     # === DATES & AUDIT TRAIL ===
     expiration_date = fields.Date(string='Expiration Date')
@@ -262,13 +344,24 @@ class RecordsRetentionPolicy(models.Model):
         ('code_company_uniq', 'unique (code, company_id)', 'Policy Code must be unique per company!'),
     ]
 
-    # === ORM OVERRIDES ===
+    # === SMART STATE MANAGEMENT ===
+    # Automatic state transitions based on actions and dates
+
     @api.model_create_multi
     def create(self, vals_list):
-        """Auto-generate code if not provided."""
+        """Auto-generate code and set initial states."""
         for vals in vals_list:
             if vals.get('code', self.DEFAULT_CODE) == self.DEFAULT_CODE:
                 vals['code'] = self.env['ir.sequence'].next_by_code('records.retention.policy') or self.DEFAULT_CODE
+
+            # Set default states if not provided
+            if 'approval_state' not in vals:
+                vals['approval_state'] = 'draft'
+            if 'lifecycle_state' not in vals:
+                vals['lifecycle_state'] = 'active'
+            if 'publication_state' not in vals:
+                vals['publication_state'] = 'draft'
+
         return super().create(vals_list)
 
     def copy(self, default=None):
@@ -403,43 +496,112 @@ class RecordsRetentionPolicy(models.Model):
             if not self.retention_period:
                 self.retention_period = self.RETENTION_PERIOD_DEFAULTS.get(self.retention_unit, 1)
 
-    # Computed field for expiration status
-    is_expired = fields.Boolean(
-        string='Is Expired',
-        compute='_compute_is_expired',
-        store=True,
-        help='Indicates if the retention policy has expired'
-    )
-
-    @api.depends('expiration_date', 'state')
-    def _compute_is_expired(self):
-        """Compute if the retention policy is expired"""
+    # Auto-update review_state based on expiration logic
+    @api.depends('expiration_date', 'state', 'next_review_date')
+    def _compute_review_state_auto(self):
+        """Auto-compute review_state based on dates and current status."""
         today = date.today()
         for record in self:
-            if record.expiration_date and record.state in ['active', 'under_review']:
-                record.is_expired = record.expiration_date < today
+            if record.expiration_date and record.state in ['active']:
+                if record.expiration_date < today:
+                    record.review_state = 'expired'
+                elif record.next_review_date and record.next_review_date < today:
+                    record.review_state = 'overdue'
+                else:
+                    record.review_state = 'current'
             else:
-                record.is_expired = False
+                record.review_state = 'current'
 
-    # === ACTION METHODS ===
+    # === OPTIMIZED ACTION METHODS ===
     def action_activate(self):
         """Activate policy if it has at least one rule."""
         self.ensure_one()
         if not self.rule_ids:
             raise UserError(_("You cannot activate a policy with no retention rules."))
-        self.write({'state': 'active'})
+        self.write({
+            'state': 'active',
+            'approval_state': 'approved',
+            'lifecycle_state': 'active',
+            'publication_state': 'published'
+        })
         self.message_post(body=_("Policy activated."))
 
     def action_archive(self):
         """Archive the policy."""
         self.ensure_one()
-        self.write({'active': False, 'state': 'archived'})
+        self.write({
+            'active': False,
+            'state': 'archived',
+            'lifecycle_state': 'archived'
+        })
         self.message_post(body=_("Policy archived."))
 
     def action_set_to_draft(self):
         """Set policy state to draft."""
         self.ensure_one()
-        self.write({'state': 'draft'})
+        self.write({
+            'state': 'draft',
+            'approval_state': 'draft',
+            'publication_state': 'draft'
+        })
+
+    def action_submit_for_approval(self):
+        """Submit policy for approval."""
+        self.ensure_one()
+        self.write({'approval_state': 'pending'})
+        self.message_post(body=_("Policy submitted for approval."))
+
+    def action_approve(self):
+        """Approve the policy."""
+        self.ensure_one()
+        self.write({
+            'approval_state': 'approved',
+            'approved_by_id': self.env.user.id,
+            'approval_date': date.today()
+        })
+        self.message_post(body=_("Policy approved."))
+
+    def action_reject(self):
+        """Reject the policy."""
+        self.ensure_one()
+        self.write({
+            'approval_state': 'rejected',
+            'rejected_by_id': self.env.user.id,
+            'rejection_date': date.today()
+        })
+        self.message_post(body=_("Policy rejected."))
+
+    def action_publish(self):
+        """Publish the policy."""
+        self.ensure_one()
+        if self.approval_state != 'approved':
+            raise UserError(_("You can only publish approved policies."))
+        self.write({
+            'publication_state': 'published',
+            'published_by_id': self.env.user.id,
+            'published_date': date.today()
+        })
+        self.message_post(body=_("Policy published."))
+
+    def action_lock(self):
+        """Lock the policy for editing."""
+        self.ensure_one()
+        self.write({
+            'lifecycle_state': 'locked',
+            'locked_by_id': self.env.user.id,
+            'locked_date': date.today()
+        })
+        self.message_post(body=_("Policy locked."))
+
+    def action_unlock(self):
+        """Unlock the policy for editing."""
+        self.ensure_one()
+        self.write({
+            'lifecycle_state': 'unlocked',
+            'unlocked_by_id': self.env.user.id,
+            'unlocked_date': date.today()
+        })
+        self.message_post(body=_("Policy unlocked."))
 
     def action_create_new_version(self):
         """Open wizard to create a new version of this policy."""
@@ -471,7 +633,7 @@ class RecordsRetentionPolicy(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': _('Policy Versions'),
-            'res_model': 'records.policy.version',
+            'res_model': 'records.retention.policy.version',
             'view_mode': 'tree,form',
             'domain': [('policy_id', '=', self.id)],
             'context': {'default_policy_id': self.id}
