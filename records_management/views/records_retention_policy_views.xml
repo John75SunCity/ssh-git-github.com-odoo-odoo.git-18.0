@@ -35,13 +35,14 @@
                 <form string="Records Retention Policy">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
-                        <button name="action_activate" type="object" string="Activate" states="draft" class="btn-primary"/>
-                        <button name="action_submit_for_approval" type="object" string="Submit" groups="records_management.group_records_user" attrs="{'invisible': [('approval_state','!=','draft')]}"/>
-                        <button name="action_approve" type="object" string="Approve" groups="records_management.group_records_manager" attrs="{'invisible': [('approval_state','!=','pending')]}"/>
-                        <button name="action_reject" type="object" string="Reject" groups="records_management.group_records_manager" attrs="{'invisible': [('approval_state','!=','pending')]}"/>
-                        <button name="action_publish" type="object" string="Publish" groups="records_management.group_records_manager" attrs="{'invisible': [('publication_state','!=','draft'), ('approval_state','!=','approved')]}"/>
-                        <button name="action_lock" type="object" string="Lock" groups="records_management.group_records_manager" attrs="{'invisible': [('lifecycle_state','in',['locked'])]}"/>
-                        <button name="action_unlock" type="object" string="Unlock" groups="records_management.group_records_manager" attrs="{'invisible': [('lifecycle_state','not in',['locked'])]}"/>
+                        <!-- Odoo 17+ modifiers: use invisible expressions instead of deprecated states / attrs -->
+                        <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_submit_for_approval" type="object" string="Submit" groups="records_management.group_records_user" invisible="approval_state != 'draft'"/>
+                        <button name="action_approve" type="object" string="Approve" groups="records_management.group_records_manager" invisible="approval_state != 'pending'"/>
+                        <button name="action_reject" type="object" string="Reject" groups="records_management.group_records_manager" invisible="approval_state != 'pending'"/>
+                        <button name="action_publish" type="object" string="Publish" groups="records_management.group_records_manager" invisible="(publication_state != 'draft') and (approval_state != 'approved')"/>
+                        <button name="action_lock" type="object" string="Lock" groups="records_management.group_records_manager" invisible="lifecycle_state in ['locked']"/>
+                        <button name="action_unlock" type="object" string="Unlock" groups="records_management.group_records_manager" invisible="lifecycle_state not in ['locked']"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -73,7 +74,7 @@
                                     <span class="o_stat_text">Documents</span>
                                 </div>
                             </button>
-                            <button class="oe_stat_button" type="object" name="action_view_child_policies" icon="fa-sitemap" attrs="{'invisible':[('child_policy_ids','=',[])]}">
+                            <button class="oe_stat_button" type="object" name="action_view_child_policies" icon="fa-sitemap" invisible="not child_policy_ids">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value"><field name="policy_level"/></span>
                                     <span class="o_stat_text">Hierarchy</span>
