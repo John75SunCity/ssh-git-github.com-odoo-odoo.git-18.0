@@ -80,7 +80,7 @@
                 <search string="Search Forecast Lines">
                     <field name="customer_id" />
                     <field name="service_type" />
-                    <field name="state" />
+                    <field name="status" />
                     <field name="forecast_id" />
                     <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]" />
                     <filter string="Confirmed" name="confirmed" domain="[('status', '=', 'confirmed')]" />
