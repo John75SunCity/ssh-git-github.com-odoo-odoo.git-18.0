@@ -234,7 +234,7 @@ class RecordsRetentionPolicy(models.Model):
     is_pending_destruction = fields.Boolean(string='Pending Destruction',
                                            help="Indicates if documents are pending destruction under this policy")
 
-        # === BACKWARD COMPATIBILITY COMPUTED FIELDS ===
+    # === BACKWARD COMPATIBILITY COMPUTED FIELDS ===
     # These computed fields maintain compatibility with existing views and logic
     # while using the new optimized selection fields internally
 
@@ -258,6 +258,10 @@ class RecordsRetentionPolicy(models.Model):
 
     is_current = fields.Boolean(string='Is Current', compute='_compute_timeline_booleans', store=False)
     is_historical = fields.Boolean(string='Is Historical', compute='_compute_timeline_booleans', store=False)
+    is_future = fields.Boolean(string='Is Future', compute='_compute_timeline_booleans', store=False)
+
+    # Legal hold compatibility
+    is_under_legal_hold = fields.Boolean(string='Under Legal Hold', compute='_compute_legal_hold_booleans', store=False)
     is_future = fields.Boolean(string='Is Future', compute='_compute_timeline_booleans', store=False)
 
     @api.depends('approval_state')
@@ -301,6 +305,13 @@ class RecordsRetentionPolicy(models.Model):
             record.is_current = record.timeline_status == 'current'
             record.is_historical = record.timeline_status == 'historical'
             record.is_future = record.timeline_status == 'future'
+
+    @api.depends('is_legal_hold')
+    def _compute_legal_hold_booleans(self):
+        """Compute legal hold related boolean flags."""
+        for record in self:
+            # is_under_legal_hold is the same as is_legal_hold for backward compatibility
+            record.is_under_legal_hold = record.is_legal_hold
 
     # === DATES & AUDIT TRAIL ===
     expiration_date = fields.Date(string='Expiration Date')
