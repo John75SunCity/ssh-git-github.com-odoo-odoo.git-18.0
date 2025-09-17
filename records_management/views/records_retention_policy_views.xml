@@ -40,7 +40,7 @@
                         <div class="oe_button_box" name="button_box">
                             <button class="oe_stat_button"
                                     type="object"
-                                    name="action_view_retention_rules"
+                                    name="action_view_rules"
                                     icon="fa-gavel">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
@@ -51,7 +51,7 @@
                             </button>
                             <button class="oe_stat_button"
                                     type="object"
-                                    name="action_view_policy_versions"
+                                    name="action_view_versions"
                                     icon="fa-history">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
@@ -312,7 +312,7 @@
         <menuitem
             id="menu_records_retention_policy"
             name="Retention Policies"
-            parent="menu_records_management_configuration"
+            parent="menu_records_configuration"
             action="records_retention_policy_action"
             sequence="10"/>
 
