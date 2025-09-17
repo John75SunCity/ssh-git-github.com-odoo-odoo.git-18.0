@@ -14,7 +14,7 @@
                     <field name="variance_amount" sum="Total Variance" />
                     <field name="variance_percentage" widget="percentage" />
                     <field name="confidence_level" />
-                    <field name="state" />
+                    <field name="status" />
                     <field name="currency_id" invisible="1" />
                 </list>
             </field>
