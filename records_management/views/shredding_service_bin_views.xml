@@ -14,7 +14,7 @@
                 decoration-warning="status == 'maintenance'" decoration-danger="status == 'retired'">
         <field name="barcode"/>
         <field name="bin_size" widget="badge"/>
-        <field name="state" widget="badge"/>
+        <field name="status" widget="badge"/>
         <field name="current_customer_id"/>
         <field name="current_location"/>
         <field name="last_service_date" widget="date"/>
@@ -47,7 +47,7 @@ class="btn-primary" icon="fa-map-marker" title="Place at Customer"
                 <button name="action_recall_bin" string="Recall Bin" type="object"
 class="btn-secondary" icon="fa-undo" title="Recall Bin"
                         invisible="not current_customer_id"/>
-        <field name="state" widget="statusbar"
+        <field name="status" widget="statusbar"
                         statusbar_visible="available,active,maintenance,retired"/>
             </header>
 
@@ -224,7 +224,7 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
         <kanban default_group_by="status" class="o_kanban_small_column">
         <field name="barcode"/>
         <field name="bin_size"/>
-        <field name="state"/>
+        <field name="status"/>
         <field name="current_customer_id"/>
         <field name="current_location"/>
         <field name="fill_count"/>
