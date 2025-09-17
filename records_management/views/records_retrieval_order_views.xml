@@ -45,7 +45,7 @@
                             <button type="object" name="action_prepare_invoice" class="oe_stat_button" icon="fa-file-invoice" invisible="billing_status in ['not_billable']">
                                 <field name="billing_status" widget="badge" string="Billing" />
                             </button>
-                            <button type="object" name="_check_cron_sla_escalation" class="oe_stat_button" icon="fa-exclamation-triangle" invisible="(not sla_breached) or state in ['completed','cancelled']">
+                            <button type="object" name="action_manual_sla_escalation" class="oe_stat_button" icon="fa-exclamation-triangle" invisible="(not sla_breached) or state in ['completed','cancelled']">
                                 <field name="sla_breached" widget="boolean_toggle" string="SLA Breached" />
                             </button>
                         </div>
