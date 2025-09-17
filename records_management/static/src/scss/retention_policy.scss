@@ -1,0 +1,11 @@
+/* Styling for Records Retention Policy views */
+.o-retention-code-block {
+  margin-left: 20px; /* migrated from inline style */
+}
+
+.o_retention_policy_kanban .badge-danger {
+  background-color: #c0392b;
+}
+.o_retention_policy_kanban .badge-warning {
+  background-color: #f39c12;
+}

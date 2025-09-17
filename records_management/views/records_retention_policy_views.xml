@@ -36,12 +36,12 @@
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
                         <button name="action_activate" type="object" string="Activate" states="draft" class="btn-primary"/>
-                        <button name="action_submit_for_approval" type="object" string="Submit" attrs="{'invisible':[('approval_state','!=','draft')]}"/>
-                        <button name="action_approve" type="object" string="Approve" attrs="{'invisible":[('approval_state','!=','pending')]}"/>
-                        <button name="action_reject" type="object" string="Reject" attrs="{'invisible":[('approval_state','!=','pending')]}"/>
-                        <button name="action_publish" type="object" string="Publish" attrs="{'invisible":[('publication_state','!=','draft'),('approval_state','!=','approved')]}"/>
-                        <button name="action_lock" type="object" string="Lock" attrs="{'invisible":[('lifecycle_state','in',['locked'])]}"/>
-                        <button name="action_unlock" type="object" string="Unlock" attrs="{'invisible":[('lifecycle_state','not in',['locked'])]}"/>
+                        <button name="action_submit_for_approval" type="object" string="Submit" groups="records_management.group_records_user" attrs="{'invisible': [('approval_state','!=','draft')]}"/>
+                        <button name="action_approve" type="object" string="Approve" groups="records_management.group_records_manager" attrs="{'invisible': [('approval_state','!=','pending')]}"/>
+                        <button name="action_reject" type="object" string="Reject" groups="records_management.group_records_manager" attrs="{'invisible': [('approval_state','!=','pending')]}"/>
+                        <button name="action_publish" type="object" string="Publish" groups="records_management.group_records_manager" attrs="{'invisible': [('publication_state','!=','draft'), ('approval_state','!=','approved')]}"/>
+                        <button name="action_lock" type="object" string="Lock" groups="records_management.group_records_manager" attrs="{'invisible': [('lifecycle_state','in',['locked'])]}"/>
+                        <button name="action_unlock" type="object" string="Unlock" groups="records_management.group_records_manager" attrs="{'invisible': [('lifecycle_state','not in',['locked'])]}"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -85,7 +85,7 @@
                                 <h1>
                                     <field name="name" required="1" placeholder="Retention Policy Name"/>
                                 </h1>
-                                <div class="o_row" style="margin-left: 20px;">
+                                <div class="o_row o-retention-code-block">
                                     <h3>
                                         Code: <field name="code" required="1" class="oe_inline"/>
                                     </h3>
@@ -131,14 +131,10 @@
                                     </group>
                                 </group>
                                 <group>
-                                    <group name="retention_details">
-                                        <field name="retention_period"/>
-                                        <field name="retention_unit"/>
-                                        <field name="related_regulation"/>
-                                    </group>
                                     <group name="destruction_details">
                                         <field name="destruction_method"/>
                                         <field name="destruction_approver_ids" widget="many2many_tags"/>
+                                        <field name="related_regulation"/>
                                     </group>
                                 </group>
                             </page>
@@ -153,7 +149,7 @@
                                         <field name="storage_location_id"/>
                                     </group>
                                     <group name="policy_hierarchy">
-                                        <field name="parent_policy_id"/>
+                                        <field name="parent_policy_id" domain="[('id','!=', active_id)]"/>
                                         <field name="template_id"/>
                                         <field name="policy_level"/>
                                     </group>
@@ -333,16 +329,34 @@
         <record id="records_retention_policy_action" model="ir.actions.act_window">
             <field name="name">Retention Policies</field>
             <field name="res_model">records.retention.policy</field>
-            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_mode">pivot,kanban,tree,form</field>
+            <field name="view_id" ref="records_retention_policy_view_form"/>
+            <field name="priority" eval="20"/>
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    Create your first retention policy!
+                    <span class="o_text_muted">Create your first retention policy!</span>
                 </p>
                 <p>
-                    Retention policies define how long documents should be kept and how they should be destroyed.
-                    Create policies for different document types and compliance requirements.
+                    <span class="o_text_muted">Retention policies define how long documents should be kept and how they should be destroyed. Create policies for different document types and compliance requirements.</span>
                 </p>
+            </field>
+        </record>
+
+        <!-- Pivot View for analytical metrics -->
+        <record id="records_retention_policy_view_pivot" model="ir.ui.view">
+            <field name="name">records.retention.policy.view.pivot</field>
+            <field name="model">records.retention.policy</field>
+            <field name="arch" type="xml">
+                <pivot string="Retention Policy Analysis" disable_linking="True">
+                    <field name="approval_state" type="row"/>
+                    <field name="publication_state" type="col"/>
+                    <field name="review_state" type="row"/>
+                    <field name="compliance_status" type="row"/>
+                    <field name="document_count" type="measure"/>
+                    <field name="rule_count" type="measure"/>
+                    <field name="overdue_days" type="measure"/>
+                </pivot>
             </field>
         </record>
 
