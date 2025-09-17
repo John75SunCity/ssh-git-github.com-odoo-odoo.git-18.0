@@ -5,12 +5,14 @@
             <field name="name">records.storage.department.user.view.tree</field>
             <field name="model">records.storage.department.user</field>
             <field name="arch" type="xml">
-                <list decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-muted="state=='draft'">
-                    <field name="name" />
+                <list decoration-success="state=='active'" decoration-muted="state=='inactive'">
+                    <field name="display_name" />
                     <field name="user_id" />
                     <field name="department_id" />
-                    <field name="date" />
-                    <field name="state" widget="badge" decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-muted="state=='draft'" />
+                    <field name="role" />
+                    <field name="start_date" />
+                    <field name="end_date" />
+                    <field name="state" widget="badge" decoration-success="state=='active'" decoration-muted="state=='inactive'" />
                     <field name="company_id" groups="base.group_multi_company" />
                 </list>
             </field>
@@ -21,73 +23,31 @@
             <field name="arch" type="xml">
                 <form string="Records Storage Department User">
                     <header>
-                        <button name="action_confirm" type="object" string="Confirm" class="oe_highlight" invisible="state != 'draft'" />
-                        <button name="action_done" type="object" string="Mark as Done" class="oe_highlight" invisible="state != 'confirmed'" />
-                        <button name="action_reset_to_draft" type="object" string="Reset to Draft" groups="records_management.group_records_manager" invisible="state != 'cancelled'" />
-                        <button name="action_cancel" type="object" string="Cancel" invisible="state not in ['draft','confirmed']" />
-                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done" />
+                        <button name="action_activate" type="object" string="Activate" class="oe_highlight" invisible="state == 'active'" />
+                        <button name="action_deactivate" type="object" string="Deactivate" class="oe_highlight" invisible="state == 'inactive'" />
+                        <field name="state" widget="statusbar" statusbar_visible="active,inactive" />
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" type="object" name="action_view_assignments" icon="fa-tasks" title="View Assignments" groups="records_management.group_records_user">
-                                <field name="assignment_count" string="Assignments" widget="statbutton" />
-                            </button>
-                        </div>
                         <div class="oe_title">
-                            <label for="name" class="oe_edit_only" />
                             <h1>
-                                <field name="name" placeholder="Department User Assignment Name..." />
+                                <field name="display_name" readonly="1" />
                             </h1>
                         </div>
                         <group>
                             <group name="basic_info" string="Basic Information">
                                 <field name="user_id" required="1" />
                                 <field name="department_id" required="1" />
-                                <field name="date" />
+                                <field name="role" required="1" />
                                 <field name="active" />
-                                <field name="priority" widget="priority" />
                             </group>
                             <group name="assignment_info" string="Assignment Details">
-                                <field name="role" required="1" />
-                                <field name="access_level" />
                                 <field name="start_date" />
                                 <field name="end_date" />
                             </group>
                         </group>
                         <group name="company_info" string="Company Information">
-                            <field name="company_id" groups="base.group_multi_company" />
+                            <field name="company_id" groups="base.group_multi_company" readonly="1" />
                         </group>
-                        <notebook>
-                            <page string="Description" name="description">
-                                <group>
-                                    <field name="description" nolabel="1" placeholder="Description of the department user assignment..." />
-                                </group>
-                            </page>
-                            <page string="Access Permissions" name="permissions">
-                                <group>
-                                    <field name="can_view_containers" string="Can View Containers" />
-                                    <field name="can_edit_containers" string="Can Edit Containers" />
-                                    <field name="can_approve_requests" string="Can Approve Requests" />
-                                    <field name="can_generate_reports" string="Can Generate Reports" />
-                                </group>
-                            </page>
-                            <page string="Notes &amp; History" name="notes">
-                                <group>
-                                    <field name="notes" nolabel="1" placeholder="Additional notes and comments..." />
-                                </group>
-                                <div class="oe_clear">
-                                    <label string="Assignment History" />
-                                    <field name="history_ids" nolabel="1">
-                                        <list>
-                                            <field name="date" />
-                                            <field name="action" />
-                                            <field name="user_id" />
-                                            <field name="notes" />
-                                        </list>
-                                    </field>
-                                </div>
-                            </page>
-                        </notebook>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" />
@@ -102,25 +62,24 @@
             <field name="model">records.storage.department.user</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name" string="Name" filter_domain="[('name', 'ilike', self)]" />
+                    <field name="display_name" string="Name" filter_domain="[('display_name', 'ilike', self)]" />
                     <field name="user_id" string="User" />
                     <field name="department_id" string="Department" />
                     <separator />
                     <filter string="Active" name="active" domain="[('active', '=', True)]" />
                     <filter string="Inactive" name="inactive" domain="[('active', '=', False)]" />
                     <separator />
-                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
-                    <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]" />
-                    <filter string="Done" name="done" domain="[('state', '=', 'done')]" />
+                    <filter string="Active Status" name="state_active" domain="[('state', '=', 'active')]" />
+                    <filter string="Inactive Status" name="state_inactive" domain="[('state', '=', 'inactive')]" />
                     <separator />
                     <filter string="My Assignments" name="my_assignments" domain="[('user_id', '=', uid)]" />
-                    <filter string="This Month" name="this_month" domain="[('date', '&gt;=', (context_today - relativedelta(day=1)).strftime('%Y-%m-%d')),                             ('date', '&lt;', (context_today + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]" />
+                    <filter string="This Month" name="this_month" domain="[('start_date', '&gt;=', (context_today - relativedelta(day=1)).strftime('%Y-%m-%d')),                             ('start_date', '&lt;', (context_today + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]" />
                     <group expand="1" string="Group By">
                         <filter string="User" name="group_user" context="{'group_by': 'user_id'}" />
                         <filter string="Department" name="group_department" context="{'group_by': 'department_id'}" />
                         <filter string="Status" name="group_state" context="{'group_by': 'state'}" />
                         <filter string="Role" name="group_role" context="{'group_by': 'role'}" />
-                        <filter string="Date" name="group_date" context="{'group_by': 'date'}" />
+                        <filter string="Start Date" name="group_start_date" context="{'group_by': 'start_date'}" />
                     </group>
                 </search>
             </field>

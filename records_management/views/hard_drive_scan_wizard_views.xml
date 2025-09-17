@@ -62,10 +62,10 @@
                     </field>
 
                     <div class="oe_button_box" invisible="not scan_line_ids">
-                        <div class="alert alert-info" invisible="scan_step != 'verification' or manager_bypass">
+                        <div class="alert alert-info" role="alert" invisible="scan_step != 'verification' or manager_bypass">
                             <strong>Two-Step Verification:</strong> Check off each drive as you verify it at the facility.
                         </div>
-                        <div class="alert alert-success" invisible="scan_step != 'single_step'">
+                        <div class="alert alert-success" role="alert" invisible="scan_step != 'single_step'">
                             <strong>Manager Override:</strong> Single-step processing enabled.
                         </div>
                     </div>
