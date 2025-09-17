@@ -48,6 +48,11 @@ class RecordsRetentionPolicy(models.Model):
         default=DEFAULT_CODE,
         tracking=True
     )
+    default_code = fields.Char(
+        string="Default Code",
+        copy=False,
+        help="Default identification code for the retention policy"
+    )
     sequence = fields.Integer(string='Sequence', default=10)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     # Contextual label disambiguation (Batch 2)
@@ -279,7 +284,7 @@ class RecordsRetentionPolicy(models.Model):
             'last_review_date': False,
         })
         return super().copy(default)
-    @api.depends('name', 'code')
+    @api.depends('name', 'code', 'default_code')
     def _compute_display_name(self):
         """Display name as [CODE] Name if code is set."""
         for policy in self:
