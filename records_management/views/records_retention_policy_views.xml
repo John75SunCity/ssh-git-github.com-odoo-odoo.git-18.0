@@ -335,8 +335,6 @@
             <field name="res_model">records.retention.policy</field>
             <field name="view_mode">pivot,kanban,tree,form</field>
             <field name="view_id" ref="records_retention_policy_view_form"/>
-            <!-- 'priority' field deprecated/invalid on ir.actions.act_window in Odoo 17+/18. Using 'sequence' for ordering if needed. -->
-            <field name="sequence" eval="20"/>
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
