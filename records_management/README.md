@@ -1,3 +1,48 @@
+### Retention Policy View Modernization (Refactor Notes)
+
+The `records.retention.policy` model was refactored to eliminate dozens of legacy boolean mirror fields
+(`is_expired`, `is_under_legal_hold`, approval/publication/review duplicates) in favor of authoritative
+selection fields and a single derived review axis.
+
+Key changes:
+
+* Removed deprecated boolean mirror flags (approval / publication / lifecycle / review derivatives)
+* Added computed fields: `review_state`, `retention_display`, `overdue_days`, `is_latest_version`
+* Added workflow selection axes: `approval_state`, `publication_state`, `lifecycle_state`, `version_type`
+* Added supersession fields: `supersedes_id`, `superseded_by_id`, `effective_date`, `ineffective_date`
+* Added smart buttons: Documents, Child Policies
+* Updated tree/search/kanban/form views to rely on selection fields instead of removed booleans
+
+Search filters now include:
+
+* Review lifecycle: Expired, Overdue, Pending Review (via `review_state`)
+* Workflow: Approved (`approval_state`), Published (`publication_state`)
+* Core state: Draft, Active, Archived
+* Flags: Template, Default, Legal Hold
+
+Group By options now include:
+
+* `state`, `approval_state`, `publication_state`, `review_state`, `document_type_id`, `department_id`, `destruction_method`, `compliance_status`
+
+Decorations:
+
+* Warning highlight when `review_state` in (`overdue`, `expired`)
+* Muted archived, success active, info draft in list view
+
+Migration guidance:
+
+Any prior domain or code referencing removed booleans must now pivot to:
+
+* Expiration: `review_state in ('expired','overdue')` or compare dates directly (`expiration_date`, `next_review_date`)
+* Approval indicators: `approval_state` selection values
+* Publication indicators: `publication_state` selection values
+* Legal hold: `is_legal_hold`
+
+Rationale:
+
+The consolidation reduces field proliferation, avoids divergent truth sources, and simplifies UI logic while
+retaining full analytical capability via multi-axis workflow states.
+
 # Records Management System - Enterprise Edition for Odoo 18.0
 
 ## 🏆 **ENTERPRISE-GRADE DOCUMENT MANAGEMENT SYSTEM** 🏆

@@ -6,23 +6,22 @@
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
             <field name="arch" type="xml">
-                <list
-                    decoration-success="state == 'active'"
-                    decoration-muted="state == 'archived'"
-                    decoration-warning="is_expired == True"
-                    decoration-info="state == 'draft'">
+                <list decoration-success="state == 'active'"
+                      decoration-muted="state == 'archived'"
+                      decoration-warning="review_state in ('overdue','expired')"
+                      decoration-info="state == 'draft'">
                     <field name="sequence" widget="handle"/>
-                    <field name="name" string="Policy Name"/>
-                    <field name="code" string="Code"/>
-                    <field name="default_code" string="Default Code"/>
-                    <field name="retention_years" string="Retention Period"/>
-                    <field name="retention_unit" string="Unit"/>
-                    <field name="destruction_method" string="Destruction"/>
-                    <field name="state" string="Status" widget="badge"/>
-                    <field name="compliance_status" string="Compliance" widget="badge"/>
-                    <field name="document_count" string="Documents"/>
-                    <field name="rule_count" string="Rules"/>
-                    <field name="is_expired" string="Expired" widget="boolean_toggle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="retention_display" string="Retention"/>
+                    <field name="destruction_method"/>
+                    <field name="approval_state" widget="badge"/>
+                    <field name="publication_state" widget="badge"/>
+                    <field name="review_state" widget="badge"/>
+                    <field name="compliance_status" widget="badge"/>
+                    <field name="document_count"/>
+                    <field name="rule_count"/>
+                    <field name="overdue_days"/>
                 </list>
             </field>
         </record>
@@ -35,6 +34,13 @@
                 <form string="Records Retention Policy">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
+                        <button name="action_activate" type="object" string="Activate" states="draft" class="btn-primary"/>
+                        <button name="action_submit_for_approval" type="object" string="Submit" attrs="{'invisible':[('approval_state','!=','draft')]}"/>
+                        <button name="action_approve" type="object" string="Approve" attrs="{'invisible":[('approval_state','!=','pending')]}"/>
+                        <button name="action_reject" type="object" string="Reject" attrs="{'invisible":[('approval_state','!=','pending')]}"/>
+                        <button name="action_publish" type="object" string="Publish" attrs="{'invisible":[('publication_state','!=','draft'),('approval_state','!=','approved')]}"/>
+                        <button name="action_lock" type="object" string="Lock" attrs="{'invisible":[('lifecycle_state','in',['locked'])]}"/>
+                        <button name="action_unlock" type="object" string="Unlock" attrs="{'invisible":[('lifecycle_state','not in',['locked'])]}"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -60,6 +66,18 @@
                                     <span class="o_stat_text">Versions</span>
                                 </div>
                             </button>
+                            <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value"><field name="document_count"/></span>
+                                    <span class="o_stat_text">Documents</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_view_child_policies" icon="fa-sitemap" attrs="{'invisible':[('child_policy_ids','=',[])]}">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value"><field name="policy_level"/></span>
+                                    <span class="o_stat_text">Hierarchy</span>
+                                </div>
+                            </button>
                         </div>
                         <div class="oe_title">
                             <div class="o_row">
@@ -76,20 +94,32 @@
                         <group>
                             <group name="basic_info">
                                 <field name="sequence"/>
-                                <field name="default_code"/>
-                                <field name="retention_years" required="1"/>
+                                <field name="retention_display" readonly="1"/>
+                                <field name="retention_period"/>
                                 <field name="retention_unit"/>
-                                <field name="destruction_method" required="1"/>
+                                <field name="destruction_method"/>
                                 <field name="user_id"/>
                                 <field name="company_id" groups="base.group_multi_company"/>
                             </group>
-                            <group name="status_info">
+                            <group name="flags_info">
                                 <field name="active"/>
                                 <field name="is_default"/>
                                 <field name="is_template"/>
                                 <field name="is_global"/>
-                                <field name="compliance_status"/>
-                                <field name="is_expired"/>
+                                <field name="is_versioned"/>
+                                <field name="is_pending_destruction"/>
+                            </group>
+                        </group>
+                        <group string="Workflow States" colspan="4">
+                            <group>
+                                <field name="approval_state"/>
+                                <field name="publication_state"/>
+                                <field name="lifecycle_state"/>
+                            </group>
+                            <group>
+                                <field name="review_state"/>
+                                <field name="timeline_status"/>
+                                <field name="overdue_days" readonly="1"/>
                             </group>
                         </group>
                         <notebook>
@@ -141,6 +171,7 @@
                                         <field name="next_review_date"/>
                                         <field name="last_review_by_id"/>
                                         <field name="next_reviewer_id"/>
+                                        <field name="expiration_date"/>
                                     </group>
                                     <group name="compliance_info">
                                         <field name="compliance_status"/>
@@ -157,7 +188,6 @@
                                 <group>
                                     <group name="legal_hold_info">
                                         <field name="is_legal_hold"/>
-                                        <field name="is_under_legal_hold"/>
                                         <field name="legal_hold_reason" widget="text"/>
                                     </group>
                                 </group>
@@ -166,9 +196,9 @@
                                 <group>
                                     <group name="version_info">
                                         <field name="version"/>
+                                        <field name="version_type"/>
                                         <field name="current_version_id"/>
                                         <field name="is_latest_version"/>
-                                        <field name="is_versioned"/>
                                     </group>
                                 </group>
                                 <field name="version_ids">
@@ -179,6 +209,16 @@
                                         <field name="create_uid"/>
                                     </tree>
                                 </field>
+                            </page>
+                            <page string="Supersession" name="supersession">
+                                <group>
+                                    <group>
+                                        <field name="supersedes_id"/>
+                                        <field name="superseded_by_id"/>
+                                        <field name="effective_date"/>
+                                        <field name="ineffective_date"/>
+                                    </group>
+                                </group>
                             </page>
                         </notebook>
                     </sheet>
@@ -197,29 +237,30 @@
             <field name="model">records.retention.policy</field>
             <field name="arch" type="xml">
                 <search string="Records Retention Policy">
-                    <field name="name" string="Policy Name"/>
-                    <field name="code" string="Code"/>
-                    <field name="default_code" string="Default Code"/>
+                    <field name="name"/>
+                    <field name="code"/>
                     <field name="description"/>
                     <field name="document_type_id"/>
-                    <field name="partner_id"/>
                     <field name="department_id"/>
                     <filter string="Active" name="active" domain="[('active', '=', True)]"/>
                     <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                    <filter string="Active Policies" name="active_policies" domain="[('state', '=', 'active')]"/>
                     <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]"/>
-                    <filter string="Expired" name="expired" domain="[('is_expired', '=', True)]"/>
-                    <filter string="Compliant" name="compliant" domain="[('compliance_status', '=', 'compliant')]"/>
-                    <filter string="Non-Compliant" name="non_compliant" domain="[('compliance_status', '=', 'non_compliant')]"/>
-                    <separator/>
+                    <filter string="Expired" name="expired" domain="[('review_state', '=', 'expired')]"/>
+                    <filter string="Overdue" name="overdue" domain="[('review_state', '=', 'overdue')]"/>
+                    <filter string="Pending Review" name="pending_review" domain="[('review_state', '=', 'pending_review')]"/>
+                    <filter string="Approved" name="approved" domain="[('approval_state', '=', 'approved')]"/>
+                    <filter string="Published" name="published" domain="[('publication_state', '=', 'published')]"/>
                     <filter string="Legal Hold" name="legal_hold" domain="[('is_legal_hold', '=', True)]"/>
+                    <separator/>
                     <filter string="Template" name="template" domain="[('is_template', '=', True)]"/>
                     <filter string="Default" name="default" domain="[('is_default', '=', True)]"/>
                     <group expand="0" string="Group By">
                         <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Approval" name="group_approval" context="{'group_by': 'approval_state'}"/>
+                        <filter string="Publication" name="group_publication" context="{'group_by': 'publication_state'}"/>
+                        <filter string="Review" name="group_review" context="{'group_by': 'review_state'}"/>
                         <filter string="Document Type" name="group_document_type" context="{'group_by': 'document_type_id'}"/>
                         <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
-                        <filter string="Retention Unit" name="group_retention_unit" context="{'group_by': 'retention_unit'}"/>
                         <filter string="Destruction Method" name="group_destruction_method" context="{'group_by': 'destruction_method'}"/>
                         <filter string="Compliance Status" name="group_compliance_status" context="{'group_by': 'compliance_status'}"/>
                     </group>
@@ -232,16 +273,16 @@
             <field name="name">records.retention.policy.view.kanban</field>
             <field name="model">records.retention.policy</field>
             <field name="arch" type="xml">
-                <kanban default_group_by="state" class="o_kanban_small_column">
+                <kanban default_group_by="approval_state" class="o_kanban_small_column">
                     <field name="id"/>
                     <field name="name"/>
                     <field name="code"/>
-                    <field name="state"/>
-                    <field name="retention_years"/>
-                    <field name="retention_unit"/>
+                    <field name="approval_state"/>
+                    <field name="publication_state"/>
+                    <field name="review_state"/>
+                    <field name="retention_display"/>
                     <field name="destruction_method"/>
                     <field name="compliance_status"/>
-                    <field name="is_expired"/>
                     <field name="document_count"/>
                     <field name="rule_count"/>
                     <templates>
@@ -249,36 +290,32 @@
                             <div class="oe_kanban_global_click">
                                 <div class="o_kanban_record_top">
                                     <div class="o_kanban_record_headings">
-                                        <strong class="o_kanban_record_title">
-                                            <field name="name"/>
-                                        </strong>
-                                    </div>
-                                    <div class="o_kanban_manage_button_section">
-                                        <a class="o_kanban_manage_toggle_button" href="#">
-                                            <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/>
-                                        </a>
+                                        <strong class="o_kanban_record_title"><field name="name"/></strong>
                                     </div>
                                 </div>
                                 <div class="o_kanban_record_body">
                                     <div class="o_kanban_record_bottom">
                                         <div class="oe_kanban_bottom_left">
                                             <span>Code: <field name="code"/></span><br/>
-                                            <span>Retention: <field name="retention_years"/> <field name="retention_unit"/></span><br/>
+                                            <span><field name="retention_display"/></span><br/>
                                             <span>Method: <field name="destruction_method"/></span>
                                         </div>
                                         <div class="oe_kanban_bottom_right">
                                             <span class="badge badge-pill" t-att-class="record.compliance_status.raw_value == 'compliant' ? 'badge-success' : record.compliance_status.raw_value == 'non_compliant' ? 'badge-danger' : 'badge-warning'">
                                                 <field name="compliance_status"/>
                                             </span>
-                                            <t t-if="record.is_expired.raw_value">
+                                            <t t-if="record.review_state.raw_value == 'expired'">
                                                 <span class="badge badge-danger">Expired</span>
+                                            </t>
+                                            <t t-elif="record.review_state.raw_value == 'overdue'">
+                                                <span class="badge badge-warning">Overdue</span>
                                             </t>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
-                                        <span>Documents: <field name="document_count"/></span>
+                                        <span>Docs: <field name="document_count"/></span>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <span>Rules: <field name="rule_count"/></span>
