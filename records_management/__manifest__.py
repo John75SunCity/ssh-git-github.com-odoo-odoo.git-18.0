@@ -229,7 +229,8 @@
         "views/records_container_views.xml",
         "views/records_container_field_label_helper_views.xml",
         "views/records_billing_config_views.xml",
-    "views/portal_request_views.xml",
+        "views/portal_request_views.xml",
+
     # Menus moved to end to ensure all referenced actions are defined beforehand
     "views/records_management_menus.xml",
         "report/description_reports.xml",
