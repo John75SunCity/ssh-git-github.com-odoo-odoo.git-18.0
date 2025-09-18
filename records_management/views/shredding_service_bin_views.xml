@@ -76,9 +76,8 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
                 <group>
                     <group name="basic_info" string="Bin Information">
         <field name="display_name"/>
-        <field name="bin_specifications" readonly="1"/>
+        <field name="bin_size" readonly="1"/>
         <field name="barcode"/>
-        <field name="bin_size"/>
         <field name="weight_capacity_lbs" widget="float"/>
         <field name="volume_capacity_cf" widget="float"/>
                     </group>
