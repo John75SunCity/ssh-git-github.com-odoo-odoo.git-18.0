@@ -19,7 +19,7 @@
                                     <strong>💥 <field name="name" />
                                     </strong>
                                     <div class="text-muted">
-                                        <i class="fa fa-building" />
+                                        <i class="fa fa-building" title="Provider"/>
                                         <field name="provider_id" />
                                     </div>
                                 </div>
@@ -36,7 +36,7 @@
                                         🏅 NAID Compliant
                                     </span>
                                         <span class="badge badge-warning" t-if="record.chain_of_custody.raw_value">
-                                            <i class="fa fa-file-text" />
+                                            <i class="fa fa-file-text" title="Document"/>
                                         Chain of Custody
                                     </span>
                                         <span class="badge badge-info" t-if="record.witness_destruction.raw_value">
@@ -73,8 +73,7 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_create_service_request" type="object" string="Create Service Request" class="btn-primary" />
-                        <button name="action_view_certificates" type="object" string="View Certificates" class="btn-info" />
+                        <button name="action_view_certificates" type="object" string="View Certificates" class="btn-primary"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
