@@ -150,10 +150,10 @@
             <field name="binding_model_id" ref="records_management.model_records_audit_log" />
             <field name="state">code</field>
             <field name="code">
-        for record in records:
-            if hasattr(record, 'approval_status') and record.approval_status == 'pending':
-                if hasattr(record, 'action_approve'):
-                    record.action_approve()
+for record in records:
+    if hasattr(record, 'approval_status') and record.approval_status == 'pending':
+        if hasattr(record, 'action_approve'):
+            record.action_approve()
     </field>
         </record>
         <record id="action_generate_performance_report" model="ir.actions.server">
@@ -162,15 +162,15 @@
             <field name="binding_model_id" ref="records_management.model_retrieval_metric" />
             <field name="state">code</field>
             <field name="code">
-        # Generate performance summary report
-        action = {
-            'type': 'ir.actions.act_window',
-            'name': 'Performance Summary',
-            'res_model': 'retrieval.metric',
-            'view_mode': 'graph,pivot',
-            'domain': [('id', 'in', records.ids)],
-            'context': {'group_by': ['performance_rating', 'metric_type']},
-        }
+# Generate performance summary report
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Performance Summary',
+    'res_model': 'retrieval.metric',
+    'view_mode': 'graph,pivot',
+    'domain': [('id', 'in', records.ids)],
+    'context': {'group_by': ['performance_rating', 'metric_type']},
+}
     </field>
         </record>
     </data>
