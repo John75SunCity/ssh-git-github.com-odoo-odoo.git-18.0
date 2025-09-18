@@ -24,12 +24,39 @@
         <form string="Shredding Service Event">
             <sheet>
                 <div class="oe_title">
-                    <label for="name"/>
+                    <label for="display_name"/>
                     <h1>
-        <field name="name" placeholder="Name..."/>
+                        <field name="display_name" readonly="1"/>
                     </h1>
                 </div>
+                <group>
+                    <group name="service_details" string="Service Details">
+                        <field name="bin_id"/>
+                        <field name="service_date"/>
+                        <field name="service_type"/>
+                        <field name="service_customer_id"/>
+                        <field name="service_location_id"/>
+                        <field name="service_department_id"/>
+                    </group>
+                    <group name="billing_details" string="Billing Details">
+                        <field name="actual_weight_lbs"/>
+                        <field name="billable_amount"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="billing_status"/>
+                        <field name="invoice_line_id" readonly="1"/>
+                    </group>
+                </group>
+                <group name="additional_info" string="Additional Information">
+                    <field name="work_order_id"/>
+                    <field name="performed_by_id"/>
+                    <field name="notes" placeholder="Service notes and observations..."/>
+                </group>
             </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids"/>
+                <field name="activity_ids"/>
+                <field name="message_ids"/>
+            </div>
         </form>
     </field>
     </record>
@@ -40,8 +67,21 @@
         <field name="model">shredding.service.event</field>
         <field name="arch" type="xml">
         <search>
+            <field name="bin_id"/>
+            <field name="service_customer_id"/>
+            <field name="service_type"/>
+            <field name="service_date"/>
+            <filter string="Today" name="today" domain="[('service_date', '>=', context_today().strftime('%Y-%m-%d 00:00:00')), ('service_date', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+            <filter string="This Week" name="this_week" domain="[('service_date', '>=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d 00:00:00'))]"/>
+            <filter string="This Month" name="this_month" domain="[('service_date', '>=', context_today().strftime('%Y-%m-01 00:00:00'))]"/>
+            <separator/>
+            <filter string="Tips" name="tips" domain="[('service_type', '=', 'tip')]"/>
+            <filter string="Pickups" name="pickups" domain="[('service_type', '=', 'pickup')]"/>
             <group expand="1" string="Group By">
-                <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+                <filter string="Bin" name="group_bin" domain="[]" context="{'group_by':'bin_id'}"/>
+                <filter string="Customer" name="group_customer" domain="[]" context="{'group_by':'service_customer_id'}"/>
+                <filter string="Service Type" name="group_service_type" domain="[]" context="{'group_by':'service_type'}"/>
+                <filter string="Service Date" name="group_service_date" domain="[]" context="{'group_by':'service_date:day'}"/>
             </group>
         </search>
     </field>

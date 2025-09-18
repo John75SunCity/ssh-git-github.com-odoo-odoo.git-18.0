@@ -233,20 +233,20 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
 
                             <div class="oe_kanban_body">
                                 <div class="oe_kanban_row" t-if="record.current_customer_id.raw_value">
-                                    <i class="fa fa-user"/> <field name="current_customer_id"/>
+                                    <i class="fa fa-user" title="Customer"/> <field name="current_customer_id"/>
                                 </div>
 
                                 <div class="oe_kanban_row" t-if="record.location_id.raw_value">
-                                    <i class="fa fa-map-marker"/> <field name="location_id"/>
+                                    <i class="fa fa-map-marker" title="Location"/> <field name="location_id"/>
                                 </div>
 
                                 <div class="oe_kanban_row">
-                                    <i class="fa fa-recycle"/>
+                                    <i class="fa fa-recycle" title="Services"/>
                                     Services: <field name="current_period_services"/>
                                 </div>
 
                                 <div class="oe_kanban_row" t-if="record.base_rate_per_service.raw_value > 0">
-                                    <i class="fa fa-dollar"/>
+                                    <i class="fa fa-dollar" title="Rate"/>
         <field name="base_rate_per_service" widget="monetary"/>
                                 </div>
                             </div>
@@ -258,7 +258,7 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
                                 <div class="oe_kanban_footer_right">
                                     <button name="action_report_bin_issue" type="object"
                                             class="btn btn-sm btn-warning" title="Report Issue">
-                                        <i class="fa fa-exclamation-triangle"/>
+                                        <i class="fa fa-exclamation-triangle" title="Warning"/>
                                     </button>
                                 </div>
                             </div>

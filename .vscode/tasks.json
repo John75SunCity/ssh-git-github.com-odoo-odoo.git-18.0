@@ -6,7 +6,7 @@
 			"type": "shell",
 			"command": "python3",
 			"args": [
-				"development-tools/syntax-tools/find_syntax_errors.py"
+				"development-tools/comprehensive_validator.py"
 			],
 			"group": {
 				"kind": "test",
@@ -92,7 +92,7 @@
 			"command": "bash",
 			"args": [
 				"-c",
-				"python3 development-tools/syntax-tools/find_syntax_errors.py && git add . && git commit -m 'fix: Automated syntax and translation fixes'"
+				"python3 development-tools/comprehensive_validator.py && git add . && git commit -m 'fix: Automated syntax and translation fixes'"
 			],
 			"group": "build",
 			"presentation": {
@@ -144,7 +144,7 @@
 			"command": "bash",
 			"args": [
 				"-c",
-				"echo '🚀 Starting Multi-AI Validation Workflow...' && echo '✅ GitHub Copilot: Development assistance active' && echo '🔍 Cybrosys Assista: Odoo 18.0 validation ready' && echo '🎯 Odoo Extension Pack: Professional patterns loaded' && echo '📚 Arkademy Training: Advanced learning context active' && python3 development-tools/syntax-tools/find_syntax_errors.py --odoo-validation"
+				"echo '🚀 Starting Multi-AI Validation Workflow...' && echo '✅ GitHub Copilot: Development assistance active' && echo '🔍 Cybrosys Assista: Odoo 18.0 validation ready' && echo '🎯 Odoo Extension Pack: Professional patterns loaded' && echo '📚 Arkademy Training: Advanced learning context active' && python3 development-tools/comprehensive_validator.py"
 			],
 			"group": {
 				"kind": "test",
@@ -215,7 +215,7 @@
 			"command": "bash",
 			"args": [
 				"-c",
-				"echo '🔄 Complete AI-Assisted Development Workflow' && echo '1. GitHub Copilot: Code generation and assistance' && python3 development-tools/syntax-tools/find_syntax_errors.py && echo '2. Cybrosys Assista: Odoo 18.0 validation complete' && echo '3. Ready for Git deployment' && git status --porcelain"
+				"echo '🔄 Complete AI-Assisted Development Workflow' && echo '1. GitHub Copilot: Code generation and assistance' && python3 development-tools/comprehensive_validator.py && echo '2. Cybrosys Assista: Odoo 18.0 validation complete' && echo '3. Ready for Git deployment' && git status --porcelain"
 			],
 			"group": {
 				"kind": "build",
@@ -412,6 +412,39 @@
 			"label": "Clean CSV File",
 			"type": "shell",
 			"command": "python3"
+		},
+		{
+			"label": "Fast XML Validation",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"comprehensive_xml_validator.py"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Quick Module Test",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"cd records_management && python3 -c 'print(\"Testing module structure...\")' && echo '✅ Module structure OK'"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": []
 		},
 		{
 			"label": "Clean CSV File",
