@@ -142,19 +142,19 @@
 
 <separator/>
 
-<filter string="UI Configurations" name="filter_ui" domain="[('category', 'in', ['ui_customization', 'field_visibility'])]"/>
-<filter string="Feature Toggles" name="filter_features" domain="[('category', '=', 'feature_toggles')]"/>
-<filter string="Security Settings" name="filter_security" domain="[('category', '=', 'security_settings')]"/>
-<filter string="Billing Options" name="filter_billing" domain="[('category', '=', 'billing_options')]"/>
-<filter string="Mobile Features" name="filter_mobile" domain="[('category', '=', 'mobile_features')]"/>
-<filter string="Reporting Options" name="filter_reporting" domain="[('category', '=', 'reporting_options')]"/>
-<filter string="Integrations" name="filter_integrations" domain="[('category', '=', 'integration_settings')]"/>
-<filter string="Compliance" name="filter_compliance" domain="[('category', '=', 'compliance_features')]"/>
+<filter string="UI Configurations" name="filter_ui" domain="[('category', '=', 'ui')]"/>
+<filter string="Feature Toggles" name="filter_features" domain="[('config_type', '=', 'feature_toggle')]"/>
+<filter string="Security Settings" name="filter_security" domain="[('category', '=', 'security')]"/>
+<filter string="Billing Options" name="filter_billing" domain="[('category', '=', 'billing')]"/>
+<filter string="Portal Features" name="filter_portal" domain="[('category', '=', 'portal')]"/>
+<filter string="Reporting Options" name="filter_reporting" domain="[('category', '=', 'reporting')]"/>
+<filter string="FSM Settings" name="filter_fsm" domain="[('category', '=', 'fsm')]"/>
+<filter string="Compliance" name="filter_compliance" domain="[('category', '=', 'compliance')]"/>
 
 <separator/>
 
 <filter string="High Priority" name="filter_high_priority" domain="[('sequence', '=', 1)]"/>
-<filter string="System Configs" name="filter_system" domain="[('is_system_config', '=', True)]"/>
+<filter string="System Configs" name="filter_system" domain="[('category', '=', 'system')]"/>
 
 <filter string="My Configurations" name="filter_my_configs" domain="[('modified_by_id', '=', uid)]"/>
 <filter string="My Company" name="filter_my_company" domain="[('company_id', '=', company_id)]"/>
