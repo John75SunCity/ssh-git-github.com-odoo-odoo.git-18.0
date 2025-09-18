@@ -11,7 +11,8 @@
                     <field name="product_qty" />
                     <field name="product_uom_id" />
                     <field name="create_date" />
-                    <field name="expiration_date" />
+                    <field name="retention_date" />
+                    <field name="destruction_eligible" />
                     <field name="ref" />
                     <field name="company_id" />
                     <templates>
@@ -50,10 +51,10 @@ Qty:<field name="product_qty" />
 
 Created:<field name="create_date" />
                                             </div>
-                                            <div t-if="record.expiration_date.raw_value">
-                                                <i class="fa fa-clock-o" aria-hidden="true" />
+                                            <div t-if="record.retention_date.raw_value">
+                                                <i class="fa fa-calendar-times-o" aria-hidden="true" />
 
-Expires:<field name="expiration_date" />
+Retention Due:<field name="retention_date" />
                                             </div>
                                         </div>
                                         <div class="col-4">
@@ -61,9 +62,13 @@ Expires:<field name="expiration_date" />
                                                 <i class="fa fa-link" />
                                                 <field name="ref" />
                                             </span>
-                                            <span class="badge badge-warning" t-if="record.expiration_date.raw_value and record.expiration_date.raw_value &lt; context_today">
+                                            <span class="badge badge-warning" t-if="record.retention_date.raw_value and record.retention_date.raw_value &lt; context_today">
                                                 <i class="fa fa-warning" />
-                                        Expired
+                                        Past Retention
+</span>
+                                            <span class="badge badge-success" t-if="record.destruction_eligible.raw_value">
+                                                <i class="fa fa-check" />
+                                        Eligible for Destruction
 </span>
                                         </div>
                                     </div>
@@ -103,16 +108,18 @@ Expires:<field name="expiration_date" />
             <field name="name">stock.lot.view.tree</field>
             <field name="model">stock.lot</field>
             <field name="arch" type="xml">
-                <list decoration-success="product_qty &gt; 0" decoration-warning="expiration_date and expiration_date &lt; context_today" decoration-info="ref != False">
+                <list decoration-success="product_qty &gt; 0" decoration-warning="retention_date and retention_date &lt; context_today" decoration-info="ref != False" decoration-danger="destruction_eligible == True">
                     <field name="name" string="Serial/Lot Number" />
                     <field name="product_id" string="Product" />
                     <field name="product_qty" string="Quantity" />
                     <field name="product_uom_id" string="UoM" />
                     <field name="create_date" string="Created" />
-                    <field name="expiration_date" string="Expiration" optional="show" />
+                    <field name="retention_date" string="Retention Due" optional="show" />
+                    <field name="destruction_eligible" string="Eligible for Destruction" optional="show" />
                     <field name="ref" string="Reference" optional="hide" />
                     <field name="company_id" string="Company" groups="base.group_multi_company" optional="hide" />
                     <button name="action_view_stock_moves" type="object" string="Movements" icon="fa-exchange" class="btn-link" title="View Stock Movements" />
+                    <button name="action_view_documents" type="object" string="Documents" icon="fa-file-text" class="btn-link" title="View Documents in Box" attrs="{'invisible': [('is_records_box', '=', False)]}" />
                 </list>
             </field>
         </record>
@@ -123,6 +130,8 @@ Expires:<field name="expiration_date" />
                 <form>
                     <header>
                         <button name="action_view_stock_moves" type="object" string="View Movements" class="btn-primary" />
+                        <button name="action_view_documents" type="object" string="View Documents" class="btn-secondary" attrs="{'invisible': [('is_records_box', '=', False)]}" />
+                        <button name="action_mark_destruction_eligible" type="object" string="Mark for Destruction" class="btn-warning" attrs="{'invisible': ['|', ('destruction_eligible', '=', True), ('is_records_box', '=', False)]}" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -139,43 +148,50 @@ Expires:<field name="expiration_date" />
                                 <field name="product_qty" readonly="1" />
                                 <field name="product_uom_id" />
                                 <field name="create_date" />
-                                <field name="expiration_date" />
                             </group>
                         </group>
+                        <group string="Records Management" attrs="{'invisible': [('is_records_box', '=', False)]}">
+                            <group>
+                                <field name="is_records_box" />
+                                <field name="document_count" readonly="1" />
+                                <field name="destruction_eligible" readonly="1" />
+                            </group>
+                            <group>
+                                <field name="retention_date" />
+                                <field name="destruction_date" readonly="1" />
+                                <field name="last_audit_date" readonly="1" />
+                            </group>
+                        </group>
+                        <group string="Audit Notes" attrs="{'invisible': [('is_records_box', '=', False)]}">
+                            <field name="audit_notes" nolabel="1" placeholder="Internal audit notes and observations..." />
+                        </group>
                         <notebook>
-                            <page string="Stock Movements" name="movements">
-                                <field name="stock_move_ids" readonly="1">
+                            <page string="Documents" name="documents" attrs="{'invisible': [('is_records_box', '=', False)]}">
+                                <field name="document_ids" readonly="1">
                                     <list>
-                                        <field name="date" />
-                                        <field name="reference" />
-                                        <field name="location_id" />
-                                        <field name="location_dest_id" />
-                                        <field name="product_uom_qty" />
-                                        <field name="state" />
+                                        <field name="name" />
+                                        <field name="document_type_id" />
+                                        <field name="description" />
+                                        <field name="create_date" />
                                     </list>
                                 </field>
                             </page>
-                            <page string="Stock Locations" name="locations">
-                                <field name="quant_ids" readonly="1">
-                                    <list>
-                                        <field name="location_id" />
-                                        <field name="quantity" />
-                                        <field name="reserved_quantity" />
-                                        <field name="available_quantity" />
-                                        <field name="in_date" />
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Notes" name="notes">
-                                <field name="note" placeholder="Additional information about this lot/serial number..." />
+                            <page string="Stock Information" name="stock_info">
+                                <group>
+                                    <group string="Current Stock">
+                                        <label for="product_qty" />
+                                        <div class="o_row">
+                                            <field name="product_qty" readonly="1" />
+                                            <field name="product_uom_id" readonly="1" nolabel="1" />
+                                        </div>
+                                    </group>
+                                    <group string="Location">
+                                        <p>Use Inventory → Products → Lots/Serial Numbers to view detailed stock movements and locations.</p>
+                                    </group>
+                                </group>
                             </page>
                         </notebook>
                     </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" />
-                        <field name="activity_ids" />
-                        <field name="message_ids" />
-                    </div>
                 </form>
             </field>
         </record>
@@ -191,9 +207,12 @@ Expires:<field name="expiration_date" />
                     <filter string="In Stock" name="in_stock" domain="[('product_qty', '&gt;', 0)]" />
                     <filter string="Out of Stock" name="out_of_stock" domain="[('product_qty', '=', 0)]" />
                     <separator />
-                    <filter string="Expired" name="expired" domain="[('expiration_date', '&lt;', context_today)]" />
-                    <filter string="Expiring Soon (30 days)" name="expiring_soon" domain="[('expiration_date', '&lt;=', (today+30)), ('expiration_date', '&gt;=', today)]" />
-                    <filter string="Valid" name="valid" domain="[('expiration_date', '&gt;=', context_today)]" />
+                    <filter string="Past Retention" name="past_retention" domain="[('retention_date', '&lt;', context_today)]" />
+                    <filter string="Retention Due Soon (30 days)" name="retention_soon" domain="[('retention_date', '&lt;=', (context_today + relativedelta(days=30))), ('retention_date', '&gt;=', context_today)]" />
+                    <filter string="Retention Current" name="retention_current" domain="[('retention_date', '&gt;=', context_today)]" />
+                    <separator />
+                    <filter string="Records Boxes" name="records_boxes" domain="[('is_records_box', '=', True)]" />
+                    <filter string="Eligible for Destruction" name="destruction_eligible" domain="[('destruction_eligible', '=', True)]" />
                     <separator />
                     <filter string="With Reference" name="with_reference" domain="[('ref', '!=', False)]" />
                     <separator />
@@ -204,7 +223,8 @@ Expires:<field name="expiration_date" />
                         <filter string="Product" name="group_by_product" context="{'group_by': 'product_id'}" />
                         <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company" />
                         <filter string="Creation Date" name="group_by_create_date" context="{'group_by': 'create_date:month'}" />
-                        <filter string="Expiration Date" name="group_by_expiration" context="{'group_by': 'expiration_date:month'}" />
+                        <filter string="Retention Date" name="group_by_retention" context="{'group_by': 'retention_date:month'}" />
+                        <filter string="Records vs Regular" name="group_by_records_type" context="{'group_by': 'is_records_box'}" />
                     </group>
                 </search>
             </field>
