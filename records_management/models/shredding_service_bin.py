@@ -499,6 +499,22 @@ class ShreddingServiceBin(models.Model):
             }
         }
 
+    def action_view_service_history(self):
+        """Action to view service event history for this bin."""
+        self.ensure_one()
+        
+        return {
+            'name': _('Service History - %s') % self.barcode,
+            'type': 'ir.actions.act_window',
+            'res_model': 'shredding.service.event',
+            'view_mode': 'tree,form',
+            'domain': [('bin_id', '=', self.id)],
+            'context': {
+                'default_bin_id': self.id,
+                'search_default_bin_id': self.id,
+            }
+        }
+
     def action_report_bin_issue(self):
         """Action to report bin issues such as damage, missing bins, or service problems."""
         self.ensure_one()
