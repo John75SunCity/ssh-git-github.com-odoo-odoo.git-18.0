@@ -499,6 +499,22 @@ class ShreddingServiceBin(models.Model):
             }
         }
 
+    def action_report_bin_issue(self):
+        """Action to report bin issues such as damage, missing bins, or service problems."""
+        self.ensure_one()
+        
+        return {
+            'name': _('Report Bin Issue'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'bin.issue.report.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_bin_id': self.id,
+                'default_issue_type': 'damage',  # Default to damage
+            }
+        }
+
     # ============================================================================
     # ONCHANGE METHODS
     # ============================================================================

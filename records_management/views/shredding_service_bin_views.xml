@@ -34,19 +34,16 @@
         <form string="Shredding Service Bin">
             <header>
                 <button name="action_report_bin_issue" string="Report Issue" type="object"
-class="btn-warning" icon="fa-exclamation-triangle" title="Warning Action"/>
-                <button name="action_schedule_service" string="Schedule Service" type="object"
-class="btn-primary" icon="fa-calendar" title="Schedule Service"
+class="btn-warning" icon="fa-exclamation-triangle" title="Report Bin Issues"/>
+                <button name="action_create_service_event" string="Create Service" type="object"
+class="btn-primary" icon="fa-calendar" title="Create Service Event"
                         invisible="status == 'retired'"/>
-                <button name="action_empty_bin" string="Empty Bin" type="object"
-class="btn-success" icon="fa-recycle" title="Empty Bin"
-                        invisible="status != 'active' or fill_count == 0"/>
-                <button name="action_place_bin" string="Place at Customer" type="object"
-class="btn-primary" icon="fa-map-marker" title="Place at Customer"
-                        invisible="current_customer_id"/>
-                <button name="action_recall_bin" string="Recall Bin" type="object"
-class="btn-secondary" icon="fa-undo" title="Recall Bin"
-                        invisible="not current_customer_id"/>
+                <button name="action_enable_manual_override" string="Manual Override" type="object"
+class="btn-success" icon="fa-wrench" title="Enable Manual Override"
+                        invisible="manual_size_override == True"/>
+                <button name="action_view_work_orders" string="View Work Orders" type="object"
+class="btn-primary" icon="fa-tasks" title="View Work Orders"
+                        invisible="not current_work_order_id"/>
         <field name="status" widget="statusbar"
                         statusbar_visible="available,active,maintenance,retired"/>
             </header>
