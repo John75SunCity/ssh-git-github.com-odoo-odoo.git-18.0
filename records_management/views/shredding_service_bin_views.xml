@@ -130,8 +130,8 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
                             <separator string="Service Events"/>
                             <field name="service_event_ids" readonly="1">
                                 <tree>
-                                    <field name="event_date"/>
-                                    <field name="event_type"/>
+                                    <field name="service_date"/>
+                                    <field name="service_type"/>
                                     <field name="notes"/>
                                 </tree>
                             </field>
