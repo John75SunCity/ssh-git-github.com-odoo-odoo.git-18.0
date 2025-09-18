@@ -157,6 +157,7 @@
         "views/paper_load_shipment_views.xml",
         "views/paper_model_bale_views.xml",
         "views/payment_split_views.xml",
+        "views/payment_split_line_views.xml",
         "views/pickup_route_views.xml",
         "views/portal_feedback_views.xml",
         "views/portal_request_line_views.xml",
