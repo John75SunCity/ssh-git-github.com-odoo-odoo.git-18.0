@@ -50,118 +50,75 @@
                             </h1>
                         </div>
                         <group>
-                            <group name="coordinator_info" string="&lt;i class=&quot;fa fa-user&quot;/&gt; Coordinator Information">
-                                <field name="employee_ids" options="{'no_create': True}" />
-                                <field name="department_id" />
-                                <field name="coordinator_type" />
-                                <field name="specialization" />
+                            <group name="coordinator_info" string="Coordinator Information">
+                                <field name="partner_id" />
+                                <field name="portal_request_id" />
+                                <field name="scheduled_date" />
                                 <field name="priority" widget="priority" />
+                                <field name="consolidated_billing" />
                                 <field name="active" />
                             </group>
-                            <group name="contact_info" string="&lt;i class=&quot;fa fa-phone&quot;/&gt; Contact Information">
-                                <field name="phone" />
-                                <field name="mobile" />
-                                <field name="email" />
-                                <field name="emergency_contact" />
-                                <field name="emergency_phone" />
+                            <group name="billing_info" string="Billing Information">
+                                <field name="invoice_id" readonly="1" />
+                                <field name="company_id" groups="base.group_multi_company" />
                             </group>
                         </group>
                         <notebook>
-                            <page name="work_orders" string="&lt;i class=&quot;fa fa-clipboard&quot;/&gt; Work Orders">
+                            <page name="work_orders" string="Work Orders">
                                 <group>
-                                    <group name="workload_stats" string="&lt;i class=&quot;fa fa-bar-chart&quot;/&gt; Workload Statistics">
-                                        <field name="active_work_orders" />
+                                    <group name="metrics" string="Coordination Metrics">
+                                        <field name="total_work_orders" />
                                         <field name="completed_work_orders" />
-                                        <field name="pending_assignments" />
-                                        <field name="average_completion_time" />
-                                    </group>
-                                    <group name="performance_metrics" string="&lt;i class=&quot;fa fa-bolt&quot;/&gt; Performance Metrics">
-                                        <field name="success_rate" widget="percentage" />
-                                        <field name="customer_satisfaction" />
-                                        <field name="on_time_completion_rate" widget="percentage" />
-                                        <field name="last_performance_review" />
+                                        <field name="coordination_progress" widget="percentage" />
                                     </group>
                                 </group>
-                                <separator string="Current Work Orders" />
-                                <field name="current_work_order_ids" nolabel="1">
-                                    <list editable="bottom">
+                                <separator string="Retrieval Orders" />
+                                <field name="retrieval_order_ids" nolabel="1">
+                                    <tree>
                                         <field name="name" />
-                                        <field name="work_order_type" />
-                                        <field name="partner_id" />
-                                        <field name="priority" widget="priority" />
+                                        <field name="state" />
                                         <field name="scheduled_date" />
-                                        <field name="state" widget="badge" />
-                                    </list>
+                                    </tree>
                                 </field>
-                            </page>
-                            <page name="skills_certifications" string="&lt;i class=&quot;fa fa-trophy&quot;/&gt; Skills &amp; Certifications">
-                                <group>
-                                    <group name="skills" string="&lt;i class=&quot;fa fa-bullseye&quot;/&gt; Skills &amp; Specializations">
-                                        <field name="skill_level" />
-                                        <field name="years_experience" />
-                                        <field name="training_completed" />
-                                        <field name="next_training_date" />
-                                    </group>
-                                    <group name="availability" string="&lt;i class=&quot;fa fa-calendar&quot;/&gt; Availability">
-                                        <field name="work_schedule" />
-                                        <field name="time_zone" />
-                                        <field name="overtime_approved" />
-                                        <field name="weekend_availability" />
-                                    </group>
-                                </group>
-                                <separator string="Certifications &amp; Training" />
-                                <field name="certification_ids" nolabel="1">
-                                    <list editable="bottom">
+                                <separator string="Destruction Orders" />
+                                <field name="destruction_ids" nolabel="1">
+                                    <tree>
                                         <field name="name" />
-                                        <field name="certification_type" />
-                                        <field name="issue_date" />
-                                        <field name="expiry_date" />
-                                        <field name="is_active" widget="boolean_toggle" />
-                                    </list>
+                                        <field name="state" />
+                                        <field name="destruction_date" />
+                                    </tree>
                                 </field>
                             </page>
-                            <page name="equipment_tools" string="&lt;i class=&quot;fa fa-wrench&quot;/&gt; Equipment &amp; Tools">
+                            <page name="resources" string="Resources">
                                 <group>
-                                    <group name="equipment_access" string="&lt;i class=&quot;fa fa-truck&quot;/&gt; Equipment Access">
-                                        <field name="vehicle_access" />
-                                        <field name="equipment_authorizations" />
-                                        <field name="tool_certifications" />
+                                    <group name="employees" string="Assigned Employees">
+                                        <field name="employee_ids" nolabel="1" />
                                     </group>
-                                    <group name="safety" string="&lt;i class=&quot;fa fa-shield&quot;/&gt; Safety &amp; Compliance">
-                                        <field name="safety_training_date" />
-                                        <field name="safety_incidents" />
-                                        <field name="naid_certified" />
-                                        <field name="background_check_date" />
+                                    <group name="vehicles" string="Assigned Vehicles">
+                                        <field name="vehicle_ids" nolabel="1" />
                                     </group>
                                 </group>
                                 <separator string="Assigned Equipment" />
                                 <field name="assigned_equipment_ids" nolabel="1">
-                                    <list>
+                                    <tree>
                                         <field name="name" />
-                                        <field name="equipment_type" />
-                                        <field name="serial_number" />
-                                        <field name="last_maintenance_date" />
-                                        <field name="next_maintenance_due" />
-                                    </list>
+                                        <field name="category_id" />
+                                    </tree>
                                 </field>
                             </page>
-                            <page name="audit_tracking" string="&lt;i class=&quot;fa fa-clipboard&quot;/&gt; Audit &amp; Tracking">
+                            <page name="fsm" string="FSM Integration">
                                 <group>
-                                    <group name="audit_info" string="&lt;i class=&quot;fa fa-search&quot;/&gt; Audit Information">
-                                        <field name="user_id" />
-                                        <field name="company_id" groups="base.group_multi_company" />
-                                        <field name="create_date" />
-                                        <field name="write_date" />
-                                    </group>
-                                    <group name="tracking_info" string="&lt;i class=&quot;fa fa-line-chart&quot;/&gt; Tracking Information">
-                                        <field name="last_login" />
-                                        <field name="total_hours_logged" />
-                                        <field name="productivity_score" />
-                                        <field name="quality_score" />
-                                    </group>
+                                    <field name="fsm_project_id" />
                                 </group>
-                                <separator string="Recent Activities" />
-                                <field name="activity_ids" nolabel="1" />
+                                <separator string="FSM Tasks" />
+                                <field name="fsm_task_ids" nolabel="1">
+                                    <tree>
+                                        <field name="name" />
+                                        <field name="stage_id" />
+                                        <field name="user_id" />
+                                        <field name="date_deadline" />
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>
@@ -179,26 +136,22 @@
             <field name="arch" type="xml">
                 <search string="Search Work Order Coordinators">
                     <field name="name" string="Name" filter_domain="[('name', 'ilike', self)]" />
+                    <field name="partner_id" string="Customer" />
                     <field name="employee_ids" string="Employee" />
-                    <field name="department_id" string="Department" />
-                    <field name="specialization" string="Specialization" />
-                    <field name="coordinator_type" string="Type" />
                     <separator />
-                    <filter name="available" string="Available" domain="[('state', '=', 'available')]" />
-                    <filter name="busy" string="Busy" domain="[('state', '=', 'busy')]" />
-                    <filter name="unavailable" string="Unavailable" domain="[('state', '=', 'unavailable')]" />
+                    <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]" />
+                    <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]" />
+                    <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]" />
                     <separator />
-                    <filter name="high_priority" string="High Priority" domain="[('priority', '=', '3')]" />
-                    <filter name="certified" string="NAID Certified" domain="[('naid_certified', '=', True)]" />
-                    <filter name="overtime_approved" string="Overtime Approved" domain="[('overtime_approved', '=', True)]" />
+                    <filter name="high_priority" string="High Priority" domain="[('priority', '=', '1')]" />
+                    <filter name="urgent" string="Urgent" domain="[('priority', '=', '2')]" />
+                    <filter name="consolidated_billing" string="Consolidated Billing" domain="[('consolidated_billing', '=', True)]" />
                     <separator />
                     <filter name="active" string="Active" domain="[('active', '=', True)]" />
                     <filter name="archived" string="Archived" domain="[('active', '=', False)]" />
                     <group expand="1" string="Group By">
                         <filter string="State" name="group_state" domain="[]" context="{'group_by': 'state'}" />
-                        <filter string="Department" name="group_department" domain="[]" context="{'group_by': 'department_id'}" />
-                        <filter string="Coordinator Type" name="group_type" domain="[]" context="{'group_by': 'coordinator_type'}" />
-                        <filter string="Specialization" name="group_specialization" domain="[]" context="{'group_by': 'specialization'}" />
+                        <filter string="Customer" name="group_customer" domain="[]" context="{'group_by': 'partner_id'}" />
                         <filter string="Priority" name="group_priority" domain="[]" context="{'group_by': 'priority'}" />
                         <filter string="Company" name="group_company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company" />
                     </group>
@@ -212,45 +165,35 @@
                 <kanban default_group_by="state">
                     <field name="id" />
                     <field name="name" />
+                    <field name="partner_id" />
                     <field name="employee_ids" />
-                    <field name="department_id" />
                     <field name="state" />
-                    <field name="active_work_orders" />
+                    <field name="total_work_orders" />
+                    <field name="completed_work_orders" />
+                    <field name="coordination_progress" />
                     <field name="priority" />
-                    <field name="specialization" />
-                    <field name="success_rate" />
                     <templates>
-                        <t t-name="card">
+                        <t t-name="kanban-box">
                             <div class="oe_kanban_card oe_kanban_global_click">
-                                <div class="o_kanban_image">
-                                    <img t-att-src="kanban_image('work.order.coordinator', 'image_128', record.id.raw_value)" alt="Coordinator" />
-                                </div>
                                 <div class="oe_kanban_details">
                                     <strong class="o_kanban_record_title">
                                         <field name="name" />
                                     </strong>
                                     <div class="o_kanban_record_subtitle">
-                                        <field name="employee_ids" />
-                                        <field name="department_id" />
+                                        Customer: <field name="partner_id" />
                                     </div>
                                     <div class="oe_kanban_bottom_left">
                                         <div class="o_kanban_inline_block">
-                                            <field name="specialization" widget="label" />
-                                        </div>
-                                        <div class="o_kanban_inline_block">
-                                    Priority: <field name="priority" widget="priority" />
+                                            Priority: <field name="priority" widget="priority" />
                                         </div>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <div class="o_kanban_inline_block">
-Active Orders:<strong>
-                                                <field name="active_work_orders" />
-                                            </strong>
+                                            Work Orders: <strong><field name="total_work_orders" /></strong>
                                         </div>
                                         <div class="o_kanban_inline_block">
-Success Rate:<field name="success_rate" />
-%
-</div>
+                                            Progress: <field name="coordination_progress" />%
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -260,38 +203,36 @@ Success Rate:<field name="success_rate" />
             </field>
         </record>
         <record id="action_work_order_coordinator" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model work.order.coordinator has state field - consider using default search filters -->
             <field name="name">Work Order Coordinators</field>
             <field name="res_model">work.order.coordinator</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode">kanban,tree,form</field>
             <field name="domain">[]</field>
-            <field name="context">{'search_default_available': 1}</field>
+            <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-Click to create a new Work Order Coordinator.
-</p>
+                    Click to create a new Work Order Coordinator.
+                </p>
                 <p>
-            Work Order Coordinators manage and oversee the execution of various work orders
-            including pickups, deliveries, shredding services, and document retrievals.
-            They ensure efficient workflow coordination and maintain quality standards.
-        </p>
+                    Work Order Coordinators manage and coordinate multiple work orders,
+                    assign resources, and ensure efficient execution of retrieval and destruction orders.
+                </p>
             </field>
         </record>
+
         <record id="action_work_order_coordinator_available" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model work.order.coordinator has state field - consider using default search filters -->
             <field name="name">Available Coordinators</field>
             <field name="res_model">work.order.coordinator</field>
-            <field name="view_mode">kanban,list,form</field>
-            <field name="domain">[('state', '=', 'available')]</field>
-            <field name="context">{'default_state': 'available'}</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('state', '=', 'draft')]</field>
+            <field name="context">{'default_state': 'draft'}</field>
         </record>
+
         <record id="action_work_order_coordinator_performance" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model work.order.coordinator has state field - consider using default search filters -->
             <field name="name">Coordinator Performance</field>
             <field name="res_model">work.order.coordinator</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode">tree,form</field>
             <field name="domain">[]</field>
-            <field name="context">{'search_default_group_department': 1}</field>
+            <field name="context">{'search_default_group_customer': 1}</field>
         </record>
     </data>
 </odoo>
