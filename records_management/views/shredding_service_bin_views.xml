@@ -154,30 +154,19 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
                                     <field name="notes"/>
                                 </tree>
                             </field>
-                        </page>                    <page string="Work Orders" name="work_orders">
-        <field name="work_order_ids" readonly="1">
-                            <list string="Work Orders">
-        <field name="name"/>
-        <field name="stage_id"/>
-        <field name="user_ids" widget="many2many_tags"/>
-        <field name="date_deadline" widget="date"/>
-        <field name="priority" widget="priority"/>
-                            </list>
-                        </field>
-                    </page>
-
+                        </page>
                     <page string="Technical Details" name="technical">
                         <group>
                             <group name="barcode_info" string="Barcode Information">
-        <field name="barcode_product_id"/>
-        <field name="bin_category"/>
-        <field name="manufacturing_date"/>
+        <field name="barcode"/>
+        <field name="barcode_scan_status"/>
+        <field name="manual_size_override"/>
                             </group>
 
-                            <group name="maintenance" string="Maintenance">
-        <field name="last_maintenance_date"/>
-        <field name="next_maintenance_date"/>
-        <field name="maintenance_notes"/>
+                            <group name="estimates" string="Weight Estimates">
+        <field name="estimated_weight_per_service"/>
+        <field name="weight_capacity_lbs"/>
+        <field name="volume_capacity_cf"/>
                             </group>
                         </group>
                     </page>
@@ -208,8 +197,8 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
             <filter name="filter_available" string="Available" domain="[('status', '=', 'available')]"/>
             <filter name="filter_maintenance" string="Maintenance" domain="[('status', '=', 'maintenance')]"/>
             <filter name="filter_deployed" string="Deployed" domain="[('current_customer_id', '!=', False)]"/>
-            <filter name="filter_needs_service" string="Needs Service"
-                    domain="[('next_scheduled_service', '!=', False)]"/>
+            <filter name="filter_has_services" string="Has Services"
+                    domain="[('total_services_count', '>', 0)]"/>
 
             <separator/>
             <filter name="filter_today" string="Scanned Today"
