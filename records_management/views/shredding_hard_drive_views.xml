@@ -94,18 +94,15 @@
             <field name="name">shredding.hard_drive.view.tree</field>
             <field name="model">shredding.hard_drive</field>
             <field name="arch" type="xml">
-                <list string="Hard Drives for Shredding" decoration-success="destroyed" decoration-warning="verified_before_destruction and not destroyed" decoration-info="scanned_at_customer and not verified_before_destruction">
+                <list string="Hard Drives for Shredding" decoration-success="state=='destroyed'" decoration-warning="state=='scanned'" decoration-info="state=='draft'">
                     <field name="serial_number" />
-                    <field name="scanned_at_customer" widget="boolean_toggle" />
-                    <field name="scanned_at_customer_date" />
-                    <field name="scanned_at_customer_by" />
-                    <field name="verified_before_destruction" widget="boolean_toggle" />
-                    <field name="verified_at_facility_date" />
-                    <field name="verified_at_facility_by" />
-                    <field name="destroyed" widget="boolean_toggle" />
+                    <field name="state" widget="badge" />
                     <field name="destruction_date" />
                     <field name="destruction_method" />
-                    <field name="included_in_certificate" widget="boolean_toggle" />
+                    <field name="destruction_technician_id" />
+                    <field name="fsm_task_id" />
+                    <field name="partner_id" />
+                    <field name="certificate_id" />
                 </list>
             </field>
         </record>
