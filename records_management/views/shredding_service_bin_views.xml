@@ -142,7 +142,7 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_work_orders" string="View Related Work Orders"
                                     type="object" class="btn-primary"
-                                    attrs="{'invisible': [('current_work_order_id', '=', False)]}"/>
+                                    invisible="not current_work_order_id"/>
                         </div>
                     </page>
 
