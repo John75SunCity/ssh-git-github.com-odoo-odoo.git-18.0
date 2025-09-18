@@ -8,7 +8,7 @@
         <field name="report_name">records_management.report_project_task_view</field>
         <field name="report_file">records_management.report_project_task</field>
         <field name="print_report_name">"(Project Task Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="records_management.model_project_task"/>
+        <field name="binding_model_id" ref="project.model_project_task"/>
         <field name="binding_type">report</field>
     </record>
 
