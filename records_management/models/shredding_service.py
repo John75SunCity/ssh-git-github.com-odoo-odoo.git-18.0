@@ -215,7 +215,7 @@ class ShreddingService(models.Model):
     )
 
     # Computed Methods
-        @api.depends('destruction_request_ids', 'certificate_ids')
+    @api.depends('destruction_request_ids', 'certificate_ids')
     def _compute_totals(self):
         """Compute total counts for stat buttons."""
         for record in self:
