@@ -88,7 +88,7 @@
                     <field name="create_date" />
                     <field name="priority" />
                     <field name="state" />
-                    <field name="assigned_to_id" />
+                    <field name="user_id" />
                 </list>
             </field>
         </record>
@@ -104,7 +104,6 @@
                         <button name="action_start_progress" string="Start Progress" type="object" invisible="state != 'approved'" groups="records_management.group_records_manager" />
                         <button name="action_complete" string="Mark Complete" type="object" invisible="state != 'in_progress'" groups="records_management.group_records_manager" />
                         <button name="action_cancel" string="Cancel" type="object" invisible="state in ['completed', 'cancelled']" groups="records_management.group_records_manager" />
-                        <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state in ['draft', 'approved']" groups="records_management.group_records_manager" />
                         <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,in_progress,completed" />
                     </header>
                     <sheet>
@@ -113,12 +112,6 @@
                                 <div class="o_stat_info">
                                     <field name="attachment_count" class="o_stat_value" />
                                     <span class="o_stat_text">Attachments</span>
-                                </div>
-                            </button>
-                            <button class="oe_stat_button" type="object" name="action_view_work_order" icon="fa-tasks" invisible="work_order_id == False">
-                                <div class="o_stat_info">
-                                    <span class="o_stat_value">FSM</span>
-                                    <span class="o_stat_text">Work Order</span>
                                 </div>
                             </button>
                         </div>
