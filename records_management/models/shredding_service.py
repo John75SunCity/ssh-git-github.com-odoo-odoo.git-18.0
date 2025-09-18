@@ -195,11 +195,10 @@ class ShreddingService(models.Model):
         help="Total number of destruction requests"
     )
 
-    total_certificates = fields.Integer(
-        string='Total Certificates',
+    total_destruction_items = fields.Integer(
+        string='Total Destruction Items',
         compute='_compute_totals',
-        store=True,
-        help="Total number of certificates issued"
+        help="Total number of containers/items scheduled for destruction using this service"
     )
 
     last_used_date = fields.Datetime(
@@ -216,12 +215,18 @@ class ShreddingService(models.Model):
     )
 
     # Computed Methods
-    @api.depends('destruction_request_ids', 'certificate_ids')
+        @api.depends('destruction_request_ids', 'certificate_ids')
     def _compute_totals(self):
-        """Compute total requests and certificates."""
+        """Compute total counts for stat buttons."""
         for record in self:
             record.total_requests = len(record.destruction_request_ids)
             record.total_certificates = len(record.certificate_ids)
+            
+            # Count destruction items from related destruction orders
+            destruction_orders = self.env['records.destruction'].search([
+                ('request_id', 'in', record.destruction_request_ids.ids)
+            ])
+            record.total_destruction_items = len(destruction_orders.mapped('destruction_item_ids'))
 
     @api.depends('destruction_request_ids.create_date')
     def _compute_last_used_date(self):
@@ -334,8 +339,37 @@ class ShreddingService(models.Model):
 
     # Placeholder button from XML (safe stub)
     def action_view_destruction_items(self):
+        """View all destruction items related to this shredding service.
+        
+        This includes container inventory and other items scheduled for
+        destruction using this shredding service.
+        """
         self.ensure_one()
-        return False
+        
+        # Get all destruction requests using this service
+        destruction_requests = self.destruction_request_ids
+        
+        # Get related destruction orders from those requests
+        destruction_orders = self.env['records.destruction'].search([
+            ('request_id', 'in', destruction_requests.ids)
+        ])
+        
+        # Get all destruction items from those orders
+        destruction_items = destruction_orders.mapped('destruction_item_ids')
+        
+        return {
+            'name': _('Destruction Items - %s', self.name),
+            'view_mode': 'tree,form',
+            'res_model': 'destruction.item',
+            'domain': [('id', 'in', destruction_items.ids)],
+            'type': 'ir.actions.act_window',
+            'context': {
+                'default_destruction_id': destruction_orders.ids[0] if destruction_orders else False,
+                'search_default_group_by_destruction': 1,
+            },
+            'help': "<p class='o_view_nocontent_smiling_face'>No destruction items found</p>"
+                    "<p>Items (including container inventory) scheduled for destruction using this service will appear here.</p>"
+        }
 
     # Override Methods
     @api.model_create_multi

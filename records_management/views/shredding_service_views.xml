@@ -94,6 +94,14 @@
                                     <span class="o_stat_text">Certificates</span>
                                 </div>
                             </button>
+                            <button class="oe_stat_button" type="object" name="action_view_destruction_items" icon="fa-trash" title="View Containers and Items for Destruction">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="total_destruction_items" />
+                                    </span>
+                                    <span class="o_stat_text">Items to Destroy</span>
+                                </div>
+                            </button>
                         </div>
                         <div class="oe_title">
                             <h1>
