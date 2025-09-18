@@ -96,16 +96,16 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
                         <group>
                             <group name="service_tracking" string="Service Tracking">
         <field name="last_service_date"/>
-        <field name="next_scheduled_service"/>
-        <field name="service_frequency"/>
-        <field name="fill_count"/>
-        <field name="total_weight" widget="float"/>
+        <field name="total_services_count"/>
+        <field name="current_period_services"/>
+        <field name="estimated_weight_per_service" widget="float"/>
+        <field name="service_summary" readonly="1"/>
                             </group>
 
                             <group name="billing_info" string="Billing Information">
-        <field name="base_monthly_rate" widget="monetary"/>
-        <field name="per_service_rate" widget="monetary"/>
-        <field name="estimated_monthly_revenue" widget="monetary"/>
+        <field name="setup_fee" widget="monetary"/>
+        <field name="monthly_base_fee" widget="monetary"/>
+        <field name="base_rate_per_service" widget="monetary"/>
         <field name="currency_id" invisible="1"/>
                             </group>
                         </group>
