@@ -103,32 +103,19 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
                             </group>
 
                             <group name="billing_info" string="Billing Information">
-        <field name="setup_fee" widget="monetary"/>
-        <field name="monthly_base_fee" widget="monetary"/>
         <field name="base_rate_per_service" widget="monetary"/>
         <field name="currency_id" invisible="1"/>
                             </group>
                         </group>
 
                         <group name="service_notes" string="Service Notes">
-        <field name="service_notes" nolabel="1" placeholder="Add service notes..."/>
+        <field name="service_summary" nolabel="1" placeholder="Service summary..."/>
                         </group>
                     </page>
 
-                    <page string="Location History" name="location_history">
-        <field name="location_history_ids" readonly="1">
-                            <list string="Location History">
-        <field name="timestamp" widget="datetime"/>
-        <field name="location"/>
-        <field name="scan_type"/>
-        <field name="user_id"/>
-        <field name="notes"/>
-                            </list>
-                        </field>
-                    </page>
+
 
                         <page string="Service History" name="service_history">
-                            <field name="state" invisible="1"/>
                             <group>
                                 <group name="service_stats" string="Service Statistics">
             <field name="current_period_services" readonly="1"/>
@@ -137,9 +124,7 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
             <field name="base_rate_per_service" readonly="1"/>
                                 </group>
                                 <group name="billing_info" string="Billing Information">
-            <field name="setup_fee" readonly="1"/>
-            <field name="monthly_base_fee" readonly="1"/>
-            <field name="per_service_rate" readonly="1"/>
+            <field name="base_rate_per_service" readonly="1"/>
                                 </group>
                             </group>
                             <separator string="Service Events"/>
@@ -186,8 +171,6 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
             </sheet>
 
             <div class="oe_chatter">
-        <field name="message_follower_ids"/>
-        <field name="activity_ids"/>
         <field name="message_ids"/>
             </div>
         </form>
