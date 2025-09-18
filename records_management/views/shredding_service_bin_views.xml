@@ -16,11 +16,11 @@
         <field name="bin_size" widget="badge"/>
         <field name="status" widget="badge"/>
         <field name="current_customer_id"/>
-        <field name="current_location"/>
+        <field name="location_id"/>
         <field name="last_service_date" widget="date"/>
-        <field name="fill_count"/>
-        <field name="total_weight" sum="Total Weight" widget="float"/>
-        <field name="estimated_monthly_revenue" sum="Monthly Revenue" widget="monetary"/>
+        <field name="total_services_count"/>
+        <field name="current_period_services"/>
+        <field name="base_rate_per_service" widget="monetary"/>
         <field name="last_scan_date" widget="datetime"/>
 </list>
     </field>
@@ -55,14 +55,14 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
                 <div class="oe_button_box" name="button_box">
 <button name="action_view_service_history" type="object" class="oe_stat_button" icon="fa-history" title="Service History">
                         <div class="o_field_widget o_stat_info">
-                            <span class="o_stat_value"><field name="service_count"/></span>
+                            <span class="o_stat_value"><field name="total_services_count"/></span>
                             <span class="o_stat_text">Services</span>
                         </div>
                     </button>
 <button name="action_view_work_orders" type="object" class="oe_stat_button" icon="fa-wrench" title="Work Orders">
                         <div class="o_field_widget o_stat_info">
-                            <span class="o_stat_value"><field name="work_order_count"/></span>
-                            <span class="o_stat_text">Work Orders</span>
+                            <span class="o_stat_value"><field name="current_period_services"/></span>
+                            <span class="o_stat_text">Period Services</span>
                         </div>
                     </button>
                 </div>
@@ -78,18 +78,18 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
 
                 <group>
                     <group name="basic_info" string="Bin Information">
-        <field name="name"/>
+        <field name="display_name"/>
         <field name="bin_specifications" readonly="1"/>
-        <field name="purchase_date"/>
-        <field name="installation_date"/>
-        <field name="estimated_weight" widget="float"/>
-        <field name="weight_percentage"/>
+        <field name="barcode"/>
+        <field name="bin_size"/>
+        <field name="weight_capacity_lbs" widget="float"/>
+        <field name="volume_capacity_cf" widget="float"/>
                     </group>
 
                     <group name="current_status" string="Current Status">
         <field name="current_customer_id" options="{'no_create': True}"/>
-        <field name="current_location"/>
-        <field name="placement_date"/>
+        <field name="location_id"/>
+        <field name="current_department_id"/>
         <field name="last_scan_location_id"/>
         <field name="last_scan_date"/>
                     </group>
@@ -131,19 +131,30 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
                         </field>
                     </page>
 
-                    <page string="Service History" name="service_history">
-        <field name="service_history_ids" readonly="1">
-                            <list string="Service History">
-        <field name="service_date" widget="date"/>
-        <field name="service_type"/>
-        <field name="weight_collected" widget="float"/>
-        <field name="technician_id"/>
-        <field name="notes"/>
-                            </list>
-                        </field>
-                    </page>
-
-                    <page string="Work Orders" name="work_orders">
+                        <page string="Service History" name="service_history">
+                            <field name="state" invisible="1"/>
+                            <group>
+                                <group name="service_stats" string="Service Statistics">
+            <field name="current_period_services" readonly="1"/>
+            <field name="total_services_count" readonly="1"/>
+            <field name="last_service_date" readonly="1"/>
+            <field name="base_rate_per_service" readonly="1"/>
+                                </group>
+                                <group name="billing_info" string="Billing Information">
+            <field name="setup_fee" readonly="1"/>
+            <field name="monthly_base_fee" readonly="1"/>
+            <field name="per_service_rate" readonly="1"/>
+                                </group>
+                            </group>
+                            <separator string="Service Events"/>
+                            <field name="service_event_ids" readonly="1">
+                                <tree>
+                                    <field name="event_date"/>
+                                    <field name="event_type"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </page>                    <page string="Work Orders" name="work_orders">
         <field name="work_order_ids" readonly="1">
                             <list string="Work Orders">
         <field name="name"/>
@@ -190,7 +201,7 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
         <search string="Search Shredding Bins">
         <field name="barcode" string="Barcode" filter_domain="[('barcode', 'ilike', self)]"/>
         <field name="current_customer_id" string="Customer"/>
-        <field name="current_location" string="Location"/>
+        <field name="location_id" string="Location"/>
         <field name="bin_size"/>
 
             <filter name="filter_active" string="Active" domain="[('status', '=', 'active')]"/>
@@ -210,7 +221,7 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
                 <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
                 <filter name="group_by_size" string="Bin Size" context="{'group_by': 'bin_size'}"/>
                 <filter name="group_by_customer" string="Customer" context="{'group_by': 'current_customer_id'}"/>
-                <filter name="group_by_location" string="Location" context="{'group_by': 'current_location'}"/>
+                <filter name="group_by_location" string="Location" context="{'group_by': 'location_id'}"/>
             </group>
         </search>
     </field>
@@ -226,9 +237,9 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
         <field name="bin_size"/>
         <field name="status"/>
         <field name="current_customer_id"/>
-        <field name="current_location"/>
-        <field name="fill_count"/>
-        <field name="estimated_monthly_revenue"/>
+        <field name="location_id"/>
+        <field name="current_period_services"/>
+        <field name="base_rate_per_service"/>
         <field name="last_service_date"/>
 
             <templates>
@@ -247,18 +258,18 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
                                     <i class="fa fa-user"/> <field name="current_customer_id"/>
                                 </div>
 
-                                <div class="oe_kanban_row" t-if="record.current_location.raw_value">
-                                    <i class="fa fa-map-marker"/> <field name="current_location"/>
+                                <div class="oe_kanban_row" t-if="record.location_id.raw_value">
+                                    <i class="fa fa-map-marker"/> <field name="location_id"/>
                                 </div>
 
                                 <div class="oe_kanban_row">
                                     <i class="fa fa-recycle"/>
-                                    Fills: <field name="fill_count"/>
+                                    Services: <field name="current_period_services"/>
                                 </div>
 
-                                <div class="oe_kanban_row" t-if="record.estimated_monthly_revenue.raw_value > 0">
+                                <div class="oe_kanban_row" t-if="record.base_rate_per_service.raw_value > 0">
                                     <i class="fa fa-dollar"/>
-        <field name="estimated_monthly_revenue" widget="monetary"/>
+        <field name="base_rate_per_service" widget="monetary"/>
                                 </div>
                             </div>
 
