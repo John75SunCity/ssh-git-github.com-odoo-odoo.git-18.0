@@ -155,6 +155,22 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
                                 </tree>
                             </field>
                         </page>
+
+                    <page string="Work Orders" name="work_orders">
+                        <group>
+                            <group name="fsm_info" string="FSM Integration">
+                                <field name="shredding_service_id" options="{'no_create': True}"/>
+                                <field name="current_work_order_id" options="{'no_create': True}"/>
+                            </group>
+                        </group>
+
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_work_orders" string="View Related Work Orders"
+                                    type="object" class="btn-primary"
+                                    attrs="{'invisible': [('current_work_order_id', '=', False)]}"/>
+                        </div>
+                    </page>
+
                     <page string="Technical Details" name="technical">
                         <group>
                             <group name="barcode_info" string="Barcode Information">
