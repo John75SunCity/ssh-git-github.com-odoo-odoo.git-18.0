@@ -165,7 +165,7 @@
         action = {
             'type': 'ir.actions.act_window',
             'name': 'Performance Summary',
-            'res_model': 'document.retrieval.metrics',
+            'res_model': 'retrieval.metric',
             'view_mode': 'graph,pivot',
             'domain': [('id', 'in', records.ids)],
             'context': {'group_by': ['performance_rating', 'metric_type']},

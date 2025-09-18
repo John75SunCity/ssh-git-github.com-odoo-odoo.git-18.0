@@ -94,7 +94,7 @@ class DocumentRetrievalMetricsReport(models.AbstractModel):
     _description = 'Document Retrieval Performance Report (Consolidated)'    @api.model
     def _get_report_values(self, docids, data=None):
         """Get values for retrieval metrics report"""
-        docs = self.env['document.retrieval.metrics'].browse(docids)
+        docs = self.env['retrieval.metric'].browse(docids)
 
         # Group by metric type for analysis
         metrics_by_type = {}
@@ -125,7 +125,7 @@ class DocumentRetrievalMetricsReport(models.AbstractModel):
 
         return {
             'doc_ids': docids,
-            'doc_model': 'document.retrieval.metrics',
+            'doc_model': 'retrieval.metric',
             'docs': docs,
             'metrics_by_type': metrics_by_type,
             'performance_stats': performance_stats,

@@ -1,45 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Document Retrieval Metrics Views -->
+<!-- Retrieval Metrics Views -->
 
 <!-- List View -->
     <record id="document_retrieval_metrics_view_tree" model="ir.ui.view">
-        <field name="name">document.retrieval.metrics.view.tree</field>
-        <field name="model">document.retrieval.metrics</field>
+        <field name="name">retrieval.metric.view.tree</field>
+        <field name="model">retrieval.metric</field>
         <field name="arch" type="xml">
-        <list string="Retrieval Metrics" default_order="retrieval_date desc">
+        <list string="Retrieval Metrics" default_order="metric_date desc">
         <field name="name"/>
         <field name="metric_type"/>
         <field name="metric_value"/>
         <field name="metric_unit"/>
         <field name="performance_rating"/>
-        <field name="quality_score"/>
-        <field name="retrieval_date"/>
+        <field name="metric_date"/>
         </list>
     </field>
     </record>
 
 <!-- Form View -->
     <record id="document_retrieval_metrics_view_form" model="ir.ui.view">
-        <field name="name">document.retrieval.metrics.view.form</field>
-        <field name="model">document.retrieval.metrics</field>
+        <field name="name">retrieval.metric.view.form</field>
+        <field name="model">retrieval.metric</field>
         <field name="arch" type="xml">
         <form string="Retrieval Metrics">
             <sheet>
                 <group>
                     <group>
         <field name="name"/>
-        <field name="work_order_id"/>
+        <field name="retrieval_line_id"/>
         <field name="metric_type"/>
         <field name="metric_value"/>
         <field name="metric_unit"/>
                     </group>
                     <group>
-        <field name="retrieval_date"/>
+        <field name="metric_date"/>
         <field name="performance_rating"/>
-        <field name="quality_score"/>
-        <field name="accuracy_percentage"/>
+        <field name="state"/>
+        <field name="employee_id"/>
                     </group>
                 </group>
                 <notebook>
@@ -48,19 +47,13 @@
                             <group>
         <field name="target_value"/>
         <field name="variance"/>
+        <field name="variance_percentage"/>
                             </group>
                             <group>
         <field name="start_time"/>
         <field name="end_time"/>
+        <field name="duration"/>
                             </group>
-                        </group>
-                    </page>
-                    <page string="Context">
-                        <group>
-        <field name="employee_id"/>
-        <field name="container_ids"/>
-        <field name="location_id"/>
-        <field name="complexity_level"/>
                         </group>
                     </page>
                     <page string="Notes">
@@ -84,18 +77,18 @@
 
 <!-- Search View -->
     <record id="document_retrieval_metrics_view_search" model="ir.ui.view">
-        <field name="name">document.retrieval.metrics.view.search</field>
-        <field name="model">document.retrieval.metrics</field>
+        <field name="name">retrieval.metric.view.search</field>
+        <field name="model">retrieval.metric</field>
         <field name="arch" type="xml">
         <search string="Search Retrieval Metrics">
         <field name="name"/>
-        <field name="work_order_id"/>
+        <field name="retrieval_line_id"/>
         <field name="employee_id"/>
         <field name="metric_type"/>
             <separator/>
             <filter name="filter_excellent" string="Excellent Performance" domain="[('performance_rating', '=', 'excellent')]"/>
             <filter name="filter_poor" string="Poor Performance" domain="[('performance_rating', 'in', ['poor', 'unacceptable'])]"/>
-            <filter name="filter_today" string="Today" domain="[('retrieval_date', '=', today)]"/>
+            <filter name="filter_today" string="Today" domain="[('metric_date', '=', today)]"/>
             <separator/>
             <group expand="0" string="Group By">
                 <filter name="group_metric_type" string="Metric Type" context="{'group_by': 'metric_type'}"/>
@@ -108,8 +101,8 @@
 
 <!-- Action -->
     <record id="action_document_retrieval_metrics" model="ir.actions.act_window">
-        <field name="name">Document Retrieval Metrics</field>
-        <field name="res_model">document.retrieval.metrics</field>
+        <field name="name">Retrieval Metrics</field>
+        <field name="res_model">retrieval.metric</field>
         <field name="view_mode">list,form</field>
         <field name="context">{}</field>
         <field name="help" type="html">

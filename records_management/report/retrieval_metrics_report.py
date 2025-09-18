@@ -12,7 +12,7 @@ class DocumentRetrievalMetricsReport(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        docs = self.env["document.retrieval.metrics"].browse(docids)
+        docs = self.env["retrieval.metric"].browse(docids)
         metrics_by_type = {}
         for doc in docs:
             metrics_by_type.setdefault(doc.metric_type, []).append(doc)
@@ -33,7 +33,7 @@ class DocumentRetrievalMetricsReport(models.AbstractModel):
                 }
         return {
             "doc_ids": docids,
-            "doc_model": "document.retrieval.metrics",
+            "doc_model": "retrieval.metric",
             "docs": docs,
             "metrics_by_type": metrics_by_type,
             "performance_stats": performance_stats,
