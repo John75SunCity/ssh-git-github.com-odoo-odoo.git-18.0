@@ -21,7 +21,7 @@
         <field name="total_services_count"/>
         <field name="current_period_services"/>
         <field name="base_rate_per_service" widget="monetary"/>
-        <field name="last_scan_date" widget="datetime"/>
+        <field name="last_service_date" widget="datetime"/>
 </list>
     </field>
     </record>
@@ -91,7 +91,7 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
         <field name="location_id"/>
         <field name="current_department_id"/>
         <field name="last_scan_location_id"/>
-        <field name="last_scan_date"/>
+        <field name="last_service_date"/>
                     </group>
                 </group>
 
@@ -217,10 +217,10 @@ class="btn-secondary" icon="fa-undo" title="Recall Bin"
                     domain="[('total_services_count', '>', 0)]"/>
 
             <separator/>
-            <filter name="filter_today" string="Scanned Today"
-                    domain="[('last_scan_date', '!=', False)]"/>
+            <filter name="filter_today" string="Serviced Today"
+                    domain="[('last_service_date', '!=', False)]"/>
             <filter name="filter_week" string="This Week"
-                    domain="[('last_scan_date', '!=', False)]"/>
+                    domain="[('last_service_date', '!=', False)]"/>
 
             <group expand="0" string="Group By">
                 <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
