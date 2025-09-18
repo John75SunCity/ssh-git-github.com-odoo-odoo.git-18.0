@@ -158,8 +158,8 @@
         </record>
         <record id="action_generate_performance_report" model="ir.actions.server">
             <field name="name">Generate Performance Report</field>
-            <field name="model_id" ref="records_management.model_document_retrieval_metrics" />
-            <field name="binding_model_id" ref="records_management.model_document_retrieval_metrics" />
+            <field name="model_id" ref="records_management.model_retrieval_metric" />
+            <field name="binding_model_id" ref="records_management.model_retrieval_metric" />
             <field name="state">code</field>
             <field name="code">
         # Generate performance summary report
