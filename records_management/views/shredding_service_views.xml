@@ -73,25 +73,25 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_confirm" type="object" string="Confirm Service" invisible="state != 'draft'" class="btn-primary" />
-                        <button name="action_start_shredding" type="object" string="Start Shredding" invisible="state != 'confirmed'" class="btn-success" />
-                        <button name="action_complete" type="object" string="Complete" invisible="state != 'in_progress'" class="btn-success" />
-                        <button name="action_generate_certificate" type="object" string="Generate Certificate" invisible="state != 'completed'" class="btn-info" />
-                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed" />
+                        <button name="action_create_service_request" type="object" string="Create Service Request" class="btn-primary" />
+                        <button name="action_view_certificates" type="object" string="View Certificates" class="btn-info" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" type="object" name="action_view_destruction_items" icon="fa-file-text-o">
+                            <button class="oe_stat_button" type="object" name="action_view_requests" icon="fa-file-text-o">
                                 <div class="o_stat_info">
                                     <span class="o_stat_value">
-                                        <field name="destruction_item_count" />
+                                        <field name="total_requests" />
                                     </span>
-                                    <span class="o_stat_text">Items</span>
+                                    <span class="o_stat_text">Requests</span>
                                 </div>
                             </button>
-                            <button class="oe_stat_button" type="object" name="action_view_certificate" icon="fa-certificate" invisible="certificate_id == False">
+                            <button class="oe_stat_button" type="object" name="action_view_certificates" icon="fa-certificate">
                                 <div class="o_stat_info">
-                                    <span class="o_stat_text">Certificate</span>
+                                    <span class="o_stat_value">
+                                        <field name="total_certificates" />
+                                    </span>
+                                    <span class="o_stat_text">Certificates</span>
                                 </div>
                             </button>
                         </div>
@@ -102,55 +102,53 @@
                         </div>
                         <group>
                             <group>
-                                <field name="partner_id" />
+                                <field name="provider_id" />
                                 <field name="service_type" />
-                                <field name="destruction_method" />
-                                <field name="scheduled_date" />
+                                <field name="service_date" />
+                                <field name="lead_time_days" />
                             </group>
                             <group>
-                                <field name="naid_compliance_level" />
-                                <field name="certificate_required" />
-                                <field name="witness_required" />
-                                <field name="total_weight" />
+                                <field name="naid_compliant" />
+                                <field name="chain_of_custody" />
+                                <field name="witness_destruction" />
+                                <field name="security_level" />
                             </group>
                         </group>
                         <notebook>
-                            <page string="Destruction Items">
-                                <field name="destruction_item_ids" mode="list">
-                                    <list editable="bottom">
-                                        <field name="item_description" />
-                                        <field name="quantity" />
-                                        <field name="weight" />
-                                        <field name="container_type" />
-                                        <field name="destruction_status" />
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Service Details">
+                            <page string="Service Information">
                                 <group>
-                                    <field name="service_location" />
-                                    <field name="assigned_technician" />
-                                    <field name="witness_name" invisible="witness_required == False" required="witness_required == True" />
-                                    <field name="witness_company" invisible="witness_required == False" />
+                                    <group string="Pricing">
+                                        <field name="base_price" />
+                                        <field name="price_per_container" />
+                                        <field name="price_per_lb" />
+                                    </group>
+                                    <group string="Service Details">
+                                        <field name="availability" />
+                                        <field name="service_area" />
+                                        <field name="equipment_type" />
+                                        <field name="max_capacity_per_day_lbs" />
+                                    </group>
                                 </group>
-                                <group>
-                                    <field name="special_instructions" placeholder="Special handling instructions..." />
-                                    <field name="completion_notes" placeholder="Service completion notes..." />
-                                </group>
-                            </page>
-                            <page string="Compliance &amp; Certification">
-                                <group>
+                                <group string="Service History">
+                                    <field name="destruction_request_ids" readonly="1" />
                                     <field name="certificate_ids" readonly="1" />
-                                    <field name="naid_audit_log_ids" mode="list">
-                                        <list>
-                                            <field name="event_type" />
-                                            <field name="event_date" />
-                                            <field name="user_id" />
-                                            <field name="location" />
-                                        </list>
-                                    </field>
+                                    <field name="last_used_date" readonly="1" />
                                 </group>
                             </page>
+                            <page string="Contact Information">
+                                <group>
+                                    <group string="Contact Details">
+                                        <field name="contact_person" />
+                                        <field name="contact_phone" />
+                                        <field name="contact_email" />
+                                    </group>
+                                    <group string="Service Notes">
+                                        <field name="description" placeholder="Service description..." />
+                                        <field name="notes" placeholder="Additional notes..." />
+                                    </group>
+                                </group>
+                            </page>
+
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -167,20 +165,19 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name" />
-                    <field name="partner_id" />
+                    <field name="provider_id" />
                     <field name="service_type" />
-                    <field name="destruction_method" />
-                    <filter string="Scheduled" name="scheduled" domain="[('state', '=', 'scheduled')]" />
-                    <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]" />
-                    <filter string="Certificate Required" name="cert_required" domain="[('certificate_required', '=', True)]" />
-                    <filter string="Witness Required" name="witness_required" domain="[('witness_required', '=', True)]" />
+                    <field name="security_level" />
+                    <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]" />
+                    <filter string="Chain of Custody" name="chain_custody" domain="[('chain_of_custody', '=', True)]" />
+                    <filter string="Witness Required" name="witness_required" domain="[('witness_destruction', '=', True)]" />
+                    <filter string="Active" name="active" domain="[('active', '=', True)]" />
                     <separator />
-                    <filter string="This Week" name="this_week" domain="[('scheduled_date', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today + datetime.timedelta(days=7-context_today.weekday())).strftime('%Y-%m-%d'))]" />
+                    <filter string="Recent Services" name="recent" domain="[('last_used_date', '>=', (context_today - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]" />
                     <group expand="0" string="Group By">
-                        <filter string="Status" name="group_status" context="{'group_by': 'state'}" />
                         <filter string="Service Type" name="group_type" context="{'group_by': 'service_type'}" />
-                        <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}" />
-                        <filter string="Date" name="group_date" context="{'group_by': 'scheduled_date'}" />
+                        <filter string="Provider" name="group_provider" context="{'group_by': 'provider_id'}" />
+                        <filter string="Security Level" name="group_security" context="{'group_by': 'security_level'}" />
                     </group>
                 </search>
             </field>
@@ -190,7 +187,7 @@
             <field name="name">Shredding Services</field>
             <field name="res_model">shredding.service</field>
             <field name="view_mode">kanban,list,form</field>
-            <field name="context">{'search_default_scheduled': 1}</field>
+            <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                 💥 Create your first shredding service!

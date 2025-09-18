@@ -8,8 +8,6 @@
                 <list string="Temporary Inventory" decoration-bf="state=='active'" decoration-warning="state=='full'" decoration-danger="state=='archived'">
                     <field name="name" />
                     <field name="partner_id" />
-                    <field name="inventory_type" />
-                    <field name="storage_type" />
                     <field name="location_id" />
                     <field name="current_count" />
                     <field name="capacity_limit" />
@@ -42,9 +40,6 @@
                             <button name="action_view_containers" type="object" class="oe_stat_button" icon="fa-archive">
                                 <field name="container_count" widget="statinfo" string="Containers" />
                             </button>
-                            <button name="action_view_movements" type="object" class="oe_stat_button" icon="fa-exchange">
-                                <field name="movement_count" widget="statinfo" string="Movements" />
-                            </button>
                         </div>
                         <div class="oe_title">
                             <h1>
@@ -54,8 +49,6 @@
                         <group>
                             <group string="Basic Information">
                                 <field name="partner_id" />
-                                <field name="inventory_type" />
-                                <field name="storage_type" />
                                 <field name="location_id" />
                                 <field name="user_id" />
                                 <field name="priority" />
@@ -74,36 +67,16 @@
                                 <field name="retention_period" />
                                 <field name="expiry_date" />
                             </group>
-                            <group string="Approval &amp;amp; Security">
-                                <field name="approval_required" />
-                                <field name="approved_by_id" invisible="approved_by_id == False" />
-                                <field name="approval_date" invisible="approval_date == False" />
-                                <field name="access_level" />
+                            <group string="Retention Management">
+                                <field name="retention_period" />
+                                <field name="expiry_date" />
                             </group>
                         </group>
-                        <group>
-                            <group string="Storage Conditions">
-                                <field name="temperature_controlled" />
-                                <field name="humidity_controlled" />
-                            </group>
-                            <group string="Compliance">
-                                <field name="compliance_required" />
-                                <field name="chain_of_custody_required" />
-                                <field name="naid_compliant" />
-                            </group>
-                        </group>
-                        <group>
-                            <group string="Costs">
-                                <field name="currency_id" invisible="1" />
-                                <field name="storage_cost" widget="monetary" />
-                                <field name="handling_cost" widget="monetary" />
-                                <field name="total_cost" widget="monetary" />
-                            </group>
-                        </group>
+
+
+
                         <notebook>
-                            <page string="Description">
-                                <field name="description" />
-                            </page>
+
                             <page string="Documents" invisible="document_count == 0">
                                 <field name="document_ids">
                                     <list>
@@ -122,25 +95,8 @@
                                     </list>
                                 </field>
                             </page>
-                            <page string="Movements" invisible="movement_count == 0">
-                                <field name="movement_ids">
-                                    <list>
-                                        <field name="date" />
-                                        <field name="movement_type" />
-                                        <field name="user_id" />
-                                        <field name="description" />
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Audit Trail" invisible="compliance_required == False">
-                                <field name="audit_trail_ids">
-                                    <list>
-                                        <field name="date" />
-                                        <field name="user_id" />
-                                        <field name="description" />
-                                    </list>
-                                </field>
-                            </page>
+
+
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -164,14 +120,9 @@
                     <filter name="full_inventories" string="Full" domain="[('state', '=', 'full')]" />
                     <filter name="nearly_full" string="Nearly Full" domain="[('utilization_percent', '&amp;gt;=', 90)]" />
                     <separator />
-                    <filter name="temporary" string="Temporary" domain="[('inventory_type', '=', 'temporary')]" />
-                    <filter name="staging" string="Staging" domain="[('inventory_type', '=', 'staging')]" />
-                    <filter name="quarantine" string="Quarantine" domain="[('inventory_type', '=', 'quarantine')]" />
-                    <separator />
                     <filter name="high_priority" string="High Priority" domain="[('priority', 'in', ['high', 'urgent'])]" />
                     <group expand="0" string="Group By">
                         <filter string="State" name="state" context="{'group_by':'state'}" />
-                        <filter string="Inventory Type" name="inventory_type" context="{'group_by':'inventory_type'}" />
                         <filter string="Location" name="location_id" context="{'group_by':'location_id'}" />
                         <filter string="Responsible User" name="user_id" context="{'group_by':'user_id'}" />
                     </group>
