@@ -36,7 +36,6 @@
         <field name="shredding_service_id"/>
         <field name="photo_type"/>
         <field name="photo_date"/>
-        <field name="photo_filename"/>
                     </group>
                     <group>
         <field name="witness_name"/>
