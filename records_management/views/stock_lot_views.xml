@@ -119,7 +119,7 @@ Retention Due:<field name="retention_date" />
                     <field name="ref" string="Reference" optional="hide" />
                     <field name="company_id" string="Company" groups="base.group_multi_company" optional="hide" />
                     <button name="action_view_stock_moves" type="object" string="Movements" icon="fa-exchange" class="btn-link" title="View Stock Movements" />
-                    <button name="action_view_documents" type="object" string="Documents" icon="fa-file-text" class="btn-link" title="View Documents in Box" attrs="{'invisible': [('is_records_box', '=', False)]}" />
+                    <button name="action_view_documents" type="object" string="Documents" icon="fa-file-text" class="btn-link" title="View Documents in Box" invisible="is_records_box == False" />
                 </list>
             </field>
         </record>
@@ -130,8 +130,8 @@ Retention Due:<field name="retention_date" />
                 <form>
                     <header>
                         <button name="action_view_stock_moves" type="object" string="View Movements" class="btn-primary" />
-                        <button name="action_view_documents" type="object" string="View Documents" class="btn-secondary" attrs="{'invisible': [('is_records_box', '=', False)]}" />
-                        <button name="action_mark_destruction_eligible" type="object" string="Mark for Destruction" class="btn-warning" attrs="{'invisible': ['|', ('destruction_eligible', '=', True), ('is_records_box', '=', False)]}" />
+                        <button name="action_view_documents" type="object" string="View Documents" class="btn-secondary" invisible="is_records_box == False" />
+                        <button name="action_mark_destruction_eligible" type="object" string="Mark for Destruction" class="btn-warning" invisible="destruction_eligible == True or is_records_box == False" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -150,7 +150,7 @@ Retention Due:<field name="retention_date" />
                                 <field name="create_date" />
                             </group>
                         </group>
-                        <group string="Records Management" attrs="{'invisible': [('is_records_box', '=', False)]}">
+                        <group string="Records Management" invisible="is_records_box == False">
                             <group>
                                 <field name="is_records_box" />
                                 <field name="document_count" readonly="1" />
@@ -162,11 +162,11 @@ Retention Due:<field name="retention_date" />
                                 <field name="last_audit_date" readonly="1" />
                             </group>
                         </group>
-                        <group string="Audit Notes" attrs="{'invisible': [('is_records_box', '=', False)]}">
+                        <group string="Audit Notes" invisible="is_records_box == False">
                             <field name="audit_notes" nolabel="1" placeholder="Internal audit notes and observations..." />
                         </group>
                         <notebook>
-                            <page string="Documents" name="documents" attrs="{'invisible': [('is_records_box', '=', False)]}">
+                            <page string="Documents" name="documents" invisible="is_records_box == False">
                                 <field name="document_ids" readonly="1">
                                     <list>
                                         <field name="name" />
