@@ -26,7 +26,7 @@
                 </header>
                 <sheet>
                     <div class="alert alert-info" role="status">
-                        <strong><i class="fa fa-map-marker-alt"></i> Location Analysis</strong><br/>
+                        <strong><i class="fa fa-map-marker-alt" title="Location"></i> Location Analysis</strong><br/>
                         Generate detailed utilization and capacity reports for storage locations.
                     </div>
                     <group>

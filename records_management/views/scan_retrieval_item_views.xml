@@ -28,7 +28,7 @@
                                         </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        <i class="fa fa-tag"/>
+                                        <i class="fa fa-tag" title="Document Type"/>
                                         <field name="document_type"/>
                                     </div>
                                 </div>

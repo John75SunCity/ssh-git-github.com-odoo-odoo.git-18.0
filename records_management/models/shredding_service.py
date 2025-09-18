@@ -199,7 +199,14 @@ class ShreddingService(models.Model):
         string='Total Destruction Items',
         compute='_compute_totals',
         store=True,
-        help="Total number of containers/items scheduled for destruction using this service"
+        help="Total number of items scheduled for destruction"
+    )
+    
+    total_certificates = fields.Integer(
+        string='Total Certificates',
+        compute='_compute_totals',
+        store=True,
+        help="Total number of destruction certificates generated"
     )
 
     last_used_date = fields.Datetime(
@@ -221,6 +228,7 @@ class ShreddingService(models.Model):
         """Compute total counts for stat buttons."""
         for record in self:
             record.total_requests = len(record.destruction_request_ids)
+            record.total_certificates = len(record.certificate_ids)
             
             # Count destruction items from related destruction orders
             destruction_orders = self.env['records.destruction'].search([

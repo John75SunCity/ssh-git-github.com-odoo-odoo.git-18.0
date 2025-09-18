@@ -174,7 +174,7 @@
                                             <div class="text-center">
                                                 <span class="badge badge-primary">
                                                     <field name="container_count" />
-                                                    <i class="fa fa-box" />
+                                                    <i class="fa fa-box" title="Containers" />
                                                 </span>
                                             </div>
                                         </div>
@@ -182,7 +182,7 @@
                                             <div class="text-center">
                                                 <span class="badge badge-info">
                                                     <field name="document_count" />
-                                                    <i class="fa fa-file-o" />
+                                                    <i class="fa fa-file-o" title="Documents" />
                                                 </span>
                                             </div>
                                         </div>
@@ -219,16 +219,16 @@
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-building" /> Create your first customer department!
+                    <i class="fa fa-building" title="Department" /> Create your first customer department!
             </p>
                 <p>
                     <b>Department Management:</b>
                     <br />
-                • <i class="fa fa-users" /> Organize customer departments with user access control<br />
-                • <i class="fa fa-box" /> Track containers and documents by department<br />
-                • <i class="fa fa-money" /> Manage billing contacts and approval workflows<br />
-                • <i class="fa fa-bar-chart" /> Monitor department activity and analytics<br />
-                • <i class="fa fa-unlock" /> Control access with granular permissions
+                • <i class="fa fa-users" title="Users" /> Organize customer departments with user access control<br />
+                • <i class="fa fa-box" title="Containers" /> Track containers and documents by department<br />
+                • <i class="fa fa-money" title="Billing" /> Manage billing contacts and approval workflows<br />
+                • <i class="fa fa-bar-chart" title="Analytics" /> Monitor department activity and analytics<br />
+                • <i class="fa fa-unlock" title="Access Control" /> Control access with granular permissions
             </p>
             </field>
         </record>

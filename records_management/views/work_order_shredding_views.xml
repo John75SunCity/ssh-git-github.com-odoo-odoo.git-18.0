@@ -194,7 +194,7 @@
                         <t t-name="card">
                             <div t-attf-class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_image">
-                                    <i class="fa fa-scissors fa-2x text-primary" />
+                                    <i class="fa fa-scissors fa-2x text-primary" title="Shredding Service" />
                                 </div>
                                 <div class="oe_kanban_content">
                                     <div class="o_kanban_record_top">
@@ -215,13 +215,13 @@
                                         <div class="row">
                                             <div class="col-6">
                                                 <small>
-                                                    <i class="fa fa-calendar" />
+                                                    <i class="fa fa-calendar" title="Scheduled Date" />
                                                     <field name="scheduled_date" />
                                                 </small>
                                             </div>
                                             <div class="col-6">
                                                 <small>
-                                                    <i class="fa fa-user" />
+                                                    <i class="fa fa-user" title="Coordinator" />
                                                     <field name="coordinator_id" />
                                                 </small>
                                             </div>

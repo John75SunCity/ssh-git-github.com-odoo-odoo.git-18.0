@@ -22,12 +22,12 @@
                                     <div class="o_kanban_card_header_title">
                                         <div class="o_primary">
                                             <strong>
-                                                <i class="fa fa-box" />
+                                                <i class="fa fa-box" title="Lot/Serial Number" />
                                                 <field name="name" />
                                             </strong>
                                         </div>
                                         <div class="o_secondary">
-                                            <i class="fa fa-tag" />
+                                            <i class="fa fa-tag" title="Product" />
                                             <field name="product_id" />
                                         </div>
                                     </div>
@@ -59,15 +59,15 @@ Retention Due:<field name="retention_date" />
                                         </div>
                                         <div class="col-4">
                                             <span class="badge badge-info" t-if="record.ref.raw_value">
-                                                <i class="fa fa-link" />
+                                                <i class="fa fa-link" title="Reference" />
                                                 <field name="ref" />
                                             </span>
                                             <span class="badge badge-warning" t-if="record.retention_date.raw_value and record.retention_date.raw_value &lt; context_today">
-                                                <i class="fa fa-warning" />
+                                                <i class="fa fa-warning" title="Warning" />
                                         Past Retention
 </span>
                                             <span class="badge badge-success" t-if="record.destruction_eligible.raw_value">
-                                                <i class="fa fa-check" />
+                                                <i class="fa fa-check" title="Approved" />
                                         Eligible for Destruction
 </span>
                                         </div>
@@ -75,13 +75,13 @@ Retention Due:<field name="retention_date" />
                                     <div class="row mt-2">
                                         <div class="col-6">
                                             <button class="btn btn-primary btn-sm" type="object" name="action_view_stock_moves">
-                                                <i class="fa fa-clipboard" />
+                                                <i class="fa fa-clipboard" title="Movements" />
                                         Movements
 </button>
                                         </div>
                                         <div class="col-6">
                                             <button class="btn btn-success btn-sm" type="object" name="action_view_quants">
-                                                <i class="fa fa-map-marker" />
+                                                <i class="fa fa-map-marker" title="Locations" />
                                         Locations
 </button>
                                         </div>
@@ -89,13 +89,13 @@ Retention Due:<field name="retention_date" />
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                     <a role="menuitem" type="edit" class="dropdown-item">
-                                        <i class="fa fa-edit" />
+                                        <i class="fa fa-edit" title="Edit" />
                                 Edit Lot</a>
                                     <a role="menuitem" type="object" name="action_view_stock_moves" class="dropdown-item">
-                                        <i class="fa fa-clipboard" />
+                                        <i class="fa fa-clipboard" title="View" />
                                 View Movements</a>
                                     <a role="menuitem" type="delete" class="dropdown-item">
-                                        <i class="fa fa-trash" />
+                                        <i class="fa fa-trash" title="Delete" />
                                 Delete</a>
                                 </div>
                             </div>
@@ -240,26 +240,26 @@ Retention Due:<field name="retention_date" />
         }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-box" />
+                    <i class="fa fa-box" title="Serial/Lot" />
             Create your first serial number or lot!
 </p>
                 <p>
                     <b>Records Management Inventory Tracking:</b>
                     <br />
 
-•<i class="fa fa-box" />
+•<i class="fa fa-box" title="Serial/Lot" />
             Complete serial number and lot management<br />
-            •<i class="fa fa-link" />
+            •<i class="fa fa-link" title="Integration" />
             Integration with Records Management system<br />
-            •<i class="fa fa-bar-chart" />
+            •<i class="fa fa-bar-chart" title="Analytics" />
             Real-time stock movement tracking<br />
-            •<i class="fa fa-clock-o" />
+            •<i class="fa fa-clock-o" title="Time" />
             Expiration date monitoring and alerts<br />
-            •<i class="fa fa-tag" />
+            •<i class="fa fa-tag" title="Tags" />
             Product and reference tracking<br />
-            •<i class="fa fa-clipboard" />
+            •<i class="fa fa-clipboard" title="Audit" />
             Complete audit trail and history<br />
-            •<i class="fa fa-building" />
+            •<i class="fa fa-building" title="Company" />
             Multi-company support
 </p>
             </field>
