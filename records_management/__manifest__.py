@@ -205,6 +205,7 @@
         "views/records_usage_tracking_views.xml",
         "views/revenue_analytic_views.xml",
         "views/service_item_views.xml",
+        "views/document_retrieval_metrics_views.xml",
         "views/revenue_forecast_line_views.xml",
         "views/revenue_forecast_views.xml",
         "views/revenue_forecaster_views.xml",
