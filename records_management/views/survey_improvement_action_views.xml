@@ -35,16 +35,16 @@
                                 type="object" 
                                 string="Mark as Done" 
                                 class="btn-primary"
-                                attrs="{'invisible': [('state', 'in', ('done', 'cancelled'))]}"/>
+                                invisible="state in ('done', 'cancelled')"/>
                         <button name="action_reset_to_new" 
                                 type="object" 
                                 string="Reset to New" 
-                                attrs="{'invisible': [('state', '=', 'new')]}"/>
+                                invisible="state == 'new'"/>
                         <field name="state" widget="statusbar" statusbar_visible="new,in_progress,done"/>
                     </header>
                     <sheet>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" 
-                                attrs="{'invisible': [('active', '=', True)]}"/>
+                                invisible="active == True"/>
                         <div class="oe_title">
                             <label for="name"/>
                             <h1>

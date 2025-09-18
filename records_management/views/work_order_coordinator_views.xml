@@ -25,9 +25,9 @@
             <field name="arch" type="xml">
                 <form string="Work Order Coordinator">
                     <header>
-                        <button name="action_coordinate_all" string="Start Coordination" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}" />
-                        <button name="action_create_fsm_tasks" string="Create FSM Tasks" type="object" attrs="{'invisible': [('state', 'in', ['completed', 'cancelled'])]}" />
-                        <button name="action_consolidate_billing" string="Consolidate Billing" type="object" attrs="{'invisible': [('consolidated_billing', '=', False)]}" />
+                        <button name="action_coordinate_all" string="Start Coordination" type="object" class="oe_highlight" invisible="state != 'draft'" />
+                        <button name="action_create_fsm_tasks" string="Create FSM Tasks" type="object" invisible="state in ('completed', 'cancelled')" />
+                        <button name="action_consolidate_billing" string="Consolidate Billing" type="object" invisible="consolidated_billing == False" />
                         <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed" />
                     </header>
                     <sheet>
