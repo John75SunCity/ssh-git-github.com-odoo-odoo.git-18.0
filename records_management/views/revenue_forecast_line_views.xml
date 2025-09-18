@@ -146,13 +146,14 @@
         </record>
         <record id="action_batch_approve_billing_audit" model="ir.actions.server">
             <field name="name">Batch Approve Audits</field>
-            <field name="model_id" ref="records_management.model_records_billing_config_audit" />
-            <field name="binding_model_id" ref="records_management.model_records_billing_config_audit" />
+            <field name="model_id" ref="records_management.model_records_audit_log" />
+            <field name="binding_model_id" ref="records_management.model_records_audit_log" />
             <field name="state">code</field>
             <field name="code">
         for record in records:
-            if record.approval_status == 'pending':
-                record.action_approve()
+            if hasattr(record, 'approval_status') and record.approval_status == 'pending':
+                if hasattr(record, 'action_approve'):
+                    record.action_approve()
     </field>
         </record>
         <record id="action_generate_performance_report" model="ir.actions.server">
