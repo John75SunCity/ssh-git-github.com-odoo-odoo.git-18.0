@@ -5,7 +5,7 @@
             <field name="name">survey.improvement.action.view.tree</field>
             <field name="model">survey.improvement.action</field>
             <field name="arch" type="xml">
-                <tree decoration-danger="priority == '3'" 
+                <list decoration-danger="priority == '3'" 
                       decoration-warning="priority == '2'" 
                       decoration-info="state == 'in_progress'"
                       decoration-muted="state in ('done', 'cancelled')">
@@ -21,7 +21,7 @@
                     <field name="deadline"/>
                     <field name="feedback_id"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
+                </list>
             </field>
         </record>
 

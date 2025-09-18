@@ -109,14 +109,14 @@
                             </page>
                             <page string="Version History" name="history">
                                 <field name="superseded_by_id" readonly="1">
-                                    <tree>
+                                    <list>
                                         <field name="version" />
                                         <field name="effective_date" />
                                         <field name="expiry_date" />
                                         <field name="created_by_id" />
                                         <field name="state" widget="badge" />
                                         <field name="is_current" widget="boolean_toggle" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>

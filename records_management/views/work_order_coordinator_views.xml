@@ -5,7 +5,7 @@
             <field name="name">work.order.coordinator.view.tree</field>
             <field name="model">work.order.coordinator</field>
             <field name="arch" type="xml">
-                <tree string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
+                <list string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="employee_ids" />
@@ -16,7 +16,7 @@
                     <field name="coordination_progress" widget="progressbar" />
                     <field name="state" widget="badge" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="work_order_coordinator_view_form" model="ir.ui.view">
@@ -74,19 +74,19 @@
                                 </group>
                                 <separator string="Retrieval Orders" />
                                 <field name="retrieval_order_ids" nolabel="1">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="state" />
                                         <field name="scheduled_date" />
-                                    </tree>
+                                    </list>
                                 </field>
                                 <separator string="Destruction Orders" />
                                 <field name="destruction_ids" nolabel="1">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="state" />
                                         <field name="destruction_date" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page name="resources" string="Resources">
@@ -100,10 +100,10 @@
                                 </group>
                                 <separator string="Assigned Equipment" />
                                 <field name="assigned_equipment_ids" nolabel="1">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="category_id" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page name="fsm" string="FSM Integration">
@@ -112,12 +112,12 @@
                                 </group>
                                 <separator string="FSM Tasks" />
                                 <field name="fsm_task_ids" nolabel="1">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="stage_id" />
                                         <field name="user_id" />
                                         <field name="date_deadline" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
