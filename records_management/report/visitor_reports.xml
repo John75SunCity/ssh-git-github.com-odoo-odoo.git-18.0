@@ -32,7 +32,7 @@
         <field name="model">visitor.log</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">records_management.report_visitor_log</field>
-        <field name="binding_model_id" ref="records_management.model_visitor_log"/>
+        <field name="binding_model_id" ref="records_management.model_visitor"/>
         <field name="binding_type">report</field>
     </record>
 
