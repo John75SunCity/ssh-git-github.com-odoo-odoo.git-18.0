@@ -78,10 +78,10 @@
                         <div class="o_kanban_card_header">
                             <div class="o_kanban_card_header_title">
                                 <div class="o_primary">
-                                    <strong><i class="fa fa-credit-card"></i> <field name="name"/></strong>
+                                    <strong><i class="fa fa-credit-card" title="Billing Configuration"></i> <field name="name"/></strong>
                                 </div>
                                 <div class="o_secondary">
-                                    <i class='fa fa-user'/> <field name="partner_id"/>
+                                    <i class='fa fa-user' title="Partner"/> <field name="partner_id"/>
                                 </div>
                             </div>
                             <div class="o_kanban_manage_button_section">
@@ -130,12 +130,12 @@
                             </div>
                         </div>
                         <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                            <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Config</a>
-                            <a role="menuitem" type="object" name="action_view_billing_history" class="dropdown-item"><i class='fa fa-clipboard'/> Billing History</a>
-                            <a role="menuitem" type="object" name="action_configure_rates" class="dropdown-item"><i class='fa fa-money'/> Configure Rates</a>
-                            <a role="menuitem" type="object" name="action_test_billing" class="dropdown-item"><i class="fa fa-flask"></i> Test Billing</a>
+                            <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit' title="Edit"/> Edit Config</a>
+                            <a role="menuitem" type="object" name="action_view_billing_history" class="dropdown-item"><i class='fa fa-clipboard' title="History"/> Billing History</a>
+                            <a role="menuitem" type="object" name="action_configure_rates" class="dropdown-item"><i class='fa fa-money' title="Rates"/> Configure Rates</a>
+                            <a role="menuitem" type="object" name="action_test_billing" class="dropdown-item"><i class="fa fa-flask" title="Test"></i> Test Billing</a>
                             <div class="dropdown-divider"/>
-                            <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item"><i class='fa fa-clipboard'/> Duplicate</a>
+                            <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item"><i class='fa fa-clipboard' title="Duplicate"/> Duplicate</a>
                         </div>
                     </div>
                 </t>
@@ -197,7 +197,7 @@
                     <button class="oe_stat_button" icon="fa-check-circle"
                             invisible="not auto_billing">
                         <div class="o_field_widget o_stat_info">
-                            <span class="o_stat_value"><i class="fa fa-robot"></i></span>
+                            <span class="o_stat_value"><i class="fa fa-robot" title="Automation"></i></span>
                             <span class="o_stat_text">Automated</span>
                         </div>
                     </button>
@@ -452,19 +452,19 @@
     }</field>
         <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
-            <i class="fa fa-credit-card"></i> Create your first billing configuration!
+            <i class="fa fa-credit-card" title="Billing"></i> Create your first billing configuration!
         </p>
         <p>
             <b>Enterprise Billing Management System:</b><br/>
-            • <i class='fa fa-money'/> Flexible multi-tier rate structures<br/>
-            • <i class="fa fa-robot"></i> Automated billing and invoice generation<br/>
-            • <i class='fa fa-bar-chart'/> Real-time usage tracking and analytics<br/>
-            • <i class='fa fa-bullseye'/> Advanced discount and promotion management<br/>
-            • <i class='fa fa-calendar'/> Flexible billing cycles and schedules<br/>
-            • <i class="fa fa-credit-card"></i> Multiple payment method support<br/>
-            • <i class='fa fa-envelope'/> Automated notifications and reminders<br/>
-            • <i class='fa fa-link'/> Seamless accounting system integration<br/>
-            • <i class='fa fa-line-chart'/> Comprehensive revenue analytics and reporting
+            • <i class='fa fa-money' title="Money"/> Flexible multi-tier rate structures<br/>
+            • <i class="fa fa-robot" title="Automation"></i> Automated billing and invoice generation<br/>
+            • <i class='fa fa-bar-chart' title="Analytics"/> Real-time usage tracking and analytics<br/>
+            • <i class='fa fa-bullseye' title="Target"/> Advanced discount and promotion management<br/>
+            • <i class='fa fa-calendar' title="Calendar"/> Flexible billing cycles and schedules<br/>
+            • <i class="fa fa-credit-card" title="Payment Methods"></i> Multiple payment method support<br/>
+            • <i class='fa fa-envelope' title="Email"/> Automated notifications and reminders<br/>
+            • <i class='fa fa-link' title="Integration"/> Seamless accounting system integration<br/>
+            • <i class='fa fa-line-chart' title="Reports"/> Comprehensive revenue analytics and reporting
         </p>
     </field>
     </record>
