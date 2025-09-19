@@ -173,51 +173,41 @@
                     <field name="expiration_date" />
                     <field name="created_by" />
                     <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_card oe_kanban_global_click">
-                                <div class="row">
-                                    <div class="col-8">
+                        <t t-name="card">
+                            <div class="o_kanban_record o_kanban_global_click">
+                                <div class="o_kanban_record_body">
+                                    <div class="o_kanban_primary_left">
                                         <strong>
-                                            <span>
-                                                <t t-esc="record.policy_id.value" />
-                                            </span>
+                                            <t t-esc="record.policy_id.value"/>
                                         </strong>
                                     </div>
-                                    <div class="col-4">
-                                        <span class="float-right badge badge-pill">
-                                            v<t t-esc="record.version_number.value" />
+                                    <div class="o_kanban_primary_right">
+                                        <span class="badge">
+                                            v<t t-esc="record.version_number.value"/>
                                         </span>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-6">
+                                <div class="o_kanban_record_body">
+                                    <div class="o_kanban_primary_left">
                                         <span>
-                                            <i class="fas fa-calendar" aria-hidden="true" />
-                                            <t t-esc="record.effective_date.value" />
+                                            <i class="fas fa-calendar" aria-hidden="true"/>
+                                            <t t-esc="record.effective_date.value"/>
                                         </span>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="o_kanban_primary_right">
                                         <span>
-                                            <i class="fas fa-user" aria-hidden="true" />
-                                            <t t-esc="record.created_by.value" />
+                                            <i class="fas fa-user" aria-hidden="true"/>
+                                            <t t-esc="record.created_by.value"/>
                                         </span>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <span t-if="record.is_active.raw_value">
-                                            <i class="fas fa-check-circle text-success" aria-hidden="true" />
-                                            Active
-                                        </span>
-                                        <span t-if="!record.is_active.raw_value">
-                                            <i class="fas fa-circle text-muted" aria-hidden="true" />
-                                            Inactive
-                                        </span>
+                                <div class="o_kanban_record_bottom">
+                                    <div>
+                                        <t t-if="record.is_active.raw_value">Active</t>
+                                        <t t-if="!record.is_active.raw_value">Inactive</t>
                                     </div>
-                                    <div class="col-6">
-                                        <span class="float-right">
-                                            <t t-esc="record.state.value" />
-                                        </span>
+                                    <div>
+                                        <t t-esc="record.state.value"/>
                                     </div>
                                 </div>
                             </div>

@@ -8,6 +8,7 @@ workflow states, and system interactions.
 """
 
 from datetime import datetime, timedelta
+import json
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -76,13 +77,23 @@ class WorkflowVisualizationManager(models.Model):
         default=lambda self: self.env.company
     )
 
-    @api.model
-    def action_generate_process_flow_diagram(self, model_name):
+    def action_generate_process_flow_diagram(self):
+        """Generate and store a process flow diagram for the current record.
+
+        Must be parameterless to be callable from a form button.
         """
-        Generate a process flow diagram for the specified model.
-        """
+        self.ensure_one()
         try:
-            return self.action_generate_process_flow(model_name)
+            model_name = self.target_model_id.model if self.target_model_id else None
+            if not model_name:
+                raise UserError(_("Please select a Target Model before generating the diagram."))
+            data = self._generate_process_flow(model_name)
+            # store JSON text into diagram_data and update timestamp
+            self.write({
+                'diagram_data': json.dumps(data),
+                'last_generated': fields.Datetime.now(),
+            })
+            return True
         except Exception as e:
             self.env["ir.logging"].create(
                 {
@@ -96,7 +107,7 @@ class WorkflowVisualizationManager(models.Model):
             )
             raise
 
-    def action_generate_process_flow(self, model_name):
+    def _generate_process_flow(self, model_name):
         """Internal method to generate process flow"""
         self.ensure_one()
         model = self.env['ir.model'].search([('model', '=', model_name)], limit=1)
@@ -135,7 +146,7 @@ class WorkflowVisualizationManager(models.Model):
             'generated_at': datetime.now().isoformat(),
         }
 
-        return diagram_data
+    return diagram_data
 
     @api.model
     def get_workflow_analytics(self, model_name, date_from=None, date_to=None):

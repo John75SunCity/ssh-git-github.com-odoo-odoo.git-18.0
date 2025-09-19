@@ -24,14 +24,12 @@
             <field name="name">workflow.visualization.manager.view.form</field>
             <field name="model">workflow.visualization.manager</field>
             <field name="arch" type="xml">
-                <form string="Workflow Visualization">
+        <form string="Workflow Visualization">
                     <header>
-                        <button name="action_generate_process_flow_diagram" 
-                                type="object" 
-                                string="Generate Diagram" 
-                                class="btn-primary"
-                                args="[]"
-                                context="{'model_name': target_model_id}"/>
+            <button name="action_generate_process_flow_diagram"
+                type="object"
+                string="Generate Diagram"
+                class="btn-primary"/>
                         <field name="active" widget="boolean_toggle"/>
                     </header>
                     <sheet>
