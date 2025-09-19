@@ -230,6 +230,8 @@
         "views/records_container_field_label_helper_views.xml",
         "views/records_billing_config_views.xml",
         "views/portal_request_views.xml",
+        # Ensure feedback analytics action loads before menus referencing it
+        "views/portal_feedback_analytic_views.xml",
 
     # Menus moved to end to ensure all referenced actions are defined beforehand
     "views/records_management_menus.xml",
