@@ -250,19 +250,3 @@
         </record>
     </data>
 </odoo>
-            Integration with Records Management system<br />
-            •<i class="fa fa-bar-chart" title="Analytics" />
-            Real-time stock movement tracking<br />
-            •<i class="fa fa-clock-o" title="Time" />
-            Expiration date monitoring and alerts<br />
-            •<i class="fa fa-tag" title="Tags" />
-            Product and reference tracking<br />
-            •<i class="fa fa-clipboard" title="Audit" />
-            Complete audit trail and history<br />
-            •<i class="fa fa-building" title="Company" />
-            Multi-company support
-</p>
-            </field>
-        </record>
-    </data>
-</odoo>
