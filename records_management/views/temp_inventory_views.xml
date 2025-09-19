@@ -128,11 +128,15 @@
             <field name="model">temp.inventory.movement</field>
             <field name="arch" type="xml">
                 <list string="Inventory Movements" create="false" edit="false">
-                    <field name="date" />
-                    <field name="inventory_id" />
-                    <field name="movement_type" />
+                    <field name="create_date" />
+                    <field name="name" />
+                    <field name="product_id" />
+                    <field name="container_id" />
+                    <field name="quantity" />
+                    <field name="location_src_id" />
+                    <field name="location_dest_id" />
+                    <field name="state" />
                     <field name="user_id" />
-                    <field name="description" />
                     <field name="company_id" groups="base.group_multi_company" />
                 </list>
             </field>
@@ -144,13 +148,18 @@
                 <form string="Inventory Movement">
                     <sheet>
                         <group>
-                            <field name="inventory_id" />
-                            <field name="date" />
-                            <field name="movement_type" />
+                            <field name="name" readonly="1"/>
+                            <field name="create_date" readonly="1"/>
+                            <field name="state"/>
                             <field name="user_id" />
                         </group>
                         <group>
-                            <field name="description" />
+                            <field name="product_id" />
+                            <field name="container_id" />
+                            <field name="quantity" />
+                            <field name="location_src_id" />
+                            <field name="location_dest_id" />
+                            <field name="notes" />
                         </group>
                     </sheet>
                 </form>
@@ -163,8 +172,9 @@
                 <list string="Inventory Audit Trail" create="false" edit="false">
                     <field name="date" />
                     <field name="inventory_id" />
+                    <field name="event_type" />
                     <field name="user_id" />
-                    <field name="description" />
+                    <field name="details" />
                     <field name="company_id" groups="base.group_multi_company" />
                 </list>
             </field>
@@ -195,11 +205,9 @@
             <field name="res_model">temp.inventory.audit</field>
             <field name="view_mode">list</field>
         </record>
-    <data>
         <menuitem id="menu_temp_inventory_root" name="Temporary Inventory" parent="records_management.menu_records_management_root" sequence="25" />
         <menuitem id="menu_temp_inventory" name="Inventories" parent="menu_temp_inventory_root" action="action_temp_inventory" sequence="10" />
         <menuitem id="menu_temp_inventory_movement" name="Movements" parent="menu_temp_inventory_root" action="action_temp_inventory_movement" sequence="20" />
         <menuitem id="menu_temp_inventory_audit" name="Audit Trail" parent="menu_temp_inventory_root" action="action_temp_inventory_audit" sequence="30" groups="records_management.group_records_manager" />
-    </data>
     </data>
 </odoo>
