@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
 <record id="container_access_document_view_tree" model="ir.ui.view">

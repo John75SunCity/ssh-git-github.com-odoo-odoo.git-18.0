@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="records_category_view_tree" model="ir.ui.view">
         <field name="name">records.category.view.tree</field>
