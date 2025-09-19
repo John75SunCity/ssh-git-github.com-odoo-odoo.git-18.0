@@ -60,12 +60,14 @@
 
     <!-- Menu -->
     <!--
+<data>
     <menuitem
         id="menu_inventory_item_profile"
         name="Inventory Item Profile"
         action="action_inventory_item_profile"
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
+</data>
     -->
     </data>
 </odoo>

@@ -49,6 +49,8 @@
     </record>
 
     <!-- List view for Menu -->
+<data>
     <menuitem id="menu_container_type_converter" name="Bulk Convert Container Types" parent="menu_records_operations" action="action_container_type_converter" sequence="30"/>
+</data>
     </data>
 </odoo>

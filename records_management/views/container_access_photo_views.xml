@@ -170,6 +170,8 @@
     </record>
 
 
+<data>
     <menuitem id="menu_container_access_photos" name="Access Photos" parent="menu_container_access" action="action_container_access_photo" sequence="40" />
+</data>
     </data>
 </odoo>

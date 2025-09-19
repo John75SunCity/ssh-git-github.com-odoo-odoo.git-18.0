@@ -61,12 +61,14 @@
 
     <!-- Menu -->
     <!--
+<data>
     <menuitem
         id="menu_inventory_item"
         name="Inventory Item"
         action="action_inventory_item"
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
+</data>
     -->
     </data>
 </odoo>

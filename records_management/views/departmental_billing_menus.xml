@@ -4,11 +4,13 @@
 <!-- List view for Department -->
 
 <!-- List view for Menu -->
+<data>
 <menuitem id="menu_department_billing_contacts" 
             name="Department Billing Contacts" 
             parent="menu_records_configuration"
             action="action_department_billing_contacts"
             sequence="26"
             groups="records_management.group_records_manager"/>
+</data>
     </data>
 </odoo>

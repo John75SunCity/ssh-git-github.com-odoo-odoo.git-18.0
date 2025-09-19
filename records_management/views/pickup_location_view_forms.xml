@@ -93,10 +93,12 @@
     </record>
 
 <!-- Menu Items -->
+<data>
     <menuitem id="pickup_location_menu"
             name="Pickup Locations"
             parent="records_management.menu_records_configuration"
             action="pickup_location_action"
             sequence="40"/>
+</data>
     </data>
 </odoo>

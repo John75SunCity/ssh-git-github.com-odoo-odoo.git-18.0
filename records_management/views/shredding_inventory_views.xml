@@ -154,10 +154,12 @@
     </record>
 
     
+<data>
     <menuitem id="menu_shredding_inventory_root" name="Shredding Inventory" parent="records_management.menu_records_management_root" sequence="35" />
 
     <menuitem id="menu_shredding_inventory_items" name="Inventory Items" parent="menu_shredding_inventory_root" action="action_shredding_inventory_item" sequence="10" />
 
     <menuitem id="menu_shredding_picklist_items" name="Picklist Items" parent="menu_shredding_inventory_root" action="action_shredding_picklist_item" sequence="20" />
+</data>
     </data>
 </odoo>

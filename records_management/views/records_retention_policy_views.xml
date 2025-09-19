@@ -352,6 +352,8 @@
                 </pivot>
             </field>
         </record>
+    <data>
         <menuitem id="menu_records_retention_policy" name="Retention Policies" parent="menu_records_configuration" action="records_retention_policy_action" sequence="10" />
+    </data>
     </data>
 </odoo>

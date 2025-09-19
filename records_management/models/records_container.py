@@ -42,6 +42,15 @@ class RecordsContainer(models.Model):
         domain="[('active', '=', True), ('state', '=', 'active')]",
     )
     container_type_id = fields.Many2one("records.container.type", string="Container Type", required=True)
+    # Compatibility alias for legacy references and reporting convenience
+    # Many existing views/controllers expect a `container_type` field (string)
+    # Provide a stored related Char to the type name for grouping/read_group
+    container_type = fields.Char(
+        related="container_type_id.name",
+        string="Container Type",
+        store=True,
+        readonly=True,
+    )
     retention_policy_id = fields.Many2one("records.retention.policy", string="Retention Policy")
     temp_inventory_id = fields.Many2one("temp.inventory", string="Temporary Inventory")
     document_type_id = fields.Many2one("records.document.type", string="Document Type")
@@ -78,6 +87,24 @@ class RecordsContainer(models.Model):
     is_full = fields.Boolean(string="Container Full", default=False)
     document_ids = fields.One2many("records.document", "container_id", string="Documents")
     document_count = fields.Integer(compute="_compute_document_count", string="Document Count", store=True)
+
+    # ============================================================================
+    # BILLING & RATES (Derived from customer rates, then container type)
+    # ============================================================================
+    customer_rate_id = fields.Many2one(
+        comodel_name="customer.negotiated.rate",
+        string="Applied Rate",
+        domain="[('rate_type', '=', 'storage'), ('is_current', '=', True), ('partner_id', '=', partner_id), ('container_type_id', '=', container_type_id)]",
+        help="Storage rate applied to this container. When set, the container type is derived from the rate.",
+        tracking=True,
+    )
+    monthly_rate_effective = fields.Monetary(
+        string="Effective Monthly Rate",
+        currency_field="currency_id",
+        compute="_compute_effective_rate",
+        store=True,
+        help="The effective storage monthly rate charge for this container. Prefers approved negotiated rate; falls back to container type's standard rate.",
+    )
 
     # ============================================================================
     # DATES & RETENTION
@@ -180,6 +207,84 @@ class RecordsContainer(models.Model):
             ("state", "=", "destroyed"),
         ]
         return inverse_domain
+
+    # ============================================================================
+    # ONCHANGE & HELPERS (Rates ↔ Container Type)
+    # ============================================================================
+    @api.onchange("customer_rate_id")
+    def _onchange_customer_rate_id(self):
+        """When a rate is chosen, derive the container type and partner if missing.
+
+        Business rule:
+        - If rate has container_type_id, apply it to container_type_id.
+        - If partner not set but rate.partner_id exists, set partner.
+        """
+        if self.customer_rate_id:
+            rate = self.customer_rate_id
+            if getattr(rate, "container_type_id", False):
+                self.container_type_id = rate.container_type_id.id
+            if not self.partner_id and getattr(rate, "partner_id", False):
+                self.partner_id = rate.partner_id.id
+
+    @api.onchange("partner_id", "container_type_id")
+    def _onchange_partner_type_autorate(self):
+        """Auto-select the best matching current rate for this partner and type.
+
+        Selection strategy:
+        - Find active/current storage rates for partner & type, choose highest priority (lowest number),
+          or most recent effective_date if priorities equal.
+        - Do not override manually selected customer_rate_id if already set and matches partner & type.
+        """
+        if not self.partner_id or not self.container_type_id:
+            return
+
+        # Keep current selection if it matches
+        if (
+            self.customer_rate_id
+            and self.customer_rate_id.partner_id == self.partner_id
+            and self.customer_rate_id.container_type_id == self.container_type_id
+            and self.customer_rate_id.state == "active"
+            and self.customer_rate_id.is_current
+        ):
+            return
+
+        rates = self.env["customer.negotiated.rate"].search(
+            [
+                ("partner_id", "=", self.partner_id.id),
+                ("rate_type", "=", "storage"),
+                ("container_type_id", "=", self.container_type_id.id),
+                ("state", "=", "active"),
+                ("is_current", "=", True),
+            ],
+            order="priority asc, effective_date desc",
+            limit=1,
+        )
+        if rates:
+            self.customer_rate_id = rates.id
+
+    @api.depends("customer_rate_id.state", "customer_rate_id.is_current", "customer_rate_id.monthly_rate", "customer_rate_id.discount_percentage", "container_type_id.standard_rate")
+    def _compute_effective_rate(self):
+        """Compute the effective monthly storage rate.
+
+        Contract:
+        - If a current approved negotiated rate exists on the container, use its discounted value.
+        - Otherwise, fall back to the container type's standard monthly rate.
+        - Missing values resolve to 0.0.
+        """
+        for rec in self:
+            value = 0.0
+            rate = rec.customer_rate_id
+            if rate and getattr(rate, "is_current", False) and getattr(rate, "state", "") == "active":
+                # Use helper to apply discount logic if present
+                try:
+                    value = rate.get_effective_rate("monthly_rate")
+                except Exception:
+                    # Fallback to raw monthly_rate if helper unavailable
+                    value = rate.monthly_rate or 0.0
+            else:
+                # Fallback to container type standard rate
+                value = getattr(rec.container_type_id, "standard_rate", 0.0) or 0.0
+            rec.monthly_rate_effective = value
 
     # ============================================================================
     # BUTTON ACTIONS

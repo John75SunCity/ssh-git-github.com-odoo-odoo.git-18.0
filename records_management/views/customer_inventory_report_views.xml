@@ -167,6 +167,8 @@
             </p>
             </field>
         </record>
+    <data>
         <menuitem id="menu_customer_inventory_report" name="Customer Inventory Reports" parent="menu_records_reporting" action="customer_inventory_report_action" sequence="10" />
+    </data>
     </data>
 </odoo>

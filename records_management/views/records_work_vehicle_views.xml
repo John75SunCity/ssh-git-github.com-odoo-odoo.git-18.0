@@ -347,6 +347,7 @@
             * Security groups for proper access control
             * Direct action binding for seamless navigation
         -->
+    <data>
         <menuitem
             id="menu_fleet_vehicle_records_work"
             name="Work Vehicles"
@@ -354,5 +355,6 @@
             action="action_fleet_vehicle_records_work"
             sequence="30"
             groups="records_management.group_records_user,records_management.group_records_manager"/>
+    </data>
     </data>
 </odoo>

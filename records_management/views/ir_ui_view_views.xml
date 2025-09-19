@@ -71,12 +71,14 @@ These definitions allow administrators to manage Odoo view records directly from
 
     <!-- Menu -->
     <!--
+<data>
     <menuitem
         id="menu_ir_ui_view"
         name="View"
         action="action_ir_ui_view"
         parent="TODO_REPLACE_WITH_ACTUAL_PARENT_MENU_ID"
         sequence="10"/>
+</data>
     -->
     </data>
 </odoo>

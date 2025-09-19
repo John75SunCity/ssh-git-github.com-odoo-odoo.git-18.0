@@ -4,10 +4,14 @@
 <!-- Barcode Menus - Loaded after main menu structure -->
 
 <!-- Menu Items for Barcode Configuration and History -->
+<data>
 <menuitem id="menu_barcode_config" name="Barcode Configuration" parent="menu_records_configuration" 
 action="action_barcode_generation_history" sequence="40"/>
+</data>
 
+<data>
 <menuitem id="menu_barcode_history" name="Barcode History" parent="menu_records_reporting" 
 action="action_barcode_generation_history" sequence="40"/>
+</data>
     </data>
 </odoo>

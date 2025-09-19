@@ -116,10 +116,12 @@
     </record>
 
     <!-- Menu item for advanced.billing.contact -->
+<data>
     <menuitem id="advanced_billing_contact_menu"
               name="Billing Contacts"
               parent="records_management.menu_records_billing"
               action="advanced_billing_contact_action"
               sequence="25"/>
+</data>
     </data>
 </odoo>

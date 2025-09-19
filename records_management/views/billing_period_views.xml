@@ -41,6 +41,8 @@
         <field name="view_mode">list,form</field>
     </record>
     <!-- Updated XML ID to follow convention -->
+<data>
     <menuitem id="billing_period_menu" name="Billing Periods" parent="records_management.menu_records_billing" action="billing_period_action" sequence="10"/>
+</data>
     </data>
 </odoo>

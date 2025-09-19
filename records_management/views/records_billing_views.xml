@@ -109,6 +109,8 @@
             <field name="context">{'search_default_filter_draft': 1}</field>
             <field name="help">Manage billing records for the Records Management system</field>
         </record>
+    <data>
         <menuitem id="records_billing_menu" name="Billing Records" parent="records_management.menu_records_billing" action="records_billing_action" sequence="10" />
+    </data>
     </data>
 </odoo>

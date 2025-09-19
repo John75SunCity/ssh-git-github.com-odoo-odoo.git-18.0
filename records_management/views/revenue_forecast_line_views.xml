@@ -115,6 +115,7 @@
         </p>
             </field>
         </record>
+    <data>
         <menuitem id="menu_revenue_forecasting" name="Revenue Forecasting" parent="records_management.menu_records_billing" sequence="30" />
         <menuitem id="menu_revenue_forecast_lines" name="Forecast Lines" parent="menu_revenue_forecasting" action="action_revenue_forecast_line" sequence="10" />
         <menuitem id="menu_billing_configuration" name="Billing Configuration" parent="records_management.menu_records_billing" sequence="40" />
@@ -128,6 +129,7 @@
         <menuitem id="menu_payment_split_lines" name="Payment Splits" parent="menu_payment_management" action="action_payment_split_line" sequence="10" />
         <menuitem id="menu_shredding_documentation" name="Shredding Documentation" parent="menu_records_operations" sequence="70" />
         <menuitem id="menu_shredding_service_photos" name="Service Photos" parent="menu_shredding_documentation" action="action_shredding_service_photo" sequence="10" />
+    </data>
         <record id="action_revenue_forecast_line" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model revenue.forecast.line has state field - consider using default search filters -->
             <field name="name">Revenue Forecast Lines</field>

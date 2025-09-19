@@ -362,7 +362,9 @@
             </p>
             </field>
         </record>
+    <data>
         <menuitem id="menu_bin_key_management" name="Bin Key Management" parent="records_management.menu_records_management_root" action="action_bin_key_management" sequence="10" />
         <menuitem id="menu_bin_unlock_services" name="Unlock Services" parent="records_management.menu_records_management_root" action="action_bin_unlock_service" sequence="11" />
+    </data>
     </data>
 </odoo>

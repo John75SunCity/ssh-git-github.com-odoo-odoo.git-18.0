@@ -207,8 +207,10 @@
                 </p>
             </field>
         </record>
+    <data>
         <menuitem id="menu_paper_recycling" name="Paper Recycling" parent="menu_records_management_root" sequence="25" groups="records_management.group_records_user" />
         <menuitem id="menu_load_shipments" name="Load Shipments" parent="menu_paper_recycling" action="action_paper_load_shipment" sequence="20" groups="records_management.group_records_user" />
+    </data>
         <record id="action_paper_recycling_dashboard" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model paper.load.shipment has state field - consider using default search filters -->
             <field name="name">Paper Recycling Dashboard</field>
@@ -227,6 +229,8 @@
                 </p>
             </field>
         </record>
+    <data>
         <menuitem id="menu_paper_recycling_dashboard" name="Dashboard" parent="menu_paper_recycling" action="action_paper_recycling_dashboard" sequence="5" groups="records_management.group_records_user" />
+    </data>
     </data>
 </odoo>

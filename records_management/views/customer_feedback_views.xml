@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    <data>
         <menuitem id="records_management_menu_root" name="Records Management" sequence="10" />
+    </data>
         <record id="customer_feedback_view_tree" model="ir.ui.view">
             <field name="name">customer.feedback.view.tree</field>
             <field name="model">customer.feedback</field>
@@ -78,6 +80,8 @@ Manage customer feedback items. Use stages to track progress from New to Closed.
 </p>
             </field>
         </record>
+    <data>
         <menuitem id="customer_feedback_menu" name="Customer Feedback" parent="records_management_menu_root" action="customer_feedback_action" sequence="40" />
+    </data>
     </data>
 </odoo>

@@ -193,6 +193,8 @@
                 <p>Unified retrieval for files, containers, scans, and more with SLA tracking.</p>
             </field>
         </record>
+    <data>
         <menuitem id="menu_records_retrieval_orders" name="Retrieval Orders" parent="menu_records_operations" action="action_records_retrieval_order" sequence="25" groups="records_management.group_records_user" />
+    </data>
     </data>
 </odoo>

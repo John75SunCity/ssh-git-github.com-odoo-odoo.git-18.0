@@ -258,8 +258,10 @@
                 </div>
             </field>
         </record>
+    <data>
         <menuitem id="menu_shred_bin" name="Shred Bins" parent="menu_records_operations" action="action_shred_bin" sequence="15" />
         <menuitem id="menu_shred_bin_portal" name="My Shred Bins" parent="portal.portal_menu" action="action_shred_bin_portal" sequence="20" groups="base.group_portal" />
+    </data>
         <template id="shred_bin_custom_css" name="Shred Bin Custom CSS" inherit_id="web.layout">
             <xpath expr="//head" position="inside">
                 <style>

@@ -51,6 +51,7 @@
 </p>
             </field>
         </record>
+    <data>
         <menuitem id="menu_records_containers" name="Containers" parent="menu_records_operations" action="action_records_container" sequence="10" groups="records_management.group_records_user" />
         <menuitem id="menu_container_field_label_helper" name="Container Field Labels" parent="menu_records_operations" action="action_field_label_helper_wizard" sequence="12" groups="records_management.group_records_manager" />
         <menuitem id="menu_records_documents" name="Files" parent="menu_records_operations" action="action_records_document" sequence="20" groups="records_management.group_records_user" />
@@ -110,5 +111,6 @@
         <menuitem id="menu_service_item_mobile" name="Mobile &amp; FSM" parent="menu_service_item_main" sequence="60" groups="records_management.group_records_user,records_management.group_records_technician" />
         <menuitem id="menu_service_item_portal" name="Portal Integration" parent="menu_service_item_main" sequence="70" groups="records_management.group_records_manager" />
         <menuitem id="menu_system_config" name="System Configuration" parent="menu_records_configuration" sequence="40" groups="records_management.group_records_manager" />
+    </data>
     </data>
 </odoo>

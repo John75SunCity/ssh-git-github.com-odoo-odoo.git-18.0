@@ -62,12 +62,14 @@
 
     <!-- Menu -->
     <!--
+<data>
     <menuitem
         id="menu_custody_transfer_event"
         name="Custody Transfer Event"
         action="action_custody_transfer_event"
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
+</data>
     -->
     </data>
 </odoo>

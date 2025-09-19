@@ -87,6 +87,8 @@
                 </p>
             </field>
         </record>
+    <data>
         <menuitem id="menu_records_request" name="Requests" parent="menu_records_operations" action="action_records_request" sequence="30" />
+    </data>
     </data>
 </odoo>

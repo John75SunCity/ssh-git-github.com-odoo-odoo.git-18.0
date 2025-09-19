@@ -637,11 +637,13 @@
         </record>
 
         <!-- List view for Menu -->
+    <data>
         <menuitem id="menu_records_config_settings"
                   name="Configuration"
                   parent="records_management.menu_records_configuration"
                   action="action_records_config_settings"
                   sequence="1"
                   groups="records_management.group_records_manager"/>
+    </data>
     </data>
 </odoo>

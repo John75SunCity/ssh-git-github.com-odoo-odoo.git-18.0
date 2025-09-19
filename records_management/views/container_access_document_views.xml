@@ -133,6 +133,8 @@
     </record>
 
     
+<data>
     <menuitem id="menu_container_access_document" name="Access Documents" parent="records_management.menu_container_access" action="container_access_document_action" sequence="15" />
+</data>
     </data>
 </odoo>

@@ -88,11 +88,13 @@
     </record>
 
     <!-- Menu (optional - provide a real parent ID when enabling)
+<data>
     <menuitem id="menu_inventory_item_location_transfer"
               name="Inventory Item Location Transfer"
               parent="REPLACE_WITH_PARENT_MENU_ID"
               action="action_inventory_item_location_transfer"
               sequence="10"/>
+</data>
     -->
     </data>
 </odoo>

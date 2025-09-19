@@ -50,12 +50,14 @@
 
     <!-- Menu -->
     <!--
+<data>
     <menuitem
         id="menu_hard_drive_scan_wizard_line"
         name="Hard Drive Scan Wizard Line"
         action="action_hard_drive_scan_wizard_line"
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
+</data>
     -->
     </data>
 </odoo>

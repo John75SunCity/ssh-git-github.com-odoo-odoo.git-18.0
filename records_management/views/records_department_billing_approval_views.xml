@@ -165,10 +165,12 @@
         </record>
 
         <!-- Menu Item -->
+    <data>
         <menuitem id="menu_records_department_billing_approval"
                   name="Billing Approvals"
                   parent="records_management.menu_records_billing"
                   action="records_department_billing_approval_action"
                   sequence="20"/>
+    </data>
     </data>
 </odoo>

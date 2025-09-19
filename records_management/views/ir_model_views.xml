@@ -57,12 +57,14 @@
 
     <!-- Menu -->
     <!--
+<data>
     <menuitem
         id="menu_ir_model"
         name="Model"
         action="action_ir_model"
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
+</data>
     -->
     </data>
 </odoo>

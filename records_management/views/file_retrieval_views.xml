@@ -126,12 +126,14 @@ invisible="status != 'pending'"
 
     <!-- Menu -->
     <!--
+<data>
     <menuitem
         id="menu_file_retrieval"
         name="File Retrieval"
         action="action_file_retrieval"
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
+</data>
     -->
     </data>
 </odoo>

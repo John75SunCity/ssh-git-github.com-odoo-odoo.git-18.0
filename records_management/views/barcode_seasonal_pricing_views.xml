@@ -55,6 +55,8 @@
             <field name="res_model">barcode.seasonal.pricing</field>
             <field name="view_mode">list,form</field>
         </record>
+    <data>
         <menuitem id="barcode_seasonal_pricing_menu" name="Seasonal Pricing" parent="menu_barcode_config" action="barcode_seasonal_pricing_action" sequence="95" />
+    </data>
     </data>
 </odoo>

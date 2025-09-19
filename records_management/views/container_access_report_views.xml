@@ -84,6 +84,8 @@
     </record>
 
     
+<data>
     <menuitem id="menu_container_access_report" name="Access Reports" parent="records_management.menu_container_access" action="container_access_report_action" sequence="20" />
+</data>
     </data>
 </odoo>

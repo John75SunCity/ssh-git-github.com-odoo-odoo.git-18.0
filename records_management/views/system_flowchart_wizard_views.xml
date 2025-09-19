@@ -62,6 +62,8 @@ Ready to Launch!
                             'default_export_format': 'png'
                     }</field>
     </record>
+<data>
     <menuitem id="system_flowchart_wizard_menu" name="System Flowchart" parent="menu_records_management_root" action="system_flowchart_wizard_action" sequence="15" groups="records_management.group_records_manager"/>
+</data>
     </data>
 </odoo>

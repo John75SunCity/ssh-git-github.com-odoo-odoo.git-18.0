@@ -63,12 +63,14 @@
 
     <!-- Menu -->
     <!--
+<data>
     <menuitem
         id="menu_container_access_visitor"
         name="Container Access Visitor"
         action="action_container_access_visitor"
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
+</data>
     -->
     </data>
 </odoo>

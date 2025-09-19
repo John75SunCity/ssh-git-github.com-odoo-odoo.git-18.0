@@ -198,9 +198,13 @@
 <!-- ============================================================================= -->
 
 <!-- List view for Main -->
+<data>
     <menuitem id="menu_customer_portal_diagram" name="Portal Organization" parent="menu_records_management_root" action="action_customer_portal_diagram_admin" sequence="7" groups="records_management.group_records_manager"/>
+</data>
 
 <!-- List view for Submenu -->
+<data>
     <menuitem id="menu_customer_portal_diagram_config" name="Diagram Configuration" parent="menu_records_configuration" action="action_customer_portal_diagram_admin" sequence="50" groups="records_management.group_records_manager"/>
+</data>
     </data>
 </odoo>

@@ -183,6 +183,8 @@
     </record>
 
 <!-- Volume Calculator Menu Item -->
+<data>
     <menuitem id="custom_box_volume_calculator_menu" name="Volume Calculator" parent="records_management.records_management_menu" action="custom_box_volume_calculator_action" sequence="20" groups="records_management.group_records_user"/>
+</data>
     </data>
 </odoo>
