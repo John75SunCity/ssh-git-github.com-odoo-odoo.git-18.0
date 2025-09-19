@@ -313,7 +313,7 @@ class RecordsBillingConfig(models.Model):
             current_month = fields.Date.today().replace(day=1)
             next_month = current_month + relativedelta(months=1)
             monthly_usage = record.usage_tracking_ids.filtered(
-                lambda u: u.tracking_date and current_month <= u.tracking_date < next_month
+                lambda u: u.date and current_month <= u.date < next_month
             )
             record.monthly_revenue = sum(monthly_usage.mapped('total_cost'))
 
@@ -324,7 +324,7 @@ class RecordsBillingConfig(models.Model):
             quarter_start = today.replace(month=((today.month - 1) // 3) * 3 + 1, day=1)
             quarter_end = quarter_start + relativedelta(months=3)
             quarterly_usage = record.usage_tracking_ids.filtered(
-                lambda u: u.tracking_date and quarter_start <= u.tracking_date < quarter_end
+                lambda u: u.date and quarter_start <= u.date < quarter_end
             )
             record.quarterly_revenue = sum(quarterly_usage.mapped('total_cost'))
 
@@ -333,7 +333,7 @@ class RecordsBillingConfig(models.Model):
         for record in self:
             current_year = fields.Date.today().year
             annual_usage = record.usage_tracking_ids.filtered(
-                lambda u: u.tracking_date and u.tracking_date.year == current_year
+                lambda u: u.date and u.date.year == current_year
             )
             record.annual_revenue = sum(annual_usage.mapped('total_cost'))
 

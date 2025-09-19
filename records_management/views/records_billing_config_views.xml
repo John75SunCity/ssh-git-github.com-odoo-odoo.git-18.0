@@ -265,7 +265,7 @@
                         </group>
         <field name="usage_tracking_ids" mode="list">
                             <list>
-        <field name="tracking_date"/>
+        <field name="date"/>
         <field name="service_type"/>
         <field name="quantity"/>
         <field name="unit_rate"/>
