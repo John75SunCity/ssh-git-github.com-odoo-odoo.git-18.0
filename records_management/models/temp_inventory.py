@@ -105,6 +105,58 @@ class TempInventory(models.Model):
         })
         self.message_post(body=_("Temporary inventory activated by %s.", self.env.user.name))
 
+    def action_deactivate(self):
+        """Deactivate inventory - move from active/in_use back to draft state"""
+        for record in self:
+            if record.state not in ['active', 'in_use']:
+                raise UserError(_("Only active or in-use inventories can be deactivated."))
+            record.write({
+                "state": "draft",
+            })
+            record.message_post(body=_("Temporary inventory deactivated by %s.", self.env.user.name))
+
+    def action_approve(self):
+        """Approve inventory - placeholder for approval workflow"""
+        for record in self:
+            if record.state != 'draft':
+                raise UserError(_("Only draft inventories can be approved."))
+            # Add approval logic here if needed
+            record.message_post(body=_("Temporary inventory approved by %s.", self.env.user.name))
+
+    def action_check_capacity_status(self):
+        """Check and update capacity status"""
+        for record in self:
+            if record.current_count >= record.capacity_limit:
+                record.state = 'full'
+            elif record.current_count > 0:
+                record.state = 'in_use'
+            record.message_post(body=_("Capacity status checked by %s. Current: %d/%d items.", 
+                                       self.env.user.name, record.current_count, record.capacity_limit))
+
+    def action_view_documents(self):
+        """Open documents related to this inventory"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Documents'),
+            'res_model': 'records.document',
+            'view_mode': 'list,form',
+            'domain': [('temp_inventory_id', '=', self.id)],
+            'context': {'default_temp_inventory_id': self.id},
+        }
+
+    def action_view_containers(self):
+        """Open containers related to this inventory"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Containers'),
+            'res_model': 'records.container',
+            'view_mode': 'list,form',
+            'domain': [('temp_inventory_id', '=', self.id)],
+            'context': {'default_temp_inventory_id': self.id},
+        }
+
     def action_archive(self):
         for record in self:
             if record.current_count > 0:
@@ -146,5 +198,3 @@ class TempInventory(models.Model):
         for record in self:
             if record.retention_period < 0:
                 raise ValidationError(_("Retention period cannot be negative."))
-
-

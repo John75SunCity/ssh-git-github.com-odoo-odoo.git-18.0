@@ -28,7 +28,7 @@
                         <button name="action_activate" string="Activate" type="object" class="btn-primary" invisible="state != 'draft'" />
                         <button name="action_deactivate" string="Deactivate" type="object" invisible="state not in ['active','in_use']" />
                         <button name="action_archive" string="Archive" type="object" invisible="state not in ['active','in_use']" />
-                        <button name="action_approve" string="Approve" type="object" invisible="(state != 'draft') or (approval_required == False)" />
+                        <button name="action_approve" string="Approve" type="object" invisible="state != 'draft'" />
                         <button name="action_check_capacity_status" string="Check Capacity" type="object" />
                         <field name="state" widget="statusbar" statusbar_visible="draft,active,in_use,full,archived" />
                     </header>
