@@ -207,7 +207,9 @@ class ComprehensiveValidator:
         
         # Check if XML has proper odoo/data structure
         if '<odoo>' in content:
-            if '<data>' not in content:
+            # Accept <data> with or without attributes (e.g., <data noupdate="1">)
+            has_data_wrapper = re.search(r"<data(\s|>)", content) is not None
+            if not has_data_wrapper:
                 # Check if there are records that should be in data tags
                 if any(tag in content for tag in ['<record', '<menuitem', '<act_window']):
                     issues.append("⚠️  Records found without <data> wrapper - may cause schema issues")
