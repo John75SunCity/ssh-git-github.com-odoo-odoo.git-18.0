@@ -68,6 +68,18 @@
         <menuitem id="menu_records_portal" name="Customer Portal" parent="menu_records_management_root" sequence="15" groups="records_management.group_records_user" />
         <menuitem id="menu_portal_requests" name="Portal Requests" parent="menu_records_portal" action="action_portal_request" sequence="10" groups="records_management.group_records_user" />
         <menuitem id="menu_customer_feedback" name="Customer Feedback" parent="menu_records_portal" action="customer_feedback_action" sequence="20" groups="records_management.group_records_user" />
+        <record id="action_feedback_responses" model="ir.actions.act_window">
+            <field name="name">Portal Feedback</field>
+            <field name="res_model">portal.feedback</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context">{'search_default_needs_response': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-comments" title="Feedback"/> No feedback yet!
+                </p>
+                <p>Customer feedback submitted through the portal will appear here.</p>
+            </field>
+        </record>
         <menuitem id="menu_portal_feedback" name="Portal Feedback" parent="menu_records_portal" action="action_feedback_responses" sequence="30" groups="records_management.group_records_manager" />
         <menuitem id="menu_feedback_analytics" name="Feedback Analytics" parent="menu_portal_feedback" action="action_feedback_analytics" sequence="10" groups="records_management.group_records_manager" />
         <menuitem id="menu_records_inventory" name="Inventory" parent="menu_records_management_root" sequence="20" groups="records_management.group_records_user" />

@@ -23,14 +23,14 @@
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_card_header">
                                     <strong>
-                                        <i class="fa fa-clipboard" />
+                                        <i class="fa fa-clipboard" title="Request" />
                                         <field name="name" />
                                     </strong>
                                     <span class="float-end">
                                         <field name="priority" widget="priority" />
                                     </span>
                                     <div class="text-muted">
-                                        <i class="fa fa-user" />
+                                        <i class="fa fa-user" title="Customer" />
                                         <field name="partner_id" />
                                     </div>
                                 </div>
