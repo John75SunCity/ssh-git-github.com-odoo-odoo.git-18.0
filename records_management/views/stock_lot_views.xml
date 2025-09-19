@@ -41,62 +41,50 @@
                                     <div class="row">
                                         <div class="col-8">
                                             <div>
-                                                <i class="fa fa-cubes" aria-hidden="true" />
-
-
-Qty:<field name="product_qty" />
+                                                <i class="fa fa-cubes" aria-hidden="true" /> Qty: <field name="product_qty"/>
                                             </div>
                                             <div>
-                                                <i class="fa fa-calendar" aria-hidden="true" />
-
-Created:<field name="create_date" />
+                                                <i class="fa fa-calendar" aria-hidden="true" /> Created: <field name="create_date"/>
                                             </div>
                                             <div t-if="record.retention_date.raw_value">
-                                                <i class="fa fa-calendar-times-o" aria-hidden="true" />
-
-Retention Due:<field name="retention_date" />
+                                                <i class="fa fa-calendar-times-o" aria-hidden="true" /> Retention Due: <field name="retention_date"/>
                                             </div>
                                         </div>
                                         <div class="col-4">
                                             <span class="badge badge-info" t-if="record.ref.raw_value">
-                                                <i class="fa fa-link" title="Reference" />
-                                                <field name="ref" />
+                                                <i class="fa fa-link" title="Reference" /> <field name="ref"/>
                                             </span>
                                             <span class="badge badge-warning" t-if="record.retention_date.raw_value and record.retention_date.raw_value &lt; context_today">
-                                                <i class="fa fa-warning" title="Warning" />
-                                        Past Retention
-</span>
+                                                <i class="fa fa-warning" title="Warning" /> Past Retention
+                                            </span>
                                             <span class="badge badge-success" t-if="record.destruction_eligible.raw_value">
-                                                <i class="fa fa-check" title="Approved" />
-                                        Eligible for Destruction
-</span>
+                                                <i class="fa fa-check" title="Approved" /> Eligible for Destruction
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-6">
                                             <button class="btn btn-primary btn-sm" type="object" name="action_view_stock_moves">
-                                                <i class="fa fa-clipboard" title="Movements" />
-                                        Movements
-</button>
+                                                <i class="fa fa-clipboard" title="Movements" /> Movements
+                                            </button>
                                         </div>
                                         <div class="col-6">
                                             <button class="btn btn-success btn-sm" type="object" name="action_view_quants">
-                                                <i class="fa fa-map-marker" title="Locations" />
-                                        Locations
-</button>
+                                                <i class="fa fa-map-marker" title="Locations" /> Locations
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                     <a role="menuitem" type="edit" class="dropdown-item">
-                                        <i class="fa fa-edit" title="Edit" />
-                                Edit Lot</a>
+                                        <i class="fa fa-edit" title="Edit" /> Edit Lot
+                                    </a>
                                     <a role="menuitem" type="object" name="action_view_stock_moves" class="dropdown-item">
-                                        <i class="fa fa-clipboard" title="View" />
-                                View Movements</a>
+                                        <i class="fa fa-clipboard" title="View" /> View Movements
+                                    </a>
                                     <a role="menuitem" type="delete" class="dropdown-item">
-                                        <i class="fa fa-trash" title="Delete" />
-                                Delete</a>
+                                        <i class="fa fa-trash" title="Delete" /> Delete
+                                    </a>
                                 </div>
                             </div>
                         </t>
@@ -119,7 +107,7 @@ Retention Due:<field name="retention_date" />
                     <field name="ref" string="Reference" optional="hide" />
                     <field name="company_id" string="Company" groups="base.group_multi_company" optional="hide" />
                     <button name="action_view_stock_moves" type="object" string="Movements" icon="fa-exchange" class="btn-link" title="View Stock Movements" />
-                    <button name="action_view_documents" type="object" string="Documents" icon="fa-file-text" class="btn-link" title="View Documents in Box" invisible="is_records_box == False" />
+                    <button name="action_view_documents" type="object" string="Documents" icon="fa-file-text" class="btn-link" title="View Documents in Box" attrs="{'invisible': [('is_records_box', '=', False)]}"/>
                 </list>
             </field>
         </record>
@@ -129,14 +117,12 @@ Retention Due:<field name="retention_date" />
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_view_stock_moves" type="object" string="View Movements" class="btn-primary" />
-                        <button name="action_view_documents" type="object" string="View Documents" class="btn-secondary" invisible="is_records_box == False" />
-                        <button name="action_mark_destruction_eligible" type="object" string="Mark for Destruction" class="btn-warning" invisible="destruction_eligible == True or is_records_box == False" />
+                        <button name="action_view_stock_moves" type="object" string="View Movements" class="btn-primary"/>
+                        <button name="action_view_documents" type="object" string="View Documents" class="btn-secondary" attrs="{'invisible': [('is_records_box', '=', False)]}"/>
+                        <button name="action_mark_destruction_eligible" type="object" string="Mark for Destruction" class="btn-warning" attrs="{'invisible': ['|', ('destruction_eligible', '=', True), ('is_records_box', '=', False)]}"/>
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box">
-
-</div>
+                        <div class="oe_button_box" name="button_box"></div>
                         <group>
                             <group string="Lot/Serial Information">
                                 <field name="name" placeholder="e.g., LOT-2024-001" />
@@ -150,7 +136,7 @@ Retention Due:<field name="retention_date" />
                                 <field name="create_date" />
                             </group>
                         </group>
-                        <group string="Records Management" invisible="is_records_box == False">
+                        <group string="Records Management" attrs="{'invisible': [('is_records_box', '=', False)]}">
                             <group>
                                 <field name="is_records_box" />
                                 <field name="document_count" readonly="1" />
@@ -162,17 +148,17 @@ Retention Due:<field name="retention_date" />
                                 <field name="last_audit_date" readonly="1" />
                             </group>
                         </group>
-                        <group string="Audit Notes" invisible="is_records_box == False">
+                        <group string="Audit Notes" attrs="{'invisible': [('is_records_box', '=', False)]}">
                             <field name="audit_notes" nolabel="1" placeholder="Internal audit notes and observations..." />
                         </group>
                         <notebook>
-                            <page string="Documents" name="documents" invisible="is_records_box == False">
+                            <page string="Documents" name="documents" attrs="{'invisible': [('is_records_box', '=', False)]}">
                                 <field name="document_ids" readonly="1">
                                     <list>
-                                        <field name="name" />
-                                        <field name="document_type_id" />
-                                        <field name="description" />
-                                        <field name="create_date" />
+                                        <field name="name"/>
+                                        <field name="document_type_id"/>
+                                        <field name="description"/>
+                                        <field name="create_date"/>
                                     </list>
                                 </field>
                             </page>
@@ -216,9 +202,9 @@ Retention Due:<field name="retention_date" />
                     <separator />
                     <filter string="With Reference" name="with_reference" domain="[('ref', '!=', False)]" />
                     <separator />
-                    <filter string="Created Today" name="created_today" domain="[('create_date', '&gt;=', context_today)]" />
-                    <filter string="Created This Week" name="created_this_week" domain="[('create_date', '&gt;=', (context_today - relativedelta(days=context_today.weekday())).strftime('%Y-%m-%d'))]" />
-                    <filter string="Created This Month" name="created_this_month" domain="[('create_date', '&gt;=', (context_today or today).replace(day=1))]" />
+                    <filter string="Created Today" name="created_today" domain="[('create_date', '&gt;=', context_today)]"/>
+                    <filter string="Created This Week" name="created_this_week" domain="[('create_date', '&gt;=', (context_today - relativedelta(days=7)))]"/>
+                    <filter string="Created This Month" name="created_this_month" domain="[('create_date', '&gt;=', (context_today - relativedelta(days=30)))]"/>
                     <group expand="0" string="Group By">
                         <filter string="Product" name="group_by_product" context="{'group_by': 'product_id'}" />
                         <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company" />
@@ -235,9 +221,7 @@ Retention Due:<field name="retention_date" />
             <field name="res_model">stock.lot</field>
             <field name="view_mode">kanban,list,form</field>
             <field name="search_view_id" ref="stock_lot_view_search" />
-            <field name="context">{
-            'search_default_in_stock': 1
-        }</field>
+            <field name="context">{'search_default_in_stock': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     <i class="fa fa-box" title="Serial/Lot" />
@@ -250,6 +234,22 @@ Retention Due:<field name="retention_date" />
 •<i class="fa fa-box" title="Serial/Lot" />
             Complete serial number and lot management<br />
             •<i class="fa fa-link" title="Integration" />
+            Integration with Records Management system<br />
+            •<i class="fa fa-bar-chart" title="Analytics" />
+            Real-time stock movement tracking<br />
+            •<i class="fa fa-clock-o" title="Time" />
+            Expiration date monitoring and alerts<br />
+            •<i class="fa fa-tag" title="Tags" />
+            Product and reference tracking<br />
+            •<i class="fa fa-clipboard" title="Audit" />
+            Complete audit trail and history<br />
+            •<i class="fa fa-building" title="Company" />
+            Multi-company support
+</p>
+            </field>
+        </record>
+    </data>
+</odoo>
             Integration with Records Management system<br />
             •<i class="fa fa-bar-chart" title="Analytics" />
             Real-time stock movement tracking<br />
