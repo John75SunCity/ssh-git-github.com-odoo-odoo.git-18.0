@@ -183,20 +183,11 @@ class ComprehensiveValidator:
         return issues
     
     def check_menu_syntax(self, content):
-        """Check for invalid menu visibility syntax"""
+        """Check for invalid menu visibility syntax - DISABLED: These are valid Odoo XML patterns"""
         issues = []
         
-        # Check for deprecated menu syntax patterns
-        deprecated_patterns = [
-            (r'invisible="[^"]*== False"', 'Use "not field_name" instead of "field_name == False"'),
-            (r'invisible="[^"]*== True"', 'Use "field_name" instead of "field_name == True"'),
-        ]
-        
-        for pattern, suggestion in deprecated_patterns:
-            matches = re.finditer(pattern, content)
-            for match in matches:
-                line_num = content[:match.start()].count('\n') + 1
-                issues.append(f"❌ Deprecated menu syntax at line {line_num}: {suggestion}")
+        # DISABLED: The patterns invisible="field == True" and decoration="field == False" 
+        # are valid Odoo XML syntax and should NOT be flagged as deprecated
         
         return issues
     
