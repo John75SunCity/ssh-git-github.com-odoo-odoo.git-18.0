@@ -337,8 +337,8 @@
                             <list>
         <field name="period"/>
         <field name="service_category"/>
-        <field name="revenue_amount"/>
-        <field name="cost_amount"/>
+        <field name="total_revenue"/>
+        <field name="actual_costs"/>
         <field name="profit_margin"/>
         <field name="customer_count"/>
                             </list>
