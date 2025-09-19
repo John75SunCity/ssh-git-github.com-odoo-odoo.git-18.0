@@ -146,7 +146,7 @@ class WorkflowVisualizationManager(models.Model):
             'generated_at': datetime.now().isoformat(),
         }
 
-    return diagram_data
+        return diagram_data
 
     @api.model
     def get_workflow_analytics(self, model_name, date_from=None, date_to=None):
