@@ -232,6 +232,8 @@
         "views/portal_request_views.xml",
         # Ensure feedback analytics action loads before menus referencing it
         "views/portal_feedback_analytic_views.xml",
+        # Ensure inventory item action is defined before menus referencing it
+        "views/inventory_item_views.xml",
 
     # Menus moved to end to ensure all referenced actions are defined beforehand
     "views/records_management_menus.xml",
