@@ -107,7 +107,7 @@
                     <field name="ref" string="Reference" optional="hide" />
                     <field name="company_id" string="Company" groups="base.group_multi_company" optional="hide" />
                     <button name="action_view_stock_moves" type="object" string="Movements" icon="fa-exchange" class="btn-link" title="View Stock Movements" />
-                    <button name="action_view_documents" type="object" string="Documents" icon="fa-file-text" class="btn-link" title="View Documents in Box" attrs="{'invisible': [('is_records_box', '=', False)]}"/>
+                    <button name="action_view_documents" type="object" string="Documents" icon="fa-file-text" class="btn-link" title="View Documents in Box" invisible="not is_records_box"/>
                 </list>
             </field>
         </record>
@@ -118,8 +118,8 @@
                 <form>
                     <header>
                         <button name="action_view_stock_moves" type="object" string="View Movements" class="btn-primary"/>
-                        <button name="action_view_documents" type="object" string="View Documents" class="btn-secondary" attrs="{'invisible': [('is_records_box', '=', False)]}"/>
-                        <button name="action_mark_destruction_eligible" type="object" string="Mark for Destruction" class="btn-warning" attrs="{'invisible': ['|', ('destruction_eligible', '=', True), ('is_records_box', '=', False)]}"/>
+                        <button name="action_view_documents" type="object" string="View Documents" class="btn-secondary" invisible="not is_records_box"/>
+                        <button name="action_mark_destruction_eligible" type="object" string="Mark for Destruction" class="btn-warning" invisible="destruction_eligible or not is_records_box"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box"></div>
@@ -136,7 +136,7 @@
                                 <field name="create_date" />
                             </group>
                         </group>
-                        <group string="Records Management" attrs="{'invisible': [('is_records_box', '=', False)]}">
+                        <group string="Records Management" invisible="not is_records_box">
                             <group>
                                 <field name="is_records_box" />
                                 <field name="document_count" readonly="1" />
@@ -148,11 +148,11 @@
                                 <field name="last_audit_date" readonly="1" />
                             </group>
                         </group>
-                        <group string="Audit Notes" attrs="{'invisible': [('is_records_box', '=', False)]}">
+                        <group string="Audit Notes" invisible="not is_records_box">
                             <field name="audit_notes" nolabel="1" placeholder="Internal audit notes and observations..." />
                         </group>
                         <notebook>
-                            <page string="Documents" name="documents" attrs="{'invisible': [('is_records_box', '=', False)]}">
+                            <page string="Documents" name="documents" invisible="not is_records_box">
                                 <field name="document_ids" readonly="1">
                                     <list>
                                         <field name="name"/>
