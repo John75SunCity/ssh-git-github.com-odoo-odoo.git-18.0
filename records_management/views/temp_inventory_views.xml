@@ -64,19 +64,13 @@
                             <group string="Dates">
                                 <field name="date_created" />
                                 <field name="date_activated" />
-                                <field name="retention_period" />
-                                <field name="expiry_date" />
                             </group>
                             <group string="Retention Management">
                                 <field name="retention_period" />
                                 <field name="expiry_date" />
                             </group>
                         </group>
-
-
-
                         <notebook>
-
                             <page string="Documents" invisible="document_count == 0">
                                 <field name="document_ids">
                                     <list>
@@ -95,8 +89,6 @@
                                     </list>
                                 </field>
                             </page>
-
-
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -201,7 +193,7 @@
             <field name="res_model">temp.inventory.audit</field>
             <field name="view_mode">list</field>
         </record>
-        <menuitem id="menu_temp_inventory_root" name="Temporary Inventory" parent="records_management.menu_records_management_root" sequence="25" invisible="temp_inventory_enabled == False" />
+        <menuitem id="menu_temp_inventory_root" name="Temporary Inventory" parent="records_management.menu_records_management_root" sequence="25" invisible="not temp_inventory_enabled" />
         <menuitem id="menu_temp_inventory" name="Inventories" parent="menu_temp_inventory_root" action="action_temp_inventory" sequence="10" />
         <menuitem id="menu_temp_inventory_movement" name="Movements" parent="menu_temp_inventory_root" action="action_temp_inventory_movement" sequence="20" />
         <menuitem id="menu_temp_inventory_audit" name="Audit Trail" parent="menu_temp_inventory_root" action="action_temp_inventory_audit" sequence="30" groups="records_management.group_records_manager" />
