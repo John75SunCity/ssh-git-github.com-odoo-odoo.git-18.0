@@ -171,7 +171,8 @@
     "editor.guides.bracketPairs": true,
     "editor.suggest.insertMode": "replace",
     "editor.acceptSuggestionOnCommitCharacter": false,
-    "editor.acceptSuggestionOnEnter": "off"
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.renderWhitespace": "all"
   },
   "xml.format.enabled": false,
   "xml.format.legacy": false,
@@ -276,6 +277,11 @@
   },
   "terminal.integrated.inheritEnv": true,
   "terminal.integrated.automationShell.osx": "/bin/zsh",
+  "terminal.integrated.commandsToSkipShell": [],
+  "terminal.integrated.allowChords": false,
+  "terminal.integrated.confirmOnExit": "never",
+  "terminal.integrated.confirmOnKill": "never",
+  "workbench.terminal.integrated.confirmOnExit": "never",
   "python.defaultInterpreterPath": "./venv312/bin/python",
   "python.pythonPath": "./venv312/bin/python",
   "extensions.ignoreRecommendations": false,
