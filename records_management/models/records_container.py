@@ -47,9 +47,10 @@ class RecordsContainer(models.Model):
     # Provide a stored related Char to the type name for grouping/read_group
     container_type = fields.Char(
         related="container_type_id.name",
-        string="Container Type",
+        string="Container Type Name",
         store=True,
         readonly=True,
+        help="Read-only name of the selected Container Type (for reporting/grouping)."
     )
     retention_policy_id = fields.Many2one("records.retention.policy", string="Retention Policy")
     temp_inventory_id = fields.Many2one("temp.inventory", string="Temporary Inventory")
