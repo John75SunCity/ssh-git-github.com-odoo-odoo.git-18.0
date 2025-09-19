@@ -37,3 +37,13 @@ class RecordsBillingConfig(models.Model):
     def action_view_invoices(self):
         self.ensure_one()
         return self._action_generic_open(_('Invoices'), [('id', '=', 0)], 'account.move')
+
+    def action_view_revenue(self):
+        """Open Revenue Analytics linked to this billing config.
+
+        Safe stub: opens list/form on `revenue.analytic` filtered by current config.
+        If no records exist yet, shows an empty list for clarity.
+        """
+        self.ensure_one()
+        domain = [('config_id', '=', self.id)] if self.id else [('id', '=', 0)]
+        return self._action_generic_open(_('Revenue Analytics'), domain, 'revenue.analytic')
