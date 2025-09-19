@@ -13,7 +13,6 @@
                     <field name="container_ids" widget="many2many_tags" optional="hide" />
                     <field name="from_custodian_id" optional="hide" />
                     <field name="to_custodian_id" />
-                    <field name="transfer_date" />
                     <field name="state" widget="badge" />
                     <button name="action_start" type="object" string="Start" class="btn-link" icon="fa-play" invisible="state != 'draft'" />
                     <button name="action_complete" type="object" string="Complete" class="btn-link" icon="fa-check" invisible="state != 'in_progress'" />
@@ -85,7 +84,6 @@
                     <field name="transfer_date" />
                     <field name="from_custodian_id" />
                     <field name="to_custodian_id" />
-                    <field name="transfer_date" />
                     <field name="state" />
                     <field name="document_ids" />
                     <field name="container_ids" />

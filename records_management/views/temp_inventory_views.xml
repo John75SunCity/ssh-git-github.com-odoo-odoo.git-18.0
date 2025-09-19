@@ -196,6 +196,5 @@
         <menuitem id="menu_temp_inventory" name="Inventories" parent="menu_temp_inventory_root" action="action_temp_inventory" sequence="10" />
         <menuitem id="menu_temp_inventory_movement" name="Movements" parent="menu_temp_inventory_root" action="action_temp_inventory_movement" sequence="20" />
         <menuitem id="menu_temp_inventory_audit" name="Audit Trail" parent="menu_temp_inventory_root" action="action_temp_inventory_audit" sequence="30" groups="records_management.group_records_manager" />
-    </odoo>
     </data>
 </odoo>

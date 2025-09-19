@@ -21,7 +21,6 @@
         <field name="total_services_count"/>
         <field name="current_period_services"/>
         <field name="base_rate_per_service" widget="monetary"/>
-        <field name="last_service_date" widget="datetime"/>
 </list>
     </field>
     </record>

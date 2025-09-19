@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="records_category_view_tree" model="ir.ui.view">
+    <data>
+        <record id="records_category_view_tree" model="ir.ui.view">
         <field name="name">records.category.view.tree</field>
         <field name="model">records.category</field>
         <field name="arch" type="xml">
@@ -69,4 +70,5 @@
         </field>
     </record>
     <menuitem id="menu_records_category_root" name="Categories" parent="records_management.menu_records_management_root" action="action_records_category" sequence="30" />
+    </data>
 </odoo>
