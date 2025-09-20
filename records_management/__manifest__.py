@@ -234,6 +234,8 @@
         "views/records_container_field_label_helper_views.xml",
         "views/records_billing_config_views.xml",
         "views/portal_request_views.xml",
+    # Ensure bin key action is defined before menus reference it
+    "views/bin_key_views.xml",
         # Ensure feedback analytics action loads before menus referencing it
         "views/portal_feedback_analytic_views.xml",
         # Ensure inventory item action is defined before menus referencing it
