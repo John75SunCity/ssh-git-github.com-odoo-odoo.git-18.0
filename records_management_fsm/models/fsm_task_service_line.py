@@ -15,7 +15,8 @@ class FsmTaskServiceLine(models.Model):
     sequence = fields.Integer(string="Sequence", default=10)
 
     task_id = fields.Many2one(
-        "fsm.task", string="FSM Task", required=True, ondelete="cascade"
+        "project.task", string="Task", required=True, ondelete="cascade",
+        help="Linked task; uses Project Task to ensure compatibility when industry_fsm is not installed."
     )
     partner_id = fields.Many2one(
         "res.partner", string="Customer", related="task_id.partner_id", store=True
