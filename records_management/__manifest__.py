@@ -241,6 +241,10 @@
 
     # Menus moved to end to ensure all referenced actions are defined beforehand
     "views/records_management_menus.xml",
+    # Additional menus split by domain (loaded after actions)
+    "views/service_item_menus.xml",
+    "views/document_retrieval_menus.xml",
+    "views/records_retrieval_work_order_menus.xml",
         "report/description_reports.xml",
         "report/destruction_certificate_reports.xml",
         "report/document_search_attempt_report.xml",
