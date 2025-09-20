@@ -96,12 +96,42 @@ class ShreddingService(models.Model):
     )
 
     # Service Provider Information
+    def _default_provider_id(self):
+        """Default to a sensible service provider.
+
+        Preference order:
+        1) Current company's partner if flagged as vendor (supplier_rank > 0)
+        2) Any vendor partner (first match)
+        3) base.main_partner if present and flagged as vendor
+
+        Returns:
+            int | False: res.partner ID or False if none found
+        """
+        company_partner = self.env.company.sudo().partner_id
+        if company_partner and company_partner.supplier_rank and company_partner.supplier_rank > 0:
+            return company_partner.id
+
+        vendor = self.env['res.partner'].sudo().search([('supplier_rank', '>', 0)], limit=1)
+        if vendor:
+            return vendor.id
+
+        main = self.env.ref('base.main_partner', raise_if_not_found=False)
+        if main and main.supplier_rank and main.supplier_rank > 0:
+            return main.id
+        return False
+
     provider_id = fields.Many2one(
         'res.partner',
         string='Service Provider',
         domain=[('supplier_rank', '>', 0)],
         tracking=True,
-        help="Partner providing this shredding service"
+        default=_default_provider_id,
+        help=(
+            "Partner providing this shredding service. By default, this field"
+            " auto-fills with your company's partner if it is marked as a vendor"
+            " (supplier_rank > 0); otherwise the first available vendor partner"
+            " is selected."
+        )
     )
 
     contact_person = fields.Char(
@@ -366,7 +396,7 @@ class ShreddingService(models.Model):
         destruction_items = destruction_orders.mapped('destruction_item_ids')
         
         return {
-            'name': _('Destruction Items - %s', self.name),
+            'name': _('Destruction Items - %s') % self.name,
             'view_mode': 'tree,form',
             'res_model': 'destruction.item',
             'domain': [('id', 'in', destruction_items.ids)],
