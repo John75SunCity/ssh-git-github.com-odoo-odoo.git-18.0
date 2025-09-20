@@ -10,7 +10,7 @@
             <field name="description">Medical Records - Patient Files A through G</field>
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">G</field>
@@ -25,7 +25,7 @@
             <field name="description">Medical Records - Patient Files H through N</field>
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="alpha_range_start">H</field>
             <field name="alpha_range_end">N</field>
@@ -40,7 +40,7 @@
             <field name="description">Medical Records - Patient Files O through Z</field>
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="alpha_range_start">O</field>
             <field name="alpha_range_end">Z</field>
@@ -56,7 +56,7 @@
             <field name="description">Financial Records Q2 2024 - Invoices and Receipts</field>
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">Z</field>
@@ -73,7 +73,7 @@
             <field name="description">Financial Records Q3 2024 - Invoices and Receipts</field>
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">Z</field>
@@ -140,7 +140,7 @@
             <field name="description">Insurance Claims and Policies 2024</field>
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_c"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">Z</field>
@@ -174,7 +174,7 @@
             <field name="description">Project Alpha Documentation - Phase 1</field>
             <field name="partner_id" ref="base.res_partner_3"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="content_date_from">2024-01-15</field>
             <field name="content_date_to">2024-06-30</field>
@@ -189,7 +189,7 @@
             <field name="description">Project Beta Documentation - Development Phase</field>
             <field name="partner_id" ref="base.res_partner_3"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="content_date_from">2024-03-01</field>
             <field name="content_date_to">2024-09-30</field>
@@ -252,7 +252,7 @@
             <field name="description">Healthcare Customer Files and Service Agreements</field>
             <field name="partner_id" ref="base.res_partner_4"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">M</field>
@@ -285,7 +285,7 @@
             <field name="description">Tax Documents and Supporting Materials 2023</field>
             <field name="partner_id" ref="base.res_partner_4"/>
             <field name="location_id" ref="demo_location_warehouse_c"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -330,7 +330,7 @@
             <field name="description">Search Test - Date Range Scenarios</field>
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="content_date_from">2024-02-14</field>
             <field name="content_date_to">2024-02-29</field>
@@ -344,7 +344,7 @@
             <field name="description">Search Test - Common Names and Variations</field>
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="state">stored</field>
             <field name="alpha_range_start">J</field>
             <field name="alpha_range_end">J</field>

@@ -217,7 +217,7 @@
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
             <field name="location_id" ref="location_main_warehouse_a"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
@@ -236,7 +236,7 @@
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
             <field name="location_id" ref="location_main_warehouse_a"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
@@ -255,7 +255,7 @@
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
             <field name="location_id" ref="location_main_warehouse_a"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
@@ -274,7 +274,7 @@
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
             <field name="location_id" ref="location_main_warehouse_a"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
@@ -293,7 +293,7 @@
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
             <field name="location_id" ref="location_main_warehouse_a"/>
-            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
