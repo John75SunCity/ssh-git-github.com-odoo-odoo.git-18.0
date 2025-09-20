@@ -13,6 +13,7 @@
 -->
 <odoo>
     <data>
+    
 <!-- List View -->
         <record id="container_access_activity_view_tree" model="ir.ui.view">
             <field name="name">container.access.activity.view.tree</field>
@@ -106,14 +107,15 @@
 
         <!-- Menu -->
         <!--
-    <data>
+    
         <menuitem
             id="menu_container_access_activity"
             name="Container Access Activity"
             action="action_container_access_activity"
             parent="REPLACE_WITH_PARENT_MENU_ID"
             sequence="10"/>
-    </data>
+    
         -->
+    
     </data>
 </odoo>

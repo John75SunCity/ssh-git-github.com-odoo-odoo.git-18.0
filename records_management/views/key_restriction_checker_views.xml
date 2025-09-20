@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
 <!-- Form view for Key Restriction Checker -->
     <record id="key_restriction_checker_wizard_view_form" model="ir.ui.view">
         <field name="name">key.restriction.checker.wizard.view.form</field>
@@ -81,13 +82,14 @@ Create Service Request
     </record>
 
 <!-- Menu Items -->
-<data>
+
     <menuitem id="menu_key_restriction_checker" name="Key Restriction Checker" parent="records_management.menu_records_tools" action="action_key_restriction_checker" sequence="50" groups="records_management.group_records_user"/>
-</data>
 
 
-<data>
+
+
     <menuitem id="menu_key_checker_shortcut" name="Key Checker" parent="records_management.menu_records_management_root" action="action_key_restriction_checker" sequence="15" groups="records_management.group_records_user"/>
-</data>
+
+    
     </data>
 </odoo>

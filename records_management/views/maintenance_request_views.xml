@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
         <!--
             MAINTENANCE REQUEST VIEWS - Records Management Integration
 
@@ -13,4 +14,6 @@
         <!-- Placeholder for future maintenance request integration -->
         <!-- These views will be implemented when maintenance module requirements are defined -->
 
-    </odoo>
+    
+    </data>
+</odoo>

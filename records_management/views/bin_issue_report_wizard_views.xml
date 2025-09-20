@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
 <!-- ============================================================================ -->
 <!-- BIN ISSUE REPORT WIZARD FORM VIEW -->
 <!-- ============================================================================ -->
@@ -442,23 +443,24 @@
 <!-- ============================================================================ -->
 
 <!-- Add bin issues to shredding services menu -->
-<data>
+
     <menuitem id="menu_bin_issues"
             name="Bin Issues"
             parent="menu_records_operations"
             action="bin_issue_record_action"
             sequence="42"
             groups="records_management.group_records_user"/>
-</data>
+
 
 <!-- Add billing submenu to billing section -->
-<data>
+
     <menuitem id="menu_bin_issue_billing"
             name="Bin Issue Billing"
             parent="records_management.menu_records_billing"
             action="bin_issue_billing_action"
             sequence="50"
             groups="records_management.group_records_manager"/>
-</data>
+
+    
     </data>
 </odoo>

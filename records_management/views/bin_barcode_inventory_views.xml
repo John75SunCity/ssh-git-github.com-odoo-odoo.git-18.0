@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
         <record id="bin_barcode_inventory_view_form" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.view.form</field>
             <field name="model">bin.barcode.inventory</field>
@@ -279,11 +280,12 @@ lbs
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
-    <data>
+    
         <menuitem id="menu_bin_barcode_inventory_root" name="Bin Inventory" parent="menu_records_operations" sequence="30" groups="records_management.group_records_user" />
         <menuitem id="menu_bin_barcode_inventory" name="Bin Barcode Inventory" parent="menu_bin_barcode_inventory_root" action="action_bin_barcode_inventory" sequence="10" />
         <menuitem id="menu_bin_sequence_reset" name="Reset Bin Sequences" parent="menu_bin_barcode_inventory_root" action="action_shredding_bin_sequence_reset_wizard" groups="records_management.group_records_manager" sequence="20" />
         <menuitem id="menu_bin_route_dashboard" name="Route Dashboard" parent="menu_bin_barcode_inventory_root" action="action_bin_route_dashboard" sequence="40" />
-    </data>
+    
+    
     </data>
 </odoo>

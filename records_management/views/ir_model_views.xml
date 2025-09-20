@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
 <!-- List View -->
     <record id="ir_model_view_tree" model="ir.ui.view">
         <field name="name">ir.model.view.tree</field>
@@ -57,14 +58,15 @@
 
     <!-- Menu -->
     <!--
-<data>
+
     <menuitem
         id="menu_ir_model"
         name="Model"
         action="action_ir_model"
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
-</data>
+
     -->
+    
     </data>
 </odoo>

@@ -14,6 +14,7 @@
 -->
 <odoo>
     <data>
+    
 <!-- Full Customization Name List View -->
     <record id="full_customization_name_view_tree" model="ir.ui.view">
         <field name="name">full.customization.name.tree</field>
@@ -105,12 +106,13 @@
     </record>
 
     <!-- Menu Item -->
-<data>
+
     <menuitem id="full_customization_name_menu"
                 name="Customization Configurations"
                 parent="records_management.menu_records_configuration"
                 action="full_customization_name_action"
                 sequence="50"/>
-</data>
+
+    
     </data>
 </odoo>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
 <record id="container_access_document_view_tree" model="ir.ui.view">
         <field name="name">container.access.document.view.tree</field>
         <field name="model">container.access.document</field>
@@ -133,8 +134,9 @@
     </record>
 
     
-<data>
+
     <menuitem id="menu_container_access_document" name="Access Documents" parent="records_management.menu_container_access" action="container_access_document_action" sequence="15" />
-</data>
+
+    
     </data>
 </odoo>

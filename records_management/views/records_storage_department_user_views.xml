@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
         <record id="records_storage_department_user_view_tree" model="ir.ui.view">
             <field name="name">records.storage.department.user.view.tree</field>
             <field name="model">records.storage.department.user</field>
@@ -142,8 +143,9 @@ Department user assignments allow you to manage which users have access to speci
         </p>
             </field>
         </record>
-    <data>
+    
         <menuitem id="menu_records_storage_department_user" name="Department Users" parent="records_management.menu_records_configuration" action="action_records_storage_department_user" sequence="30" groups="records_management.group_records_manager" />
-    </data>
+    
+    
     </data>
 </odoo>

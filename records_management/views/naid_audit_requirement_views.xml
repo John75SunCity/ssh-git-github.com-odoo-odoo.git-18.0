@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
 <!-- NAID Audit Requirements Views -->
 
 <!-- List View -->
@@ -246,11 +247,12 @@
 
     <!-- Menu -->
 <!-- Updated parent from missing records_management.menu_records_root to existing menu_records_management_root -->
-<data>
+
     <menuitem id="naid_audit_menu" name="NAID Audits" parent="menu_records_management_root" sequence="30"/>
 
     <menuitem id="naid_audit_requirement_menu" name="Audit Requirements" parent="naid_audit_menu" action="naid_audit_requirement_action" sequence="10"/>
     <menuitem id="naid_create_checklist_menu" name="Create Default Checklist" parent="naid_audit_menu" action="action_create_default_naid_checklist" sequence="5"/>
-</data>
+
+    
     </data>
 </odoo>

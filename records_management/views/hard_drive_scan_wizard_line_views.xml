@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
 <!-- List View -->
     <record id="hard_drive_scan_wizard_line_view_tree" model="ir.ui.view">
         <field name="name">hard.drive.scan.wizard.line.view.tree</field>
@@ -50,14 +51,15 @@
 
     <!-- Menu -->
     <!--
-<data>
+
     <menuitem
         id="menu_hard_drive_scan_wizard_line"
         name="Hard Drive Scan Wizard Line"
         action="action_hard_drive_scan_wizard_line"
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
-</data>
+
     -->
+    
     </data>
 </odoo>

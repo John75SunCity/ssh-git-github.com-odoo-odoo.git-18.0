@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
         <record id="destruction_certificate_view_tree" model="ir.ui.view">
             <field name="name">destruction.certificate.view.tree</field>
             <field name="model">destruction.certificate</field>
@@ -228,8 +229,9 @@
                 </p>
             </field>
         </record>
-    <data>
+    
         <menuitem id="menu_destruction_certificates" name="Destruction Certificates" parent="records_management.menu_records_compliance" action="action_destruction_certificate" sequence="25" />
-    </data>
+    
+    
     </data>
 </odoo>

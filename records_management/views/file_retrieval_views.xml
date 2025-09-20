@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
 <!-- List View -->
     <record id="file_retrieval_view_tree" model="ir.ui.view">
         <field name="name">container.retrieval.view.tree</field>
@@ -126,14 +127,15 @@ invisible="status != 'pending'"
 
     <!-- Menu -->
     <!--
-<data>
+
     <menuitem
         id="menu_file_retrieval"
         name="File Retrieval"
         action="action_file_retrieval"
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
-</data>
+
     -->
+    
     </data>
 </odoo>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
 <record id="container_access_report_view_tree" model="ir.ui.view">
         <field name="name">container.access.report.tree</field>
         <field name="model">container.access.report</field>
@@ -84,8 +85,9 @@
     </record>
 
     
-<data>
+
     <menuitem id="menu_container_access_report" name="Access Reports" parent="records_management.menu_container_access" action="container_access_report_action" sequence="20" />
-</data>
+
+    
     </data>
 </odoo>

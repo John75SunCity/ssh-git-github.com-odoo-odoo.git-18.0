@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
         <record id="records_billing_view_tree" model="ir.ui.view">
             <field name="name">records.billing.view.tree</field>
             <field name="model">records.billing</field>
@@ -109,8 +110,9 @@
             <field name="context">{'search_default_filter_draft': 1}</field>
             <field name="help">Manage billing records for the Records Management system</field>
         </record>
-    <data>
+    
         <menuitem id="records_billing_menu" name="Billing Records" parent="records_management.menu_records_billing" action="records_billing_action" sequence="10" />
-    </data>
+    
+    
     </data>
 </odoo>

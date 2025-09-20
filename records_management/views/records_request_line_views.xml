@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
         <record id="records_request_line_view_tree" model="ir.ui.view">
             <field name="name">records.request.line.view.tree</field>
             <field name="model">records.request.line</field>
@@ -83,8 +84,9 @@
                 </p>
             </field>
         </record>
-    <data>
+    
         <menuitem id="menu_records_request_line" name="Request Lines" parent="records_management.menu_records_management_root" action="records_request_line_action" sequence="25" />
-    </data>
+    
+    
     </data>
 </odoo>

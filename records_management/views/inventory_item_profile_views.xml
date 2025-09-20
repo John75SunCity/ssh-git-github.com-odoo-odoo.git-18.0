@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
 <!-- List View -->
     <record id="inventory_item_profile_view_tree" model="ir.ui.view">
         <field name="name">inventory.item.profile.view.tree</field>
@@ -60,14 +61,15 @@
 
     <!-- Menu -->
     <!--
-<data>
+
     <menuitem
         id="menu_inventory_item_profile"
         name="Inventory Item Profile"
         action="action_inventory_item_profile"
         parent="REPLACE_WITH_PARENT_MENU_ID"
         sequence="10"/>
-</data>
+
     -->
+    
     </data>
 </odoo>

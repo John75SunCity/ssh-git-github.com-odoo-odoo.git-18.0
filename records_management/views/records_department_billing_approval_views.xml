@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
 <!--                    <filter name="low_value" string="Low Value (&lt;$100)" domain="[('charge_amount','&lt;',100)]"/> List View -->
         <record id="records_department_billing_approval_view_tree" model="ir.ui.view">
 <field name="name">records.department.billing.approval.view.tree</field>
@@ -165,12 +166,13 @@
         </record>
 
         <!-- Menu Item -->
-    <data>
+    
         <menuitem id="menu_records_department_billing_approval"
                 name="Billing Approvals"
                 parent="records_management.menu_records_billing"
                 action="records_department_billing_approval_action"
                 sequence="20"/>
-    </data>
+    
+    
     </data>
 </odoo>

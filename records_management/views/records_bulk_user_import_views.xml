@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
         <record id="records_bulk_user_import_view_tree" model="ir.ui.view">
             <field name="name">records.bulk.user.import.view.tree</field>
             <field name="model">records.bulk.user.import</field>
@@ -59,8 +60,9 @@
             <field name="view_mode">list,form</field>
             <field name="view_id" ref="records_bulk_user_import_view_tree" />
         </record>
-    <data>
+    
         <menuitem id="records_bulk_user_import_menu" name="Bulk User Import" parent="menu_records_management_root" action="records_bulk_user_import_action" groups="records_management.group_records_manager" sequence="50" />
-    </data>
+    
+    
     </data>
 </odoo>

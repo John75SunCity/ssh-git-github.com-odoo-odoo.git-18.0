@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
         <record id="records_retention_policy_view_tree" model="ir.ui.view">
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
@@ -352,8 +353,9 @@
                 </pivot>
             </field>
         </record>
-    <data>
+    
         <menuitem id="menu_records_retention_policy" name="Retention Policies" parent="menu_records_configuration" action="records_retention_policy_action" sequence="10" />
-    </data>
+    
+    
     </data>
 </odoo>

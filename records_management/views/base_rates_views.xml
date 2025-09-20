@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
 <!-- Base Rates Form View -->
     <record id="base_rates_view_form" model="ir.ui.view">
         <field name="name">base.rates.view.form</field>
@@ -100,12 +101,13 @@
     </record>
 
     <!-- Menu Item -->
-<data>
+
     <menuitem id="base_rates_menu"
             name="Base Rates"
             parent="records_management.menu_records_configuration"
             action="base_rates_action"
             sequence="30"/>
-</data>
+
+    
     </data>
 </odoo>

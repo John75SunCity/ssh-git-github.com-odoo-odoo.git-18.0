@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    
         <record id="bin_key_unlock_service_view_tree" model="ir.ui.view">
             <field name="name">bin.key.unlock.service.view.tree</field>
             <field name="model">bin.key.unlock.service</field>
@@ -250,8 +251,9 @@
         </p>
             </field>
         </record>
-    <data>
+    
         <menuitem id="menu_bin_key_unlock_service" name="Unlock Services" parent="records_management.menu_records_security" action="action_bin_key_unlock_service" sequence="30" />
-    </data>
+    
+    
     </data>
 </odoo>

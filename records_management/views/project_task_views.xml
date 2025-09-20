@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
         <!--
             PROJECT TASK VIEWS - Records Management Integration
 
@@ -13,4 +14,6 @@
         <!-- Placeholder for future project task integration -->
         <!-- These views will be implemented when project module requirements are defined -->
 
-    </odoo>
+    
+    </data>
+</odoo>
