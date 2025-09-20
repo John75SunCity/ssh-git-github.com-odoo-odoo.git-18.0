@@ -128,7 +128,7 @@
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_profile_views.xml",
         "views/approval_history_views.xml",
-        "views/base_rates_views.xml",
+    "views/base_rate_views.xml",
         "views/billing_period_views.xml",
         "views/bin_barcode_inventory_views.xml",
         "views/chain_of_custody_views.xml",
