@@ -83,7 +83,7 @@ Sincerely,
             raise ValidationError(_('Only managers can approve rate changes'))
 
         self.write({
-            'approved_by': self.env.user.id,
+            'approved_by_id': self.env.user.id,
             'approval_date': fields.Date.today()
         })
 
@@ -102,7 +102,7 @@ Sincerely,
 
         self.ensure_one()
 
-        if self.requires_approval and not self.approved_by:
+    if self.requires_approval and not self.approved_by_id:
             raise ValidationError(_('Rate changes must be approved before implementation'))
 
         # Implement based on the forecast scenario
@@ -221,13 +221,13 @@ Sincerely,
 
     def _log_rate_change_implementation(self):
         """Log the rate change implementation"""
-        log_message = f"""
+    log_message = f"""
 Rate Change Implementation:
 - Forecast: {self.forecast_id.name}
 - Revenue Impact: ${self.revenue_impact:,.2f}
 - Customers Affected: {self.customer_count}
 - Effective Date: {self.effective_date}
-- Approved By: {self.approved_by.name if self.approved_by else 'N/A'}
+- Approved By: {self.approved_by_id.name if self.approved_by_id else 'N/A'}
 - Implementation Method: {self.implementation_method}
         """.strip()
 

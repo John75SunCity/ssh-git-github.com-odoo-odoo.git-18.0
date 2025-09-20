@@ -322,8 +322,8 @@
             <field name="arch" type="xml">
                 <form string="Rate Change Implementation">
                     <header>
-                        <button name="action_approve_changes" string="Approve Changes" type="object" class="oe_highlight" invisible="approved_by != False" groups="records_management.group_records_manager" />
-                        <button name="action_implement_changes" string="Implement Changes" type="object" class="oe_highlight" invisible="(approved_by == False) or (requires_approval == True)" confirm="This will implement the rate changes. This action cannot be undone. Are you sure?" />
+                        <button name="action_approve_changes" string="Approve Changes" type="object" class="oe_highlight" invisible="approved_by_id != False" groups="records_management.group_records_manager" />
+                        <button name="action_implement_changes" string="Implement Changes" type="object" class="oe_highlight" invisible="(approved_by_id == False) or (requires_approval == True)" confirm="This will implement the rate changes. This action cannot be undone. Are you sure?" />
                         <button name="action_cancel_implementation" string="Cancel" type="object" class="btn-secondary" />
                     </header>
                     <sheet>
@@ -354,7 +354,7 @@
                         <group string="Approval" invisible="requires_approval == False">
                             <group>
                                 <field name="requires_approval" />
-                                <field name="approved_by" readonly="1" />
+                                <field name="approved_by_id" readonly="1" />
                                 <field name="approval_date" readonly="1" />
                             </group>
                         </group>
@@ -368,7 +368,7 @@
                                     <field name="rollback_plan" placeholder="Describe the rollback plan if issues arise..." />
                                 </group>
                             </page>
-                            <page string="Approval Notes" invisible="approved_by == False">
+                            <page string="Approval Notes" invisible="approved_by_id == False">
                                 <field name="approval_notes" placeholder="Management approval notes and conditions..." />
                             </page>
                         </notebook>
