@@ -94,11 +94,11 @@
                                         <div class="o_kanban_record_bottom">
                                             <div class="oe_kanban_bottom_left">
                                                 <div>
-                                                    <i class="fa fa-user" aria-hidden="true" />
+                                                    <i class="fa fa-user" role="img" aria-label="Assigned user" title="Assigned user" />
                                                     <field name="user_id" />
                                                 </div>
                                                 <div>
-                                                    <i class="fa fa-truck" aria-hidden="true" />
+                                                    <i class="fa fa-truck" role="img" aria-label="Delivery method" title="Delivery method" />
                                                     <field name="delivery_method" />
                                                 </div>
                                             </div>

@@ -3,13 +3,13 @@
     <data>
 <!-- Report Action for Description Model -->
     <record id="description_report_action" model="ir.actions.report">
-        <field name="name">Description</field>
-        <field name="model">description</field>
+        <field name="name">Model Description</field>
+        <field name="model">ir.model</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_description_view</field>
         <field name="report_file">records_management.report_description</field>
-        <field name="print_report_name">'%s' % object.name</field>
-        <field name="binding_model_id" ref="model_description"/>
+        <field name="print_report_name">'Model: %s' % object.name</field>
+        <field name="binding_model_id" ref="base.model_ir_model"/>
         <field name="binding_type">report</field>
     </record>
 
@@ -19,18 +19,18 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Description Overview</h2>
+                        <h2>Model Description Overview</h2>
                         <table class="table table-sm o_main_table">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
+                                    <th>Field</th>
+                                    <th>Help</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="doc.field_ids" t-as="field">
+                                <tr t-foreach="doc.field_id" t-as="field">
                                     <td><span t-esc="field.name"/></td>
-                                    <td><span t-esc="field.description"/></td>
+                                    <td><span t-esc="field.help or ''"/></td>
                                 </tr>
                             </tbody>
                         </table>
