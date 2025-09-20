@@ -244,6 +244,7 @@
         "report/naid_certificate_reports.xml",
         "report/report_records_management_report_customer_inventory_report.xml",
         "templates/portal_certifications.xml",
+    "templates/portal_certificate_templates.xml",
         "templates/portal_inventory_template.xml",
         "templates/portal_mobile_export.xml",
         "templates/portal_mobile_inventory_template.xml",

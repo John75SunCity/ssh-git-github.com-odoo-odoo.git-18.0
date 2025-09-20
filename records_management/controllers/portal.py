@@ -756,6 +756,86 @@ class RecordsManagementController(http.Controller):
     # NAID CERTIFICATION ROUTES
     # ============================================================================
 
+    @http.route(
+        "/my/certificates/<int:cert_id>", type="http", auth="user", website=True
+    )
+    def portal_certificate_detail(self, cert_id, **kwargs):
+        """
+        Portal detail page for a NAID Certificate of Destruction.
+        Ensures the logged-in user's partner owns the certificate.
+        """
+        Certificate = request.env["naid.certificate"].sudo()
+        cert = Certificate.browse(cert_id)
+
+        # Validate existence and ownership (partner-based)
+        if not cert or not cert.exists():
+            return request.redirect("/my")
+
+        user_partner = request.env.user.partner_id
+        if cert.partner_id.id != user_partner.id:
+            # Prevent access if certificate is not owned by this portal user
+            return request.redirect("/my")
+
+        # Minimal context for portal detail
+        context = {
+            "certificate": cert,
+            "page_name": "certificate_detail",
+        }
+        return request.render(
+            "records_management.portal_certificate_detail", context
+        )
+
+    @http.route(
+        "/my/certificates/<int:cert_id>/download",
+        type="http",
+        auth="user",
+        website=True,
+        methods=["GET"],
+    )
+    def portal_certificate_download(self, cert_id, **get):
+        """
+        Secure download for a NAID Certificate PDF for portal users.
+        Verifies ownership and returns the generated PDF via QWeb report.
+        """
+        Certificate = request.env["naid.certificate"].sudo()
+        cert = Certificate.browse(cert_id)
+
+        # Validate existence
+        if not cert or not cert.exists():
+            return request.redirect("/my")
+
+        # Ownership check
+        user_partner = request.env.user.partner_id
+        if cert.partner_id.id != user_partner.id:
+            return request.redirect("/my")
+
+        # Optionally require issued/sent state for downloads
+        if cert.state not in ("issued", "sent"):
+            # Fallback: try to generate on the fly if data missing but allowed
+            try:
+                if not cert.certificate_data:
+                    cert.action_issue_certificate()
+            except Exception:
+                return request.redirect("/my")
+
+        # Use the report to render PDF content
+        report = request.env.ref(
+            "records_management.action_report_naid_certificate", raise_if_not_found=False
+        )
+        if not report:
+            return request.redirect("/my")
+
+        pdf_tuple = report._render_qweb_pdf([cert.id])
+        pdf_content = pdf_tuple[0] if isinstance(pdf_tuple, tuple) else pdf_tuple
+        pdf_bytes = pdf_content if isinstance(pdf_content, (bytes, bytearray)) else bytes(pdf_content or b"")
+
+        filename = (cert.certificate_filename or ("CoD-%s.pdf" % (cert.certificate_number or cert.id))).replace(" ", "_")
+        headers = [
+            ("Content-Type", "application/pdf"),
+            ("Content-Disposition", f"attachment; filename={filename}"),
+        ]
+        return request.make_response(pdf_bytes, headers=headers)
+
     @http.route("/my/certifications", type="http", auth="user", website=True)
     def portal_certifications(self):
         """
