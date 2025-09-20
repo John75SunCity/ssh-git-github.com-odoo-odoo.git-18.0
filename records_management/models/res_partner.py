@@ -587,7 +587,7 @@ class ResPartner(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': _('Key Restriction'),
-            'res_model': 'key.restriction.checker.wizard',
+            'res_model': 'key.restriction.management.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
@@ -601,7 +601,7 @@ class ResPartner(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': _('Allow Key Issuance'),
-            'res_model': 'key.restriction.checker.wizard',
+            'res_model': 'key.restriction.management.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
