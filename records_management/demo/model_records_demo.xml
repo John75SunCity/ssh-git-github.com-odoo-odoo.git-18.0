@@ -126,6 +126,20 @@
             <field name="state">active</field>
         </record>
 
+        <!-- Additional Demo Document Types -->
+        <record id="demo_document_type_medical_records" model="records.document.type">
+            <field name="name">Medical Records</field>
+            <field name="code">MED-DATA</field>
+            <field name="description">Medical and healthcare documentation</field>
+            <field name="state">active</field>
+        </record>
+        <record id="demo_document_type_payroll" model="records.document.type">
+            <field name="name">Payroll</field>
+            <field name="code">PAY-DATA</field>
+            <field name="description">Payroll and compensation records</field>
+            <field name="state">active</field>
+        </record>
+
         <!-- Demo Retention Policies -->
         <record id="demo_retention_policy_standard" model="records.retention.policy">
             <field name="name">Standard Business Records</field>
@@ -141,6 +155,24 @@
             <field name="code">HR-10Y</field>
             <field name="retention_years">10</field>
             <field name="description">Extended retention for HR and employment records</field>
+            <field name="active">True</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- Additional Demo Retention Policies -->
+        <record id="demo_retention_policy_legal_15y" model="records.retention.policy">
+            <field name="name">Legal Contracts (15 Years)</field>
+            <field name="code">LEGAL-15Y</field>
+            <field name="retention_years">15</field>
+            <field name="description">Extended 15-year retention for legal contracts</field>
+            <field name="active">True</field>
+            <field name="state">active</field>
+        </record>
+        <record id="demo_retention_policy_finance_12y" model="records.retention.policy">
+            <field name="name">Finance Records (12 Years)</field>
+            <field name="code">FIN-12Y</field>
+            <field name="retention_years">12</field>
+            <field name="description">12-year retention for finance and audit records</field>
             <field name="active">True</field>
             <field name="state">active</field>
         </record>
@@ -215,6 +247,68 @@
             <field name="active">True</field>
         </record>
 
+        <!-- Additional Demo Customers -->
+        <record id="demo_customer_xyz_industries" model="res.partner">
+            <field name="name">XYZ Industries</field>
+            <field name="is_company">True</field>
+            <field name="email">contact@xyzindustries.com</field>
+            <field name="phone">555-987-6543</field>
+            <field name="street">987 Commerce Blvd</field>
+            <field name="city">Industrial Park</field>
+            <field name="zip">98765</field>
+            <field name="supplier_rank">0</field>
+            <field name="customer_rank">1</field>
+        </record>
+        <record id="demo_contact_jane_doe_abc" model="res.partner">
+            <field name="name">Jane Doe</field>
+            <field name="email">jane.doe@abccorp.com</field>
+            <field name="phone">555-555-0101</field>
+            <field name="parent_id" ref="demo_customer_abc_corp"/>
+            <field name="supplier_rank">0</field>
+            <field name="customer_rank">0</field>
+        </record>
+
+        <!-- Additional Demo Storage Locations -->
+        <record id="demo_location_warehouse_d" model="records.location">
+            <field name="name">Warehouse D - Overflow Storage</field>
+            <field name="code">WHD-OVR</field>
+            <field name="description">Overflow storage for seasonal spikes</field>
+            <field name="location_type">warehouse</field>
+            <field name="building">Building D</field>
+            <field name="zone">Zone 4</field>
+            <field name="active">True</field>
+            <field name="temperature_controlled">False</field>
+            <field name="humidity_controlled">False</field>
+            <field name="security_level">level_2</field>
+            <field name="storage_capacity">12000</field>
+        </record>
+        <record id="demo_location_warehouse_archive_2" model="records.location">
+            <field name="name">Archive Warehouse 2</field>
+            <field name="code">ARCHIVE-WH-2</field>
+            <field name="description">Secondary long-term archive storage</field>
+            <field name="location_type">archive</field>
+            <field name="building">Archive Annex</field>
+            <field name="zone">Archive Zone B</field>
+            <field name="active">True</field>
+            <field name="temperature_controlled">True</field>
+            <field name="humidity_controlled">True</field>
+            <field name="security_level">level_3</field>
+            <field name="storage_capacity">35000</field>
+        </record>
+        <record id="demo_location_vault_2" model="records.location">
+            <field name="name">Secure Vault 2</field>
+            <field name="code">SECURE-VAULT-2</field>
+            <field name="description">Secondary high-security vault</field>
+            <field name="location_type">vault</field>
+            <field name="building">Main Building</field>
+            <field name="zone">Vault Zone 2</field>
+            <field name="active">True</field>
+            <field name="temperature_controlled">True</field>
+            <field name="humidity_controlled">True</field>
+            <field name="security_level">level_4</field>
+            <field name="storage_capacity">3000</field>
+        </record>
+
         <!-- Demo Records Boxes (requires customer - will be created by demo customer data) -->
         <!-- These will be created by the demo.xml file after customers are available -->
 
@@ -228,6 +322,16 @@
             <field name="description">Standard on-site document destruction service with NAID AAA compliance</field>
         </record>
 
+        <!-- Additional Demo Shredding Services -->
+        <record id="demo_shredding_service_offsite" model="shredding.service">
+            <field name="name">Offsite Document Shredding</field>
+            <field name="provider_id" ref="base.main_partner"/>
+            <field name="service_type">offsite</field>
+            <field name="service_date">2025-09-01</field>
+            <field name="state">draft</field>
+            <field name="description">Off-site document destruction with secure chain-of-custody</field>
+        </record>
+
         <!-- Demo Paper Bale Recycling -->
         <record id="demo_paper_bale_001" model="paper.bale.recycling">
             <field name="name">Bale-001-Demo</field>
@@ -236,11 +340,26 @@
             <field name="collection_date" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')"/>
         </record>
 
+        <!-- Additional Demo Paper Bales -->
+        <record id="demo_paper_bale_002" model="paper.bale.recycling">
+            <field name="name">Bale-002-Demo</field>
+            <field name="bale_weight">750.0</field>
+            <field name="state">draft</field>
+            <field name="collection_date" eval="(datetime.now() + timedelta(days=45)).strftime('%Y-%m-%d')"/>
+        </record>
+
         <!-- Demo Chain of Custody Log Template -->
         <record id="demo_custody_log_template" model="chain.of.custody">
             <field name="name">Template Custody Transfer</field>
             <field name="custody_event">transfer</field>
             <field name="notes">Template for custody transfer procedures</field>
+        </record>
+
+        <!-- Additional Demo Chain of Custody Logs -->
+        <record id="demo_custody_log_transfer_002" model="chain.of.custody">
+            <field name="name">Transfer to Secure Vault 2</field>
+            <field name="custody_event">transfer</field>
+            <field name="notes">Transferred sealed containers to Secure Vault 2</field>
         </record>
 
         <!-- Demo Portal Request Templates -->
@@ -262,6 +381,24 @@
             <field name="priority">1</field>
         </record>
 
+        <!-- Additional Demo Portal Requests -->
+        <record id="demo_portal_request_destruction_2" model="portal.request">
+            <field name="name">Destruction Request - XYZ</field>
+            <field name="partner_id" ref="demo_customer_xyz_industries"/>
+            <field name="request_type">destruction</field>
+            <field name="state">draft</field>
+            <field name="description">Bulk destruction request for end-of-life documents</field>
+            <field name="priority">2</field>
+        </record>
+        <record id="demo_portal_request_retrieval_2" model="portal.request">
+            <field name="name">Retrieval Request - ABC</field>
+            <field name="partner_id" ref="demo_customer_abc_corp"/>
+            <field name="request_type">retrieval</field>
+            <field name="state">draft</field>
+            <field name="description">Request retrieval of archived payroll records</field>
+            <field name="priority">2</field>
+        </record>
+
         <!-- Demo System Configuration -->
         <record id="demo_system_config" model="ir.config_parameter">
             <field name="key">records_management.demo_mode</field>
@@ -276,6 +413,14 @@
         <record id="demo_naid_compliance" model="ir.config_parameter">
             <field name="key">records_management.naid_compliance_required</field>
             <field name="value">True</field>
+        </record>
+        <record id="demo_portal_feature_flag" model="ir.config_parameter">
+            <field name="key">records_management.portal.enabled</field>
+            <field name="value">True</field>
+        </record>
+        <record id="demo_default_security_level" model="ir.config_parameter">
+            <field name="key">records_management.default_security_level</field>
+            <field name="value">level_3</field>
         </record>
 
     </data>
