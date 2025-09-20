@@ -25,7 +25,7 @@
                                             </strong>
                                         </div>
                                         <div class="o_secondary">
-                                            <i class="fa fa-certificate" aria-hidden="true" /> NAID <field name="naid_level" />
+                                            <i class="fa fa-certificate" aria-hidden="true" title="Certificate" /> NAID <field name="naid_level" />
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
@@ -94,7 +94,7 @@
             <field name="name">naid.compliance.view.tree</field>
             <field name="model">naid.compliance</field>
             <field name="arch" type="xml">
-                <list decoration-success="compliance_status == 'certified' and certificate_valid == True" decoration-warning="compliance_status == 'pending_audit'" decoration-danger="certificate_valid == False or expiry_date &amp;lt; context_today" decoration-info="naid_level == 'AAA'">
+                <list decoration-success="compliance_status == 'certified' and certificate_valid == True" decoration-warning="compliance_status == 'pending_audit'" decoration-danger="certificate_valid == False or expiry_date &lt; context_today" decoration-info="naid_level == 'AAA'">
                     <field name="name" string="Compliance Record" />
                     <field name="facility_name" string="Facility" />
                     <field name="naid_level" string="NAID Level" widget="badge" />
@@ -135,7 +135,7 @@
                             <button class="oe_stat_button" icon="fa-shield" invisible="naid_level != 'AAA'">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
-                                        <i class="fa fa-trophy" />
+                                        <i class="fa fa-trophy" title="NAID Trophy" />
                                     </span>
                                     <span class="o_stat_text">NAID AAA</span>
                                 </div>
@@ -340,7 +340,7 @@
                     <filter string="Audit Required" name="audit_required" domain="[('audit_required', '=', True)]" />
                     <filter string="Auto Renewal" name="auto_renewal" domain="[('auto_renewal', '=', True)]" />
                     <separator />
-                    <filter string="Expiring Soon (30 days)" name="expiring_soon" domain="[('expiry_date', '&amp;lt;=', (context_today + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiry_date', '&gt;=', context_today.strftime('%Y-%m-%d'))]" />
+                    <filter string="Expiring Soon (30 days)" name="expiring_soon" domain="[('expiry_date', '&lt;=', (context_today + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiry_date', '&gt;=', context_today.strftime('%Y-%m-%d'))]" />
                     <filter string="Overdue Audit" name="overdue_audit" domain="[('next_audit_date', '&amp;lt;', context_today.strftime('%Y-%m-%d'))]" />
                     <group expand="0" string="Group By">
                         <filter string="NAID Level" name="group_by_naid_level" context="{'group_by': 'naid_level'}" />
