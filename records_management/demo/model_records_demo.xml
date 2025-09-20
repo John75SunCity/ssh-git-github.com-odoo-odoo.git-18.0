@@ -221,7 +221,7 @@
         <!-- Demo Shredding Service Templates -->
         <record id="demo_shredding_service_template" model="shredding.service">
             <field name="name">Standard Document Shredding</field>
-            <field name="partner_id" ref="demo_customer_abc_corp"/>
+            <field name="provider_id" ref="base.main_partner"/>
             <field name="service_type">onsite</field>
             <field name="service_date">2025-08-13</field>
             <field name="state">draft</field>
