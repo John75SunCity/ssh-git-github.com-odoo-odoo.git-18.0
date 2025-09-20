@@ -6,11 +6,12 @@
             <field name="model">records.retrieval.work.order</field>
             <field name="arch" type="xml">
                 <list>
-                    <field name="name" />
-                    <field name="equipment_id" />
-                    <field name="state" />
-                    <field name="requested_by" />
-                    <field name="date_requested" />
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="state"/>
+                    <field name="delivery_method"/>
+                    <field name="completion_date"/>
                 </list>
             </field>
         </record>
@@ -21,40 +22,39 @@
                 <form>
                     <sheet>
                         <group>
-                            <field name="name" />
-                            <field name="equipment_id" />
-                            <field name="state" />
-                            <field name="requested_by" />
-                            <field name="date_requested" />
-                            <field name="notes" />
+                            <field name="name"/>
+                            <field name="state"/>
+                            <field name="partner_id"/>
+                            <field name="user_id"/>
+                            <field name="retrieval_team_id"/>
+                            <field name="delivery_method"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                         <notebook>
-                            <page name="details" string=" Details">
+                            <page name="details" string="Details">
                                 <group>
-                                    <group name="dates" string=" Scheduling">
-                                        <field name="completion_date" readonly="state != 'in_progress'" />
+                                    <group name="dates" string="Scheduling">
+                                        <field name="completion_date" attrs="{'readonly': [('state','!=','in_progress')]}"/>
                                     </group>
-                                    <group name="financials" string=" Financial Information">
-                                        <field name="currency_id" invisible="1" />
+                                    <group name="financials" string="Financial Information">
+                                        <field name="currency_id" invisible="1"/>
                                     </group>
                                 </group>
-                                <separator string=" Retrieval Instructions" />
-                                <field name="message_ids" widget="mail_thread" />
                             </page>
-                            <page name="tracking" string=" Tracking &amp; History">
+                            <page name="tracking" string="Tracking &amp; History">
                                 <group>
                                     <group name="timestamps" string="Timestamps">
-                                        <field name="create_date" readonly="1" />
-                                        <field name="write_date" readonly="1" />
+                                        <field name="create_date" readonly="1"/>
+                                        <field name="write_date" readonly="1"/>
                                     </group>
                                 </group>
                             </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
-                        <field name="message_follower_ids" />
-                        <field name="activity_ids" />
-                        <field name="message_ids" />
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
                     </div>
                 </form>
             </field>
