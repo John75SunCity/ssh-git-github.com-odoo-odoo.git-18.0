@@ -29,6 +29,28 @@ class ComprehensiveValidator:
         self.total_issues = 0
         self.files_with_issues = 0
         self.files_passed = 0
+        # Local model registry collected from Python files
+        self.local_models = set()
+        # Non-blocking warnings to display after summary
+        self.global_warnings = []
+
+    def collect_local_model_names(self):
+        """Scan records_management/models and wizards to collect `_name` model names"""
+        model_dirs = [
+            Path("records_management/models"),
+            Path("records_management/wizards"),
+        ]
+        name_regex = re.compile(r"_name\s*=\s*['\"]([a-z0-9_.]+)['\"]", re.IGNORECASE)
+        for base in model_dirs:
+            if not base.exists():
+                continue
+            for py_file in base.rglob("*.py"):
+                try:
+                    text = py_file.read_text(encoding="utf-8", errors="ignore")
+                except Exception:
+                    continue
+                for match in name_regex.findall(text):
+                    self.local_models.add(match.strip())
         
     def validate_xml_structure(self, file_path, content):
         """Enhanced XML structure validation that catches formatting and duplication issues"""
@@ -58,12 +80,41 @@ class ComprehensiveValidator:
             # Check for proper data tag structure
             data_structure_issues = self.check_data_structure(content)
             issues.extend(data_structure_issues)
+
+            # Validate ir.actions.act_window res_model values against local models
+            action_model_issues = self.check_action_res_models(root, file_path)
+            issues.extend(action_model_issues)
             
         except ET.ParseError as e:
             issues.append(f"❌ XML Parse Error: {e}")
         except Exception as e:
             issues.append(f"❌ Structure validation error: {e}")
             
+        return issues
+
+    def check_action_res_models(self, root: ET.Element, file_path: Path):
+        """Check <record model="ir.actions.act_window"> res_model values.
+
+        Rules (non-invasive):
+        - ERROR if res_model starts with 'records.' or 'rate.' and is not in local models set
+        - For other unknown res_models, collect a non-blocking global warning (printed after summary)
+        """
+        issues = []
+        for record in root.findall(".//record[@model='ir.actions.act_window']"):
+            res_model_field = record.find(".//field[@name='res_model']")
+            if res_model_field is None or (res_model_field.text or '').strip() == '':
+                continue
+            res_model = (res_model_field.text or '').strip()
+            if res_model in self.local_models:
+                continue
+            # Strict ERROR only for local namespaces we own
+            if res_model.startswith('records.') or res_model.startswith('rate.'):
+                issues.append(f"❌ Action res_model '{res_model}' not found among local models/wizards")
+            else:
+                # Non-blocking global warning (do not fail validation)
+                self.global_warnings.append(
+                    f"WARN {file_path}: res_model '{res_model}' not found in local models – verify dependencies/typos"
+                )
         return issues
     
     def check_duplicate_fields(self, content):
@@ -241,6 +292,12 @@ class ComprehensiveValidator:
         print("=" * 60)
         print("🎯 Enhanced to catch XML structural and formatting issues")
         print()
+        # Collect local model names once
+        self.collect_local_model_names()
+        if self.local_models:
+            print(f"📚 Local models collected: {len(self.local_models)}")
+        else:
+            print("📚 Local models collected: 0 (skipping res_model cross-check)")
         
         # Find all XML files
         xml_files = list(Path("records_management").rglob("*.xml"))
@@ -333,6 +390,12 @@ class ComprehensiveValidator:
                     print(f"   - {issue_type}: {count}")
         else:
             print("\n🎉 All files passed validation!")
+
+        # Print non-blocking global warnings (do not affect totals)
+        if self.global_warnings:
+            print("\n⚠️  NON-BLOCKING WARNINGS")
+            for w in self.global_warnings:
+                print(f"   {w}")
         
         return self.total_issues
 
