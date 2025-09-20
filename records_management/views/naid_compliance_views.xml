@@ -229,25 +229,28 @@
                             <page string="Destruction Records" name="destructions">
                                 <field name="destruction_record_ids" mode="list">
                                     <list>
-                                        <field name="destruction_date" />
-                                        <field name="client_name" />
-                                        <field name="material_type" />
-                                        <field name="destruction_method" />
-                                        <field name="witness_present" />
-                                        <field name="certificate_issued" />
-                                        <field name="compliance_verified" />
+                                        <field name="destruction_date"/>
+                                        <field name="partner_id"/>
+                                        <field name="method"/>
+                                        <field name="items_destroyed"/>
+                                        <field name="total_weight"/>
+                                        <field name="witness_ids" widget="many2many_tags"/>
+                                        <field name="certificate_id"/>
+                                        <field name="certificate_issued_date"/>
+                                        <field name="responsible_user_id"/>
+                                        <field name="naid_compliant"/>
+                                        <field name="state" widget="badge"/>
                                     </list>
                                 </field>
                             </page>
                             <page string="Compliance Checklist" name="checklist">
                                 <field name="compliance_checklist_ids" mode="list">
                                     <list editable="bottom">
-                                        <field name="requirement_name" />
-                                        <field name="requirement_type" />
-                                        <field name="compliance_status" />
-                                        <field name="last_verified" />
-                                        <field name="verification_method" />
-                                        <field name="responsible_person" />
+                                        <field name="sequence" />
+                                        <field name="name" />
+                                        <field name="is_required" />
+                                        <field name="is_checked" />
+                                        <field name="description" />
                                         <field name="notes" />
                                     </list>
                                 </field>
@@ -269,12 +272,15 @@
                                 </group>
                                 <field name="performance_history_ids" mode="list">
                                     <list>
-                                        <field name="measurement_date" />
-                                        <field name="metric_type" />
-                                        <field name="score" />
-                                        <field name="benchmark" />
-                                        <field name="variance" />
-                                        <field name="trend" />
+                                        <field name="generation_date" />
+                                        <field name="date_start" />
+                                        <field name="date_end" />
+                                        <field name="audits_passed_count" />
+                                        <field name="audits_failed_count" />
+                                        <field name="destruction_weight_total" />
+                                        <field name="avg_destruction_time_hours" />
+                                        <field name="compliance_alerts_triggered" />
+                                        <field name="state" widget="badge" />
                                     </list>
                                 </field>
                             </page>

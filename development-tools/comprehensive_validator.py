@@ -20,6 +20,8 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 import traceback
 from collections import defaultdict
+import subprocess
+import sys
 
 class ComprehensiveValidator:
     def __init__(self):
@@ -273,6 +275,27 @@ class ComprehensiveValidator:
                 print("   ✅ All validations passed!")
                 print()
         
+        # Run nested sublist field existence validator (catch cross-model nested list field errors)
+        nested_tool = Path("development-tools/validation-tools/nested_sublist_field_validator.py")
+        nested_issues = 0
+        if nested_tool.exists():
+            print("🔎 Running nested sublist field validator...")
+            try:
+                proc = subprocess.run([
+                    sys.executable, str(nested_tool)
+                ], capture_output=True, text=True, check=False)
+                output = (proc.stdout or "") + (proc.stderr or "")
+                # Echo output for visibility
+                if output.strip():
+                    print(output)
+                # Non-zero return code indicates ERROR(s) (WARNs allowed)
+                if proc.returncode != 0:
+                    # Count ERROR lines if present to add into totals
+                    nested_issues = sum(1 for line in output.splitlines() if line.startswith("ERROR")) or 1
+                    self.total_issues += nested_issues
+            except Exception as e:
+                print(f"⚠️  Failed to run nested sublist validator: {e}")
+
         # Summary
         print("=" * 70)
         print("📊 VALIDATION SUMMARY")
@@ -281,6 +304,8 @@ class ComprehensiveValidator:
         print(f"✅ Files passed: {self.files_passed}")
         print(f"❌ Files with issues: {self.files_with_issues}")
         print(f"🐛 Total issues found: {self.total_issues}")
+        if nested_issues:
+            print(f"   • Nested sublist field errors: {nested_issues}")
         
         if self.total_issues > 0:
             print(f"\n⚠️  {self.total_issues} issues need to be resolved before deployment")
