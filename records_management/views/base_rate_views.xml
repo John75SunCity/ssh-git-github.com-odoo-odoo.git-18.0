@@ -299,7 +299,7 @@
                         <notebook invisible="analysis_complete == False">
                             <page string="Customer Impact Analysis">
                                 <field name="forecast_line_ids" readonly="1">
-                                    <list decoration-success="revenue_change &amp;lt; 0" decoration-danger="revenue_change &amp;gt; 0">
+                                    <list decoration-success="revenue_change &lt; 0" decoration-danger="revenue_change &gt; 0">
                                         <field name="partner_id" />
                                         <field name="customer_segment" />
                                         <field name="container_count" />
