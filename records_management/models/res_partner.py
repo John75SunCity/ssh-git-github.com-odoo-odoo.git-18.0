@@ -99,6 +99,59 @@ class ResPartner(models.Model):
         readonly=True
     )
 
+    # =========================================================================
+    # KEY RESTRICTION – PARTNER-LEVEL SUMMARY FIELDS (used by partner views)
+    # =========================================================================
+    key_issuance_allowed = fields.Boolean(
+        string="Key Issuance Allowed",
+        compute='_compute_key_restriction_fields',
+        search='_search_key_issuance_allowed',
+        help="Indicates if this partner is allowed to be issued physical bin keys (derived from active restrictions)."
+    )
+    key_restriction_status = fields.Selection(
+        [
+            ('allowed', 'Allowed'),
+            ('restricted', 'Restricted'),
+        ],
+        string='Key Restriction Status',
+        compute='_compute_key_restriction_fields',
+        search='_search_key_restriction_status',
+        help="Convenience badge mapping based on key issuance policy."
+    )
+    key_restriction_reason = fields.Text(
+        string='Restriction Reason',
+        compute='_compute_key_restriction_fields',
+        help="Reason captured on the most recent key restriction record."
+    )
+    key_restriction_date = fields.Date(
+        string='Restriction Date',
+        compute='_compute_key_restriction_fields',
+        search='_search_key_restriction_date'
+    )
+    key_restriction_approved_by = fields.Many2one(
+        comodel_name='res.users',
+        string='Approved By',
+        compute='_compute_key_restriction_fields'
+    )
+    key_restriction_notes = fields.Text(
+        string='Restriction Notes',
+        compute='_compute_key_restriction_fields'
+    )
+    key_restriction_history_ids = fields.One2many(
+        comodel_name='res.partner.key.restriction',
+        inverse_name='partner_id',
+        string='Key Restriction History'
+    )
+    key_restriction_history_count = fields.Integer(
+        string='Restriction History Count',
+        compute='_compute_key_restriction_history_count'
+    )
+    restricted_unlock_count = fields.Integer(
+        string='Restricted Unlock Count',
+        compute='_compute_restricted_unlock_count',
+        help="Number of unlock services performed while customer was restricted."
+    )
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
@@ -408,5 +461,164 @@ class ResPartner(models.Model):
                 'search_default_assigned': 1,
                 'default_key_holder_id': self.id,
                 'bin_key_mark_lost_mode': True,
+            }
+        }
+
+    # =========================================================================
+    # COMPUTES: KEY RESTRICTIONS
+    # =========================================================================
+    def _get_latest_key_restriction_by_partner(self):
+        """Return a dict partner_id -> latest res.partner.key.restriction (by effective_date desc, id desc).
+
+        We consider records in any state but prefer an 'active' restriction when present.
+        """
+        result = {}
+        if not self:
+            return result
+        # Fetch all restrictions for these partners ordered by effective_date desc, id desc
+        restrictions = self.env['res.partner.key.restriction'].sudo().search(
+            [('partner_id', 'in', self.ids)], order='effective_date desc, id desc'
+        )
+        for restr in restrictions:
+            pid = restr.partner_id.id
+            if pid not in result:
+                result[pid] = restr
+            else:
+                # Prefer active over any other state
+                if result[pid].state != 'active' and restr.state == 'active':
+                    result[pid] = restr
+        return result
+
+    def _compute_key_restriction_fields(self):
+        latest_map = self._get_latest_key_restriction_by_partner()
+        for partner in self:
+            restr = latest_map.get(partner.id)
+            # Default: allowed when no restriction exists
+            allowed = True
+            status = 'allowed'
+            reason = False
+            date_val = False
+            approved_by = False
+            notes = False
+            if restr:
+                # If an active restriction exists and its flag is False, partner is restricted
+                allowed = bool(restr.key_issuance_allowed)
+                status = 'allowed' if allowed else 'restricted'
+                reason = restr.restriction_reason
+                date_val = restr.effective_date
+                approved_by = restr.user_id
+                notes = restr.notes
+            partner.key_issuance_allowed = allowed
+            partner.key_restriction_status = status
+            partner.key_restriction_reason = reason
+            partner.key_restriction_date = date_val
+            partner.key_restriction_approved_by = approved_by
+            partner.key_restriction_notes = notes
+
+    def _compute_key_restriction_history_count(self):
+        counts = self.env['res.partner.key.restriction']._read_group(
+            [('partner_id', 'in', self.ids)], ['partner_id'], ['__count']
+        )
+        count_map = {d['partner_id'][0]: d['__count'] for d in counts}
+        for partner in self:
+            partner.key_restriction_history_count = count_map.get(partner.id, 0)
+
+    def _compute_restricted_unlock_count(self):
+        if not self:
+            return
+        # Count unlock services that were tied to restriction context
+        rows = self.env['bin.unlock.service']._read_group(
+            [('partner_id', 'in', self.ids), ('customer_key_restricted', '=', True)],
+            ['partner_id'], ['__count']
+        )
+        cnt_map = {r['partner_id'][0]: r['__count'] for r in rows}
+        for partner in self:
+            partner.restricted_unlock_count = cnt_map.get(partner.id, 0)
+
+    # =========================================================================
+    # SEARCH HELPERS for computed (non-stored) fields used in domains
+    # =========================================================================
+    def _search_key_issuance_allowed(self, operator, value):
+        # Build set of restricted partners: active restriction with key_issuance_allowed = False
+        restricted_partners = self.env['res.partner.key.restriction'].sudo().search([
+            ('key_issuance_allowed', '=', False),
+            ('partner_id', '!=', False),
+            ('state', 'in', ['active', 'draft'])
+        ]).mapped('partner_id').ids
+        if operator in ('=', '=='):
+            if value:
+                return [('id', 'not in', restricted_partners)]
+            return [('id', 'in', restricted_partners)]
+        if operator in ('!=', '<>'):
+            if value:
+                return [('id', 'in', restricted_partners)]
+            return [('id', 'not in', restricted_partners)]
+        # Fallback conservative domain
+        return [('id', '!=', 0)]
+
+    def _search_key_restriction_status(self, operator, value):
+        # Map status to boolean value of allowed
+        if isinstance(value, str):
+            value = value.lower()
+        if operator in ('=', '=='):
+            if value == 'allowed':
+                return self._search_key_issuance_allowed('=', True)
+            if value == 'restricted':
+                return self._search_key_issuance_allowed('=', False)
+        if operator in ('!=', '<>'):
+            if value == 'allowed':
+                return self._search_key_issuance_allowed('=', False)
+            if value == 'restricted':
+                return self._search_key_issuance_allowed('=', True)
+        return [('id', '!=', 0)]
+
+    def _search_key_restriction_date(self, operator, value):
+        # Partners that have a restriction with effective_date OP value
+        restrs = self.env['res.partner.key.restriction'].sudo().search([
+            ('effective_date', operator, value)
+        ])
+        return [('id', 'in', restrs.mapped('partner_id').ids)]
+
+    # =========================================================================
+    # ACTIONS: UI Buttons in partner view for key restrictions
+    # =========================================================================
+    def action_restrict_key_issuance(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Key Restriction'),
+            'res_model': 'key.restriction.checker.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_partner_id': self.id,
+                'default_action': 'restrict',
+            }
+        }
+
+    def action_allow_key_issuance(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Allow Key Issuance'),
+            'res_model': 'key.restriction.checker.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_partner_id': self.id,
+                'default_action': 'allow',
+            }
+        }
+
+    def action_view_key_history(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Key Restriction History'),
+            'res_model': 'res.partner.key.restriction',
+            'view_mode': 'tree,form',
+            'domain': [('partner_id', '=', self.id)],
+            'context': {
+                'default_partner_id': self.id,
             }
         }
