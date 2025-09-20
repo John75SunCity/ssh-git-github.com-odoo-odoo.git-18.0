@@ -246,6 +246,8 @@
     # Additional menus split by domain (loaded after actions)
     "views/service_item_menus.xml",
     "views/document_retrieval_menus.xml",
+    # Ensure retrieval work order action is defined before its menu references it
+    "views/records_retrieval_work_order_views.xml",
     "views/records_retrieval_work_order_menus.xml",
         "report/description_reports.xml",
         "report/destruction_certificate_reports.xml",
