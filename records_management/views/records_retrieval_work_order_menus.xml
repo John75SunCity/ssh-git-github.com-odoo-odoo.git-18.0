@@ -3,7 +3,7 @@
     <data>
     
     
-        <menuitem id="records_retrieval_work_order_menu" name="Retrieval Work Orders" parent="menu_records_management_root" action="records_retrieval_work_order_action" sequence="50" />
+    <menuitem id="records_retrieval_work_order_menu" name="Retrieval Work Orders" parent="menu_records_management_root" action="action_records_retrieval_work_order" sequence="50" />
     
     
     </data>

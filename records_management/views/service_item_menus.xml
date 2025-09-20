@@ -87,7 +87,7 @@
 
     <!-- Service Item Configuration -->
 
-    <menuitem id="menu_service_item_configuration" name="&lt;i class='fa fa-wrench'/&gt; Service Configuration" parent="menu_service_item_settings" action="action_rm_module_configurator_service_items" sequence="10"/>
+    <menuitem id="menu_service_item_configuration" name="&lt;i class='fa fa-wrench'/&gt; Service Configuration" parent="menu_service_item_settings" action="action_rm_module_configurator" sequence="10"/>
 
 
     <!-- Service Item Pricing Rules -->

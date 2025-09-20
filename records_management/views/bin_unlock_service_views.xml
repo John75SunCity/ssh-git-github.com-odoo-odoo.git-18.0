@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
+
         <record id="res_partner_view_form_inherit" model="ir.ui.view">
             <field name="name">res.partner.view.form.inherit.key_restrictions</field>
             <field name="model">res.partner</field>
@@ -76,9 +76,10 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree" />
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='name']" position="after">
-                    <field name="key_restriction_status" widget="badge" decoration-success="key_restriction_status == 'allowed'" decoration-danger="key_restriction_status == 'restricted'" optional="hide" />
-                    <field name="restricted_unlock_count" optional="hide" />
+                <!-- Insert additional columns directly inside the partner tree to avoid brittle field-based xpaths -->
+                <xpath expr="//tree" position="inside">
+                    <field name="key_restriction_status" widget="badge" decoration-success="key_restriction_status == 'allowed'" decoration-danger="key_restriction_status == 'restricted'" optional="hide"/>
+                    <field name="restricted_unlock_count" optional="hide"/>
                 </xpath>
             </field>
         </record>
