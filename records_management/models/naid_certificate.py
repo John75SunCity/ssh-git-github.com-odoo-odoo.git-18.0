@@ -337,6 +337,19 @@ class NaidCertificate(models.Model):
             placeholder_content = _("Certificate %s - PDF Generation Error") % self.certificate_number
             return base64.b64encode(placeholder_content.encode("utf-8"))
 
+    def action_download_pdf(self):
+        """Return native report action to download the Certificate PDF.
+
+        Uses the QWeb report referenced by xmlid
+        'records_management.action_report_naid_certificate'.
+        """
+        self.ensure_one()
+        report = self.env.ref("records_management.action_report_naid_certificate", raise_if_not_found=False)
+        if not report:
+            raise UserError(_("NAID certificate report template not found"))
+        # Return native report action (lets Odoo handle download/preview)
+        return report.report_action(self)
+
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================

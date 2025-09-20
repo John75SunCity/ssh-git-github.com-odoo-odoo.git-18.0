@@ -222,6 +222,7 @@
                                         <field name="total_items" />
                                         <field name="total_weight" />
                                         <field name="state" widget="badge" />
+                                        <button name="action_download_pdf" type="object" string="Download" icon="fa-download" class="btn-link"/>
                                     </list>
                                 </field>
                             </page>
