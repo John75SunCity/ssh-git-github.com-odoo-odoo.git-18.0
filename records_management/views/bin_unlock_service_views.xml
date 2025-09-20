@@ -34,9 +34,10 @@
                         <group string="Restriction History" invisible="key_issuance_allowed == True">
                             <field name="key_restriction_history_ids" nolabel="1" mode="tree">
                                 <list>
-                                    <field name="action" />
-                                    <field name="reason" />
-                                    <field name="approved_by" />
+                                    <field name="state"/>
+                                    <field name="restriction_reason"/>
+                                    <field name="effective_date"/>
+                                    <field name="user_id" string="Approved By"/>
                                 </list>
                             </field>
                         </group>
@@ -139,27 +140,25 @@
             <field name="model">bin.unlock.service</field>
             <field name="arch" type="xml">
                 <search string="Search Unlock Services">
-                    <field name="service_number" />
-                    <field name="partner_id" />
-                    <field name="technician_id" />
-                    <field name="bin_location" />
-                    <field name="unlock_reason" />
-                    <filter string="Billable" name="billable" domain="[('billable', '=', True)]" />
-                    <filter string="Non-Billable" name="non_billable" domain="[('billable', '=', False)]" />
-                    <filter string="Completed" name="completed" domain="[('completed', '=', True)]" />
-                    <filter string="Pending" name="pending" domain="[('completed', '=', False)]" />
-                    <filter string="Invoice Created" name="invoiced" domain="[('invoice_created', '=', True)]" />
-                    <filter string="Not Invoiced" name="not_invoiced" domain="[('invoice_created', '=', False)]" />
-                    <separator />
-                    <filter string="Today" name="today" domain="[('service_date', '=', context_today)]" />
-                    <filter string="This Week" name="this_week" domain="[('service_date', '&gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]" />
-                    <filter string="This Month" name="this_month" domain="[('service_date', '&gt;=', context_today.strftime('%Y-%m-01'))]" />
+                    <field name="service_number"/>
+                    <field name="partner_id"/>
+                    <field name="assigned_technician_id"/>
+                    <field name="bin_location"/>
+                    <field name="reason_for_unlock"/>
+                    <separator/>
+                    <filter string="Draft" name="flt_draft" domain="[('state','=','draft')]"/>
+                    <filter string="Scheduled" name="flt_scheduled" domain="[('state','=','scheduled')]"/>
+                    <filter string="In Progress" name="flt_in_progress" domain="[('state','=','in_progress')]"/>
+                    <filter string="Completed" name="flt_completed" domain="[('state','=','completed')]"/>
+                    <filter string="Invoiced" name="flt_invoiced" domain="[('state','=','invoiced')]"/>
+                    <separator/>
+                    <filter string="Requested Today" name="today" domain="[('request_date', '=', context_today)]"/>
                     <group expand="1" string="Group By">
-                        <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}" />
-                        <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}" />
-                        <filter string="Unlock Reason" name="group_reason" context="{'group_by': 'unlock_reason'}" />
-                        <filter string="Service Date" name="group_date" context="{'group_by': 'service_date:month'}" />
-                        <filter string="Billable Status" name="group_billable" context="{'group_by': 'billable'}" />
+                        <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Technician" name="group_technician" context="{'group_by': 'assigned_technician_id'}"/>
+                        <filter string="Reason" name="group_reason" context="{'group_by': 'reason_for_unlock'}"/>
+                        <filter string="Completion Month" name="group_date" context="{'group_by': 'completion_date:month'}"/>
+                        <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
                     </group>
                 </search>
             </field>
@@ -168,17 +167,19 @@
             <field name="name">bin.unlock.service.view.tree</field>
             <field name="model">bin.unlock.service</field>
             <field name="arch" type="xml">
-                <list string="Bin Unlock Services" decoration-success="billable == True and invoice_created == True" decoration-warning="billable == False" decoration-info="completed == True">
-                    <field name="service_number" />
-                    <field name="partner_id" />
-                    <field name="service_date" />
-                    <field name="bin_location" />
-                    <field name="unlock_reason" />
-                    <field name="charge_amount" sum="Total Revenue" />
-                    <field name="billable" widget="boolean_toggle" />
-                    <field name="completed" widget="boolean_toggle" />
-                    <field name="technician_id" />
-                    <field name="invoice_created" widget="boolean_toggle" />
+                <list string="Bin Unlock Services" decoration-success="state == 'invoiced'" decoration-info="state == 'completed'">
+                    <field name="service_number"/>
+                    <field name="partner_id"/>
+                    <field name="request_date"/>
+                    <field name="scheduled_date"/>
+                    <field name="completion_date"/>
+                    <field name="bin_id"/>
+                    <field name="bin_location"/>
+                    <field name="reason_for_unlock"/>
+                    <field name="total_cost" sum="Total Revenue"/>
+                    <field name="assigned_technician_id"/>
+                    <field name="state"/>
+                    <field name="invoice_id"/>
                 </list>
             </field>
         </record>
@@ -188,54 +189,62 @@
             <field name="arch" type="xml">
                 <form string="Bin Unlock Service">
                     <header>
-                        <button name="action_create_invoice" string="Create Invoice" type="object" class="btn-primary" invisible="billable == False or invoice_created == True" />
-                        <button name="action_mark_completed" string="Mark Completed" type="object" class="btn-success" invisible="completed == True" />
+                        <button name="action_create_invoice" string="Create Invoice" type="object" class="btn-primary" invisible="state != 'completed' or invoice_id != False"/>
+                        <button name="action_complete" string="Mark Completed" type="object" class="btn-success" invisible="state == 'completed' or state == 'invoiced'"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
                             <label for="service_number" class="oe_edit_only" />
                             <h1>
-                                <field name="service_number" readonly="1" />
+                                <field name="service_number" readonly="1"/>
                             </h1>
-                            <h2>Unlock Service for <field name="partner_id" options="{'no_create_edit': True}" />
+                            <h2>Unlock Service for <field name="partner_id" options="{'no_create_edit': True}"/>
                             </h2>
                         </div>
                         <group>
                             <group string="Service Details">
-                                <field name="service_date" />
-                                <field name="bin_location" />
-                                <field name="unlock_reason" />
-                                <field name="technician_id" />
-                                <field name="key_holder_id" readonly="1" />
+                                <field name="request_date"/>
+                                <field name="scheduled_date"/>
+                                <field name="completion_date"/>
+                                <field name="bin_id"/>
+                                <field name="bin_location" readonly="1"/>
+                                <field name="reason_for_unlock"/>
+                                <field name="assigned_technician_id"/>
+                                <field name="key_id"/>
+                                <field name="key_serial_number" readonly="1"/>
                             </group>
                             <group string="Billing &amp; Status">
-                                <field name="charge_amount" />
-                                <field name="billable" />
-                                <field name="invoice_created" readonly="1" />
-                                <field name="completed" />
+                                <field name="service_cost"/>
+                                <field name="emergency_surcharge"/>
+                                <field name="total_cost" readonly="1"/>
+                                <field name="state"/>
+                                <field name="invoice_id" readonly="1"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Details">
                                 <group>
-                                    <field name="reason_description" widget="text" placeholder="Detailed description of why unlock was needed..." />
-                                    <field name="items_retrieved" widget="text" placeholder="Description of items retrieved from the bin..." />
-                                    <field name="notes" widget="text" placeholder="Additional service notes..." />
+                                    <field name="service_report" widget="text" placeholder="Detailed description of why unlock was needed..."/>
+                                    <field name="completion_notes" widget="text" placeholder="Completion notes..."/>
                                 </group>
                             </page>
                             <page string="Photos &amp; Documentation">
-                                <field name="photo_ids" widget="many2many_binary" />
+                                <group>
+                                    <field name="photo_before"/>
+                                    <field name="photo_after"/>
+                                    <field name="service_certificate" readonly="1"/>
+                                </group>
                             </page>
                             <page string="System Information">
                                 <group>
                                     <group>
-                                        <field name="company_id" groups="base.group_multi_company" readonly="1" />
-                                        <field name="create_date" readonly="1" />
-                                        <field name="create_uid" readonly="1" />
+                                        <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                                        <field name="create_date" readonly="1"/>
+                                        <field name="create_uid" readonly="1"/>
                                     </group>
                                     <group>
-                                        <field name="write_date" readonly="1" />
-                                        <field name="write_uid" readonly="1" />
+                                        <field name="write_date" readonly="1"/>
+                                        <field name="write_uid" readonly="1"/>
                                     </group>
                                 </group>
                             </page>
@@ -247,70 +256,6 @@
                         <field name="message_ids" widget="mail_thread" />
                     </div>
                 </form>
-            </field>
-        </record>
-        <record id="bin_unlock_service_view_form_inherit" model="ir.ui.view">
-            <field name="name">bin.unlock.service.view.form.inherit.key_restrictions</field>
-            <field name="model">bin.unlock.service</field>
-            <field name="inherit_id" ref="bin_unlock_service_view_form" />
-            <field name="arch" type="xml">
-                <xpath expr="//sheet" position="before">
-                    <div class="alert alert-info" role="status" invisible="customer_key_restricted == False">
-                        <strong>
-                            <i class="fa fa-key" /> Key Restricted Customer:</strong>
-                    This customer is not allowed to receive bin keys.
-                    <br />
-                        <strong>Restriction Reason:</strong>
-                        <field name="key_restriction_reason" readonly="1" nolabel="1" />
-                        <br />
-                        <strong>Alternative:</strong> This unlock service provides temporary access.
-                </div>
-                </xpath>
-                <xpath expr="//field[@name='unlock_reason']" position="after">
-                    <field name="unlock_reason_code" />
-                    <field name="customer_key_restricted" invisible="1" />
-                    <field name="key_restriction_reason" invisible="1" />
-                    <field name="auto_created_for_restriction" invisible="auto_created_for_restriction == False" />
-                </xpath>
-            </field>
-        </record>
-        <record id="bin_unlock_service_view_tree_inherit" model="ir.ui.view">
-            <field name="name">bin.unlock.service.view.tree.inherit.key_restrictions</field>
-            <field name="model">bin.unlock.service</field>
-            <field name="inherit_id" ref="bin_unlock_service_view_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='unlock_reason']" position="after">
-                    <field name="unlock_reason_code" optional="hide" />
-                    <field name="customer_key_restricted" widget="boolean_toggle" optional="hide" />
-                    <field name="auto_created_for_restriction" optional="hide" />
-                </xpath>
-                <xpath expr="//field[@name='service_number']" position="after">
-                    <field name="key_restriction_reason" string="Restriction Reason" optional="hide" />
-                    <field name="key_restriction_approved_by" string="Approved By" optional="hide" />
-                </xpath>
-            </field>
-        </record>
-        <record id="bin_unlock_service_view_search_inherit" model="ir.ui.view">
-            <field name="name">bin.unlock.service.view.search.inherit.key_restrictions</field>
-            <field name="model">bin.unlock.service</field>
-            <field name="inherit_id" ref="bin_unlock_service_view_search" />
-            <field name="arch" type="xml">
-                <xpath expr="//filter[@name='my_services']" position="after">
-                    <separator />
-                    <filter name="key_restriction" string="Key Restriction Services" domain="[('unlock_reason_code', '=', 'key_restriction')]" />
-                    <filter name="key_restricted_customers" string="Key Restricted Customers" domain="[('customer_key_restricted', '=', True)]" />
-                    <filter name="auto_created_restrictions" string="Auto-Created for Restrictions" domain="[('auto_created_for_restriction', '=', True)]" />
-                </xpath>
-                <xpath expr="//field[@name='name']" position="after">
-                    <field name="key_restriction_reason" string="Restriction Reason" />
-                    <field name="key_restriction_approved_by" string="Approved By" />
-                </xpath>
-                <xpath expr="//group[@expand='0']" position="inside">
-                    <filter string="Key Status" name="group_key_status" context="{'group_by': 'key_restriction_status'}" />
-                    <filter string="Restriction Status" name="group_restriction_status" context="{'group_by': 'customer_key_restricted'}" />
-                    <filter string="Unlock Reason" name="group_unlock_reason" context="{'group_by': 'unlock_reason_code'}" />
-                    <filter string="Restriction Date" name="group_restriction_date" context="{'group_by': 'key_restriction_date'}" />
-                </xpath>
             </field>
         </record>
         <record id="action_bin_key_management" model="ir.actions.act_window">
@@ -342,7 +287,7 @@
             <!-- OPTIMIZATION: Model bin.unlock.service has state field - consider using default search filters -->
             <field name="name">Bin Unlock Services</field>
             <field name="res_model">bin.unlock.service</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode">tree,form</field>
             <field name="context">{'search_default_this_month': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_create">
