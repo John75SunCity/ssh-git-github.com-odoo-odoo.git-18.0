@@ -39,13 +39,13 @@
                         <group string="Summary">
                             <field name="total_drives_count" readonly="1"/>
                             <field name="verified_drives_count" readonly="1"
-                                   invisible="not two_step_verification or manager_bypass"/>
+                                invisible="not two_step_verification or manager_bypass"/>
                         </group>
                     </group>
 
                     <group string="📱 Quick Scan Entry">
                         <field name="serial_numbers_text" placeholder="Scan barcodes or type serial numbers here (one per line)..."
-                               nolabel="1" widget="text"/>
+                            nolabel="1" widget="text"/>
                         <button name="action_process_scanned_serials" string="➕ Add to List" type="object"
                                 class="btn-primary" invisible="not serial_numbers_text"/>
                     </group>
@@ -55,7 +55,7 @@
                         <list editable="bottom">
                             <field name="serial_number" readonly="1"/>
                             <field name="verified" widget="boolean_toggle"
-                                   invisible="context.get('default_scan_step') == 'pickup' or parent.manager_bypass"/>
+                                invisible="context.get('default_scan_step') == 'pickup' or parent.manager_bypass"/>
                             <field name="scanned_at_pickup" readonly="1" optional="hide"/>
                             <field name="scanned_at_facility" readonly="1" optional="hide"/>
                         </list>

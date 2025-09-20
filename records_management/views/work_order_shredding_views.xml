@@ -237,11 +237,11 @@
                                         <div class="oe_kanban_bottom_left">
                                             <span class="badge badge-secondary">
                                                 <field name="container_count" />
- containers
+containers
                                 </span>
                                             <span class="badge badge-info">
                                                 <field name="total_weight" />
- lbs
+lbs
                                 </span>
                                         </div>
                                         <div class="oe_kanban_bottom_right">

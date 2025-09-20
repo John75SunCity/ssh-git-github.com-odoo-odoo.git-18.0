@@ -29,7 +29,7 @@ Remove PERMANENT Flag (Admin Only)
 
         <div class="alert alert-warning" role="alert" invisible="operation_type != 'remove'">
 <strong>
-     ADMINISTRATOR SECURITY WARNING</strong>
+    ADMINISTRATOR SECURITY WARNING</strong>
 <br />
 
                         You are about to <strong>remove permanent protection</strong> from documents.

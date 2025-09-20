@@ -239,16 +239,16 @@
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                     <a role="menuitem" type="edit" class="dropdown-item">
                                         <i class="fa fa-edit" title="Edit" />
- Edit Type</a>
+Edit Type</a>
                                     <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">
                                         <i class="fa fa-file-o" title="Documents" />
- View Documents</a>
+View Documents</a>
                                     <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">
                                         <i class="fa fa-check-circle text-success" title="Activate" />
- Activate</a>
+Activate</a>
                                     <a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" invisible="state != 'active'">
                                         <i class="fa fa-warning" title="Deprecate" />
- Deprecate</a>
+Deprecate</a>
                                     <div class="dropdown-divider" />
                                     <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state in ('draft', 'deprecated')">📁 Archive</a>
                                 </div>

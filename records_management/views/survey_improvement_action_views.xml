@@ -6,16 +6,16 @@
             <field name="model">survey.improvement.action</field>
             <field name="arch" type="xml">
                 <list decoration-danger="priority == '3'" 
-                      decoration-warning="priority == '2'" 
-                      decoration-info="state == 'in_progress'"
-                      decoration-muted="state in ('done', 'cancelled')">
+                    decoration-warning="priority == '2'" 
+                    decoration-info="state == 'in_progress'"
+                    decoration-muted="state in ('done', 'cancelled')">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="state" widget="badge" 
-                           decoration-success="state == 'done'"
-                           decoration-warning="state == 'in_progress'"
-                           decoration-info="state == 'new'"
-                           decoration-muted="state == 'cancelled'"/>
+                        decoration-success="state == 'done'"
+                        decoration-warning="state == 'in_progress'"
+                        decoration-info="state == 'new'"
+                        decoration-muted="state == 'cancelled'"/>
                     <field name="priority" widget="priority"/>
                     <field name="user_id" widget="many2one_avatar_user"/>
                     <field name="deadline"/>

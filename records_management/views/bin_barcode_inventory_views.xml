@@ -146,8 +146,8 @@
                                         </div>
                                         <small class="text-muted">
                                             <field name="current_weight" />
- /        <field name="capacity_pounds" />
- lbs
+/        <field name="capacity_pounds" />
+lbs
 </small>
                                     </div>
                                 </div>

@@ -95,15 +95,15 @@
                                 <div class="col-8">
         <div>
 <i class='fa fa-credit-card' aria-hidden="true"/>
- Model: <field name="billing_model"/>
+Model: <field name="billing_model"/>
 </div>
         <div>
 <i class='fa fa-money' aria-hidden="true"/>
- Rate: $<field name="base_rate"/>
+Rate: $<field name="base_rate"/>
 </div>
         <div>
 <i class='fa fa-calendar' aria-hidden="true"/>
- Terms: <field name="payment_terms"/>
+Terms: <field name="payment_terms"/>
 </div>
                                 </div>
                                 <div class="col-4">
@@ -150,8 +150,8 @@
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
         <list decoration-success="active == True and auto_billing == True"
-              decoration-warning="billing_model == 'custom'"
-              decoration-info="payment_terms == 'net_30'">
+            decoration-warning="billing_model == 'custom'"
+            decoration-info="payment_terms == 'net_30'">
         <field name="name" string="Configuration Name"/>
         <field name="partner_id" string="Customer"/>
         <field name="billing_model" string="Billing Model" widget="badge"/>
@@ -393,8 +393,8 @@
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
         <calendar string="Billing Schedule"
-                  date_start="next_billing_date"
-                  color="billing_model">
+                date_start="next_billing_date"
+                color="billing_model">
         <field name="name"/>
         <field name="partner_id"/>
         <field name="billing_frequency"/>
