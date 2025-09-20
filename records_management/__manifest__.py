@@ -125,6 +125,8 @@
         "views/temp_inventory_reject_wizard_views.xml",
         "views/visitor_pos_wizard_views.xml",
         "views/work_order_bin_assignment_wizard_views.xml",
+    # Key restriction + Bin Unlock Service actions must load before menus
+    "views/bin_unlock_service_views.xml",
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_profile_views.xml",
         "views/approval_history_views.xml",

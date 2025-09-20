@@ -31,6 +31,8 @@ class ComprehensiveValidator:
         self.files_passed = 0
         # Local model registry collected from Python files
         self.local_models = set()
+        # Action XML IDs collected from XML files (e.g., ir.actions.* and <act_window>)
+        self.action_xml_ids = set()
         # Non-blocking warnings to display after summary
         self.global_warnings = []
 
@@ -84,6 +86,10 @@ class ComprehensiveValidator:
             # Validate ir.actions.act_window res_model values against local models
             action_model_issues = self.check_action_res_models(root, file_path)
             issues.extend(action_model_issues)
+
+            # Validate that menus reference existing actions (by XML id)
+            menu_action_issues = self.check_menu_action_references(root, file_path)
+            issues.extend(menu_action_issues)
             
         except ET.ParseError as e:
             issues.append(f"❌ XML Parse Error: {e}")
@@ -115,6 +121,88 @@ class ComprehensiveValidator:
                 self.global_warnings.append(
                     f"WARN {file_path}: res_model '{res_model}' not found in local models – verify dependencies/typos"
                 )
+        return issues
+
+    def _extract_action_target(self, raw_value: str):
+        """Normalize an action reference string to (module, id).
+
+        Accepts values like 'module.action_id' or 'action_id'. Returns tuple
+        (module or None, id_str). Whitespace is stripped. If value is empty, returns (None, '').
+        """
+        if not raw_value:
+            return (None, '')
+        value = (raw_value or '').strip()
+        # Odoo allows module-qualified refs: module.xml_id
+        if '.' in value:
+            module, _, xml_id = value.rpartition('.')
+            module = module or None
+            return (module, xml_id)
+        return (None, value)
+
+    def check_menu_action_references(self, root: ET.Element, file_path: Path):
+        """Ensure that menus reference existing action XML IDs.
+
+        Rules:
+        - If a <menuitem> has an 'action' attribute or a child <field name="action" ref="...">
+          we check that the referenced action xml id exists.
+        - If the reference is module-qualified and module != 'records_management', emit a
+          non-blocking warning only (external dependency), don't fail.
+        - If the reference is local (module is None or 'records_management') and the id is
+          not in self.action_xml_ids, raise a blocking error.
+        Also supports <record model="ir.ui.menu"> with <field name="action" ref="..."/>.
+        """
+        issues = []
+        # 1) <menuitem action="...">
+        for menu in root.findall('.//menuitem'):
+            action_attr = menu.get('action')
+            if action_attr:
+                mod, xml_id = self._extract_action_target(action_attr)
+                if not xml_id:
+                    continue
+                if mod and mod != 'records_management':
+                    # External module reference – warn only
+                    self.global_warnings.append(
+                        f"WARN {file_path}: menu action '{action_attr}' not defined locally – verify dependency order"
+                    )
+                else:
+                    if xml_id not in self.action_xml_ids:
+                        issues.append(
+                            f"❌ Menu references unknown action '{action_attr}' (xml id '{xml_id}' not found in this module)"
+                        )
+        # 2) <menuitem><field name="action" ref="..."/></menuitem>
+        for field in root.findall(".//menuitem/field[@name='action']"):
+            ref = field.get('ref') or ''
+            if not ref:
+                continue
+            mod, xml_id = self._extract_action_target(ref)
+            if mod and mod != 'records_management':
+                self.global_warnings.append(
+                    f"WARN {file_path}: menu action ref '{ref}' not defined locally – verify dependency order"
+                )
+            else:
+                if xml_id not in self.action_xml_ids:
+                    issues.append(
+                        f"❌ Menu references unknown action ref '{ref}' (xml id '{xml_id}' not found in this module)"
+                    )
+        # 3) <record model="ir.ui.menu"><field name="action" ref="..."/></record>
+        for rec in root.findall(".//record[@model='ir.ui.menu']"):
+            field = rec.find(".//field[@name='action']")
+            if field is None:
+                continue
+            ref = field.get('ref') or ''
+            if not ref:
+                # Sometimes action may be provided as text with eval="...", skip complex cases
+                continue
+            mod, xml_id = self._extract_action_target(ref)
+            if mod and mod != 'records_management':
+                self.global_warnings.append(
+                    f"WARN {file_path}: ir.ui.menu action ref '{ref}' not defined locally – verify dependency order"
+                )
+            else:
+                if xml_id not in self.action_xml_ids:
+                    issues.append(
+                        f"❌ ir.ui.menu references unknown action ref '{ref}' (xml id '{xml_id}' not found in this module)"
+                    )
         return issues
     
     def check_duplicate_fields(self, content):
@@ -305,6 +393,10 @@ class ComprehensiveValidator:
         if not xml_files:
             print("❌ No XML files found in records_management/")
             return 1
+
+        # Pre-collect all action xml ids across module for menu cross-checks
+        self.collect_action_xml_ids(xml_files)
+        print(f"🧭 Action XML IDs collected: {len(self.action_xml_ids)}")
         
         self.total_files = len(xml_files)
         print(f"📊 Validating {self.total_files} XML files...")
@@ -398,6 +490,34 @@ class ComprehensiveValidator:
                 print(f"   {w}")
         
         return self.total_issues
+
+    def collect_action_xml_ids(self, xml_files):
+        """Scan provided XML files to collect action XML IDs defined in this module.
+
+        We collect ids from:
+         - <record model="ir.actions.*" id="...">
+         - <act_window id="..." .../>
+        """
+        action_ids = set()
+        for xml_file in xml_files:
+            try:
+                content = Path(xml_file).read_text(encoding='utf-8', errors='ignore')
+                root = ET.fromstring(content)
+            except Exception:
+                continue
+            # Collect from <record model="ir.actions.*">
+            for rec in root.findall(".//record"):
+                model = rec.get('model') or ''
+                if model.startswith('ir.actions.'):
+                    rec_id = rec.get('id')
+                    if rec_id:
+                        action_ids.add(rec_id)
+            # Collect from shorthand <act_window id="...">
+            for aw in root.findall('.//act_window'):
+                rec_id = aw.get('id')
+                if rec_id:
+                    action_ids.add(rec_id)
+        self.action_xml_ids = action_ids
 
 def main():
     """Main validation function"""

@@ -364,8 +364,7 @@
             </field>
         </record>
     
-        <menuitem id="menu_bin_key_management" name="Bin Key Management" parent="records_management.menu_records_management_root" action="action_bin_key_management" sequence="10" />
-        <menuitem id="menu_bin_unlock_services" name="Unlock Services" parent="records_management.menu_records_management_root" action="action_bin_unlock_service" sequence="11" />
+    <!-- Menus defined centrally in records_management_menus.xml to guarantee load order -->
     
     
     </data>
