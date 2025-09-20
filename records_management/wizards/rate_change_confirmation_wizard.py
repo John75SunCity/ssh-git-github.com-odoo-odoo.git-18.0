@@ -102,7 +102,7 @@ Sincerely,
 
         self.ensure_one()
 
-    if self.requires_approval and not self.approved_by_id:
+        if self.requires_approval and not self.approved_by_id:
             raise ValidationError(_('Rate changes must be approved before implementation'))
 
         # Implement based on the forecast scenario
@@ -221,7 +221,7 @@ Sincerely,
 
     def _log_rate_change_implementation(self):
         """Log the rate change implementation"""
-    log_message = f"""
+        log_message = f"""
 Rate Change Implementation:
 - Forecast: {self.forecast_id.name}
 - Revenue Impact: ${self.revenue_impact:,.2f}
