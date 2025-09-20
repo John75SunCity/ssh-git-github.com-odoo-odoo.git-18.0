@@ -187,5 +187,13 @@
             <field name="res_id" ref="records_management.container_type_01_standard"/>
             <field name="noupdate">1</field>
         </record>
+
+        <record id="alias_demo_container_type_secure_box" model="ir.model.data">
+            <field name="name">demo_container_type_secure_box</field>
+            <field name="module">records_management</field>
+            <field name="model">records.container.type</field>
+            <field name="res_id" ref="records_management.container_type_04_secure_storage"/>
+            <field name="noupdate">1</field>
+        </record>
     </data>
 </odoo>

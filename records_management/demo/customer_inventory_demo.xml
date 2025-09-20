@@ -115,6 +115,30 @@
             
         </record>
 
+        <!-- BIO PAPPEL DEPARTMENTS -->
+        <record id="dept_bio_pappel_general" model="records.department">
+            <field name="name">General Business Records</field>
+            <field name="code">BP-GEN</field>
+            <field name="partner_id" ref="customer_bio_pappel"/>
+            
+        </record>
+
+        <!-- CITY OF EL PASO DEPARTMENTS -->
+        <record id="dept_city_el_paso_general" model="records.department">
+            <field name="name">General City Records</field>
+            <field name="code">CEP-GEN</field>
+            <field name="partner_id" ref="customer_city_el_paso"/>
+            
+        </record>
+
+        <!-- CHASE BANK DEPARTMENTS -->
+        <record id="dept_chase_bank_general" model="records.department">
+            <field name="name">General Financial Records</field>
+            <field name="code">CB-GEN</field>
+            <field name="partner_id" ref="customer_chase_bank"/>
+            
+        </record>
+
         <!-- ===================================================== -->
         <!-- STORAGE LOCATIONS -->
         <!-- ===================================================== -->
@@ -2025,7 +2049,7 @@
             <field name="name">Container-910928</field>
             <field name="barcode">910928</field>
             <field name="partner_id" ref="customer_bio_pappel"/>
-            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="department_id" ref="dept_bio_pappel_general"/>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
@@ -2044,7 +2068,7 @@
             <field name="name">Container-910931</field>
             <field name="barcode">910931</field>
             <field name="partner_id" ref="customer_city_el_paso"/>
-            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="department_id" ref="dept_city_el_paso_general"/>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
@@ -2063,7 +2087,7 @@
             <field name="name">Container-900007</field>
             <field name="barcode">900007</field>
             <field name="partner_id" ref="customer_chase_bank"/>
-            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="department_id" ref="dept_chase_bank_general"/>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="container_type_id" ref="demo_container_type_secure_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>

@@ -21,10 +21,12 @@ Strategy:
 This provides forward / backward compatibility without repeated manual edits.
 """
 
-from odoo import api, SUPERUSER_ID
+"""Post-init hook uses Odoo 18 signature: post_init_hook(env)."""
+
+# No direct API decorators needed; the registry passes an Environment
 
 
-def post_init_hook(cr, registry):  # pragma: no cover - executed at install
+def post_init_hook(env):  # pragma: no cover - executed at install
     """Resolve cron field schema differences dynamically.
 
     Detection logic:
@@ -33,7 +35,6 @@ def post_init_hook(cr, registry):  # pragma: no cover - executed at install
 
     Both may co-exist in some patched environments; in that case we set both.
     """
-    env = api.Environment(cr, SUPERUSER_ID, {})
     cron_model = env['ir.cron']
     cron_fields = cron_model._fields
 
