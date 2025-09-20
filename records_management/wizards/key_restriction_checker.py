@@ -54,6 +54,15 @@ class KeyRestrictionChecker(models.TransientModel):
     # ACTIONS
     # ==========================================
 
+    def action_check_customer(self):
+        """Wrapper to match view button name.
+
+        The form view binds a button to `action_check_customer`, but the
+        implementation lives in `__check__check_customer`. Keep a thin wrapper
+        to avoid renaming internals and to preserve existing behavior.
+        """
+        return self.__check__check_customer()
+
     def __check__check_customer(self):
         """Check customer key restriction status"""
 
