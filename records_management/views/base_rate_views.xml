@@ -55,18 +55,18 @@
             <field name="name">base.rate.view.tree</field>
             <field name="model">base.rate</field>
             <field name="arch" type="xml">
-                <list decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-warning="state == 'confirmed'" decoration-muted="state in ['superseded', 'expired', 'cancelled']">
-                    <field name="name" />
-                    <field name="version" />
-                    <field name="is_current" widget="boolean_toggle" />
-                    <field name="effective_date" />
-                    <field name="expiration_date" />
-                    <field name="creation_method" />
-                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-warning="state == 'confirmed'" decoration-danger="state in ['expired', 'cancelled']" />
-                    <field name="customer_count" string="Base Rate Users" />
-                    <field name="negotiated_rate_count" string="Negotiated Users" />
-                    <field name="average_service_rate" widget="monetary" string="Avg. Rate" />
-                    <field name="company_id" optional="hide" />
+                <list decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-muted="state == 'archived'">
+                    <field name="name"/>
+                    <field name="version"/>
+                    <field name="active"/>
+                    <field name="effective_date"/>
+                    <field name="expiration_date"/>
+                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-muted="state == 'archived'"/>
+                    <field name="average_container_rate" widget="monetary" optional="hide"/>
+                    <field name="total_service_rate" widget="monetary" optional="hide"/>
+                    <field name="customers_using_rates" optional="hide"/>
+                    <field name="containers_at_base_rates" optional="hide"/>
+                    <field name="company_id" optional="hide"/>
                 </list>
             </field>
         </record>
@@ -76,150 +76,119 @@
             <field name="arch" type="xml">
                 <form string="Base Rates">
                     <header>
-                        <button name="action_activate" string="Activate Rate" type="object" class="oe_highlight" invisible="state != 'draft'" />
-                        <button name="action_expire" string="Expire Rate" type="object" confirm="Are you sure you want to expire this rate?" invisible="state != 'active'" />
-                        <button name="action_run_forecast" string="Revenue Forecast" type="object" class="btn-secondary" />
-                        <button name="action_approve_changes" string="Approve Changes" type="object" groups="records_management.group_records_manager" invisible="state != 'draft'" />
-                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,active,superseded,expired" />
+                        <button name="action_activate" string="Activate Rate" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_expire" string="Expire Rate" type="object" confirm="Are you sure you want to expire this rate?" invisible="state != 'active'"/>
+                        <button name="action_run_forecast" string="Revenue Forecast" type="object" class="btn-secondary"/>
+                        <button name="action_approve_changes" string="Approve Changes" type="object" groups="records_management.group_records_manager" invisible="state != 'draft'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_customers_using_rate" type="object" class="oe_stat_button" icon="fa-users">
-                                <field name="customer_count" widget="statinfo" string="Base Rate Users" />
-                            </button>
-                            <button name="action_view_negotiated_rates" type="object" class="oe_stat_button" icon="fa-handshake-o">
-                                <field name="negotiated_rate_count" widget="statinfo" string="Negotiated Rates" />
+                                <field name="customers_using_rates" widget="statinfo" string="Base Rate Users"/>
                             </button>
                         </div>
                         <group>
                             <group string="Basic Information">
-                                <field name="name" />
-                                <field name="company_id" options="{'no_create': True}" />
-                                <field name="user_id" />
-                                <field name="active" />
-                                <field name="version" />
+                                <field name="name"/>
+                                <field name="company_id" options="{'no_create': True}"/>
+                                <field name="user_id"/>
+                                <field name="active"/>
+                                <field name="version"/>
                             </group>
                             <group string="Rate Information">
-                                <field name="is_current" />
-                                <field name="effective_date" />
-                                <field name="expiration_date" />
-                                <field name="creation_method" />
+                                <field name="effective_date"/>
+                                <field name="expiration_date"/>
                             </group>
                         </group>
                         <notebook>
-                            <page string="Service Rates" name="service_rates">
+                            <page string="Service &amp; Hourly Rates" name="service_rates">
                                 <group>
-                                    <group string="External Shredding Services">
-                                        <field name="external_per_bin_rate" widget="monetary" />
-                                        <field name="external_service_call_rate" widget="monetary" />
+                                    <group>
+                                        <field name="pickup_rate" widget="monetary"/>
+                                        <field name="delivery_rate" widget="monetary"/>
+                                        <field name="destruction_rate" widget="monetary"/>
+                                        <field name="document_retrieval_rate" widget="monetary"/>
                                     </group>
-                                    <group string="Managed Document Services">
-                                        <field name="managed_permanent_removal_rate" widget="monetary" />
-                                        <field name="managed_retrieval_rate" widget="monetary" />
-                                        <field name="managed_service_call_rate" widget="monetary" />
-                                        <field name="managed_shredding_rate" widget="monetary" />
-                                    </group>
-                                </group>
-                                <group>
-                                    <group string="Pickup &amp;amp; Delivery">
-                                        <field name="pickup_rate" widget="monetary" />
-                                        <field name="delivery_rate" widget="monetary" />
-                                        <field name="emergency_pickup_rate" widget="monetary" />
-                                        <field name="rush_delivery_rate" widget="monetary" />
-                                    </group>
-                                    <group string="Storage Services">
-                                        <field name="storage_rate_monthly" widget="monetary" />
-                                        <field name="storage_setup_fee" widget="monetary" />
-                                        <field name="inactive_storage_rate" widget="monetary" />
+                                    <group>
+                                        <field name="scanning_rate" widget="monetary"/>
+                                        <field name="indexing_rate" widget="monetary"/>
+                                        <field name="technician_hourly_rate" widget="monetary"/>
+                                        <field name="supervisor_hourly_rate" widget="monetary"/>
                                     </group>
                                 </group>
                             </page>
-                            <page string="Container &amp;amp; Access Rates" name="container_rates">
+                            <page string="Container Storage Rates" name="container_rates">
                                 <group>
-                                    <group string="Container Access">
-                                        <field name="container_access_rate" widget="monetary" />
-                                        <field name="container_access_monthly_rate" widget="monetary" />
-                                        <field name="bulk_container_access_discount" widget="percentage" />
+                                    <group>
+                                        <field name="standard_box_rate" widget="monetary"/>
+                                        <field name="legal_box_rate" widget="monetary"/>
+                                        <field name="map_box_rate" widget="monetary"/>
                                     </group>
-                                    <group string="Special Services">
-                                        <field name="not_found_search_rate" widget="monetary" />
-                                        <field name="research_rate_hourly" widget="monetary" />
-                                        <field name="scanning_rate_per_page" widget="monetary" />
-                                        <field name="indexing_rate_per_document" widget="monetary" />
-                                    </group>
-                                </group>
-                                <group>
-                                    <group string="Digital Services">
-                                        <field name="digital_delivery_rate" widget="monetary" />
-                                        <field name="digital_storage_rate_gb" widget="monetary" />
-                                        <field name="data_conversion_rate" widget="monetary" />
-                                    </group>
-                                    <group string="Setup &amp;amp; Processing">
-                                        <field name="setup_fee_new_client" widget="monetary" />
-                                        <field name="processing_fee_batch" widget="monetary" />
-                                        <field name="verification_fee" widget="monetary" />
-                                        <field name="audit_trail_fee" widget="monetary" />
+                                    <group>
+                                        <field name="odd_size_rate" widget="monetary"/>
+                                        <field name="pathology_rate" widget="monetary"/>
                                     </group>
                                 </group>
                             </page>
-                            <page string="Compliance &amp;amp; Special" name="compliance_rates">
+                            <page string="Billing Configuration" name="billing_config">
                                 <group>
-                                    <group string="NAID Compliance">
-                                        <field name="naid_witness_fee" widget="monetary" />
-                                        <field name="naid_certificate_fee" widget="monetary" />
-                                        <field name="compliance_audit_rate" widget="monetary" />
-                                    </group>
-                                    <group string="Consultation &amp;amp; Support">
-                                        <field name="consultation_rate_hourly" widget="monetary" />
-                                        <field name="training_rate_hourly" widget="monetary" />
-                                        <field name="support_rate_hourly" widget="monetary" />
-                                    </group>
-                                </group>
-                                <group>
-                                    <group string="Penalties &amp;amp; Fees">
-                                        <field name="late_fee_rate" widget="monetary" />
-                                        <field name="cancellation_fee" widget="monetary" />
-                                        <field name="returned_item_fee" widget="monetary" />
-                                        <field name="restocking_fee_rate" widget="percentage" />
-                                    </group>
-                                    <group string="Travel &amp;amp; Logistics">
-                                        <field name="travel_rate_per_mile" widget="monetary" />
-                                        <field name="fuel_surcharge_rate" widget="percentage" />
-                                        <field name="weekend_service_multiplier" />
-                                        <field name="holiday_service_multiplier" />
+                                    <group>
+                                        <field name="billing_frequency_default"/>
+                                        <field name="proration_method"/>
+                                        <field name="minimum_monthly_charge" widget="monetary"/>
                                     </group>
                                 </group>
                             </page>
-                            <page string="Computation &amp;amp; Statistics" name="computed_fields">
+                            <page string="Pricing Modifiers" name="pricing_modifiers">
+                                <group string="Volume-based">
+                                    <group>
+                                        <field name="enable_volume_tiers"/>
+                                        <field name="small_volume_threshold"/>
+                                        <field name="small_volume_multiplier"/>
+                                    </group>
+                                    <group>
+                                        <field name="large_volume_threshold"/>
+                                        <field name="large_volume_multiplier"/>
+                                        <field name="enterprise_volume_threshold"/>
+                                        <field name="enterprise_volume_multiplier"/>
+                                    </group>
+                                </group>
+                                <group string="Location-based">
+                                    <group>
+                                        <field name="enable_location_modifiers"/>
+                                        <field name="premium_location_multiplier"/>
+                                    </group>
+                                    <group>
+                                        <field name="standard_location_multiplier"/>
+                                        <field name="economy_location_multiplier"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Computation &amp; Statistics" name="computed_fields">
                                 <group>
                                     <group string="Rate Analysis">
-                                        <field name="average_service_rate" widget="monetary" readonly="1" />
-                                        <field name="total_setup_fees" widget="monetary" readonly="1" />
-                                        <field name="highest_rate_service" readonly="1" />
-                                        <field name="lowest_rate_service" readonly="1" />
+                                        <field name="average_container_rate" widget="monetary" readonly="1"/>
+                                        <field name="rate_per_cubic_foot" widget="monetary" readonly="1"/>
+                                        <field name="total_service_rate" widget="monetary" readonly="1"/>
                                     </group>
                                     <group string="Usage Statistics">
-                                        <field name="most_requested_service" readonly="1" />
-                                        <field name="total_monthly_potential" widget="monetary" readonly="1" />
-                                        <field name="customer_count" readonly="1" />
-                                        <field name="negotiated_rate_count" readonly="1" />
+                                        <field name="customers_using_rates" readonly="1"/>
+                                        <field name="containers_at_base_rates" readonly="1"/>
                                     </group>
                                 </group>
                             </page>
-                            <page string="Description &amp;amp; Notes" name="description">
+                            <page string="Description" name="description">
                                 <group>
-                                    <field name="description" placeholder="Describe this rate set and when it applies..." nolabel="1" />
-                                </group>
-                                <group string="Internal Notes">
-                                    <field name="notes" placeholder="Internal notes about this rate set..." nolabel="1" />
+                                    <field name="description" placeholder="Describe this rate set and when it applies..." nolabel="1"/>
                                 </group>
                             </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
-                        <field name="message_follower_ids" />
-                        <field name="activity_ids" />
-                        <field name="message_ids" />
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
                     </div>
                 </form>
             </field>
