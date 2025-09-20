@@ -216,12 +216,12 @@
                                 <field name="certificate_ids" mode="list">
                                     <list>
                                         <field name="certificate_number" />
-                                        <field name="certificate_type" />
+                                        <field name="partner_id" />
                                         <field name="issue_date" />
-                                        <field name="expiry_date" />
-                                        <field name="issuing_authority" />
-                                        <field name="certificate_status" />
-                                        <button name="action_download_certificate" type="object" string="Download" icon="fa-download" class="btn-link" />
+                                        <field name="destruction_date" />
+                                        <field name="total_items" />
+                                        <field name="total_weight" />
+                                        <field name="state" widget="badge" />
                                     </list>
                                 </field>
                             </page>
