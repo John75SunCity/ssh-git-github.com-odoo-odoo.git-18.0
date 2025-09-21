@@ -4,12 +4,23 @@
 <record id="report_naid_certificate" model="ir.actions.report">
         <field name="name">Naid Certificate</field>
         <field name="model">naid.certificate</field>
-        <field name="report_type">qweb-html</field>
+        <field name="report_type">qweb-pdf</field>
         <field name="report_name">records_management.report_naid_certificate_view</field>
         <field name="report_file">records_management.report_naid_certificate</field>
         <field name="print_report_name">"(NAID Certificate Report) %s" % (object.name or 'N/A')</field>
         <field name="binding_model_id" ref="records_management.model_naid_certificate"/>
         <field name="binding_type">report</field>
+    </record>
+
+    <!-- Backward-compatibility alias expected by Python and portal routes -->
+    <record id="action_report_naid_certificate" model="ir.actions.report">
+        <field name="name">Naid Certificate</field>
+        <field name="model">naid.certificate</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_naid_certificate_view</field>
+        <field name="report_file">records_management.report_naid_certificate</field>
+        <field name="print_report_name">"(NAID Certificate Report) %s" % (object.name or 'N/A')</field>
+        <!-- Note: No binding to avoid duplicate Print menu entries; used as XMLID alias only. -->
     </record>
 
     <template id="report_naid_certificate_view">
