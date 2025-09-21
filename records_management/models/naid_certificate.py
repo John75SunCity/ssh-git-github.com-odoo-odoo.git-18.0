@@ -391,7 +391,10 @@ class NaidCertificate(models.Model):
             for record in self:
                 if record.state != vals["state"]:
                     record.message_post(
-                        body=_("Certificate state changed from %s to %s", record.state, vals["state"])
+                        body=(
+                            _("Certificate state changed from %s to %s")
+                            % (record.state, vals["state"]) 
+                        )
                     )
 
         return super(NaidCertificate, self).write(vals)
@@ -408,6 +411,29 @@ class NaidCertificate(models.Model):
                 )
 
         return super(NaidCertificate, self).unlink()
+
+    # =========================================================================
+    # XML DATA HELPERS (safe wrappers for data/demo calls)
+    # =========================================================================
+    @api.model
+    def xml_issue_certificate(self, ids):
+        """Wrapper to issue certificate(s) from XML data.
+
+        Accepts a single ID or a list/tuple of IDs and calls the record-level
+        action to perform proper validations and PDF generation.
+        """
+        if not ids:
+            return True
+        # Normalize to iterable of IDs
+        if isinstance(ids, (int, str)):
+            ids = [int(ids)]
+        elif isinstance(ids, tuple):
+            ids = list(ids)
+        # Browse and act
+        records = self.browse(ids)
+        for rec in records.exists():
+            rec.action_issue_certificate()
+        return True
 
     # ============================================================================
     # SQL CONSTRAINTS
