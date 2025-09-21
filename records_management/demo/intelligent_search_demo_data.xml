@@ -64,8 +64,7 @@
             <field name="content_date_to">2024-06-30</field>
             <field name="primary_content_type">financial</field>
             <field name="search_keywords">invoices, receipts, payments, accounts payable, accounts receivable, quarterly reports</field>
-            <field name="customer_sequence_start">1001</field>
-            <field name="customer_sequence_end">1500</field>
+            <!-- Removed fields not defined on model: customer_sequence_start, customer_sequence_end -->
         </record>
 
         <record id="demo_container_financial_q3" model="records.container">
@@ -81,8 +80,7 @@
             <field name="content_date_to">2024-09-30</field>
             <field name="primary_content_type">financial</field>
             <field name="search_keywords">invoices, receipts, payments, accounts payable, accounts receivable, quarterly reports, John Doe, service dates</field>
-            <field name="customer_sequence_start">1501</field>
-            <field name="customer_sequence_end">2000</field>
+            <!-- Removed fields not defined on model: customer_sequence_start, customer_sequence_end -->
         </record>
 
         <!-- Legal Files Container -->
@@ -115,7 +113,7 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">personnel</field>
             <field name="search_keywords">employee files, HR records, performance reviews, hiring documents, benefits, payroll</field>
-            <field name="security_level">confidential</field>
+            <field name="security_level">2</field>
         </record>
 
         <record id="demo_container_personnel_inactive" model="records.container">
@@ -131,7 +129,7 @@
             <field name="content_date_to">2023-12-31</field>
             <field name="primary_content_type">personnel</field>
             <field name="search_keywords">terminated employees, HR records, exit interviews, final pay stubs, references</field>
-            <field name="security_level">confidential</field>
+            <field name="security_level">2</field>
         </record>
 
         <!-- Insurance Records Container -->
@@ -180,8 +178,7 @@
             <field name="content_date_to">2024-06-30</field>
             <field name="primary_content_type">project</field>
             <field name="search_keywords">Project Alpha, Phase 1, project plans, specifications, requirements, engineering drawings, Alpha-001 to Alpha-099</field>
-            <field name="project_number">ALPHA-2024-001</field>
-            <field name="department_code">ENG</field>
+            <!-- Removed fields not defined on model: project_number, department_code -->
         </record>
 
         <record id="demo_container_project_beta" model="records.container">
@@ -195,8 +192,7 @@
             <field name="content_date_to">2024-09-30</field>
             <field name="primary_content_type">project</field>
             <field name="search_keywords">Project Beta, development phase, software specs, code reviews, testing documentation, Beta-001 to Beta-150</field>
-            <field name="project_number">BETA-2024-002</field>
-            <field name="department_code">DEV</field>
+            <!-- Removed fields not defined on model: project_number, department_code -->
         </record>
 
         <!-- Compliance and Audit Files -->
@@ -211,8 +207,8 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">compliance</field>
             <field name="search_keywords">SOX compliance, Sarbanes-Oxley, internal controls, financial audits, control testing, audit reports</field>
-            <field name="security_level">restricted</field>
-            <field name="compliance_category">SOX</field>
+            <field name="security_level">2</field>
+            <!-- Removed field not defined on model: compliance_category -->
         </record>
 
         <record id="demo_container_hipaa_medical" model="records.container">
@@ -226,8 +222,8 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">medical</field>
             <field name="search_keywords">HIPAA medical records, patient confidentiality, PHI, protected health information, medical charts</field>
-            <field name="security_level">restricted</field>
-            <field name="compliance_category">HIPAA</field>
+            <field name="security_level">2</field>
+            <!-- Removed field not defined on model: compliance_category -->
         </record>
 
         <!-- Vendor and Customer Files by Industry -->
@@ -244,7 +240,7 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">vendor</field>
             <field name="search_keywords">technology vendors, software licenses, hardware contracts, SaaS agreements, support contracts, Azure, Microsoft, Google, Amazon</field>
-            <field name="industry_category">technology</field>
+            <!-- Removed field not defined on model: industry_category -->
         </record>
 
         <record id="demo_container_customers_healthcare" model="records.container">
@@ -260,7 +256,7 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">customer</field>
             <field name="search_keywords">healthcare customers, medical facilities, hospitals, clinics, service agreements, HIPAA compliance</field>
-            <field name="industry_category">healthcare</field>
+            <!-- Removed field not defined on model: industry_category -->
         </record>
 
         <!-- Time-Sensitive and Priority Files -->
@@ -275,9 +271,8 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">litigation</field>
             <field name="search_keywords">litigation hold, legal hold, active lawsuits, court documents, depositions, discovery materials</field>
-            <field name="security_level">restricted</field>
-            <field name="retention_category">legal_hold</field>
-            <field name="priority_level">high</field>
+            <field name="security_level">2</field>
+            <!-- Removed fields not defined on model: retention_category, priority_level -->
         </record>
 
         <record id="demo_container_tax_documents" model="records.container">
@@ -291,7 +286,7 @@
             <field name="content_date_to">2023-12-31</field>
             <field name="primary_content_type">tax</field>
             <field name="search_keywords">tax returns, 1099 forms, W-2 forms, tax supporting documents, IRS correspondence, state tax, federal tax</field>
-            <field name="retention_category">tax_7_year</field>
+            <!-- Removed field not defined on model: retention_category -->
         </record>
 
         <!-- Multi-Language and International Content -->
@@ -306,7 +301,7 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">international</field>
             <field name="search_keywords">international contracts, contrats internationaux, contratos internacionales, European Union, GDPR, global partnerships</field>
-            <field name="language_codes">en,fr,es,de</field>
+            <!-- Removed field not defined on model: language_codes -->
         </record>
 
         <!-- Digital and Hybrid Content -->
@@ -321,7 +316,7 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">digital</field>
             <field name="search_keywords">digital backups, hard drives, USB drives, backup media, data recovery, archived emails, database backups</field>
-            <field name="media_type">digital_storage</field>
+            <!-- Removed field not defined on model: media_type -->
         </record>
 
         <!-- Search Test Scenarios -->
@@ -336,7 +331,7 @@
             <field name="content_date_to">2024-02-29</field>
             <field name="primary_content_type">test</field>
             <field name="search_keywords">Valentine's Day records, February 2024, leap year documents, February 14, February 29</field>
-            <field name="special_dates">2024-02-14,2024-02-29</field>
+            <!-- Removed field not defined on model: special_dates -->
         </record>
 
         <record id="demo_container_search_test_names" model="records.container">
@@ -366,8 +361,7 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">emergency</field>
             <field name="search_keywords">emergency contacts, crisis procedures, disaster recovery, business continuity, emergency response</field>
-            <field name="access_level">emergency_only</field>
-            <field name="priority_level">critical</field>
+            <!-- Removed fields not defined on model: access_level, priority_level -->
         </record>
 
         <!-- Intelligent Search Configuration Settings -->

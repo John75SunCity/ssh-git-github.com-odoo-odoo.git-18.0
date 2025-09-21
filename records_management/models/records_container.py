@@ -82,6 +82,62 @@ class RecordsContainer(models.Model):
     description = fields.Text(string="Container Description")
     # Batch 3 label disambiguation
     content_description = fields.Text(string="Box Contents")
+    # Intelligent Search metadata (alpha/date ranges, content type, keywords)
+    alpha_range_start = fields.Char(
+        string="Alpha Range Start",
+        help="Starting letter of the primary alphabetical range for the contents (e.g., A).",
+    )
+    alpha_range_end = fields.Char(
+        string="Alpha Range End",
+        help="Ending letter of the primary alphabetical range for the contents (e.g., G).",
+    )
+    alpha_range_display = fields.Char(
+        string="Alphabetical Range",
+        compute="_compute_alpha_range_display",
+        store=True,
+        help="Computed display of the alphabetical range (e.g., 'A - G').",
+    )
+    content_date_from = fields.Date(
+        string="Content Date From",
+        help="Earliest relevant content date contained in this container.",
+    )
+    content_date_to = fields.Date(
+        string="Content Date To",
+        help="Latest relevant content date contained in this container.",
+    )
+    content_date_range_display = fields.Char(
+        string="Content Date Range",
+        compute="_compute_content_date_range_display",
+        store=True,
+        help="Computed display of the content date range (e.g., '2024-01-01 to 2024-03-31').",
+    )
+    primary_content_type = fields.Selection(
+        selection=[
+            ("medical", "Medical"),
+            ("financial", "Financial"),
+            ("legal", "Legal"),
+            ("personnel", "Personnel"),
+            ("insurance", "Insurance"),
+            ("mixed", "Mixed"),
+            ("project", "Project"),
+            ("compliance", "Compliance"),
+            ("vendor", "Vendor"),
+            ("customer", "Customer"),
+            ("test", "Test"),
+            ("international", "International"),
+            ("digital", "Digital"),
+            ("emergency", "Emergency"),
+            ("litigation", "Litigation"),
+            ("tax", "Tax"),
+        ],
+        default="mixed",
+        string="Primary Content Type",
+        help="Main classification of the contents to improve search suggestions.",
+    )
+    search_keywords = fields.Text(
+        string="Search Keywords",
+        help="Comma-separated keywords to improve findability (e.g., names, identifiers).",
+    )
     dimensions = fields.Char(string="Dimensions", related="container_type_id.dimensions", readonly=True)
     weight = fields.Float(string="Weight (lbs)")
     cubic_feet = fields.Float(string="Cubic Feet", related="container_type_id.cubic_feet", readonly=True)
@@ -208,6 +264,37 @@ class RecordsContainer(models.Model):
             ("state", "=", "destroyed"),
         ]
         return inverse_domain
+
+    @api.depends("alpha_range_start", "alpha_range_end")
+    def _compute_alpha_range_display(self):
+        for rec in self:
+            start = (rec.alpha_range_start or "").strip()
+            end = (rec.alpha_range_end or "").strip()
+            if start and end:
+                if start.upper() == end.upper():
+                    rec.alpha_range_display = start.upper()
+                else:
+                    rec.alpha_range_display = "%s - %s" % (start.upper(), end.upper())
+            elif start:
+                rec.alpha_range_display = start.upper()
+            elif end:
+                rec.alpha_range_display = end.upper()
+            else:
+                rec.alpha_range_display = False
+
+    @api.depends("content_date_from", "content_date_to")
+    def _compute_content_date_range_display(self):
+        for rec in self:
+            d_from = rec.content_date_from
+            d_to = rec.content_date_to
+            if d_from and d_to:
+                rec.content_date_range_display = "%s to %s" % (d_from, d_to)
+            elif d_from:
+                rec.content_date_range_display = "%s" % (d_from)
+            elif d_to:
+                rec.content_date_range_display = "%s" % (d_to)
+            else:
+                rec.content_date_range_display = False
 
     # ============================================================================
     # ONCHANGE & HELPERS (Rates ↔ Container Type)
