@@ -7,6 +7,7 @@ It includes mobile-specific features, offline capabilities, and enhanced mobile 
 """
 
 from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 from datetime import datetime
 
 
@@ -43,6 +44,18 @@ class MobileFsmIntegration(models.Model):
         string='Biometric Authentication',
         default=False,
         help='Enable biometric authentication for mobile login'
+    )
+
+    require_pin = fields.Boolean(
+        string='Require PIN',
+        default=False,
+        help='Require PIN verification for sensitive actions'
+    )
+
+    session_timeout = fields.Integer(
+        string='Session Timeout (minutes)',
+        default=15,
+        help='Automatic logout after a period of inactivity (in minutes)'
     )
 
     # Mobile UI settings
@@ -88,6 +101,12 @@ class MobileFsmIntegration(models.Model):
         string='Photo Capture',
         default=True,
         help='Enable photo capture for documentation'
+    )
+
+    enable_signature_capture = fields.Boolean(
+        string='Signature Capture',
+        default=True,
+        help='Enable signature capture during mobile workflows'
     )
 
     # GPS and location
@@ -371,3 +390,10 @@ class MobileFsmIntegration(models.Model):
         })
 
         return config
+
+    # Constraints & validations
+    @api.constrains('session_timeout')
+    def _check_session_timeout(self):
+        for rec in self:
+            if rec.session_timeout is not None and rec.session_timeout < 0:
+                raise ValidationError(_("Session timeout must be non-negative"))
