@@ -334,7 +334,7 @@
         <record id="demo_paper_bale_001" model="paper.bale.recycling">
             <field name="name">Bale-001-Demo</field>
             <field name="bale_weight">500.0</field>
-            <field name="state">draft</field>
+            <field name="state">pending</field>
             <field name="collection_date" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')"/>
         </record>
 
@@ -342,7 +342,7 @@
         <record id="demo_paper_bale_002" model="paper.bale.recycling">
             <field name="name">Bale-002-Demo</field>
             <field name="bale_weight">750.0</field>
-            <field name="state">draft</field>
+            <field name="state">pending</field>
             <field name="collection_date" eval="(datetime.now() + timedelta(days=45)).strftime('%Y-%m-%d')"/>
         </record>
 

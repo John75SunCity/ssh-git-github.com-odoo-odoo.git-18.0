@@ -5,7 +5,7 @@
 <!-- Enhanced Records Management Menu with Fleet and FSM Integration -->
     <menuitem id="menu_records_fleet_fsm"
               name="Fleet &amp; Route Management"
-              parent="records_management_menu.menu_records_management_root"
+              parent="records_management.menu_records_management_root"
               sequence="30"/>
 
     <!-- Fleet Management Submenu -->
