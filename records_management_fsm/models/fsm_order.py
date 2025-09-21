@@ -324,17 +324,27 @@ class FsmOrder(models.Model):
             if record.witness_required and not record.witness_name:
                 raise UserError(_("Witness name is required when a witness is required."))
 
-    @api.constrains('naid_compliance_required', 'certificate_required')
+    @api.constrains('naid_compliance_required', 'certificate_required', 'service_type')
     def _check_naid_compliance(self):
-        """Validate NAID compliance requirements."""
+        """Validate NAID compliance requirements for shredding services only.
+
+        Scope: Only enforce when this task represents a shredding/destruction service
+        (i.e., `service_type` is set). This avoids impacting unrelated demo modules
+        that create generic `project.task` records with this inherited model.
+        """
         for record in self:
-            if record.naid_compliance_required and not record.certificate_required:
+            # Enforce only for actual shredding services (service_type set)
+            if record.service_type and record.naid_compliance_required and not record.certificate_required:
                 raise UserError(_("Certificate is required when NAID compliance is required."))
 
     @api.onchange('naid_compliance_required')
     def _onchange_naid_compliance_required(self):
-        """Auto-correct certificate_required when NAID compliance is required."""
-        if self.naid_compliance_required:
+        """Auto-correct certificate_required when NAID compliance is required.
+
+        Apply only for shredding services (service_type set) to avoid side effects
+        on generic tasks created by other modules (e.g., sale_timesheet demos).
+        """
+        if self.service_type and self.naid_compliance_required:
             self.certificate_required = True
 
     # Renamed helper to satisfy naming lint (_selection_ prefix)

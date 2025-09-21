@@ -11,9 +11,19 @@
             <field name="state">issued</field>
         </record>
 
+        <!-- Ensure issued certificate has at least one destroyed item -->
+        <record id="demo_naid_certificate_item_001" model="naid.certificate.item">
+            <field name="certificate_id" ref="records_management.demo_naid_certificate_001"/>
+            <field name="name">Confidential Paper Boxes</field>
+            <field name="weight">25.0</field>
+            <field name="quantity">3</field>
+            <field name="material_type">Paper</field>
+        </record>
+
         <record id="demo_naid_certificate_002" model="naid.certificate">
             <field name="certificate_number">CERT/2024/00002</field>
             <field name="partner_id" ref="base.res_partner_2"/>
+            <field name="destruction_date" eval="(datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')"/>
             <field name="issue_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
             <field name="state">draft</field>
         </record>
