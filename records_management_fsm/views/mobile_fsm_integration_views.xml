@@ -8,14 +8,14 @@
             <field name="name">mobile.fsm.integration.tree</field>
             <field name="model">mobile.fsm.integration</field>
             <field name="type">list</field>
-    <field name="arch" type="xml">
-        <list string="Mobile FSM Integrations">
+            <field name="arch" type="xml">
+                <list string="Mobile FSM Integrations">
                     <field name="name"/>
-                    <field name="device_type"/>
+                    <field name="mobile_theme"/>
                     <field name="active"/>
-                    <field name="offline_enabled"/>
+                    <field name="enable_offline_mode"/>
                     <field name="sync_interval"/>
-        </list>
+                </list>
             </field>
         </record>
 
@@ -24,11 +24,10 @@
             <field name="name">mobile.fsm.integration.form</field>
             <field name="model">mobile.fsm.integration</field>
             <field name="type">form</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <form string="Mobile FSM Integration">
                     <header>
-                        <button name="sync_mobile_data" type="object" string="Sync Data" class="btn-primary"/>
-                        <button name="test_mobile_connection" type="object" string="Test Connection" class="btn-secondary"/>
+                        <button name="create_default_mobile_config" type="object" string="Create Default Config" class="btn-secondary"/>
                         <field name="active" widget="statusbar"/>
                     </header>
                     <sheet>
@@ -38,14 +37,14 @@
                         </div>
                         <group>
                             <group>
-                                <field name="device_type"/>
+                                <field name="mobile_theme"/>
                                 <field name="active"/>
-                                <field name="offline_enabled"/>
+                                <field name="enable_offline_mode"/>
                                 <field name="sync_interval"/>
                             </group>
                             <group>
                                 <field name="enable_biometric_auth"/>
-                                <field name="enable_gps_tracking"/>
+                                <field name="enable_location_tracking"/>
                                 <field name="enable_photo_capture"/>
                                 <field name="enable_signature_capture"/>
                             </group>
@@ -54,19 +53,18 @@
                             <field name="enable_push_notifications"/>
                             <field name="enable_voice_commands"/>
                             <field name="enable_barcode_scanning"/>
-                            <field name="enable_nfc_scanning"/>
+                            <field name="enable_qr_scanning"/>
                         </group>
                         <field name="description" placeholder="Describe this mobile integration..."/>
                         <notebook>
                             <page string="Dashboard Configuration">
                                 <group>
-                                    <field name="dashboard_layout"/>
-                                    <field name="quick_action_buttons"/>
+                                    <field name="dashboard_widgets"/>
                                 </group>
                             </page>
                             <page string="Offline Settings">
                                 <group>
-                                    <field name="offline_enabled"/>
+                                    <field name="enable_offline_mode"/>
                                     <field name="sync_interval"/>
                                     <field name="max_offline_days"/>
                                 </group>
@@ -94,15 +92,15 @@
             <field name="name">mobile.fsm.integration.search</field>
             <field name="model">mobile.fsm.integration</field>
             <field name="type">search</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <search string="Mobile FSM Integrations">
                     <field name="name"/>
-                    <field name="device_type"/>
+                    <field name="mobile_theme"/>
                     <filter name="active" string="Active" domain="[('active', '=', True)]"/>
-                    <filter name="offline_enabled" string="Offline Enabled" domain="[('offline_enabled', '=', True)]"/>
+                    <filter name="offline_enabled" string="Offline Enabled" domain="[('enable_offline_mode', '=', True)]"/>
                     <filter name="biometric_enabled" string="Biometric Auth" domain="[('enable_biometric_auth', '=', True)]"/>
                     <group expand="0" string="Group By">
-                        <filter name="device_type" string="Device Type" context="{'group_by': 'device_type'}"/>
+                        <filter name="device_type" string="Device Type" context="{'group_by': 'mobile_theme'}"/>
                     </group>
                 </search>
             </field>
