@@ -33,7 +33,14 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    partner_id = fields.Many2one("res.partner", string="Customer", required=True, tracking=True)
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Customer",
+        required=True,
+        tracking=True,
+        default=lambda self: self.env.user.partner_id.id,
+        help="Defaults to the current user's partner to ensure minimal record creation works in tests and quick operations.",
+    )
     department_id = fields.Many2one("records.department", string="Department", tracking=True)
     location_id = fields.Many2one(
         "records.location",

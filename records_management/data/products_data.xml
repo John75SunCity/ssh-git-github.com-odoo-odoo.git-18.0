@@ -252,5 +252,14 @@
             <field name="categ_id" ref="category_compliance_services"/>
         </record>
 
+        <!-- Backward-compatible XMLID alias for tests expecting records_management.product_container -->
+        <record id="product_container" model="ir.model.data">
+            <field name="name">product_container</field>
+            <field name="module">records_management</field>
+            <field name="model">product.product</field>
+            <field name="res_id" ref="records_management.product_storage_container"/>
+            <field name="noupdate">1</field>
+        </record>
+
     </data>
 </odoo>
