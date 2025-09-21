@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<odoo>
-    <templates id="template" xml:space="preserve">
+<templates id="template" xml:space="preserve">
         <!-- Main System Flowchart Template -->
         <t t-name="SystemFlowchartTemplate">
             <div class="o_system_flowchart_view">
@@ -305,4 +304,4 @@
             </div>
         </t>
     </templates>
-</odoo>
+ 
