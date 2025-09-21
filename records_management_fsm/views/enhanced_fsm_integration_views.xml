@@ -8,14 +8,14 @@
             <field name="name">enhanced.fsm.integration.tree</field>
             <field name="model">enhanced.fsm.integration</field>
             <field name="type">list</field>
-        <field name="arch" type="xml">
-                <tree string="FSM Integrations">
+            <field name="arch" type="xml">
+                <list string="FSM Integrations">
                     <field name="name"/>
                     <field name="integration_type"/>
                     <field name="active"/>
                     <field name="auto_create_tasks"/>
                     <field name="enable_mobile_checkin"/>
-                </tree>
+                </list>
             </field>
         </record>
 
