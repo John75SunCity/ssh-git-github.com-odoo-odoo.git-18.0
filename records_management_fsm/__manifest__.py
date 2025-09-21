@@ -14,7 +14,6 @@
         "views/enhanced_fsm_integration_views.xml",
         "views/fsm_notification_manager_views.xml",
         "views/fsm_notification_views.xml",
-        "views/fsm_reschedule_wizard_placeholder_views.xml",
         "views/fsm_reschedule_wizard_views.xml",
         "views/fsm_task_service_line_views.xml",
         "views/fsm_task_views.xml",
