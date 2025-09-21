@@ -38,7 +38,7 @@
     <menuitem id="menu_pickup_routes"
               name="Pickup Routes"
               parent="menu_records_routes"
-              action="action_pickup_route"
+              action="records_management.action_pickup_route"
               sequence="10"/>
 
     <!-- FSM Projects for Routes -->

@@ -364,14 +364,16 @@
         <!-- Demo Chain of Custody Log Template -->
         <record id="demo_custody_log_template" model="chain.of.custody">
             <field name="name">Template Custody Transfer</field>
-            <field name="custody_event">transfer</field>
+            <field name="transfer_type">transport</field>
+            <field name="to_custodian_id" ref="base.user_admin"/>
             <field name="notes">Template for custody transfer procedures</field>
         </record>
 
         <!-- Additional Demo Chain of Custody Logs -->
         <record id="demo_custody_log_transfer_002" model="chain.of.custody">
             <field name="name">Transfer to Secure Vault 2</field>
-            <field name="custody_event">transfer</field>
+            <field name="transfer_type">transport</field>
+            <field name="to_custodian_id" ref="base.user_admin"/>
             <field name="notes">Transferred sealed containers to Secure Vault 2</field>
         </record>
 
