@@ -68,7 +68,7 @@ class FsmOrder(models.Model):
     certificate_required = fields.Boolean(string="Certificate Required", default=True)
     certificate_id = fields.Many2one(
         comodel_name='shredding.certificate',
-        string="Destruction Certificate",
+        string="Shredding Certificate",
         readonly=True,
         copy=False
     )
