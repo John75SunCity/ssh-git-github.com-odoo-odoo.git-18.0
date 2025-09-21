@@ -197,7 +197,8 @@ class RecordsLocation(models.Model):
     # ============================================================================
     @api.constrains('parent_location_id')
     def _check_location_hierarchy(self):
-        if not self._check_recursion():
+        # Odoo 18: _check_recursion is deprecated; use _has_cycle with explicit parent field
+        if self._has_cycle('parent_location_id'):
             raise ValidationError(_('You cannot create recursive locations.'))
 
     @api.constrains('max_capacity')

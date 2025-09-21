@@ -218,6 +218,7 @@ from . import rm_module_configurator
 from . import route_optimizer
 from . import scan_digital_asset
 from . import scan_retrieval
+from . import hard_drive_scan
 from . import service_item
 from . import service_item_actions
 from . import shred_bin
