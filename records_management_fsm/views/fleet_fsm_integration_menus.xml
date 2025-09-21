@@ -18,7 +18,7 @@
     <menuitem id="menu_records_fleet_vehicles"
               name="Records Vehicles"
               parent="menu_records_fleet"
-              action="action_fleet_vehicle_records"
+              action="records_management.action_fleet_vehicle_records_work"
               sequence="10"/>
 
     <!-- Standard Fleet Menu for Comparison -->

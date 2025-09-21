@@ -330,10 +330,25 @@
             <field name="description">Off-site document destruction with secure chain-of-custody</field>
         </record>
 
+        <!-- Demo Paper Bales (required for recycling records) -->
+        <record id="demo_bale_001" model="paper.bale">
+            <field name="name">BALE-DEM-001</field>
+            <field name="state">in_stock</field>
+            <field name="weight">500.0</field>
+            <field name="paper_grade">occ</field>
+        </record>
+
+        <record id="demo_bale_002" model="paper.bale">
+            <field name="name">BALE-DEM-002</field>
+            <field name="state">in_stock</field>
+            <field name="weight">750.0</field>
+            <field name="paper_grade">mix</field>
+        </record>
+
         <!-- Demo Paper Bale Recycling -->
         <record id="demo_paper_bale_001" model="paper.bale.recycling">
             <field name="name">Bale-001-Demo</field>
-            <field name="bale_weight">500.0</field>
+            <field name="bale_id" ref="demo_bale_001"/>
             <field name="state">pending</field>
             <field name="collection_date" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')"/>
         </record>
@@ -341,7 +356,7 @@
         <!-- Additional Demo Paper Bales -->
         <record id="demo_paper_bale_002" model="paper.bale.recycling">
             <field name="name">Bale-002-Demo</field>
-            <field name="bale_weight">750.0</field>
+            <field name="bale_id" ref="demo_bale_002"/>
             <field name="state">pending</field>
             <field name="collection_date" eval="(datetime.now() + timedelta(days=45)).strftime('%Y-%m-%d')"/>
         </record>
