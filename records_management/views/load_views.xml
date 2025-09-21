@@ -322,7 +322,7 @@
             <field name="name">load.view.calendar</field>
             <field name="model">paper.bale.load</field>
             <field name="arch" type="xml">
-                <calendar string="Load Schedule" date_start="scheduled_departure" date_stop="estimated_delivery" color="driver_id" quick_add="False" mode="month">
+                <calendar string="Load Schedule" date_start="scheduled_departure" date_stop="estimated_delivery" color="driver_id" mode="month">
                     <field name="name" />
                     <field name="trailer_id" />
                     <field name="driver_id" />

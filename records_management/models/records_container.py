@@ -206,6 +206,18 @@ class RecordsContainer(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            # Ensure required linkage to a partner to satisfy DB NOT NULL and test scenarios
+            if not vals.get("partner_id"):
+                # Prefer current user's partner; fallback to company partner; then root partner
+                partner = self.env.user.partner_id or self.env.company.partner_id
+                if not partner:
+                    try:
+                        partner = self.env.ref("base.partner_root")
+                    except Exception:
+                        partner = False
+                if partner:
+                    vals["partner_id"] = partner.id
+            # Assign a sequence if name is left to default "New"
             if vals.get("name", _("New")) == _("New"):
                 vals["name"] = self.env["ir.sequence"].next_by_code("records.container") or _("New")
         return super().create(vals_list)
