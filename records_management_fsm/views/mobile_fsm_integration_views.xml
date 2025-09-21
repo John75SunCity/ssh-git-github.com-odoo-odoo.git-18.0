@@ -8,14 +8,14 @@
             <field name="name">mobile.fsm.integration.tree</field>
             <field name="model">mobile.fsm.integration</field>
             <field name="type">list</field>
-        <field name="arch" type="xml">
-                <tree string="Mobile FSM Integrations">
+    <field name="arch" type="xml">
+        <list string="Mobile FSM Integrations">
                     <field name="name"/>
                     <field name="device_type"/>
                     <field name="active"/>
                     <field name="offline_enabled"/>
                     <field name="sync_interval"/>
-                </tree>
+        </list>
             </field>
         </record>
 

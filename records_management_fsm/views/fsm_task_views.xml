@@ -5,7 +5,7 @@
     <record id="fsm_task_view_kanban" model="ir.ui.view">
         <field name="name">fsm.task.view.kanban</field>
         <field name="model">fsm.task</field>
-        <field name="type">tree</field>
+    <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="task_status" class="o_kanban_fsm_task_dashboard">
                 <field name="name"/>
@@ -69,7 +69,7 @@
         <field name="model">fsm.task</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-<tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="task_status=='completed'" decoration-info="naid_compliant==True">
+                <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="task_status=='completed'" decoration-info="naid_compliant==True">
                 <field name="name"/>
                 <field name="task_type"/>
                 <field name="partner_id"/>
@@ -82,7 +82,7 @@
 <field name="naid_compliant" widget="boolean"/>
 <field name="total_cubic_feet"/>
 
-            </tree>
+                </list>
         </field>
     </record>
 
@@ -306,7 +306,7 @@
     <record id="fsm_task_view_calendar" model="ir.ui.view">
         <field name="name">fsm.task.view.calendar</field>
         <field name="model">fsm.task</field>
-        <field name="type">tree</field>
+    <field name="type">calendar</field>
         <field name="arch" type="xml">
 <calendar date_start="scheduled_date" date_stop="actual_end_time" color="assigned_technician" quick_add="false" mode="month">
                 <field name="name"/>

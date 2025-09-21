@@ -8,11 +8,11 @@
             <field name="model">fsm.notification.manager</field>
             <field name="type">list</field>
         <field name="arch" type="xml">
-                <tree string="FSM Notification Manager">
-                    name
-                    company_id
-                    active
-                </tree>
+                <list string="FSM Notification Manager">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="active"/>
+                </list>
             </field>
         </record>
 
@@ -25,9 +25,9 @@
                 <form string="FSM Notification Manager">
                     <sheet>
                         <group>
-                            name
-                            company_id
-                            active
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
                         </group>
                     </sheet>
                 </form>

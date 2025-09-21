@@ -42,7 +42,7 @@ class ProjectTaskFSMExtension(models.Model):
     # Certificate generation
     destruction_certificate_id = fields.Many2one(
         'destruction.certificate',
-        string="Destruction Certificate",
+        string="NAID Destruction Certificate",
         help="Certificate of destruction for this service"
     )
 

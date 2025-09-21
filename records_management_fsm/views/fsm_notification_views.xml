@@ -7,8 +7,8 @@
             <field name="name">fsm.notification.view.tree</field>
             <field name="model">fsm.notification</field>
             <field name="type">list</field>
-        <field name="arch" type="xml">
-                <tree string="FSM Notification">
+    <field name="arch" type="xml">
+        <list string="FSM Notification">
                     <field name="name"/>
                     <field name="display_name"/>
                     <field name="partner_id"/>
@@ -18,7 +18,7 @@
                     <field name="state"/>
                     <field name="priority"/>
                     <field name="scheduled_datetime"/>
-                </tree>
+        </list>
             </field>
         </record>
 
