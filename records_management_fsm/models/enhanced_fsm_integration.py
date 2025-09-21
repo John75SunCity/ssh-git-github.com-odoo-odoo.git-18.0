@@ -96,7 +96,7 @@ class EnhancedFsmIntegration(models.Model):
 
     # Company and settings
     company_id = fields.Many2one(
-        'res.company',
+        comodel_name='res.company',
         string='Company',
         default=lambda self: self.env.company
     )
@@ -114,7 +114,7 @@ class EnhancedFsmIntegration(models.Model):
                 'name': 'FSM Task Creation Error',
                 'type': 'server',
                 'level': 'ERROR',
-                'message': _('Error creating FSM task for pickup: %s', str(e)),
+                'message': _("Error creating FSM task for pickup: %s") % str(e),
                 'path': 'enhanced.fsm.integration',
                 'func': 'create_fsm_task_for_pickup',
             })
@@ -143,8 +143,8 @@ class EnhancedFsmIntegration(models.Model):
     def _create_industry_fsm_task(self, pickup_request):
         """Create task using industry_fsm module"""
         task_data = {
-            'name': _('Pickup Request: %s', pickup_request.name),
-            'description': _('Pickup request for customer: %s', pickup_request.partner_id.name),
+            'name': _("Pickup Request: %s") % pickup_request.name,
+            'description': _("Pickup request for customer: %s") % (pickup_request.partner_id.name or ''),
             'partner_id': pickup_request.partner_id.id,
             'scheduled_date_start': pickup_request.requested_date,
             'priority': self.task_priority,
@@ -158,7 +158,7 @@ class EnhancedFsmIntegration(models.Model):
             'name': 'FSM Task Created',
             'type': 'server',
             'level': 'INFO',
-            'message': _('Created FSM task %s for pickup request %s', task.name, pickup_request.name),
+            'message': _("Created FSM task %s for pickup request %s") % (task.name, pickup_request.name),
             'path': 'enhanced.fsm.integration',
             'func': '_create_industry_fsm_task',
         })
@@ -167,10 +167,9 @@ class EnhancedFsmIntegration(models.Model):
 
     def _create_alternative_fsm_task(self, pickup_request):
         """Create alternative task implementation"""
-        # Create a work order coordinator entry instead
         work_order_data = {
-            'name': _('Pickup Task: %s', pickup_request.name),
-            'description': _('Pickup request for customer: %s', pickup_request.partner_id.name),
+            'name': _("Pickup Task: %s") % pickup_request.name,
+            'description': _("Pickup request for customer: %s") % (pickup_request.partner_id.name or ''),
             'partner_id': pickup_request.partner_id.id,
             'scheduled_date': pickup_request.requested_date,
             'priority': self.task_priority,
@@ -185,7 +184,7 @@ class EnhancedFsmIntegration(models.Model):
             'name': 'Alternative FSM Task Created',
             'type': 'server',
             'level': 'INFO',
-            'message': _('Created alternative work order %s for pickup request %s', work_order.name, pickup_request.name),
+            'message': _("Created alternative work order %s for pickup request %s") % (work_order.name, pickup_request.name),
             'path': 'enhanced.fsm.integration',
             'func': '_create_alternative_fsm_task',
         })
@@ -200,9 +199,12 @@ class EnhancedFsmIntegration(models.Model):
         if not user_id:
             user_id = self.env.user.id
 
-        # Get user's assigned tasks/work orders
-        domain = [('assigned_user_id', '=', user_id)]
-        if self._check_fsm_availability():
+        # Select user field depending on availability
+        is_fsm = self._check_fsm_availability()
+        user_field = 'user_id' if is_fsm else 'assigned_user_id'
+        domain = [(user_field, '=', user_id)]
+
+        if is_fsm:
             tasks = self.env['fsm.task'].search(domain + [('stage_id.fold', '=', False)])
         else:
             tasks = self.env['work.order.coordinator'].search(domain + [('state', 'not in', ['completed', 'cancelled'])])
@@ -210,20 +212,27 @@ class EnhancedFsmIntegration(models.Model):
         dashboard_data = {
             'user_id': user_id,
             'total_tasks': len(tasks),
-            'pending_tasks': len(tasks.filtered(lambda t: getattr(t, 'stage_id', None) and not getattr(t.stage_id, 'fold', True) if hasattr(t, 'stage_id') else t.state in ['draft', 'confirmed'])),
-            'completed_today': len(tasks.filtered(lambda t: getattr(t, 'date_done', None) and t.date_done.date() == datetime.now().date() if hasattr(t, 'date_done') else False)),
+            'pending_tasks': len(tasks.filtered(
+                lambda t: (hasattr(t, 'stage_id') and t.stage_id and not getattr(t.stage_id, 'fold', True))
+                or (hasattr(t, 'state') and t.state in ['draft', 'confirmed'])
+            )),
+            'completed_today': len(tasks.filtered(
+                lambda t: (
+                    (getattr(t, 'date_end', None) or getattr(t, 'date_done', None)) and
+                    (getattr(t, 'date_end', None) or getattr(t, 'date_done', None)).date() == datetime.now().date()
+                )
+            )),
             'tasks': [],
         }
 
-        # Add task details
-        for task in tasks[:10]:  # Limit to first 10 tasks
+        for task in tasks[:10]:
             task_data = {
                 'id': task.id,
                 'name': task.name,
-                'partner_name': task.partner_id.name if task.partner_id else '',
+                'partner_name': task.partner_id.name if getattr(task, 'partner_id', False) else '',
                 'scheduled_date': getattr(task, 'scheduled_date_start', getattr(task, 'scheduled_date', None)),
                 'priority': getattr(task, 'priority', '1'),
-                'state': getattr(task, 'stage_id', {}).get('name', '') if hasattr(task, 'stage_id') else task.state,
+                'state': (getattr(task, 'stage_id', False) and getattr(task.stage_id, 'name', '')) or getattr(task, 'state', ''),
             }
             dashboard_data['tasks'].append(task_data)
 
@@ -233,31 +242,46 @@ class EnhancedFsmIntegration(models.Model):
     def update_task_location(self, task_id, latitude, longitude, user_id=None):
         """
         Update task location for GPS tracking.
+
+        Security intent:
+        - Persist logs only in technical logs (ir.logging), which are invisible to regular users.
+        - Regular users cannot see or edit location logs.
+        - Admins (base.group_system) can see full coordinates and details in responses and logs.
         """
         if not user_id:
             user_id = self.env.user.id
 
-        # Create location tracking record
-        location_data = {
-            'user_id': user_id,
-            'task_id': task_id,
-            'latitude': latitude,
-            'longitude': longitude,
-            'timestamp': datetime.now(),
-        }
+        # Prepare immutable log payload
+        timestamp = datetime.now()
+        is_admin = self.env.user.has_group('base.group_system')
 
-        # This would typically create a location tracking record
-        # For now, just log the location update
-        self.env['ir.logging'].create({
+        # Always log full coordinates in technical logs; only admins can browse them by default
+        self.env['ir.logging'].sudo().create({
             'name': 'GPS Location Update',
             'type': 'server',
             'level': 'INFO',
-            'message': _('GPS location updated for task %s: %s, %s', task_id, latitude, longitude),
+            'message': _("GPS location updated for task %s: %s, %s") % (task_id, latitude, longitude),
             'path': 'enhanced.fsm.integration',
             'func': 'update_task_location',
         })
 
-        return {'status': 'success', 'message': 'Location updated successfully'}
+        # Do NOT create any user-visible business records for location logs
+        # This ensures users cannot view or edit location history
+        # Return minimal info to users; full details only to admins
+        base_message = _("Location updated successfully")
+        if is_admin:
+            return {
+                'status': 'success',
+                'message': base_message,
+                'data': {
+                    'task_id': task_id,
+                    'user_id': user_id,
+                    'latitude': latitude,
+                    'longitude': longitude,
+                    'timestamp': timestamp,
+                },
+            }
+        return {'status': 'success', 'message': base_message}
 
     @api.model
     def _create_default_integrations(self):
@@ -296,7 +320,7 @@ class EnhancedFsmIntegration(models.Model):
                     'name': 'Default Integration Creation Error',
                     'type': 'server',
                     'level': 'ERROR',
-                    'message': _('Error creating default integration %s: %s', integration_data['name'], str(e)),
+                    'message': _("Error creating default integration %s: %s") % (integration_data['name'], str(e)),
                     'path': 'enhanced.fsm.integration',
                     'func': '_create_default_integrations',
                 })

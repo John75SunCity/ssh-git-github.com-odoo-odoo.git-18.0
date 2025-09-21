@@ -9,7 +9,7 @@
         <field name="model">fsm.task.service.line</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree string="Service Lines" default_order="task_id, sequence">
+            <list string="Service Lines" default_order="task_id, sequence">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="service_type"/>
@@ -19,7 +19,7 @@
                 <field name="total_price" sum="Total"/>
                 <field name="status"/>
                 <field name="currency_id" invisible="1"/>
-            </tree>
+            </list>
         </field>
     </record>
 
