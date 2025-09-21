@@ -70,7 +70,11 @@ class ProjectTaskFSMExtension(models.Model):
     def _compute_service_complete(self):
         """Compute if service is complete based on stage"""
         for task in self:
-            task.service_complete = task.stage_id.is_closed if task.stage_id else False
+            # In Odoo 18, project.task.type doesn't provide `is_closed` by default.
+            # Use the `fold` attribute (True when a stage is folded/considered done) as a proxy.
+            # Fallback to False if stage is not set.
+            stage = task.stage_id
+            task.service_complete = bool(getattr(stage, 'fold', False)) if stage else False
 
     # ============================================================================
     # BUSINESS METHODS

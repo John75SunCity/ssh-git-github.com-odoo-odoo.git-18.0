@@ -318,7 +318,6 @@
             <field name="provider_id" ref="base.main_partner"/>
             <field name="service_type">onsite</field>
             <field name="service_date">2025-08-13</field>
-            <field name="state">draft</field>
             <field name="description">Standard on-site document destruction service with NAID AAA compliance</field>
         </record>
 
@@ -328,7 +327,6 @@
             <field name="provider_id" ref="base.main_partner"/>
             <field name="service_type">offsite</field>
             <field name="service_date">2025-09-01</field>
-            <field name="state">draft</field>
             <field name="description">Off-site document destruction with secure chain-of-custody</field>
         </record>
 
