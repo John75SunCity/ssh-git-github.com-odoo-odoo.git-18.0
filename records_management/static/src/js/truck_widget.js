@@ -1,5 +1,5 @@
 /** @odoo-module **/
-import { Component } from "@odoo/owl";
+import { Component, xml } from "@odoo/owl";
 
 export class TruckProgressWidget extends Component {
     static template = xml`

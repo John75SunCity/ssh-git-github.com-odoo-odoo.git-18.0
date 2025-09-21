@@ -1,5 +1,5 @@
 /** @odoo-module **/
-import { Component } from "@odoo/owl";
+import { Component, xml } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 
 export class PaperLoadTruckWidget extends Component {
