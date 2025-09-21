@@ -81,6 +81,13 @@ class EnhancedFsmIntegration(models.Model):
         help='Enable GPS tracking for field technicians'
     )
 
+    # Mobile update interval (used in views)
+    location_update_interval = fields.Integer(
+        string='Location Update Interval (sec)',
+        default=60,
+        help='Time interval in seconds between technician GPS location updates'
+    )
+
     # Notification settings
     enable_sms_notifications = fields.Boolean(
         string='SMS Notifications',
@@ -190,6 +197,34 @@ class EnhancedFsmIntegration(models.Model):
         })
 
         return work_order
+
+    def create_default_integrations(self):
+        """UI button: create a set of default FSM integrations.
+
+        Returns an action to show the created integrations, or a notification if none were created.
+        """
+        self.ensure_one()
+        created = self._create_default_integrations()
+        created_ids = [rec.id for rec in created if rec]
+        if created_ids:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Enhanced FSM Integrations'),
+                'res_model': 'enhanced.fsm.integration',
+                'view_mode': 'list,form',
+                'domain': [('id', 'in', created_ids)],
+                'target': 'current',
+            }
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('No New Integrations'),
+                'message': _('Default integrations already exist or could not be created.'),
+                'sticky': False,
+                'type': 'warning',
+            }
+        }
 
     @api.model
     def get_mobile_dashboard_data(self, user_id=None):
