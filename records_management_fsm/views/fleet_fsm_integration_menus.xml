@@ -42,10 +42,23 @@
               sequence="10"/>
 
     <!-- FSM Projects for Routes -->
+    <!-- Define a safe local action for FSM Projects to avoid missing external XMLIDs -->
+    <record id="action_fsm_route_projects_local" model="ir.actions.act_window">
+        <field name="name">FSM Route Projects</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <!-- industry_fsm adds is_fsm flag on projects; use it to filter -->
+        <field name="domain">[("is_fsm", "=", True)]</field>
+        <field name="context">{
+            "search_default_is_fsm": 1,
+            "default_is_fsm": 1
+        }</field>
+    </record>
     <menuitem id="menu_fsm_route_projects"
               name="FSM Route Projects"
               parent="menu_records_routes"
-              action="project.action_view_projects_fsm"
+              action="action_fsm_route_projects_local"
               sequence="20"/>
 
     <!-- Route Analytics -->

@@ -5,12 +5,13 @@
     "summary": "FSM integration for Records Management",
     "author": "Your Name",
     "license": "LGPL-3",
-    "depends": ["records_management", "industry_fsm", "project"],
+    # Ensure all referenced actions exist (fleet vehicles menu uses fleet action)
+    "depends": ["records_management", "industry_fsm", "project", "fleet"],
+    # Load order: security first, then data, then views/actions, menus last
     "data": [
-        "data/fsm_model_external_ids_data.xml",
         "security/ir.model.access.csv",
+        "data/fsm_model_external_ids_data.xml",
         "views/enhanced_fsm_integration_views.xml",
-        "views/fleet_fsm_integration_menus.xml",
         "views/fsm_notification_manager_views.xml",
         "views/fsm_notification_views.xml",
         "views/fsm_reschedule_wizard_placeholder_views.xml",
@@ -18,6 +19,8 @@
         "views/fsm_task_service_line_views.xml",
         "views/fsm_task_views.xml",
         "views/mobile_fsm_integration_views.xml",
+        # Menus loaded last to ensure actions above are available
+        "views/fleet_fsm_integration_menus.xml",
     ],
     "installable": True,
     # Auto-install so it comes in automatically with records_management + industry_fsm
