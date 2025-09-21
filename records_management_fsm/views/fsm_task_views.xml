@@ -10,7 +10,7 @@
             <kanban default_group_by="stage_id" class="o_kanban_fsm_task_dashboard">
                 <field name="name"/>
                 <field name="partner_id"/>
-                <field name="user_id"/>
+                <field name="user_ids"/>
                 <field name="priority"/>
                 <field name="stage_id"/>
                 <templates>
@@ -26,7 +26,7 @@
                             <div class="o_kanban_card_content" role="group">
                                 <div class="mb-2">
                                     <strong>Technician:</strong>
-                                    <field name="user_id"/>
+                                    <field name="user_ids" widget="many2many_avatar_user"/>
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
             <list>
                 <field name="name"/>
                 <field name="partner_id"/>
-                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="user_ids" widget="many2many_avatar_user"/>
                 <field name="priority" widget="priority"/>
                 <field name="stage_id"/>
             </list>
@@ -70,7 +70,7 @@
                     <group>
                         <group string="Task Information">
                             <field name="partner_id"/>
-                            <field name="user_id"/>
+                            <field name="user_ids" widget="many2many_avatar_user"/>
                             <field name="priority"/>
                         </group>
                         <!-- Scheduling fields removed to avoid referencing non-existent fields on project.task.
@@ -94,10 +94,10 @@
             <search>
                 <field name="name" string="Task Name"/>
                 <field name="partner_id" string="Customer"/>
-                <field name="user_id" string="Technician"/>
+                <field name="user_ids" string="Technician"/>
                 <group expand="0" string="Group By">
                     <filter string="Stage" name="group_stage" context="{'group_by': 'stage_id'}"/>
-                    <filter string="Technician" name="group_technician" context="{'group_by': 'user_id'}"/>
+                    <filter string="Technician" name="group_technician" context="{'group_by': 'user_ids'}"/>
                     <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
                 </group>
             </search>
@@ -110,10 +110,10 @@
         <field name="model">project.task</field>
         <field name="type">calendar</field>
         <field name="arch" type="xml">
-            <calendar date_start="date_deadline" color="user_id" quick_add="false" mode="month">
+            <calendar date_start="date_deadline" color="stage_id" quick_add="false" mode="month">
                 <field name="name"/>
                 <field name="partner_id"/>
-                <field name="user_id"/>
+                <field name="user_ids"/>
                 <field name="priority"/>
             </calendar>
         </field>
