@@ -1,6 +1,6 @@
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.12.0.5",  # Force module reload to clear cached views
+    "version": "18.0.12.0.6",  # Force module reload to clear cached views
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
@@ -60,8 +60,8 @@
         "security/ir.model.access.csv",
     # Root menus must be available before any child menus declared in scattered views
     "views/records_management_root_menus.xml",
-    # Accessibility/layout improvements (lang attribute, viewport fixes)
-    "views/accessibility_layout_overrides.xml",
+    # Removed a11y override (viewport/lang) due to upstream layout change causing ParseError
+    # "views/accessibility_layout_overrides.xml",
         # Core sequence data (previously omitted, required for many next_by_code usages)
         "data/ir_sequence_data.xml",
         "data/sequence_data.xml",
