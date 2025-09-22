@@ -60,6 +60,8 @@
         "security/ir.model.access.csv",
     # Root menus must be available before any child menus declared in scattered views
     "views/records_management_root_menus.xml",
+    # Accessibility/layout improvements (lang attribute, viewport fixes)
+    "views/accessibility_layout_overrides.xml",
         # Core sequence data (previously omitted, required for many next_by_code usages)
         "data/ir_sequence_data.xml",
         "data/sequence_data.xml",
