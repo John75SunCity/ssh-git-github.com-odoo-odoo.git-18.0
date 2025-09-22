@@ -31,22 +31,7 @@
             <div class="o_map_container" t-ref="mapContainer">
                 <!-- Map will be rendered here by JavaScript -->
             </div>
-            <div class="o_map_info" t-if="widget.show_info">
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title">Location Details</h6>
-                        <p class="card-text">
-                            <strong>Selected:</strong> <span t-esc="widget.selected_location"/>
-                        </p>
-                        <p class="card-text">
-                            <strong>Capacity:</strong> <span t-esc="widget.location_capacity"/>
-                        </p>
-                        <p class="card-text">
-                            <strong>Utilization:</strong> <span t-esc="widget.location_utilization"/>%
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <!-- Info panel removed for now; legacy widget.* vars not defined in OWL component scope -->
         </div>
     </t>
     

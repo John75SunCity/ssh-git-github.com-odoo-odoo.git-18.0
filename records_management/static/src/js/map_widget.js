@@ -38,4 +38,9 @@ export class MapWidget extends Component {
     }
 }
 
-registry.category("fields").add("map_widget", MapWidget);
+// Register as a field widget definition (expects an object with a `component` key in Odoo 18)
+registry.category("fields").add("map_widget", {
+    component: MapWidget,
+    displayName: "Map",
+    supportedTypes: ["char", "text", "float", "integer"],
+});
