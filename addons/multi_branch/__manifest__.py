@@ -7,6 +7,6 @@
     "website": "https://github.com/John75SunCity",
     "depends": ["base"],
     "data": [],
-    "installable": True,
+    "installable": False,  # Disabled stub to avoid unintended discovery/installation
     "auto_install": False
 }
