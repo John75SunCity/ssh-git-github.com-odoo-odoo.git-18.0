@@ -1,6 +1,6 @@
 {
     "name": "Multi Branch Management",
-    "version": "18.0.1.0.0",
+    "version": "18.0.0.1",
     "summary": "Branch management for Odoo (demo stub)",
     "category": "Extra Tools",
     "author": "Stub for Development",
