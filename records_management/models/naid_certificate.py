@@ -419,18 +419,50 @@ class NaidCertificate(models.Model):
     def xml_issue_certificate(self, ids):
         """Wrapper to issue certificate(s) from XML data.
 
-        Accepts a single ID or a list/tuple of IDs and calls the record-level
-        action to perform proper validations and PDF generation.
+        Accepts:
+        - an integer record id
+        - an xmlid string (e.g., 'module.record_xmlid')
+        - a list/tuple of either ints or xmlid strings
+
+        Safely resolves xmlids and issues each certificate, with robust
+        normalization to avoid passing lists to env.ref or other internals.
         """
         if not ids:
             return True
-        # Normalize to iterable of IDs
-        if isinstance(ids, (int, str)):
-            ids = [int(ids)]
-        elif isinstance(ids, tuple):
-            ids = list(ids)
+
+        def _resolve_to_id(val):
+            # Already an integer id
+            if isinstance(val, int):
+                return val
+            # xmlid string pattern: module.name
+            if isinstance(val, str):
+                if "." in val:
+                    rec = self.env.ref(val, raise_if_not_found=False)
+                    return rec.id if rec else False
+                # Best-effort cast for numeric strings
+                try:
+                    return int(val)
+                except Exception:
+                    return False
+            return False
+
+        # Normalize input to a list of ids
+        norm_ids = []
+        if isinstance(ids, (list, tuple)):
+            for v in ids:
+                rid = _resolve_to_id(v)
+                if rid:
+                    norm_ids.append(rid)
+        else:
+            rid = _resolve_to_id(ids)
+            if rid:
+                norm_ids.append(rid)
+
+        if not norm_ids:
+            return True
+
         # Browse and act
-        records = self.browse(ids)
+        records = self.browse(norm_ids)
         for rec in records.exists():
             rec.action_issue_certificate()
         return True

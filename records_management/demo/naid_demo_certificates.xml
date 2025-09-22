@@ -21,7 +21,7 @@
         </record>
 
     <!-- Issue the certificate after items exist to satisfy constraints -->
-    <function model="naid.certificate" name="xml_issue_certificate" eval="[(ref('records_management.demo_naid_certificate_001'))]"/>
+    <function model="naid.certificate" name="xml_issue_certificate" eval="ref('records_management.demo_naid_certificate_001')"/>
 
         <record id="demo_naid_certificate_002" model="naid.certificate">
             <field name="certificate_number">CERT/2024/00002</field>
