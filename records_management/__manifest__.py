@@ -275,6 +275,8 @@
     "post_init_hook": "post_init_hook",
     "assets": {
         "web.assets_backend": [
+            "records_management/static/src/lib/vis/vis-network.min.css",
+            "records_management/static/src/lib/vis/vis-network.min.js",
             "records_management/static/src/scss/records_management.scss",
             "records_management/static/src/scss/retention_policy.scss",
             "records_management/static/src/css/intelligent_search.css",
@@ -297,6 +299,8 @@
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
         "web.assets_frontend": [
+            "records_management/static/src/lib/vis/vis-network.min.css",
+            "records_management/static/src/lib/vis/vis-network.min.js",
             "records_management/static/src/css/portal_tour.css",
             "records_management/static/src/css/intelligent_search.css",
             "records_management/static/src/css/customer_portal_diagram.css",
