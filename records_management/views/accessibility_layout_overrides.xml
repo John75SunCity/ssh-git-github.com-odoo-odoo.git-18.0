@@ -1,28 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Backend layout: add lang attribute to <html> and clean viewport meta -->
-    <template id="web_layout_lang_attr_inherit" inherit_id="web.layout" name="web.layout.inherit.add_lang">
-        <xpath expr="//html" position="attributes">
-            <attribute name="t-att-lang">lang or 'en'</attribute>
-        </xpath>
-    </template>
+    <data>
+        <!-- Backend webclient: add dynamic HTML lang attribute -->
+        <template id="webclient_bootstrap_lang_inherit" inherit_id="web.webclient_bootstrap" name="web.webclient_bootstrap.inherit.lang">
+            <xpath expr="//html" position="attributes">
+                <!-- Use context language, fallback to en_US to satisfy validators -->
+                <attribute name="t-att-lang">request.env.context.get('lang') or 'en_US'</attribute>
+            </xpath>
+        </template>
 
-    <template id="web_layout_viewport_fix_inherit" inherit_id="web.layout" name="web.layout.inherit.viewport">
-        <xpath expr="//meta[@name='viewport']" position="attributes">
-            <attribute name="content">width=device-width, initial-scale=1</attribute>
-        </xpath>
-    </template>
-
-    <!-- Website layout: mirror the same accessibility fixes -->
-    <template id="website_layout_lang_attr_inherit" inherit_id="website.layout" name="website.layout.inherit.add_lang">
-        <xpath expr="//html" position="attributes">
-            <attribute name="t-att-lang">lang or 'en'</attribute>
-        </xpath>
-    </template>
-
-    <template id="website_layout_viewport_fix_inherit" inherit_id="website.layout" name="website.layout.inherit.viewport">
-        <xpath expr="//meta[@name='viewport']" position="attributes">
-            <attribute name="content">width=device-width, initial-scale=1</attribute>
-        </xpath>
-    </template>
+        <!-- Website layout: add dynamic HTML lang attribute for portal/website pages -->
+        <template id="website_layout_lang_inherit" inherit_id="website.layout" name="website.layout.inherit.lang">
+            <xpath expr="//html" position="attributes">
+                <attribute name="t-att-lang">request.env.context.get('lang') or 'en_US'</attribute>
+            </xpath>
+        </template>
+    </data>
 </odoo>

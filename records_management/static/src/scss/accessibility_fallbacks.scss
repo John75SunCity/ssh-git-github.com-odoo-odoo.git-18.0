@@ -1,0 +1,29 @@
+/* Minimal cross-browser fallbacks to improve accessibility & compatibility
+ * Keep this file small and safe; avoid overriding Odoo core styles.
+ */
+
+/* Respect user font scaling across browsers */
+html, body {
+  /* Standard property; supported in modern browsers */
+  text-size-adjust: 100%;
+  /* WebKit/Safari prefix (older iOS/Safari) */
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Improve print color fidelity where printing is used (certificates, reports) */
+@media print {
+  html, body {
+    /* Standard property; supported by Chromium-based browsers */
+    print-color-adjust: exact;
+    /* Safari/WebKit variant */
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+/* Ensure draggable/non-selectable UI parts behave consistently on Safari */
+/* Scope narrowly to our module root class if present to avoid global impact */
+.o_records_management_root, .o_web_client .o_action_manager {
+  /* Respect selection behavior consistently; core may override more specifically */
+  user-select: auto;
+  -webkit-user-select: auto; /* Safari/WebKit */
+}

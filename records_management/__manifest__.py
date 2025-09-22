@@ -60,8 +60,8 @@
         "security/ir.model.access.csv",
     # Root menus must be available before any child menus declared in scattered views
     "views/records_management_root_menus.xml",
-    # Removed a11y override (viewport/lang) due to upstream layout change causing ParseError
-    # "views/accessibility_layout_overrides.xml",
+    # A11y/compatibility: safe html[lang] attribute injection for backend/website
+        "views/accessibility_layout_overrides.xml",
         # Core sequence data (previously omitted, required for many next_by_code usages)
         "data/ir_sequence_data.xml",
         "data/sequence_data.xml",
@@ -280,6 +280,7 @@
             "records_management/static/src/lib/vis/vis-network.min.css",
             "records_management/static/src/lib/vis/vis-network.min.js",
             "records_management/static/src/scss/records_management.scss",
+            "records_management/static/src/scss/accessibility_fallbacks.scss",
             "records_management/static/src/scss/retention_policy.scss",
             "records_management/static/src/css/intelligent_search.css",
             "records_management/static/src/css/system_flowchart.css",
@@ -303,6 +304,7 @@
             "records_management/static/src/lib/vis/vis-network.min.css",
             "records_management/static/src/lib/vis/vis-network.min.js",
             "records_management/static/src/css/portal_tour.css",
+            "records_management/static/src/scss/accessibility_fallbacks.scss",
             "records_management/static/src/css/intelligent_search.css",
             "records_management/static/src/css/customer_portal_diagram.css",
             "records_management/static/src/js/portal_search.js",
