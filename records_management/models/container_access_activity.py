@@ -757,13 +757,7 @@ class ContainerAccessActivity(models.Model):
 
         return result
 
-    def name_get(self):
-        """Custom name display"""
-        result = []
-        for activity in self:
-            name = activity.display_name or activity.name
-            result.append((activity.id, name))
-        return result
+    # Deprecated name_get: rely on computed display_name
 
     # ============================================================================
     # INTEGRATION METHODS

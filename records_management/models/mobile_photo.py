@@ -55,6 +55,13 @@ class MobilePhoto(models.Model):
     photo_filename = fields.Char(string="Filename")
     photo_date = fields.Datetime(string="Date Taken", default=fields.Datetime.now)
 
+    # Friendly label used in UI/searches
+    display_name = fields.Char(
+        string="Display Name",
+        compute="_compute_display_name",
+        store=True
+    )
+
     # Geolocation
     gps_latitude = fields.Float(string="GPS Latitude", digits=(10, 7))
     gps_longitude = fields.Float(string="GPS Longitude", digits=(10, 7))
@@ -135,6 +142,25 @@ class MobilePhoto(models.Model):
                 raise ValidationError(_('Photo file size cannot exceed 50MB.'))
             if record.file_size and record.file_size < 0:
                 raise ValidationError(_('Photo file size cannot be negative.'))
+
+    @api.depends('name', 'photo_filename', 'photo_date', 'fsm_task_id', 'work_order_reference', 'container_id', 'destruction_request_id', 'pickup_request_id')
+    def _compute_display_name(self):
+        """Compute a user-friendly display name similar to prior name_get."""
+        for record in self:
+            base = record.photo_filename or record.name or _('Unnamed Photo')
+            # append date
+            if record.photo_date:
+                try:
+                    base = f"{base} ({record.photo_date.strftime('%Y-%m-%d')})"
+                except Exception:
+                    base = f"{base} ({record.photo_date})"
+
+            # Add related entity info
+            related_entity = record.get_related_entity_name()
+            if related_entity != _('No related entity'):
+                base = f"{base} - {related_entity}"
+
+            record.display_name = base
 
     # ============================================================================
     # ACTION METHODS
@@ -266,21 +292,7 @@ class MobilePhoto(models.Model):
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
-    def name_get(self):
-        """Custom display name for photo records."""
-        result = []
-        for record in self:
-            name = record.photo_filename or record.name or _('Unnamed Photo')
-            if record.photo_date:
-                name = f"{name} ({record.photo_date.strftime('%Y-%m-%d')})"
-
-            # Add related entity info
-            related_entity = record.get_related_entity_name()
-            if related_entity != _("No related entity"):
-                name = f"{name} - {related_entity}"
-
-            result.append((record.id, name))
-        return result
+    # name_get: rely on base implementation using computed display_name
 
     @api.model
     def get_photos_for_fsm_task(self, task_id):

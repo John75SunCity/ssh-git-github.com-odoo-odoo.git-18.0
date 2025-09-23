@@ -47,12 +47,7 @@ class FullCustomizationName(models.Model):
             else:
                 record.display_name = record.name
 
-    def name_get(self):
-        """Return display name for selection fields"""
-        result = []
-        for record in self:
-            result.append((record.id, record.display_name or record.name))
-        return result
+    # Deprecated name_get: Odoo 18 uses computed display_name
 
     @api.constrains('name')
     def _check_name_unique(self):

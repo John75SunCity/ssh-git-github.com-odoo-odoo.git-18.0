@@ -72,6 +72,12 @@ class BaseRates(models.Model):
         default=lambda self: self.env.company, 
         required=True
     )
+    # User-friendly label used across UI and search (replaces name_get)
+    display_name = fields.Char(
+        string='Display Name',
+        compute='_compute_display_name',
+        store=True,
+    )
 
     @api.constrains('effective_date', 'expiry_date')
     def _check_date_validity(self):
@@ -92,10 +98,13 @@ class BaseRates(models.Model):
             if record.maximum_charge and record.maximum_charge < record.minimum_charge:
                 raise ValueError(_("Maximum charge must be greater than minimum charge"))
 
-    def name_get(self):
-        """Return descriptive name for selection fields"""
-        result = []
+    @api.depends('base_rate', 'currency_id', 'company_id')
+    def _compute_display_name(self):
         for record in self:
-            name = "%s (%s)" % (record.name, dict(record._fields['rate_type'].selection).get(record.rate_type))
-            result.append((record.id, name))
-        return result
+            company = record.company_id.name or ''
+            currency = record.currency_id.name or ''
+            record.display_name = _("Base Rate: %(amount).2f %(currency)s (%(company)s)") % {
+                'amount': record.base_rate or 0.0,
+                'currency': currency,
+                'company': company,
+            }

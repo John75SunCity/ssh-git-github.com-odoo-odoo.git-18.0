@@ -242,10 +242,4 @@ class CustomerInventoryReportLine(models.Model):
                     line.message_post(body=_("Document count changed to %s (verification required).") % line.document_count)
         return res
 
-    def name_get(self):
-        """Custom name display"""
-        result = []
-        for line in self:
-            name = line.display_name
-            result.append((line.id, name))
-        return result
+    # Deprecated name_get: rely on computed display_name

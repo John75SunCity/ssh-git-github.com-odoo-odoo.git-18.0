@@ -490,22 +490,17 @@ class ShreddingCertificate(models.Model):
     # ============================================================================
     # SEARCH & NAME METHODS
     # ============================================================================
-    def name_get(self):
-        """Generate display name for certificate records.
+    # Deprecated name_get in Odoo 18; using computed display_name
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
 
-        Returns a list of tuples containing record IDs and display names
-        that include the certificate number and customer name.
-
-        Returns:
-            list: List of (id, name) tuples for display.
-        """
-        result = []
-        for record in self:
-            name = f"{record.name}"
-            if record.partner_id:
-                name += f" - {record.partner_id.name}"
-            result.append((record.id, name))
-        return result
+    @api.depends('name', 'partner_id')
+    def _compute_display_name(self):
+        for rec in self:
+            base = rec.name or ''
+            if rec.partner_id:
+                rec.display_name = f"{base} - {rec.partner_id.name}"
+            else:
+                rec.display_name = base
 
     @api.model
     def _name_search(self, name='', args=None, operator='ilike', limit=100):
@@ -526,7 +521,7 @@ class ShreddingCertificate(models.Model):
             args = []
 
         if name:
-            # Search by certificate number or customer name
+            # Search by certificate number or customer name via display_name
             search_args = [
                 '|',
                 ('name', operator, name),

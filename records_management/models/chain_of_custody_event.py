@@ -320,19 +320,18 @@ class ChainOfCustodyEvent(models.Model):
             user_id=self.env.user.id,
         )
 
-    def name_get(self):
-        """Enhanced name_get for better readability"""
-        result = []
+    # Stored display name for Odoo 18 compliance
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+
+    @api.depends('display_name_computed', 'event_date', 'event_type')
+    def _compute_display_name(self):
         for rec in self:
-            if rec.display_name_computed:
-                result.append((rec.id, rec.display_name_computed))
+            if getattr(rec, 'display_name_computed', False):
+                rec.display_name = rec.display_name_computed
             else:
-                # Fallback to basic format
                 date_str = rec.event_date.strftime('%Y-%m-%d %H:%M') if rec.event_date else ''
                 event_type = dict(rec._fields['event_type'].selection).get(rec.event_type, rec.event_type)
-                label = "%s - %s" % (date_str, event_type)
-                result.append((rec.id, label))
-        return result
+                rec.display_name = "%s - %s" % (date_str, event_type)
 
     @api.constrains('event_date', 'custody_id')
     def _check_event_date(self):

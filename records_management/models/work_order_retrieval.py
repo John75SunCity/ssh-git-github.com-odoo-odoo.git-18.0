@@ -154,18 +154,7 @@ class WorkOrderRetrieval(models.Model):
         return super().create(vals_list)
 
     # ===================== CRUD / DISPLAY HELPERS =====================
-    def name_get(self):
-        """Custom name display"""
-        result = []
-        for record in self:
-            name_parts = [record.name]
-            if record.partner_id:
-                name_parts.append(f"({record.partner_id.name})")
-            if record.state != 'draft':
-                state_label = dict(record._fields['state'].selection)[record.state]
-                name_parts.append(f"- {state_label}")
-            result.append((record.id, ' '.join(name_parts)))
-        return result
+    # Deprecated name_get in Odoo 18; rely on computed display_name
 
     # Replaces former _name_search (removed to follow _search_<field> convention)
     def _search_display_name(self, operator, value):

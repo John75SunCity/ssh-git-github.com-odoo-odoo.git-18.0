@@ -48,6 +48,14 @@ class Photo(models.Model):
     reference_model = fields.Char(string="Reference Model")
     mobile_wizard_reference = fields.Char(string="Mobile Wizard Reference", help="Reference to the mobile wizard")
 
+    # Friendly label used across the UI
+    display_name = fields.Char(
+        string="Display Name",
+        compute="_compute_display_name",
+        store=True,
+        help="Human-friendly label including category and date"
+    )
+
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
@@ -82,6 +90,23 @@ class Photo(models.Model):
                     record.message_post(body=_("Error computing resolution: %s") % str(e))
             else:
                 record.resolution = False
+
+    @api.depends("name", "category", "date")
+    def _compute_display_name(self):
+        """Compute a user-friendly display name similar to prior name_get."""
+        for record in self:
+            name = record.name or _("Unnamed Photo")
+            # prepend category if not general
+            if record.category and record.category != "general":
+                category_dict = dict(self._fields["category"].selection)
+                name = _("[%s] %s") % (category_dict.get(record.category, "Unknown"), name)
+            if record.date:
+                try:
+                    name = _("%s (%s)") % (name, record.date.strftime("%Y-%m-%d"))
+                except Exception:
+                    # Fallback if date not a datetime
+                    name = _("%s (%s)") % (name, record.date)
+            record.display_name = name
 
     # ============================================================================
     # ACTIONS
@@ -215,18 +240,7 @@ class Photo(models.Model):
                 )
         return super().unlink()
 
-    def name_get(self):
-        """Custom name display with category and date for better context."""
-        result = []
-        for record in self:
-            name = record.name or _("Unnamed Photo")
-            if record.category and record.category != "general":
-                category_dict = dict(self._fields["category"].selection)
-                name = _(" [%s] %s") % (category_dict.get(record.category, "Unknown"), name)
-            if record.date:
-                name = _(" %s (%s)") % (name, record.date.strftime("%Y-%m-%d"))
-            result.append((record.id, name))
-        return result
+    # name_get: rely on base implementation using computed display_name
 
     # ============================================================================
     # CONSTRAINTS

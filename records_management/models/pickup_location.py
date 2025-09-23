@@ -73,9 +73,4 @@ class PickupLocation(models.Model):
         if self.country_id and self.state_id.country_id != self.country_id:
             self.state_id = False
     
-    def name_get(self):
-        """Return display name for selection fields"""
-        result = []
-        for record in self:
-            result.append((record.id, record.display_name or record.name))
-        return result
+    # Deprecated name_get: rely on computed display_name for Odoo 18

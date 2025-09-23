@@ -64,6 +64,13 @@ class RecordsAccessLog(models.Model):
         ('new', 'New'), ('reviewed', 'Reviewed'), ('suspicious', 'Suspicious'), ('resolved', 'Resolved')
     ], string="Status", default='new', tracking=True)
 
+    # Friendly UI label mirroring prior name_get
+    display_name = fields.Char(
+        string="Display Name",
+        compute='_compute_display_name',
+        store=True
+    )
+
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
@@ -195,18 +202,18 @@ class RecordsAccessLog(models.Model):
     # ============================================================================
     # UTILITY METHODS
     # ============================================================================
-    def name_get(self):
-        """Custom name display"""
-        result = []
+    @api.depends('name', 'container_id', 'access_type', 'user_id')
+    def _compute_display_name(self):
+        """Compute a descriptive display name for UI/search."""
         for record in self:
-            name = _("%(name)s (%(container)s) - %(access_type)s by %(user)s") % {
+            container = record.container_id.name if record.container_id else _('N/A')
+            access_label = record.access_type.title() if record.access_type else ''
+            record.display_name = _("%(name)s (%(container)s) - %(access_type)s by %(user)s") % {
                 'name': record.name,
-                'container': record.container_id.name or _('N/A'),
-                'access_type': record.access_type.title() if record.access_type else '',
-                'user': record.user_id.name
+                'container': container,
+                'access_type': access_label,
+                'user': record.user_id.name or ''
             }
-            result.append((record.id, name))
-        return result
 
     @api.model
     def _search_by_name_document_user(self, name="", args=None, operator="ilike", limit=100, name_get_uid=None):

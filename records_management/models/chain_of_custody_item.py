@@ -274,17 +274,17 @@ class ChainOfCustodyItem(models.Model):
 
         return True
 
-    def name_get(self):
-        """Enhanced name_get with more context"""
-        result = []
+    # Stored display name for Odoo 18 compliance
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+
+    @api.depends('display_name_computed', 'document_id', 'container_id', 'item_type')
+    def _compute_display_name(self):
         for rec in self:
-            if rec.display_name_computed:
-                result.append((rec.id, rec.display_name_computed))
+            if getattr(rec, 'display_name_computed', False):
+                rec.display_name = rec.display_name_computed
             else:
                 base = rec.document_id.display_name or rec.container_id.display_name or _('Item')
-                label = "%s (%s)" % (base, rec.item_type)
-                result.append((rec.id, label))
-        return result
+                rec.display_name = "%s (%s)" % (base, rec.item_type)
 
     @api.model_create_multi
     def create(self, vals_list):

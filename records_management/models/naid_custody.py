@@ -110,6 +110,13 @@ class NaidCustody(models.Model):
         help="Brief description of security controls applied (e.g., sealed container, tamper-evident tape)."
     )
 
+    # Computed UI label replacing deprecated name_get
+    display_name = fields.Char(
+        string='Display Name',
+        compute='_compute_display_name',
+        store=True,
+    )
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -125,10 +132,10 @@ class NaidCustody(models.Model):
                 rec.name = f"{rec.event_type.upper()}-{rec.id}"
         return records
 
-    def name_get(self):
-        result = []
-        for record in self:
-            base = record.name or record.description or _('Custody Event')
-            name = f"{base} - {record.event_type}" if record.event_type else base
-            result.append((record.id, name))
-        return result
+    # Deprecated name_get: rely on computed display_name
+
+    @api.depends('name', 'description', 'event_type')
+    def _compute_display_name(self):
+        for rec in self:
+            base = rec.name or rec.description or _('Custody Event')
+            rec.display_name = (f"{base} - {rec.event_type}" if rec.event_type else base)
