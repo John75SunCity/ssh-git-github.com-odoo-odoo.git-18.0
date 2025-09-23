@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
-    
-        <menuitem id="records_management_menu_root" name="Records Management" sequence="10" />
-    
+
+
+       <!-- Removed duplicate root menu to avoid a second Records Management app icon
+           The canonical root menu is defined in records_management/views/records_management_menu_roots.xml
+           with id="menu_records_management_root". -->
+
         <record id="customer_feedback_view_tree" model="ir.ui.view">
             <field name="name">customer.feedback.view.tree</field>
             <field name="model">customer.feedback</field>
@@ -81,9 +83,9 @@ Manage customer feedback items. Use stages to track progress from New to Closed.
 </p>
             </field>
         </record>
-    
-        <menuitem id="customer_feedback_menu" name="Customer Feedback" parent="records_management_menu_root" action="customer_feedback_action" sequence="40" />
-    
-    
+
+    <menuitem id="customer_feedback_menu" name="Customer Feedback" parent="menu_records_management_root" action="customer_feedback_action" sequence="40" />
+
+
     </data>
 </odoo>
