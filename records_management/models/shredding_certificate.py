@@ -322,7 +322,7 @@ class ShreddingCertificate(models.Model):
         Updates certificate issue date and posts notification to chatter.
         Only allows issuing if certificate is in draft state.
         """
-    self.ensure_one()
+        self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft certificates can be issued."))
         if not self.shredding_service_ids:
@@ -415,7 +415,7 @@ class ShreddingCertificate(models.Model):
             dict: Report action dictionary for printing the certificate.
         """
         self.ensure_one()
-    return self.env.ref('records_management.report_shredding_certificate').report_action(self)
+        return self.env.ref('records_management.report_shredding_certificate').report_action(self)
 
     def action_duplicate_certificate(self):
         """Create a duplicate of the current certificate.
@@ -439,7 +439,7 @@ class ShreddingCertificate(models.Model):
         }
 
         duplicate = self.create(duplicate_vals)
-    duplicate.message_post(body=_("Certificate duplicated from %(original)s") % {"original": self.name})
+        duplicate.message_post(body=_("Certificate duplicated from %(original)s") % {"original": self.name})
 
         return duplicate
 

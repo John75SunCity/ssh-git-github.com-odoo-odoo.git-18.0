@@ -372,6 +372,26 @@ class NaidCertificate(models.Model):
         report = self.env.ref("records_management.action_report_naid_certificate", raise_if_not_found=False)
         if not report:
             raise UserError(_("NAID certificate report template not found"))
+        # Defensive fix: sanitize report fields if migration stored lists/tuples or wrong types
+        try:
+            fixes = {}
+            if isinstance(getattr(report, "report_name", None), (list, tuple)):
+                rn = report.report_name
+                fixes["report_name"] = rn[0] if rn else ""
+            elif report.report_name is not None and not isinstance(report.report_name, str):
+                fixes["report_name"] = str(report.report_name)
+
+            if isinstance(getattr(report, "report_file", None), (list, tuple)):
+                rf = report.report_file
+                fixes["report_file"] = rf[0] if rf else ""
+            elif report.report_file is not None and not isinstance(report.report_file, str):
+                fixes["report_file"] = str(report.report_file)
+
+            if fixes:
+                report.write(fixes)
+        except Exception:
+            # Non-blocking; let report_action surface any issues if present
+            pass
         # Return native report action (lets Odoo handle download/preview)
         return report.report_action(self)
 

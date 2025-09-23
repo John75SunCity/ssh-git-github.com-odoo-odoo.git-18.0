@@ -90,13 +90,13 @@ class Photo(models.Model):
         """Archive the photo"""
         self.ensure_one()
         self.write({"state": "archived"})
-    self.message_post(body=_("Photo archived: %s") % self.name)
+        self.message_post(body=_("Photo archived: %s") % self.name)
 
     def action_unarchive_photo(self):
         """Unarchive the photo"""
         self.ensure_one()
         self.write({"state": "draft"})
-    self.message_post(body=_("Photo unarchived: %s") % self.name)
+        self.message_post(body=_("Photo unarchived: %s") % self.name)
 
     def action_view_metadata(self):
         """View photo metadata"""
@@ -248,7 +248,7 @@ class Photo(models.Model):
                 file_extension = record.image_filename.split(".")[-1].lower()
                 if file_extension not in allowed_extensions:
                     raise ValidationError(
-                        _("The image file must be one of the following types: %s.", ", ".join(allowed_extensions))
+                        _("The image file must be one of the following types: %s.") % ", ".join(allowed_extensions)
                     )
 
     @api.constrains("tags")

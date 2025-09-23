@@ -70,7 +70,7 @@ class FullCustomizationName(models.Model):
         """Create a copy of this customization"""
         self.ensure_one()
         copy_vals = {
-            "name": _("%s (Copy)", self.name),
+            "name": _("%s (Copy)") % self.name,
             "description": self.description,
             "user_id": self.env.user.id,
         }

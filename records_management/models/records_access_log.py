@@ -116,7 +116,7 @@ class RecordsAccessLog(models.Model):
     def action_mark_reviewed(self):
         self.ensure_one()
         self.write({'state': 'reviewed'})
-        self.message_post(body=_("Access log marked as reviewed by %s", self.env.user.name))
+        self.message_post(body=_("Access log marked as reviewed by %s") % self.env.user.name)
 
     def action_flag_suspicious(self):
         self.ensure_one()
@@ -131,7 +131,7 @@ class RecordsAccessLog(models.Model):
                 self.env["mail.activity"].create(
                     {
                         "activity_type_id": activity_type_id,
-                        "summary": _("Investigate Suspicious Access: %s", record.name),
+                        "summary": _("Investigate Suspicious Access: %s") % record.name,
                         "note": _("Please investigate this access log flagged as suspicious."),
                         "res_id": record.id,
                         "res_model_id": self.env["ir.model"]._get(self._name).id,
@@ -139,7 +139,7 @@ class RecordsAccessLog(models.Model):
                     }
                 )
             except Exception as e:
-                _logger.warning(_("Could not schedule suspicious access activity: %s"), e)
+                _logger.warning(_("Could not schedule suspicious access activity: %s") % e)
 
     def action_create_audit_trail(self):
         self.ensure_one()
@@ -154,7 +154,7 @@ class RecordsAccessLog(models.Model):
 
             audit_vals = {
                 "event_type": "document_access",
-                "description": _("Manual audit trail for access log %s", self.name),
+                "description": _("Manual audit trail for access log %s") % self.name,
                 "user_id": self.user_id.id,
                 "container_id": self.container_id.id,
                 "access_log_id": self.id,
@@ -163,9 +163,9 @@ class RecordsAccessLog(models.Model):
 
             audit_log = self.env["naid.audit.log"].create(audit_vals)
             self.write({"audit_trail_id": audit_log.id})
-            self.message_post(body=_("Audit trail created: %s", audit_log.name))
+            self.message_post(body=_("Audit trail created: %s") % audit_log.name)
         except Exception as e:
-            raise UserError(_("Could not create audit trail entry: %s", e)) from e
+            raise UserError(_("Could not create audit trail entry: %s") % e) from e
 
     # ============================================================================
     # VALIDATION METHODS
@@ -189,7 +189,7 @@ class RecordsAccessLog(models.Model):
                 raise ValidationError(_("Access duration cannot be negative."))
             if record.duration_seconds and record.duration_seconds > 86400:  # 24 hours
                 record.message_post(
-                    body=_("Warning: Unusually long access duration detected: %s seconds", record.duration_seconds)
+                    body=_("Warning: Unusually long access duration detected: %s seconds") % record.duration_seconds
                 )
 
     # ============================================================================
@@ -249,7 +249,7 @@ class RecordsAccessLog(models.Model):
 
     def cleanup_old_logs(self, days=365):
         """Clean up old access logs based on retention policy"""
-        _logger.info(_("Starting cleanup of old access logs older than %d days"), days)
+        _logger.info(_("Starting cleanup of old access logs older than %d days") % days)
         # Implement cleanup logic for old access log entries
         cutoff_date = fields.Datetime.subtract(fields.Datetime.now(), days=days)
         old_logs = self.search([('access_date', '<', cutoff_date)])
