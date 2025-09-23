@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <!-- Backend webclient: add dynamic HTML lang attribute -->
-        <!-- Note: In Odoo 18, web.webclient_bootstrap does not expose an <html> node; target web.layout instead. -->
-        <template id="webclient_bootstrap_lang_inherit" inherit_id="web.layout" name="web.layout.inherit.lang">
-            <xpath expr="//html" position="attributes">
-                <!-- Use context language, fallback to en_US to satisfy validators -->
-                <attribute name="t-att-lang">env.context.get('lang') or 'en_US'</attribute>
-            </xpath>
-        </template>
+        <!-- Removed backend override by request: no changes to webclient layout -->
 
         <!-- Website layout: add dynamic HTML lang attribute for portal/website pages -->
         <template id="website_layout_lang_inherit" inherit_id="website.layout" name="website.layout.inherit.lang">
