@@ -353,8 +353,6 @@ class ShreddingService(models.Model):
         certificate_vals = {
             'partner_id': partner_id,
             'destruction_date': destruction_data.get('service_date') or fields.Datetime.now(),
-            'res_model': 'shredding.service',
-            'res_id': self.id,
             'shredding_service_id': self.id,
         }
 

@@ -865,7 +865,6 @@ class RecordsManagementController(http.Controller):
         """
         Detailed view of a specific certification.
         """
-        self.ensure_one()  # Added for Odoo standard compliance
         certification = request.env['naid.operator.certification'].browse(certification_id)
 
         # Check if certification exists and user has access

@@ -311,7 +311,11 @@ class NaidCertificate(models.Model):
         self.ensure_one()
 
         try:
-            report = self.env.ref("records_management.action_report_naid_certificate")
+            # Use safe lookup to avoid hard failures in test/demo environments
+            report = self.env.ref(
+                "records_management.action_report_naid_certificate",
+                raise_if_not_found=False,
+            )
             if not report:
                 raise UserError(_("NAID certificate report template not found"))
 

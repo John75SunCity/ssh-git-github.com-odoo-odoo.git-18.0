@@ -28,27 +28,81 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>NAID Certificate Report</h2>
-                        <table class="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-if="doc.field_ids">
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
-                                </tr>
-                            </t>
-                            </tbody>
-                        </table>
+                        <h2>NAID Certificate of Destruction</h2>
+                        <div class="row">
+                            <div class="col-12">
+                                <p>
+                                    <strong>Certificate Number:</strong>
+                                    <span t-esc="doc.certificate_number or doc.name"/>
+                                </p>
+                                <p>
+                                    <strong>Customer:</strong>
+                                    <span t-esc="doc.partner_id and doc.partner_id.display_name or ''"/>
+                                </p>
+                                <p>
+                                    <strong>Destruction Date:</strong>
+                                    <span t-esc="doc.destruction_date and doc.destruction_date.strftime('%Y-%m-%d %H:%M:%S') or ''"/>
+                                </p>
+                                <p>
+                                    <strong>Issue Date:</strong>
+                                    <span t-esc="doc.issue_date and doc.issue_date.strftime('%Y-%m-%d %H:%M:%S') or ''"/>
+                                </p>
+                            </div>
+                        </div>
+
+                        <t t-if="doc.container_ids or doc.box_ids or doc.destruction_item_ids">
+                            <h3>Destroyed Items Summary</h3>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Name</th>
+                                        <th t-attf-style="text-align:right;">Qty</th>
+                                        <th t-attf-style="text-align:right;">Weight</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="doc.destruction_item_ids" t-as="item">
+                                        <tr>
+                                            <td>Item</td>
+                                            <td><span t-esc="item.display_name"/></td>
+                                            <td style="text-align:right"><span t-esc="item.quantity or 0"/></td>
+                                            <td style="text-align:right"><span t-esc="item.weight or 0.0"/></td>
+                                        </tr>
+                                    </t>
+                                    <t t-foreach="doc.container_ids" t-as="cont">
+                                        <tr>
+                                            <td>Container</td>
+                                            <td><span t-esc="cont.display_name"/></td>
+                                            <td style="text-align:right">1</td>
+                                            <td style="text-align:right"><span t-esc="cont.cubic_feet or 0.0"/></td>
+                                        </tr>
+                                    </t>
+                                    <t t-foreach="doc.box_ids" t-as="box">
+                                        <tr>
+                                            <td>Box</td>
+                                            <td><span t-esc="box.display_name"/></td>
+                                            <td style="text-align:right">1</td>
+                                            <td style="text-align:right"><span t-esc="box.cubic_feet or 0.0"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="2" style="text-align:right">Totals:</th>
+                                        <th style="text-align:right"><span t-esc="doc.total_items or 0"/></th>
+                                        <th style="text-align:right"><span t-esc="doc.total_weight or 0.0"/></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </t>
+
+                        <t t-if="doc.witness_name">
+                            <p>
+                                <strong>Witness:</strong>
+                                <span t-esc="doc.witness_name"/>
+                            </p>
+                        </t>
                     </div>
                 </t>
             </t>

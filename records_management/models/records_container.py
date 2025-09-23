@@ -203,6 +203,50 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
+    @api.model
+    def _get_default_container_type_id(self):
+        """Resolve a safe default for container_type_id.
+
+        Strategy:
+        1) Use system parameter 'records_management.default_container_type_id' if set and valid.
+        2) Fallback to the first active `records.container.type` (optionally scoped to current company when available).
+        """
+        # 1) System parameter (global)
+        try:
+            param_val = self.env["ir.config_parameter"].sudo().get_param(
+                "records_management.default_container_type_id"
+            )
+        except Exception:
+            param_val = None
+
+        if param_val:
+            try:
+                ctype_id = int(param_val)
+                if ctype_id:
+                    ctype = self.env["records.container.type"].browse(ctype_id)
+                    if ctype.exists() and (not hasattr(ctype, "active") or ctype.active):
+                        return ctype.id
+            except Exception:
+                # Ignore malformed parameter values
+                pass
+
+        # 2) Fallback to first active container type (prefer current company if model supports it)
+        comodel = self.env["records.container.type"]
+        search_domain = [("active", "=", True)] if "active" in getattr(comodel, "_fields", {}) else []
+        if "company_id" in getattr(comodel, "_fields", {}):
+            search_domain.append(("company_id", "in", [False, self.env.company.id]))
+        ctype = comodel.search(search_domain, order="sequence, name", limit=1)
+        return ctype.id if ctype else False
+
+    @api.model
+    def default_get(self, fields_list):
+        vals = super().default_get(fields_list)
+        if "container_type_id" in fields_list and not vals.get("container_type_id"):
+            default_type_id = self._get_default_container_type_id()
+            if default_type_id:
+                vals["container_type_id"] = default_type_id
+        return vals
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -220,6 +264,11 @@ class RecordsContainer(models.Model):
             # Assign a sequence if name is left to default "New"
             if vals.get("name", _("New")) == _("New"):
                 vals["name"] = self.env["ir.sequence"].next_by_code("records.container") or _("New")
+            # Ensure a safe default container type to satisfy NOT NULL constraints in tests/runtime
+            if not vals.get("container_type_id"):
+                default_type_id = self._get_default_container_type_id()
+                if default_type_id:
+                    vals["container_type_id"] = default_type_id
         return super().create(vals_list)
 
     def write(self, vals):
