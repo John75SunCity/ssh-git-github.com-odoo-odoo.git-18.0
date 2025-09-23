@@ -143,7 +143,7 @@ class Photo(models.Model):
     def duplicate_photo(self):
         """Create a duplicate of this photo, including its image."""
         self.ensure_one()
-    return self.copy({"name": _(" %s (Copy)") % self.name, "state": "draft"})
+        return self.copy({"name": _(" %s (Copy)") % self.name, "state": "draft"})
 
     def get_image_thumbnail(self, size=(150, 150)):
         """Get a thumbnail version of the image."""
