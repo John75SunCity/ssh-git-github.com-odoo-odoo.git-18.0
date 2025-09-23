@@ -389,9 +389,14 @@ class RmModuleConfigurator(models.Model):
 
     @api.constrains("config_key")
     def _check_config_key_format(self):
-        pattern = r"^[a-z][a-z0-9_]*[a-z0-9]$"
+        # Accept dot-separated namespaces (e.g., "naid.compliance.enabled").
+        # Each segment must start with a letter, may contain letters, digits, or underscores,
+        # and must not end with an underscore. Single-letter segments are allowed.
+        segment = r"[a-z](?:[a-z0-9_]*[a-z0-9])?"
+        pattern = rf"^(?:{segment})(?:\.(?:{segment}))*$"
         for rec in self:
-            if not re.match(pattern, rec.config_key or ""):
+            key = (rec.config_key or "").strip()
+            if not key or not re.match(pattern, key):
                 raise ValidationError(_("Configuration key format invalid:") + f" {rec.config_key}")
 
     # ------------------------------------------------------------------
