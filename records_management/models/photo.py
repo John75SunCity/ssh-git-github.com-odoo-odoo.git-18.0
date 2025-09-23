@@ -63,7 +63,7 @@ class Photo(models.Model):
                 except Exception as e:
                     record.file_size = 0
                     record.file_type = "unknown"
-                    record.message_post(body=_("Error computing file info: %s", e))
+                    record.message_post(body=_("Error computing file info: %s") % e)
             else:
                 record.file_size = 0
                 record.file_type = False
@@ -79,7 +79,7 @@ class Photo(models.Model):
                     record.resolution = "%sx%s" % (image.width, image.height)
                 except Exception as e:
                     record.resolution = "Unknown"
-                    record.message_post(body=_("Error computing resolution: %s", str(e)))
+                    record.message_post(body=_("Error computing resolution: %s") % str(e))
             else:
                 record.resolution = False
 
@@ -90,13 +90,13 @@ class Photo(models.Model):
         """Archive the photo"""
         self.ensure_one()
         self.write({"state": "archived"})
-        self.message_post(body=_("Photo archived: %s", self.name))
+    self.message_post(body=_("Photo archived: %s") % self.name)
 
     def action_unarchive_photo(self):
         """Unarchive the photo"""
         self.ensure_one()
         self.write({"state": "draft"})
-        self.message_post(body=_("Photo unarchived: %s", self.name))
+    self.message_post(body=_("Photo unarchived: %s") % self.name)
 
     def action_view_metadata(self):
         """View photo metadata"""
@@ -143,7 +143,7 @@ class Photo(models.Model):
     def duplicate_photo(self):
         """Create a duplicate of this photo, including its image."""
         self.ensure_one()
-        return self.copy({"name": _(" %s (Copy)", self.name), "state": "draft"})
+    return self.copy({"name": _(" %s (Copy)") % self.name, "state": "draft"})
 
     def get_image_thumbnail(self, size=(150, 150)):
         """Get a thumbnail version of the image."""
@@ -185,7 +185,7 @@ class Photo(models.Model):
 
         photos = super().create(vals_list)
         for photo in photos:
-            photo.message_post(body=_("Photo created: %s", photo.name))
+            photo.message_post(body=_("Photo created: %s") % photo.name)
         return photos
 
     def write(self, vals):
@@ -195,11 +195,11 @@ class Photo(models.Model):
         # Log significant changes
         if "state" in vals:
             for record in self:
-                record.message_post(body=_("Photo state changed to: %s", record.state))
+                record.message_post(body=_("Photo state changed to: %s") % record.state)
 
         if "category" in vals:
             for record in self:
-                record.message_post(body=_("Photo category changed to: %s", record.category))
+                record.message_post(body=_("Photo category changed to: %s") % record.category)
 
         return result
 
@@ -209,10 +209,9 @@ class Photo(models.Model):
             if photo.state in ["validated", "archived"]:
                 raise UserError(
                     _(
-                        "Cannot delete photo '%s' because it is in the '%s' state. Please reset it to draft first.",
-                        photo.name,
-                        photo.state,
+                        "Cannot delete photo '%s' because it is in the '%s' state. Please reset it to draft first."
                     )
+                    % (photo.name, photo.state)
                 )
         return super().unlink()
 
@@ -223,9 +222,9 @@ class Photo(models.Model):
             name = record.name or _("Unnamed Photo")
             if record.category and record.category != "general":
                 category_dict = dict(self._fields["category"].selection)
-                name = _(" [%s] %s", category_dict.get(record.category, "Unknown"), name)
+                name = _(" [%s] %s") % (category_dict.get(record.category, "Unknown"), name)
             if record.date:
-                name = _(" %s (%s)", name, record.date.strftime("%Y-%m-%d"))
+                name = _(" %s (%s)") % (name, record.date.strftime("%Y-%m-%d"))
             result.append((record.id, name))
         return result
 

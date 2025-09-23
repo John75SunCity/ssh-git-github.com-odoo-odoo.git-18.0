@@ -50,7 +50,7 @@ class ShreddingCertificate(models.Model):
         required=True,
         readonly=True
     )
-    
+
     # Hard Drive Verification Fields
     verification_method = fields.Selection([
         ('single_step', 'Single Step (Manager Override)'),
@@ -322,8 +322,7 @@ class ShreddingCertificate(models.Model):
         Updates certificate issue date and posts notification to chatter.
         Only allows issuing if certificate is in draft state.
         """
-        self.ensure_one()
-        self.ensure_one()
+    self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft certificates can be issued."))
         if not self.shredding_service_ids:
@@ -384,7 +383,7 @@ class ShreddingCertificate(models.Model):
         self.ensure_one()
         self.write({'state': 'archived', 'active': False})
         self.message_post(
-            body=_("Certificate has been archived on %s", fields.Date.context_today(self)), message_type="notification"
+            body=_("Certificate has been archived on %s") % fields.Date.context_today(self), message_type="notification"
         )
 
     def action_reset_to_draft(self):
@@ -396,7 +395,7 @@ class ShreddingCertificate(models.Model):
         self.ensure_one()
         self.write({'state': 'draft', 'active': True})
         self.message_post(
-            body=_("Certificate has been reset to draft on %(date)s", {"date": fields.Date.context_today(self)}),
+            body=_("Certificate has been reset to draft on %(date)s") % {"date": fields.Date.context_today(self)},
             message_type="notification",
         )
 
@@ -416,7 +415,7 @@ class ShreddingCertificate(models.Model):
             dict: Report action dictionary for printing the certificate.
         """
         self.ensure_one()
-        return self.env.ref('records_management.action_report_shredding_certificate').report_action(self)
+    return self.env.ref('records_management.report_shredding_certificate').report_action(self)
 
     def action_duplicate_certificate(self):
         """Create a duplicate of the current certificate.
@@ -440,7 +439,7 @@ class ShreddingCertificate(models.Model):
         }
 
         duplicate = self.create(duplicate_vals)
-        duplicate.message_post(body=_("Certificate duplicated from %(original)s", {"original": self.name}))
+    duplicate.message_post(body=_("Certificate duplicated from %(original)s") % {"original": self.name})
 
         return duplicate
 
@@ -473,7 +472,7 @@ class ShreddingCertificate(models.Model):
 
         # Log success
         self.message_post(
-            body=_("Certificate sent to %(email)s via email", {"email": self.partner_id.email}),
+            body=_("Certificate sent to %(email)s via email") % {"email": self.partner_id.email},
             message_type="notification",
         )
 
