@@ -1,22 +1,20 @@
+/** @odoo-module **/
 /**
- * Intelligent Search Widget for Records Management
+ * Intelligent Search Widget (ESM Conversion)
+ * - Converted from legacy AMD (odoo.define) to ESM module standard
+ * - Ready for OWL/env migration if needed later
+ * - Retains jQuery-based DOM logic for minimal diff risk
  *
- * Provides intelligent auto-suggestion and search functionality for:
- * - Container/box number auto-complete
- * - File search with smart container recommendations
- * - Portal and backend integration
+ * TODO (future): Convert to OWL Component and leverage useService('rpc')
  */
 
-odoo.define("records_management.intelligent_search", function (require) {
-  "use strict";
+import { registry } from "@web/core/registry";
+import { AbstractField } from "@web/views/fields/abstract_field";
+import { _t } from "@web/core/l10n/translation";
+import rpc from "@web/core/network/rpc_service";
+import { qweb as QWeb } from "@web/core/qweb";
 
-  var AbstractField = require("web.AbstractField");
-  var core = require("web.core");
-  var field_registry = require("web.field_registry");
-  var rpc = require("web.rpc");
-
-  var QWeb = core.qweb;
-  var _t = core._t;
+const fieldRegistry = registry.category("fields");
 
   /**
    * Container Number Auto-Complete Widget
@@ -366,11 +364,10 @@ odoo.define("records_management.intelligent_search", function (require) {
   });
 
   // Register the widgets
-  field_registry.add("container_search", ContainerSearchWidget);
-  field_registry.add("file_search", FileSearchWidget);
+fieldRegistry.add("container_search", ContainerSearchWidget);
+fieldRegistry.add("file_search", FileSearchWidget);
 
-  return {
-    ContainerSearchWidget: ContainerSearchWidget,
-    FileSearchWidget: FileSearchWidget,
-  };
-});
+export const IntelligentSearchWidgets = {
+  ContainerSearchWidget,
+  FileSearchWidget,
+};

@@ -77,6 +77,19 @@ class RmModuleConfigurator(models.Model):
     destruction_certificate_enabled = fields.Boolean(default=True)
     # New: Global FSM feature enable (controls visibility of FSM integration menus/views)
     enable_fsm_features = fields.Boolean(default=True, help="Master switch for Records Management FSM integration UI components.")
+    # New visualization & portal/advanced search toggles
+    enable_flowchart_visualization = fields.Boolean(
+        default=True,
+        help="Master switch controlling availability of the System Flowchart custom view (system_flowchart). Disable to hide heavy visualization assets.",
+    )
+    enable_portal_diagram = fields.Boolean(
+        default=True,
+        help="Controls availability of the Customer Portal Organization Diagram view (customer_portal_diagram).",
+    )
+    enable_intelligent_search = fields.Boolean(
+        default=True,
+        help="Enables intelligent container/file search widgets (container_search, file_search) in backend forms.",
+    )
 
     # Additional referenced toggles kept (avoid view breakage)
     bulk_user_import_enabled = fields.Boolean(default=True)
@@ -211,7 +224,7 @@ class RmModuleConfigurator(models.Model):
                 for rec in self.filtered(lambda r: r.config_type == 'feature_toggle'):
                     keys.add(rec.config_key)
             # direct boolean feature toggles tracked explicitly
-            for direct in ['bin_inventory_enabled', 'enable_fsm_features']:
+            for direct in ['bin_inventory_enabled', 'enable_fsm_features', 'enable_flowchart_visualization', 'enable_portal_diagram', 'enable_intelligent_search']:
                 if direct in vals:
                     keys.add(direct)
         return keys

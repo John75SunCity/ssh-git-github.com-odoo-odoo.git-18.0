@@ -17,19 +17,17 @@
  * @version 18.0.0.1
  */
 
-odoo.define("records_management.system_flowchart_view", function (require) {
-  "use strict";
+/** @odoo-module **/
+import { registry } from "@web/core/registry";
+import { _t } from "@web/core/l10n/translation";
+import { AbstractView } from "@web/views/abstract_view";
+import { AbstractRenderer } from "@web/views/abstract_renderer";
+import { AbstractController } from "@web/views/abstract_controller";
+import { Dialog } from "@web/core/dialog/dialog";
+import rpc from "@web/core/network/rpc_service";
+import { qweb as QWeb } from "@web/core/qweb";
 
-  var AbstractView = require("web.AbstractView");
-  var AbstractRenderer = require("web.AbstractRenderer");
-  var AbstractController = require("web.AbstractController");
-  var viewRegistry = require("web.view_registry");
-  var core = require("web.core");
-  var Dialog = require("web.Dialog");
-  var rpc = require("web.rpc");
-
-  var _t = core._t;
-  var QWeb = core.qweb;
+const viewRegistry = registry.category("views");
 
   /**
    * System Flowchart Controller
@@ -675,9 +673,8 @@ odoo.define("records_management.system_flowchart_view", function (require) {
   // Register the view
   viewRegistry.add("system_flowchart", SystemFlowchartView);
 
-  return {
-    SystemFlowchartView: SystemFlowchartView,
-    SystemFlowchartController: SystemFlowchartController,
-    SystemFlowchartRenderer: SystemFlowchartRenderer,
+  export const SystemFlowchart = {
+    SystemFlowchartView,
+    SystemFlowchartController,
+    SystemFlowchartRenderer,
   };
-});

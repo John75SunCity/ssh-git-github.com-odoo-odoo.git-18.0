@@ -1,24 +1,17 @@
+/** @odoo-module **/
 /**
- * Customer Portal Diagram View Type
- *
- * Custom Odoo view type specifically for the customer portal organization diagram.
- * This extends the standard Odoo view framework to provide the interactive
- * visualization capabilities needed for the portal users.
+ * Customer Portal Diagram View (ESM Conversion)
+ * Converted from legacy AMD to modern ESM view registration.
+ * NOTE: Still uses global vis.js (provided via asset bundle) until refactored.
  */
 
-odoo.define(
-  "records_management.customer_portal_diagram_view",
-  function (require) {
-    "use strict";
+import { registry } from "@web/core/registry";
+import { _t } from "@web/core/l10n/translation";
+import { AbstractView } from "@web/views/abstract_view";
+import { AbstractRenderer } from "@web/views/abstract_renderer";
+import { AbstractController } from "@web/views/abstract_controller";
 
-    var AbstractView = require("web.AbstractView");
-    var AbstractRenderer = require("web.AbstractRenderer");
-    var AbstractController = require("web.AbstractController");
-    var viewRegistry = require("web.view_registry");
-    var core = require("web.core");
-    var rpc = require("web.rpc");
-
-    var _t = core._t;
+const viewRegistry = registry.category("views");
 
     /**
      * Customer Portal Diagram Controller
@@ -222,13 +215,11 @@ odoo.define(
       },
     });
 
-    // Register the view
-    viewRegistry.add("customer_portal_diagram", CustomerPortalDiagramView);
+// Register the view
+viewRegistry.add("customer_portal_diagram", CustomerPortalDiagramView);
 
-    return {
-      CustomerPortalDiagramView: CustomerPortalDiagramView,
-      CustomerPortalDiagramController: CustomerPortalDiagramController,
-      CustomerPortalDiagramRenderer: CustomerPortalDiagramRenderer,
-    };
-  }
-);
+export const CustomerPortalDiagram = {
+  CustomerPortalDiagramView,
+  CustomerPortalDiagramController,
+  CustomerPortalDiagramRenderer,
+};

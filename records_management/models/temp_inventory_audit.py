@@ -42,22 +42,36 @@ class TempInventoryAudit(models.Model):
     # ============================================================================
     @api.depends('event_type', 'user_id', 'date')
     def _compute_display_name(self):
-        """Compute a descriptive display name for the audit log."""
+        """Compute a descriptive display name for the audit log.
+
+        Uses project translation policy with percent interpolation after _().
+        """
         for record in self:
             event_label = dict(record._fields['event_type'].selection).get(record.event_type, record.event_type)
             user_name = record.user_id.name if record.user_id else _("Unknown User")
-            record.display_name = _("%s by %s on %s", event_label, user_name, fields.Datetime.to_string(record.date))
+            record.display_name = _("%s by %s on %s") % (event_label, user_name, fields.Datetime.to_string(record.date))
 
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to automatically capture the IP address from the request context."""
-        ip_address = self.env.context.get('ip_address') or (self.env.cr.transaction.ip if hasattr(self.env.cr, 'transaction') else 'N/A')
+        """Override create to automatically capture the IP address from the request context.
+
+        Removed unsafe access to self.env.cr.transaction.ip (not standard in Odoo)
+        and replaced with layered fallbacks: explicit context key, httprequest remote_addr,
+        then 'N/A'.
+        """
+        # Best-effort IP extraction
+        request_ip = 'N/A'
+        if 'ip_address' in self.env.context:
+            request_ip = self.env.context['ip_address']
+        elif getattr(self.env, 'request', None) and getattr(self.env.request, 'httprequest', None):
+            request_ip = getattr(self.env.request.httprequest, 'remote_addr', 'N/A') or 'N/A'
+
         for vals in vals_list:
             if 'ip_address' not in vals:
-                vals['ip_address'] = ip_address
+                vals['ip_address'] = request_ip
         return super(TempInventoryAudit, self).create(vals_list)
 
     # ============================================================================

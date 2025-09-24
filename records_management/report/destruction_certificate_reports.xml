@@ -179,10 +179,12 @@
                                             <td><strong>Service Type:</strong></td>
                                             <td><span t-field="service.service_type"/></td>
                                         </tr>
-                                        <tr>
-                                            <td><strong>Completion Time:</strong></td>
-                                            <td><span t-field="service.completion_time" t-options="{'widget': 'datetime'}"/></td>
-                                        </tr>
+                                        <t t-if="'completion_time' in service._fields">
+                                            <tr>
+                                                <td><strong>Completion Time:</strong></td>
+                                                <td><span t-field="service.completion_time" t-options="{'widget': 'datetime'}"/></td>
+                                            </tr>
+                                        </t>
                                     </table>
                                 </div>
                                 <div class="col-6">

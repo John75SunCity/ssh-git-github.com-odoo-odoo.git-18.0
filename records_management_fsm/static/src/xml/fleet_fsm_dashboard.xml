@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <templates id="template" xml:space="preserve">
+    <templates xml:space="preserve">
         <!-- Basic placeholder template; enhance with KPIs / graphs later -->
         <t t-name="records_management_fsm.FleetFSMDashboard" owl="1">
             <div class="o_fleet_fsm_dashboard p-3">
