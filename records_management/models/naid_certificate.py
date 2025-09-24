@@ -319,33 +319,48 @@ class NaidCertificate(models.Model):
             if not report:
                 raise UserError(_("NAID certificate report template not found"))
 
-            # Defensive: sanitize report action fields in case of bad data types from legacy/migration
-            try:
-                fixes = {}
-                if isinstance(getattr(report, "report_name", None), (list, tuple)):
-                    rn = report.report_name
-                    fixes["report_name"] = rn[0] if rn else ""
-                elif report.report_name is not None and not isinstance(report.report_name, str):
-                    fixes["report_name"] = str(report.report_name)
+            # Robust sanitation: ensure both fields are plain strings BEFORE rendering
+            # Root cause (observed in logs): legacy/migration data left list/int values in
+            # ir.actions.report.report_name / report_file, leading to attribute errors
+            def _coerce(val):
+                if isinstance(val, (list, tuple)):
+                    # Take first element, cast to str (lists like [1] become '1')
+                    return str(val[0]) if val else ""
+                if val is None:
+                    return ""
+                if not isinstance(val, str):
+                    return str(val)
+                return val
 
-                if isinstance(getattr(report, "report_file", None), (list, tuple)):
-                    rf = report.report_file
-                    fixes["report_file"] = rf[0] if rf else ""
-                elif report.report_file is not None and not isinstance(report.report_file, str):
-                    fixes["report_file"] = str(report.report_file)
+            fixes = {}
+            coerced_report_name = _coerce(getattr(report, "report_name", ""))
+            coerced_report_file = _coerce(getattr(report, "report_file", ""))
+            if getattr(report, "report_name", None) != coerced_report_name:
+                fixes["report_name"] = coerced_report_name
+            if getattr(report, "report_file", None) != coerced_report_file:
+                fixes["report_file"] = coerced_report_file
+            if fixes:
+                # Use sudo to bypass potential ACL restrictions on ir.actions.report
+                try:
+                    report.sudo().write(fixes)
+                except Exception as write_err:
+                    _logger.warning(
+                        "Could not persist report sanitation for NAID certificate report (%s): %s",
+                        fixes,
+                        write_err,
+                    )
+                    # Even if write fails, continue with in-memory coerced values
+                    report.report_name = coerced_report_name  # type: ignore
+                    report.report_file = coerced_report_file  # type: ignore
 
-                if fixes:
-                    report.write(fixes)
-            except Exception as _e:
-                # Don't block rendering if we can't sanitize; logging already handled in except below if render fails
-                pass
+            # Final defensive guard BEFORE calling internal rendering (expects dotted model path str)
+            if not isinstance(report.report_name, str):  # pragma: no cover (safety net)
+                raise UserError(_("Invalid report configuration (report_name not a string)"))
+            if not isinstance(report.report_file, str):  # pragma: no cover
+                raise UserError(_("Invalid report configuration (report_file not a string)"))
 
             result = report._render_qweb_pdf(self.ids)
-            # Handle both tuple and single return value for compatibility
-            if isinstance(result, tuple):
-                pdf_content = result[0]
-            else:
-                pdf_content = result
+            pdf_content = result[0] if isinstance(result, tuple) else result
 
             if not pdf_content:
                 raise UserError(_("Failed to generate PDF content"))
@@ -373,25 +388,32 @@ class NaidCertificate(models.Model):
         if not report:
             raise UserError(_("NAID certificate report template not found"))
         # Defensive fix: sanitize report fields if migration stored lists/tuples or wrong types
-        try:
-            fixes = {}
-            if isinstance(getattr(report, "report_name", None), (list, tuple)):
-                rn = report.report_name
-                fixes["report_name"] = rn[0] if rn else ""
-            elif report.report_name is not None and not isinstance(report.report_name, str):
-                fixes["report_name"] = str(report.report_name)
-
-            if isinstance(getattr(report, "report_file", None), (list, tuple)):
-                rf = report.report_file
-                fixes["report_file"] = rf[0] if rf else ""
-            elif report.report_file is not None and not isinstance(report.report_file, str):
-                fixes["report_file"] = str(report.report_file)
-
-            if fixes:
-                report.write(fixes)
-        except Exception:
-            # Non-blocking; let report_action surface any issues if present
-            pass
+        def _coerce(val):
+            if isinstance(val, (list, tuple)):
+                return str(val[0]) if val else ""
+            if val is None:
+                return ""
+            if not isinstance(val, str):
+                return str(val)
+            return val
+        fixes = {}
+        coerced_report_name = _coerce(getattr(report, "report_name", ""))
+        coerced_report_file = _coerce(getattr(report, "report_file", ""))
+        if getattr(report, "report_name", None) != coerced_report_name:
+            fixes["report_name"] = coerced_report_name
+        if getattr(report, "report_file", None) != coerced_report_file:
+            fixes["report_file"] = coerced_report_file
+        if fixes:
+            try:
+                report.sudo().write(fixes)
+            except Exception as write_err:
+                _logger.warning(
+                    "Could not persist report sanitation during download (%s): %s",
+                    fixes,
+                    write_err,
+                )
+                report.report_name = coerced_report_name  # type: ignore
+                report.report_file = coerced_report_file  # type: ignore
         # Return native report action (lets Odoo handle download/preview)
         return report.report_action(self)
 
