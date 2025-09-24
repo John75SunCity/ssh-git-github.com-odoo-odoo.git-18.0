@@ -2,12 +2,13 @@
 <odoo>
     <template id="report_service_item_utilization_template">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <h2>Utilization Report for <span t-field="o.name"/>
-                        </h2>
-
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Utilization Report</h2>
+                    <t t-if="not docs">
+                        <p>No service items to display.</p>
+                    </t>
+                    <t t-foreach="docs" t-as="o">
                         <div class="row mt32 mb32">
                             <div class="col-6">
                                 <strong>Item:</strong>
@@ -25,51 +26,50 @@
                                 <span t-field="o.state"/>
                                 <br/>
                                 <strong>Utilization Rate:</strong>
-                                <span t-field="o.utilization_rate"/>
-%                                <br/>
+                                <span t-field="o.utilization_rate"/> %
+                                <br/>
                                 <strong>Efficiency:</strong>
                                 <span t-field="o.efficiency_rating"/>
                                 <br/>
                             </div>
                         </div>
-
-                        <h3>Performance Metrics</h3>
-                        <table class="table table-sm o_main_table">
-                            <thead>
+                    </t>
+                    <h3>Performance Metrics</h3>
+                    <table class="table table-sm o_main_table">
+                        <thead>
+                            <tr>
+                                <th name="th_item" class="text-left">Item</th>
+                                <th name="th_created" class="text-left">Created</th>
+                                <th name="th_user" class="text-left">Created By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="not docs">
+                                <tr><td colspan="3">No performance data.</td></tr>
+                            </t>
+                            <t t-foreach="docs" t-as="doc">
                                 <tr>
-                                    <th name="th_metric" class="text-left">Metric</th>
-                                    <th name="th_value" class="text-left">Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                                                <tr>
-                                    <td><strong>Name:</strong></td>
                                     <td><span t-esc="doc.name or 'N/A'"/></td>
+                                    <td>
+                                        <span t-esc="doc.create_date and doc.create_date.strftime('%Y-%m-%d %H:%M') or '-'"/>
+                                    </td>
+                                    <td><span t-esc="doc.user_id and doc.user_id.name or '-'"/></td>
                                 </tr>
-                                <tr t-if="doc.create_date">
-                                    <td><strong>Created:</strong></td>
-                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
-                                </tr>
-                                <tr t-if="doc.user_id">
-                                    <td><strong>Created by:</strong></td>
-                                    <td><span t-esc="doc.user_id.name"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
             </t>
         </t>
     </template>
 
     <template id="report_maintenance_schedule_template">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <h2>Maintenance Schedule for <span t-field="o.name"/>
-                        </h2>
-
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Maintenance Schedule</h2>
+                    <t t-if="not docs"><p>No maintenance items.</p></t>
+                    <t t-foreach="docs" t-as="o">
                         <div class="row mt32 mb32">
                             <div class="col-6">
                                 <strong>Item:</strong>
@@ -88,34 +88,32 @@
                                 <br/>
                             </div>
                         </div>
-
-                        <h3>Maintenance History</h3>
-                        <table class="table table-sm o_main_table">
-                            <thead>
+                    </t>
+                    <h3>Maintenance History</h3>
+                    <table class="table table-sm o_main_table">
+                        <thead>
+                            <tr>
+                                <th name="th_item" class="text-left">Item</th>
+                                <th name="th_created" class="text-left">Created</th>
+                                <th name="th_user" class="text-left">Created By</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="not docs">
+                                <tr><td colspan="3">No history available.</td></tr>
+                            </t>
+                            <t t-foreach="docs" t-as="doc">
                                 <tr>
-                                    <th name="th_request" class="text-left">Request</th>
-                                    <th name="th_date" class="text-left">Date</th>
-                                    <th name="th_type" class="text-left">Type</th>
-                                    <th name="th_status" class="text-left">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                                                <tr>
-                                    <td><strong>Name:</strong></td>
                                     <td><span t-esc="doc.name or 'N/A'"/></td>
+                                    <td>
+                                        <span t-esc="doc.create_date and doc.create_date.strftime('%Y-%m-%d %H:%M') or '-'"/>
+                                    </td>
+                                    <td><span t-esc="doc.user_id and doc.user_id.name or '-'"/></td>
                                 </tr>
-                                <tr t-if="doc.create_date">
-                                    <td><strong>Created:</strong></td>
-                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
-                                </tr>
-                                <tr t-if="doc.user_id">
-                                    <td><strong>Created by:</strong></td>
-                                    <td><span t-esc="doc.user_id.name"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
             </t>
         </t>
     </template>

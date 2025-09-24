@@ -292,15 +292,15 @@
             "records_management/static/src/js/trailer_visualization.js",
             "records_management/static/src/js/truck_widget.js",
             # Temporarily disabled custom visualization/search ESM modules pending dependency resolution
-            # "records_management/static/src/js/intelligent_search.js",
-            # "records_management/static/src/js/system_flowchart_view.js",
-            # "records_management/static/src/js/customer_portal_diagram_view.js",
+            "records_management/static/src/js/intelligent_search.js",
+            "records_management/static/src/js/system_flowchart_view.js",
+            "records_management/static/src/js/customer_portal_diagram_view.js",
             "records_management/static/src/xml/map_widget.xml",
             "records_management/static/src/xml/trailer_visualization.xml",
             # Templates for disabled modules also commented to avoid unresolved template references
-            # "records_management/static/src/xml/intelligent_search_templates.xml",
-            # "records_management/static/src/xml/system_flowchart_templates.xml",
-            # "records_management/static/src/xml/customer_portal_diagram_templates.xml"
+            "records_management/static/src/xml/intelligent_search_templates.xml",
+            "records_management/static/src/xml/system_flowchart_templates.xml",
+            "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
         "web.assets_frontend": [
             "records_management/static/src/lib/vis/vis-network.min.css",
