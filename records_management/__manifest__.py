@@ -291,6 +291,10 @@
             "records_management/static/src/js/paper_load_truck_widget.js",
             "records_management/static/src/js/trailer_visualization.js",
             "records_management/static/src/js/truck_widget.js",
+            # Legacy AMD modules (to be migrated to ESM) re-enabled per request
+            "records_management/static/src/js/intelligent_search.js",
+            "records_management/static/src/js/system_flowchart_view.js",
+            "records_management/static/src/js/customer_portal_diagram_view.js",
             "records_management/static/src/xml/map_widget.xml",
             "records_management/static/src/xml/trailer_visualization.xml",
             "records_management/static/src/xml/intelligent_search_templates.xml",
@@ -317,6 +321,10 @@
             "records_management/static/src/js/customer_portal_diagram.js",
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
+        ],
+        # POS integration assets (customer history patch)
+        "point_of_sale.assets": [
+            "records_management/static/src/js/pos_customer_history.js",
         ],
         "web.assets_tests": [
             "records_management/static/tests/tours/records_management_basic_tour.js",
