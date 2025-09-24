@@ -97,3 +97,17 @@ def post_init_hook(env):  # pragma: no cover - executed at install
             except Exception:
                 # Never block installation; silently continue to next cron.
                 continue
+
+    # ------------------------------------------------------------------
+    # NAID Report Sanitation (ensure migrated report records are clean)
+    # ------------------------------------------------------------------
+    # Some legacy environments had non-string (list) values stored in
+    # ir.actions.report fields report_name / report_file, causing runtime
+    # attribute errors when generating NAID certificate PDFs. Ensure the
+    # sanitation utility runs once after install/upgrade so all existing
+    # environments are corrected globally beyond demo XML.
+    try:  # pragma: no cover - safety wrapper
+        env['naid.certificate'].xml_sanitize_naid_reports()
+    except Exception:
+        # Non-fatal; do not block installation on sanitation edge cases.
+        pass
