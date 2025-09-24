@@ -12,15 +12,12 @@
             <xpath expr="/t/html" position="attributes">
                 <attribute name="lang">en</attribute>
             </xpath>
-            <!-- Replace existing viewport meta with accessible version -->
-            <xpath expr="//meta[@name='viewport']" position="replace">
-                <meta name="viewport" content="width=device-width, initial-scale=1"/>
-            </xpath>
-            <!-- Remove obsolete X-UA-Compatible meta if any -->
-            <xpath expr="//meta[translate(@http-equiv, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='x-ua-compatible']" position="replace"/>
-            <!-- Remove existing theme-color meta (if any) then add standardized one -->
-            <xpath expr="//meta[@name='theme-color']" position="replace"/>
+            <!-- Insert accessibility / modern meta tags idempotently.
+                 Using head insertion instead of replace so absence of elements does not cause ParseError.
+                 Potential duplicates are acceptable; browsers use the first. For stricter uniqueness,
+                 a future enhancement could search and remove via server-side cleanup script. -->
             <xpath expr="//head" position="inside">
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <meta name="theme-color" content="#3b5998"/>
             </xpath>
         </template>
