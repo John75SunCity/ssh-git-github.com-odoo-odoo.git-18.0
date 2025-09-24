@@ -8,9 +8,9 @@
              - Standardizes theme-color meta for modern browsers
         -->
         <template id="records_management_accessibility_layout" name="Records Management Accessibility Overrides" inherit_id="web.layout">
-            <!-- Ensure html tag has lang attribute (fallback en) -->
+            <!-- Dynamic lang attribute: derive from context lang, fallback en-US -->
             <xpath expr="/t/html" position="attributes">
-                <attribute name="lang">en</attribute>
+                <attribute name="t-att-lang">(env.context.get('lang') or 'en_US').replace('_','-')</attribute>
             </xpath>
             <!-- Insert accessibility / modern meta tags idempotently.
                  Using head insertion instead of replace so absence of elements does not cause ParseError.
@@ -19,6 +19,7 @@
             <xpath expr="//head" position="inside">
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <meta name="theme-color" content="#3b5998"/>
+                <meta name="color-scheme" content="light dark"/>
             </xpath>
         </template>
     </data>
