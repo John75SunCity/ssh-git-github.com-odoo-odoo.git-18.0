@@ -291,11 +291,6 @@
             "records_management/static/src/js/paper_load_truck_widget.js",
             "records_management/static/src/js/trailer_visualization.js",
             "records_management/static/src/js/truck_widget.js",
-            # Temporarily disabled legacy AMD backend modules pending ESM refactor
-            # "records_management/static/src/js/intelligent_search.js",
-            # "records_management/static/src/js/system_flowchart_view.js",
-            # "records_management/static/src/js/customer_portal_diagram_view.js",
-            # "records_management/static/src/js/pos_customer_history.js",
             "records_management/static/src/xml/map_widget.xml",
             "records_management/static/src/xml/trailer_visualization.xml",
             "records_management/static/src/xml/intelligent_search_templates.xml",
@@ -322,6 +317,9 @@
             "records_management/static/src/js/customer_portal_diagram.js",
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
+        ],
+        "web.assets_tests": [
+            "records_management/static/tests/tours/records_management_basic_tour.js",
         ]
     },
     "external_dependencies": {},
