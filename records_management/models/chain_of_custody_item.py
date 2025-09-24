@@ -140,13 +140,8 @@ class ChainOfCustodyItem(models.Model):
     verified_by = fields.Many2one('res.users', string='Verified By', tracking=True)
     verified_date = fields.Datetime(string='Verified Date', tracking=True)
 
-    # Computed fields for display
-    display_name_computed = fields.Char(
-        string='Computed Display Name',
-        compute='_compute_display_name_computed',
-        store=False,
-        help='Runtime descriptive label combining item, serial/barcode, type and quantity.'
-    )
+    # Unified stored display name (removed legacy non-stored display_name_computed to avoid
+    # inconsistent compute/store warnings).
 
     @api.depends('quantity', 'value')
     def _compute_total_value(self):
@@ -154,30 +149,30 @@ class ChainOfCustodyItem(models.Model):
         for item in self:
             item.total_value = item.quantity * (item.value or 0.0)
 
-    @api.depends('document_id', 'container_id', 'item_type', 'serial_number', 'barcode')
-    def _compute_display_name_computed(self):
-        """Compute display name for better identification"""
+    @api.depends('document_id', 'container_id', 'item_type', 'serial_number', 'barcode', 'quantity')
+    def _compute_display_name(self):
+        """Compute unified stored display name.
+
+        Format example: "DocumentName (document) S/N:123 Qty: 2".
+        """
         for item in self:
             parts = []
-
+            base = False
             if item.document_id:
-                parts.append(item.document_id.display_name)
+                base = item.document_id.display_name
             elif item.container_id:
-                parts.append(item.container_id.display_name)
-            else:
-                parts.append(_('Item'))
-
+                base = item.container_id.display_name
+            if not base:
+                base = _('Item')
+            parts.append(base)
+            parts.append('(%s)' % dict(item._fields['item_type'].selection).get(item.item_type, item.item_type))
             if item.serial_number:
                 parts.append(_('S/N: %s') % item.serial_number)
             elif item.barcode:
                 parts.append(_('BC: %s') % item.barcode)
-
-            parts.append('(%s)' % dict(item._fields['item_type'].selection).get(item.item_type, item.item_type))
-
-            if item.quantity > 1:
+            if item.quantity and item.quantity > 1:
                 parts.append(_('Qty: %d') % item.quantity)
-
-            item.display_name_computed = ' '.join(parts)
+            item.display_name = ' '.join(parts)
 
     @api.constrains('document_id', 'container_id', 'item_type')
     def _check_item_consistency(self):
@@ -274,17 +269,8 @@ class ChainOfCustodyItem(models.Model):
 
         return True
 
-    # Stored display name for Odoo 18 compliance
+    # Stored display name for Odoo 18 compliance (definition placed after compute)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-
-    @api.depends('display_name_computed', 'document_id', 'container_id', 'item_type')
-    def _compute_display_name(self):
-        for rec in self:
-            if getattr(rec, 'display_name_computed', False):
-                rec.display_name = rec.display_name_computed
-            else:
-                base = rec.document_id.display_name or rec.container_id.display_name or _('Item')
-                rec.display_name = "%s (%s)" % (base, rec.item_type)
 
     @api.model_create_multi
     def create(self, vals_list):

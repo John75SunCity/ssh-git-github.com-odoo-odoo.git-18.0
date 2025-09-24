@@ -131,13 +131,9 @@ class ChainOfCustodyEvent(models.Model):
         help="Hours elapsed since the previous event in this custody chain"
     )
 
-    # Use a distinct label to avoid duplicate label warning with core display_name
-    display_name_computed = fields.Char(
-        string='Computed Display Name',
-        compute='_compute_display_name',
-        store=False,
-        help="Descriptive name (not stored) to avoid compute/store mismatch with core display_name"
-    )
+    # Unified display name (stored) for Odoo 18 compliance.
+    # Previous intermediate non-stored field display_name_computed removed to avoid
+    # registry warnings about inconsistent compute/store attributes.
 
     @api.depends('event_date', 'custody_id.custody_event_ids')
     def _compute_duration_since_previous(self):
@@ -160,16 +156,24 @@ class ChainOfCustodyEvent(models.Model):
 
     @api.depends('event_type', 'event_date', 'responsible_person', 'location')
     def _compute_display_name(self):
-        """Compute enhanced display name for better readability"""
+        """Compute enhanced display name for better readability.
+
+        Consolidated logic: builds the stored display_name directly.
+        Format: "YYYY-MM-DD HH:MM - Event Type - Location" (components optional).
+        """
         for event in self:
             parts = []
             if event.event_date:
-                parts.append(event.event_date.strftime('%Y-%m-%d %H:%M'))
+                try:
+                    parts.append(event.event_date.strftime('%Y-%m-%d %H:%M'))
+                except Exception:
+                    # Defensive: event_date might be bogus/None during partial updates
+                    pass
             if event.event_type:
-                parts.append(dict(event._fields['event_type'].selection)[event.event_type])
+                parts.append(dict(event._fields['event_type'].selection).get(event.event_type, event.event_type))
             if event.location:
                 parts.append(event.location)
-            event.display_name_computed = ' - '.join(parts) if parts else 'Chain of Custody Event'
+            event.display_name = ' - '.join(parts) if parts else _('Chain of Custody Event')
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -320,18 +324,8 @@ class ChainOfCustodyEvent(models.Model):
             user_id=self.env.user.id,
         )
 
-    # Stored display name for Odoo 18 compliance
+    # Stored display name for Odoo 18 compliance (definition moved above compute)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-
-    @api.depends('display_name_computed', 'event_date', 'event_type')
-    def _compute_display_name(self):
-        for rec in self:
-            if getattr(rec, 'display_name_computed', False):
-                rec.display_name = rec.display_name_computed
-            else:
-                date_str = rec.event_date.strftime('%Y-%m-%d %H:%M') if rec.event_date else ''
-                event_type = dict(rec._fields['event_type'].selection).get(rec.event_type, rec.event_type)
-                rec.display_name = "%s - %s" % (date_str, event_type)
 
     @api.constrains('event_date', 'custody_id')
     def _check_event_date(self):

@@ -58,14 +58,29 @@ class PickupLocation(models.Model):
     
     @api.depends('name', 'city', 'state_id')
     def _compute_display_name(self):
-        """Compute a user-friendly display name"""
+        """Compute a user-friendly display name.
+
+        Robust against new (unsaved) records where fields may be empty so that
+        core tests (TestEveryModel.test_display_name_new_record) do not fail.
+        Fallback order:
+          1. name (+ optional city/state components)
+          2. city/state if name absent
+          3. Generic translated label.
+        """
         for record in self:
-            parts = [record.name]
+            base = record.name or ''
+            parts = []
+            if base:
+                parts.append(base)
             if record.city:
                 parts.append(record.city)
             if record.state_id:
                 parts.append(record.state_id.code or record.state_id.name)
-            record.display_name = ', '.join(parts)
+
+            if not parts:
+                record.display_name = _('Pickup Location')
+            else:
+                record.display_name = ', '.join(parts)
     
     @api.onchange('country_id')
     def _onchange_country_id(self):
