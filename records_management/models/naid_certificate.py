@@ -322,36 +322,7 @@ class NaidCertificate(models.Model):
             # Robust sanitation: ensure both fields are plain strings BEFORE rendering
             # Root cause (observed in logs): legacy/migration data left list/int values in
             # ir.actions.report.report_name / report_file, leading to attribute errors
-            def _coerce(val):
-                if isinstance(val, (list, tuple)):
-                    # Take first element, cast to str (lists like [1] become '1')
-                    return str(val[0]) if val else ""
-                if val is None:
-                    return ""
-                if not isinstance(val, str):
-                    return str(val)
-                return val
-
-            fixes = {}
-            coerced_report_name = _coerce(getattr(report, "report_name", ""))
-            coerced_report_file = _coerce(getattr(report, "report_file", ""))
-            if getattr(report, "report_name", None) != coerced_report_name:
-                fixes["report_name"] = coerced_report_name
-            if getattr(report, "report_file", None) != coerced_report_file:
-                fixes["report_file"] = coerced_report_file
-            if fixes:
-                # Use sudo to bypass potential ACL restrictions on ir.actions.report
-                try:
-                    report.sudo().write(fixes)
-                except Exception as write_err:
-                    _logger.warning(
-                        "Could not persist report sanitation for NAID certificate report (%s): %s",
-                        fixes,
-                        write_err,
-                    )
-                    # Even if write fails, continue with in-memory coerced values
-                    report.report_name = coerced_report_name  # type: ignore
-                    report.report_file = coerced_report_file  # type: ignore
+            self._sanitize_report_action(report, context_label="generate")
 
             # Final defensive guard BEFORE calling internal rendering (expects dotted model path str)
             if not isinstance(report.report_name, str):  # pragma: no cover (safety net)
@@ -359,7 +330,23 @@ class NaidCertificate(models.Model):
             if not isinstance(report.report_file, str):  # pragma: no cover
                 raise UserError(_("Invalid report configuration (report_file not a string)"))
 
-            result = report._render_qweb_pdf(self.ids)
+            # Attempt rendering; if we still encounter a classic legacy 'list'.split failure
+            # caused by stale prefetch/cache, retry once after a forced sanitation flush.
+            try:
+                result = report._render_qweb_pdf(self.ids)
+            except Exception as inner_err:
+                msg = str(inner_err)
+                if "split" in msg and isinstance(getattr(report, "report_name", None), (list, tuple)):
+                    _logger.warning(
+                        "Retrying NAID certificate PDF generation after secondary sanitation (report_name=%s, report_file=%s)",
+                        report.report_name,
+                        report.report_file,
+                    )
+                    # Force in-memory coercion and second attempt
+                    self._sanitize_report_action(report, force_in_memory=True, context_label="retry")
+                    result = report._render_qweb_pdf(self.ids)
+                else:
+                    raise
             pdf_content = result[0] if isinstance(result, tuple) else result
 
             if not pdf_content:
@@ -388,32 +375,7 @@ class NaidCertificate(models.Model):
         if not report:
             raise UserError(_("NAID certificate report template not found"))
         # Defensive fix: sanitize report fields if migration stored lists/tuples or wrong types
-        def _coerce(val):
-            if isinstance(val, (list, tuple)):
-                return str(val[0]) if val else ""
-            if val is None:
-                return ""
-            if not isinstance(val, str):
-                return str(val)
-            return val
-        fixes = {}
-        coerced_report_name = _coerce(getattr(report, "report_name", ""))
-        coerced_report_file = _coerce(getattr(report, "report_file", ""))
-        if getattr(report, "report_name", None) != coerced_report_name:
-            fixes["report_name"] = coerced_report_name
-        if getattr(report, "report_file", None) != coerced_report_file:
-            fixes["report_file"] = coerced_report_file
-        if fixes:
-            try:
-                report.sudo().write(fixes)
-            except Exception as write_err:
-                _logger.warning(
-                    "Could not persist report sanitation during download (%s): %s",
-                    fixes,
-                    write_err,
-                )
-                report.report_name = coerced_report_name  # type: ignore
-                report.report_file = coerced_report_file  # type: ignore
+        self._sanitize_report_action(report, context_label="download")
         # Return native report action (lets Odoo handle download/preview)
         return report.report_action(self)
 
@@ -528,7 +490,7 @@ class NaidCertificate(models.Model):
                     record.message_post(
                         body=(
                             _("Certificate state changed from %s to %s")
-                            % (record.state, vals["state"]) 
+                            % (record.state, vals["state"])
                         )
                     )
 
@@ -641,3 +603,57 @@ class NaidCertificate(models.Model):
     def action_view_destruction_records(self):
         self.ensure_one()
         return False
+
+    # -------------------------------------------------------------
+    # INTERNAL HELPERS (Report sanitation & retry logic)
+    # -------------------------------------------------------------
+    def _sanitize_report_action(self, report, force_in_memory=False, context_label=""):
+        """Coerce report_name/report_file on an ir.actions.report record.
+
+        Parameters:
+            report (recordset): ir.actions.report single record
+            force_in_memory (bool): if True, always set coerced values in-memory
+                even when write is possible (used on retry path)
+            context_label (str): adds context to log messages (generate/download/retry)
+        """
+        if not report:
+            return
+
+        def _coerce(val):
+            if isinstance(val, (list, tuple)):
+                return str(val[0]) if val else ""
+            if val is None:
+                return ""
+            if not isinstance(val, str):
+                return str(val)
+            return val
+
+        original_name = getattr(report, "report_name", "")
+        original_file = getattr(report, "report_file", "")
+        coerced_name = _coerce(original_name)
+        coerced_file = _coerce(original_file)
+        if force_in_memory:
+            if original_name != coerced_name:
+                report.report_name = coerced_name  # type: ignore
+            if original_file != coerced_file:
+                report.report_file = coerced_file  # type: ignore
+            return
+
+        updates = {}
+        if original_name != coerced_name:
+            updates["report_name"] = coerced_name
+        if original_file != coerced_file:
+            updates["report_file"] = coerced_file
+        if updates:
+            try:
+                report.sudo().write(updates)
+            except Exception as e:  # pragma: no cover (safety logging)
+                _logger.warning(
+                    "In-memory fallback sanitation (%s) failed to persist %s: %s",
+                    context_label or "naid",
+                    updates,
+                    e,
+                )
+                # Fallback to in-memory mutation
+                for k, v in updates.items():
+                    setattr(report, k, v)

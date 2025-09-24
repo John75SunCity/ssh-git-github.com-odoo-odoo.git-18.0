@@ -1,12 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Removed backend override by request: no changes to webclient layout -->
-
-        <!-- Website layout: add dynamic HTML lang attribute for portal/website pages -->
-        <template id="website_layout_lang_inherit" inherit_id="website.layout" name="website.layout.inherit.lang">
-            <xpath expr="//html" position="attributes">
-                <attribute name="t-att-lang">env.context.get('lang') or 'en_US'</attribute>
+        <!-- Accessibility & Standards Compliance Overrides (Backend webclient)
+             - Adds lang attribute to <html>
+             - Normalizes viewport to allow user scaling (removes user-scalable=no)
+             - Removes obsolete X-UA-Compatible meta if present
+             - Standardizes theme-color meta for modern browsers
+        -->
+        <template id="records_management_accessibility_layout" name="Records Management Accessibility Overrides" inherit_id="web.layout">
+            <!-- Ensure html tag has lang attribute (fallback en) -->
+            <xpath expr="/t/html" position="attributes">
+                <attribute name="lang">en</attribute>
+            </xpath>
+            <!-- Replace existing viewport meta with accessible version -->
+            <xpath expr="//meta[@name='viewport']" position="replace">
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            </xpath>
+            <!-- Remove obsolete X-UA-Compatible meta if any -->
+            <xpath expr="//meta[translate(@http-equiv, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='x-ua-compatible']" position="replace"/>
+            <!-- Remove existing theme-color meta (if any) then add standardized one -->
+            <xpath expr="//meta[@name='theme-color']" position="replace"/>
+            <xpath expr="//head" position="inside">
+                <meta name="theme-color" content="#3b5998"/>
             </xpath>
         </template>
     </data>
