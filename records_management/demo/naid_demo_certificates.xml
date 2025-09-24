@@ -21,6 +21,8 @@
         </record>
 
     <!-- Issue the certificate after items exist to satisfy constraints -->
+    <!-- Pre-sanitize NAID reports to avoid legacy list-type corruption errors -->
+    <function model="naid.certificate" name="xml_sanitize_naid_reports"/>
     <function model="naid.certificate" name="xml_issue_certificate" eval="(ref('records_management.demo_naid_certificate_001'),)"/>
 
         <record id="demo_naid_certificate_002" model="naid.certificate">

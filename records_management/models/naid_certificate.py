@@ -417,6 +417,74 @@ class NaidCertificate(models.Model):
         # Return native report action (lets Odoo handle download/preview)
         return report.report_action(self)
 
+    # =========================================================================
+    # DATA / REPORT SANITATION UTILITIES (invoked from XML demo / hooks)
+    # =========================================================================
+    @api.model
+    def xml_sanitize_naid_reports(self):  # pragma: no cover - utility for data loading
+        """Sanitize NAID report definitions corrupted during legacy migrations.
+
+        During certain intermediate migrations the ``ir.actions.report`` records
+        for this module had ``report_name`` / ``report_file`` values stored as
+        Python list objects (e.g. ``[1]``) instead of plain strings. This causes
+        framework internals to attempt string operations (``split``) on list
+        instances, producing the observed log errors:
+
+            'list' object has no attribute 'split'
+
+        and domain warnings like:
+
+            The domain term ('report_name', '=', [1]) should use the 'in' operator.
+
+        This helper coerces those fields back to strings safely *before* any
+        report rendering occurs (especially important for demo XML which issues
+        a certificate immediately after creation).
+        """
+        xmlids = [
+            "records_management.action_report_naid_certificate",
+            "records_management.report_naid_certificate",
+        ]
+
+        def _coerce(val):
+            if isinstance(val, (list, tuple)):
+                return str(val[0]) if val else ""
+            if val is None:
+                return ""
+            if not isinstance(val, str):
+                return str(val)
+            return val
+
+        fixed = []
+        for xid in xmlids:
+            report = self.env.ref(xid, raise_if_not_found=False)
+            if not report:
+                continue
+            updates = {}
+            rn = _coerce(getattr(report, "report_name", ""))
+            rf = _coerce(getattr(report, "report_file", ""))
+            if getattr(report, "report_name", None) != rn:
+                updates["report_name"] = rn
+            if getattr(report, "report_file", None) != rf:
+                updates["report_file"] = rf
+            if updates:
+                try:
+                    report.sudo().write(updates)
+                    fixed.append((xid, updates))
+                except Exception as e:  # pragma: no cover - safety logging
+                    _logger.warning(
+                        "Failed to permanently sanitize report %s (%s); applying in-memory fallback", xid, e
+                    )
+                    # In-memory fallback so subsequent usage in same txn is safe
+                    for k, v in updates.items():
+                        setattr(report, k, v)
+                    fixed.append((xid, updates))
+        if fixed:
+            _logger.info(
+                "NAID report sanitation applied: %s",
+                ", ".join(f"{xid}:{vals}" for xid, vals in fixed),
+            )
+        return True
+
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
