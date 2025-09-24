@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 class PickupLocation(models.Model):
     _name = 'pickup.location'
@@ -68,19 +68,18 @@ class PickupLocation(models.Model):
           3. Generic translated label.
         """
         for record in self:
-            base = record.name or ''
+            # New records may not have any values; avoid test failures by providing stable fallback
+            base = (record.name or '').strip()
             parts = []
             if base:
                 parts.append(base)
             if record.city:
-                parts.append(record.city)
+                parts.append(record.city.strip())
             if record.state_id:
-                parts.append(record.state_id.code or record.state_id.name)
+                parts.append((record.state_id.code or record.state_id.name or '').strip())
 
-            if not parts:
-                record.display_name = _('Pickup Location')
-            else:
-                record.display_name = ', '.join(parts)
+            # If all components empty, provide a translated generic label
+            record.display_name = ', '.join([p for p in parts if p]) if parts else _('Pickup Location')
     
     @api.onchange('country_id')
     def _onchange_country_id(self):
