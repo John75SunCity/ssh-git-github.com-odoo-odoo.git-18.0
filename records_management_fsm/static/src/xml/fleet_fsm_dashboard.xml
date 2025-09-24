@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <templates id="template" xml:space="preserve">
+        <!-- Basic placeholder template; enhance with KPIs / graphs later -->
+        <t t-name="records_management_fsm.FleetFSMDashboard" owl="1">
+            <div class="o_fleet_fsm_dashboard p-3">
+                <h2 class="mb-3">Fleet &amp; FSM Integration Dashboard</h2>
+                <div class="row g-3">
+                    <div class="col-12 col-md-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Today's Tasks</h5>
+                                <p class="card-text display-6" t-esc="component.metrics.tasks_today"/>
+                                <small class="text-muted">Scheduled FSM tasks for today</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Open Routes</h5>
+                                <p class="card-text display-6" t-esc="component.metrics.open_routes"/>
+                                <small class="text-muted">Routes not yet closed</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Active Vehicles</h5>
+                                <p class="card-text display-6" t-esc="component.metrics.active_vehicles"/>
+                                <small class="text-muted">Fleet vehicles currently in service</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p class="text-muted">This is an initial placeholder. Future iterations will include KPI trends, route optimization insights, and real-time task progression widgets.</p>
+                </div>
+            </div>
+        </t>
+    </templates>
+</odoo>

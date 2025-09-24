@@ -21,6 +21,13 @@
         # Menus loaded last to ensure actions above are available
         "views/fleet_fsm_integration_menus.xml",
     ],
+    # Backend assets for dashboard client action placeholder
+    "assets": {
+        "web.assets_backend": [
+            "records_management_fsm/static/src/js/fleet_fsm_dashboard.js",
+            "records_management_fsm/static/src/xml/fleet_fsm_dashboard.xml",
+        ],
+    },
     "installable": True,
     # Auto-install so it comes in automatically with records_management + industry_fsm
     "auto_install": True,
