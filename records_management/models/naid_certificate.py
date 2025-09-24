@@ -335,14 +335,22 @@ class NaidCertificate(models.Model):
             try:
                 result = report._render_qweb_pdf(self.ids)
             except Exception as inner_err:
+                # Broaden handling: ANY 'list' object split failure during report rendering
                 msg = str(inner_err)
-                if "split" in msg and isinstance(getattr(report, "report_name", None), (list, tuple)):
+                needs_retry = "list" in msg and "split" in msg
+                if needs_retry:
                     _logger.warning(
-                        "Retrying NAID certificate PDF generation after secondary sanitation (report_name=%s, report_file=%s)",
-                        report.report_name,
-                        report.report_file,
+                        "Detected list.split failure generating NAID certificate %s; performing global sanitation + retry (report_name=%r, report_file=%r)",
+                        self.certificate_number,
+                        getattr(report, "report_name", None),
+                        getattr(report, "report_file", None),
                     )
-                    # Force in-memory coercion and second attempt
+                    # Global sanitation across known NAID report xmlids (persists coercion where possible)
+                    try:
+                        self.xml_sanitize_naid_reports()
+                    except Exception as sanitize_err:  # pragma: no cover - defensive
+                        _logger.warning("Global NAID report sanitation raised: %s", sanitize_err)
+                    # Force in-memory coercion and second attempt (handles stale prefetch cache)
                     self._sanitize_report_action(report, force_in_memory=True, context_label="retry")
                     result = report._render_qweb_pdf(self.ids)
                 else:
@@ -360,7 +368,7 @@ class NaidCertificate(models.Model):
                 self.certificate_number,
                 str(e),
             )
-            # Return a basic PDF placeholder if report generation fails
+            # Return a basic PDF placeholder if report generation fails (keeps flow resilient)
             placeholder_content = _("Certificate %s - PDF Generation Error") % self.certificate_number
             return base64.b64encode(placeholder_content.encode("utf-8"))
 

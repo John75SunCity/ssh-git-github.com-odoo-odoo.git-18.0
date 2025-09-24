@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <templates xml:space="preserve">
-        <!-- Basic placeholder template; enhance with KPIs / graphs later -->
+        <!-- Fleet FSM Dashboard Root Template -->
         <t t-name="records_management_fsm.FleetFSMDashboard" owl="1">
             <div class="o_fleet_fsm_dashboard p-3">
                 <h2 class="mb-3">Fleet &amp; FSM Integration Dashboard</h2>

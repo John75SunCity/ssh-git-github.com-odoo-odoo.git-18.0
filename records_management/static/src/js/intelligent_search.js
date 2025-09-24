@@ -9,7 +9,8 @@
  */
 
 import { registry } from "@web/core/registry";
-import { AbstractField } from "@web/views/fields/abstract_field";
+// Adjusted import path for Odoo 18 core field base (avoid missing module error during bundling)
+import { AbstractField } from "@web/views/fields/abstract_field/abstract_field";
 import { _t } from "@web/core/l10n/translation";
 import rpc from "@web/core/network/rpc_service";
 import { qweb as QWeb } from "@web/core/qweb";
