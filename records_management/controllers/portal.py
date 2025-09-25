@@ -846,7 +846,8 @@ class RecordsManagementController(http.Controller):
             # Non-blocking; rendering attempt will surface issues if any remain
             pass
 
-        pdf_tuple = report._render_qweb_pdf([cert.id])
+        # Use global model method with explicit report reference to avoid list-as-report_ref bugs
+        pdf_tuple = request.env['ir.actions.report']._render_qweb_pdf(report.report_name, [cert.id])
         pdf_content = pdf_tuple[0] if isinstance(pdf_tuple, tuple) else pdf_tuple
         pdf_bytes = pdf_content if isinstance(pdf_content, (bytes, bytearray)) else bytes(pdf_content or b"")
 

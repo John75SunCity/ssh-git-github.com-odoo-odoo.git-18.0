@@ -261,7 +261,9 @@ class DestructionCertificate(models.Model):
         )
         if report:
             try:
-                result = report._render_qweb_pdf(self.ids)
+                result = self.env['ir.actions.report']._render_qweb_pdf(
+                    report.report_name, self.ids
+                )
                 if isinstance(result, tuple):
                     pdf_bytes = result[0]
                 else:

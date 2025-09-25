@@ -330,10 +330,16 @@ class NaidCertificate(models.Model):
             if not isinstance(report.report_file, str):  # pragma: no cover
                 raise UserError(_("Invalid report configuration (report_file not a string)"))
 
-            # Attempt rendering; if we still encounter a classic legacy 'list'.split failure
-            # caused by stale prefetch/cache, retry once after a forced sanitation flush.
+            # Attempt rendering; IMPORTANT: Core/enterprise signature of _render_qweb_pdf is
+            #   _render_qweb_pdf(report_ref, res_ids, data=None)
+            # The previous implementation incorrectly called report._render_qweb_pdf(self.ids),
+            # passing the record ids list as the first positional argument (report_ref). This
+            # caused Odoo to treat `[1]` as an xmlid → env.ref([1]) → AttributeError: 'list' object
+            # has no attribute 'split'. We now explicitly provide the report reference string.
             try:
-                result = report._render_qweb_pdf(self.ids)
+                result = self.env["ir.actions.report"]._render_qweb_pdf(
+                    report.report_name, self.ids
+                )
             except Exception as inner_err:
                 # Broaden handling: ANY 'list' object split failure during report rendering
                 msg = str(inner_err)
@@ -352,7 +358,10 @@ class NaidCertificate(models.Model):
                         _logger.warning("Global NAID report sanitation raised: %s", sanitize_err)
                     # Force in-memory coercion and second attempt (handles stale prefetch cache)
                     self._sanitize_report_action(report, force_in_memory=True, context_label="retry")
-                    result = report._render_qweb_pdf(self.ids)
+                    # Second attempt with corrected signature (ensure no argument shift)
+                    result = self.env["ir.actions.report"]._render_qweb_pdf(
+                        report.report_name, self.ids
+                    )
                 else:
                     raise
             pdf_content = result[0] if isinstance(result, tuple) else result

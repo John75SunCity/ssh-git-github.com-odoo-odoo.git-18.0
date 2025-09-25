@@ -435,8 +435,11 @@ class WorkOrderPortal(CustomerPortal):
         # Generate work order report
         report = request.env.ref('records_management.work_order_report')
         if report:
-            pdf_content, content_type = report._render_qweb_pdf([work_order.id])
-            pdf_name = _("Work_Order_%s.pdf", work_order.name)
+            # Correct signature: _render_qweb_pdf(report_ref, res_ids, data=None)
+            pdf_content, content_type = request.env['ir.actions.report']._render_qweb_pdf(
+                report.report_name, [work_order.id]
+            )
+            pdf_name = _("Work_Order_%s.pdf") % work_order.name
 
             return request.make_response(
                 pdf_content,

@@ -258,7 +258,10 @@ class ProjectTask(models.Model):
         self.ensure_one()
         try:
             report_action = self.env.ref('records_management.action_report_certificate_of_destruction')
-            pdf_content, _ = report_action._render_qweb_pdf(res_ids=self.ids)
+            # Corrected: explicitly pass report reference then ids
+            pdf_content, _ = self.env['ir.actions.report']._render_qweb_pdf(
+                report_action.report_name, self.ids
+            )
 
             # Keep repository translation style (multi-arg inside _())
             # Translation: repo conflicting rules; using percent interpolation post _() per project policy
