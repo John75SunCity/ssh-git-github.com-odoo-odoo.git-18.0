@@ -338,6 +338,8 @@ class RmModuleConfigurator(models.Model):
             {"name": "Enable Chain of Custody", "config_key": "chain_of_custody_enabled", "config_type": "feature_toggle", "value_boolean": True, "category": "compliance"},
             {"name": "Enable Bin Inventory", "config_key": "bin_inventory_enabled", "config_type": "feature_toggle", "value_boolean": True, "category": "fsm"},
             {"name": "Enable FSM Features", "config_key": "enable_fsm_features", "config_type": "feature_toggle", "value_boolean": True, "category": "fsm"},
+            # UI / Theming
+            {"name": "Theme Color", "config_key": "rm_theme_color", "config_type": "parameter", "value_text": "#875A7B", "category": "ui", "description": "Primary browser UI theme-color meta value (hex). Overrides default if present."},
         ]
         created = []
         for vals in defaults:
