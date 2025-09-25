@@ -33,8 +33,28 @@ class IrActionsReport(models.Model):
     # structural constraints enforced by the base test suite.
     # ------------------------------------------------------------------
 
-    def _render_qweb_html(self, report_ref, res_ids=None, data=None):  # noqa: D401 - signature mirrors core
-        result = super()._render_qweb_html(report_ref, res_ids=res_ids, data=data)
+    def _render_qweb_html(self, report_ref, docids=None, data=None, **kwargs):  # noqa: D401
+        """Render QWeb HTML with structural post-processing.
+
+        Odoo 18 core uses the parameter name ``docids`` (older custom code in
+        this module previously used ``res_ids`` and passed it as a keyword).
+        The earlier override forwarded ``res_ids`` to ``super()`` causing
+        ``TypeError: unexpected keyword argument 'res_ids'`` after framework
+        upgrade. We accept both for backward compatibility:
+
+            self._render_qweb_html(report_ref, res_ids=[1, 2])  # legacy
+            self._render_qweb_html(report_ref, docids=[1, 2])  # current
+
+        Any ``res_ids`` kw is mapped to ``docids`` before delegating to core.
+        ``**kwargs`` is intentionally accepted so future upstream optional
+        parameters do not break this shim silently (they are ignored unless
+        recognized here).
+        """
+        # Backward compatibility shim: map legacy 'res_ids' kw to 'docids'.
+        if docids is None and 'res_ids' in kwargs:
+            docids = kwargs.pop('res_ids')
+        # Only pass supported arguments to super (avoid leaking unknown kwargs)
+        result = super()._render_qweb_html(report_ref, docids=docids, data=data)
         try:
             if not result:
                 return result
@@ -53,6 +73,24 @@ class IrActionsReport(models.Model):
         except Exception:
             # Fail-safe: never block report rendering because of sanitizer
             return result
+
+    # ------------------------------------------------------------------
+    # Compatibility Wrapper (future-proof centralization)
+    # ------------------------------------------------------------------
+    def rm_render_qweb_pdf(self, report_ref, docids=None, data=None, **kwargs):
+        """Module-level safe wrapper for PDF rendering.
+
+        Purpose:
+            - Normalize legacy callers still passing 'res_ids'.
+            - Provide single logging/exception concentration point if future
+              framework changes require signature adaptation.
+
+        This is intentionally thin; business logic should stay in calling
+        models. Use only inside this addon.
+        """
+        if docids is None and 'res_ids' in kwargs:
+            docids = kwargs.pop('res_ids')
+        return super()._render_qweb_pdf(report_ref, docids, data=data)
 
     # ------------------------------------------------------------------
     # Internal helpers
