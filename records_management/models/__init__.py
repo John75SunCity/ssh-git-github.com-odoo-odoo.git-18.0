@@ -215,6 +215,7 @@ from . import revenue_forecast_line
 from . import revenue_forecaster
 from . import revenue_forecasting_reports
 from . import rm_module_configurator
+from . import ir_actions_report_sanitizer
 from . import route_optimizer
 from . import scan_digital_asset
 from . import scan_retrieval
