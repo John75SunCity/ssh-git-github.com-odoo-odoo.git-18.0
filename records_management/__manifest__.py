@@ -1,6 +1,6 @@
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.0.1",  # Force module reload to clear cached views
+    "version": "18.0.0.2",  # bump version to force asset rebuild for intelligent search re-enable
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
@@ -291,17 +291,14 @@
             "records_management/static/src/js/paper_load_truck_widget.js",
             "records_management/static/src/js/trailer_visualization.js",
             "records_management/static/src/js/truck_widget.js",
-            # Temporarily disabled custom visualization/search ESM modules pending dependency resolution
-            # Temporarily disabled advanced ESM modules pending dependency resolution in test environment
-            # (cause: test asset bundle missing core '@web' modules after failure in these scripts)
-            # "records_management/static/src/js/intelligent_search.js",
+            # Re-enabled hardened intelligent search (templates must precede for QWeb safety)
+            "records_management/static/src/xml/intelligent_search_templates.xml",
+            "records_management/static/src/js/intelligent_search.js",
+            # Still disabled pending hardening: flowchart & portal diagram
             # "records_management/static/src/js/system_flowchart_view.js",
             # "records_management/static/src/js/customer_portal_diagram_view.js",
             "records_management/static/src/xml/map_widget.xml",
             "records_management/static/src/xml/trailer_visualization.xml",
-            # Templates for disabled modules also commented to avoid unresolved template references
-            # Corresponding templates also disabled to avoid unresolved template refs while JS disabled
-            # "records_management/static/src/xml/intelligent_search_templates.xml",
             # "records_management/static/src/xml/system_flowchart_templates.xml",
             # "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
@@ -321,13 +318,13 @@
             "records_management/static/src/js/portal_signature.js",
             "records_management/static/src/js/portal_user_import.js",
             "records_management/static/src/js/field_label_customizer.js",
-            # Disabled frontend counterparts (see backend note above)
-            # "records_management/static/src/js/intelligent_search.js",
+            # Re-enable portal intelligent search (templates before JS)
+            "records_management/static/src/xml/intelligent_search_templates.xml",
+            "records_management/static/src/js/intelligent_search.js",
+            # Still disabled: portal diagram until hardened
             # "records_management/static/src/js/customer_portal_diagram.js",
-            # "records_management/static/src/xml/intelligent_search_templates.xml",
             # "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
-        # POS integration assets (customer history patch)
         "point_of_sale.assets": [
             "records_management/static/src/js/pos_customer_history.js",
         ],

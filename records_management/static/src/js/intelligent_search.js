@@ -15,6 +15,38 @@ import { _t } from "@web/core/l10n/translation";
 import rpc from "@web/core/network/rpc_service";
 import { qweb as QWeb } from "@web/core/qweb";
 
+// Defensive helpers ---------------------------------------------------------
+function safeGetPartnerId(record) {
+  try {
+    if (!record || !record.data || !record.data.partner_id) {
+      return null;
+    }
+    const partnerRaw = record.data.partner_id;
+    // Many2one in the web client can be either an object {data:{id:..}} or the id itself
+    if (partnerRaw && partnerRaw.data && partnerRaw.data.id) {
+      return partnerRaw.data.id;
+    }
+    if (typeof partnerRaw === "number") {
+      return partnerRaw;
+    }
+    if (Array.isArray(partnerRaw) && partnerRaw.length) {
+      return partnerRaw[0];
+    }
+  } catch (err) {
+    console.warn("[IntelligentSearch] Failed to extract partner id", err);
+  }
+  return null;
+}
+
+function toggleVisible($el, show) {
+  if (!$el) return;
+  if (show) {
+    $el.removeClass("d-none");
+  } else {
+    $el.addClass("d-none");
+  }
+}
+
 const fieldRegistry = registry.category("fields");
 
   /**
@@ -52,7 +84,7 @@ const fieldRegistry = registry.category("fields");
     /**
      * Handle input changes with debouncing
      */
-    _onSearchInput: function (event) {
+  _onSearchInput: function (event) {
       var self = this;
       var query = event.target.value.trim();
 
@@ -76,14 +108,8 @@ const fieldRegistry = registry.category("fields");
      */
     _performSearch: function (query) {
       var self = this;
-
-      // Get customer_id from context or current record
-      var customer_id = null;
-      if (this.record && this.record.data.partner_id) {
-        customer_id = this.record.data.partner_id.data
-          ? this.record.data.partner_id.data.id
-          : this.record.data.partner_id;
-      }
+      // Defensive partner extraction
+      var customer_id = safeGetPartnerId(this.record);
 
       rpc
         .query({
@@ -109,25 +135,34 @@ const fieldRegistry = registry.category("fields");
      */
     _showSuggestions: function () {
       var self = this;
+      if (!this.$suggestions) return; // not yet rendered
       this.$suggestions.empty();
 
+      if (!QWeb) {
+        console.warn("[IntelligentSearch] QWeb not available – skipping suggestions render");
+        toggleVisible(this.$suggestions, false);
+        return;
+      }
+
       if (this.suggestions.length === 0) {
-        this.$suggestions.hide();
+        toggleVisible(this.$suggestions, false);
         return;
       }
 
       this.suggestions.forEach(function (suggestion, index) {
-        var $item = $(
-          QWeb.render("ContainerSuggestionItem", {
+        try {
+          var html = QWeb.render("ContainerSuggestionItem", {
             suggestion: suggestion,
             index: index,
-          })
-        );
-
-        self.$suggestions.append($item);
+          });
+          var $item = $(html);
+          self.$suggestions.append($item);
+        } catch (err) {
+          console.error("[IntelligentSearch] Failed to render suggestion", err);
+        }
       });
 
-      this.$suggestions.show();
+      toggleVisible(this.$suggestions, true);
       this.selectedIndex = -1;
     },
 
@@ -135,7 +170,9 @@ const fieldRegistry = registry.category("fields");
      * Hide suggestions dropdown
      */
     _hideSuggestions: function () {
-      this.$suggestions.hide();
+      if (this.$suggestions) {
+        toggleVisible(this.$suggestions, false);
+      }
       this.suggestions = [];
       this.selectedIndex = -1;
     },
@@ -256,10 +293,9 @@ const fieldRegistry = registry.category("fields");
       };
 
       // Get customer_id from context or current record
-      if (this.record && this.record.data.partner_id) {
-        searchParams.customer_id = this.record.data.partner_id.data
-          ? this.record.data.partner_id.data.id
-          : this.record.data.partner_id;
+      const partnerId = safeGetPartnerId(this.record);
+      if (partnerId) {
+        searchParams.customer_id = partnerId;
       }
 
       if (!searchParams.file_name && !searchParams.service_date) {
@@ -365,8 +401,16 @@ const fieldRegistry = registry.category("fields");
   });
 
   // Register the widgets
-fieldRegistry.add("container_search", ContainerSearchWidget);
-fieldRegistry.add("file_search", FileSearchWidget);
+try {
+  fieldRegistry.add("container_search", ContainerSearchWidget);
+  fieldRegistry.add("file_search", FileSearchWidget);
+  // Optional debug log (quiet unless dev tools visible)
+  if (window && window.console) {
+    console.debug("[IntelligentSearch] Widgets registered (container_search, file_search)");
+  }
+} catch (err) {
+  console.error("[IntelligentSearch] Failed to register widgets", err);
+}
 
 export const IntelligentSearchWidgets = {
   ContainerSearchWidget,

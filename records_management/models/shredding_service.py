@@ -55,6 +55,16 @@ class ShreddingService(models.Model):
         help="Detailed description of the shredding service"
     )
 
+    partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        string='Customer',
+        tracking=True,
+        help=(
+            "Customer for whom this shredding service is performed. Added to align with certificate"
+            " and destruction report templates referencing service.partner_id.*"
+        )
+    )
+
     # Service Date
     service_date = fields.Date(
         string='Service Date',

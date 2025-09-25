@@ -24,8 +24,9 @@
     # Backend assets for dashboard client action placeholder
     "assets": {
         "web.assets_backend": [
-            "records_management_fsm/static/src/js/fleet_fsm_dashboard.js",
+            # Load XML template before JS so Owl component template is available
             "records_management_fsm/static/src/xml/fleet_fsm_dashboard.xml",
+            "records_management_fsm/static/src/js/fleet_fsm_dashboard.js",
         ],
     },
     "installable": True,

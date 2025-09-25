@@ -1,21 +1,41 @@
 /** @odoo-module **/
+/**
+ * Portal / Inventory Tours
+ *
+ * This file previously mixed ESM (`@odoo-module`) + legacy AMD (`odoo.define`).
+ * The mixed pattern was triggering asset bundling instability in test mode
+ * (web.assets_web.bundle.xml failure) when `web_tour.tour` wasn't resolvable
+ * early enough. We now:
+ *   - Keep a pure ESM implementation
+ *   - Provide a defensive lazy resolver for the legacy `web_tour.tour` API
+ *     only if available (for backwards compatibility)
+ *   - Always register tours through the modern registry so Owl test harness
+ *     can discover them even if legacy loader is skipped.
+ */
 
 import { registry } from "@web/core/registry";
 import { tourManager } from "@web_tour/tour_manager";
 
-// Legacy tour support for older Odoo versions
-odoo.define('records_management.portal_tour', function (require) {
-    "use strict";
-
-    var tour = require('web_tour.tour');
-
-    // Traditional Portal App Tour with Enhanced Features
-    tour.register('portal_app_tour', {
-        test: true,  // Set to false in production
-        url: '/my/overview',
-        rainbowMan: true,  // Show celebration at end
-        fadeout: 'slow',
-        steps: [
+// Attempt to access legacy tour API if present (older compatibility layers)
+let legacyTourApi;
+try {
+    // `require` may not exist in strict ESM contexts; guard it.
+    // eslint-disable-next-line no-undef
+    if (typeof require === 'function') {
+        // eslint-disable-next-line no-undef
+        legacyTourApi = require('web_tour.tour');
+    }
+} catch (err) {
+    // Silently ignore – modern registry path will still function.
+    console.debug('[portal_tour] Legacy tour API not available:', err.message);
+}
+// Traditional Portal App Tour (legacy style definition retained as data only)
+const legacyPortalAppTour = {
+    test: true,
+    url: '/my/overview',
+    rainbowMan: true,
+    fadeout: 'slow',
+    steps: [
             {
                 trigger: '.hero-section h1',
                 content: '<div class="tour-step-enhanced"><h4><i class="fa fa-rocket text-primary"></i> Welcome to Your Portal!</h4><p>This guided tour will showcase all the powerful features of your enterprise-grade Records Management Portal.</p></div>',
@@ -133,14 +153,14 @@ odoo.define('records_management.portal_tour', function (require) {
                     }, 500);
                 },
             },
-        ]
-    });
+    ]
+};
 
-    // Feature-specific tours
-    tour.register('inventory_feature_tour', {
-        test: true,
-        url: '/my/inventory',
-        steps: [
+// Inventory feature tour (legacy style data)
+const legacyInventoryFeatureTour = {
+    test: true,
+    url: '/my/inventory',
+    steps: [
             {
                 trigger: '#global_search',
                 content: '<div class="tour-step-enhanced"><h4><i class="fa fa-search text-primary"></i> Google-Like Search</h4><p>Type anything to search across all your inventory. Try commands like "active boxes" or "destroy document".</p></div>',
@@ -159,17 +179,35 @@ odoo.define('records_management.portal_tour', function (require) {
                 content: '<div class="tour-step-enhanced"><h4><i class="fa fa-tasks text-warning"></i> Bulk Operations</h4><p>Select multiple items and perform batch operations like destruction requests, pickup scheduling, or archiving.</p></div>',
                 position: 'top',
             },
-        ]
-    });
+    ]
+};
 
-    // Global tour starter functions
-    window.startPortalTour = function() {
-        tour.run('portal_app_tour');
-    };
+// If legacy API exists, register there too (harmless duplicate for modern env)
+if (legacyTourApi?.register) {
+    try {
+        legacyTourApi.register('portal_app_tour', legacyPortalAppTour, legacyPortalAppTour.steps);
+        legacyTourApi.register('inventory_feature_tour', legacyInventoryFeatureTour, legacyInventoryFeatureTour.steps);
+    } catch (err) {
+        console.warn('[portal_tour] Legacy tour registration failed:', err.message);
+    }
+}
 
-    window.startInventoryTour = function() {
-        tour.run('inventory_feature_tour');
-    };
+// Global (legacy) helpers – retained, but now delegate to modern tourManager when possible
+window.startPortalTour = function() {
+    if (tourManager?.startTour) {
+        tourManager.startTour('portal_overview_tour', { mode: 'manual' });
+    } else if (legacyTourApi?.run) {
+        legacyTourApi.run('portal_app_tour');
+    }
+};
+
+window.startInventoryTour = function() {
+    if (tourManager?.startTour) {
+        tourManager.startTour('portal_inventory_tour', { mode: 'manual' });
+    } else if (legacyTourApi?.run) {
+        legacyTourApi.run('inventory_feature_tour');
+    }
+};
 
     // Enhanced tour with skip option
     window.startEnhancedTour = function() {
@@ -225,14 +263,7 @@ odoo.define('records_management.portal_tour', function (require) {
         });
     };
 
-    return {
-        startPortalTour: window.startPortalTour,
-        startInventoryTour: window.startInventoryTour,
-        startEnhancedTour: window.startEnhancedTour
-    };
-});
-
-// Modern Web Tour Implementation (Odoo 16+)
+// Modern Web Tour Implementation (Odoo 16+ / 18 Hardened)
 const portalOverviewTour = {
     url: '/my/overview',
     test: true,
@@ -307,7 +338,11 @@ const portalOverviewTour = {
 };
 
 // Register the modern tour
-registry.category("web_tour.tours").add("portal_overview_tour", portalOverviewTour);
+try {
+    registry.category("web_tour.tours").add("portal_overview_tour", portalOverviewTour);
+} catch (err) {
+    console.error('[portal_tour] Failed to register portal_overview_tour:', err.message);
+}
 
 // Portal Inventory Tour
 const portalInventoryTour = {
@@ -352,7 +387,11 @@ const portalInventoryTour = {
     ],
 };
 
-registry.category("web_tour.tours").add("portal_inventory_tour", portalInventoryTour);
+try {
+    registry.category("web_tour.tours").add("portal_inventory_tour", portalInventoryTour);
+} catch (err) {
+    console.error('[portal_tour] Failed to register portal_inventory_tour:', err.message);
+}
 
 // Portal Functions for Overview Page
 window.portalFunctions = {

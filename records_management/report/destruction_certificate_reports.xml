@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Report for destruction.certificate model (renamed from destruction_certificate_report.xml) -->
+<!-- Report for destruction.certificate model
+    Consolidated canonical definition: previous duplicate file destruction_certificate_report.xml removed
+    to prevent duplicate action/template IDs causing unpredictable overrides. -->
 <record id="action_report_destruction_certificate" model="ir.actions.report">
     <field name="name">Destruction Certificate</field>
     <field name="model">destruction.certificate</field>
@@ -17,6 +19,7 @@
     <t t-call="web.html_container">
         <t t-foreach="docs" t-as="doc">
             <t t-call="web.external_layout">
+                <!-- Single page wrapper per certificate to avoid pagination inflation -->
                 <div class="page">
                     <style>
                                 .o_signature_placeholder { height: 60px; border-bottom: 1px solid #000; }
@@ -130,10 +133,10 @@
                             </p>
                         </div>
                     </div>
-                </div>
-            </t>
-        </t>
-    </t>
+                </div><!-- /.page -->
+            </t><!-- /external_layout -->
+        </t><!-- /foreach docs -->
+    </t><!-- /html_container -->
 </template>
 
 <!-- Existing shredding.service report retained (ids unchanged) -->
@@ -151,9 +154,10 @@
 
 <!-- NAID AAA Destruction Certificate Template for shredding.service (id preserved) -->
         <template id="destruction_certificate_template">
-            <t t-call="web.external_layout">
-                <div class="page">
-                    <t t-foreach="docs" t-as="service">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="service">
+                    <t t-call="web.external_layout">
+                        <div class="page">
                         <!-- NAID Compliance Header -->
                         <div class="certificate-header" style="text-align: center; border: 2px solid #000; padding: 20px; margin-bottom: 30px;">
                             <h1 style="color: #d32f2f; margin: 0;">CERTIFICATE OF DESTRUCTION</h1>
@@ -228,18 +232,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                                                    <tr>
-                                    <td><strong>Name:</strong></td>
-                                    <td><span t-esc="doc.name or 'N/A'"/></td>
-                                </tr>
-                                <tr t-if="doc.create_date">
-                                    <td><strong>Created:</strong></td>
-                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
-                                </tr>
-                                <tr t-if="doc.user_id">
-                                    <td><strong>Created by:</strong></td>
-                                    <td><span t-esc="doc.user_id.name"/></td>
-                                </tr>
+                                    <!-- Rows dynamically provided elsewhere; removed stray doc.* references (undefined in this context) -->
                                 </tbody>
                                 <tfoot>
                                     <tr style="background-color: #e9ecef; font-weight: bold;">
@@ -289,18 +282,7 @@ This certificate confirms that the above-listed materials have been destroyed
                                     </tr>
                                 </thead>
                                 <tbody>
-                                                                    <tr>
-                                    <td><strong>Name:</strong></td>
-                                    <td><span t-esc="doc.name or 'N/A'"/></td>
-                                </tr>
-                                <tr t-if="doc.create_date">
-                                    <td><strong>Created:</strong></td>
-                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
-                                </tr>
-                                <tr t-if="doc.user_id">
-                                    <td><strong>Created by:</strong></td>
-                                    <td><span t-esc="doc.user_id.name"/></td>
-                                </tr>
+                                    <!-- Chain of custody events to be populated if available; removed invalid doc.* debug remnants -->
                                 </tbody>
                             </table>
                         </div>
@@ -385,9 +367,10 @@ Certificate generated on<span t-esc="context_timestamp(datetime.datetime.now()).
                                 Page <span class="page"/> of <span class="topage"/>
                             </p>
                         </div>
-                    </t>
-                </div>
-            </t>
+                        </div><!-- /.page service certificate -->
+                    </t><!-- /external_layout -->
+                </t><!-- /foreach docs -->
+            </t><!-- /html_container -->
         </template>
 
         <!-- Walk-in Destruction Certificate (for POS integration) -->
