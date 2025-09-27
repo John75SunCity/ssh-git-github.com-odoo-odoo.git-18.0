@@ -28,7 +28,7 @@
     #         "records_management_fsm/static/src/js/fleet_fsm_dashboard.js",
     #     ],
     # },
-    "installable": True,
+    "installable": False,  # Temporarily disabled to fix test issues
     # Auto-install so it comes in automatically with records_management + industry_fsm
-    "auto_install": True,
+    "auto_install": False,
 }
