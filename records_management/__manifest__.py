@@ -243,6 +243,8 @@
         "views/portal_feedback_analytic_views.xml",
         # Ensure inventory item action is defined before menus referencing it
         "views/inventory_item_views.xml",
+        # Ensure res partner key restriction action is defined before menus reference it
+        "views/res_partner_key_restriction_views.xml",
 
     # Menus moved to end to ensure all referenced actions are defined beforehand
     "views/records_management_menus.xml",
@@ -291,16 +293,14 @@
             "records_management/static/src/js/paper_load_truck_widget.js",
             "records_management/static/src/js/trailer_visualization.js",
             "records_management/static/src/js/truck_widget.js",
-            # Re-enabled hardened intelligent search (templates must precede for QWeb safety)
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
-            # Still disabled pending hardening: flowchart & portal diagram
-            # "records_management/static/src/js/system_flowchart_view.js",
-            # "records_management/static/src/js/customer_portal_diagram_view.js",
+            "records_management/static/src/js/system_flowchart_view.js",
+            "records_management/static/src/js/customer_portal_diagram_view.js",
             "records_management/static/src/xml/map_widget.xml",
             "records_management/static/src/xml/trailer_visualization.xml",
-            # "records_management/static/src/xml/system_flowchart_templates.xml",
-            # "records_management/static/src/xml/customer_portal_diagram_templates.xml"
+            "records_management/static/src/xml/system_flowchart_templates.xml",
+            "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
         "web.assets_frontend": [
             "records_management/static/src/lib/vis/vis-network.min.css",
@@ -318,12 +318,10 @@
             "records_management/static/src/js/portal_signature.js",
             "records_management/static/src/js/portal_user_import.js",
             "records_management/static/src/js/field_label_customizer.js",
-            # Re-enable portal intelligent search (templates before JS)
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
-            # Still disabled: portal diagram until hardened
-            # "records_management/static/src/js/customer_portal_diagram.js",
-            # "records_management/static/src/xml/customer_portal_diagram_templates.xml"
+            "records_management/static/src/js/customer_portal_diagram.js",
+            "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
         "point_of_sale.assets": [
             "records_management/static/src/js/pos_customer_history.js",
