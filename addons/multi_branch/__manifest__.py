@@ -5,6 +5,7 @@
     "category": "Extra Tools",
     "author": "Stub for Development",
     "website": "https://github.com/John75SunCity",
+    "license": "LGPL-3",
     "depends": ["base"],
     "data": [],
     "installable": False,  # Disabled stub to avoid unintended discovery/installation
