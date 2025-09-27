@@ -21,14 +21,12 @@
         # Menus loaded last to ensure actions above are available
         "views/fleet_fsm_integration_menus.xml",
     ],
-    # Backend assets temporarily disabled to fix bundle loading issues
-    # "assets": {
-    #     "web.assets_backend": [
-    #         "records_management_fsm/static/src/xml/fleet_fsm_dashboard.xml",
-    #         "records_management_fsm/static/src/js/fleet_fsm_dashboard.js",
-    #     ],
-    # },
-    "installable": False,  # Temporarily disabled to fix test issues
-    # Auto-install so it comes in automatically with records_management + industry_fsm
-    "auto_install": False,
+    "assets": {
+        "web.assets_backend": [
+            "records_management_fsm/static/src/xml/fleet_fsm_dashboard.xml",
+            "records_management_fsm/static/src/js/fleet_fsm_dashboard.js",
+        ],
+    },
+    "installable": True,
+    "auto_install": True,
 }
