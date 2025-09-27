@@ -23,9 +23,9 @@
                 <form string="Partner Key Access Restriction">
                     <header>
                         <field name="state" widget="statusbar" />
-                        <button name="action_activate" string="Activate" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'draft')]}" />
-                        <button name="action_revoke" string="Revoke" type="object" class="btn-danger" attrs="{'invisible': [('state', 'not in', ('active', 'expired'))]}" />
-                        <button name="action_reset_to_draft" string="Reset to Draft" type="object" attrs="{'invisible': [('state', '=', 'draft')]}" />
+                        <button name="action_activate" string="Activate" type="object" class="btn-primary" invisible="state != 'draft'" />
+                        <button name="action_revoke" string="Revoke" type="object" class="btn-danger" invisible="state not in ('active', 'expired')" />
+                        <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state == 'draft'" />
                     </header>
                     <sheet>
                         <div class="oe_title">
