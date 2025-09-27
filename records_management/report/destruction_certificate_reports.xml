@@ -238,7 +238,7 @@
                                     <tr style="background-color: #e9ecef; font-weight: bold;">
                                         <td colspan="2">TOTAL</td>
                                         <td><span t-field="service.total_weight"/> lbs</td>
-                                        <td><span t-field="service.total_volume"/> CF</td>
+                                        <td><span t-field="service.total_weight"/> kg</td>
                                         <td>-</td>
                                     </tr>
                                 </tfoot>
