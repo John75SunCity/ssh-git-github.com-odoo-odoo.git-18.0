@@ -17,7 +17,13 @@ class TestRecordsManagement(TransactionCase):
                 "email": "records.test@company.example",
             }
         )
-        cls.product_container = cls.env.ref("records_management.product_container")
+        cls.product_container = cls.env["product.product"].create(
+            {
+                "name": "Test Container",
+                "type": "product",
+                "tracking": "lot",
+            }
+        )
         cls.lot = cls.env["stock.lot"].create(
             {
                 "name": "TEST001",

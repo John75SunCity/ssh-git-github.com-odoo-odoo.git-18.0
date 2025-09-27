@@ -96,6 +96,7 @@ class RmModuleConfigurator(models.Model):
     retrieval_work_order_enabled = fields.Boolean(default=True)
     photo_enabled = fields.Boolean(default=True)
     photo_portal_access = fields.Boolean(default=False)
+    key_restriction_enabled = fields.Boolean(default=True, help="Enable key access restriction management for partners.")
 
     current_value = fields.Char(compute="_compute_current_value", store=True)
     display_name = fields.Char(compute="_compute_display_name", store=True)
@@ -216,6 +217,8 @@ class RmModuleConfigurator(models.Model):
             self.action_apply_bin_inventory_toggle()
         if 'enable_fsm_features' in updated_keys:
             self.action_apply_fsm_visibility_toggle()
+        if 'key_restriction_enabled' in updated_keys:
+            self.action_apply_key_restriction_toggle()
 
     def _collect_updated_feature_keys(self, vals_list):
         keys = set()
@@ -224,7 +227,7 @@ class RmModuleConfigurator(models.Model):
                 for rec in self.filtered(lambda r: r.config_type == 'feature_toggle'):
                     keys.add(rec.config_key)
             # direct boolean feature toggles tracked explicitly
-            for direct in ['bin_inventory_enabled', 'enable_fsm_features', 'enable_flowchart_visualization', 'enable_portal_diagram', 'enable_intelligent_search']:
+            for direct in ['bin_inventory_enabled', 'enable_fsm_features', 'enable_flowchart_visualization', 'enable_portal_diagram', 'enable_intelligent_search', 'key_restriction_enabled']:
                 if direct in vals:
                     keys.add(direct)
         return keys
@@ -369,6 +372,17 @@ class RmModuleConfigurator(models.Model):
                     menu.active = bool(enabled)
                 except Exception:
                     continue
+
+    def action_apply_key_restriction_toggle(self):
+        """Apply key restriction toggle functionality"""
+        self.ensure_one()
+        enabled = self.get_config_parameter('key_restriction_enabled', True)
+        menu = self.env.ref("records_management.menu_key_restriction", raise_if_not_found=False)
+        if menu:
+            try:
+                menu.active = bool(enabled)
+            except Exception:
+                pass
 
     def _default_create_default_configurations(self):  # alias (backwards compatibility)
         self.ensure_one()

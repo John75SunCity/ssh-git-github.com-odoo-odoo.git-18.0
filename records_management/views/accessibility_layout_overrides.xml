@@ -23,14 +23,14 @@
               If legacy metas exist, future cleanup can be done via server-side scripts. -->
             <!-- Ensure a single standards-compliant viewport meta exists (idempotent) -->
             <xpath expr="//head" position="inside">
-                <meta t-if="not head.xpath(&quot;meta[@name='viewport']&quot;)" name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
             </xpath>
             <!-- Theme color: keep first if core defines one; otherwise inject unified branding color -->
             <xpath expr="//head" position="inside">
                 <!-- Dynamic theme color: pull from configurator (rm_theme_color) with fallback to Odoo default purple (#875A7B) -->
                 <t t-set="_rm_theme_color" t-value="(env['rm.module.configurator'].sudo().get_config_parameter('rm_theme_color') or '#875A7B')"/>
-                <meta t-if="not head.xpath(&quot;meta[@name='theme-color']&quot;)" name="theme-color" t-att-content="_rm_theme_color"/>
-                <meta t-if="not head.xpath(&quot;meta[@name='color-scheme']&quot;)" name="color-scheme" content="light dark"/>
+                <meta name="theme-color" t-att-content="_rm_theme_color"/>
+                <meta name="color-scheme" content="light dark"/>
             </xpath>
         </template>
 
@@ -41,12 +41,12 @@
             </xpath>
             <!-- Safe: no direct removals (avoid ParseError if elements absent) -->
             <xpath expr="//head" position="inside">
-                <meta t-if="not head.xpath(&quot;meta[@name='viewport']&quot;)" name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
             </xpath>
             <xpath expr="//head" position="inside">
                 <t t-set="_rm_theme_color" t-value="(env['rm.module.configurator'].sudo().get_config_parameter('rm_theme_color') or '#875A7B')"/>
-                <meta t-if="not head.xpath(&quot;meta[@name='theme-color']&quot;)" name="theme-color" t-att-content="_rm_theme_color"/>
-                <meta t-if="not head.xpath(&quot;meta[@name='color-scheme']&quot;)" name="color-scheme" content="light dark"/>
+                <meta name="theme-color" t-att-content="_rm_theme_color"/>
+                <meta name="color-scheme" content="light dark"/>
             </xpath>
         </template>
     </data>

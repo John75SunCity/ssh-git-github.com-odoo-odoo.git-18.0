@@ -249,6 +249,13 @@ class ShreddingService(models.Model):
         help="Total number of destruction certificates generated"
     )
 
+    total_weight = fields.Float(
+        string='Total Weight (kg)',
+        compute='_compute_totals',
+        store=True,
+        help="Total weight of items scheduled for destruction"
+    )
+
     last_used_date = fields.Datetime(
         string='Last Used',
         compute='_compute_last_used_date',
@@ -275,6 +282,7 @@ class ShreddingService(models.Model):
                 ('request_id', 'in', record.destruction_request_ids.ids)
             ])
             record.total_destruction_items = len(destruction_orders.mapped('destruction_item_ids'))
+            record.total_weight = sum(item.weight or 0.0 for item in destruction_orders.mapped('destruction_item_ids'))
 
     @api.depends('destruction_request_ids.create_date')
     def _compute_last_used_date(self):

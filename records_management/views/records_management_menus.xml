@@ -116,6 +116,7 @@
         <menuitem id="menu_records_security" name="Security &amp; Access" parent="menu_records_configuration" sequence="30" groups="records_management.group_records_manager" />
         <menuitem id="menu_bin_key_management" name="Bin Key Management" parent="menu_records_security" action="action_bin_key_management" sequence="10" groups="records_management.group_records_manager" />
         <menuitem id="menu_bin_keys" name="Physical Bin Keys" parent="menu_records_security" action="action_bin_key" sequence="20" groups="records_management.group_records_manager" />
+        <menuitem id="menu_key_restriction" name="Key Access Restrictions" parent="menu_records_security" action="action_res_partner_key_restriction" sequence="30" groups="records_management.group_records_manager" />
         <menuitem id="menu_service_item_main" name="Service Items" parent="menu_records_configuration" sequence="35" groups="records_management.group_records_manager" />
         <menuitem id="menu_service_item_operations" name="Operations" parent="menu_service_item_main" sequence="30" groups="records_management.group_records_user" />
         <menuitem id="menu_service_item_reports" name="Reports &amp; Analytics" parent="menu_service_item_main" sequence="40" groups="records_management.group_records_manager" />
