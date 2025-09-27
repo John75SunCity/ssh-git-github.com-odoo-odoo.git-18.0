@@ -108,6 +108,11 @@ class IrActionsReport(models.Model):
         if not html_text or lxml_html is None:
             return html_text
 
+        # Track original type so we can preserve bytes vs str contract expected by
+        # upstream report pipeline (wkhtmltopdf expects bytes). Returning a str
+        # where bytes were provided caused: "a bytes-like object is required, not 'str'".
+        original_is_bytes = isinstance(html_text, (bytes, bytearray))
+
         # Parse with lxml tolerant HTML parser
         try:
             doc = lxml_html.fromstring(html_text)
@@ -162,7 +167,10 @@ class IrActionsReport(models.Model):
                     article.append(node)
 
         try:
-            # tostring returns bytes by default when encoding specified
-            return lxml_html.tostring(doc, encoding='unicode')
+            # Preserve original type: if input was bytes, emit UTF-8 bytes; else unicode string.
+            return lxml_html.tostring(
+                doc,
+                encoding='utf-8' if original_is_bytes else 'unicode'
+            )
         except Exception:
             return html_text
