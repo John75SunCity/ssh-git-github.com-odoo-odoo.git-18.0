@@ -312,6 +312,16 @@ class ShreddingService(models.Model):
         help="Digital signature of the technician"
     )
 
+    supervisor_signature = fields.Binary(
+        string='Supervisor Signature',
+        help="Digital signature of the supervisor"
+    )
+
+    customer_signature = fields.Binary(
+        string='Customer Signature',
+        help="Digital signature of the customer witness"
+    )
+
     completion_time = fields.Datetime(
         string='Completion Time',
         help="Time when the destruction was completed"
