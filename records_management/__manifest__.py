@@ -1,6 +1,6 @@
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.0.2",  # bump version to force asset rebuild for intelligent search re-enable
+    "version": "18.0.0.3",  # bumped to rebuild assets after vis dedup
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
@@ -289,18 +289,16 @@
             "records_management/static/src/js/paper_load_truck_widget.js",
             "records_management/static/src/js/trailer_visualization.js",
             "records_management/static/src/js/truck_widget.js",
+            "records_management/static/src/xml/map_widget.xml",
+            "records_management/static/src/xml/trailer_visualization.xml",
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
             "records_management/static/src/js/system_flowchart_view.js",
             "records_management/static/src/js/customer_portal_diagram_view.js",
-            "records_management/static/src/xml/map_widget.xml",
-            "records_management/static/src/xml/trailer_visualization.xml",
             "records_management/static/src/xml/system_flowchart_templates.xml",
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
         "web.assets_frontend": [
-            "records_management/static/src/lib/vis/vis-network.min.css",
-            "records_management/static/src/lib/vis/vis-network.min.js",
             "records_management/static/src/css/portal_tour.css",
             "records_management/static/src/css/intelligent_search.css",
             "records_management/static/src/css/customer_portal_diagram.css",
@@ -332,5 +330,7 @@
     "sequence": 100,
     "images": [
         "static/description/icon.png"
+    ]
+}
     ]
 }

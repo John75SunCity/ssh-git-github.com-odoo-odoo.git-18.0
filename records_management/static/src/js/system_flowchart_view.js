@@ -23,7 +23,7 @@ import { _t } from "@web/core/l10n/translation";
 import { Component } from "@odoo/owl";
 import { Dialog } from "@web/core/dialog/dialog";
 import { rpc } from "@web/core/network/rpc";
-import { renderToElement } from "@web/core/utils/render";
+import { renderToMarkup } from "@web/core/utils/render";
 
 const viewRegistry = registry.category("views");
 
