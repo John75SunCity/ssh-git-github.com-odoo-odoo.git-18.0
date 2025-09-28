@@ -8,8 +8,8 @@
     <field name="name">Destruction Certificate</field>
     <field name="model">destruction.certificate</field>
     <field name="report_type">qweb-pdf</field>
-    <field name="report_name">records_management.report_destruction_certificate_template</field>
-    <field name="report_file">records_management.report_destruction_certificate_template</field>
+    <field name="report_name">records_management.report_destruction_cert_template</field>
+    <field name="report_file">records_management.report_destruction_cert_template</field>
     <field name="binding_model_id" ref="records_management.model_destruction_certificate"/>
     <field name="binding_type">report</field>
     <field name="print_report_name">"DestructionCertificate-%s" % (object.name or '')</field>
@@ -145,8 +145,8 @@
             <field name="name">NAID Destruction Certificate</field>
             <field name="model">shredding.service</field>
             <field name="report_type">qweb-pdf</field>
-            <field name="report_name">records_management.report_destruction_certificate_template</field>
-            <field name="report_file">records_management.report_destruction_certificate_template</field>
+            <field name="report_name">records_management.destruction_cert_template</field>
+            <field name="report_file">records_management.destruction_cert_template</field>
             <field name="binding_model_id" ref="records_management.model_shredding_service"/>
             <field name="binding_type">report</field>
             <field name="print_report_name">'Destruction_Certificate_%s' % (object.name)</field>

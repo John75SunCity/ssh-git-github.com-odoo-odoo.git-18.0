@@ -2,7 +2,7 @@ from odoo import models, fields, api
 
 
 class DestructionCertificateReport(models.AbstractModel):
-    _name = 'report.records_management.destruction_certificate_template'
+    _name = 'report.rm.destruction_cert_template'
     _description = 'Destruction Certificate Report'
 
     @api.model
@@ -18,7 +18,7 @@ class DestructionCertificateReport(models.AbstractModel):
 
 
 class ReportDestructionCertificateTemplate(models.AbstractModel):
-    _name = 'report.records_management.report_destruction_certificate_template'
+    _name = 'report.rm.report_destruction_cert_template'
     _description = 'Report Destruction Certificate Template'
 
     @api.model
