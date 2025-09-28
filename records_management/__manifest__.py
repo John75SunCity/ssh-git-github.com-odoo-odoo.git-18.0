@@ -58,8 +58,6 @@
         "security/naid_security.xml",
         "security/portal_request_security.xml",
         "security/ir.model.access.csv",
-        "views/accessibility_layout_overrides.xml",
-        "views/website_accessibility_layout_overrides.xml",
     # Root menus must be available before any child menus declared in scattered views
     "views/records_management_root_menus.xml",
         # Core sequence data (previously omitted, required for many next_by_code usages)
@@ -282,7 +280,6 @@
             "records_management/static/src/lib/vis/vis-network.min.css",
             "records_management/static/src/lib/vis/vis-network.min.js",
             "records_management/static/src/scss/records_management.scss",
-            "records_management/static/src/scss/accessibility_fallbacks.scss",
             "records_management/static/src/scss/retention_policy.scss",
             "records_management/static/src/css/intelligent_search.css",
             "records_management/static/src/css/system_flowchart.css",
@@ -305,7 +302,6 @@
             "records_management/static/src/lib/vis/vis-network.min.css",
             "records_management/static/src/lib/vis/vis-network.min.js",
             "records_management/static/src/css/portal_tour.css",
-            # "records_management/static/src/scss/accessibility_fallbacks.scss",
             "records_management/static/src/css/intelligent_search.css",
             "records_management/static/src/css/customer_portal_diagram.css",
             "records_management/static/src/js/portal_search.js",
