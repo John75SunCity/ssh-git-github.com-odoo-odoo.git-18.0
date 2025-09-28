@@ -155,6 +155,21 @@
                                     </group>
                                 </group>
                             </page>
+                            <page string="Execution &amp; Completion">
+                                <group>
+                                    <group string="Execution Details">
+                                        <field name="technician_id" />
+                                        <field name="supervisor_id" />
+                                        <field name="witness_name" />
+                                        <field name="completion_time" />
+                                    </group>
+                                    <group string="Digital Signatures">
+                                        <field name="technician_signature" widget="image" />
+                                        <field name="supervisor_signature" widget="image" />
+                                        <field name="customer_signature" widget="image" />
+                                    </group>
+                                </group>
+                            </page>
 
                         </notebook>
                     </sheet>
