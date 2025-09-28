@@ -8,11 +8,19 @@ import { registry } from "@web/core/registry";
 import { _t } from "@web/core/l10n/translation";
 import { Component } from "@odoo/owl";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
-import rpc from 'web.rpc';
-import AbstractField from 'web.AbstractField';
 
 // Minimal compatible implementation
 console.log("Intelligent Search module loaded (simplified version)");
+
+class IntelligentSearchComponent extends Component {
+    static template = `<div class="o_intelligent_search">
+        <input type="text" placeholder="Search containers..." class="form-control"/>
+    </div>`;
+    static props = [...standardFieldProps];
+}
+
+// Register the component
+registry.category("fields").add("intelligent_search", IntelligentSearchComponent);
 
 // Defensive helpers ---------------------------------------------------------
 function safeGetPartnerId(record) {
