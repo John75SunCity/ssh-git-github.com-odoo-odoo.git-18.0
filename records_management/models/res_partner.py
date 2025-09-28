@@ -2,6 +2,21 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 
+class Company(models.Model):
+    _inherit = 'res.company'
+    
+    # Records Management configurations
+    records_management_enabled = fields.Boolean(
+        string="Enable Records Management",
+        default=True,
+        help="Enable Records Management features for this company"
+    )
+    naid_member_id = fields.Char(
+        string="NAID Member ID", 
+        help="Official NAID membership identifier for destruction certificates"
+    )
+
+
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 

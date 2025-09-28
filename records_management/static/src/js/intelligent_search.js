@@ -220,3 +220,6 @@ try {
 } catch (err) {
   console.error("[IntelligentSearch] Failed to register widgets", err);
 }
+
+// Export for module compatibility
+export { ContainerSearchWidget, FileSearchWidget };
