@@ -16,8 +16,8 @@
     <data>
     
 <!-- List View -->
-    <record id="inventory_item_location_transfer_view_tree" model="ir.ui.view">
-        <field name="name">inventory.item.location.transfer.view.tree</field>
+    <record id="inventory_item_location_transfer_view_list" model="ir.ui.view">
+        <field name="name">inventory.item.location.transfer.view.list</field>
         <field name="model">inventory.item.location.transfer</field>
     <field name="arch" type="xml">
             <list string="Inventory Item Location Transfer">

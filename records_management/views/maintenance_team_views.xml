@@ -14,8 +14,8 @@
 
 
 <!-- View maintenance.team tree -->
-    <record id="maintenance_team_view_tree" model="ir.ui.view">
-        <field name="name">maintenance.team.view.tree.inherit.records_management</field>
+        <record id="maintenance_team_view_list" model="ir.ui.view">
+        <field name="name">maintenance.team.view.list</field>
         <field name="model">maintenance.team</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="records_management_bale_view_tree" model="ir.ui.view">
-            <field name="name">paper.bale.view.tree</field>
+                <record id="records_management_bale_view_list" model="ir.ui.view">
+            <field name="name">records.management.bale.view.list</field>
             <field name="model">paper.bale</field>
             <field name="arch" type="xml">
                 <list>

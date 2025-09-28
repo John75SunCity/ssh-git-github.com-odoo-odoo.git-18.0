@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="scan_digital_asset_view_tree" model="ir.ui.view">
-            <field name="name">scan.digital.asset.view.tree</field>
+        <record id="scan_digital_asset_view_list" model="ir.ui.view">
+            <field name="name">scan.digital.asset.view.list</field>
             <field name="model">scan.digital.asset</field>
             <field name="arch" type="xml">
                 <list>

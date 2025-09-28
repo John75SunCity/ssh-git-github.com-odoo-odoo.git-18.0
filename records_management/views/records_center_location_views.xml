@@ -2,8 +2,8 @@
 <odoo>
     <data>
 <!-- List View -->
-        <record id="records_center_location_view_tree" model="ir.ui.view">
-            <field name="name">records.center.location.view.tree</field>
+        <record id="records_center_location_view_list" model="ir.ui.view">
+            <field name="name">records.center.location.view.list</field>
             <field name="model">records.center.location</field>
         <field name="arch" type="xml">
                 <list string="Records Center Location">

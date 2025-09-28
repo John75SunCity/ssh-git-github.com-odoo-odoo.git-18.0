@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="shredding_inventory_batch_view_tree" model="ir.ui.view">
-            <field name="name">shredding.inventory.batch.view.tree</field>
+        <record id="shredding_inventory_batch_view_list" model="ir.ui.view">
+            <field name="name">shredding.inventory.batch.view.list</field>
             <field name="model">shredding.inventory.batch</field>
             <field name="arch" type="xml">
                 <list>

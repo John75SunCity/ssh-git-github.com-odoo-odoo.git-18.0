@@ -57,8 +57,8 @@
     </record>
 
     <!-- FIXED: Corrected list view element name -->
-    <record id="visitor_pos_wizard_view_tree" model="ir.ui.view">
-        <field name="name">visitor.pos.wizard.view.tree</field>
+    <record id="visitor_pos_wizard_view_list" model="ir.ui.view">
+        <field name="name">visitor.pos.wizard.view.list</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
             <list string="Visitor POS Processing History">

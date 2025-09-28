@@ -2,8 +2,8 @@
 <odoo>
     <data>
 <!-- List View -->
-    <record id="naid_operator_certification_view_tree" model="ir.ui.view">
-        <field name="name">naid.operator.certification.view.tree</field>
+    <record id="naid_operator_certification_view_list" model="ir.ui.view">
+        <field name="name">naid.operator.certification.view.list</field>
         <field name="model">naid.operator.certification</field>
     <field name="arch" type="xml">
             <list string="NAID Operator Certification" decoration-warning="status == 'expired'" decoration-danger="status == 'revoked'">

@@ -2,8 +2,8 @@
 <odoo>
     <data>
     
-        <record id="destruction_certificate_view_tree" model="ir.ui.view">
-            <field name="name">destruction.certificate.view.tree</field>
+        <record id="destruction_certificate_view_list" model="ir.ui.view">
+            <field name="name">destruction.certificate.view.list</field>
             <field name="model">destruction.certificate</field>
             <field name="arch" type="xml">
                 <list string="Destruction Certificates" default_order="certificate_date desc">

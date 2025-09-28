@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="res_partner_key_restriction_view_tree" model="ir.ui.view">
-            <field name="name">res.partner.key.restriction.view.tree</field>
+        <record id="res_partner_key_restriction_view_list" model="ir.ui.view">
+            <field name="name">res.partner.key.restriction.view.list</field>
             <field name="model">res.partner.key.restriction</field>
             <field name="arch" type="xml">
                 <list>

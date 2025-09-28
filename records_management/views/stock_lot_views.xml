@@ -92,8 +92,8 @@
                 </kanban>
             </field>
         </record>
-        <record id="stock_lot_view_tree" model="ir.ui.view">
-            <field name="name">stock.lot.view.tree</field>
+        <record id="stock_lot_view_list" model="ir.ui.view">
+            <field name="name">stock.lot.view.list</field>
             <field name="model">stock.lot</field>
             <field name="arch" type="xml">
                 <list decoration-success="product_qty &gt; 0" decoration-warning="retention_date and retention_date &lt; context_today" decoration-info="ref != False" decoration-danger="destruction_eligible == True">

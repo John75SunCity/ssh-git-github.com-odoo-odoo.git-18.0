@@ -3,8 +3,8 @@
     <data>
     
 <!-- List View -->
-    <record id="custody_transfer_event_view_tree" model="ir.ui.view">
-        <field name="name">custody.transfer.event.view.tree</field>
+    <record id="custody_transfer_event_view_list" model="ir.ui.view">
+        <field name="name">custody.transfer.event.view.list</field>
         <field name="model">custody.transfer.event</field>
     <field name="arch" type="xml">
             <list string="Custody Transfer Event">

@@ -125,8 +125,8 @@ Destroy Container</a>
     </record>
 
 <!-- List view for Enhanced -->
-    <record id="records_container_view_tree" model="ir.ui.view">
-        <field name="name">records.container.view.tree</field>
+    <record id="records_container_view_list" model="ir.ui.view">
+        <field name="name">records.container.view.list</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
         <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">

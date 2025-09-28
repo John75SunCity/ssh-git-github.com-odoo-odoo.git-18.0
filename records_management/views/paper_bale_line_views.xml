@@ -2,8 +2,8 @@
 <odoo>
     <data>
 <!-- List View -->
-    <record id="paper_bale_line_view_tree" model="ir.ui.view">
-        <field name="name">paper.bale.line.view.tree</field>
+    <record id="paper_bale_line_view_list" model="ir.ui.view">
+        <field name="name">paper.bale.line.view.list</field>
         <field name="model">paper.bale.line</field>
     <field name="arch" type="xml">
             <list string="Paper Bale Line">
