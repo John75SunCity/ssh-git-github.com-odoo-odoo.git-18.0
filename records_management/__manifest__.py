@@ -332,5 +332,3 @@
         "static/description/icon.png"
     ]
 }
-    ]
-}
