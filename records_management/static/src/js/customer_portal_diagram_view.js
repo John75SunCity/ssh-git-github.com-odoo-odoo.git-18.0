@@ -7,9 +7,8 @@
 
 import { registry } from "@web/core/registry";
 import { _t } from "@web/core/l10n/translation";
-import { AbstractView } from "@web/views/abstract_view";
-import { AbstractRenderer } from "@web/views/abstract_renderer";
-import { AbstractController } from "@web/views/abstract_controller";
+import { Component } from "@odoo/owl";
+import { rpc } from "@web/core/network/rpc";
 
 const viewRegistry = registry.category("views");
 

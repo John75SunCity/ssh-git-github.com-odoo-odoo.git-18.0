@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="work_order_coordinator_view_tree" model="ir.ui.view">
-            <field name="name">work.order.coordinator.view.tree</field>
+        <record id="work_order_coordinator_view_list" model="ir.ui.view">
+            <field name="name">work.order.coordinator.view.list</field>
             <field name="model">work.order.coordinator</field>
             <field name="arch" type="xml">
                 <list string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">

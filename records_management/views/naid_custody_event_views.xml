@@ -2,8 +2,8 @@
 <odoo>
     <data>
 <!-- List view for naid.custody.event -->
-    <record id="naid_custody_event_view_tree" model="ir.ui.view">
-        <field name="name">naid.custody.event.view.tree</field>
+    <record id="naid_custody_event_view_list" model="ir.ui.view">
+        <field name="name">naid.custody.event.view.list</field>
         <field name="model">naid.custody.event</field>
         <field name="arch" type="xml">
         <list>

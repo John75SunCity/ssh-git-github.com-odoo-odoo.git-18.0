@@ -6,8 +6,8 @@
 <!-- ============================================================================ -->
 
 <!-- List View -->
-    <record id="shredding_service_bin_view_tree" model="ir.ui.view">
-        <field name="name">shredding.service.bin.view.tree</field>
+    <record id="shredding_service_bin_view_list" model="ir.ui.view">
+        <field name="name">shredding.service.bin.view.list</field>
         <field name="model">shredding.service.bin</field>
         <field name="arch" type="xml">
         <list string="Shredding Service Bins" decoration-success="status == 'active'"

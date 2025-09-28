@@ -2,8 +2,8 @@
 <odoo>
     <data>
     
-        <record id="records_retrieval_order_view_tree" model="ir.ui.view">
-            <field name="name">records.retrieval.order.view.tree</field>
+        <record id="records_retrieval_order_view_list" model="ir.ui.view">
+            <field name="name">records.retrieval.order.view.list</field>
             <field name="model">records.retrieval.order</field>
             <field name="arch" type="xml">
                 <list string="Retrieval Orders" decoration-warning="sla_elapsed_pct &gt;= 80 and state not in ['completed','cancelled']" decoration-danger="sla_breached and state not in ['completed','cancelled']" decoration-success="state == 'completed'">

@@ -1,9 +1,8 @@
-<?x<record id="container_retrieval_view_list" model="ir.ui.view">
-    <field name="name">container.retrieval.view.list</field> version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<record id="container_retrieval_view_tree" model="ir.ui.view">
-        <field name="name">container.retrieval.view.tree</field>
+<record id="container_retrieval_view_list" model="ir.ui.view">
+    <field name="name">container.retrieval.view.list</field>
         <field name="model">container.retrieval</field>
     <field name="arch" type="xml">
             <list string="Container Retrieval">

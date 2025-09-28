@@ -9,11 +9,11 @@
  */
 
 import { registry } from "@web/core/registry";
-// Adjusted import path for Odoo 18 core field base (avoid missing module error during bundling)
-import { AbstractField } from "@web/views/fields/abstract_field/abstract_field";
+// Fixed import paths for Odoo 18 compatibility
+import { StandardFieldProps, useInputField } from "@web/views/fields/standard_field_props";
 import { _t } from "@web/core/l10n/translation";
-import rpc from "@web/core/network/rpc_service";
-import { qweb as QWeb } from "@web/core/qweb";
+import { rpc } from "@web/core/network/rpc";
+import { renderToElement } from "@web/core/utils/render";
 
 // Defensive helpers ---------------------------------------------------------
 function safeGetPartnerId(record) {

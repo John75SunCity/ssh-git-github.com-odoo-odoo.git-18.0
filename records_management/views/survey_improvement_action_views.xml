@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="survey_improvement_action_view_tree" model="ir.ui.view">
-            <field name="name">survey.improvement.action.view.tree</field>
+        <record id="survey_improvement_action_view_list" model="ir.ui.view">
+            <field name="name">survey.improvement.action.view.list</field>
             <field name="model">survey.improvement.action</field>
             <field name="arch" type="xml">
                 <list decoration-danger="priority == '3'" 

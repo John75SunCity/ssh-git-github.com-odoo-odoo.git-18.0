@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="naid_performance_history_view_tree" model="ir.ui.view">
-            <field name="name">naid.performance.history.view.tree</field>
+        <record id="naid_performance_history_view_list" model="ir.ui.view">
+            <field name="name">naid.performance.history.view.list</field>
             <field name="model">naid.performance.history</field>
             <field name="arch" type="xml">
                 <list>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="customer_negotiated_rate_view_tree" model="ir.ui.view">
-            <field name="name">customer.negotiated.rate.view.tree</field>
+        <record id="customer_negotiated_rate_view_list" model="ir.ui.view">
+            <field name="name">customer.negotiated.rate.view.list</field>
             <field name="model">customer.negotiated.rate</field>
             <field name="arch" type="xml">
                 <list>

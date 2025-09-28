@@ -2,8 +2,8 @@
 <odoo>
     <data>
 <!-- List View -->
-    <record id="media_type_view_tree" model="ir.ui.view">
-        <field name="name">media.type.view.tree</field>
+    <record id="media_type_view_list" model="ir.ui.view">
+        <field name="name">media.type.view.list</field>
         <field name="model">media.type</field>
     <field name="arch" type="xml">
             <list string="Media Type">

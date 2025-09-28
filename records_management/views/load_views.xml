@@ -69,8 +69,8 @@
                 </kanban>
             </field>
         </record>
-        <record id="load_view_tree" model="ir.ui.view">
-            <field name="name">load.view.tree</field>
+                <record id="load_view_list" model="ir.ui.view">
+            <field name="name">paper.bale.load.view.list</field>
             <field name="model">paper.bale.load</field>
             <field name="arch" type="xml">
                 <list string="Paper Bale Load Management" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'" decoration-muted="state=='cancelled'" multi_edit="1" sample="1">

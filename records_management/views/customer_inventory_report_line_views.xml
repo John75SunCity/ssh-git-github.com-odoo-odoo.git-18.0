@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="customer_inventory_report_line_view_tree" model="ir.ui.view">
-            <field name="name">customer.inventory.report.line.view.tree</field>
+        <record id="customer_inventory_report_line_view_list" model="ir.ui.view">
+            <field name="name">customer.inventory.report.line.view.list</field>
             <field name="model">customer.inventory.report.line</field>
             <field name="arch" type="xml">
                 <list string="Customer Inventory Report Line">

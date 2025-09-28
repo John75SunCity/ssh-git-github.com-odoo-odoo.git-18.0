@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- List view for base.rate -->    <record id="records_security_audit_view_tree" model="ir.ui.view">
-    <field name="name">records.security.audit.view.tree</field>
+<!-- List view for records.security.audit -->
+    <record id="records_security_audit_view_list" model="ir.ui.view">
+    <field name="name">records.security.audit.view.list</field>
     <field name="model">records.security.audit</field>
     <field name="arch" type="xml">
         <list>
