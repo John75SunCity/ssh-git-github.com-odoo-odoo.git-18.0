@@ -8,6 +8,7 @@ import { registry } from "@web/core/registry";
 import { _t } from "@web/core/l10n/translation";
 import { Component } from "@odoo/owl";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
+import { useService } from "@web/core/utils/hooks";
 
 // Minimal compatible implementation
 console.log("Intelligent Search module loaded (simplified version)");
@@ -58,7 +59,16 @@ function toggleVisible($el, show) {
  * Container Number Auto-Complete Widget (OWL Component)
  */
 class ContainerSearchWidget extends Component {
-  static template = "ContainerSearchWidget";
+  static template = `<div class="o_container_search">
+    <input type="text" placeholder="Search containers..." class="form-control" 
+           t-on-input="onSearchInput" t-on-keydown="onKeyDown"/>
+    <div class="suggestions" t-if="suggestions.length">
+      <div t-foreach="suggestions" t-as="suggestion" t-key="suggestion.id"
+           class="suggestion-item" t-on-click="() => onSelectSuggestion(suggestion)">
+        <span t-esc="suggestion.name"/>
+      </div>
+    </div>
+  </div>`;
   static props = {
     ...standardFieldProps,
   };
@@ -67,6 +77,7 @@ class ContainerSearchWidget extends Component {
     this.searchTimeout = null;
     this.suggestions = [];
     this.selectedIndex = -1;
+    this.rpc = useService("rpc");
   }
 
   /**
@@ -98,13 +109,10 @@ class ContainerSearchWidget extends Component {
       // Defensive partner extraction
       const customer_id = safeGetPartnerId(this.props.record);
 
-      const result = await rpc.query({
-        route: "/records/search/containers",
-        params: {
-          query: query,
-          limit: 10,
-          customer_id: customer_id,
-        },
+      const result = await this.rpc("/records/search/containers", {
+        query: query,
+        limit: 10,
+        customer_id: customer_id,
       });
 
       this.suggestions = result.suggestions || [];
@@ -185,89 +193,19 @@ class ContainerSearchWidget extends Component {
 }
 
 /**
- * File Search Widget with Smart Recommendations (Legacy Widget)
+ * File Search Widget (Simplified OWL Component)
  */
-class FileSearchWidget extends AbstractField {
-  init() {
-    super.init(...arguments);
-    this.recommendations = [];
-  }
+class FileSearchWidget extends Component {
+  static template = `<div class="o_file_search">
+    <input type="text" placeholder="Search files..." class="form-control"/>
+    <p class="text-muted mt-2">File search functionality simplified for compatibility</p>
+  </div>`;
+  static props = {
+    ...standardFieldProps,
+  };
 
-  /**
-   * Search for files and get container recommendations
-   */
-  async onSearchFiles() {
-    const searchParams = {
-      file_name: this.fileNameInput?.value?.trim() || "",
-      service_date: this.serviceDateInput?.value || "",
-      content_type: this.contentTypeSelect?.value || "",
-    };
-
-    // Get customer_id from context or current record
-    const partnerId = safeGetPartnerId(this.record);
-    if (partnerId) {
-      searchParams.customer_id = partnerId;
-    }
-
-    if (!searchParams.file_name && !searchParams.service_date) {
-      this.displayNotification({
-        title: _t("Search Required"),
-        message: _t("Please enter a file name or service date to search."),
-        type: "warning",
-      });
-      return;
-    }
-
-    try {
-      const result = await rpc.query({
-        route: "/records/search/recommend_containers",
-        params: searchParams,
-      });
-
-      this.recommendations = result.recommendations || [];
-      this.showRecommendations(result);
-    } catch (error) {
-      console.error("File search error:", error);
-      this.displayNotification({
-        title: _t("Search Error"),
-        message: _t("Error occurred while searching for containers."),
-        type: "danger",
-      });
-    }
-  }
-
-  /**
-   * Show container recommendations
-   */
-  showRecommendations(result) {
-    // Implementation depends on your template structure
-    console.log("Showing recommendations:", this.recommendations);
-  }
-
-  /**
-   * Handle recommendation selection
-   */
-  onSelectRecommendation(recommendation) {
-    if (recommendation) {
-      // Set the container value and trigger change
-      this.setValue(recommendation.name);
-
-      // Show success message
-      this.displayNotification({
-        title: _t("Container Selected"),
-        message: _t("Selected container: ") + recommendation.name,
-        type: "success",
-      });
-    }
-  }
-
-  setValue(value) {
-    // Implementation for setting field value
-    this.trigger_up("field_changed", {
-      dataPointID: this.dataPointID,
-      changes: {},
-      value: value,
-    });
+  setup() {
+    this.rpc = useService("rpc");
   }
 }
 
@@ -278,14 +216,7 @@ try {
   fieldRegistry.add("container_search", ContainerSearchWidget);
   fieldRegistry.add("file_search", FileSearchWidget);
 
-  if (window && window.console) {
-    console.debug("[IntelligentSearch] Widgets registered (container_search, file_search)");
-  }
+  console.log("[IntelligentSearch] Widgets registered successfully");
 } catch (err) {
   console.error("[IntelligentSearch] Failed to register widgets", err);
 }
-
-export const IntelligentSearchWidgets = {
-  ContainerSearchWidget,
-  FileSearchWidget,
-};

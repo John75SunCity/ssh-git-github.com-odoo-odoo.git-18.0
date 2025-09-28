@@ -322,6 +322,11 @@ class ShreddingService(models.Model):
         help="Digital signature of the customer witness"
     )
 
+    customer_representative = fields.Char(
+        string='Customer Representative',
+        help="Name of the customer representative who witnessed the destruction"
+    )
+
     completion_time = fields.Datetime(
         string='Completion Time',
         help="Time when the destruction was completed"

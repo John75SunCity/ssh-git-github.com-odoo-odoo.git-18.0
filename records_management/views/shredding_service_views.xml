@@ -167,6 +167,7 @@
                                         <field name="technician_signature" widget="image" />
                                         <field name="supervisor_signature" widget="image" />
                                         <field name="customer_signature" widget="image" />
+                                        <field name="customer_representative" />
                                     </group>
                                 </group>
                             </page>
