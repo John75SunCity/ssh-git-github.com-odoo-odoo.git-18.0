@@ -1,5 +1,4 @@
-<?xml version="1.0    <record id="full_customization_name_view_list" model="ir.ui.view">
-        <field name="name">full.customization.name.view.list</field>encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     View Definitions for full.customization.name Model
 
@@ -15,7 +14,7 @@
 -->
 <odoo>
     <data>
-    
+
 <!-- Full Customization Name List View -->
     <record id="full_customization_name_view_tree" model="ir.ui.view">
         <field name="name">full.customization.name.tree</field>
@@ -114,6 +113,6 @@
                 action="full_customization_name_action"
                 sequence="50"/>
 
-    
+
     </data>
 </odoo>

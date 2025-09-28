@@ -53,6 +53,20 @@ class MaintenanceEquipment(models.Model):
     warranty_expiry_date = fields.Date(string="Warranty Expiry Date")
     is_under_warranty = fields.Boolean(string="Under Warranty", compute="_compute_is_under_warranty", store=True)
 
+    # Additional fields needed for destruction certificate templates
+    particle_size = fields.Float(
+        string='Particle Size (mm)',
+        help="Particle size output in millimeters for destruction compliance"
+    )
+
+    # Relationship with shredding services
+    shredding_service_ids = fields.One2many(
+        'shredding.service',
+        'equipment_id',
+        string='Shredding Services',
+        help="Services using this equipment"
+    )
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

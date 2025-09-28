@@ -241,7 +241,7 @@ class ShreddingService(models.Model):
         store=True,
         help="Total number of items scheduled for destruction"
     )
-    
+
     total_certificates = fields.Integer(
         string='Total Certificates',
         compute='_compute_totals',
@@ -269,6 +269,54 @@ class ShreddingService(models.Model):
         help="Internal notes about this shredding service"
     )
 
+    # Template Fields for Destruction Certificate Reports
+    destruction_method = fields.Selection([
+        ('shredding', 'Paper Shredding'),
+        ('hard_drive', 'Hard Drive Destruction'),
+        ('incineration', 'Incineration'),
+        ('pulping', 'Pulping'),
+        ('disintegration', 'Disintegration'),
+        ('other', 'Other Method')
+    ], string='Destruction Method', default='shredding', help="Method used for destruction")
+
+    equipment_id = fields.Many2one(
+        'maintenance.equipment',
+        string='Equipment Used',
+        help="Equipment/machine used for destruction"
+    )
+
+    particle_size = fields.Float(
+        string='Particle Size (mm)',
+        help="Particle size after destruction (in millimeters)"
+    )
+
+    technician_id = fields.Many2one(
+        'res.users',
+        string='Technician',
+        help="Technician responsible for the destruction"
+    )
+
+    supervisor_id = fields.Many2one(
+        'res.users',
+        string='Supervisor',
+        help="Supervisor overseeing the destruction"
+    )
+
+    witness_name = fields.Char(
+        string='Witness Name',
+        help="Name of the witness present during destruction"
+    )
+
+    technician_signature = fields.Binary(
+        string='Technician Signature',
+        help="Digital signature of the technician"
+    )
+
+    completion_time = fields.Datetime(
+        string='Completion Time',
+        help="Time when the destruction was completed"
+    )
+
     # Computed Methods
     @api.depends('destruction_request_ids', 'certificate_ids')
     def _compute_totals(self):
@@ -276,7 +324,7 @@ class ShreddingService(models.Model):
         for record in self:
             record.total_requests = len(record.destruction_request_ids)
             record.total_certificates = len(record.certificate_ids)
-            
+
             # Count destruction items from related destruction orders
             destruction_orders = self.env['records.destruction'].search([
                 ('request_id', 'in', record.destruction_request_ids.ids)
@@ -399,18 +447,18 @@ class ShreddingService(models.Model):
         destruction using this shredding service.
         """
         self.ensure_one()
-        
+
         # Get all destruction requests using this service
         destruction_requests = self.destruction_request_ids
-        
+
         # Get related destruction orders from those requests
         destruction_orders = self.env['records.destruction'].search([
             ('request_id', 'in', destruction_requests.ids)
         ])
-        
+
         # Get all destruction items from those orders
         destruction_items = destruction_orders.mapped('destruction_item_ids')
-        
+
         return {
             'name': _('Destruction Items - %s') % self.name,
             'view_mode': 'tree,form',
