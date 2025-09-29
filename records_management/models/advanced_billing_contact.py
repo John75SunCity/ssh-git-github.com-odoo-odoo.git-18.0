@@ -80,7 +80,7 @@ class AdvancedBillingContact(models.Model):
     def _get_languages(self):
         """Get available languages for selection"""
         langs = self.env["res.lang"].get_installed()
-        return [(lang["code"], lang["name"]) for lang in langs]
+        return langs
 
     @api.model
     def _tz_get(self):
