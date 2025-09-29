@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
     <data>
-        <!-- Scheduled action to auto-escalate breached retrieval orders -->
+        <!-- Scheduled action to auto-escalate breached retrieval orders
+             Odoo 18 best practice: use numbercall=-1 (infinite), avoid legacy max_calls/catchup mix
+             Runs hourly; adjust interval_number if escalation window changes. -->
         <record id="ir_cron_records_retrieval_order_sla_escalation" model="ir.cron">
             <field name="name">Retrieval Orders SLA Escalation</field>
             <field name="model_id" ref="model_records_retrieval_order"/>
@@ -9,9 +11,10 @@
             <field name="code">model._check_cron_sla_escalation()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">hours</field>
-<field name="max_calls">-1</field>
+            <field name="numbercall">-1</field>
             <field name="active">True</field>
-<field name="catchup">False</field>
+            <!-- Run first execution on next top-of-hour after module install -->
+            <field name="nextcall" eval="(datetime.now().replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
             <field name="user_id" ref="base.user_root"/>
         </record>
     </data>
