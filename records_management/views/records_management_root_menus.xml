@@ -11,7 +11,7 @@
         <menuitem id="menu_records_compliance" name="NAID Compliance" parent="menu_records_management_root" sequence="25" groups="records_management.group_records_user"/>
         <menuitem id="menu_records_billing" name="Billing &amp; Finance" parent="menu_records_management_root" sequence="30" groups="records_management.group_records_manager"/>
         <menuitem id="menu_records_reporting" name="Reports" parent="menu_records_management_root" sequence="40" groups="records_management.group_records_user"/>
-        <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="90" groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="90" groups="records_management.group_records_manager,base.group_system"/>
     
     
     </data>

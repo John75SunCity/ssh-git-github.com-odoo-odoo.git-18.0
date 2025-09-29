@@ -82,7 +82,7 @@
     <!-- SERVICE ITEM SETTINGS (New section with RM Configurator integration) -->
     <!-- ============================================================================ -->
 
-    <menuitem id="menu_service_item_settings" name="&lt;i class='fa fa-cog'/&gt; Service Settings" parent="menu_service_item_main" sequence="50" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_service_item_settings" name="&lt;i class='fa fa-cog'/&gt; Service Settings" parent="menu_service_item_main" sequence="50" groups="records_management.group_records_manager,base.group_system"/>
 
 
     <!-- Service Item Configuration -->

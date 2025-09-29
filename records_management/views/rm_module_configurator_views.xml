@@ -315,5 +315,14 @@ This centralized configurator ensures consistent system behavior and provides gr
                 'search_default_group_by_category': 1
             }</field>
 </record>
+
+<!-- Settings Menu for System Administrators -->
+<menuitem id="menu_rm_configurator_settings" 
+          name="Records Management Configuration" 
+          parent="base.menu_administration" 
+          action="action_rm_module_configurator" 
+          sequence="50" 
+          groups="base.group_system"/>
+
     </data>
 </odoo>
