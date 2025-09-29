@@ -83,11 +83,25 @@
             <field name="arch" type="xml">
                 <list>
                     <field name="name" string="Location Name" />
+                    <field name="parent_location_id" optional="show"/>
                     <field name="location_type" string="Type" />
                     <field name="storage_capacity" string="Capacity" />
                     <field name="active" string="Active" />
                     <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link" />
                 </list>
+            </field>
+        </record>
+        <!-- Hierarchy View for Locations -->
+        <record id="records_location_view_hierarchy" model="ir.ui.view">
+            <field name="name">records.location.view.hierarchy</field>
+            <field name="model">records.location</field>
+            <field name="arch" type="xml">
+                <hierarchy string="Location Hierarchy" parent_field="parent_location_id" child_field="child_location_ids" default_expand="1">
+                    <field name="name"/>
+                    <field name="location_type"/>
+                    <field name="storage_capacity"/>
+                    <field name="active"/>
+                </hierarchy>
             </field>
         </record>
         <record id="records_location_view_form" model="ir.ui.view">
@@ -166,7 +180,7 @@
             <!-- OPTIMIZATION: Model records.location has state field - consider using default search filters -->
             <field name="name">Storage Locations</field>
             <field name="res_model">records.location</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode">hierarchy,kanban,list,form</field>
             <field name="search_view_id" ref="records_location_view_search" />
             <field name="context">{
                 'search_default_active': 1

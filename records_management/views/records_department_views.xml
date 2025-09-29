@@ -7,6 +7,7 @@
             <field name="arch" type="xml">
                 <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
                     <field name="display_name" string="Department" />
+                    <field name="parent_department_id" optional="show"/>
                     <field name="partner_id" string="Customer" />
                     <field name="code" string="🔢 Code" />
                     <field name="container_count" string="Containers" widget="integer" />
@@ -36,6 +37,9 @@
                             <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file">
                                 <field name="document_count" string="Documents" widget="statinfo" />
                             </button>
+                            <button class="oe_stat_button" type="object" name="action_view_child_departments" icon="fa-sitemap" attrs="{'invisible': [('child_count', '=', 0)]}">
+                                <field name="child_count" string="Children" widget="statinfo" />
+                            </button>
                             <button class="oe_stat_button" icon="fa-users">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
@@ -56,6 +60,7 @@
                                 <field name="name" required="1" />
                                 <field name="code" required="1" />
                                 <field name="partner_id" required="1" />
+                                <field name="parent_department_id" options="{'no_open': True}"/>
                                 <field name="user_id" />
                                 <field name="company_id" groups="base.group_multi_company" />
                             </group>
@@ -64,9 +69,21 @@
                                 <field name="active" widget="boolean_toggle" />
                                 <field name="container_count" readonly="1" />
                                 <field name="document_count" readonly="1" />
+                                <field name="child_count" readonly="1" />
                             </group>
                         </group>
                         <notebook>
+                            <page string="Child Departments" name="children">
+                                <field name="child_department_ids" context="{'default_parent_department_id': active_id}">
+                                    <list editable="bottom">
+                                        <field name="name" />
+                                        <field name="code" />
+                                        <field name="partner_id" optional="show"/>
+                                        <field name="user_id" optional="show"/>
+                                        <field name="state" widget="badge"/>
+                                    </list>
+                                </field>
+                            </page>
                             <page string="Users &amp; Access" name="users">
                                 <field name="user_ids" widget="many2many_tags" nolabel="1" />
                             </page>
@@ -117,6 +134,7 @@
                 <search string="Search Departments">
                     <field name="name" string="Department" filter_domain="['|', ('name', 'ilike', self), ('display_name', 'ilike', self)]" />
                     <field name="partner_id" />
+                    <field name="parent_department_id" />
                     <field name="code" />
                     <field name="user_id" />
                     <field name="state" />
@@ -127,13 +145,30 @@
                     <filter string="Has Containers" name="has_containers" domain="[('container_count', '&gt;', 0)]" />
                     <filter string="Has Documents" name="has_documents" domain="[('document_count', '&gt;', 0)]" />
                     <filter string="Has Users" name="has_users" domain="[('user_ids', '!=', False)]" />
+                    <filter string="Has Children" name="has_children" domain="[('child_count', '&gt;', 0)]" />
                     <group expand="0" string="Group By">
                         <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}" />
+                        <filter string="Parent" name="group_by_parent" context="{'group_by': 'parent_department_id'}" />
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}" />
                         <filter string="Responsible" name="group_by_user" context="{'group_by': 'user_id'}" />
                         <filter string="Container Count" name="group_by_containers" context="{'group_by': 'container_count'}" />
                     </group>
                 </search>
+            </field>
+        </record>
+        <!-- Hierarchy View -->
+        <record id="records_department_view_hierarchy" model="ir.ui.view">
+            <field name="name">records.department.view.hierarchy</field>
+            <field name="model">records.department</field>
+            <field name="arch" type="xml">
+                <hierarchy string="Department Hierarchy" parent_field="parent_department_id" child_field="child_department_ids" default_expand="1">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="state" widget="badge"/>
+                    <field name="child_count"/>
+                </hierarchy>
             </field>
         </record>
         <record id="records_department_view_kanban" model="ir.ui.view">
@@ -214,7 +249,7 @@
             <!-- OPTIMIZATION: Model records.department has state field - consider using default search filters -->
             <field name="name">Customer Departments</field>
             <field name="res_model">records.department</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode">hierarchy,kanban,list,form</field>
             <field name="search_view_id" ref="records_department_view_search" />
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">

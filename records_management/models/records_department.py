@@ -1,5 +1,5 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class RecordsDepartment(models.Model):
@@ -35,6 +35,18 @@ class RecordsDepartment(models.Model):
         column2='user_id',
         string='Users'
     )
+    # Hierarchy
+    parent_department_id = fields.Many2one(
+        comodel_name='records.department',
+        string='Parent Department',
+        index=True,
+        help='Set a parent to build a hierarchical department structure for large customers.'
+    )
+    child_department_ids = fields.One2many(
+        comodel_name='records.department',
+        inverse_name='parent_department_id',
+        string='Child Departments'
+    )
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -50,6 +62,7 @@ class RecordsDepartment(models.Model):
     # ============================================================================
     container_count = fields.Integer(compute='_compute_counts', string="Container Count", store=True)
     document_count = fields.Integer(compute='_compute_counts', string="Document Count", store=True)
+    child_count = fields.Integer(compute='_compute_child_count', string='Child Dept. Count', store=True)
 
     # ============================================================================
     # SQL CONSTRAINTS
@@ -74,6 +87,11 @@ class RecordsDepartment(models.Model):
         for record in self:
             record.container_count = len(record.container_ids)
             record.document_count = len(record.document_ids)
+
+    @api.depends('child_department_ids')
+    def _compute_child_count(self):
+        for record in self:
+            record.child_count = len(record.child_department_ids)
 
     # ============================================================================
     # ACTION METHODS
@@ -116,3 +134,36 @@ class RecordsDepartment(models.Model):
 
     def get_department_users(self):
         return self.user_ids.filtered(lambda u: u.active)
+
+    def action_view_child_departments(self):
+        self.ensure_one()
+        return {
+            'name': _('Child Departments'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.department',
+            'view_mode': 'list,form,kanban',
+            'domain': [('parent_department_id', '=', self.id)],
+            'context': {'default_parent_department_id': self.id, 'search_default_parent_department_id': self.id},
+        }
+
+    # =========================================================================
+    # CONSTRAINTS
+    # =========================================================================
+    @api.constrains('parent_department_id')
+    def _check_parent_hierarchy(self):
+        for record in self:
+            if not record.parent_department_id:
+                continue
+            if record.parent_department_id == record:
+                raise ValidationError(_("A department cannot be its own parent."))
+            # Detect recursion / cycles
+            ancestor = record.parent_department_id
+            visited = set()
+            while ancestor:
+                if ancestor == record:
+                    raise ValidationError(_("Recursive department hierarchy detected (cycle)."))
+                if ancestor.id in visited:
+                    # Safety break (should not normally happen)
+                    break
+                visited.add(ancestor.id)
+                ancestor = ancestor.parent_department_id
