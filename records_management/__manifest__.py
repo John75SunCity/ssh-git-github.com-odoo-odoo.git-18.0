@@ -58,8 +58,8 @@
         "security/naid_security.xml",
         "security/portal_request_security.xml",
         "security/ir.model.access.csv",
-    # Root menus must be available before any child menus declared in scattered views
-    "views/records_management_root_menus.xml",
+        # Root menus must be available before any child menus declared in scattered views
+        "views/records_management_root_menus.xml",
         # Core sequence data (previously omitted, required for many next_by_code usages)
         "data/ir_sequence_data.xml",
         "data/sequence_data.xml",
@@ -79,13 +79,13 @@
         "report/naid_compliance_action_plan_reports.xml",
         "report/naid_compliance_alert_reports.xml",
         "report/naid_compliance_reports.xml",
-    # Wizard/action definitions needed by menus must load first
-    "views/field_label_helper_wizard_views.xml",
-    # Actions referenced by menus (ensure before menus)
-    "views/records_digital_scan_views.xml",
-    # Menus (can now safely reference pre-loaded actions)
-    # Ensure pickup_request action loads before menus referencing it
-    "views/pickup_request_views.xml",
+        # Wizard/action definitions needed by menus must load first
+        "views/field_label_helper_wizard_views.xml",
+        # Actions referenced by menus (ensure before menus)
+        "views/records_digital_scan_views.xml",
+        # Menus (can now safely reference pre-loaded actions)
+        # Ensure pickup_request action loads before menus referencing it
+        "views/pickup_request_views.xml",
         # Compliance related views (may reference compliance menu)
         "views/naid_audit_log_views.xml",
         "views/naid_audit_verification_wizard_views.xml",
@@ -235,8 +235,8 @@
         "views/records_container_field_label_helper_views.xml",
         "views/records_billing_config_views.xml",
         "views/portal_request_views.xml",
-    # Ensure bin key action is defined before menus reference it
-    "views/bin_key_views.xml",
+        # Ensure bin key action is defined before menus reference it
+        "views/bin_key_views.xml",
         # Ensure feedback analytics action loads before menus referencing it
         "views/portal_feedback_analytic_views.xml",
         # Ensure inventory item action is defined before menus referencing it
@@ -244,13 +244,13 @@
         # Ensure res partner key restriction action is defined before menus reference it
         "views/res_partner_key_restriction_views.xml",
 
-    # Menus moved to end to ensure all referenced actions are defined beforehand
-    "views/records_management_menus.xml",
-    # Additional menus split by domain (loaded after actions)
-    "views/service_item_menus.xml",
-    "views/document_retrieval_menus.xml",
-    # Ensure retrieval work order action is defined before its menu references it
-    "views/records_retrieval_work_order_views.xml",
+        # Menus moved to end to ensure all referenced actions are defined beforehand
+        "views/records_management_menus.xml",
+        # Additional menus split by domain (loaded after actions)
+        "views/service_item_menus.xml",
+        "views/document_retrieval_menus.xml",
+        # Ensure retrieval work order action is defined before its menu references it
+        "views/records_retrieval_work_order_views.xml",
     "views/records_retrieval_work_order_menus.xml",
         "report/description_reports.xml",
         "report/destruction_certificate_reports.xml",
@@ -258,7 +258,7 @@
         "report/naid_certificate_reports.xml",
         "report/report_records_management_report_customer_inventory_report.xml",
         "templates/portal_certifications.xml",
-    "templates/portal_certificate_templates.xml",
+        "templates/portal_certificate_templates.xml",
         "templates/portal_inventory_template.xml",
         "templates/portal_mobile_export.xml",
         "templates/portal_mobile_inventory_template.xml",
