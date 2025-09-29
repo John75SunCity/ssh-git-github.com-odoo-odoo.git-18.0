@@ -99,7 +99,8 @@
         "data/tag_data.xml",
         "data/fsm_mail_templates_data.xml",
         "data/mail_activity_data_todo.xml",
-        "data/records_retrieval_order_cron.xml",
+    # Updated: replaced removed duplicate cron file with consolidated cron data definition
+    "data/records_retrieval_order_cron_data.xml",
         "data/scheduled_actions_data.xml",
         "data/field_label_customization_batch_data.xml",
         "data/temp_inventory_configurator_data.xml",
