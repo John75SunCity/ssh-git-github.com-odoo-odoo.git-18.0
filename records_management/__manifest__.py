@@ -294,7 +294,7 @@
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
             "records_management/static/src/js/system_flowchart_view.js",
-            "records_management/static/src/js/customer_portal_diagram_view.js",
+            # "records_management/static/src/js/customer_portal_diagram_view.js",  # Temporarily disabled - hybrid ES6/legacy causing tour loading conflicts
             "records_management/static/src/xml/system_flowchart_templates.xml",
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
