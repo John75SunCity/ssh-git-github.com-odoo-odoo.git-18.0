@@ -316,13 +316,33 @@ This centralized configurator ensures consistent system behavior and provides gr
             }</field>
 </record>
 
-<!-- Settings Menu for System Administrators -->
-<menuitem id="menu_rm_configurator_settings" 
+<!-- Settings App Integration -->
+<!-- This creates a menu item in Administration > Records Management -->
+<menuitem id="menu_rm_configurator_admin" 
           name="Records Management Configuration" 
           parent="base.menu_administration" 
           action="action_rm_module_configurator" 
-          sequence="50" 
+          sequence="15" 
           groups="base.group_system"/>
+
+<!-- For Settings Dashboard Icon: Create a custom settings action -->
+<record id="action_rm_settings_dashboard" model="ir.actions.act_window">
+    <field name="name">Records Management</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">rm.module.configurator</field>
+    <field name="view_mode">form</field>
+    <field name="target">inline</field>
+    <field name="context">{}</field>
+</record>
+
+<!-- Create Settings category entry (this should appear in Settings app) -->
+<menuitem id="menu_rm_settings_category"
+          name="Records Management"
+          parent="base.menu_administration"
+          action="action_rm_settings_dashboard"
+          sequence="16"
+          groups="base.group_system"
+          web_icon="records_management,static/description/icon.png"/>
 
     </data>
 </odoo>
