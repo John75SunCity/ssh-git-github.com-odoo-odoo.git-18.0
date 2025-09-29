@@ -341,8 +341,7 @@ This centralized configurator ensures consistent system behavior and provides gr
           parent="base.menu_administration"
           action="action_rm_settings_dashboard"
           sequence="16"
-          groups="base.group_system"
-          web_icon="records_management,static/description/icon.png"/>
+          groups="base.group_system"/>
 
     </data>
 </odoo>
