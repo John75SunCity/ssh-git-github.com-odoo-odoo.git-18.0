@@ -2,13 +2,16 @@
 <odoo>
     <data>
 <record id="report_report_records_management_report_customer_inventory" model="ir.actions.report">
-        <field name="name">Report Records Management Report Customer Inventory</field>
-        <field name="model">report.records.management.report.customer.inventory</field>
+        <field name="name">Customer Inventory Report</field>
+        <!-- Business model the report prints -->
+        <field name="model">customer.inventory</field>
         <field name="report_type">qweb-html</field>
-        <field name="report_name">addon.report_report_records_management_report_customer_inventory_view</field>
-        <field name="report_file">addon.report_report_records_management_report_customer_inventory</field>
-        <field name="print_report_name">'%s' % object.name</field>
-        <field name="binding_model_id" ref="model_report_records_management_report_customer_inventory"/>
+        <!-- QWeb template identifier (module.template_id) -->
+        <field name="report_name">records_management.report_report_records_management_report_customer_inventory_view</field>
+        <field name="report_file">records_management.report_report_records_management_report_customer_inventory_view</field>
+        <field name="print_report_name">'Customer Inventory - %s' % object.display_name</field>
+        <!-- Bind to the customer.inventory model definition -->
+        <field name="binding_model_id" ref="records_management.model_customer_inventory"/>
         <field name="binding_type">report</field>
     </record>
 
