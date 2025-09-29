@@ -96,7 +96,8 @@
             <field name="name">records.location.view.hierarchy</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
-                <hierarchy string="Location Hierarchy" parent_field="parent_location_id" child_field="child_location_ids" default_expand="1">
+                <!-- Removed unsupported attribute default_expand (hierarchy validator in Odoo 18 rejects it) -->
+                <hierarchy string="Location Hierarchy" parent_field="parent_location_id" child_field="child_location_ids">
                     <field name="name"/>
                     <field name="location_type"/>
                     <field name="storage_capacity"/>
