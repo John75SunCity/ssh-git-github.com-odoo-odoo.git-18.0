@@ -9,6 +9,9 @@ import { registry } from "@web/core/registry";
 import { _t } from "@web/core/l10n/translation";
 import { Component } from "@odoo/owl";
 import { rpc } from "@web/core/network/rpc";
+import { AbstractController } from "@web/mvc/controller/abstract_controller";
+import { AbstractRenderer } from "@web/mvc/renderer/abstract_renderer";
+import { AbstractView } from "@web/mvc/view/abstract_view";
 
 const viewRegistry = registry.category("views");
 
@@ -41,7 +44,7 @@ const viewRegistry = registry.category("views");
       },
 
       _onLayoutChange: function (event) {
-        this.layoutType = $(event.target).val();
+        this.layoutType = event.target.value;
         this.renderer.updateLayout(this.layoutType);
       },
 
@@ -57,7 +60,8 @@ const viewRegistry = registry.category("views");
       },
 
       _performSearch: function () {
-        this.searchQuery = this.$(".o_search_input").val();
+        const searchInput = this.el.querySelector(".o_search_input");
+        this.searchQuery = searchInput ? searchInput.value : "";
         this.renderer.updateSearch(this.searchQuery);
       },
     });
@@ -94,14 +98,20 @@ const viewRegistry = registry.category("views");
           var nodes = JSON.parse(record.node_data.value || "[]");
           var edges = JSON.parse(record.edge_data.value || "[]");
 
-          var container = this.$(".o_diagram_container")[0];
+          var container = this.el.querySelector(".o_diagram_container");
+          // Check if vis.js is available
+          if (typeof window.vis === 'undefined') {
+            console.error("vis.js library is not loaded");
+            return;
+          }
+
           var data = {
-            nodes: new vis.DataSet(nodes),
-            edges: new vis.DataSet(edges),
+            nodes: new window.vis.DataSet(nodes),
+            edges: new window.vis.DataSet(edges),
           };
 
           var options = this._getNetworkOptions();
-          this.network = new vis.Network(container, data, options);
+          this.network = new window.vis.Network(container, data, options);
           this._setupNetworkEvents();
         } catch (error) {
           console.error("Error initializing portal diagram:", error);
@@ -203,7 +213,7 @@ const viewRegistry = registry.category("views");
     var CustomerPortalDiagramView = AbstractView.extend({
       display_name: _t("Portal Organization Diagram"),
       icon: "fa-sitemap",
-      config: _.extend({}, AbstractView.prototype.config, {
+      config: Object.assign({}, AbstractView.prototype.config, {
         Controller: CustomerPortalDiagramController,
         Renderer: CustomerPortalDiagramRenderer,
       }),
@@ -217,7 +227,8 @@ const viewRegistry = registry.category("views");
 // Register the view
 viewRegistry.add("customer_portal_diagram", CustomerPortalDiagramView);
 
-export const CustomerPortalDiagram = {
+// Export for potential reuse
+export {
   CustomerPortalDiagramView,
   CustomerPortalDiagramController,
   CustomerPortalDiagramRenderer,

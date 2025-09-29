@@ -59,6 +59,7 @@ from . import document_retrieval_item
 from . import document_search_attempt
 from . import feedback_improvement_area
 from . import field_label_customization
+from . import file_retrieval_item
 from . import full_customization_name
 from . import hard_drive_scan_wizard
 from . import hr_employee
@@ -228,6 +229,7 @@ from . import shred_model_bin
 from . import shredding_certificate
 from . import shredding_hard_drive
 from . import shredding_inventory_batch
+from . import shredding_inventory_item
 from . import shredding_picklist_item
 from . import shredding_rate
 from . import shredding_service
@@ -248,6 +250,7 @@ from . import stock_lot_attribute_option
 from . import stock_lot_attribute_value
 from . import stock_move_sms_validation
 from . import stock_picking
+from . import stock_picking_records_extension
 from . import survey_feedback_theme
 from . import survey_improvement_action
 from . import survey_user_input
