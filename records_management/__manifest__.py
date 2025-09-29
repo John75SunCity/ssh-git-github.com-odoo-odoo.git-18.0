@@ -282,8 +282,8 @@
             "records_management/static/src/scss/records_management.scss",
             "records_management/static/src/scss/retention_policy.scss",
             "records_management/static/src/css/intelligent_search.css",
-            "records_management/static/src/css/system_flowchart.css",
-            "records_management/static/src/css/customer_portal_diagram.css",
+            # "records_management/static/src/css/system_flowchart.css",  # Temporarily disabled - ::before pseudo-elements affecting PDF DOM structure
+            # "records_management/static/src/css/customer_portal_diagram.css",  # Temporarily disabled - ::before pseudo-elements affecting PDF DOM structure
             "records_management/static/src/js/map_widget.js",
             "records_management/static/src/js/paper_load_progress_field.js",
             "records_management/static/src/js/paper_load_truck_widget.js",
