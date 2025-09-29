@@ -72,7 +72,7 @@ class StockPickingRecordsExtension(models.Model):
     )
     
     naid_certificate_id = fields.Many2one(
-        comodel_name='naid.certification',
+        comodel_name='naid.certificate',
         string='NAID Certificate'
     )
     
