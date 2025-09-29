@@ -623,20 +623,145 @@ class FileSearchWidget extends Component {
 // WIDGET REGISTRATION
 // ============================================================================
 
-const fieldRegistry = registry.category("fields");
+/** @odoo-module **/
+import { Component, xml, useState } from "@odoo/owl";
+import { registry } from "@web/core/registry";
+import { standardFieldProps } from "@web/views/fields/standard_field_props";
 
-try {
-    fieldRegistry.add("container_search", ContainerSearchWidget);
-    fieldRegistry.add("file_search", FileSearchWidget);
+export class ContainerSearchWidget extends Component {
+    static template = xml`
+        <div class="container-search-widget">
+            <input t-ref="searchInput"
+                   type="text"
+                   class="form-control"
+                   placeholder="Search containers..."
+                   t-on-input="onSearchInput"/>
+            <div t-if="state.suggestions.length" class="search-suggestions">
+                <div t-foreach="state.suggestions" t-as="suggestion" t-key="suggestion.id"
+                     class="suggestion-item" t-on-click="() => this.selectSuggestion(suggestion)">
+                    <t t-esc="suggestion.name"/>
+                </div>
+            </div>
+        </div>
+    `;
 
-    console.log("[IntelligentSearch] Advanced widgets registered successfully");
-} catch (err) {
-    console.error("[IntelligentSearch] Failed to register widgets:", err);
+    static props = {
+        ...standardFieldProps,
+        searchType: { type: String, optional: true },
+    };
 
-    // Fallback registration without advanced features
-    fieldRegistry.add("container_search", Component);
-    fieldRegistry.add("file_search", Component);
+    setup() {
+        this.state = useState({
+            suggestions: [],
+            isSearching: false
+        });
+    }
+
+    onSearchInput(ev) {
+        const query = ev.target.value;
+        if (query.length >= 2) {
+            this.searchContainers(query);
+        } else {
+            this.state.suggestions = [];
+        }
+    }
+
+    async searchContainers(query) {
+        this.state.isSearching = true;
+        try {
+            const result = await this.env.services.rpc({
+                model: 'records.container',
+                method: 'search_containers',
+                args: [query],
+            });
+            this.state.suggestions = result;
+        } catch (error) {
+            console.error('Search error:', error);
+        } finally {
+            this.state.isSearching = false;
+        }
+    }
+
+    selectSuggestion(suggestion) {
+        this.props.record.update({ [this.props.name]: suggestion.id });
+        this.state.suggestions = [];
+    }
 }
+
+export class FileSearchWidget extends Component {
+    static template = xml`
+        <div class="file-search-widget">
+            <input t-ref="fileSearchInput"
+                   type="text"
+                   class="form-control"
+                   placeholder="Search files..."
+                   t-on-input="onFileSearchInput"/>
+            <div t-if="state.fileSuggestions.length" class="search-suggestions">
+                <div t-foreach="state.fileSuggestions" t-as="file" t-key="file.id"
+                     class="suggestion-item" t-on-click="() => this.selectFile(file)">
+                    <t t-esc="file.name"/>
+                </div>
+            </div>
+        </div>
+    `;
+
+    static props = {
+        ...standardFieldProps,
+        searchType: { type: String, optional: true },
+    };
+
+    setup() {
+        this.state = useState({
+            fileSuggestions: [],
+            isSearching: false
+        });
+    }
+
+    onFileSearchInput(ev) {
+        const query = ev.target.value;
+        if (query.length >= 2) {
+            this.searchFiles(query);
+        } else {
+            this.state.fileSuggestions = [];
+        }
+    }
+
+    async searchFiles(query) {
+        this.state.isSearching = true;
+        try {
+            const result = await this.env.services.rpc({
+                model: 'records.document',
+                method: 'search_files',
+                args: [query],
+            });
+            this.state.fileSuggestions = result;
+        } catch (error) {
+            console.error('File search error:', error);
+        } finally {
+            this.state.isSearching = false;
+        }
+    }
+
+    selectFile(file) {
+        this.props.record.update({ [this.props.name]: file.id });
+        this.state.fileSuggestions = [];
+    }
+}
+
+// Register the widgets with field registry (Odoo 18 compatible)
+registry.category("fields").add("container_search", {
+    component: ContainerSearchWidget,
+    displayName: "Container Search",
+    supportedTypes: ["many2one", "char"],
+});
+
+registry.category("fields").add("file_search", {
+    component: FileSearchWidget,
+    displayName: "File Search",
+    supportedTypes: ["many2one", "char"],
+});
+
+console.log("[IntelligentSearch] Advanced widgets registered successfully");
 
 // Global namespace for external access
 if (typeof window !== 'undefined') {
