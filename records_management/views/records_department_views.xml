@@ -74,7 +74,8 @@
                         </group>
                         <notebook>
                             <page string="Child Departments" name="children">
-                                <field name="child_department_ids" context="{'default_parent_department_id': active_id}">
+                                <!-- Removed invalid context referencing 'active_id'; One2many inverse handles linkage automatically -->
+                                <field name="child_department_ids">
                                     <list editable="bottom">
                                         <field name="name" />
                                         <field name="code" />
