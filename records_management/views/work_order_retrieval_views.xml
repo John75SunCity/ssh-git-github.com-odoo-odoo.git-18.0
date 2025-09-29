@@ -202,7 +202,8 @@
             <!-- OPTIMIZATION: Model work.order.retrieval has sequence field - consider adding _order="sequence" to model -->
             <field name="name">Work Order Retrievals</field>
             <field name="res_model">work.order.retrieval</field>
-            <field name="view_mode">kanban,list,form</field>
+            <!-- Added activity, graph, and pivot views for analytical and scheduling capabilities -->
+            <field name="view_mode">activity,kanban,graph,pivot,list,form</field>
             <field name="domain">[]</field>
             <field name="context">{
             'search_default_in_progress': 1,
@@ -231,12 +232,51 @@
             <!-- OPTIMIZATION: Model work.order.retrieval has sequence field - consider adding _order="sequence" to model -->
             <field name="name">My Retrievals</field>
             <field name="res_model">work.order.retrieval</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode">activity,kanban,graph,pivot,list,form</field>
             <field name="domain">[('assigned_technician_id', '=', uid)]</field>
             <field name="context">{
             'search_default_today': 1,
             'search_default_in_progress': 1
         }</field>
+        </record>
+        <!-- Activity view: enables mail.activity based scheduling overview -->
+        <record id="work_order_retrieval_view_activity" model="ir.ui.view">
+            <field name="name">work.order.retrieval.view.activity</field>
+            <field name="model">work.order.retrieval</field>
+            <field name="arch" type="xml">
+                <activity string="Work Order Retrieval Activities"/>
+            </field>
+        </record>
+        <!-- Graph view: progress and duration analytics over time -->
+        <record id="work_order_retrieval_view_graph" model="ir.ui.view">
+            <field name="name">work.order.retrieval.view.graph</field>
+            <field name="model">work.order.retrieval</field>
+            <field name="arch" type="xml">
+                <graph string="Retrieval Performance" type="bar" stacked="True">
+                    <field name="scheduled_date" interval="day" />
+                    <field name="actual_duration" type="measure" />
+                    <field name="estimated_duration" type="measure" />
+                    <field name="item_count" type="measure" />
+                    <field name="state" />
+                </graph>
+            </field>
+        </record>
+        <!-- Pivot view: multidimensional analysis (state, priority, partner, team) -->
+        <record id="work_order_retrieval_view_pivot" model="ir.ui.view">
+            <field name="name">work.order.retrieval.view.pivot</field>
+            <field name="model">work.order.retrieval</field>
+            <field name="arch" type="xml">
+                <pivot string="Retrieval Analysis" disable_linking="True">
+                    <field name="scheduled_date" interval="month" />
+                    <field name="partner_id" />
+                    <field name="state" />
+                    <field name="priority" />
+                    <field name="assigned_team_id" />
+                    <field name="actual_duration" type="measure" />
+                    <field name="estimated_duration" type="measure" />
+                    <field name="item_count" type="measure" />
+                </pivot>
+            </field>
         </record>
     </data>
 </odoo>
