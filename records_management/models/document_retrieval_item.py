@@ -141,22 +141,8 @@ class DocumentRetrievalItem(models.Model):
     audit_trail = fields.Text(string='Audit Trail')
     display_name = fields.Char(string='Display Name', compute='_compute_display_name')
     location_display = fields.Char(string='Location Display', compute='_compute_location_display')
-    state = fields.Selection([
-        ('pending', 'Pending'),
-        ('searching', 'Searching'),
-        ('located', 'Located'),
-        ('retrieved', 'Retrieved'),
-        ('packaged', 'Packaged'),
-        ('delivered', 'Delivered'),
-        ('returned', 'Returned'),
-        ('not_found', 'Not Found')
-    ], related='status', string='State')
-    effective_priority = fields.Selection([
-        ('0', 'Low'),
-        ('1', 'Normal'),
-        ('2', 'High'),
-        ('3', 'Very High')
-    ], related='priority', string='Effective Priority')
+    state = fields.Selection(related='status', string='State')
+    effective_priority = fields.Selection(related='priority', string='Effective Priority')
 
     # Class-level constant for maintainability
     DEFAULT_ACTIVE_STATUSES = ["pending", "searching", "located"]

@@ -47,15 +47,7 @@ class RetrievalItemBase(models.AbstractModel):
         ('cancelled', 'Cancelled')
     ], string='Status', default='pending', tracking=True, required=True)
 
-    state = fields.Selection([
-        ('pending', 'Pending'),
-        ('searching', 'Searching'),
-        ('located', 'Located'),
-        ('retrieved', 'Retrieved'),
-        ('completed', 'Completed'),
-        ('not_found', 'Not Found'),
-        ('cancelled', 'Cancelled')
-    ], related='status', string='State')
+    state = fields.Selection(related='status', string='State')
 
     # ============================================================================
     # PARTNER AND CUSTOMER INFORMATION
