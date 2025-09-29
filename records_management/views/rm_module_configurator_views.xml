@@ -211,8 +211,8 @@
 <div class="o_kanban_record_body">
     <div class="row">
         <div class="col-8">
-            <span class="badge badge-pill" t-att-class="record.active.raw_value ? 'badge-success' : 'badge-secondary'">
-                <t t-if="record.active.raw_value">
+            <span class="badge badge-pill" t-att-class="record.active and record.active.raw_value ? 'badge-success' : 'badge-secondary'">
+                <t t-if="record.active and record.active.raw_value">
 <i class="fa fa-check-circle" title="Active Status"/>
 Active
 </t>
@@ -221,27 +221,27 @@ Active
 Inactive
 </t>
 </span>
-<span class="badge badge-pill badge-info" t-if="record.value_boolean.raw_value">Enabled</span>
-<span class="badge badge-pill badge-warning" t-if="!record.value_boolean.raw_value">Disabled</span>
+<span class="badge badge-pill badge-info" t-if="record.value_boolean and record.value_boolean.raw_value">Enabled</span>
+<span class="badge badge-pill badge-warning" t-if="!record.value_boolean or !record.value_boolean.raw_value">Disabled</span>
 </div>
 <div class="col-4">
-<span class="badge badge-danger" t-if="record.sequence.raw_value == 1">High</span>
-<span class="badge badge-warning" t-if="record.sequence.raw_value == 2">Medium</span>
-<span class="badge badge-info" t-if="record.sequence.raw_value == 3">Low</span>
+<span class="badge badge-danger" t-if="record.sequence and record.sequence.raw_value == 1">High</span>
+<span class="badge badge-warning" t-if="record.sequence and record.sequence.raw_value == 2">Medium</span>
+<span class="badge badge-info" t-if="record.sequence and record.sequence.raw_value == 3">Low</span>
 </div>
 </div>
-<div t-if="record.config_type.raw_value == 'feature_toggle'" class="mt-2">
+<div t-if="record.config_type and record.config_type.raw_value == 'feature_toggle'" class="mt-2">
 <small class="text-warning">Feature Toggle</small>
 </div>
 </div>
 <div class="o_kanban_record_bottom">
     <div class="oe_kanban_bottom_left">
-        <div t-if="record.modified_by_id.raw_value">
+        <div t-if="record.modified_by_id and record.modified_by_id.raw_value">
 <field name="modified_by_id" widget="many2one_avatar_user"/>
 </div>
 </div>
 <div class="oe_kanban_bottom_right">
-<div t-if="record.company_id.raw_value" groups="base.group_multi_company">
+<div t-if="record.company_id and record.company_id.raw_value" groups="base.group_multi_company">
 <i class="fa fa-building mr-1" title="Company"/>
 <field name="company_id"/>
 
