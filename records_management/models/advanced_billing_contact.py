@@ -79,13 +79,23 @@ class AdvancedBillingContact(models.Model):
     @api.model
     def _get_languages(self):
         """Get available languages for selection"""
-        langs = self.env["res.lang"].get_installed()
-        return langs
+        try:
+            langs = self.env["res.lang"].get_installed()
+            return langs if langs else [('en_US', 'English')]
+        except Exception:
+            return [('en_US', 'English')]
 
     @api.model
     def _tz_get(self):
         """Get available timezones for selection"""
-        return [(tz, tz) for tz in self.env["res.partner"]._tz_get()]
+        try:
+            tz_list = self.env["res.partner"]._tz_get()
+            if tz_list:
+                return [(tz, tz) for tz in tz_list]
+            else:
+                return [('UTC', 'UTC')]
+        except Exception:
+            return [('UTC', 'UTC')]
 
     @api.constrains('primary_contact')
     def _check_primary_contact(self):
