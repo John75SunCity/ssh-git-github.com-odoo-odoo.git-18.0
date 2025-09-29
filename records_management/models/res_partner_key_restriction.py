@@ -94,3 +94,44 @@ class ResPartnerKeyRestriction(models.Model):
             expired_restrictions.write({'state': 'expired'})
             for restriction in expired_restrictions:
                 restriction.message_post(body=_("This key restriction has automatically expired."))
+
+    # =========================================================================
+    # DEFAULT VIEW FALLBACK (Test Support)
+    # =========================================================================
+    def _get_default_tree_view(self):  # Odoo core still asks for 'tree' in some test helpers
+        """Provide a minimal fallback list (tree) view structure for automated tests.
+
+        Odoo 18 uses <list/> arch tag, but internal test utilities may still request
+        a default 'tree' view for x2many placeholders when no explicit list view is
+        preloaded. Returning a valid list arch prevents UserError during base tests.
+        """
+        return (
+            "<list string='Key Restrictions'>"
+            "<field name='name'/>"
+            "<field name='partner_id'/>"
+            "<field name='state'/>"
+            "<field name='effective_date'/>"
+            "</list>"
+        )
+
+    def _get_default_form_view(self):  # Symmetric fallback for form view requests in tests
+        """Return a minimal safe form view arch for automated tests requesting a default form.
+
+        Some base tests (e.g. partner form computations) trigger generation of inline
+        x2many editors that expect both 'tree' (list) and 'form' fallback views on the
+        comodel. We provide a lean form arch limited to stable, always-present fields
+        to avoid referencing optional ones and to keep postprocessing fast.
+        """
+        return (
+            "<form string='Key Restriction'>"
+            "<sheet>"
+            "<group>"
+            "<field name='name'/>"
+            "<field name='partner_id'/>"
+            "<field name='state'/>"
+            "<field name='effective_date'/>"
+            "<field name='expiry_date'/>"
+            "</group>"
+            "</sheet>"
+            "</form>"
+        )
