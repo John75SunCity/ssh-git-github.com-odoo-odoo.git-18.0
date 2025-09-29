@@ -163,7 +163,8 @@
             <field name="name">records.department.view.hierarchy</field>
             <field name="model">records.department</field>
             <field name="arch" type="xml">
-                <hierarchy string="Department Hierarchy" parent_field="parent_department_id" child_field="child_department_ids" default_expand="1">
+                <!-- Removed unsupported attribute default_expand (causing hierarchy validation failure) -->
+                <hierarchy string="Department Hierarchy" parent_field="parent_department_id" child_field="child_department_ids">
                     <field name="name"/>
                     <field name="code"/>
                     <field name="partner_id"/>
