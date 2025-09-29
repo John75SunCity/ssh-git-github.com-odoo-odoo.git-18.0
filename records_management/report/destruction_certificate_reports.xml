@@ -153,7 +153,7 @@
         </record>
 
 <!-- NAID AAA Destruction Certificate Template for shredding.service (id preserved) -->
-        <template id="destruction_certificate_template">
+<template id="destruction_cert_template">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="service">
                     <t t-call="web.external_layout">
