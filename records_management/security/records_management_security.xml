@@ -196,13 +196,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
         <record id="rule_company_admin_full_control" model="ir.rule">
             <field name="name">Company Admin Full Control Rule</field>
             <field name="model_id" ref="records_management.model_portal_request"/>
-            <field name="domain_force">[
-                '|',
-                ('partner_id', '=', user.partner_id.id),
-                '|',
-                ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
-            ]</field>
+                        <field name="domain_force">[                '|',                ('partner_id', '=', user.partner_id.id),                '|',                ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),                ('partner_id.department_ids.user_ids', 'in', user.id)            ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
@@ -217,7 +211,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="domain_force">[
                 '|',
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
+                ('partner_id.department_ids.user_ids', 'in', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_department_admin'))]"/>
             <field name="perm_read" eval="True"/>
@@ -233,7 +227,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="domain_force">[
                 '|',
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
+                ('partner_id.department_ids.user_ids', 'in', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_department_user'))]"/>
             <field name="perm_read" eval="True"/>
@@ -249,7 +243,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="domain_force">[
                 '|',
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
+                ('partner_id.department_ids.user_ids', 'in', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_readonly_employee'))]"/>
             <field name="perm_read" eval="True"/>
@@ -265,7 +259,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="domain_force">[
                 '|',
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
+                ('partner_id.department_ids.user_ids', 'in', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin'))]"/>
             <field name="perm_read" eval="True"/>
@@ -280,7 +274,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="domain_force">[
                 '|',
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
+                ('partner_id.department_ids.user_ids', 'in', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_department_admin'))]"/>
             <field name="perm_read" eval="True"/>
@@ -295,7 +289,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="domain_force">[
                 '|',
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
+                ('partner_id.department_ids.user_ids', 'in', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_department_user'))]"/>
             <field name="perm_read" eval="True"/>
@@ -310,7 +304,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="domain_force">[
                 '|',
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
+                ('partner_id.department_ids.user_ids', 'in', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_readonly_employee'))]"/>
             <field name="perm_read" eval="True"/>
@@ -326,7 +320,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="domain_force">[
                 '|',
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
+                ('partner_id.department_ids.user_ids', 'in', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin'))]"/>
             <field name="perm_read" eval="True"/>
@@ -341,7 +335,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="domain_force">[
                 '|',
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
+                ('partner_id.department_ids.user_ids', 'in', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_department_admin'))]"/>
             <field name="perm_read" eval="True"/>
@@ -356,7 +350,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="domain_force">[
                 '|',
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
+                ('partner_id.department_ids.user_ids', 'in', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_department_user'))]"/>
             <field name="perm_read" eval="True"/>
@@ -371,7 +365,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="domain_force">[
                 '|',
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id]),
-                ('partner_id.records_department_users.user_id', '=', user.id)
+                ('partner_id.department_ids.user_ids', 'in', user.id)
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_readonly_employee'))]"/>
             <field name="perm_read" eval="True"/>
