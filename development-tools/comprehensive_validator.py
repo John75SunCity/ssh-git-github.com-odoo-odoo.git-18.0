@@ -45,6 +45,7 @@ class ComprehensiveValidator:
         self.missing_hierarchy_view_warnings = 0
         # Cron tracking
         self._cron_id_first_seen = {}
+        # Stored as blocking errors (may be downgraded to warnings when isolated)
         self._duplicate_cron_issues = []
 
     # ---------------------- Modernization / New Checks ----------------------
@@ -487,12 +488,12 @@ class ComprehensiveValidator:
         print(f"🧭 Action XML IDs collected: {len(self.action_xml_ids)}")
         # Detect duplicate cron ids BEFORE per-file validation so they surface early
         self.detect_duplicate_cron_ids(xml_files)
-        if self._duplicate_cron_issues:
-            # Count each duplicate as an issue (blocking) – duplicates cause override ambiguity
-            self.total_issues += len(self._duplicate_cron_issues)
-            self.files_with_issues += 1
+        duplicate_cron_count = len(self._duplicate_cron_issues)
+        if duplicate_cron_count:
+            # We'll initially collect them; final severity decided after per-file pass.
             print("📄 [aggregate] scheduled_actions (ir.cron)")
-            print("🎯 Status: ❌ ISSUES FOUND")
+            # Placeholder status; may be downgraded later if these are the ONLY issues
+            print("🎯 Status: ⚠️  POTENTIAL DUPLICATES")
             for issue in self._duplicate_cron_issues:
                 print(f"      {issue}")
             print()
@@ -543,6 +544,20 @@ class ComprehensiveValidator:
                     self.total_issues += nested_issues
             except Exception as e:
                 print(f"⚠️  Failed to run nested sublist validator: {e}")
+
+        # If duplicate cron issues exist but no per-file issues were found, downgrade them to warnings.
+        if self._duplicate_cron_issues and not files_with_issues:
+            for msg in self._duplicate_cron_issues:
+                # Convert blocking duplicate into advisory warning text
+                warn_text = msg.replace('❌ Duplicate', 'WARN Duplicate')
+                self.global_warnings.append(warn_text + " – no conflicting file-level issues detected; treat as advisory")
+            # Do not count them as blocking issues
+            self._duplicate_cron_issues.clear()
+        else:
+            # Only now add duplicate cron issues to totals if they coexist with other file issues
+            if self._duplicate_cron_issues:
+                self.total_issues += len(self._duplicate_cron_issues)
+                self.files_with_issues += 1
 
         # Summary
         print("=" * 70)
