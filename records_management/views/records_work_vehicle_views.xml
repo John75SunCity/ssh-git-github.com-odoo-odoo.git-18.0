@@ -355,7 +355,7 @@
             parent="menu_records_operations"
             action="action_fleet_vehicle_records_work"
             sequence="30"
-            groups="records_management.group_records_user,records_management.group_records_manager"/>
+            groups="fleet.fleet_group_manager,fleet.fleet_group_user"/>
     
     
     </data>
