@@ -9,7 +9,7 @@ and requesting rescans, with full audit trail via chatter messages.
 """
 
 try:
-    from odoo import models, fields, _
+    from odoo import models, fields, api, _
     from odoo.exceptions import UserError
 except Exception:  # Allows offline import by validators without Odoo installed
     # Minimal stubs so static tools can import this module
