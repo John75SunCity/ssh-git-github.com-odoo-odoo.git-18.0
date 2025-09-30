@@ -32,14 +32,14 @@
                             <field name="restricted_unlock_count" widget="statinfo" string="Unlock Services" />
                         </div>
                         <group string="Restriction History" invisible="key_issuance_allowed == True">
-                            <field name="key_restriction_history_ids" nolabel="1" mode="tree">
-                                <!-- Converted inner <list> to <tree> for Odoo 18 compliance; inline one2many subviews must use <tree> -->
-                                <tree>
+                            <field name="key_restriction_history_ids" nolabel="1">
+                                <!-- Inline one2many list view (modern Odoo 18 <list/> tag). Using <list> instead of legacy <tree> to ensure proper comodel context (res.partner.key.restriction) so nested fields are not resolved against res.partner. -->
+                                <list string="Key Restriction History">
                                     <field name="state"/>
                                     <field name="restriction_reason"/>
                                     <field name="effective_date"/>
                                     <field name="user_id" string="Approved By"/>
-                                </tree>
+                                </list>
                             </field>
                         </group>
                     </page>
