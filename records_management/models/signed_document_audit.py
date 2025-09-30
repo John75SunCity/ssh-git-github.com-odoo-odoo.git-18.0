@@ -164,7 +164,7 @@ class SignedDocumentAudit(models.Model):
     def write(self, vals):
         """Prevent modification of audit trail entries."""
         # Allow test operations
-        if (not self.env.context.get('test_mode') and 
+        if (not self.env.context.get('test_mode') and
             not hasattr(self.env.registry, '_test_env') and
             not self.env.context.get('_test_context') and
             not self._context.get('bypass_audit_protection')):
@@ -173,8 +173,11 @@ class SignedDocumentAudit(models.Model):
 
     def unlink(self):
         """Prevent deletion of audit trail entries."""
-        # Allow test operations
-        if (not self.env.context.get('test_mode') and 
+        # Preserve base test expectations: empty recordset unlink must return True silently
+        if not self:
+            return True
+        # Allow test operations / explicit bypass only; otherwise forbid
+        if (not self.env.context.get('test_mode') and
             not hasattr(self.env.registry, '_test_env') and
             not self.env.context.get('_test_context') and
             not self._context.get('bypass_audit_protection')):

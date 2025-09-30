@@ -74,6 +74,18 @@ class RmModuleConfigurator(models.Model):
     modification_count = fields.Integer(readonly=True, default=0)
     notes = fields.Text()
 
+    # Virtual recency flags (avoid Python date expressions in XML domains)
+    recently_created_30d = fields.Boolean(
+        compute='_compute_recency_flags',
+        search='_search_recently_created_30d',
+        string='Created Last 30 Days'
+    )
+    recently_modified_7d = fields.Boolean(
+        compute='_compute_recency_flags',
+        search='_search_recently_modified_7d',
+        string='Modified Last 7 Days'
+    )
+
     # Feature toggles (subset + explicit chain/bin controls)
     enable_chain_of_custody = fields.Boolean(default=True)
     bin_inventory_enabled = fields.Boolean(default=True)
@@ -137,6 +149,38 @@ class RmModuleConfigurator(models.Model):
                 rec.display_name = rec.name + f" - {status}"
             else:
                 rec.display_name = rec.name
+
+    # ------------------------------------------------------------------
+    # RECENCY COMPUTES & SEARCH HELPERS
+    # ------------------------------------------------------------------
+    def _compute_recency_flags(self):
+        from datetime import datetime, timedelta
+        now = fields.Datetime.now()
+        threshold_created = now - timedelta(days=30)
+        threshold_modified = now - timedelta(days=7)
+        for rec in self:
+            rec.recently_created_30d = bool(rec.create_date and rec.create_date >= threshold_created)
+            # Use last_modified when available, fallback to write_date
+            mod_dt = rec.last_modified or rec.write_date
+            rec.recently_modified_7d = bool(mod_dt and mod_dt >= threshold_modified)
+
+    def _search_recently_created_30d(self, operator, value):
+        if operator not in ('=', '=='):
+            return [('id', '!=', 0)]  # conservative
+        from datetime import timedelta
+        date_from = fields.Datetime.now() - timedelta(days=30)
+        domain = [('create_date', '>=', date_from)] if value else ['|', ('create_date', '=', False), ('create_date', '<', date_from)]
+        return domain
+
+    def _search_recently_modified_7d(self, operator, value):
+        if operator not in ('=', '=='):
+            return [('id', '!=', 0)]
+        from datetime import timedelta
+        date_from = fields.Datetime.now() - timedelta(days=7)
+        # Consider either explicit last_modified or write_date
+        if value:
+            return ['|', ('last_modified', '>=', date_from), ('write_date', '>=', date_from)]
+        return ['&', ('last_modified', '!=', False), ('last_modified', '<', date_from)]
 
     # ------------------------------------------------------------------
     # CREATE / WRITE OVERRIDES

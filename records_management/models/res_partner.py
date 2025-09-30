@@ -549,12 +549,21 @@ class ResPartner(models.Model):
         if not self:
             return
         try:
-            # Count unlock services that were tied to restriction context
-            rows = self.env['bin.unlock.service']._read_group(
-                [('partner_id', 'in', self.ids), ('customer_key_restricted', '=', True)],
-                ['partner_id'], ['__count']
-            )
-            cnt_map = {r['partner_id'][0]: r['__count'] for r in rows}
+            # Determine restricted partners using same logic as key issuance search helper
+            restricted_partner_ids = set(self.env['res.partner.key.restriction'].sudo().search([
+                ('key_issuance_allowed', '=', False),
+                ('partner_id', 'in', self.ids),
+                ('state', 'in', ['active', 'draft'])
+            ]).mapped('partner_id').ids)
+
+            if restricted_partner_ids:
+                rows = self.env['bin.unlock.service']._read_group(
+                    [('partner_id', 'in', list(restricted_partner_ids))],
+                    ['partner_id'], ['__count']
+                )
+                cnt_map = {r['partner_id'][0]: r['__count'] for r in rows}
+            else:
+                cnt_map = {}
         except AccessError:
             # Defensive fallback: if ACL load order or test harness context prevents
             # reading bin.unlock.service, suppress the AccessError and treat as zero.
