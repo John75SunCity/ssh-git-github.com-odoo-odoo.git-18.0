@@ -119,8 +119,12 @@ class IrActionsReport(models.Model):
         except Exception:
             return html_text  # parsing failure – leave untouched
 
-        # 1. Collapse nested page divs
-        nested_pages = doc.xpath("//div[@class='page']//div[@class='page']")
+        # Helper XPaths consider any element whose class attribute CONTAINS the token 'page'
+        # rather than equals exactly 'page' (some themes add additional classes, e.g. 'page o_report').
+        page_token_xpath = "contains(concat(' ', normalize-space(@class), ' '), ' page ')"
+
+        # 1. Collapse nested page wrappers (allow additional classes)
+        nested_pages = doc.xpath(f"//div[{page_token_xpath}]//div[{page_token_xpath}]")
         for inner in nested_pages:
             parent = inner.getparent()
             if parent is None:
@@ -132,8 +136,8 @@ class IrActionsReport(models.Model):
                 insert_at += 1
             parent.remove(inner)
 
-        # 2. Constrain direct children count to header/article/footer
-        page_nodes = doc.xpath("//div[@class='page']")
+        # 2. Constrain direct children count to header/article/footer for each page container
+        page_nodes = doc.xpath(f"//div[{page_token_xpath}]")
         for page in page_nodes:
             # Identify existing special nodes
             header = None
@@ -165,6 +169,41 @@ class IrActionsReport(models.Model):
                 for node in stray:
                     page.remove(node)
                     article.append(node)
+
+            # After restructuring, if page still has more than 3 direct children, consolidate
+            # everything that is not header/footer/article into (or under) a single article.
+            resulting_children = list(page)
+            if len(resulting_children) > 3:
+                # Recompute in case created above
+                header_ids = []
+                footer_ids = []
+                article_nodes = []
+                for c in resulting_children:
+                    classes = c.attrib.get('class', '').split()
+                    if 'header' in classes:
+                        header_ids.append(id(c))
+                    elif 'footer' in classes:
+                        footer_ids.append(id(c))
+                    elif c.tag == 'article':
+                        article_nodes.append(c)
+                primary_article = article_nodes[0] if article_nodes else None
+                if primary_article is None:
+                    from lxml import etree  # local import
+                    primary_article = etree.Element('article')
+                    # Insert before first footer or at end
+                    insert_pos = 0
+                    for idx, c in enumerate(list(page)):
+                        if id(c) in footer_ids:
+                            insert_pos = idx
+                            break
+                        insert_pos = idx + 1
+                    page.insert(insert_pos, primary_article)
+                for c in list(page):
+                    cid = id(c)
+                    if c is primary_article or cid in header_ids or cid in footer_ids:
+                        continue
+                    page.remove(c)
+                    primary_article.append(c)
 
         try:
             # Preserve original type: if input was bytes, emit UTF-8 bytes; else unicode string.
