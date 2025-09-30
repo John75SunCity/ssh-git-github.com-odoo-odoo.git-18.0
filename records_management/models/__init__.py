@@ -209,6 +209,10 @@ from . import records_vehicle
 from . import required_document
 from . import res_config_settings
 from . import res_partner
+from . import recent_window_mixin
+from . import records_document_recent
+from . import naid_custody_recent
+from . import naid_audit_log_recent
 from . import res_partner_key_restriction
 from . import retrieval_metric
 from . import revenue_analytic

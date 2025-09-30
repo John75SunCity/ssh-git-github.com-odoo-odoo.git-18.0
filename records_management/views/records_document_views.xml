@@ -111,7 +111,15 @@
             <field name="name">records.document.view.tree</field>
             <field name="model">records.document</field>
             <field name="arch" type="xml">
-                <list decoration-danger="destruction_eligible_date &lt;= context_today" decoration-warning="destruction_eligible_date &lt;= (context_today + relativedelta(days=30))" decoration-success="is_permanent == True">
+                <!-- Modernized decorations: remove Python expressions (relativedelta) -->
+                <!-- Use computed helper field days_until_destruction (Integer) and permanent flag -->
+                <!-- Interpretation:
+                     danger: past due (negative or zero days)
+                     warning: due within next 30 days (0 < days_until_destruction <= 30)
+                     success: permanent record -->
+                <list decoration-danger="days_until_destruction != False and days_until_destruction &lt;= 0"
+                      decoration-warning="days_until_destruction != False and days_until_destruction &gt; 0 and days_until_destruction &lt;= 30"
+                      decoration-success="is_permanent == True">
                     <field name="name" string="Document" />
                     <field name="document_type_id" string="Type" />
                     <field name="partner_id" string="Customer" />
@@ -287,9 +295,12 @@
                     <filter string="Permanent Records" name="permanent" domain="[('is_permanent', '=', True)]" />
                     <filter string="Non-Permanent Records" name="non_permanent" domain="[('is_permanent', '=', False)]" />
                     <separator />
+                    <!-- Modernized date filters replacing Python expressions with mixin-backed virtual fields -->
                     <filter string="Destruction Due" name="destruction_due" domain="[('destruction_eligible_date', '&lt;=', context_today)]" />
-                    <filter string="Destruction This Month" name="destruction_this_month" domain="[('destruction_eligible_date', '&lt;=', (context_today + relativedelta(months=1)).strftime('%Y-%m-%d'))]" />
-                    <filter string="Recent Activity" name="recent_access" domain="[('last_access_date', '&gt;=', (context_today - relativedelta(days=30)).strftime('%Y-%m-%d'))]" />
+                    <!-- Next 30 days destruction eligibility -->
+                    <filter string="Destruction Next 30 Days" name="destruction_next_30d" domain="[('expiring_30d_destruction', '=', True)]" />
+                    <!-- Recent Access: last 30 days -->
+                    <filter string="Accessed Last 30 Days" name="recent_access" domain="[('is_recent_30d_last_access', '=', True)]" />
                     <group expand="0" string="Group By">
                         <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}" />
                         <filter string="Document Type" name="group_by_type" context="{'group_by': 'document_type_id'}" />
