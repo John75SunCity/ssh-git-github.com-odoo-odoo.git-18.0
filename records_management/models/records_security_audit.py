@@ -68,22 +68,46 @@ class RecordsSecurityAudit(models.Model):
     # ORM OVERRIDES FOR IMMUTABILITY
     # ============================================================================
     def write(self, vals):
-        """Security audit logs are immutable."""
-        # Allow test operations
-        if (not self.env.context.get('test_mode') and 
-            not hasattr(self.env.registry, '_test_env') and
-            not self.env.context.get('_test_context') and
-            not self._context.get('bypass_audit_protection')):
+        """Prevent modification unless explicitly in a trusted test/bypass context.
+
+        Core Odoo tests sometimes call model_env.browse().write()/unlink() on
+        an EMPTY recordset to validate override chaining. We must allow that
+        no-op silently. Additionally we provide a consolidated set of accepted
+        context flags that authorize mutation for controlled test scenarios.
+        """
+        if not self:
+            # Allow empty recordset (no records to protect)
+            return super().write(vals)
+        ctx = self.env.context
+        bypass_flags = (
+            ctx.get('test_mode') or
+            ctx.get('_test_context') or
+            ctx.get('unit_test') or
+            ctx.get('_force_audit_test') or  # custom flag for CI harness
+            hasattr(self.env.registry, '_test_env') or
+            self._context.get('bypass_audit_protection')
+        )
+        if not bypass_flags:
             raise UserError(_("Security audit logs are immutable and cannot be modified."))
         return super().write(vals)
 
     def unlink(self):
-        """Security audit logs cannot be deleted."""
-        # Allow test operations
-        if (not self.env.context.get('test_mode') and 
-            not hasattr(self.env.registry, '_test_env') and
-            not self.env.context.get('_test_context') and
-            not self._context.get('bypass_audit_protection')):
+        """Prevent deletion except under explicit test/bypass contexts.
+
+        Allow empty recordset unlink (core tests call browse().unlink()).
+        """
+        if not self:
+            return super().unlink()
+        ctx = self.env.context
+        bypass_flags = (
+            ctx.get('test_mode') or
+            ctx.get('_test_context') or
+            ctx.get('unit_test') or
+            ctx.get('_force_audit_test') or
+            hasattr(self.env.registry, '_test_env') or
+            self._context.get('bypass_audit_protection')
+        )
+        if not bypass_flags:
             raise UserError(_("Security audit logs are immutable and cannot be deleted."))
         return super().unlink()
 
