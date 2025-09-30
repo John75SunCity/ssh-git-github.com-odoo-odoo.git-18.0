@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
+
 <!-- ============================================================================ -->
     <!-- SERVICE ITEMS SECTION (Enhanced with comprehensive structure) -->
     <!-- ============================================================================ -->
@@ -87,7 +87,7 @@
 
     <!-- Service Item Configuration -->
 
-    <menuitem id="menu_service_item_configuration" name="&lt;i class='fa fa-wrench'/&gt; Service Configuration" parent="menu_service_item_settings" action="action_rm_module_configurator" sequence="10"/>
+    <menuitem id="menu_service_item_configuration" name="Service Configuration" parent="menu_records_configuration" sequence="30" groups="base.group_system" />
 
 
     <!-- Service Item Pricing Rules -->
@@ -133,6 +133,6 @@
 
     <menuitem id="menu_service_item_self_service" name="&lt;i class='fa fa-wrench'/&gt; Self-Service Setup" parent="menu_service_item_portal" action="action_service_item_self_service" sequence="15"/>
 
-    
+
     </data>
 </odoo>

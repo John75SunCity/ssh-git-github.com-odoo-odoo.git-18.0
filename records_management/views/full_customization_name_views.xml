@@ -111,7 +111,8 @@
                 name="Customization Configurations"
                 parent="records_management.menu_records_configuration"
                 action="full_customization_name_action"
-                sequence="50"/>
+                sequence="50"
+                groups="base.group_system"/>
 
 
     </data>

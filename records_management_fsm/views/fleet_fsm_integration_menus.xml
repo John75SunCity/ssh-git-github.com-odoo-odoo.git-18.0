@@ -61,7 +61,8 @@
               name="FSM Route Projects"
               parent="menu_records_routes"
               action="action_fsm_route_projects_local"
-              sequence="20"/>
+              sequence="20"
+              groups="project.group_project_user,project.group_project_manager"/>
 
     <!-- Route Analytics -->
     <record id="action_route_analytics" model="ir.actions.act_window">

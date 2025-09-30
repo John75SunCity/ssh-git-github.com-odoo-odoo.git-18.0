@@ -393,7 +393,7 @@
     <!-- ============================================================================ -->
 
     <menuitem id="menu_system_architecture" name="System Architecture" parent="records_management.menu_records_management_root" sequence="20" groups="records_management.group_records_manager"/>
-    <menuitem id="menu_system_analysis" name="System Analysis" parent="menu_system_architecture" sequence="10"/>
+    <menuitem id="menu_system_analysis" name="System Analysis" parent="menu_system_architecture" sequence="10" groups="base.group_system"/>
     <menuitem id="menu_system_flowchart_main" name="Interactive Flowcharts" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
     <menuitem id="menu_system_flowchart_user" name="User Access Analysis" parent="menu_system_analysis" action="action_system_flowchart_user_analysis" sequence="20"/>
     <menuitem id="menu_system_flowchart_model" name="Model Structure Explorer" parent="menu_system_analysis" action="action_system_flowchart_model_explorer" sequence="30"/>

@@ -6,7 +6,7 @@
 
 <!-- Menu Items for Barcode Configuration and History -->
 
-<menuitem id="menu_barcode_config" name="Barcode Configuration" parent="menu_records_configuration" 
+<menuitem id="menu_barcode_config" name="Barcode Configuration" parent="menu_records_configuration" groups="base.group_system" 
 action="action_barcode_generation_history" sequence="40"/>
 
 
