@@ -278,8 +278,6 @@
     "post_init_hook": "post_init_hook",
     "assets": {
         "web.assets_backend": [
-            "records_management/static/src/lib/vis/vis-network.min.css",
-            "records_management/static/src/lib/vis/vis-network.min.js",
             "records_management/static/src/scss/records_management.scss",
             "records_management/static/src/scss/retention_policy.scss",
             "records_management/static/src/css/intelligent_search.css",
@@ -294,8 +292,14 @@
             "records_management/static/src/xml/trailer_visualization.xml",
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
+            # Heavy visualization assets (vis-network + flowchart templates) moved to separate optional bundle
+        ],
+        # Optional heavy visualization bundle loaded only when flowchart / portal diagram features are enabled.
+        # This reduces baseline asset generation time for generic back-end usage and speeds up unit test asset build.
+        "records_management.assets_visualization_optional": [
+            "records_management/static/src/lib/vis/vis-network.min.css",
+            "records_management/static/src/lib/vis/vis-network.min.js",
             "records_management/static/src/js/system_flowchart_view.js",
-            # "records_management/static/src/js/customer_portal_diagram_view.js",  # Temporarily disabled - hybrid ES6/legacy causing tour loading conflicts
             "records_management/static/src/xml/system_flowchart_templates.xml",
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
