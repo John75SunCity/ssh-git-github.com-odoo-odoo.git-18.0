@@ -215,8 +215,9 @@
                     <filter string="NAID Compliant" name="naid_compliant" domain="[('requires_naid_compliance', '=', True)]" />
                     <filter string="My Requests" name="my_requests" domain="[('user_id', '=', uid)]" />
                     <separator />
-                    <filter string="This Week" name="week" domain="[('requested_date', '&gt;=', (context_today - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]" />
-                    <filter string="This Month" name="month" domain="[('requested_date', '&gt;=', (context_today - relativedelta(months=1)).strftime('%Y-%m-%d'))]" />
+                    <!-- Refactored: dynamic Python date arithmetic replaced with precomputed boolean flags -->
+                    <filter string="This Week" name="week" domain="[('requested_last_7d', '=', True)]" />
+                    <filter string="This Month" name="month" domain="[('requested_last_30d', '=', True)]" />
                     <separator />
                     <!-- Hidden technical filters reused by automated contexts; intentionally invisible -->
                     <filter invisible="1" string="Late Activities" name="activities_overdue" domain="[('activity_ids.date_deadline', '&lt;', context_today.strftime('%Y-%m-%d'))]" help="Show requests with overdue activities" />

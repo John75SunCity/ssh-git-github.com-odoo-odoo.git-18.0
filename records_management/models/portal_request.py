@@ -56,6 +56,22 @@ class PortalRequest(models.Model):
     actual_hours = fields.Float(string='Actual Hours', readonly=True)
     is_overdue = fields.Boolean(string='Is Overdue', compute='_compute_is_overdue', store=True)
 
+    # --------------------------------------------------------------------------
+    # VIRTUAL / SEARCH OPTIMIZATION FIELDS (Dynamic date domain refactor)
+    # --------------------------------------------------------------------------
+    requested_last_7d = fields.Boolean(
+        string='Requested Last 7 Days',
+        compute='_compute_requested_period_flags',
+        search='_search_requested_last_7d',
+        help='Indicates the request was created (requested) within the past 7 days.'
+    )
+    requested_last_30d = fields.Boolean(
+        string='Requested Last 30 Days',
+        compute='_compute_requested_period_flags',
+        search='_search_requested_last_30d',
+        help='Indicates the request was created (requested) within the past 30 days.'
+    )
+
     # ============================================================================
     # BILLING & COST
     # ============================================================================
@@ -120,6 +136,48 @@ class PortalRequest(models.Model):
                 record.deadline < fields.Datetime.now() and
                 record.state not in ('completed', 'cancelled', 'rejected')
             )
+
+    @api.depends('requested_date')
+    def _compute_requested_period_flags(self):
+        """Compute recency flags for requested_date to remove Python arithmetic from view domains."""
+        today = fields.Date.context_today(self)
+        # Define date thresholds
+        from datetime import timedelta as _td
+        last_7 = today - _td(days=7)
+        last_30 = today - _td(days=30)
+        for rec in self:
+            rd = rec.requested_date.date() if rec.requested_date else None
+            rec.requested_last_7d = bool(rd and rd >= last_7)
+            rec.requested_last_30d = bool(rd and rd >= last_30)
+
+    # ------------------------------------------------------------------
+    # SEARCH HELPERS
+    # ------------------------------------------------------------------
+    def _search_requested_last_7d(self, operator, value):
+        truthy = {True, '1', 1, 'true', 'True'}
+        today = fields.Date.context_today(self)
+        from datetime import timedelta as _td
+        last_7 = today - _td(days=7)
+        if operator in ('=', '==') and value in truthy:
+            return [('requested_date', '>=', fields.Datetime.to_datetime(str(last_7) + ' 00:00:00'))]
+        if operator in ('!=', '<>') and value in truthy:
+            return ['|', ('requested_date', '=', False), ('requested_date', '<', fields.Datetime.to_datetime(str(last_7) + ' 00:00:00'))]
+        if operator in ('=', '==') and value not in truthy:
+            return ['|', ('requested_date', '=', False), ('requested_date', '<', fields.Datetime.to_datetime(str(last_7) + ' 00:00:00'))]
+        return [('id', '!=', 0)]
+
+    def _search_requested_last_30d(self, operator, value):
+        truthy = {True, '1', 1, 'true', 'True'}
+        today = fields.Date.context_today(self)
+        from datetime import timedelta as _td
+        last_30 = today - _td(days=30)
+        if operator in ('=', '==') and value in truthy:
+            return [('requested_date', '>=', fields.Datetime.to_datetime(str(last_30) + ' 00:00:00'))]
+        if operator in ('!=', '<>') and value in truthy:
+            return ['|', ('requested_date', '=', False), ('requested_date', '<', fields.Datetime.to_datetime(str(last_30) + ' 00:00:00'))]
+        if operator in ('=', '==') and value not in truthy:
+            return ['|', ('requested_date', '=', False), ('requested_date', '<', fields.Datetime.to_datetime(str(last_30) + ' 00:00:00'))]
+        return [('id', '!=', 0)]
 
     def _compute_attachment_count(self):
         for record in self:

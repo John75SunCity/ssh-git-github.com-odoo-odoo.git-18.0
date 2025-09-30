@@ -66,6 +66,16 @@ class RecordsStorageDepartmentUser(models.Model):
     notes = fields.Text(string="Internal Notes", tracking=True,
                        help="Internal notes about this assignment, visible only to managers")
 
+    # ==========================================================================
+    # VIRTUAL / SEARCH OPTIMIZATION FIELDS (Dynamic date domains refactor)
+    # ==========================================================================
+    start_date_this_month = fields.Boolean(
+        string="Started This Month",
+        compute="_compute_start_date_period_flags",
+        search="_search_start_date_this_month",
+        help="Indicates assignments whose start date falls within the current calendar month."
+    )
+
     # ============================================================================
     # GRANULAR PERMISSIONS
     # ============================================================================
@@ -113,6 +123,58 @@ class RecordsStorageDepartmentUser(models.Model):
                 ])
             else:
                 record.assignment_count = 0
+
+    # --------------------------------------------------------------------------
+    # COMPUTE: PERIOD FLAGS
+    # --------------------------------------------------------------------------
+    @api.depends('start_date')
+    def _compute_start_date_period_flags(self):
+        """Compute boolean period flags for optimized search filters.
+
+        Replaces UI domains that previously embedded Python date arithmetic
+        (relativedelta/day manipulations) with a simple boolean field that can
+        be safely referenced in search views.
+        """
+        today = fields.Date.context_today(self)
+        # First day of current month
+        month_start = today.replace(day=1)
+        # First day of next month (safe month increment)
+        if month_start.month == 12:
+            next_month_start = month_start.replace(year=month_start.year + 1, month=1)
+        else:
+            next_month_start = month_start.replace(month=month_start.month + 1)
+
+        for rec in self:
+            sd = rec.start_date
+            rec.start_date_this_month = bool(sd and month_start <= sd < next_month_start)
+
+    # --------------------------------------------------------------------------
+    # SEARCH HELPERS
+    # --------------------------------------------------------------------------
+    def _search_start_date_this_month(self, operator, value):
+        """Search helper for start_date_this_month virtual flag.
+
+        Accepts truthy comparisons only; falsy searches fall back to a domain
+        excluding the month range to preserve logical semantics.
+        """
+        # Normalize expected truthy values
+        truthy = {'1', 1, True, 'true', 'True'}
+        today = fields.Date.context_today(self)
+        month_start = today.replace(day=1)
+        if month_start.month == 12:
+            next_month_start = month_start.replace(year=month_start.year + 1, month=1)
+        else:
+            next_month_start = month_start.replace(month=month_start.month + 1)
+
+        if operator in ('=', '==') and value in truthy:
+            return [('start_date', '>=', month_start), ('start_date', '<', next_month_start)]
+        if operator in ('!=', '<>') and value in truthy:
+            return ['|', ('start_date', '=', False), ('start_date', '<', month_start), ('start_date', '>=', next_month_start)]
+        # For any other pattern (including searching for False) return a domain that negates the range
+        if operator in ('=', '==') and value not in truthy:
+            return ['|', ('start_date', '=', False), ('start_date', '<', month_start), ('start_date', '>=', next_month_start)]
+        # Default safe fallback
+        return [('id', '!=', 0)]
 
     # ============================================================================
     # ACTION METHODS

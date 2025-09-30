@@ -135,6 +135,9 @@ class RecordsBillingConfig(models.Model):
     auto_billing = fields.Boolean(string="Auto Billing", default=False)
 
     # Payment terms
+    # ================================================================
+    # VIRTUAL / SEARCH OPTIMIZATION FIELDS (Dynamic date domains refactor)
+    # ================================================================
     payment_terms = fields.Selection(
         [
             ("net_15", "Net 15"),
@@ -332,6 +335,16 @@ class RecordsBillingConfig(models.Model):
     def _compute_annual_revenue(self):
         for record in self:
             current_year = fields.Date.today().year
+
+    # ------------------------------------------------------------------
+    # COMPUTE: NEXT BILLING DATE WINDOW FLAGS
+    # ------------------------------------------------------------------
+    next_billing_within_7d = fields.Boolean(
+        string='Next Billing Within 7 Days',
+        compute='_compute_next_billing_flags',
+        search='_search_next_billing_within_7d',
+        help='Indicates configurations whose next billing date is within the coming 7 days (inclusive).'
+    )
             annual_usage = record.usage_tracking_ids.filtered(
                 lambda u: u.date and u.date.year == current_year
             )
