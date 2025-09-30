@@ -13,6 +13,9 @@ after the `_()` call.
 from odoo import _, api, fields, models  # noqa: E402 (kept order per local style)
 from odoo.exceptions import UserError, ValidationError
 import re  # placed after odoo imports previously; retained but allowed
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class RmModuleConfigurator(models.Model):
@@ -494,6 +497,13 @@ class RmModuleConfigurator(models.Model):
             return False
         # When running tests (test mode indicators) allow only if partner exists
         test_markers = {'test_mode', 'testing', 'unit_test', 'test_enable'}
+        partner = self.env.user.partner_id
         if any(ctx.get(k) for k in test_markers):
-            return bool(self.env.user.partner_id)
+            # Require a partner WITH email to satisfy mail_thread author constraints
+            return bool(partner and (partner.email or self.env.user.email))
+        # Outside explicit test markers, still avoid posting if no email to prevent
+        # "Unable to send message, please configure the sender's email address." errors.
+        if not partner or not (partner.email or self.env.user.email):
+            _logger.debug("Configurator chatter suppressed: missing user email for uid=%s", self.env.user.id)
+            return False
         return True
