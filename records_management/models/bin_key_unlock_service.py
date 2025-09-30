@@ -63,6 +63,12 @@ class BinKeyUnlockService(models.Model):
     unlock_reason_description = fields.Text(string='Reason Description')
     items_retrieved = fields.Text(string='Items Retrieved/Inspected')
     service_notes = fields.Text(string='Service Notes')
+    priority = fields.Selection([
+        ('0', 'Low'),
+        ('1', 'Normal'),
+        ('2', 'High'),
+        ('3', 'Urgent')
+    ], string='Priority', default='1', tracking=True)
 
     # ============================================================================
     # LOCATION & ASSET

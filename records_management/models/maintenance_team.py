@@ -15,6 +15,13 @@ class MaintenanceTeam(models.Model):
         ('general', 'General Facility')
     ], string='Team Specialization')
 
+    priority = fields.Selection([
+        ('0', 'Low'),
+        ('1', 'Normal'),
+        ('2', 'High'),
+        ('3', 'Urgent')
+    ], string='Priority', default='1')
+
     service_location_ids = fields.Many2many(
         'records.location',
         'maintenance_team_location_rel',

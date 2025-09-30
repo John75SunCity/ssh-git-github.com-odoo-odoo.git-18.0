@@ -15,7 +15,7 @@
 <field name="value_boolean" widget="boolean_toggle" string="Enabled"/>
 <field name="value_text" string="Value" optional="hide"/>
 
-<field name="sequence" widget="priority"/>
+<field name="sequence"/>
 <field name="active" widget="boolean_toggle"/>
 <field name="company_id" groups="base.group_multi_company" optional="hide"/>
 <field name="modified_by_id" widget="many2one_avatar_user" string="Owner" optional="hide"/>
@@ -58,12 +58,10 @@
 </div>
 <group>
 <group string="Basic Configuration">
-<field name="config_key" string="Configuration Key"/>
-<field name="category" string="Category" widget="selection"/>
-<field name="sequence" widget="priority" string="Priority"/>
-<field name="config_type" string="Type" widget="selection"/>
-
-</group>
+                <field name="config_key" string="Configuration Key"/>
+                <field name="category" string="Category" widget="selection"/>
+                <field name="sequence" string="Priority"/>
+                <field name="config_type" string="Type" widget="selection"/></group>
 <group string="Ownership &amp; Access">
 <field name="company_id" groups="base.group_multi_company"/>
 <field name="modified_by_id" string="Configuration Owner"/>
