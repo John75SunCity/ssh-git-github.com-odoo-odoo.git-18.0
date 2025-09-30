@@ -114,9 +114,11 @@ class RmModuleConfigurator(models.Model):
     @api.depends("value_text", "value_boolean", "value_number", "value_selection")
     def _compute_current_value(self):
         for rec in self:
+            # Treat numeric zero as a legitimate value (previous logic considered 0.0 as empty)
+            # This change prevents spurious validation errors for parameters intentionally set to 0 (e.g., retention days)
             if isinstance(rec.value_boolean, bool):
                 rec.current_value = str(rec.value_boolean)
-            elif rec.value_number not in (None, 0.0):
+            elif rec.value_number is not None:
                 rec.current_value = str(rec.value_number)
             elif rec.value_text:
                 rec.current_value = rec.value_text
@@ -247,7 +249,8 @@ class RmModuleConfigurator(models.Model):
             return default
         if isinstance(rec.value_boolean, bool):
             return rec.value_boolean
-        if rec.value_number not in (None, 0.0):
+        # Allow zero as a valid stored numeric parameter
+        if rec.value_number is not None:
             return rec.value_number
         if rec.value_text:
             return rec.value_text
@@ -404,16 +407,19 @@ class RmModuleConfigurator(models.Model):
     def _validate_value_type(self):
         for rec in self:
             if rec.config_type == 'parameter':
+                # Consider a numeric value valid even if zero; prior logic excluded 0.0 causing false negatives
                 values = [
                     bool(rec.value_text),
                     rec.value_boolean is not False and rec.value_boolean is not None,
-                    (rec.value_number not in (None, 0.0)),
+                    (rec.value_number is not None),
                     bool(rec.value_selection),
                 ]
                 count = sum(1 for v in values if v)
                 if count > 1:
                     raise ValidationError(_("Configuration parameter value type conflict:") + f" {rec.name}")
                 if count == 0:
+                    # Allow truly blank parameter records only if they are feature toggles reset elsewhere; otherwise raise
+                    # (Retain original behavior for non-numeric empties)
                     raise ValidationError(_("Configuration requires at least one value:") + f" {rec.name}")
 
     @api.constrains("config_type", "target_model_id", "target_field_id")
