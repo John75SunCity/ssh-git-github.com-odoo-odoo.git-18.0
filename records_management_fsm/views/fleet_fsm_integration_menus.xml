@@ -19,14 +19,16 @@
               name="Records Vehicles"
               parent="menu_records_fleet"
               action="records_management.action_fleet_vehicle_records_work"
-              sequence="10"/>
+              sequence="10"
+              groups="fleet.fleet_group_manager,fleet.fleet_group_user"/>
 
     <!-- Standard Fleet Menu for Comparison -->
     <menuitem id="menu_standard_fleet"
               name="Standard Fleet"
               parent="menu_records_fleet"
               action="fleet.fleet_vehicle_action"
-              sequence="20"/>
+              sequence="20"
+              groups="fleet.fleet_group_manager,fleet.fleet_group_user"/>
 
     <!-- Route Management Submenu -->
     <menuitem id="menu_records_routes"
