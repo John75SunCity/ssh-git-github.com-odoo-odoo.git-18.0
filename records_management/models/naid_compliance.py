@@ -166,6 +166,22 @@ class NaidCompliance(models.Model):
     company_id = fields.Many2one("res.company", string="Company", default=lambda self: self.env.company, required=True)
 
     # ------------------------------------------------------------
+    # VIRTUAL / SEARCH OPTIMIZATION FIELDS (Dynamic date domain refactor)
+    # ------------------------------------------------------------
+    expiry_within_30d = fields.Boolean(
+        string="Expiry Within 30 Days",
+        compute="_compute_expiry_audit_flags",
+        search="_search_expiry_within_30d",
+        help="Certificate expiry date is in the next 30 days (inclusive) and not yet past."
+    )
+    audit_overdue = fields.Boolean(
+        string="Audit Overdue",
+        compute="_compute_expiry_audit_flags",
+        search="_search_audit_overdue",
+        help="Next audit date is before today (overdue)."
+    )
+
+    # ------------------------------------------------------------
     # COMPUTES
     # ------------------------------------------------------------
     @api.depends("name", "facility_name", "naid_level")
@@ -338,3 +354,44 @@ class NaidCompliance(models.Model):
         self.ensure_one()
         # Could be extended to open a detailed dashboard view; returning simple True keeps it safe.
         return True
+
+    # ------------------------------------------------------------
+    # RECENCY / STATUS FLAG COMPUTES
+    # ------------------------------------------------------------
+    @api.depends("expiry_date", "next_audit_date")
+    def _compute_expiry_audit_flags(self):
+        today = fields.Date.context_today(self)
+        from datetime import timedelta as _td
+        horizon = today + _td(days=30)
+        for rec in self:
+            ed = rec.expiry_date
+            rec.expiry_within_30d = bool(ed and ed >= today and ed <= horizon)
+            nad = rec.next_audit_date
+            rec.audit_overdue = bool(nad and nad < today)
+
+    # ------------------------------------------------------------
+    # SEARCH HELPERS (mirror semantics in compute to remove Python from XML domains)
+    # ------------------------------------------------------------
+    def _search_expiry_within_30d(self, operator, value):
+        truthy = {True, '1', 1, 'true', 'True'}
+        today = fields.Date.context_today(self)
+        from datetime import timedelta as _td
+        horizon = today + _td(days=30)
+        if operator in ('=', '==') and value in truthy:
+            return ['&', ('expiry_date', '>=', today), ('expiry_date', '<=', horizon)]
+        if operator in ('!=', '<>') and value in truthy:
+            return ['|', ('expiry_date', '=', False), '|', ('expiry_date', '<', today), ('expiry_date', '>', horizon)]
+        if operator in ('=', '==') and value not in truthy:
+            return ['|', ('expiry_date', '=', False), '|', ('expiry_date', '<', today), ('expiry_date', '>', horizon)]
+        return [('id', '!=', 0)]
+
+    def _search_audit_overdue(self, operator, value):
+        truthy = {True, '1', 1, 'true', 'True'}
+        today = fields.Date.context_today(self)
+        if operator in ('=', '==') and value in truthy:
+            return [('next_audit_date', '<', today)]
+        if operator in ('!=', '<>') and value in truthy:
+            return ['|', ('next_audit_date', '=', False), ('next_audit_date', '>=', today)]
+        if operator in ('=', '==') and value not in truthy:
+            return ['|', ('next_audit_date', '=', False), ('next_audit_date', '>=', today)]
+        return [('id', '!=', 0)]

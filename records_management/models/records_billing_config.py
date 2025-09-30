@@ -218,6 +218,16 @@ class RecordsBillingConfig(models.Model):
         string="Avg Monthly Billing", compute="_compute_average_monthly_billing", digits=(10, 2)
     )
 
+    # ------------------------------------------------------------------
+    # RECENT BILLING WINDOW FLAG (Refactored dynamic date domain)
+    # ------------------------------------------------------------------
+    next_billing_within_7d = fields.Boolean(
+        string='Next Billing Within 7 Days',
+        compute='_compute_next_billing_flags',
+        search='_search_next_billing_within_7d',
+        help='Indicates configurations whose next billing date is within the coming 7 days (inclusive).'
+    )
+
     # Performance indicators
     billing_accuracy_rate = fields.Float(
         string="Billing Accuracy Rate", compute="_compute_billing_accuracy_rate", digits=(5, 2)
@@ -333,22 +343,34 @@ class RecordsBillingConfig(models.Model):
 
     @api.depends('usage_tracking_ids')
     def _compute_annual_revenue(self):
+        """Compute annual revenue based on usage tracking lines in the current calendar year."""
+        current_year = fields.Date.today().year
         for record in self:
-            current_year = fields.Date.today().year
-
-    # ------------------------------------------------------------------
-    # COMPUTE: NEXT BILLING DATE WINDOW FLAGS
-    # ------------------------------------------------------------------
-    next_billing_within_7d = fields.Boolean(
-        string='Next Billing Within 7 Days',
-        compute='_compute_next_billing_flags',
-        search='_search_next_billing_within_7d',
-        help='Indicates configurations whose next billing date is within the coming 7 days (inclusive).'
-    )
             annual_usage = record.usage_tracking_ids.filtered(
-                lambda u: u.date and u.date.year == current_year
+                lambda u: getattr(u, 'date', False) and u.date.year == current_year
             )
             record.annual_revenue = sum(annual_usage.mapped('total_cost'))
+
+    # ------------------------------------------------------------------
+    # COMPUTE: NEXT BILLING DATE WINDOW FLAG
+    # ------------------------------------------------------------------
+    def _compute_next_billing_flags(self):
+        today = fields.Date.context_today(self)
+        from datetime import timedelta as _td
+        horizon = today + _td(days=7)
+        for record in self:
+            nb = record.next_billing_date
+            record.next_billing_within_7d = bool(nb and today <= nb <= horizon)
+
+    # SEARCH helper mirrors former dynamic domain pattern
+    def _search_next_billing_within_7d(self, operator, value):  # noqa: ARG002
+        today = fields.Date.context_today(self)
+        from datetime import timedelta as _td
+        horizon = today + _td(days=7)
+        domain = ['&', ('next_billing_date', '>=', today), ('next_billing_date', '<=', horizon)]
+        if (operator, value) in [('=', False), ('!=', True)]:
+            domain = ['!'] + domain
+        return domain
 
     @api.depends('monthly_revenue')
     def _compute_average_monthly_billing(self):

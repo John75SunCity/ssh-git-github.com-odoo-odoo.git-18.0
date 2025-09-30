@@ -27,6 +27,13 @@ class MaintenanceEquipment(models.Model):
     # NAID Compliance
     naid_certification_date = fields.Date(string='NAID Certification Date')
     naid_certification_expiry = fields.Date(string='NAID Certification Expiry')
+    # Virtual flag replacing dynamic date domains in search views
+    cert_expiring_30d = fields.Boolean(
+        string='Certification Expiring 30d',
+        compute='_compute_cert_expiring_30d',
+        search='_search_cert_expiring_30d',
+        help='NAID certification expiry is within the next 30 days (inclusive) and not already expired.'
+    )
 
     # Calibration
     calibration_required = fields.Boolean(string='Requires Calibration', default=False)
@@ -103,6 +110,28 @@ class MaintenanceEquipment(models.Model):
             equipment.is_under_warranty = bool(
                 equipment.warranty_expiry_date and equipment.warranty_expiry_date >= fields.Date.today()
             )
+
+    @api.depends('naid_certification_expiry')
+    def _compute_cert_expiring_30d(self):
+        today = fields.Date.context_today(self)
+        from datetime import timedelta as _td
+        horizon = today + _td(days=30)
+        for rec in self:
+            ed = rec.naid_certification_expiry
+            rec.cert_expiring_30d = bool(ed and ed >= today and ed <= horizon)
+
+    def _search_cert_expiring_30d(self, operator, value):
+        truthy = {True, '1', 1, 'true', 'True'}
+        today = fields.Date.context_today(self)
+        from datetime import timedelta as _td
+        horizon = today + _td(days=30)
+        if operator in ('=', '==') and value in truthy:
+            return ['&', ('naid_certification_expiry', '>=', today), ('naid_certification_expiry', '<=', horizon)]
+        if operator in ('!=', '<>') and value in truthy:
+            return ['|', ('naid_certification_expiry', '=', False), '|', ('naid_certification_expiry', '<', today), ('naid_certification_expiry', '>', horizon)]
+        if operator in ('=', '==') and value not in truthy:
+            return ['|', ('naid_certification_expiry', '=', False), '|', ('naid_certification_expiry', '<', today), ('naid_certification_expiry', '>', horizon)]
+        return [('id', '!=', 0)]
 
     # ============================================================================
     # CRON METHODS

@@ -65,6 +65,17 @@ class PickupRouteStop(models.Model):
     photos_taken = fields.Integer(string='Photos Taken', default=0)
     verification_code = fields.Char(string='Verification Code')
 
+    # -------------------------------------------------------------------------
+    # SEARCH / FILTER FLAG FIELDS (Replacing dynamic context_today domains)
+    # -------------------------------------------------------------------------
+    # These booleans allow stable search filters instead of embedding Python date
+    # arithmetic in XML view domains. They are computed in batch and also have
+    # dedicated _search_* helpers mirroring the pattern used across the module
+    # (portal requests, NAID compliance, scan retrieval items, maintenance equip.).
+    scheduled_today = fields.Boolean(string='Scheduled Today', compute='_compute_schedule_flags', search='_search_scheduled_today')
+    scheduled_recent_7d = fields.Boolean(string='Scheduled Last 7 Days', compute='_compute_schedule_flags', search='_search_scheduled_recent_7d')
+    scheduled_overdue = fields.Boolean(string='Overdue (Uncompleted Past)', compute='_compute_schedule_flags', search='_search_scheduled_overdue')
+
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
@@ -100,6 +111,65 @@ class PickupRouteStop(models.Model):
                 stop.delay_minutes = delta.total_seconds() / 60.0
             else:
                 stop.delay_minutes = 0.0
+
+    # -------------------------------------------------------------------------
+    # COMPUTE: Schedule flag booleans
+    # -------------------------------------------------------------------------
+    @api.depends('planned_arrival', 'state')
+    def _compute_schedule_flags(self):
+        """Compute boolean flags for date-based search filters.
+
+        Semantics (matching original XML domains):
+        - scheduled_today: planned_arrival date == context today
+        - scheduled_recent_7d (XML label 'This Week'): planned_arrival >= today - 7 days (rolling window)
+        - scheduled_overdue: planned_arrival < today AND state in ['planned','in_transit'] (mapping from legacy pending/in_progress labels)
+        """
+        today = fields.Date.context_today(self)
+        # Pre-calc boundaries
+        recent_threshold = today - fields.Date.to_date(str(today)) + today  # placeholder; adjust below
+        # Correct recent threshold: date subtraction using datetime / timedelta
+        from datetime import timedelta
+        recent_threshold = today - timedelta(days=7)
+        for rec in self:
+            rec_date = rec.planned_arrival.date() if rec.planned_arrival else None
+            if rec_date:
+                rec.scheduled_today = rec_date == today
+                rec.scheduled_recent_7d = rec_date >= recent_threshold
+                rec.scheduled_overdue = rec_date < today and rec.state in ['planned', 'in_transit']
+            else:
+                rec.scheduled_today = False
+                rec.scheduled_recent_7d = False
+                rec.scheduled_overdue = False
+
+    # -------------------------------------------------------------------------
+    # SEARCH HELPERS (Domains equivalent to legacy dynamic expressions)
+    # -------------------------------------------------------------------------
+    def _search_scheduled_today(self, operator, value):  # noqa: ARG002 (Odoo API signature)
+        from datetime import timedelta
+        today = fields.Date.context_today(self)
+        start_dt = fields.Datetime.to_datetime(str(today))
+        next_day = start_dt + timedelta(days=1)
+        domain = [('planned_arrival', '>=', start_dt), ('planned_arrival', '<', next_day)]
+        if (operator, value) in [('=', False), ('!=', True)]:
+            domain = ['!', '&'] + domain  # invert logic
+        return domain
+
+    def _search_scheduled_recent_7d(self, operator, value):  # noqa: ARG002
+        from datetime import timedelta
+        today = fields.Date.context_today(self)
+        threshold = fields.Datetime.to_datetime(str(today)) - timedelta(days=7)
+        domain = [('planned_arrival', '>=', threshold)]
+        if (operator, value) in [('=', False), ('!=', True)]:
+            domain = ['!'] + domain
+        return domain
+
+    def _search_scheduled_overdue(self, operator, value):  # noqa: ARG002
+        today = fields.Date.context_today(self)
+        start_of_today = fields.Datetime.to_datetime(str(today))
+        domain = ['&', ('planned_arrival', '<', start_of_today), ('state', 'in', ['planned', 'in_transit'])]
+        if (operator, value) in [('=', False), ('!=', True)]:
+            domain = ['!'] + domain
+        return domain
 
     # ============================================================================
     # ACTION METHODS
@@ -195,4 +265,3 @@ class PickupRouteStop(models.Model):
                 partner = self.env['res.partner'].browse(vals['partner_id'])
                 vals['address'] = partner._get_contact_address()
         return super().create(vals_list)
-

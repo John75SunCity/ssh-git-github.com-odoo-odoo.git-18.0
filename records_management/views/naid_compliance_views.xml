@@ -345,8 +345,9 @@
                     <filter string="Audit Required" name="audit_required" domain="[('audit_required', '=', True)]" />
                     <filter string="Auto Renewal" name="auto_renewal" domain="[('auto_renewal', '=', True)]" />
                     <separator />
-                    <filter string="Expiring Soon (30 days)" name="expiring_soon" domain="[('expiry_date', '&lt;=', (context_today + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiry_date', '&gt;=', context_today.strftime('%Y-%m-%d'))]" />
-                    <filter string="Overdue Audit" name="overdue_audit" domain="[('next_audit_date', '&lt;', context_today.strftime('%Y-%m-%d'))]" />
+                    <!-- Refactored: replaced dynamic date arithmetic with boolean flags -->
+                    <filter string="Expiring Soon (30 days)" name="expiring_soon" domain="[('expiry_within_30d', '=', True)]" />
+                    <filter string="Overdue Audit" name="overdue_audit" domain="[('audit_overdue', '=', True)]" />
                     <group expand="0" string="Group By">
                         <filter string="NAID Level" name="group_by_naid_level" context="{'group_by': 'naid_level'}" />
                         <filter string="Compliance Status" name="group_by_status" context="{'group_by': 'compliance_status'}" />

@@ -43,25 +43,25 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <strong>Sequence:</strong> #
-                                        <field name="stop_sequence" />
+                                        <field name="sequence" />
                                         </div>
                                         <div class="col-6">
                                             <strong>Route:</strong>
-                                            <field name="pickup_route_id" />
+                                            <field name="route_id" />
                                         </div>
                                     </div>
                                     <div class="row mt-1">
                                         <div class="col-12">
                                             <i class="fa fa-clock-o" />
                                             <strong>Scheduled:</strong>
-                                            <field name="scheduled_time" widget="datetime" />
+                                            <field name="planned_arrival" widget="datetime" />
                                         </div>
                                     </div>
-                                    <div t-if="record.actual_time.raw_value" class="row mt-1">
+                                    <div t-if="record.actual_arrival.raw_value" class="row mt-1">
                                         <div class="col-12">
                                             <i class="fa fa-check-circle text-success" />
                                             <strong>Actual:</strong>
-                                            <field name="actual_time" widget="datetime" />
+                                            <field name="actual_arrival" widget="datetime" />
                                         </div>
                                     </div>
                                     <div t-if="record.pickup_request_id.raw_value" class="row mt-1">
@@ -107,13 +107,13 @@
             <field name="model">pickup.route.stop</field>
             <field name="arch" type="xml">
                 <list decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'" decoration-danger="priority == 'urgent'">
-                    <field name="stop_sequence" />
-                    <field name="name" />
-                    <field name="pickup_route_id" />
+                    <field name="sequence" />
+                    <field name="display_name" />
+                    <field name="route_id" />
                     <field name="partner_id" />
                     <field name="address" />
-                    <field name="scheduled_time" />
-                    <field name="actual_time" />
+                    <field name="planned_arrival" />
+                    <field name="actual_arrival" />
                     <field name="estimated_duration" widget="float_time" />
                     <field name="actual_duration" widget="float_time" />
                     <field name="state" widget="badge" decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'" />
@@ -158,16 +158,16 @@
                         </div>
                         <group>
                             <group name="basic_info" string="Basic Information">
-                                <field name="pickup_route_id" required="1" />
-                                <field name="stop_sequence" />
+                                <field name="route_id" required="1" />
+                                <field name="sequence" />
                                 <field name="partner_id" required="1" />
                                 <field name="pickup_request_id" />
                                 <field name="priority" />
                                 <field name="color" />
                             </group>
                             <group name="timing" string="Timing Information">
-                                <field name="scheduled_time" required="1" />
-                                <field name="actual_time" readonly="1" />
+                                <field name="planned_arrival" required="1" />
+                                <field name="actual_arrival" readonly="1" />
                                 <field name="estimated_duration" widget="float_time" />
                                 <field name="actual_duration" widget="float_time" readonly="1" />
                             </group>
@@ -252,8 +252,8 @@
             <field name="model">pickup.route.stop</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name" filter_domain="[('name', 'ilike', self)]" />
-                    <field name="pickup_route_id" />
+                    <field name="display_name" filter_domain="[('display_name', 'ilike', self)]" />
+                    <field name="route_id" />
                     <field name="partner_id" />
                     <field name="address" />
                     <field name="pickup_request_id" />
@@ -267,9 +267,10 @@
                     <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]" />
                     <filter string="Urgent" name="urgent" domain="[('priority', '=', 'urgent')]" />
                     <separator />
-                    <filter string="Today" name="today" domain="[('scheduled_time', '&gt;=', context_today.strftime('%Y-%m-%d')), ('scheduled_time', '&lt;', (context_today + relativedelta(days=1)).strftime('%Y-%m-%d'))]" />
-                    <filter string="This Week" name="this_week" domain="[('scheduled_time', '&gt;=', (context_today - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]" />
-                    <filter string="Overdue" name="overdue" domain="[('scheduled_time', '&lt;', context_today.strftime('%Y-%m-%d')), ('state', 'in', ['pending', 'in_progress'])]" />
+                    <!-- Refactored: Replace dynamic context_today/relativedelta domains with boolean flags -->
+                    <filter string="Today" name="today" domain="[('scheduled_today', '=', True)]" />
+                    <filter string="Last 7 Days" name="recent_7d" domain="[('scheduled_recent_7d', '=', True)]" />
+                    <filter string="Overdue" name="overdue" domain="[('scheduled_overdue', '=', True)]" />
                     <separator />
                     <filter string="My Stops" name="my_stops" domain="[('user_id', '=', uid)]" />
                     <filter string="Active" name="active" domain="[('active', '=', True)]" />
@@ -281,14 +282,14 @@
                     <group expand="0" string="Group By">
                         <filter string="Status" name="state" context="{'group_by': 'state'}" />
                         <filter string="Priority" name="priority" context="{'group_by': 'priority'}" />
-                        <filter string="Route" name="pickup_route" context="{'group_by': 'pickup_route_id'}" />
+                        <filter string="Route" name="pickup_route" context="{'group_by': 'route_id'}" />
                         <filter string="Customer" name="partner" context="{'group_by': 'partner_id'}" />
                         <filter string="Assigned User" name="user" context="{'group_by': 'user_id'}" />
                         <filter string="Company" name="company" context="{'group_by': 'company_id'}" groups="base.group_multi_company" />
                         <separator />
-                        <filter string="Scheduled Date" name="scheduled_date" context="{'group_by': 'scheduled_time:day'}" />
-                        <filter string="Scheduled Week" name="scheduled_week" context="{'group_by': 'scheduled_time:week'}" />
-                        <filter string="Scheduled Month" name="scheduled_month" context="{'group_by': 'scheduled_time:month'}" />
+                        <filter string="Scheduled Date" name="scheduled_date" context="{'group_by': 'planned_arrival:day'}" />
+                        <filter string="Scheduled Week" name="scheduled_week" context="{'group_by': 'planned_arrival:week'}" />
+                        <filter string="Scheduled Month" name="scheduled_month" context="{'group_by': 'planned_arrival:month'}" />
                     </group>
                 </search>
             </field>

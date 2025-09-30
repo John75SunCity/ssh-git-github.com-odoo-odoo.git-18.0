@@ -213,9 +213,10 @@
                 <filter string="Unassigned" name="unassigned" domain="[('assigned_user_id', '=', False)]"/>
                 <filter string="Quality Passed" name="quality_passed" domain="[('quality_check_passed', '=', True)]"/>
                 <separator/>
-                <filter string="Scanned Today" name="scanned_today" domain="[('scan_date', '>=', context_today)]"/>
-                <filter string="Scanned This Week" name="scanned_this_week" domain="[('scan_date', '>=', (context_today - relativedelta(days=context_today.weekday())).strftime('%Y-%m-%d'))]"/>
-                <filter string="Scanned This Month" name="scanned_this_month" domain="[('scan_date', '>=', context_today.strftime('%Y-%m-01'))]"/>
+                <!-- Refactored: use precomputed boolean flags instead of dynamic Python date arithmetic -->
+                <filter string="Scanned Today" name="scanned_today" domain="[('scanned_today', '=', True)]"/>
+                <filter string="Scanned This Week" name="scanned_this_week" domain="[('scanned_this_week', '=', True)]"/>
+                <filter string="Scanned This Month" name="scanned_this_month" domain="[('scanned_this_month', '=', True)]"/>
                 <separator/>
                 <filter string="Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today), ('state', 'not in', ['completed', 'cancelled'])]"/>
                 <filter string='Due Today' name="due_today" domain="[('expected_completion_date', '=', context_today)]"/>

@@ -113,6 +113,82 @@ class ScanRetrievalItem(models.Model):
         }
     )
 
+    # ------------------------------------------------------------------
+    # VIRTUAL / SEARCH OPTIMIZATION FIELDS (Dynamic date domain refactor)
+    # ------------------------------------------------------------------
+    scanned_today = fields.Boolean(
+        string='Scanned Today',
+        compute='_compute_scan_period_flags',
+        search='_search_scanned_today',
+        help='Scan date is today.'
+    )
+    scanned_this_week = fields.Boolean(
+        string='Scanned This Week',
+        compute='_compute_scan_period_flags',
+        search='_search_scanned_this_week',
+        help='Scan date is within the current calendar week (Mon-Sun).' )
+    scanned_this_month = fields.Boolean(
+        string='Scanned This Month',
+        compute='_compute_scan_period_flags',
+        search='_search_scanned_this_month',
+        help='Scan date is within the current calendar month.' )
+
+    @api.depends('scan_date')
+    def _compute_scan_period_flags(self):
+        today = fields.Date.context_today(self)
+        from datetime import timedelta as _td
+        # Monday (0) ... Sunday (6)
+        week_start = today - _td(days=today.weekday())
+        month_start = today.replace(day=1)
+        for rec in self:
+            sd = rec.scan_date.date() if rec.scan_date else None
+            rec.scanned_today = bool(sd and sd == today)
+            rec.scanned_this_week = bool(sd and sd >= week_start)
+            rec.scanned_this_month = bool(sd and sd >= month_start)
+
+    # -----------------------------
+    # SEARCH HELPERS
+    # -----------------------------
+    def _search_scanned_today(self, operator, value):
+        truthy = {True, '1', 1, 'true', 'True'}
+        today = fields.Date.context_today(self)
+        start_dt = fields.Datetime.to_datetime(str(today) + ' 00:00:00')
+        end_dt = fields.Datetime.to_datetime(str(today) + ' 23:59:59')
+        if operator in ('=', '==') and value in truthy:
+            return [('scan_date', '>=', start_dt), ('scan_date', '<=', end_dt)]
+        if operator in ('!=', '<>') and value in truthy:
+            return ['|', ('scan_date', '=', False), '|', ('scan_date', '<', start_dt), ('scan_date', '>', end_dt)]
+        if operator in ('=', '==') and value not in truthy:
+            return ['|', ('scan_date', '=', False), '|', ('scan_date', '<', start_dt), ('scan_date', '>', end_dt)]
+        return [('id', '!=', 0)]
+
+    def _search_scanned_this_week(self, operator, value):
+        truthy = {True, '1', 1, 'true', 'True'}
+        today = fields.Date.context_today(self)
+        from datetime import timedelta as _td
+        week_start = today - _td(days=today.weekday())
+        week_start_dt = fields.Datetime.to_datetime(str(week_start) + ' 00:00:00')
+        if operator in ('=', '==') and value in truthy:
+            return [('scan_date', '>=', week_start_dt)]
+        if operator in ('!=', '<>') and value in truthy:
+            return ['|', ('scan_date', '=', False), ('scan_date', '<', week_start_dt)]
+        if operator in ('=', '==') and value not in truthy:
+            return ['|', ('scan_date', '=', False), ('scan_date', '<', week_start_dt)]
+        return [('id', '!=', 0)]
+
+    def _search_scanned_this_month(self, operator, value):
+        truthy = {True, '1', 1, 'true', 'True'}
+        today = fields.Date.context_today(self)
+        month_start = today.replace(day=1)
+        month_start_dt = fields.Datetime.to_datetime(str(month_start) + ' 00:00:00')
+        if operator in ('=', '==') and value in truthy:
+            return [('scan_date', '>=', month_start_dt)]
+        if operator in ('!=', '<>') and value in truthy:
+            return ['|', ('scan_date', '=', False), ('scan_date', '<', month_start_dt)]
+        if operator in ('=', '==') and value not in truthy:
+            return ['|', ('scan_date', '=', False), ('scan_date', '<', month_start_dt)]
+        return [('id', '!=', 0)]
+
     # ============================================================================
     # NOTE: The following block of fields appears to be incorrectly generated
     # and is the source of many errors. Many are standard fields that should not
