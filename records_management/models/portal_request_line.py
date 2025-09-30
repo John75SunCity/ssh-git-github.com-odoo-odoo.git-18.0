@@ -24,7 +24,7 @@ class PortalRequestLine(models.Model):
     _inherit = ['portal.mixin']
     _order = 'sequence, id'
 
-    request_id = fields.Many2one('portal.request', string='Portal Request', required=True)
+    request_id = fields.Many2one(comodel_name='portal.request', string='Portal Request', required=True)
     item_type = fields.Selection([
         ('document', 'Document'),
         ('container', 'Container'),
@@ -43,7 +43,7 @@ class PortalRequestLine(models.Model):
     ], string='Status', default='pending', required=True)
     sequence = fields.Integer(string='Sequence', default=10)
     notes = fields.Text(string='Notes')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company.id, required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
     active = fields.Boolean(string='Active', default=True)
 
     _sql_constraints = [

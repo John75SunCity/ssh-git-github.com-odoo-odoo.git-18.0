@@ -12,14 +12,14 @@ class MobilePhoto(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string="Photo Name", required=True, default=lambda self: _('New Photo'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string="Active", default=True)
 
     # Relational fields to link photos to operations
     wizard_reference = fields.Char(string="Related Wizard Reference", help="Reference to the mobile wizard that created this photo")
 
     # Work Order and FSM Integration
-    fsm_task_id = fields.Many2one('project.task', string="FSM Task",
+    fsm_task_id = fields.Many2one(comodel_name='project.task', string="FSM Task",
                                   domain=[('is_fsm', '=', True)],
                                   help="Related Field Service Management task")
     work_order_reference = fields.Reference([
@@ -33,21 +33,21 @@ class MobilePhoto(models.Model):
     ], string="Work Order", help="Related work order for this photo")
 
     # Business Entity Relationships
-    container_id = fields.Many2one('records.container', string="Container",
+    container_id = fields.Many2one(comodel_name='records.container', string="Container",
                                    help="Related container for this photo")
-    destruction_request_id = fields.Many2one('records.destruction', string="Destruction Request",
+    destruction_request_id = fields.Many2one(comodel_name='records.destruction', string="Destruction Request",
                                              help="Related destruction request")
-    pickup_request_id = fields.Many2one('pickup.request', string="Pickup Request",
+    pickup_request_id = fields.Many2one(comodel_name='pickup.request', string="Pickup Request",
                                         help="Related pickup request")
-    partner_id = fields.Many2one('res.partner', string="Customer",
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer",
                                  help="Customer related to this photo")
 
     # Bin Issue Integration
-    bin_issue_id = fields.Many2one('bin.issue.record', string="Bin Issue",
+    bin_issue_id = fields.Many2one(comodel_name='bin.issue.record', string="Bin Issue",
                                    help="Related bin issue record for this photo")
 
     # Auto-computed from relationships
-    project_id = fields.Many2one('project.project', string="Project",
+    project_id = fields.Many2one(comodel_name='project.project', string="Project",
                                  related='fsm_task_id.project_id', store=True)
 
     # Photo Data

@@ -5,10 +5,10 @@ class InventoryItemDestructionLine(models.Model):
     _description = 'Inventory Item Destruction Line'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    destruction_id = fields.Many2one('inventory.item.destruction', string='Destruction', required=True, ondelete='cascade')
-    item_id = fields.Many2one('inventory.item', string='Inventory Item', required=True)
+    destruction_id = fields.Many2one(comodel_name='inventory.item.destruction', string='Destruction', required=True, ondelete='cascade')
+    item_id = fields.Many2one(comodel_name='inventory.item', string='Inventory Item', required=True)
     quantity = fields.Float(string='Quantity', default=1.0)
-    location_id = fields.Many2one('records.location', string='Location')
+    location_id = fields.Many2one(comodel_name='records.location', string='Location')
     destruction_method = fields.Selection([
         ('shredding', 'Shredding'),
         ('incineration', 'Incineration'),
@@ -24,4 +24,4 @@ class InventoryItemDestructionLine(models.Model):
         ('certified', 'Certified')
     ], string='Status', default='pending')
     destruction_date = fields.Datetime(string='Destruction Date')
-    responsible_id = fields.Many2one('res.users', string='Destroyed By')
+    responsible_id = fields.Many2one(comodel_name='res.users', string='Destroyed By')

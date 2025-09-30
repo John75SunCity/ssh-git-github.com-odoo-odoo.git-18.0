@@ -18,8 +18,8 @@ class RecordsStorageDepartmentUser(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    department_id = fields.Many2one('records.department', string="Department", required=True, ondelete='cascade', index=True, tracking=True)
-    user_id = fields.Many2one('res.users', string="User", required=True, ondelete='cascade', index=True, tracking=True)
+    department_id = fields.Many2one(comodel_name='records.department', string="Department", required=True, ondelete='cascade', index=True, tracking=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="User", required=True, ondelete='cascade', index=True, tracking=True)
 
     # ============================================================================
     # PERMISSIONS & LIFECYCLE
@@ -212,10 +212,10 @@ class RecordsStorageDepartmentUserHistory(models.Model):
     _order = 'change_date desc'
     _rec_name = 'change_summary'
 
-    assignment_id = fields.Many2one('records.storage.department.user', string="Assignment",
+    assignment_id = fields.Many2one(comodel_name='records.storage.department.user', string="Assignment",
                                    required=True, ondelete='cascade', index=True)
     change_date = fields.Datetime(string="Change Date", default=fields.Datetime.now, required=True)
-    changed_by_id = fields.Many2one('res.users', string="Changed By", default=lambda self: self.env.user, required=True)
+    changed_by_id = fields.Many2one(comodel_name='res.users', string="Changed By", default=lambda self: self.env.user, required=True)
     change_type = fields.Selection([
         ('created', 'Assignment Created'),
         ('activated', 'Assignment Activated'),

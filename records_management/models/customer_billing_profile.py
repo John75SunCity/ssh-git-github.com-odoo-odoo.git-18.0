@@ -6,7 +6,7 @@ class CustomerBillingProfile(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Profile Name', compute='_compute_name', store=True, help='Computed name based on customer and profile type')
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     active = fields.Boolean(string='Active', default=True)
     profile_type = fields.Selection([
         ('standard', 'Standard Billing'),

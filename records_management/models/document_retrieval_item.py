@@ -16,10 +16,10 @@ class DocumentRetrievalItem(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Item Reference', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Assigned User', default=lambda self: self.env.user)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Assigned User', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
-    work_order_id = fields.Many2one('records.retrieval.order', string='Retrieval Order')
+    work_order_id = fields.Many2one(comodel_name='records.retrieval.order', string='Retrieval Order')
     sequence = fields.Integer(string='Sequence', default=10)
     priority = fields.Selection([
         ('0', 'Low'),
@@ -27,9 +27,9 @@ class DocumentRetrievalItem(models.Model):
         ('2', 'High'),
         ('3', 'Very High')
     ], string='Priority', default='1')
-    document_id = fields.Many2one('records.document', string='Document')
-    container_id = fields.Many2one('records.container', string='Container')
-    location_id = fields.Many2one('records.location', string='Location')
+    document_id = fields.Many2one(comodel_name='records.document', string='Document')
+    container_id = fields.Many2one(comodel_name='records.container', string='Container')
+    location_id = fields.Many2one(comodel_name='records.location', string='Location')
     item_type = fields.Selection([
         ('document', 'Document'),
         ('container', 'Container'),
@@ -49,7 +49,7 @@ class DocumentRetrievalItem(models.Model):
         ('not_found', 'Not Found')
     ], string='Status', default='pending', tracking=True)
     current_location = fields.Char(string='Current Location')
-    storage_location_id = fields.Many2one('records.location', string='Storage Location')
+    storage_location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
     searched_container_ids = fields.Many2many('records.container', 'document_retrieval_searched_container_rel', 'retrieval_item_id', 'container_id', string='Searched Containers')
     containers_accessed_count = fields.Integer(string='Containers Accessed', compute='_compute_containers_accessed_count')
     containers_not_found_count = fields.Integer(string='Containers Not Found', compute='_compute_containers_not_found_count')
@@ -63,7 +63,7 @@ class DocumentRetrievalItem(models.Model):
         ('very_hard', 'Very Hard')
     ], string='Difficulty Level', default='medium')
     retrieval_date = fields.Datetime(string='Retrieved Date')
-    retrieved_by_id = fields.Many2one('res.users', string='Retrieved By')
+    retrieved_by_id = fields.Many2one(comodel_name='res.users', string='Retrieved By')
     condition_notes = fields.Text(string='Condition Notes')
     special_handling = fields.Boolean(string='Special Handling Required')
     quality_checked = fields.Boolean(string='Quality Checked')
@@ -81,9 +81,9 @@ class DocumentRetrievalItem(models.Model):
     not_found_notes = fields.Text(string='Not Found Notes')
     file_discovered = fields.Boolean(string='File Discovered')
     discovery_date = fields.Datetime(string='Discovery Date')
-    discovery_container_id = fields.Many2one('records.container', string='Discovery Container')
+    discovery_container_id = fields.Many2one(comodel_name='records.container', string='Discovery Container')
     retrieval_notes = fields.Text(string='Retrieval Notes')
-    partner_id = fields.Many2one('res.partner', string='Customer')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer')
     handling_instructions = fields.Text(string='Handling Instructions')
     fragile = fields.Boolean(string='Fragile Item')
     estimated_weight = fields.Float(string='Estimated Weight (kg)')
@@ -95,7 +95,7 @@ class DocumentRetrievalItem(models.Model):
         ('confidential', 'Confidential'),
         ('restricted', 'Restricted')
     ], string='Security Level', default='internal')
-    access_authorized_by_id = fields.Many2one('res.users', string='Access Authorized By')
+    access_authorized_by_id = fields.Many2one(comodel_name='res.users', string='Access Authorized By')
     authorization_date = fields.Datetime(string='Authorization Date')
     condition_before = fields.Selection([
         ('excellent', 'Excellent'),
@@ -127,7 +127,7 @@ class DocumentRetrievalItem(models.Model):
     ], string='Scan Quality')
     return_required = fields.Boolean(string='Return Required')
     return_date = fields.Date(string='Return Date')
-    return_location_id = fields.Many2one('records.location', string='Return Location')
+    return_location_id = fields.Many2one(comodel_name='records.location', string='Return Location')
     return_notes = fields.Text(string='Return Notes')
     retrieval_cost = fields.Monetary(
         string="Retrieval Cost", compute="_compute_retrieval_cost", currency_field="currency_id"
@@ -136,7 +136,7 @@ class DocumentRetrievalItem(models.Model):
         string="Container Access Cost", compute="_compute_container_access_cost", currency_field="currency_id"
     )
     total_cost = fields.Monetary(string="Total Cost", compute="_compute_total_cost", currency_field="currency_id")
-    currency_id = fields.Many2one('res.currency', string='Currency', compute='_compute_currency_id')
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', compute='_compute_currency_id')
     tracking_number = fields.Char(string='Tracking Number')
     audit_trail = fields.Text(string='Audit Trail')
     display_name = fields.Char(string='Display Name', compute='_compute_display_name')

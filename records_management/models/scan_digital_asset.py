@@ -13,7 +13,7 @@ class ScanDigitalAsset(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Asset Name", required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
     # Link to unified retrieval order
     work_order_id = fields.Many2one(

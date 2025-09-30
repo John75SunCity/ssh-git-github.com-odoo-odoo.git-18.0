@@ -15,8 +15,8 @@ class RetrievalMetric(models.Model):
     # ============================================================================
     name = fields.Char(string="Metric Reference", compute='_compute_display_name', store=True)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Metric Recorder', default=lambda self: self.env.user)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Metric Recorder', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
 
     # Unified retrieval linkage (legacy polymorphic Reference fully removed)
@@ -27,9 +27,9 @@ class RetrievalMetric(models.Model):
     help='Unified retrieval order line linkage.'
     )
 
-    team_id = fields.Many2one('maintenance.team', string='Team')
-    employee_id = fields.Many2one('hr.employee', string='Employee')
-    partner_id = fields.Many2one('res.partner', string='Customer')
+    team_id = fields.Many2one(comodel_name='maintenance.team', string='Team')
+    employee_id = fields.Many2one(comodel_name='hr.employee', string='Employee')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer')
 
     metric_type = fields.Selection([
         ('search_time', 'Search Time'),

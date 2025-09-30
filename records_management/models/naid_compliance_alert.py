@@ -13,7 +13,7 @@ class NaidComplianceAlert(models.Model):
     # ============================================================================
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     title = fields.Char(string='Title', required=True, readonly=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
     active = fields.Boolean(string='Active', default=True, help="The active field is used to hide the alert without deleting it.")
 
     # Polymorphic relationship to link alert to any record
@@ -46,10 +46,10 @@ class NaidComplianceAlert(models.Model):
     ], string='Status', default='new', readonly=True, tracking=True)
 
     resolved_date = fields.Datetime(string='Resolved Date', readonly=True)
-    resolved_by_id = fields.Many2one('res.users', string='Resolved By', readonly=True)
+    resolved_by_id = fields.Many2one(comodel_name='res.users', string='Resolved By', readonly=True)
     resolution_notes = fields.Text(string='Resolution Notes')
 
-    escalated_to_id = fields.Many2one('res.users', string='Escalated To', readonly=True)
+    escalated_to_id = fields.Many2one(comodel_name='res.users', string='Escalated To', readonly=True)
     escalation_date = fields.Datetime(string='Last Escalation Date', readonly=True)
 
     # ============================================================================

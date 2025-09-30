@@ -23,7 +23,7 @@ class NaidCompliancePolicy(models.Model):
     # ============================================================================
     name = fields.Char(string='Policy Name', required=True, tracking=True)
     sequence = fields.Integer(string='Sequence', default=10, help='Order of policy evaluation')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
 
     # Policy classification and type

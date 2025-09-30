@@ -11,8 +11,8 @@ class RecordsContainerMovement(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Movement Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(default=True)
 
     # ============================================================================
@@ -20,10 +20,10 @@ class RecordsContainerMovement(models.Model):
     # ============================================================================
     container_id = fields.Many2one('records.container', string="Container", required=True, ondelete='cascade', tracking=True)
     partner_id = fields.Many2one(related='container_id.partner_id', string="Customer", store=True, readonly=True, comodel_name='res.partner')
-    from_location_id = fields.Many2one('stock.location', string="From Location", required=True, tracking=True)
-    to_location_id = fields.Many2one('stock.location', string="To Location", required=True, tracking=True)
-    assigned_technician_id = fields.Many2one('res.users', string="Assigned Technician", tracking=True)
-    authorized_by_id = fields.Many2one('res.users', string="Authorized By", readonly=True)
+    from_location_id = fields.Many2one(comodel_name='stock.location', string="From Location", required=True, tracking=True)
+    to_location_id = fields.Many2one(comodel_name='stock.location', string="To Location", required=True, tracking=True)
+    assigned_technician_id = fields.Many2one(comodel_name='res.users', string="Assigned Technician", tracking=True)
+    authorized_by_id = fields.Many2one(comodel_name='res.users', string="Authorized By", readonly=True)
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -66,7 +66,7 @@ class RecordsContainerMovement(models.Model):
     authorization_date = fields.Datetime(string="Authorization Date", readonly=True)
     completion_verified = fields.Boolean(string="Completion Verified", readonly=True)
     verification_date = fields.Datetime(string="Verification Date", readonly=True)
-    verified_by_id = fields.Many2one('res.users', string="Verified By", readonly=True)
+    verified_by_id = fields.Many2one(comodel_name='res.users', string="Verified By", readonly=True)
     barcode_scanned = fields.Boolean(string="Barcode Scanned", help="Indicates if the container barcode was scanned during movement.")
     # Batch 3 label disambiguation
     notes = fields.Text(string="Movement Notes")  # retained wording already specific, kept for consistency

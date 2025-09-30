@@ -79,7 +79,7 @@ class BinUnlockService(models.Model):
     # ============================================================================
     # CUSTOMER AND BIN INFORMATION
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     bin_id = fields.Many2one(
         'shred.bin',
         string='Bin',
@@ -87,7 +87,7 @@ class BinUnlockService(models.Model):
         domain="[('partner_id', '=', partner_id)]",
         help="The physical bin to be unlocked"
     )
-    key_id = fields.Many2one('bin.key', string='Key Used', help="The key used for the unlock operation")
+    key_id = fields.Many2one(comodel_name='bin.key', string='Key Used', help="The key used for the unlock operation")
     bin_location = fields.Char(string='Bin Location', related='bin_id.customer_location', readonly=True)
     key_serial_number = fields.Char(string='Key Serial Number', related='key_id.key_code', readonly=True)
 
@@ -107,7 +107,7 @@ class BinUnlockService(models.Model):
         tracking=True,
         help="Technician responsible for the service"
     )
-    backup_technician_id = fields.Many2one('hr.employee', string='Backup Technician')
+    backup_technician_id = fields.Many2one(comodel_name='hr.employee', string='Backup Technician')
 
     estimated_duration = fields.Float(string='Estimated Duration (hours)', digits=(4, 2))
     actual_duration = fields.Float(
@@ -158,7 +158,7 @@ class BinUnlockService(models.Model):
         currency_field='currency_id'
     )
     service_rate = fields.Float(string='Service Rate (per hour)')
-    invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True, copy=False)
+    invoice_id = fields.Many2one(comodel_name='account.move', string='Invoice', readonly=True, copy=False)
 
     # ============================================================================
     # RELATIONSHIP FIELDS

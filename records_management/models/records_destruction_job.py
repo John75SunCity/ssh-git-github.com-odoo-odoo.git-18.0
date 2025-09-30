@@ -15,8 +15,8 @@ class RecordsDestructionJob(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
     destruction_line_ids = fields.One2many('records.destruction.line', 'job_id', string='Destruction Lines')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -29,10 +29,10 @@ class RecordsDestructionLine(models.Model):
     _name = 'records.destruction.line'
     _description = 'Records Destruction Line'
 
-    job_id = fields.Many2one('records.destruction.job', string='Destruction Job', required=True, ondelete='cascade')
-    box_id = fields.Many2one('records.container', string='Box')
-    container_id = fields.Many2one('records.container', string='Container')
+    job_id = fields.Many2one(comodel_name='records.destruction.job', string='Destruction Job', required=True, ondelete='cascade')
+    box_id = fields.Many2one(comodel_name='records.container', string='Box')
+    container_id = fields.Many2one(comodel_name='records.container', string='Container')
     destruction_date = fields.Date(string='Destruction Date', related='job_id.destruction_date', store=True)
     state = fields.Selection(related='job_id.state', string='Status', store=True)
     user_id = fields.Many2one(related='job_id.user_id', string='Responsible', store=True, comodel_name='res.users')
-    company_id = fields.Many2one('res.company', string='Company', related='job_id.company_id', store=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', related='job_id.company_id', store=True, readonly=True)

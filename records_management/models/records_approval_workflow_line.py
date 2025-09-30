@@ -10,7 +10,7 @@ class RecordsApprovalWorkflowLine(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    workflow_id = fields.Many2one('records.approval.workflow', string="Workflow", required=True, ondelete='cascade')
+    workflow_id = fields.Many2one(comodel_name='records.approval.workflow', string="Workflow", required=True, ondelete='cascade')
     name = fields.Char(string="Step Name", required=True, help="e.g., 'Manager Approval', 'Compliance Review'")
     sequence = fields.Integer(string='Sequence', default=10, help="Defines the order of the approval steps.")
 
@@ -22,8 +22,8 @@ class RecordsApprovalWorkflowLine(models.Model):
         ('group', 'Security Group'),
     ], string="Approval Type", required=True, default='group')
 
-    user_id = fields.Many2one('res.users', string="Approver (User)", help="The specific user required to approve this step.")
-    group_id = fields.Many2one('res.groups', string="Approver (Group)", help="Any user from this security group can approve this step.")
+    user_id = fields.Many2one(comodel_name='res.users', string="Approver (User)", help="The specific user required to approve this step.")
+    group_id = fields.Many2one(comodel_name='res.groups', string="Approver (Group)", help="Any user from this security group can approve this step.")
 
     # ============================================================================
     # RULES & BEHAVIOR

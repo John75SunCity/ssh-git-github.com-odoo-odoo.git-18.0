@@ -34,7 +34,7 @@ class InventoryItemType(models.Model):
         ('other', 'Other')
     ], string='Category', default='physical', required=True)
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company.id, required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
 
     _sql_constraints = [
         ('code_unique', 'unique(code, company_id)', 'Type code must be unique per company.'),

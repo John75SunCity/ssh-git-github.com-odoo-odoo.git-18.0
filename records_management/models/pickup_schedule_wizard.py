@@ -5,11 +5,11 @@ class PickupScheduleWizard(models.TransientModel):
     _name = 'pickup.schedule.wizard'
     _description = 'Pickup Scheduling Wizard'
 
-    request_id = fields.Many2one('pickup.request', string='Pickup Request', required=True, readonly=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', readonly=True)
+    request_id = fields.Many2one(comodel_name='pickup.request', string='Pickup Request', required=True, readonly=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', readonly=True)
 
     scheduled_date = fields.Datetime(string='Scheduled Date & Time', required=True, default=fields.Datetime.now)
-    technician_id = fields.Many2one('res.users', string='Assigned Technician', domain="[('share', '=', False)]")
+    technician_id = fields.Many2one(comodel_name='res.users', string='Assigned Technician', domain="[('share', '=', False)]")
     notes = fields.Text(string='Scheduling Notes')
 
     def action_schedule_pickup(self):

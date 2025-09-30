@@ -12,8 +12,8 @@ class NAIDAuditLog(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
-    user_id = fields.Many2one('res.users', string='User', required=True, readonly=True, ondelete='restrict')
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='User', required=True, readonly=True, ondelete='restrict')
 
     action_type = fields.Selection([
         ('create', 'Create'),
@@ -120,7 +120,7 @@ class NAIDAuditLog(models.Model):
         index=True,
         help='Related chain of custody record for this audit entry.'
     )
-    task_id = fields.Many2one('project.task', string='Task', ondelete='cascade', index=True)
+    task_id = fields.Many2one(comodel_name='project.task', string='Task', ondelete='cascade', index=True)
     audit_requirement_id = fields.Many2one(
         'naid.audit.requirement',
         string='Audit Requirement',

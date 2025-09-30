@@ -13,7 +13,7 @@ class PortalFeedbackAnalytic(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Period Name', required=True, readonly=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
 
     period_start = fields.Date(string='Period Start Date', required=True, readonly=True)

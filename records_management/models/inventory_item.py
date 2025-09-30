@@ -34,9 +34,9 @@ class InventoryItem(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Item Reference', required=True, copy=False, readonly=True, default='New')
-    product_id = fields.Many2one('product.product', string='Product', required=True)
+    product_id = fields.Many2one(comodel_name='product.product', string='Product', required=True)
     serial_number = fields.Char(string='Serial Number')
-    location_id = fields.Many2one('records.location', string='Location')
+    location_id = fields.Many2one(comodel_name='records.location', string='Location')
     status = fields.Selection([
         ('available', 'Available'),
         ('in_use', 'In Use'),
@@ -48,7 +48,7 @@ class InventoryItem(models.Model):
     notes = fields.Text(string='Notes')
     active = fields.Boolean(default=True)
     # Use a lambda for the default to ensure the current environment's company is set at record creation time.
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
 
     @api.model_create_multi
     def create(self, vals_list):

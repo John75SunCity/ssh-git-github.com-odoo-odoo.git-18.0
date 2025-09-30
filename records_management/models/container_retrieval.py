@@ -11,15 +11,15 @@ class ContainerRetrieval(models.Model):
 
     # Core fields from document.retrieval.item
     name = fields.Char(string='Retrieval Reference', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Assigned User', default=lambda self: self.env.user)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Assigned User', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
 
     # Container-specific fields
-    container_id = fields.Many2one('records.container', string='Container', required=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True)
-    location_id = fields.Many2one('records.location', string='Current Location')
-    storage_location_id = fields.Many2one('records.location', string='Storage Location')
+    container_id = fields.Many2one(comodel_name='records.container', string='Container', required=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True)
+    location_id = fields.Many2one(comodel_name='records.location', string='Current Location')
+    storage_location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
 
     # Status and workflow
     status = fields.Selection([
@@ -43,13 +43,13 @@ class ContainerRetrieval(models.Model):
     estimated_time = fields.Float(string='Estimated Time (hours)')
     actual_time = fields.Float(string='Actual Time (hours)')
     retrieval_date = fields.Datetime(string='Retrieved Date')
-    retrieved_by_id = fields.Many2one('res.users', string='Retrieved By')
+    retrieved_by_id = fields.Many2one(comodel_name='res.users', string='Retrieved By')
 
     # Cost tracking
     retrieval_cost = fields.Monetary(
         string="Retrieval Cost", compute="_compute_retrieval_cost", currency_field="currency_id"
     )
-    currency_id = fields.Many2one('res.currency', string='Currency', compute='_compute_currency_id')
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', compute='_compute_currency_id')
 
     # Display and related fields
     display_name = fields.Char(string='Display Name', compute='_compute_display_name')

@@ -13,7 +13,7 @@ class ContainerAccessVisitor(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string='Visitor Name', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True)
     active = fields.Boolean(string='Active', default=True)
 
     # ============================================================================
@@ -50,16 +50,16 @@ class ContainerAccessVisitor(models.Model):
     # ============================================================================
     # AUTHORIZATION FIELDS
     # ============================================================================
-    authorized_by_id = fields.Many2one('res.users', string='Authorized By', required=True, tracking=True)
+    authorized_by_id = fields.Many2one(comodel_name='res.users', string='Authorized By', required=True, tracking=True)
     escort_required = fields.Boolean(string='Escort Required', default=False)
-    escort_id = fields.Many2one('res.users', string='Escort', tracking=True)
+    escort_id = fields.Many2one(comodel_name='res.users', string='Escort', tracking=True)
     access_areas = fields.Text(string='Authorized Access Areas')
 
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string='Related Partner')
-    work_order_id = fields.Many2one('container.access.work.order', string='Related Work Order')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Related Partner')
+    work_order_id = fields.Many2one(comodel_name='container.access.work.order', string='Related Work Order')
     container_ids = fields.Many2many(
         'records.container',
         relation='container_access_visitor_container_rel',

@@ -14,7 +14,7 @@ class RequiredDocument(models.Model):
     # ============================================================================
     name = fields.Char(string='Document Name', required=True, tracking=True)
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
 
     # Generic relation to link this to any model (e.g., res.partner, records.destruction)
     res_model = fields.Char(string="Related Model", readonly=True, index=True)
@@ -24,7 +24,7 @@ class RequiredDocument(models.Model):
     # ============================================================================
     # DOCUMENT DETAILS & LIFECYCLE
     # ============================================================================
-    document_type_id = fields.Many2one('records.document.type', string="Document Type", tracking=True)
+    document_type_id = fields.Many2one(comodel_name='records.document.type', string="Document Type", tracking=True)
     is_required = fields.Boolean(string='Required', default=True)
     state = fields.Selection([
         ('pending', 'Pending'),
@@ -42,7 +42,7 @@ class RequiredDocument(models.Model):
     # ============================================================================
     document_file = fields.Binary(string='Document File', attachment=True)
     document_filename = fields.Char(string='Document Filename')
-    verified_by_id = fields.Many2one('res.users', string="Verified By", readonly=True, tracking=True)
+    verified_by_id = fields.Many2one(comodel_name='res.users', string="Verified By", readonly=True, tracking=True)
     verification_date = fields.Datetime(string='Verification Date', readonly=True, tracking=True)
     notes = fields.Text(string='Notes')
 

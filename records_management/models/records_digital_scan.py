@@ -13,15 +13,15 @@ class RecordsDigitalScan(models.Model):
     # ============================================================================
     name = fields.Char(string="Scan Name", required=True, copy=False, readonly=True, default=lambda self: _('New'))
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     sequence = fields.Integer(string='Sequence', default=10, help="Order of the scan within the document.")
 
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    document_id = fields.Many2one('records.document', string="Parent Document", required=True, ondelete='cascade', tracking=True)
-    scanned_by_id = fields.Many2one('hr.employee', string='Scanned By', tracking=True)
+    document_id = fields.Many2one(comodel_name='records.document', string="Parent Document", required=True, ondelete='cascade', tracking=True)
+    scanned_by_id = fields.Many2one(comodel_name='hr.employee', string='Scanned By', tracking=True)
 
     # ============================================================================
     # STATE & LIFECYCLE

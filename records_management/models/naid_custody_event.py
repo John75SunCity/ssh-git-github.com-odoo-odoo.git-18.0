@@ -12,8 +12,8 @@ class NAIDCustodyEvent(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Event Reference', compute='_compute_name', store=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
-    user_id = fields.Many2one('res.users', string='Event Recorder', default=lambda self: self.env.user, required=True, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='Event Recorder', default=lambda self: self.env.user, required=True, tracking=True)
 
     event_type = fields.Selection([
         ('pickup', 'Pickup'),
@@ -34,10 +34,10 @@ class NAIDCustodyEvent(models.Model):
     )
 
     # Polymorphic relationship to link to the primary custody chain document
-    custody_id = fields.Many2one('naid.custody', string='Chain of Custody', ondelete='cascade', required=True)
+    custody_id = fields.Many2one(comodel_name='naid.custody', string='Chain of Custody', ondelete='cascade', required=True)
 
-    from_location_id = fields.Many2one('records.location', string='From Location')
-    to_location_id = fields.Many2one('records.location', string='To Location')
+    from_location_id = fields.Many2one(comodel_name='records.location', string='From Location')
+    to_location_id = fields.Many2one(comodel_name='records.location', string='To Location')
 
     gps_latitude = fields.Float(string='GPS Latitude', digits=(10, 7))
     gps_longitude = fields.Float(string='GPS Longitude', digits=(10, 7))

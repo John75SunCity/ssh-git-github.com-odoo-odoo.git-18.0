@@ -11,8 +11,8 @@ class RecordsContainerTransfer(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Transfer Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -28,8 +28,8 @@ class RecordsContainerTransfer(models.Model):
     # ============================================================================
     # TRANSFER DETAILS
     # ============================================================================
-    from_location_id = fields.Many2one('stock.location', string="From Location", required=True, readonly=True)
-    to_location_id = fields.Many2one('stock.location', string="To Location", required=True, readonly=True)
+    from_location_id = fields.Many2one(comodel_name='stock.location', string="From Location", required=True, readonly=True)
+    to_location_id = fields.Many2one(comodel_name='stock.location', string="To Location", required=True, readonly=True)
     scheduled_date = fields.Datetime(string="Scheduled Date", default=fields.Datetime.now, required=True, tracking=True)
     actual_transfer_date = fields.Datetime(string="Actual Transfer Date", readonly=True)
     notes = fields.Text(string="Notes")

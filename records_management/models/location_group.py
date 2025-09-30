@@ -11,5 +11,5 @@ class LocationGroup(models.Model):
     description = fields.Text(string='Description')
     active = fields.Boolean(string='Active', default=True)
     location_ids = fields.One2many('records.location', 'group_id', string='Locations')
-    manager_id = fields.Many2one('res.users', string='Group Manager')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
+    manager_id = fields.Many2one(comodel_name='res.users', string='Group Manager')
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True)

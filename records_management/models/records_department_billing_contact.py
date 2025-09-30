@@ -19,10 +19,10 @@ class RecordsDepartmentBillingContact(models.Model):
     name = fields.Char(string='Name', compute='_compute_name', store=True)
     contact_name = fields.Char(string='Contact Name', required=True, tracking=True)
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
 
     # Relations
-    department_id = fields.Many2one('records.department', string='Department', required=True, ondelete='cascade', tracking=True)
+    department_id = fields.Many2one(comodel_name='records.department', string='Department', required=True, ondelete='cascade', tracking=True)
 
     # Contact details
     email = fields.Char(string='Email')

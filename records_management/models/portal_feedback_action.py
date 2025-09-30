@@ -13,11 +13,11 @@ class PortalFeedbackAction(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Action Name', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Created By', default=lambda self: self.env.user)
-    partner_id = fields.Many2one('res.partner', string='Customer')
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Created By', default=lambda self: self.env.user)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer')
     active = fields.Boolean(string='Active', default=True)
-    feedback_id = fields.Many2one('customer.feedback', string='Related Feedback', required=True, ondelete='cascade')
+    feedback_id = fields.Many2one(comodel_name='customer.feedback', string='Related Feedback', required=True, ondelete='cascade')
     description = fields.Text(string='Action Description')
     action_type = fields.Selection([
         ('email', 'Email Response'),
@@ -28,7 +28,7 @@ class PortalFeedbackAction(models.Model):
         ('follow_up', 'Follow Up'),
         ('other', 'Other')
     ], string='Action Type', required=True, tracking=True)
-    assigned_to_id = fields.Many2one('res.users', string='Assigned To', tracking=True)
+    assigned_to_id = fields.Many2one(comodel_name='res.users', string='Assigned To', tracking=True)
     due_date = fields.Date(string='Due Date', required=True, tracking=True)
     priority = fields.Selection([
         ('low', 'Low'),

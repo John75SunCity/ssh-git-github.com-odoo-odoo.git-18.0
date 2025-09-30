@@ -18,12 +18,12 @@ class CustomerInventoryReport(models.Model):
 
     # Core
     name = fields.Char(string='Name', default=lambda self: _('Customer Inventory Report'), tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
 
     # Report parameters
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     department_id = fields.Many2one('records.department', string='Department')
     report_date = fields.Date(string='Report Date', default=fields.Date.context_today, tracking=True)
 

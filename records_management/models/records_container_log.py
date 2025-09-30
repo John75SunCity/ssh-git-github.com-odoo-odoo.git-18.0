@@ -9,9 +9,9 @@ class RecordsContainerLog(models.Model):
 
     name = fields.Char(string='Log Reference', required=True, default=lambda self: _('New'))
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(default=True)
-    container_id = fields.Many2one('records.container', string='Container', required=True)
+    container_id = fields.Many2one(comodel_name='records.container', string='Container', required=True)
     event_type = fields.Selection([
         ('move', 'Move'),
         ('audit', 'Audit'),
@@ -20,7 +20,7 @@ class RecordsContainerLog(models.Model):
         ('other', 'Other'),
     ], string='Event Type', required=True)
     date = fields.Datetime(string='Event Date', default=fields.Datetime.now, required=True)
-    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
+    user_id = fields.Many2one(comodel_name='res.users', string='User', default=lambda self: self.env.user)
     # Contextual label disambiguation (Batch 2)
     notes = fields.Text(string='Event Notes')
 

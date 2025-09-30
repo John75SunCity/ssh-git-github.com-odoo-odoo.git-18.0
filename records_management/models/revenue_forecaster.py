@@ -348,9 +348,9 @@ class RevenueForecasterLine(models.TransientModel):
     _name = "revenue.forecaster.line"
     _description = "Revenue Forecaster Line"
 
-    forecaster_id = fields.Many2one('revenue.forecaster', string='Forecaster', ondelete='cascade')
+    forecaster_id = fields.Many2one(comodel_name='revenue.forecaster', string='Forecaster', ondelete='cascade')
 
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True)
     customer_segment = fields.Selection([
         ('base_rate', 'Base Rate'),
         ('negotiated', 'Negotiated Rate')

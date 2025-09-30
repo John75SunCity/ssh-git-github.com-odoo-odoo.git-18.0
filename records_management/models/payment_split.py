@@ -13,12 +13,12 @@ class PaymentSplit(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True)
 
-    payment_id = fields.Many2one('account.payment', string='Source Payment')
-    journal_id = fields.Many2one('account.journal', string='Journal', required=True)
-    currency_id = fields.Many2one('res.currency', related='journal_id.currency_id', string='Currency', readonly=True)
+    payment_id = fields.Many2one(comodel_name='account.payment', string='Source Payment')
+    journal_id = fields.Many2one(comodel_name='account.journal', string='Journal', required=True)
+    currency_id = fields.Many2one(comodel_name='res.currency', related='journal_id.currency_id', string='Currency', readonly=True)
 
     total_amount = fields.Monetary(string='Total Amount to Split', required=True, currency_field='currency_id')
     payment_date = fields.Date(string='Payment Date', default=fields.Date.context_today, required=True)

@@ -24,8 +24,8 @@ class WorkOrderShredding(models.Model):
         ('cancelled', 'Cancelled'),
     ], string="Status", default='draft', required=True, tracking=True)
 
-    partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
-    portal_request_id = fields.Many2one('portal.request', string="Portal Request", ondelete='set null')
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", required=True, tracking=True)
+    portal_request_id = fields.Many2one(comodel_name='portal.request', string="Portal Request", ondelete='set null')
 
     scheduled_date = fields.Datetime(string="Scheduled Date", required=True, tracking=True)
     start_date = fields.Datetime(string='Start Time', readonly=True, copy=False)
@@ -38,7 +38,7 @@ class WorkOrderShredding(models.Model):
         ('2', 'Urgent')
     ], string="Priority", default='0', tracking=True)
 
-    assigned_team_id = fields.Many2one('maintenance.team', string="Assigned Team")
+    assigned_team_id = fields.Many2one(comodel_name='maintenance.team', string="Assigned Team")
     technician_ids = fields.Many2many(
         'hr.employee',
         relation='work_order_shredding_technician_rel',
@@ -53,7 +53,7 @@ class WorkOrderShredding(models.Model):
         column2='equipment_id',
         string="Assigned Equipment"
     )
-    vehicle_id = fields.Many2one('fleet.vehicle', string="Assigned Vehicle")
+    vehicle_id = fields.Many2one(comodel_name='fleet.vehicle', string="Assigned Vehicle")
 
     material_type = fields.Selection([
         ('paper', 'Paper'),
@@ -67,10 +67,10 @@ class WorkOrderShredding(models.Model):
     completion_notes = fields.Text(string="Completion Notes")
 
     certificate_required = fields.Boolean(string="Certificate Required", default=True)
-    certificate_id = fields.Many2one('naid.certificate', string="Destruction Certificate", readonly=True, copy=False)
+    certificate_id = fields.Many2one(comodel_name='naid.certificate', string="Destruction Certificate", readonly=True, copy=False)
 
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    currency_id = fields.Many2one('res.currency', related='company_id.currency_id')
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    currency_id = fields.Many2one(comodel_name='res.currency', related='company_id.currency_id')
     active = fields.Boolean(default=True)
 
     # ============================================================================

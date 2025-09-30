@@ -11,8 +11,8 @@ class ShreddingInventoryBatch(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Batch Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(default=True)
     priority = fields.Selection([('0', 'Normal'), ('1', 'High')], string="Priority", default='0')
     state = fields.Selection([

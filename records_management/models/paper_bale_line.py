@@ -9,10 +9,10 @@ class PaperBaleLine(models.Model):
 
     name = fields.Char(string='Line Reference', required=True, default=lambda self: _('New'))
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)
-    bale_id = fields.Many2one('paper.bale', string='Bale')
+    bale_id = fields.Many2one(comodel_name='paper.bale', string='Bale')
     weight_lbs = fields.Float(string='Weight (lbs)')
     material_type = fields.Selection([
         ('white_paper', 'White Paper'),

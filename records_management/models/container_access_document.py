@@ -20,5 +20,5 @@ class ContainerAccessDocument(models.Model):
         ondelete='cascade',
     )
 
-    attachment_id = fields.Many2one('ir.attachment', string='Attachment')
+    attachment_id = fields.Many2one(comodel_name='ir.attachment', string='Attachment')
     description = fields.Text(string='Description')

@@ -16,8 +16,8 @@ class RecordsDeletionRequest(models.Model):
     name = fields.Char(string="Request ID", required=True, copy=False, readonly=True, default=lambda self: _('New'))
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Requested By", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Requested By", default=lambda self: self.env.user, tracking=True)
     partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
     currency_id = fields.Many2one(related='company_id.currency_id', readonly=True, comodel_name='res.currency')
 
@@ -68,15 +68,15 @@ class RecordsDeletionRequest(models.Model):
     # ============================================================================
     # APPROVAL & COMPLIANCE
     # ============================================================================
-    approved_by_id = fields.Many2one('res.users', string="Approved By", readonly=True, tracking=True)
+    approved_by_id = fields.Many2one(comodel_name='res.users', string="Approved By", readonly=True, tracking=True)
     approval_date = fields.Datetime(string="Approval Date", readonly=True, tracking=True)
     rejection_reason = fields.Text(string="Rejection Reason", readonly=True, tracking=True)
     legal_hold_check = fields.Boolean(string="Legal Hold Cleared", default=False)
     retention_policy_verified = fields.Boolean(string="Retention Policy Verified", default=False)
     customer_authorization = fields.Boolean(string="Customer Authorization Received", default=False)
     naid_compliant = fields.Boolean(string="NAID Compliant Process", default=True)
-    chain_of_custody_id = fields.Many2one('naid.custody', string="Chain of Custody")
-    certificate_of_deletion_id = fields.Many2one('shredding.certificate', string="Certificate of Deletion", readonly=True)
+    chain_of_custody_id = fields.Many2one(comodel_name='naid.custody', string="Chain of Custody")
+    certificate_of_deletion_id = fields.Many2one(comodel_name='shredding.certificate', string="Certificate of Deletion", readonly=True)
     can_approve = fields.Boolean(compute='_compute_can_approve', string="Can Approve")
 
     # ============================================================================

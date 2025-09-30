@@ -8,8 +8,8 @@ class RecordsRequest(models.Model):
 
     name = fields.Char(string='Name', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
     active = fields.Boolean(default=True)
-    request_type_id = fields.Many2one('records.request.type', string='Request Type', required=True, tracking=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    request_type_id = fields.Many2one(comodel_name='records.request.type', string='Request Type', required=True, tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
@@ -18,9 +18,9 @@ class RecordsRequest(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
     request_line_ids = fields.One2many('records.request.line', 'request_id', string='Request Lines')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
-    destruction_address_id = fields.Many2one('res.partner', string='Destruction Address', related='partner_id.destruction_address_id', readonly=False)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    destruction_address_id = fields.Many2one(comodel_name='res.partner', string='Destruction Address', related='partner_id.destruction_address_id', readonly=False)
 
     @api.model_create_multi
     def create(self, vals_list):

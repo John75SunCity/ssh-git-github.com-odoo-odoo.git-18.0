@@ -12,12 +12,12 @@ class RecordsApprovalWorkflow(models.Model):
     # ============================================================================
     name = fields.Char(string='Workflow Name', required=True, tracking=True, help="A descriptive name for the approval workflow, e.g., 'High-Value Destruction Approval'.")
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
 
     # ============================================================================
     # CONFIGURATION
     # ============================================================================
-    res_model_id = fields.Many2one('ir.model', string="Applies To", required=True, tracking=True, ondelete='cascade',
+    res_model_id = fields.Many2one(comodel_name='ir.model', string="Applies To", required=True, tracking=True, ondelete='cascade',
         help="The model this approval workflow applies to (e.g., Destruction Request, Service Request).")
     description = fields.Text(string="Description", help="A detailed explanation of when and how this workflow should be used.")
 
@@ -50,7 +50,7 @@ class RecordsApprovalWorkflow(models.Model):
         self.write({'state': 'draft'})
         self.message_post(body=_("Workflow reset to draft by %s.", self.env.user.name))
 
-    group_id = fields.Many2one('res.groups', string="Approver (Group)", help="Any user from this security group can approve this step.")
+    group_id = fields.Many2one(comodel_name='res.groups', string="Approver (Group)", help="Any user from this security group can approve this step.")
 
     # ============================================================================
     # RULES & BEHAVIOR

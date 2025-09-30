@@ -12,8 +12,8 @@ class PickupRequest(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
     active = fields.Boolean(string='Active', default=True)
 
     request_date = fields.Datetime(string='Request Date', default=fields.Datetime.now, readonly=True)
@@ -46,8 +46,8 @@ class PickupRequest(models.Model):
     ], string='Urgency', default='normal', tracking=True)
 
     pickup_item_ids = fields.One2many('pickup.request.item', 'request_id', string='Pickup Items')
-    fsm_task_id = fields.Many2one('project.task', string='FSM Task', readonly=True, copy=False)
-    route_id = fields.Many2one('pickup.route', string="Pickup Route")
+    fsm_task_id = fields.Many2one(comodel_name='project.task', string='FSM Task', readonly=True, copy=False)
+    route_id = fields.Many2one(comodel_name='pickup.route', string="Pickup Route")
 
     total_items = fields.Integer(string='Total Items', compute='_compute_total_items', store=True)
     container_count = fields.Integer(string='Container Count', compute='_compute_container_count', store=True)
@@ -85,7 +85,7 @@ class PickupRequest(models.Model):
     # Billing Information
     billable = fields.Boolean(string='Billable', default=True)
     estimated_cost = fields.Monetary(string='Estimated Cost', currency_field='currency_id', tracking=True)
-    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
 
     # ============================================================================
     # COMPUTED FIELDS

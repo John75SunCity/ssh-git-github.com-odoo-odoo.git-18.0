@@ -27,8 +27,8 @@ class CustomerInventoryReportLine(models.Model):
     # ============================================================================
     name = fields.Char(string="Line Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)
     # Explicit comodel_name per project convention
@@ -46,7 +46,7 @@ class CustomerInventoryReportLine(models.Model):
     container_barcode = fields.Char(related='container_id.barcode', string='Barcode')
     container_volume_cf = fields.Float(related='container_id.cubic_feet', string='Volume (cf)')
     container_weight_lbs = fields.Float(related='container_id.weight', string='Weight (lbs)')
-    document_type_id = fields.Many2one('records.document.type', string='Document Type')
+    document_type_id = fields.Many2one(comodel_name='records.document.type', string='Document Type')
     document_type = fields.Char(string="Document Type Name", related='document_type_id.name')
     document_count = fields.Integer(string='Document Count')
     # create_date on comodel is Datetime; related field type must match
@@ -60,7 +60,7 @@ class CustomerInventoryReportLine(models.Model):
     # ============================================================================
     document_count_verified = fields.Boolean(string='Count Verified')
     verification_date = fields.Date(string='Verification Date', readonly=True)
-    verified_by_id = fields.Many2one('res.users', string='Verified By', readonly=True)
+    verified_by_id = fields.Many2one(comodel_name='res.users', string='Verified By', readonly=True)
     line_status = fields.Selection([('ok', 'OK'), ('discrepancy', 'Discrepancy'), ('new', 'New')], string='Line Status', default='ok')
     billing_status = fields.Selection([('billed', 'Billed'), ('pending', 'Pending'), ('not_applicable', 'N/A')], string='Billing Status', default='pending')
 

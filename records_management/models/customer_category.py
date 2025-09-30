@@ -30,7 +30,7 @@ class CustomerCategory(models.Model):
     # ============================================================================
     name = fields.Char(string='Category Name', required=True, tracking=True)
     description = fields.Text(string='Description')
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
     # Additional contact summary fields referenced in views (functional, stored)
     email = fields.Char(string='Primary Email', help="Representative email shown in category overviews")

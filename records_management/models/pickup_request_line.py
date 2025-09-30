@@ -25,15 +25,15 @@ class PickupRequestLine(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, id'
 
-    request_id = fields.Many2one('pickup.request', string='Pickup Request', required=True)
-    container_id = fields.Many2one('records.container', string='Container', required=True)
+    request_id = fields.Many2one(comodel_name='pickup.request', string='Pickup Request', required=True)
+    container_id = fields.Many2one(comodel_name='records.container', string='Container', required=True)
     item_description = fields.Char(string='Item Description')
     quantity = fields.Integer(string='Quantity', default=1)
     # The 'sequence' field determines the order of line items within a pickup request.
     # Adjust this value to customize the display or processing order of lines.
     sequence = fields.Integer(string='Sequence', default=10)
     notes = fields.Text(string='Notes')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company.id, required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
     active = fields.Boolean(string='Active', default=True)
 
     _sql_constraints = [

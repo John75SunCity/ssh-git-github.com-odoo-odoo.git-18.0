@@ -15,16 +15,16 @@ class SignedDocument(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Document Name", required=True, copy=False, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
-    partner_id = fields.Many2one('res.partner', string="Customer", related='request_id.partner_id', store=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", related='request_id.partner_id', store=True, readonly=True)
     active = fields.Boolean(default=True)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
 
     # ============================================================================
     # RELATIONSHIP & DOCUMENT DETAILS
     # ============================================================================
-    request_id = fields.Many2one('portal.request', string="Related Request", ondelete='cascade')
+    request_id = fields.Many2one(comodel_name='portal.request', string="Related Request", ondelete='cascade')
     document_type = fields.Selection([
         ('destruction_certificate', 'Destruction Certificate'),
         ('service_agreement', 'Service Agreement'),
@@ -66,7 +66,7 @@ class SignedDocument(models.Model):
         ('invalid', 'Invalid')
     ], string="Verification Status", default='not_verified', tracking=True)
     verification_date = fields.Datetime(string="Verification Date", readonly=True)
-    verified_by_id = fields.Many2one('res.users', string="Verified By", readonly=True)
+    verified_by_id = fields.Many2one(comodel_name='res.users', string="Verified By", readonly=True)
 
     # ============================================================================
     # LEGAL & COMPLIANCE

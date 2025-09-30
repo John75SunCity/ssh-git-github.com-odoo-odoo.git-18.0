@@ -7,16 +7,16 @@ class RecordsAuditLog(models.Model):
     _order = 'create_date desc, id desc'
     _rec_name = 'description'
 
-    document_type_id = fields.Many2one('records.document.type', string="Document Type", help="Related document type for this audit log entry.")
+    document_type_id = fields.Many2one(comodel_name='records.document.type', string="Document Type", help="Related document type for this audit log entry.")
 
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     # Note: Most fields are readonly to ensure log integrity.
-    user_id = fields.Many2one('res.users', string="User", readonly=True, required=True, ondelete='restrict')
+    user_id = fields.Many2one(comodel_name='res.users', string="User", readonly=True, required=True, ondelete='restrict')
     timestamp = fields.Datetime(string="Timestamp", default=fields.Datetime.now, readonly=True, required=True)
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True, required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True, required=True)
 
     # ============================================================================
     # LOG DETAILS
@@ -43,8 +43,8 @@ class RecordsAuditLog(models.Model):
     # ============================================================================
     # RELATED POLICY AND RULE
     # ============================================================================
-    policy_id = fields.Many2one('records.retention.policy', string="Retention Policy", readonly=True, help="Related retention policy for this audit log entry.")
-    rule_id = fields.Many2one('records.retention.rule', string="Retention Rule", readonly=True, help="Related retention rule for this audit log entry.")
+    policy_id = fields.Many2one(comodel_name='records.retention.policy', string="Retention Policy", readonly=True, help="Related retention policy for this audit log entry.")
+    rule_id = fields.Many2one(comodel_name='records.retention.rule', string="Retention Rule", readonly=True, help="Related retention rule for this audit log entry.")
 
     # ============================================================================
     # TECHNICAL DETAILS

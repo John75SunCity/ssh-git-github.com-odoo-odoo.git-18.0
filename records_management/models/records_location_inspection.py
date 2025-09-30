@@ -13,14 +13,14 @@ class RecordsLocationInspection(models.Model):
     # ============================================================================
     name = fields.Char(string='Inspection ID', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
 
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    location_id = fields.Many2one('records.location', string="Location", required=True, ondelete='cascade', tracking=True)
-    inspector_id = fields.Many2one('hr.employee', string='Inspector', tracking=True)
+    location_id = fields.Many2one(comodel_name='records.location', string="Location", required=True, ondelete='cascade', tracking=True)
+    inspector_id = fields.Many2one(comodel_name='hr.employee', string='Inspector', tracking=True)
     inspection_line_ids = fields.One2many('records.location.inspection.line', 'inspection_id', string="Inspection Checklist")
 
     # ============================================================================
@@ -125,7 +125,7 @@ class RecordsLocationInspectionLine(models.Model):
     _description = 'Records Location Inspection Checklist Line'
     _order = 'sequence, id'
 
-    inspection_id = fields.Many2one('records.location.inspection', string="Inspection", required=True, ondelete='cascade')
+    inspection_id = fields.Many2one(comodel_name='records.location.inspection', string="Inspection", required=True, ondelete='cascade')
     sequence = fields.Integer(string="Sequence", default=10)
     name = fields.Char(string="Checklist Item", required=True)
     result = fields.Selection([

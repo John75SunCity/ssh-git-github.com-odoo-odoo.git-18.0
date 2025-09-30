@@ -14,15 +14,15 @@ class RecordsInventoryDashboard(models.Model):
     # CONFIGURATION FIELDS
     # ============================================================================
     name = fields.Char(string="Dashboard Name", required=True, default="Inventory Dashboard")
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
-    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='User', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([('draft', 'Draft'), ('active', 'Active'), ('inactive', 'Inactive')], default='draft')
 
     # Filters
     location_ids = fields.Many2many('records.location', 'records_inventory_dashboard_location_rel', 'dashboard_id', 'location_id', string="Locations")
     customer_ids = fields.Many2many('res.partner', 'records_inventory_dashboard_customer_rel', 'dashboard_id', 'partner_id', string="Customers", domain="[('is_company', '=', True)]")
-    department_id = fields.Many2one('records.department', string="Department")
+    department_id = fields.Many2one(comodel_name='records.department', string="Department")
     date_range = fields.Selection([
         ('last_7_days', 'Last 7 Days'),
         ('last_30_days', 'Last 30 Days'),

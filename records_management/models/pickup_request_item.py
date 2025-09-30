@@ -13,7 +13,7 @@ class PickupRequestItem(models.Model):
     # ============================================================================
     name = fields.Char(string='Description', required=True)
     sequence = fields.Integer(string='Sequence', default=10)
-    request_id = fields.Many2one('pickup.request', string='Pickup Request', required=True, ondelete='cascade')
+    request_id = fields.Many2one(comodel_name='pickup.request', string='Pickup Request', required=True, ondelete='cascade')
 
     item_type = fields.Selection([
         ('box', 'Document Box'),

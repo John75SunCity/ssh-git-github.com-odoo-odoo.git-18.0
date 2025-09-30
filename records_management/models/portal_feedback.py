@@ -12,12 +12,12 @@ class PortalFeedback(models.Model):
     # ============================================================================
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     subject = fields.Char(string='Subject', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
 
-    partner_id = fields.Many2one('res.partner', string='Customer', tracking=True)
-    submitted_by_id = fields.Many2one('res.users', string='Submitted By', default=lambda self: self.env.user, tracking=True)
-    assigned_to_id = fields.Many2one('res.users', string='Assigned To', tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', tracking=True)
+    submitted_by_id = fields.Many2one(comodel_name='res.users', string='Submitted By', default=lambda self: self.env.user, tracking=True)
+    assigned_to_id = fields.Many2one(comodel_name='res.users', string='Assigned To', tracking=True)
 
     description = fields.Html(string='Feedback Details', required=True)
 

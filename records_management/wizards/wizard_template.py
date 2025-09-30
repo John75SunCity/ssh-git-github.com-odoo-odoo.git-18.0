@@ -36,7 +36,7 @@ class WizardTemplate(models.TransientModel):
     # It's common to link a wizard to the record that opened it.
     # This is typically handled via context in the action that launches the wizard.
     # For example: context="{'default_related_record_id': active_id}"
-    # related_record_id = fields.Many2one('source.model', string="Related Record")
+    # related_record_id = fields.Many2one(comodel_name='source.model', string="Related Record")
 
     # ============================================================================
     # ACTION METHODS

@@ -67,7 +67,7 @@ class NaidOperatorCertification(models.Model):
     )
     completed_trainings_ids = fields.Many2many('slide.channel', 'naid_cert_training_rel', 'certification_id', 'training_id', string='Completed Trainings', help='Trainings successfully completed')
     training_verified = fields.Boolean(string='Training Verified', default=False, tracking=True, help='Indicates if all required trainings are completed and verified')
-    verified_by_id = fields.Many2one('res.users', string='Verified By', tracking=True, help='User who verified the training completion')
+    verified_by_id = fields.Many2one(comodel_name='res.users', string='Verified By', tracking=True, help='User who verified the training completion')
     verification_date = fields.Date(string='Verification Date', tracking=True)
 
     # Recurring training and refreshers
@@ -97,7 +97,7 @@ class NaidOperatorCertification(models.Model):
     notes = fields.Text(string='Notes', help='Additional notes on certification or training')
     attachment_ids = fields.Many2many('ir.attachment', 'naid_operator_cert_attachment_rel', 'certification_id', 'attachment_id', string='Supporting Documents', help='Certificates, training records, etc.')
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
 
     # ------------------------------------------------------------------
     # VIEW-REFERENCED FIELDS (Added to satisfy missing field audit)
@@ -114,13 +114,13 @@ class NaidOperatorCertification(models.Model):
         ('safety', 'Safety Compliance')
     ], string='Certification Type', help='Type/category of certification')
     completed_date = fields.Date(string='Completed Date', help='Date when all training requirements were completed')
-    instructor_id = fields.Many2one('res.users', string='Instructor', help='Primary instructor or trainer responsible')
+    instructor_id = fields.Many2one(comodel_name='res.users', string='Instructor', help='Primary instructor or trainer responsible')
     issue_date = fields.Date(string='Issue Date', help='Official issuance date of certificate (may differ from completion)')
     issuing_authority = fields.Char(string='Issuing Authority', help='Organization or authority issuing the certification')
     scheduled_date = fields.Date(string='Scheduled Date', help='Initial scheduled date for training/certification')
     scope_of_certification = fields.Text(string='Scope of Certification', help='Defines what operational scope this certification covers')
-    training_id = fields.Many2one('slide.channel', string='Primary Training', help='Primary training channel/course this certification is based on')
-    operator_id = fields.Many2one('hr.employee', string='Operator (Employee)', help='Explicit operator reference when linking externally')
+    training_id = fields.Many2one(comodel_name='slide.channel', string='Primary Training', help='Primary training channel/course this certification is based on')
+    operator_id = fields.Many2one(comodel_name='hr.employee', string='Operator (Employee)', help='Explicit operator reference when linking externally')
 
     @api.model
     def _generate_certification_number(self):

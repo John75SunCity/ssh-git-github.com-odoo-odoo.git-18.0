@@ -87,7 +87,7 @@ class BarcodeProduct(models.Model):
     # ============================================================================
     # PRICING & RATE CONFIGURATION (Monetary fields reference company currency)
     # ============================================================================
-    currency_id = fields.Many2one('res.currency', string='Currency', related='company_id.currency_id', readonly=True)
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', related='company_id.currency_id', readonly=True)
     storage_rate = fields.Monetary(string='Storage Rate', currency_field='currency_id', help='Monthly storage rate applied to this product.')
     shred_rate = fields.Monetary(string='Shred Rate', currency_field='currency_id', help='Shredding service rate per unit / bin.')
     setup_fee = fields.Monetary(string='Setup Fee', currency_field='currency_id')
@@ -249,8 +249,8 @@ class BarcodeProduct(models.Model):
     # ============================================================================
     # RELATED RECORDS
     # ============================================================================
-    location_id = fields.Many2one('records.location', string='Related Location', readonly=True)
-    container_id = fields.Many2one('records.container', string='Related Container', readonly=True)
+    location_id = fields.Many2one(comodel_name='records.location', string='Related Location', readonly=True)
+    container_id = fields.Many2one(comodel_name='records.container', string='Related Container', readonly=True)
     created_records_count = fields.Integer(
         string='Created Records',
         compute='_compute_created_records_count',

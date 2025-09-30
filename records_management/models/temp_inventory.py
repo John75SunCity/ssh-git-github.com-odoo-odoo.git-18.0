@@ -14,9 +14,9 @@ class TempInventory(models.Model):
     # ============================================================================
     name = fields.Char(string="Inventory Name", required=True, copy=False, default=lambda self: _('New'))
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
-    partner_id = fields.Many2one('res.partner', string="Customer/Owner", help="Optional: Link this inventory to a specific customer.")
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer/Owner", help="Optional: Link this inventory to a specific customer.")
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -37,7 +37,7 @@ class TempInventory(models.Model):
     # ============================================================================
     # LOCATION & CAPACITY
     # ============================================================================
-    location_id = fields.Many2one('records.location', string="Physical Location")
+    location_id = fields.Many2one(comodel_name='records.location', string="Physical Location")
     capacity_limit = fields.Integer(string="Capacity Limit (Items)", default=100)
     current_count = fields.Integer(string="Current Item Count", compute='_compute_current_count', store=True)
     available_capacity = fields.Integer(string="Available Capacity", compute='_compute_capacity_metrics', store=True)

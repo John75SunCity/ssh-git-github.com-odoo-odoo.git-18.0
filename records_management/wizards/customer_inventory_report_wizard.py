@@ -19,11 +19,11 @@ class CustomerInventoryReportWizard(models.TransientModel):
     # ============================================================================
     # WIZARD FIELDS
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True)
-    department_id = fields.Many2one('records.department', string='Department', domain="[('partner_id', '=', partner_id)]")
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True)
+    department_id = fields.Many2one(comodel_name='records.department', string='Department', domain="[('partner_id', '=', partner_id)]")
     inventory_date_from = fields.Date(string='From Date')
     inventory_date_to = fields.Date(string='To Date', default=fields.Date.context_today)
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
 
     # ============================================================================
     # ACTION METHODS

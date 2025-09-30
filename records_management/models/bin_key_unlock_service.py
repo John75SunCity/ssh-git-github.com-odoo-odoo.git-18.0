@@ -49,8 +49,8 @@ class BinKeyUnlockService(models.Model):
     # ============================================================================
     # SERVICE DETAILS
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    technician_id = fields.Many2one('res.users', string='Technician', tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
+    technician_id = fields.Many2one(comodel_name='res.users', string='Technician', tracking=True)
     service_date = fields.Datetime(string='Service Date', default=fields.Datetime.now, tracking=True)
     completion_date = fields.Datetime(string='Completion Date', readonly=True)
     unlock_reason = fields.Selection([
@@ -73,8 +73,8 @@ class BinKeyUnlockService(models.Model):
     # ============================================================================
     # LOCATION & ASSET
     # ============================================================================
-    shred_bin_id = fields.Many2one('shred.bin', string='Associated Bin')
-    bin_key_id = fields.Many2one('bin.key', string='Associated Key')
+    shred_bin_id = fields.Many2one(comodel_name='shred.bin', string='Associated Bin')
+    bin_key_id = fields.Many2one(comodel_name='bin.key', string='Associated Key')
     unlock_bin_location = fields.Char(string='Bin Location Description', help="Physical location of the bin, e.g., 'Office 201, 2nd Floor'.")
 
     # ============================================================================
@@ -83,7 +83,7 @@ class BinKeyUnlockService(models.Model):
     currency_id = fields.Many2one(related='company_id.currency_id', string='Currency')
     unlock_charge = fields.Monetary(string='Service Charge', tracking=True, currency_field='currency_id')
     billable = fields.Boolean(string='Billable Service', default=True)
-    invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True, copy=False)
+    invoice_id = fields.Many2one(comodel_name='account.move', string='Invoice', readonly=True, copy=False)
 
     # ============================================================================
     # ATTACHMENTS & VERIFICATION
@@ -95,7 +95,7 @@ class BinKeyUnlockService(models.Model):
         string='Verification Photos'
     )
     identity_verified = fields.Boolean(string='Identity Verified', help="Check if the technician verified the identity of the person requesting access.")
-    witness_id = fields.Many2one('res.partner', string='Witness')
+    witness_id = fields.Many2one(comodel_name='res.partner', string='Witness')
 
     # ============================================================================
     # ACTION METHODS

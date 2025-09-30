@@ -48,7 +48,7 @@ class MaintenanceTeam(models.Model):
     average_response_time = fields.Float(string='Avg. Response Time (Hours)', compute='_compute_performance_metrics', store=True)
     average_resolution_time = fields.Float(string='Avg. Resolution Time (Hours)', compute='_compute_performance_metrics', store=True)
 
-    records_department_id = fields.Many2one('records.department', string='Associated Department')
+    records_department_id = fields.Many2one(comodel_name='records.department', string='Associated Department')
 
     # ============================================================================
     # COMPUTE METHODS

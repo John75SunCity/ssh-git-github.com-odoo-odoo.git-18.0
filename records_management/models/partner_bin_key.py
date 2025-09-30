@@ -14,9 +14,9 @@ class PartnerBinKey(models.Model):
     key_number = fields.Char(string='Key Number', required=True, tracking=True)
     description = fields.Text(string='Description')
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
 
-    partner_id = fields.Many2one('res.partner', string='Assigned Customer', tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Assigned Customer', tracking=True)
     assigned_contact_id = fields.Many2one(
         "res.partner", string="Assigned Contact", domain="[('parent_id', '=', partner_id)]", tracking=True
     )

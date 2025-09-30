@@ -28,9 +28,9 @@ class RecordsRetentionRule(models.Model):
     # ============================================================================
     # RELATIONSHIPS & APPLICABILITY
     # ============================================================================
-    policy_id = fields.Many2one('records.retention.policy', string="Policy", required=True, ondelete='cascade', index=True, tracking=True)
-    document_type_id = fields.Many2one('records.document.type', string="Document Type", help="Apply this rule only to this type of document. Leave empty to apply to all.")
-    partner_id = fields.Many2one('res.partner', string='Customer')
+    policy_id = fields.Many2one(comodel_name='records.retention.policy', string="Policy", required=True, ondelete='cascade', index=True, tracking=True)
+    document_type_id = fields.Many2one(comodel_name='records.document.type', string="Document Type", help="Apply this rule only to this type of document. Leave empty to apply to all.")
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer')
     department_id = fields.Many2one('hr.department', string='Department')
     category_id = fields.Many2one('records.category', string='Category')
     tag_ids = fields.Many2many(
@@ -62,8 +62,8 @@ class RecordsRetentionRule(models.Model):
 
     # Hierarchy
     is_template = fields.Boolean(string='Is Template')
-    template_id = fields.Many2one('records.retention.rule', string='Template')
-    parent_rule_id = fields.Many2one('records.retention.rule', string='Parent Rule', check_company=True)
+    template_id = fields.Many2one(comodel_name='records.retention.rule', string='Template')
+    parent_rule_id = fields.Many2one(comodel_name='records.retention.rule', string='Parent Rule', check_company=True)
     child_rule_ids = fields.One2many('records.retention.rule', 'parent_rule_id', string='Child Rules')
     rule_level = fields.Integer(string='Rule Level', compute='_compute_rule_level', store=True, recursive=True)
 
@@ -102,7 +102,7 @@ class RecordsRetentionRule(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
     ], string='Approval Status', default='draft', tracking=True)
-    approved_by_id = fields.Many2one('res.users', string='Approved By')
+    approved_by_id = fields.Many2one(comodel_name='res.users', string='Approved By')
     approval_date = fields.Date(string='Approval Date')
     rejection_reason = fields.Text(string='Rejection Reason')
 
@@ -123,7 +123,7 @@ class RecordsRetentionRule(models.Model):
     ], string='Compliance Status', default='unknown')
     compliance_notes = fields.Text(string='Compliance Notes')
     compliance_check_date = fields.Date(string='Compliance Check Date')
-    compliance_checker_id = fields.Many2one('res.users', string='Compliance Checker')
+    compliance_checker_id = fields.Many2one(comodel_name='res.users', string='Compliance Checker')
 
     # Legal Hold
     is_legal_hold = fields.Boolean(string='Legal Hold')
@@ -134,7 +134,7 @@ class RecordsRetentionRule(models.Model):
     document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
     audit_log_ids = fields.One2many('records.audit.log', 'rule_id', string='Audit Logs')
     related_regulation = fields.Char(string='Related Regulation')
-    storage_location_id = fields.Many2one('records.location', string='Storage Location')
+    storage_location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
 
     # ============================================================================
     # COMPUTE METHODS

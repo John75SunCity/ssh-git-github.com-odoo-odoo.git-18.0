@@ -5,7 +5,7 @@ class RecordsContainerTransferLine(models.Model):
     _description = 'Records Container Transfer Line'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    transfer_id = fields.Many2one('records.container.transfer', string="Transfer", required=True, ondelete='cascade')
+    transfer_id = fields.Many2one(comodel_name='records.container.transfer', string="Transfer", required=True, ondelete='cascade')
     container_id = fields.Many2one('records.container', string="Container", required=True)
     from_location_id = fields.Many2one(related='transfer_id.from_location_id', string="From Location", store=True, readonly=True, comodel_name='stock.location')
     to_location_id = fields.Many2one(related='transfer_id.to_location_id', string="To Location", store=True, readonly=True, comodel_name='stock.location')

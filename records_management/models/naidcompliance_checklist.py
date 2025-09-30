@@ -11,10 +11,10 @@ class NAIDComplianceChecklist(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Checklist Name', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
     category = fields.Char(string='Category', index=True, tracking=True)
-    policy_id = fields.Many2one('naid.compliance.policy', string='Compliance Policy', ondelete='cascade')
+    policy_id = fields.Many2one(comodel_name='naid.compliance.policy', string='Compliance Policy', ondelete='cascade')
     res_model = fields.Char(string='Related Model', readonly=True)
     res_id = fields.Integer(string='Related Record ID', readonly=True)
     res_name = fields.Char(string='Related Record', compute='_compute_res_name')
@@ -26,7 +26,7 @@ class NAIDComplianceChecklist(models.Model):
         ('failed', 'Failed'),
     ], string='Status', default='draft', readonly=True, tracking=True)
     completion_percentage = fields.Float(string='Completion', compute='_compute_completion_percentage', store=True)
-    completed_by_id = fields.Many2one('res.users', string='Completed By', readonly=True)
+    completed_by_id = fields.Many2one(comodel_name='res.users', string='Completed By', readonly=True)
     completion_date = fields.Datetime(string='Completion Date', readonly=True)
     notes = fields.Text(string='Auditor Notes')
 

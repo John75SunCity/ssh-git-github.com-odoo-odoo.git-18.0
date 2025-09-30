@@ -21,4 +21,4 @@ class ContainerAccessReport(models.Model):
     )
 
     content = fields.Text(string='Report Content')
-    attachment_id = fields.Many2one('ir.attachment', string='Report Attachment')
+    attachment_id = fields.Many2one(comodel_name='ir.attachment', string='Report Attachment')

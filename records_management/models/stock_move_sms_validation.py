@@ -10,7 +10,7 @@ class StockMoveSMSValidation(models.Model):
 
     # Core fields
     name = fields.Char(string="Reference", required=True, copy=False, default=lambda self: _('New'))
-    stock_move_id = fields.Many2one('stock.move', string="Stock Move", required=True)
+    stock_move_id = fields.Many2one(comodel_name='stock.move', string="Stock Move", required=True)
     partner_id = fields.Many2one(related='stock_move_id.partner_id', string="Customer", readonly=True)
 
     # SMS fields
@@ -22,7 +22,7 @@ class StockMoveSMSValidation(models.Model):
     is_validated = fields.Boolean(string="Validated", default=False, tracking=True)
     validation_code = fields.Char(string="Validation Code", readonly=True)
     validation_date = fields.Datetime(string="Validation Date", readonly=True)
-    validated_by_id = fields.Many2one('res.users', string="Validated By", readonly=True)
+    validated_by_id = fields.Many2one(comodel_name='res.users', string="Validated By", readonly=True)
 
     # State management
     state = fields.Selection([

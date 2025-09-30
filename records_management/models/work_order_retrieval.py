@@ -15,19 +15,19 @@ class WorkOrderRetrieval(models.Model):
     # ============================================================================
     name = fields.Char(string='Work Order', required=True, readonly=True, default=lambda self: _('New'))
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)
 
     # Partner and Customer Information
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    customer_id = fields.Many2one('res.partner', string='Related Customer', related='partner_id', store=True)
-    portal_request_id = fields.Many2one('portal.request', string='Portal Request', ondelete='set null')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
+    customer_id = fields.Many2one(comodel_name='res.partner', string='Related Customer', related='partner_id', store=True)
+    portal_request_id = fields.Many2one(comodel_name='portal.request', string='Portal Request', ondelete='set null')
 
     # Assignment and Team
-    user_id = fields.Many2one('res.users', string='Assigned To', default=lambda self: self.env.user, tracking=True)
-    assigned_team_id = fields.Many2one('hr.department', string='Assigned Team')
-    team_leader_id = fields.Many2one('res.users', string='Team Leader')
+    user_id = fields.Many2one(comodel_name='res.users', string='Assigned To', default=lambda self: self.env.user, tracking=True)
+    assigned_team_id = fields.Many2one(comodel_name='hr.department', string='Assigned Team')
+    team_leader_id = fields.Many2one(comodel_name='res.users', string='Team Leader')
     technician_ids = fields.Many2many('res.users', 'work_order_retrieval_res_users_rel', 'work_order_id', 'user_id', string='Technicians')
 
     # Scheduling and Dates
@@ -64,7 +64,7 @@ class WorkOrderRetrieval(models.Model):
     ], string='Retrieval Type', default='document_retrieval')
 
     # Location and Access
-    service_location_id = fields.Many2one('records.location', string='Service Location')
+    service_location_id = fields.Many2one(comodel_name='records.location', string='Service Location')
     customer_address = fields.Text(string='Customer Address')
     access_instructions = fields.Text(string='Access Instructions')
     access_restrictions = fields.Text(string='Access Restrictions')
@@ -73,7 +73,7 @@ class WorkOrderRetrieval(models.Model):
 
     # Equipment and Vehicle
     equipment_ids = fields.Many2many('maintenance.equipment', 'work_order_retrieval_equipment_rel', 'work_order_id', 'equipment_id', string='Equipment Required')
-    vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle')
+    vehicle_id = fields.Many2one(comodel_name='fleet.vehicle', string='Vehicle')
 
     # Items to Retrieve
     item_count = fields.Integer(string='Number of Items', default=1)
@@ -97,12 +97,12 @@ class WorkOrderRetrieval(models.Model):
     # Financial
     estimated_cost = fields.Monetary(string="Estimated Cost", currency_field="currency_id")
     actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
-    currency_id = fields.Many2one('res.currency', string='Currency',
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Currency',
                                   default=lambda self: self.env.company.currency_id)
     billable = fields.Boolean(string='Billable', default=True)
 
     # Related Records
-    coordinator_id = fields.Many2one('work.order.coordinator', string='Work Order Coordinator')
+    coordinator_id = fields.Many2one(comodel_name='work.order.coordinator', string='Work Order Coordinator')
 
     # ============================================================================
     # COMPUTED FIELDS

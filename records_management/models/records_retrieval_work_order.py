@@ -18,15 +18,15 @@ class RecordsRetrievalWorkOrder(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
-    partner_id = fields.Many2one('res.partner', string='Customer')
-    company_id = fields.Many2one('res.company', string='Company')
-    user_id = fields.Many2one('res.users', string='Assigned To')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer')
+    company_id = fields.Many2one(comodel_name='res.company', string='Company')
+    user_id = fields.Many2one(comodel_name='res.users', string='Assigned To')
     completion_date = fields.Datetime(string='Completion Date', help="Date and time when the retrieval was completed")
     delivery_method = fields.Selection([('scan', 'Scan & Email'), ('physical', 'Physical Delivery')], string='Delivery Method')
 
     # Link to retrieval team (for One2many in maintenance.team)
-    retrieval_team_id = fields.Many2one('maintenance.team', string='Retrieval Team')
-    currency_id = fields.Many2one('res.currency', string='Currency', compute='_compute_currency_id', store=True)
+    retrieval_team_id = fields.Many2one(comodel_name='maintenance.team', string='Retrieval Team')
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', compute='_compute_currency_id', store=True)
 
     # ============================================================================
     # METHODS

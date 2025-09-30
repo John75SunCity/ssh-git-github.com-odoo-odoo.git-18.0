@@ -13,11 +13,11 @@ class PickupRouteStop(models.Model):
     # FIELDS
     # ============================================================================
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
-    route_id = fields.Many2one('pickup.route', string='Pickup Route', required=True, ondelete='cascade')
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True)
-    pickup_request_id = fields.Many2one('pickup.request', string='Pickup Request')
+    route_id = fields.Many2one(comodel_name='pickup.route', string='Pickup Route', required=True, ondelete='cascade')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True)
+    pickup_request_id = fields.Many2one(comodel_name='pickup.request', string='Pickup Request')
     sequence = fields.Integer(string='Sequence', default=10)
     planned_arrival = fields.Datetime(string='Planned Arrival', tracking=True)
     planned_departure = fields.Datetime(string='Planned Departure', tracking=True)

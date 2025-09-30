@@ -15,15 +15,15 @@ class StockLotAttributeValue(models.Model):
     # FIELDS
     # ============================================================================
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    lot_id = fields.Many2one('stock.lot', string="Stock Lot", required=True, ondelete='cascade')
-    attribute_id = fields.Many2one('stock.lot.attribute', string="Attribute", required=True)
+    lot_id = fields.Many2one(comodel_name='stock.lot', string="Stock Lot", required=True, ondelete='cascade')
+    attribute_id = fields.Many2one(comodel_name='stock.lot.attribute', string="Attribute", required=True)
     attribute_type = fields.Selection(related='attribute_id.attribute_type', readonly=True)
 
     value_text = fields.Char(string='Text Value')
     value_number = fields.Float(string='Number Value')
     value_date = fields.Date(string='Date Value')
     value_boolean = fields.Boolean(string='Boolean Value')
-    value_selection_id = fields.Many2one('stock.lot.attribute.option', string="Selection Value")
+    value_selection_id = fields.Many2one(comodel_name='stock.lot.attribute.option', string="Selection Value")
 
     # ============================================================================
     # COMPUTE METHODS

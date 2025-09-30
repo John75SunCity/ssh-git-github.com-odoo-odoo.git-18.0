@@ -10,8 +10,8 @@ class RecordsContainerTypeConverter(models.TransientModel):
     # WIZARD FIELDS
     # ============================================================================
     container_ids = fields.Many2many('records.container', string="Containers to Convert", readonly=True)
-    source_container_type_id = fields.Many2one('records.container.type', string="Source Type", readonly=True, compute='_compute_source_type')
-    target_container_type_id = fields.Many2one('records.container.type', string="New Container Type", required=True)
+    source_container_type_id = fields.Many2one(comodel_name='records.container.type', string="Source Type", readonly=True, compute='_compute_source_type')
+    target_container_type_id = fields.Many2one(comodel_name='records.container.type', string="New Container Type", required=True)
     container_count = fields.Integer(string="Number of Containers", readonly=True, compute='_compute_container_count')
 
     # ============================================================================

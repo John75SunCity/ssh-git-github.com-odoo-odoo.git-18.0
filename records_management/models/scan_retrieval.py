@@ -11,13 +11,13 @@ class ScanRetrieval(models.Model):
 
     # Core identification
     name = fields.Char(string='Scan Reference', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Assigned User', default=lambda self: self.env.user)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Assigned User', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
 
     # Source document/file
-    document_id = fields.Many2one('records.document', string='Document')
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True)
+    document_id = fields.Many2one(comodel_name='records.document', string='Document')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True)
 
     # Scanning specifications
     scan_required = fields.Boolean(string='Scan Required', default=True)
@@ -61,7 +61,7 @@ class ScanRetrieval(models.Model):
     # Return handling
     return_required = fields.Boolean(string='Return Required', default=True)
     return_date = fields.Date(string='Return Date')
-    return_location_id = fields.Many2one('records.location', string='Return Location')
+    return_location_id = fields.Many2one(comodel_name='records.location', string='Return Location')
     return_notes = fields.Text(string='Return Notes')
 
     # Timing

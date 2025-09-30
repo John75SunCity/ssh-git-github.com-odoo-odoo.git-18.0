@@ -14,9 +14,9 @@ class Load(models.Model):
     # ============================================================================
     name = fields.Char(string='Load Number', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
     priority = fields.Selection([('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
-    user_id = fields.Many2one('res.users', string='Load Coordinator', default=lambda self: self.env.user)
+    user_id = fields.Many2one(comodel_name='res.users', string='Load Coordinator', default=lambda self: self.env.user)
     load_date = fields.Datetime(string='Load Date', default=fields.Datetime.now, required=True, tracking=True)
     completion_date = fields.Datetime(string='Completion Date', readonly=True)
     notes = fields.Text(string='Load Notes')
@@ -43,7 +43,7 @@ class Load(models.Model):
     driver_signature = fields.Binary(string="Driver's Signature", attachment=True)
 
     # Destination
-    buyer_id = fields.Many2one('res.partner', string='Buyer/Recycling Center', domain="[('is_company', '=', True)]")
+    buyer_id = fields.Many2one(comodel_name='res.partner', string='Buyer/Recycling Center', domain="[('is_company', '=', True)]")
 
     # Contents
     paper_bale_ids = fields.One2many('paper.bale', 'load_id', string='Paper Bales')
@@ -56,8 +56,8 @@ class Load(models.Model):
     total_weight_occ = fields.Float(string='OCC Weight (lbs)', compute='_compute_weight_by_type', store=True)
 
     # Financials & Payment
-    currency_id = fields.Many2one('res.currency', related='company_id.currency_id', store=True)
-    invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True, copy=False)
+    currency_id = fields.Many2one(comodel_name='res.currency', related='company_id.currency_id', store=True)
+    invoice_id = fields.Many2one(comodel_name='account.move', string='Invoice', readonly=True, copy=False)
     payment_status = fields.Selection(related='invoice_id.payment_state', string="Payment Status", readonly=True, store=True)
 
     # Attachments

@@ -11,11 +11,11 @@ class NaidRiskAssessment(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Risk Title', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
     active = fields.Boolean(string='Active', default=True)
 
     assessment_date = fields.Date(string='Assessment Date', required=True, default=fields.Date.context_today, tracking=True)
-    assessor_id = fields.Many2one('res.users', string='Assessor', default=lambda self: self.env.user, required=True, tracking=True)
+    assessor_id = fields.Many2one(comodel_name='res.users', string='Assessor', default=lambda self: self.env.user, required=True, tracking=True)
 
     risk_category = fields.Selection([
         ('physical_security', 'Physical Security'),
@@ -50,7 +50,7 @@ class NaidRiskAssessment(models.Model):
         ('critical', 'Critical')
     ], string='Risk Level', compute='_compute_risk_level', store=True, readonly=True)
 
-    mitigation_plan_id = fields.Many2one('naid.compliance.action.plan', string='Mitigation Action Plan', readonly=True)
+    mitigation_plan_id = fields.Many2one(comodel_name='naid.compliance.action.plan', string='Mitigation Action Plan', readonly=True)
 
     status = fields.Selection([
         ('draft', 'Draft'),

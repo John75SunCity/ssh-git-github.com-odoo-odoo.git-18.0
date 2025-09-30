@@ -9,8 +9,8 @@ class DestructionEvent(models.Model):
     name = fields.Char(string='Event Reference', required=True, default=lambda self: self.env['ir.sequence'].next_by_code('destruction.event'))
     date = fields.Date(string='Destruction Date', required=True, tracking=True)
     time = fields.Float(string='Destruction Time', tracking=True)  # In hours, e.g., 14.5 for 2:30 PM
-    technician_id = fields.Many2one('res.users', string='Technician', required=True, tracking=True)
-    requestor_id = fields.Many2one('res.users', string='Requestor', tracking=True)
+    technician_id = fields.Many2one(comodel_name='res.users', string='Technician', required=True, tracking=True)
+    requestor_id = fields.Many2one(comodel_name='res.users', string='Requestor', tracking=True)
     location_type = fields.Selection([
         ('onsite', 'On-Site'),
         ('offsite', 'Off-Site')
@@ -24,9 +24,9 @@ class DestructionEvent(models.Model):
         ('files', 'Files')
     ], string='Unit of Measure', required=True, tracking=True)
     notes = fields.Text(string='Notes')
-    certificate_id = fields.Many2one('destruction.certificate', string='Related Certificate', tracking=True)
+    certificate_id = fields.Many2one(comodel_name='destruction.certificate', string='Related Certificate', tracking=True)
     audit_log_ids = fields.One2many('naid.audit.log', 'event_id', string='Audit Logs')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
 
     @api.model_create_multi

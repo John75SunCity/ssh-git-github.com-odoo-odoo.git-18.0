@@ -9,8 +9,8 @@ class RecordsPortalUserInvitationWizard(models.TransientModel):
     _description = 'Records Portal User Invitation Wizard'
 
     # Customer context
-    customer_id = fields.Many2one('res.partner', string='Customer', required=True)
-    department_id = fields.Many2one('records.department', string='Department')
+    customer_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True)
+    department_id = fields.Many2one(comodel_name='records.department', string='Department')
 
     # Invitation details
     email = fields.Char(string='Email Address', required=True)
@@ -99,8 +99,8 @@ class RecordsBulkUserImport(models.TransientModel):
     ], string='File Type', compute='_compute_file_type', store=True)
 
     # Import options
-    customer_id = fields.Many2one('res.partner', string='Default Customer', required=True)
-    department_id = fields.Many2one('records.department', string='Default Department')
+    customer_id = fields.Many2one(comodel_name='res.partner', string='Default Customer', required=True)
+    department_id = fields.Many2one(comodel_name='records.department', string='Default Department')
     default_access_level = fields.Selection([
         ('view', 'View Only'),
         ('request', 'View & Request'),

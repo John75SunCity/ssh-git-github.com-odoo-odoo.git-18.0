@@ -15,9 +15,9 @@ class RecordsRetrievalOrder(models.Model):
     name = fields.Char(string='Order #', required=True, copy=False, index=True, default=lambda self: _('New'), tracking=True)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True, index=True)
-    portal_request_id = fields.Many2one('portal.request', string='Portal Request')
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True, index=True)
+    portal_request_id = fields.Many2one(comodel_name='portal.request', string='Portal Request')
     request_description = fields.Text(string='Request Description')
     request_date = fields.Datetime(string='Request Date', default=fields.Datetime.now, required=True, tracking=True)
 
@@ -54,8 +54,8 @@ class RecordsRetrievalOrder(models.Model):
     escalation_reason = fields.Char(string='Escalation Reason')
 
     # Team
-    user_id = fields.Many2one('res.users', string='Owner', default=lambda self: self.env.user, tracking=True, required=True)
-    coordinator_id = fields.Many2one('res.users', string='Coordinator')
+    user_id = fields.Many2one(comodel_name='res.users', string='Owner', default=lambda self: self.env.user, tracking=True, required=True)
+    coordinator_id = fields.Many2one(comodel_name='res.users', string='Coordinator')
     # Using positional args for clearer static analysis: (comodel, relation, column1, column2)
     retrieval_team_ids = fields.Many2many(
         'res.users',
@@ -65,7 +65,7 @@ class RecordsRetrievalOrder(models.Model):
         string='Retrieval Team',
         help="Team members assigned to physically retrieve the requested items"
     )
-    quality_inspector_id = fields.Many2one('res.users', string='Quality Inspector')
+    quality_inspector_id = fields.Many2one(comodel_name='res.users', string='Quality Inspector')
 
     # Lines & metrics
     line_ids = fields.One2many('records.retrieval.order.line', 'order_id', string='Retrieval Lines')
@@ -93,19 +93,19 @@ class RecordsRetrievalOrder(models.Model):
         ('pickup', 'Customer Pickup'),
         ('courier', 'Courier Service')
     ], string='Delivery Method')
-    delivery_address_id = fields.Many2one('res.partner', string='Delivery Address')
+    delivery_address_id = fields.Many2one(comodel_name='res.partner', string='Delivery Address')
     delivery_instructions = fields.Text(string='Delivery Instructions')
 
     # Billing placeholders
-    rate_id = fields.Many2one('base.rate', string='Rate')
-    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id, required=True)
+    rate_id = fields.Many2one(comodel_name='base.rate', string='Rate')
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', default=lambda self: self.env.company.currency_id, required=True)
     billing_status = fields.Selection([
         ('not_billable', 'Not Billable'),
         ('pending', 'Pending Billing'),
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid')
     ], string='Billing Status', default='pending', tracking=True)
-    invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True)
+    invoice_id = fields.Many2one(comodel_name='account.move', string='Invoice', readonly=True)
     estimated_cost = fields.Monetary(string='Estimated Cost', compute='_compute_billing_metrics', store=True, currency_field='currency_id')
     actual_cost = fields.Monetary(string='Actual Cost', currency_field='currency_id')
 

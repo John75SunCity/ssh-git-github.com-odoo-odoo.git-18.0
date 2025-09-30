@@ -10,8 +10,8 @@ class RecordsSeries(models.Model):
     code = fields.Char(string='Code', required=True, tracking=True)
     description = fields.Text(string='Description')
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     document_type_ids = fields.Many2many(
         'records.document.type',
         relation='records_series_document_type_rel',
@@ -19,7 +19,7 @@ class RecordsSeries(models.Model):
         column2='document_type_id',
         string='Document Types'
     )
-    retention_policy_id = fields.Many2one('records.retention.policy', string='Retention Policy')
+    retention_policy_id = fields.Many2one(comodel_name='records.retention.policy', string='Retention Policy')
     document_ids = fields.One2many('records.document', 'series_id', string='Documents')
     document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
 

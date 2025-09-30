@@ -24,7 +24,7 @@ class KeyRestrictionChecker(models.TransientModel):
     # ==========================================
 
     customer_name = fields.Char(string='Customer Name', help='Start typing customer name')
-    customer_id = fields.Many2one('res.partner', string='Customer',
+    customer_id = fields.Many2one(comodel_name='res.partner', string='Customer',
                                 domain=[('is_company', '=', True)])
     bin_identifier = fields.Char(string='Bin Identifier', help='Bin number or identifier')
 

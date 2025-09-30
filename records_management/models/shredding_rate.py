@@ -13,16 +13,16 @@ class ShreddingRate(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string='Rate Name', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    partner_id = fields.Many2one('res.partner', string="Customer", help="Specify a customer for a negotiated rate. Leave empty for a base rate.")
-    service_id = fields.Many2one('shredding.service', string="Service", required=True, help="The shredding service this rate applies to.")
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", help="Specify a customer for a negotiated rate. Leave empty for a base rate.")
+    service_id = fields.Many2one(comodel_name='shredding.service', string="Service", required=True, help="The shredding service this rate applies to.")
 
     # ============================================================================
     # RATE & PRICING FIELDS
     # ============================================================================
     rate = fields.Float(string="Rate", digits='Product Price', required=True, tracking=True)
-    currency_id = fields.Many2one('res.currency', string='Currency', related='company_id.currency_id', readonly=True)
-    uom_id = fields.Many2one('uom.uom', string="Unit of Measure", help="Unit of Measure for the service.")
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', related='company_id.currency_id', readonly=True)
+    uom_id = fields.Many2one(comodel_name='uom.uom', string="Unit of Measure", help="Unit of Measure for the service.")
 
     # ============================================================================
     # STATUS & LIFECYCLE FIELDS

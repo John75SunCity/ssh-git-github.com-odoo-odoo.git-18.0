@@ -13,8 +13,8 @@ class WorkOrderCoordinator(models.Model):
     # ============================================================================
     name = fields.Char(string="Coordination Reference", required=True, copy=False, readonly=True,
                         default=lambda self: _('New'))
-    partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
-    portal_request_id = fields.Many2one('portal.request', string="Portal Request", ondelete='set null')
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", required=True, tracking=True)
+    portal_request_id = fields.Many2one(comodel_name='portal.request', string="Portal Request", ondelete='set null')
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -64,14 +64,14 @@ class WorkOrderCoordinator(models.Model):
     )
 
     # FSM Integration
-    fsm_project_id = fields.Many2one('project.project', string="FSM Project", help="Project for managing Field Service tasks related to this coordination.")
+    fsm_project_id = fields.Many2one(comodel_name='project.project', string="FSM Project", help="Project for managing Field Service tasks related to this coordination.")
     fsm_task_ids = fields.One2many('project.task', 'coordinator_id', string="FSM Tasks")
 
     # Billing
     consolidated_billing = fields.Boolean(string="Consolidated Billing", default=True)
-    invoice_id = fields.Many2one('account.move', string="Consolidated Invoice", readonly=True, copy=False)
+    invoice_id = fields.Many2one(comodel_name='account.move', string="Consolidated Invoice", readonly=True, copy=False)
 
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
 
     # ============================================================================

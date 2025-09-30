@@ -117,7 +117,7 @@ class SystemDiagramData(models.Model):
     edge_count = fields.Integer(string="Edge Count", compute="_compute_counts", store=True)
     node_count = fields.Integer(string="Node Count", compute="_compute_counts", store=True)
 
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
 
     nodes_data = fields.Text(string="Nodes JSON", compute="_compute_diagram_data", store=True)
     edges_data = fields.Text(string="Edges JSON", compute="_compute_diagram_data", store=True)

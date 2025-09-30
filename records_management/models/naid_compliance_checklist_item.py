@@ -11,7 +11,7 @@ class NAIDComplianceChecklistItem(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    checklist_id = fields.Many2one('naid.compliance.checklist', string='Checklist', required=True, ondelete='cascade')
+    checklist_id = fields.Many2one(comodel_name='naid.compliance.checklist', string='Checklist', required=True, ondelete='cascade')
     name = fields.Char(string='Item Description', required=True)
     sequence = fields.Integer(string='Sequence', default=10)
     is_checked = fields.Boolean(string='Checked')

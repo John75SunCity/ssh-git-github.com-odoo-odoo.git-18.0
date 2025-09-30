@@ -27,6 +27,6 @@ class ContainerAccessPhoto(models.Model):
     )
 
     # Either link to a generic Photo record or store the binary inline
-    photo_id = fields.Many2one('photo', string='Photo Record')
+    photo_id = fields.Many2one(comodel_name='photo', string='Photo Record')
     image = fields.Binary(string='Image')
     image_filename = fields.Char(string='Image Filename')

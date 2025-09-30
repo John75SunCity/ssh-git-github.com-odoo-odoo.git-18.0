@@ -16,12 +16,12 @@ class RecordsCategory(models.Model):
     state = fields.Selection([("draft", "Draft"), ("active", "Active")], default="draft")
     model = fields.Char(string="Related Model")
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     parent_path = fields.Char(index=True)
     complete_name = fields.Char(
         'Complete Name', compute='_compute_complete_name',
         recursive=True, store=True)
-    parent_id = fields.Many2one('records.category', string='Parent Category', index=True, ondelete='cascade')
+    parent_id = fields.Many2one(comodel_name='records.category', string='Parent Category', index=True, ondelete='cascade')
     child_ids = fields.One2many('records.category', 'parent_id', string='Child Categories')
     document_type_ids = fields.One2many('records.document.type', 'category_id', string='Document Types')
     document_count = fields.Integer(string='Document Count', compute='_compute_document_count')

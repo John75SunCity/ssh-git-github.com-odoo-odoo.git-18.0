@@ -5,7 +5,7 @@ class UnlockServiceRescheduleWizard(models.TransientModel):
     _name = 'unlock.service.reschedule.wizard'
     _description = 'Unlock Service Reschedule Wizard'
 
-    service_id = fields.Many2one('bin.unlock.service', string="Service", required=True, readonly=True)
+    service_id = fields.Many2one(comodel_name='bin.unlock.service', string="Service", required=True, readonly=True)
     current_date = fields.Datetime(string="Current Scheduled Date", readonly=True)
     new_date = fields.Datetime(string="New Scheduled Date", required=True, default=fields.Datetime.now)
     reason = fields.Text(string="Reason for Rescheduling", required=True)

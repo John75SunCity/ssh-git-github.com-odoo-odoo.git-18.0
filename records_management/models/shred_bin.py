@@ -20,7 +20,7 @@ class ShredBin(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string="Customer", required=True, ondelete='restrict', tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", required=True, ondelete='restrict', tracking=True)
     department_id = fields.Many2one(
         "records.department",
         string="Department",
@@ -31,7 +31,7 @@ class ShredBin(models.Model):
         partner_id = self.partner_id.id if self.partner_id else False
         return [("partner_id", "=", partner_id)] if partner_id else []
 
-    user_id = fields.Many2one('res.users', string="Service Representative", tracking=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Service Representative", tracking=True)
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -74,7 +74,7 @@ class ShredBin(models.Model):
     service_count = fields.Integer(string="Service Count", compute='_compute_service_count', store=True)
     last_service_date = fields.Datetime(string="Last Service Date", readonly=True)
     needs_collection = fields.Boolean(string="Needs Collection", compute='_compute_needs_collection', store=True)
-    product_id = fields.Many2one('barcode.product', string='Barcode Product', ondelete='set null', index=True, help='Optional link to a barcode product template associated with this shred bin.')
+    product_id = fields.Many2one(comodel_name='barcode.product', string='Barcode Product', ondelete='set null', index=True, help='Optional link to a barcode product template associated with this shred bin.')
 
     _sql_constraints = [
         ('name_company_uniq', 'unique(name, company_id)', 'The Bin Number must be unique per company.'),

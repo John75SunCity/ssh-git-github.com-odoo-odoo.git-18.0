@@ -27,7 +27,7 @@ class RecordsServiceType(models.Model):
     sequence = fields.Integer(string='Sequence', default=10, help="Used to order service types")
     active = fields.Boolean(default=True)
     description = fields.Text(string='Description')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
 
     # Optional: workflow state placeholder
     status = fields.Selection([

@@ -27,8 +27,8 @@ class NAIDTrainingSchedule(models.Model):  # noqa: E305 (naming retained per exi
     # Debug helper to confirm early model registration order during load (safe no-op in production)
     _logger.debug('Loading model naid.training.schedule (fields will be available for One2many inverse resolution)')
 
-    certification_id = fields.Many2one('naid.operator.certification', string='Certification', required=True, ondelete='cascade')
-    training_id = fields.Many2one('slide.channel', string='Training Course', required=True)
+    certification_id = fields.Many2one(comodel_name='naid.operator.certification', string='Certification', required=True, ondelete='cascade')
+    training_id = fields.Many2one(comodel_name='slide.channel', string='Training Course', required=True)
     scheduled_date = fields.Date(string='Scheduled Date', required=True)
     completed_date = fields.Date(string='Completed Date')
     status = fields.Selection([
@@ -39,7 +39,7 @@ class NAIDTrainingSchedule(models.Model):  # noqa: E305 (naming retained per exi
         ('cancelled', 'Cancelled')
     ], string='Status', default='scheduled', tracking=True)
     notes = fields.Text(string='Notes')
-    instructor_id = fields.Many2one('res.users', string='Instructor')
+    instructor_id = fields.Many2one(comodel_name='res.users', string='Instructor')
     location = fields.Char(string='Location')
     duration_hours = fields.Float(string='Duration (Hours)')
     reminder_sent = fields.Boolean(string='Reminder Sent', default=False)

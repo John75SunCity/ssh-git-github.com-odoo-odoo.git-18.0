@@ -17,8 +17,8 @@ class ProcessingLog(models.Model):
     # CORE FIELDS
     # ============================================================================
     name = fields.Char(string='Log Entry', required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
-    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='User', default=lambda self: self.env.user, readonly=True)
     active = fields.Boolean(default=True)
     timestamp = fields.Datetime(string='Timestamp', default=fields.Datetime.now, required=True, readonly=True)
 
@@ -62,7 +62,7 @@ class ProcessingLog(models.Model):
         ('ignored', 'Ignored'),
     ], string='Status', default='new', tracking=True)
     resolution_notes = fields.Text(string='Resolution Notes')
-    resolved_by_id = fields.Many2one('res.users', string='Resolved By', readonly=True)
+    resolved_by_id = fields.Many2one(comodel_name='res.users', string='Resolved By', readonly=True)
     resolved_date = fields.Datetime(string='Resolved Date', readonly=True)
 
     # ============================================================================
@@ -145,7 +145,7 @@ class ProcessingLogResolutionWizard(models.TransientModel):
     _name = 'processing.log.resolution.wizard'
     _description = 'Processing Log Resolution Wizard'
 
-    log_id = fields.Many2one('processing.log', string="Log Entry", required=True, readonly=True)
+    log_id = fields.Many2one(comodel_name='processing.log', string="Log Entry", required=True, readonly=True)
     resolution_notes = fields.Text(string="Resolution Notes", required=True)
 
     def action_confirm_resolution(self):

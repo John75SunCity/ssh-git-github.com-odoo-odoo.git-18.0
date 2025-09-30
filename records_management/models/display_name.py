@@ -28,7 +28,7 @@ class DisplayName(models.Model):
     model_name = fields.Char(string='Target Model', required=True)
     description = fields.Text(string='Description')
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company.id, required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
 
     _sql_constraints = [
         ('name_model_unique', 'unique(name, model_name, company_id)',

@@ -23,7 +23,7 @@ class AdvancedBillingProfile(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Profile Name', required=True, tracking=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     active = fields.Boolean(default=True)
 
     # Billing Configuration
@@ -41,7 +41,7 @@ class AdvancedBillingProfile(models.Model):
     discount_percentage = fields.Float(string="Discount Percentage", default=0.0, tracking=True)
 
     # Related billing configuration
-    company_id = fields.Many2one('res.company', string='Company',
+    company_id = fields.Many2one(comodel_name='res.company', string='Company',
                                 default=lambda self: self.env.company)
     currency_id = fields.Many2one(
         "res.currency", string="Currency", default=lambda self: self.env.company.currency_id

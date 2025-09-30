@@ -7,11 +7,11 @@ class RecordsRequestLine(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     active = fields.Boolean(default=True)
-    request_id = fields.Many2one('records.request', string='Request', required=True, ondelete='cascade')
-    document_id = fields.Many2one('records.document', string='Document')
-    box_id = fields.Many2one('records.container', string='Box')
-    container_id = fields.Many2one('records.container', string='Container')
-    company_id = fields.Many2one('res.company', string='Company', related='request_id.company_id', store=True, readonly=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', related='request_id.partner_id', store=True, readonly=True)
+    request_id = fields.Many2one(comodel_name='records.request', string='Request', required=True, ondelete='cascade')
+    document_id = fields.Many2one(comodel_name='records.document', string='Document')
+    box_id = fields.Many2one(comodel_name='records.container', string='Box')
+    container_id = fields.Many2one(comodel_name='records.container', string='Container')
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', related='request_id.company_id', store=True, readonly=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', related='request_id.partner_id', store=True, readonly=True)
     state = fields.Selection(related='request_id.state', string='Status', store=True)
-    request_type_id = fields.Many2one('records.request.type', string='Request Type', related='request_id.request_type_id', store=True, readonly=True)
+    request_type_id = fields.Many2one(comodel_name='records.request.type', string='Request Type', related='request_id.request_type_id', store=True, readonly=True)

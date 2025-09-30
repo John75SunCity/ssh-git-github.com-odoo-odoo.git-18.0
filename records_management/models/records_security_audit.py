@@ -37,9 +37,9 @@ class RecordsSecurityAudit(models.Model):
     # ============================================================================
     # ACTOR & CONTEXT
     # ============================================================================
-    user_id = fields.Many2one('res.users', string="User", readonly=True, required=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="User", readonly=True, required=True)
     ip_address = fields.Char(string="IP Address", readonly=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
 
     # ============================================================================
     # TARGET RECORD

@@ -17,8 +17,8 @@ class RecordsApprovalStep(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    request_id = fields.Many2one('portal.request', string="Portal Request", required=True, ondelete='cascade', readonly=True)
-    workflow_line_id = fields.Many2one('records.approval.workflow.line', string="Workflow Step", readonly=True, help="The workflow template line this step is based on.")
+    request_id = fields.Many2one(comodel_name='portal.request', string="Portal Request", required=True, ondelete='cascade', readonly=True)
+    workflow_line_id = fields.Many2one(comodel_name='records.approval.workflow.line', string="Workflow Step", readonly=True, help="The workflow template line this step is based on.")
 
     # ============================================================================
     # APPROVAL STATE & DETAILS
@@ -30,10 +30,10 @@ class RecordsApprovalStep(models.Model):
         ('skipped', 'Skipped'),
     ], string="Status", default='pending', required=True, tracking=True, readonly=True)
 
-    approver_id = fields.Many2one('res.users', string="Assigned Approver", readonly=True, help="The user responsible for this approval step.")
-    approver_group_id = fields.Many2one('res.groups', string="Assigned Group", readonly=True, help="The group responsible for this approval step.")
+    approver_id = fields.Many2one(comodel_name='res.users', string="Assigned Approver", readonly=True, help="The user responsible for this approval step.")
+    approver_group_id = fields.Many2one(comodel_name='res.groups', string="Assigned Group", readonly=True, help="The group responsible for this approval step.")
 
-    approved_by_id = fields.Many2one('res.users', string="Processed By", readonly=True)
+    approved_by_id = fields.Many2one(comodel_name='res.users', string="Processed By", readonly=True)
     approval_date = fields.Datetime(string="Processed Date", readonly=True)
     comments = fields.Text(string="Approver Comments")
 

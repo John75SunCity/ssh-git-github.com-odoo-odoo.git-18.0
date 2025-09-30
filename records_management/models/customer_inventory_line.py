@@ -7,15 +7,15 @@ class CustomerInventoryLine(models.Model):
     _order = 'container_id'
 
     # ...existing fields (moved from original file)...
-    inventory_id = fields.Many2one('customer.inventory', string='Inventory', required=True, ondelete='cascade')
-    container_id = fields.Many2one('records.container', string='Container', required=True)
-    location_id = fields.Many2one('records.location', string='Location', related='container_id.location_id', store=True)
+    inventory_id = fields.Many2one(comodel_name='customer.inventory', string='Inventory', required=True, ondelete='cascade')
+    container_id = fields.Many2one(comodel_name='records.container', string='Container', required=True)
+    location_id = fields.Many2one(comodel_name='records.location', string='Location', related='container_id.location_id', store=True)
     file_count = fields.Integer(string='Actual Count')
     expected_file_count = fields.Integer(string='Expected Count')
     previous_file_count = fields.Integer(string='Previous Count')
     verified = fields.Boolean(string='Verified', default=False)
     verification_date = fields.Datetime(string='Verification Date', readonly=True)
-    verified_by_id = fields.Many2one('res.users', string='Verified By', readonly=True)
+    verified_by_id = fields.Many2one(comodel_name='res.users', string='Verified By', readonly=True)
     notes = fields.Text(string='Notes')
     has_variance = fields.Boolean(string='Has Variance', compute='_compute_variance', store=True)
     variance_amount = fields.Integer(string='Variance', compute='_compute_variance', store=True)
@@ -28,9 +28,9 @@ class CustomerInventoryLine(models.Model):
         ('other', 'Other')
     ], string='Variance Reason')
     variance_notes = fields.Text(string='Variance Notes')
-    container_type_id = fields.Many2one('records.container.type', related='container_id.container_type_id',
+    container_type_id = fields.Many2one(comodel_name='records.container.type', related='container_id.container_type_id',
                                         string='Container Type', store=True)
-    department_id = fields.Many2one('records.department', related='container_id.department_id',
+    department_id = fields.Many2one(comodel_name='records.department', related='container_id.department_id',
                                     string='Department', store=True)
 
     @api.depends('file_count', 'expected_file_count')

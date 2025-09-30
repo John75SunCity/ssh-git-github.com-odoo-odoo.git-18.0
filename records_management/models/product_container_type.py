@@ -14,8 +14,8 @@ class ProductContainerType(models.Model):
     # ============================================================================
     name = fields.Char(string="Type Name", required=True, tracking=True)
     code = fields.Char(string="Type Code", required=True, tracking=True, help="Unique code for this container type (e.g., 'BOX01').")
-    product_id = fields.Many2one('product.product', string="Related Service Product", ondelete='restrict', help="Service product used for billing this container type.")
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    product_id = fields.Many2one(comodel_name='product.product', string="Related Service Product", ondelete='restrict', help="Service product used for billing this container type.")
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)
 
@@ -41,7 +41,7 @@ class ProductContainerType(models.Model):
     # ============================================================================
     # BILLING & FINANCIAL FIELDS
     # ============================================================================
-    currency_id = fields.Many2one('res.currency', related='company_id.currency_id')
+    currency_id = fields.Many2one(comodel_name='res.currency', related='company_id.currency_id')
     base_monthly_rate = fields.Monetary(string="Base Monthly Rate", currency_field='currency_id', tracking=True)
     setup_fee = fields.Monetary(string="Setup Fee", currency_field='currency_id')
     handling_fee = fields.Monetary(string="Handling Fee", currency_field='currency_id')

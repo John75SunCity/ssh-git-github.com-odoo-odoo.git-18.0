@@ -66,8 +66,8 @@ class RecordsRetentionPolicy(models.Model):
     # Contextual label disambiguation (Batch 2)
     description = fields.Text(string="Policy Description")
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Policy Owner", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Policy Owner", default=lambda self: self.env.user, tracking=True)
 
     # === RETENTION & DESTRUCTION ===
     retention_unit = fields.Selection([
@@ -95,17 +95,17 @@ class RecordsRetentionPolicy(models.Model):
 
     # === RELATIONSHIPS ===
     rule_ids = fields.One2many('records.retention.rule', 'policy_id', string="Retention Rules")
-    document_type_id = fields.Many2one('records.document.type', string='Document Type')
-    partner_id = fields.Many2one('res.partner', string='Customer')
-    department_id = fields.Many2one('hr.department', string='Department')
-    category_id = fields.Many2one('records.category', string='Category')
-    branch_id = fields.Many2one('res.company', string='Operating Unit')
+    document_type_id = fields.Many2one(comodel_name='records.document.type', string='Document Type')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer')
+    department_id = fields.Many2one(comodel_name='hr.department', string='Department')
+    category_id = fields.Many2one(comodel_name='records.category', string='Category')
+    branch_id = fields.Many2one(comodel_name='res.company', string='Operating Unit')
     document_ids = fields.One2many('records.document', 'retention_policy_id', string='Documents')
     audit_log_ids = fields.One2many('records.audit.log', 'policy_id', string='Audit Log')
     child_policy_ids = fields.One2many('records.retention.policy', 'parent_policy_id', string='Child Policies')
-    parent_policy_id = fields.Many2one('records.retention.policy', string='Parent Policy')
+    parent_policy_id = fields.Many2one(comodel_name='records.retention.policy', string='Parent Policy')
     version_ids = fields.One2many('records.retention.policy.version', 'policy_id', string='Policy Versions')
-    template_id = fields.Many2one('records.retention.policy', string='Template')
+    template_id = fields.Many2one(comodel_name='records.retention.policy', string='Template')
     destruction_approver_ids = fields.Many2many(
         'res.users',
         relation='records_retention_policy_destruction_approver_rel',
@@ -134,7 +134,7 @@ class RecordsRetentionPolicy(models.Model):
         column2='state_id',
         string='Applicable States'
     )
-    storage_location_id = fields.Many2one('records.location', string='Storage Location')
+    storage_location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
 
     # === COMPUTED COUNTS & STATS ===
     rule_count = fields.Integer(string="Rule Count", compute='_compute_counts')
@@ -155,8 +155,8 @@ class RecordsRetentionPolicy(models.Model):
     last_review_date = fields.Date(string="Last Review Date", readonly=True)
     next_review_date = fields.Date(string="Next Review Date", compute='_compute_next_review_date', store=True)
     review_cycle = fields.Integer(string='Review Cycle (days)')
-    last_review_by_id = fields.Many2one('res.users', string='Last Reviewed By')
-    next_reviewer_id = fields.Many2one('res.users', string='Next Reviewer')
+    last_review_by_id = fields.Many2one(comodel_name='res.users', string='Last Reviewed By')
+    next_reviewer_id = fields.Many2one(comodel_name='res.users', string='Next Reviewer')
     compliance_status = fields.Selection([
         ('compliant', 'Compliant'),
         ('non_compliant', 'Non-Compliant'),
@@ -164,7 +164,7 @@ class RecordsRetentionPolicy(models.Model):
     ], string='Compliance Status')
     compliance_notes = fields.Text(string='Compliance Notes')
     compliance_check_date = fields.Date(string='Compliance Check Date')
-    compliance_checker_id = fields.Many2one('res.users', string='Compliance Checker')
+    compliance_checker_id = fields.Many2one(comodel_name='res.users', string='Compliance Checker')
     is_compliant = fields.Boolean(string='Is Compliant')
 
     # === STATE AXES (Primary Workflow Dimensions) ===
@@ -254,29 +254,29 @@ class RecordsRetentionPolicy(models.Model):
     next_action_date = fields.Date(string='Next Action Date')
     next_action = fields.Selection([('review', 'Review'), ('destroy', 'Destroy')], string='Next Action')
     related_regulation = fields.Char(string='Related Regulation')
-    approved_by_id = fields.Many2one('res.users', string='Approved By')
+    approved_by_id = fields.Many2one(comodel_name='res.users', string='Approved By')
     approval_date = fields.Date(string='Approval Date')
     rejection_reason = fields.Text(string='Rejection Reason')
-    rejected_by_id = fields.Many2one('res.users', string='Rejected By')
+    rejected_by_id = fields.Many2one(comodel_name='res.users', string='Rejected By')
     rejection_date = fields.Date(string='Rejection Date')
-    archived_by_id = fields.Many2one('res.users', string='Archived By')
+    archived_by_id = fields.Many2one(comodel_name='res.users', string='Archived By')
     archived_date = fields.Date(string='Archived Date')
-    restored_by_id = fields.Many2one('res.users', string='Restored By')
+    restored_by_id = fields.Many2one(comodel_name='res.users', string='Restored By')
     restored_date = fields.Date(string='Restored Date')
-    deleted_by_id = fields.Many2one('res.users', string='Deleted By')
+    deleted_by_id = fields.Many2one(comodel_name='res.users', string='Deleted By')
     deleted_date = fields.Date(string='Deleted Date')
-    purged_by_id = fields.Many2one('res.users', string='Purged By')
+    purged_by_id = fields.Many2one(comodel_name='res.users', string='Purged By')
     purged_date = fields.Date(string='Purged Date')
-    locked_by_id = fields.Many2one('res.users', string='Locked By')
+    locked_by_id = fields.Many2one(comodel_name='res.users', string='Locked By')
     locked_date = fields.Date(string='Locked Date')
-    unlocked_by_id = fields.Many2one('res.users', string='Unlocked By')
+    unlocked_by_id = fields.Many2one(comodel_name='res.users', string='Unlocked By')
     unlocked_date = fields.Date(string='Unlocked Date')
-    published_by_id = fields.Many2one('res.users', string='Published By')
+    published_by_id = fields.Many2one(comodel_name='res.users', string='Published By')
     published_date = fields.Date(string='Published Date')
-    unpublished_by_id = fields.Many2one('res.users', string='Unpublished By')
+    unpublished_by_id = fields.Many2one(comodel_name='res.users', string='Unpublished By')
     unpublished_date = fields.Date(string='Unpublished Date')
-    superseded_by_id = fields.Many2one('records.retention.policy', string='Superseded By')
-    supersedes_id = fields.Many2one('records.retention.policy', string='Supersedes')
+    superseded_by_id = fields.Many2one(comodel_name='records.retention.policy', string='Superseded By')
+    supersedes_id = fields.Many2one(comodel_name='records.retention.policy', string='Supersedes')
     effective_date = fields.Date(string='Effective Date')
     ineffective_date = fields.Date(string='Ineffective Date')
     version = fields.Integer(
@@ -658,8 +658,8 @@ class RecordsRetentionPolicyVersion(models.Model):
     _description = 'Records Retention Policy Version'
     _order = 'version desc'
 
-    policy_id = fields.Many2one('records.retention.policy', string='Policy', required=True, ondelete='cascade')
+    policy_id = fields.Many2one(comodel_name='records.retention.policy', string='Policy', required=True, ondelete='cascade')
     version = fields.Char(string='Version', required=True)
     state = fields.Selection(related='policy_id.state', store=True)
     create_date = fields.Datetime(string='Creation Date', readonly=True)
-    create_uid = fields.Many2one('res.users', string='Created By', readonly=True)
+    create_uid = fields.Many2one(comodel_name='res.users', string='Created By', readonly=True)

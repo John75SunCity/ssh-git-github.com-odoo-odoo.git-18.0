@@ -37,8 +37,8 @@ class CustomerNegotiatedRate(models.Model):
     # CORE & WORKFLOW
     # ============================================================================
     name = fields.Char(string="Rate Name", required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -53,7 +53,7 @@ class CustomerNegotiatedRate(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     billing_profile_id = fields.Many2one(
         "customer.billing.profile", string="Billing Profile", domain="[('partner_id', '=', partner_id)]"
     )
@@ -66,8 +66,8 @@ class CustomerNegotiatedRate(models.Model):
         ('service', 'Service'),
         ('volume_discount', 'Volume Discount')
     ], string='Rate Type', required=True, default='storage', tracking=True)
-    container_type_id = fields.Many2one('records.container.type', string='Container Type', help="Apply this rate to a specific container type.")
-    service_type_id = fields.Many2one('records.service.type', string='Service Type', help="Apply this rate to a specific service type.")
+    container_type_id = fields.Many2one(comodel_name='records.container.type', string='Container Type', help="Apply this rate to a specific container type.")
+    service_type_id = fields.Many2one(comodel_name='records.service.type', string='Service Type', help="Apply this rate to a specific service type.")
     effective_date = fields.Date(string='Effective Date', required=True, default=fields.Date.context_today, tracking=True)
     expiration_date = fields.Date(string='Expiration Date', tracking=True)
     is_current = fields.Boolean(string='Is Currently Active', compute='_compute_is_current', store=True)
@@ -77,7 +77,7 @@ class CustomerNegotiatedRate(models.Model):
     # ============================================================================
     # FINANCIALS & PRICING
     # ============================================================================
-    currency_id = fields.Many2one('res.currency', related='company_id.currency_id', string='Currency')
+    currency_id = fields.Many2one(comodel_name='res.currency', related='company_id.currency_id', string='Currency')
     monthly_rate = fields.Monetary(string='Monthly Rate', tracking=True, currency_field='currency_id')
     annual_rate = fields.Monetary(string='Annual Rate', compute='_compute_annual_rate', inverse='_inverse_annual_rate', store=True, currency_field='currency_id')
     setup_fee = fields.Monetary(string='One-Time Setup Fee', currency_field='currency_id')
@@ -92,7 +92,7 @@ class CustomerNegotiatedRate(models.Model):
     # APPROVAL
     # ============================================================================
     approval_required = fields.Boolean(string='Approval Required', default=True)
-    approved_by_id = fields.Many2one('res.users', string='Approved By', readonly=True, copy=False)
+    approved_by_id = fields.Many2one(comodel_name='res.users', string='Approved By', readonly=True, copy=False)
     approval_date = fields.Datetime(string='Approval Date', readonly=True, copy=False)
 
     # ============================================================================

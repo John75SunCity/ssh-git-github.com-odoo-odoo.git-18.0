@@ -13,8 +13,8 @@ class RecordsSurveyUserInput(models.Model):
     # ============================================================================
     name = fields.Char(string="Response ID", required=True, copy=False, readonly=True, default=lambda self: _('New'))
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Submitted By", default=lambda self: self.env.user, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Submitted By", default=lambda self: self.env.user, readonly=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('completed', 'Completed'),
@@ -27,7 +27,7 @@ class RecordsSurveyUserInput(models.Model):
     # ============================================================================
     survey_title = fields.Char(string="Survey Title", required=True)
     response_date = fields.Datetime(string="Response Date", default=fields.Datetime.now, required=True, readonly=True)
-    records_partner_id = fields.Many2one('res.partner', string="Customer", tracking=True)
+    records_partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", tracking=True)
     records_service_type = fields.Selection([
         ('general', 'General'),
         ('pickup', 'Pickup'),
@@ -35,9 +35,9 @@ class RecordsSurveyUserInput(models.Model):
         ('destruction', 'Destruction'),
         ('consulting', 'Consulting'),
     ], string="Service Type", tracking=True)
-    related_container_id = fields.Many2one('records.container', string="Related Container")
-    related_pickup_request_id = fields.Many2one('portal.request', string="Related Pickup Request")
-    related_destruction_id = fields.Many2one('records.destruction', string="Related Destruction Order")
+    related_container_id = fields.Many2one(comodel_name='records.container', string="Related Container")
+    related_pickup_request_id = fields.Many2one(comodel_name='portal.request', string="Related Pickup Request")
+    related_destruction_id = fields.Many2one(comodel_name='records.destruction', string="Related Destruction Order")
 
     # ============================================================================
     # AI-DRIVEN ANALYTICS (COMPUTED)
@@ -61,7 +61,7 @@ class RecordsSurveyUserInput(models.Model):
     # ============================================================================
     # FOLLOW-UP MANAGEMENT
     # ============================================================================
-    followup_assigned_to_id = fields.Many2one('res.users', string="Follow-up Assigned To", tracking=True)
+    followup_assigned_to_id = fields.Many2one(comodel_name='res.users', string="Follow-up Assigned To", tracking=True)
     followup_status = fields.Selection([
         ('pending', 'Pending'),
         ('in_progress', 'In Progress'),

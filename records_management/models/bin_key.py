@@ -66,7 +66,7 @@ class BinKey(models.Model):
     # ============================================================================
     # ASSIGNMENT & VALIDITY
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string='Assigned Customer', tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Assigned Customer', tracking=True)
     key_holder_id = fields.Many2one(
         'res.partner',
         string='Current Key Holder',
@@ -93,8 +93,8 @@ class BinKey(models.Model):
         string='Associated Bins'
     )
     history_ids = fields.One2many('bin.key.history', 'key_id', string='Assignment History')
-    replacement_of_id = fields.Many2one('bin.key', string='Replacement For', readonly=True)
-    replaced_by_id = fields.Many2one('bin.key', string='Replaced By', readonly=True)
+    replacement_of_id = fields.Many2one(comodel_name='bin.key', string='Replacement For', readonly=True)
+    replaced_by_id = fields.Many2one(comodel_name='bin.key', string='Replaced By', readonly=True)
 
     # ============================================================================
     # SQL CONSTRAINTS

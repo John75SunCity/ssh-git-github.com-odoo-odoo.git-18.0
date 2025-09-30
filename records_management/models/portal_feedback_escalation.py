@@ -8,15 +8,15 @@ class PortalFeedbackEscalation(models.Model):
     _order = 'escalation_date desc, id desc'
 
     name = fields.Char(string='Escalation Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
     active = fields.Boolean(default=True)
 
-    feedback_id = fields.Many2one('portal.feedback', string='Related Feedback', required=True, ondelete='cascade', tracking=True)
+    feedback_id = fields.Many2one(comodel_name='portal.feedback', string='Related Feedback', required=True, ondelete='cascade', tracking=True)
     partner_id = fields.Many2one(related='feedback_id.partner_id', string='Customer', store=True, readonly=True, comodel_name='res.partner')
 
     escalation_date = fields.Datetime(string='Escalation Date', default=fields.Datetime.now, required=True, readonly=True)
-    escalated_by_id = fields.Many2one('res.users', string='Escalated By', default=lambda self: self.env.user, required=True, tracking=True)
-    escalated_to_id = fields.Many2one('res.users', string='Assigned To', tracking=True)
+    escalated_by_id = fields.Many2one(comodel_name='res.users', string='Escalated By', default=lambda self: self.env.user, required=True, tracking=True)
+    escalated_to_id = fields.Many2one(comodel_name='res.users', string='Assigned To', tracking=True)
 
     escalation_reason = fields.Text(string='Reason for Escalation', required=True)
 

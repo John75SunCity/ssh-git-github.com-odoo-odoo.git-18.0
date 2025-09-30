@@ -214,7 +214,7 @@ class HardDriveScanWizardLine(models.TransientModel):
     _name = 'hard.drive.scan.wizard.line'
     _description = 'Hard Drive Scanning Wizard Line'
 
-    wizard_id = fields.Many2one('hard.drive.scan.wizard', string="Wizard", required=True, ondelete='cascade')
+    wizard_id = fields.Many2one(comodel_name='hard.drive.scan.wizard', string="Wizard", required=True, ondelete='cascade')
     serial_number = fields.Char(string="Serial Number", required=True)
     verified = fields.Boolean(
         string="Verified",

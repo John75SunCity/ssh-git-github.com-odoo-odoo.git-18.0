@@ -9,4 +9,4 @@ class InventoryAdjustmentReason(models.Model):
     code = fields.Char(string='Code', required=True, tracking=True)
     description = fields.Text(string='Description')
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)

@@ -10,7 +10,7 @@ class ShreddingPicklistItem(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    batch_id = fields.Many2one('shredding.inventory.batch', string="Batch", required=True, ondelete='cascade')
+    batch_id = fields.Many2one(comodel_name='shredding.inventory.batch', string="Batch", required=True, ondelete='cascade')
     sequence = fields.Integer(string="Sequence", default=10)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     barcode = fields.Char(string="Barcode", related='container_id.barcode', readonly=True, store=True)
@@ -24,16 +24,16 @@ class ShreddingPicklistItem(models.Model):
     # ============================================================================
     # ITEM & LOCATION
     # ============================================================================
-    container_id = fields.Many2one('records.container', string="Container", ondelete='restrict')
-    document_id = fields.Many2one('records.document', string="Document", ondelete='restrict')
-    expected_location_id = fields.Many2one('stock.location', string="Expected Location", related='container_id.location_id', readonly=True)
+    container_id = fields.Many2one(comodel_name='records.container', string="Container", ondelete='restrict')
+    document_id = fields.Many2one(comodel_name='records.document', string="Document", ondelete='restrict')
+    expected_location_id = fields.Many2one(comodel_name='stock.location', string="Expected Location", related='container_id.location_id', readonly=True)
 
     # ============================================================================
     # PICKING & VERIFICATION
     # ============================================================================
-    picked_by_id = fields.Many2one('res.users', string="Picked By", readonly=True)
+    picked_by_id = fields.Many2one(comodel_name='res.users', string="Picked By", readonly=True)
     picked_date = fields.Datetime(string="Picked Date", readonly=True)
-    verified_by_id = fields.Many2one('res.users', string="Verified By", readonly=True)
+    verified_by_id = fields.Many2one(comodel_name='res.users', string="Verified By", readonly=True)
     verified_date = fields.Datetime(string="Verified Date", readonly=True)
     notes = fields.Text(string="Notes")
     picking_instructions = fields.Text(string="Picking Instructions")

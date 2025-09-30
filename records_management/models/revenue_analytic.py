@@ -13,7 +13,7 @@ class RevenueAnalytic(models.Model):
     # ============================================================================
     name = fields.Char(string="Analytic Period", compute='_compute_name', store=True)
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', readonly=True, comodel_name='res.currency')
     state = fields.Selection([
         ('draft', 'Draft'),

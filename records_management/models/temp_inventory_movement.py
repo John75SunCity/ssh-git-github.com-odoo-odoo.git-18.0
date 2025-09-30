@@ -31,8 +31,8 @@ class TempInventoryMovement(models.Model):
     )
     quantity = fields.Float(string="Quantity", required=True, default=1.0)
 
-    location_src_id = fields.Many2one('stock.location', string="Source Location", required=True)
-    location_dest_id = fields.Many2one('stock.location', string="Destination Location", required=True)
+    location_src_id = fields.Many2one(comodel_name='stock.location', string="Source Location", required=True)
+    location_dest_id = fields.Many2one(comodel_name='stock.location', string="Destination Location", required=True)
 
     user_id = fields.Many2one(
         'res.users',

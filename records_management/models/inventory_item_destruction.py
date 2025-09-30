@@ -7,7 +7,7 @@ class InventoryItemDestruction(models.Model):
 
     name = fields.Char(string='Destruction Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     date = fields.Datetime(string='Destruction Date', required=True, default=fields.Datetime.now)
-    responsible_id = fields.Many2one('res.users', string='Responsible', required=True, tracking=True)
+    responsible_id = fields.Many2one(comodel_name='res.users', string='Responsible', required=True, tracking=True)
     item_ids = fields.One2many('inventory.item.destruction.line', 'destruction_id', string='Destruction Lines')
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -17,7 +17,7 @@ class InventoryItemDestruction(models.Model):
     ], string='Status', default='draft', tracking=True)
     notes = fields.Text(string='Notes')
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
 
     @api.model_create_multi
     def create(self, vals_list):

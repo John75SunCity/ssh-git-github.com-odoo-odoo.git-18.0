@@ -12,7 +12,6 @@ import { useService } from '@web/core/utils/hooks';
 class FleetFSMDashboard extends Component {
     setup() {
         this.orm = useService('orm');
-        this.user = useService('user');
         this.action = useService('action');
         onWillStart(async () => {
             // Placeholder for async prefetch; keep extremely light.

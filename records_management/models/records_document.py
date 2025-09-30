@@ -56,8 +56,8 @@ class RecordsDocument(models.Model):
     name = fields.Char(string="Document Name", required=True, tracking=True)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    responsible_person_id = fields.Many2one('res.users', string='Responsible')
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    responsible_person_id = fields.Many2one(comodel_name='res.users', string='Responsible')
     reference = fields.Char(string="Reference / Barcode", copy=False, tracking=True)
 
     # ============================================================================
@@ -121,7 +121,7 @@ class RecordsDocument(models.Model):
     received_date = fields.Date(string="Received Date", default=fields.Date.context_today, tracking=True)
     storage_date = fields.Date(string="Storage Date", tracking=True)
     last_access_date = fields.Date(string="Last Access Date", tracking=True)
-    last_access_user_id = fields.Many2one('res.users', string="Last Accessed By", readonly=True, tracking=True)
+    last_access_user_id = fields.Many2one(comodel_name='res.users', string="Last Accessed By", readonly=True, tracking=True)
     destruction_eligible_date = fields.Date(string="Destruction Eligible Date", compute='_compute_destruction_eligible_date', store=True, tracking=True)
     actual_destruction_date = fields.Date(string="Actual Destruction Date", readonly=True, tracking=True)
     days_until_destruction = fields.Integer(string="Days Until Destruction", compute='_compute_days_until_destruction')

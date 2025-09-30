@@ -11,7 +11,7 @@ class TransitoryFieldConfig(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string="Field Label", required=True, tracking=True)
-    model_id = fields.Many2one('ir.model', string="Model", required=True, ondelete='cascade',
+    model_id = fields.Many2one(comodel_name='ir.model', string="Model", required=True, ondelete='cascade',
                                help="The model to add the new field to.")
     field_name = fields.Char(string="Technical Name", required=True, tracking=True,
                              help="The technical name of the field (e.g., x_custom_field).")
@@ -41,14 +41,14 @@ class TransitoryFieldConfig(models.Model):
     tracking = fields.Boolean(string="Track Changes", default=True)
     
     # Relational Fields
-    relation_model_id = fields.Many2one('ir.model', string="Relation Model",
+    relation_model_id = fields.Many2one(comodel_name='ir.model', string="Relation Model",
                                         help="For Many2one fields, specify the target model.")
     
     # Selection Field
     selection_options = fields.Text(string="Selection Options", 
                                     help="For Selection fields, provide options as a Python list of tuples, e.g., [('key1', 'Value1'), ('key2', 'Value2')]")
 
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
 
     # ============================================================================

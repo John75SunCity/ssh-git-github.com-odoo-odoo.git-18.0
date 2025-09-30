@@ -12,10 +12,10 @@ class PortalRequest(models.Model):
     # CORE FIELDS
     # ============================================================================
     name = fields.Char(string='Request #', required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    user_id = fields.Many2one('res.users', string='Assigned To', tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='Assigned To', tracking=True)
     # Contextual label disambiguation (Batch 2)
     description = fields.Html(string='Request Details', required=True)
 
@@ -75,7 +75,7 @@ class PortalRequest(models.Model):
     # ============================================================================
     # BILLING & COST
     # ============================================================================
-    currency_id = fields.Many2one('res.currency', related='company_id.currency_id', string='Currency')
+    currency_id = fields.Many2one(comodel_name='res.currency', related='company_id.currency_id', string='Currency')
     estimated_cost = fields.Monetary(string='Estimated Cost', currency_field='currency_id', tracking=True)
     actual_cost = fields.Monetary(string='Actual Cost', currency_field='currency_id', readonly=True)
     billing_status = fields.Selection([
@@ -92,12 +92,12 @@ class PortalRequest(models.Model):
     customer_signature_date = fields.Datetime(string='Customer Signature Date', readonly=True)
     technician_signature = fields.Binary(string='Technician Signature', copy=False)
     technician_signature_date = fields.Datetime(string='Technician Signature Date', readonly=True)
-    certificate_of_destruction_id = fields.Many2one('ir.attachment', string='Certificate of Destruction', readonly=True)
+    certificate_of_destruction_id = fields.Many2one(comodel_name='ir.attachment', string='Certificate of Destruction', readonly=True)
 
     # ============================================================================
     # RELATIONAL & COMPUTED FIELDS
     # ============================================================================
-    work_order_id = fields.Many2one('project.task', string='Work Order', readonly=True)
+    work_order_id = fields.Many2one(comodel_name='project.task', string='Work Order', readonly=True)
     attachment_count = fields.Integer(compute='_compute_attachment_count', string='Attachments')
     shredding_service_id = fields.Many2one(
         'shredding.service',

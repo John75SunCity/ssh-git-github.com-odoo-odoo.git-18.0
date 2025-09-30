@@ -11,7 +11,7 @@ class PaymentSplitLine(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    split_id = fields.Many2one('payment.split', string='Payment Split', required=True, ondelete='cascade')
+    split_id = fields.Many2one(comodel_name='payment.split', string='Payment Split', required=True, ondelete='cascade')
     sequence = fields.Integer(default=10)
 
     name = fields.Char(string='Description', required=True)
@@ -20,7 +20,7 @@ class PaymentSplitLine(models.Model):
         "res.currency", related="split_id.currency_id", string="Currency", readonly=True, store=True
     )
 
-    partner_id = fields.Many2one('res.partner', string='Destination Partner')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Destination Partner')
     invoice_id = fields.Many2one(
         "account.move",
         string="Destination Invoice",

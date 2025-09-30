@@ -20,13 +20,13 @@ class RetrievalItemBase(models.AbstractModel):
     name = fields.Char(string='Item Reference', required=True, tracking=True)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
 
     # ============================================================================
     # USER ASSIGNMENT AND TRACKING
     # ============================================================================
-    user_id = fields.Many2one('res.users', string='Assigned User', default=lambda self: self.env.user, tracking=True)
-    retrieved_by_id = fields.Many2one('res.users', string='Retrieved By')
+    user_id = fields.Many2one(comodel_name='res.users', string='Assigned User', default=lambda self: self.env.user, tracking=True)
+    retrieved_by_id = fields.Many2one(comodel_name='res.users', string='Retrieved By')
     priority = fields.Selection([
         ('0', 'Low'),
         ('1', 'Normal'),
@@ -52,13 +52,13 @@ class RetrievalItemBase(models.AbstractModel):
     # ============================================================================
     # PARTNER AND CUSTOMER INFORMATION
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string='Customer', tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', tracking=True)
 
     # ============================================================================
     # LOCATION AND CONTAINER TRACKING
     # ============================================================================
-    location_id = fields.Many2one('records.location', string='Current Location')
-    container_id = fields.Many2one('records.container', string='Container')
+    location_id = fields.Many2one(comodel_name='records.location', string='Current Location')
+    container_id = fields.Many2one(comodel_name='records.container', string='Container')
     current_location = fields.Char(string='Current Location Description')
 
     # ============================================================================
@@ -91,7 +91,7 @@ class RetrievalItemBase(models.AbstractModel):
         ('restricted', 'Restricted')
     ], string='Security Level', default='internal')
 
-    access_authorized_by_id = fields.Many2one('res.users', string='Access Authorized By')
+    access_authorized_by_id = fields.Many2one(comodel_name='res.users', string='Access Authorized By')
     authorization_date = fields.Datetime(string='Authorization Date')
 
     # ============================================================================

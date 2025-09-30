@@ -10,8 +10,8 @@ class HrEmployee(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    records_manager_id = fields.Many2one('hr.employee', string="Records Manager")
-    records_department_id = fields.Many2one('records.department', string="Records Department", 
+    records_manager_id = fields.Many2one(comodel_name='hr.employee', string="Records Manager")
+    records_department_id = fields.Many2one(comodel_name='records.department', string="Records Department", 
                                           help="Department this employee belongs to for records management purposes")
     
     naid_security_clearance = fields.Selection([

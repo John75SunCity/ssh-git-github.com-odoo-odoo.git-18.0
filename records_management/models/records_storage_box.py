@@ -13,7 +13,7 @@ class RecordsStorageBox(models.Model):
         ('medium', 'Medium'),
         ('large', 'Large'),
     ], string='Box Size', required=True, tracking=True)
-    location_id = fields.Many2one('records.location', string='Location', required=True, tracking=True)
+    location_id = fields.Many2one(comodel_name='records.location', string='Location', required=True, tracking=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('in_use', 'In Use'),
@@ -22,9 +22,9 @@ class RecordsStorageBox(models.Model):
     ], string='Status', default='draft', tracking=True)
     document_ids = fields.One2many('records.document', 'storage_box_id', string='Documents')
     document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
-    product_id = fields.Many2one('barcode.product', string='Barcode Product', ondelete='set null', index=True, help='Optional link to a barcode product template for this box.')
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    product_id = fields.Many2one(comodel_name='barcode.product', string='Barcode Product', ondelete='set null', index=True, help='Optional link to a barcode product template for this box.')
 
     @api.depends('document_ids')
     def _compute_document_count(self):

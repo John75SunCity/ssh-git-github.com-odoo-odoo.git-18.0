@@ -57,7 +57,7 @@ class PaperBaleRecycling(models.Model):
     ], string='Status', default='pending', tracking=True, required=True)
 
     # Financial Fields
-    currency_id = fields.Many2one('res.currency', related='company_id.currency_id')
+    currency_id = fields.Many2one(comodel_name='res.currency', related='company_id.currency_id')
     market_price_per_ton = fields.Monetary(string="Market Price per Ton", currency_field="currency_id", tracking=True)
     total_revenue = fields.Monetary(
         compute="_compute_financials", string="Total Revenue", currency_field="currency_id", store=True
@@ -73,7 +73,7 @@ class PaperBaleRecycling(models.Model):
     energy_savings = fields.Float(string="Energy Savings (kWh)", help="Estimated energy savings.")
 
     notes = fields.Text(string="Recycling Notes")
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True)
     active = fields.Boolean(default=True)
 
     # ============================================================================

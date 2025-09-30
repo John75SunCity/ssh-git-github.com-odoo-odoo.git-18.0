@@ -16,8 +16,8 @@ class CustomerInventory(models.Model):
 
     # CORE & WORKFLOW ---------------------------------------------------------
     name = fields.Char(string='Inventory Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -35,8 +35,8 @@ class CustomerInventory(models.Model):
                                      help="Aggregate of file counts across all inventory lines")
 
     # RELATIONSHIPS -----------------------------------------------------------
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    department_id = fields.Many2one('records.department', string='Department', tracking=True,
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
+    department_id = fields.Many2one(comodel_name='records.department', string='Department', tracking=True,
                                     help="Optional: Filter inventory by a specific customer department.")
 
     # INVENTORY DETAILS -------------------------------------------------------
@@ -56,7 +56,7 @@ class CustomerInventory(models.Model):
     ], string='Inventory Type', default='full', required=True)
 
     cycle_count = fields.Boolean(string='Cycle Count', help="Mark this as a cycle count inventory")
-    previous_inventory_id = fields.Many2one('customer.inventory', string='Previous Inventory',
+    previous_inventory_id = fields.Many2one(comodel_name='customer.inventory', string='Previous Inventory',
                                             help="Reference to previous inventory for variance tracking")
 
     # Variance tracking
@@ -82,7 +82,7 @@ class CustomerInventory(models.Model):
     )
 
     # Workflow fields
-    reviewer_id = fields.Many2one('res.users', string='Reviewer', tracking=True)
+    reviewer_id = fields.Many2one(comodel_name='res.users', string='Reviewer', tracking=True)
     review_notes = fields.Text(string='Review Notes')
 
     # COMPUTE METHODS ---------------------------------------------------------

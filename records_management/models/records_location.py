@@ -58,19 +58,19 @@ class RecordsLocation(models.Model):
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     code = fields.Char(string="Location Code", required=True, copy=False, readonly=True, default=lambda self: _('New'), tracking=True)
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     sequence = fields.Integer(string="Sequence", default=10)
 
     # ============================================================================
     # HIERARCHY & RELATIONSHIPS
     # ============================================================================
-    parent_location_id = fields.Many2one('records.location', string="Parent Location", ondelete='cascade', tracking=True)
+    parent_location_id = fields.Many2one(comodel_name='records.location', string="Parent Location", ondelete='cascade', tracking=True)
     child_location_ids = fields.One2many('records.location', 'parent_location_id', string="Child Locations")
     child_count = fields.Integer(string="Child Location Count", compute='_compute_child_count')
     container_ids = fields.One2many('records.container', 'location_id', string="Containers")
     container_count = fields.Integer(string="Container Count", compute='_compute_container_count', store=True)
-    group_id = fields.Many2one('location.group', string='Location Group')
+    group_id = fields.Many2one(comodel_name='location.group', string='Location Group')
 
     # ============================================================================
     # ADDRESS & COORDINATES
@@ -80,7 +80,7 @@ class RecordsLocation(models.Model):
     city = fields.Char()
     state_id = fields.Many2one("res.country.state", string='State', ondelete='restrict', domain="[('country_id', '=?', country_id)]")
     zip = fields.Char(string='Zip', change_default=True)
-    country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
+    country_id = fields.Many2one(comodel_name='res.country', string='Country', ondelete='restrict')
     full_address = fields.Text(string="Full Address", compute='_compute_full_address')
 
     building = fields.Char(string="Building")

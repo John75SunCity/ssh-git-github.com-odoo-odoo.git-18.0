@@ -12,7 +12,7 @@ class ShreddingTeam(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Team Name", required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)
     state = fields.Selection([
@@ -26,7 +26,7 @@ class ShreddingTeam(models.Model):
     # ============================================================================
     # TEAM COMPOSITION
     # ============================================================================
-    team_leader_id = fields.Many2one('hr.employee', string="Team Leader", tracking=True)
+    team_leader_id = fields.Many2one(comodel_name='hr.employee', string="Team Leader", tracking=True)
     member_ids = fields.Many2many('hr.employee', 'shredding_team_member_rel', 'team_id', 'employee_id', string="Team Members")
     member_count = fields.Integer(string="Member Count", compute='_compute_member_count', store=True)
 
@@ -72,9 +72,9 @@ class ShreddingTeam(models.Model):
         string="Assigned Equipment",
         domain="[('equipment_category', '=', 'shredder')]"
     )
-    primary_equipment_id = fields.Many2one('maintenance.equipment', string="Primary Shredder")
+    primary_equipment_id = fields.Many2one(comodel_name='maintenance.equipment', string="Primary Shredder")
     mobile_unit = fields.Boolean(string="Is Mobile Unit")
-    base_location_id = fields.Many2one('records.location', string="Base Location")
+    base_location_id = fields.Many2one(comodel_name='records.location', string="Base Location")
     service_area_ids = fields.Many2many(
         'res.country.state',
         relation='shredding_team_service_area_rel',

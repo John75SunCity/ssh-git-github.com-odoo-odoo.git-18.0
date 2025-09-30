@@ -13,16 +13,16 @@ class NaidDestructionRecord(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string='Record Number', required=True, tracking=True, index=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
-    user_id = fields.Many2one('res.users', string='Created By', default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='Created By', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string='Active', default=True)
 
     # ============================================================================
     # BUSINESS SPECIFIC FIELDS
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     destruction_date = fields.Date(string='Destruction Date', required=True, tracking=True, index=True)
-    certificate_id = fields.Many2one('naid.certificate', string='NAID Certificate', tracking=True)
+    certificate_id = fields.Many2one(comodel_name='naid.certificate', string='NAID Certificate', tracking=True)
     items_destroyed = fields.Integer(string='Items Destroyed', compute='_compute_items_destroyed', store=True)
 
     method = fields.Selection([
@@ -34,7 +34,7 @@ class NaidDestructionRecord(models.Model):
         ('other', 'Other Method')
     ], string='Destruction Method', required=True, tracking=True)
 
-    responsible_user_id = fields.Many2one('res.users', string='Responsible Technician', required=True, tracking=True)
+    responsible_user_id = fields.Many2one(comodel_name='res.users', string='Responsible Technician', required=True, tracking=True)
     notes = fields.Text(string='Destruction Notes')
     witness_ids = fields.Many2many(
         'res.users',
@@ -59,7 +59,7 @@ class NaidDestructionRecord(models.Model):
     # NAID COMPLIANCE FIELDS
     # ============================================================================
     naid_compliant = fields.Boolean(string='NAID Compliant', default=True)
-    chain_of_custody_id = fields.Many2one('naid.custody', string='Chain of Custody')
+    chain_of_custody_id = fields.Many2one(comodel_name='naid.custody', string='Chain of Custody')
     security_level = fields.Selection([
         ('level_1', 'Level 1 - Strip Cut'),
         ('level_2', 'Level 2 - Cross Cut'),

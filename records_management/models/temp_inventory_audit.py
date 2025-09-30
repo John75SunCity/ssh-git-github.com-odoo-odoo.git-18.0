@@ -30,12 +30,12 @@ class TempInventoryAudit(models.Model):
         ('cancel', 'Cancelled'),
     ], string="Event Type", required=True)
 
-    user_id = fields.Many2one('res.users', string="User", default=lambda self: self.env.user, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="User", default=lambda self: self.env.user, readonly=True)
     details = fields.Text(string="Details")
     ip_address = fields.Char(string='IP Address', readonly=True)
     active = fields.Boolean(default=True)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
 
     # ============================================================================
     # COMPUTE METHODS

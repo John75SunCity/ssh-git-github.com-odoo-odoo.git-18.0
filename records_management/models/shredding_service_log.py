@@ -12,8 +12,8 @@ class ShreddingServiceLog(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Log Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string='Logged By', default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='Logged By', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(default=True)
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -25,10 +25,10 @@ class ShreddingServiceLog(models.Model):
     # ============================================================================
     # RELATIONSHIPS & CONTEXT
     # ============================================================================
-    shredding_service_id = fields.Many2one('project.task', string="Shredding Service", required=True, ondelete='cascade')
-    partner_id = fields.Many2one('res.partner', string="Customer", related='shredding_service_id.partner_id', store=True, readonly=True)
-    operator_id = fields.Many2one('res.users', string="Operator", tracking=True)
-    equipment_id = fields.Many2one('maintenance.equipment', string="Equipment", tracking=True)
+    shredding_service_id = fields.Many2one(comodel_name='project.task', string="Shredding Service", required=True, ondelete='cascade')
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", related='shredding_service_id.partner_id', store=True, readonly=True)
+    operator_id = fields.Many2one(comodel_name='res.users', string="Operator", tracking=True)
+    equipment_id = fields.Many2one(comodel_name='maintenance.equipment', string="Equipment", tracking=True)
 
     # ============================================================================
     # TIMING & PERFORMANCE

@@ -30,7 +30,7 @@ class AdvancedBillingContact(models.Model):
     phone = fields.Char(string='Phone', tracking=True)
 
     # Billing profile relationship
-    billing_profile_id = fields.Many2one('advanced.billing.profile', string='Billing Profile',
+    billing_profile_id = fields.Many2one(comodel_name='advanced.billing.profile', string='Billing Profile',
                                         required=True, ondelete='cascade')
     partner_id = fields.Many2one(related='billing_profile_id.partner_id', string='Customer',
                                 store=True, readonly=True, comodel_name='res.partner')

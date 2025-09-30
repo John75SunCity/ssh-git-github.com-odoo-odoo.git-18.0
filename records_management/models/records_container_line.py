@@ -6,15 +6,15 @@ class RecordsContainerLine(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, id'
 
-    container_id = fields.Many2one('records.container', string='Container', required=True, ondelete='cascade')
+    container_id = fields.Many2one(comodel_name='records.container', string='Container', required=True, ondelete='cascade')
     sequence = fields.Integer(string='Sequence', default=10)
     name = fields.Char(string='Description', required=True)
-    document_type_id = fields.Many2one('records.document.type', string='Document Type')
+    document_type_id = fields.Many2one(comodel_name='records.document.type', string='Document Type')
     quantity = fields.Float(string='Quantity', default=1.0)
-    unit_id = fields.Many2one('uom.uom', string='Unit of Measure')
+    unit_id = fields.Many2one(comodel_name='uom.uom', string='Unit of Measure')
     notes = fields.Text(string='Notes')
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
 
     # Dates and tracking
     date_added = fields.Datetime(string='Date Added', default=fields.Datetime.now)

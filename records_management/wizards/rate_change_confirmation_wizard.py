@@ -20,7 +20,7 @@ class RateChangeConfirmationWizard(models.TransientModel):
     _description = 'Rate Change Confirmation Wizard'
 
     # Reference to forecast
-    forecast_id = fields.Many2one('revenue.forecast', string='Forecast Reference', required=True)
+    forecast_id = fields.Many2one(comodel_name='revenue.forecast', string='Forecast Reference', required=True)
 
     # Summary information
     revenue_impact = fields.Float(string='Annual Revenue Impact ($)', readonly=True)
@@ -42,7 +42,7 @@ class RateChangeConfirmationWizard(models.TransientModel):
 
     # Approval requirements
     requires_approval = fields.Boolean(string='Requires Management Approval', default=True)
-    approved_by_id = fields.Many2one('res.users', string='Approved By')
+    approved_by_id = fields.Many2one(comodel_name='res.users', string='Approved By')
     approval_date = fields.Date(string='Approval Date')
     approval_notes = fields.Text(string='Approval Notes')
 

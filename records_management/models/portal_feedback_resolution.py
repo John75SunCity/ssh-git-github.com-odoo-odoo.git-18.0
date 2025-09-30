@@ -12,13 +12,13 @@ class PortalFeedbackResolution(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Resolution Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
     active = fields.Boolean(default=True)
 
     feedback_id = fields.Many2one('portal.feedback', string='Related Feedback', required=True, ondelete='cascade')
     partner_id = fields.Many2one(related='feedback_id.partner_id', string='Customer', store=True, readonly=True, comodel_name='res.partner')
 
-    resolved_by_id = fields.Many2one('res.users', string='Resolved By', default=lambda self: self.env.user, tracking=True)
+    resolved_by_id = fields.Many2one(comodel_name='res.users', string='Resolved By', default=lambda self: self.env.user, tracking=True)
     resolution_date = fields.Datetime(string='Resolution Date', readonly=True, copy=False)
 
     resolution_type = fields.Selection([

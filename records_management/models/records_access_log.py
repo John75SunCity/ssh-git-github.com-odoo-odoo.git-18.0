@@ -15,16 +15,16 @@ class RecordsAccessLog(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Log Entry", required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string='User', required=True, readonly=True, default=lambda self: self.env.user)
-    partner_id = fields.Many2one('res.partner', string="Customer", related='container_id.partner_id', store=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='User', required=True, readonly=True, default=lambda self: self.env.user)
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", related='container_id.partner_id', store=True, readonly=True)
     active = fields.Boolean(default=True)
 
     # ============================================================================
     # RELATED OBJECTS
     # ============================================================================
-    container_id = fields.Many2one('records.container', string="Container", readonly=True)
-    location_id = fields.Many2one('records.location', string="Location", related='container_id.location_id', store=True, readonly=True)
+    container_id = fields.Many2one(comodel_name='records.container', string="Container", readonly=True)
+    location_id = fields.Many2one(comodel_name='records.location', string="Location", related='container_id.location_id', store=True, readonly=True)
 
     # ============================================================================
     # ACCESS DETAILS
@@ -59,7 +59,7 @@ class RecordsAccessLog(models.Model):
     security_level = fields.Selection(related='container_id.security_level', string="Security Level", store=True, readonly=True)
     compliance_required = fields.Boolean(string="Compliance Documentation Required", compute='_compute_compliance_flags', store=True)
     risk_score = fields.Integer(string="Risk Score", compute='_compute_risk_score', store=True, help="Calculated risk score (0-100). Higher is more risky.")
-    audit_trail_id = fields.Many2one('naid.audit.log', string="NAID Audit Trail", readonly=True)
+    audit_trail_id = fields.Many2one(comodel_name='naid.audit.log', string="NAID Audit Trail", readonly=True)
     state = fields.Selection([
         ('new', 'New'), ('reviewed', 'Reviewed'), ('suspicious', 'Suspicious'), ('resolved', 'Resolved')
     ], string="Status", default='new', tracking=True)

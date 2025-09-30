@@ -42,11 +42,11 @@ class PaperLoadShipment(models.Model):
     mixed_count = fields.Integer(compute='_compute_grade_counts', string="Mixed Bales", store=True)
     cardboard_count = fields.Integer(compute='_compute_grade_counts', string="Cardboard Bales", store=True)
 
-    carrier_id = fields.Many2one('res.partner', string="Carrier", domain="[('is_company', '=', True)]")
-    driver_id = fields.Many2one('res.partner', string="Driver", domain="[('is_company', '=', False)]")
+    carrier_id = fields.Many2one(comodel_name='res.partner', string="Carrier", domain="[('is_company', '=', True)]")
+    driver_id = fields.Many2one(comodel_name='res.partner', string="Driver", domain="[('is_company', '=', False)]")
 
-    pickup_location_id = fields.Many2one('stock.location', string="Pickup Location")
-    delivery_location_id = fields.Many2one('stock.location', string="Delivery Location")
+    pickup_location_id = fields.Many2one(comodel_name='stock.location', string="Pickup Location")
+    delivery_location_id = fields.Many2one(comodel_name='stock.location', string="Delivery Location")
 
     scheduled_pickup_date = fields.Datetime(string="Scheduled Pickup", tracking=True)
     actual_pickup_date = fields.Datetime(string="Actual Pickup", readonly=True, tracking=True)
@@ -55,7 +55,7 @@ class PaperLoadShipment(models.Model):
     actual_delivery_date = fields.Datetime(string="Actual Delivery", readonly=True, tracking=True)
 
     notes = fields.Text(string="Shipment Notes")
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True)
     active = fields.Boolean(default=True)
 
     # ============================================================================

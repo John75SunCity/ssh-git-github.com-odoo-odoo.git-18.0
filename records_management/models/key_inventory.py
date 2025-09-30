@@ -21,8 +21,8 @@ class KeyInventory(models.Model):
 
     name = fields.Char(string='Key Name', required=True, tracking=True)
     serial_number = fields.Char(string='Serial Number', tracking=True)
-    location_id = fields.Many2one('records.location', string='Location', tracking=True)
-    assigned_to_id = fields.Many2one('res.users', string='Assigned To', tracking=True)
+    location_id = fields.Many2one(comodel_name='records.location', string='Location', tracking=True)
+    assigned_to_id = fields.Many2one(comodel_name='res.users', string='Assigned To', tracking=True)
     status = fields.Selection([
         ('available', 'Available'),
         ('assigned', 'Assigned'),
@@ -30,7 +30,7 @@ class KeyInventory(models.Model):
         ('retired', 'Retired'),
     ], string='Status', default='available')
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     notes = fields.Text(string='Notes')
 
     @api.constrains('status')

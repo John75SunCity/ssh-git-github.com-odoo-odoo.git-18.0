@@ -9,7 +9,7 @@ class PortalFeedbackCommunication(models.Model):
 
     name = fields.Char(string='Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     subject = fields.Char(string='Subject', required=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
     active = fields.Boolean(default=True)
 
     feedback_id = fields.Many2one('portal.feedback', string='Related Feedback', required=True, ondelete='cascade')
@@ -31,8 +31,8 @@ class PortalFeedbackCommunication(models.Model):
 
     message = fields.Html(string='Message Content', required=True)
 
-    sender_id = fields.Many2one('res.users', string='Sender (Internal)', default=lambda self: self.env.user)
-    recipient_id = fields.Many2one('res.partner', string='Recipient (Customer)')
+    sender_id = fields.Many2one(comodel_name='res.users', string='Sender (Internal)', default=lambda self: self.env.user)
+    recipient_id = fields.Many2one(comodel_name='res.partner', string='Recipient (Customer)')
 
     response_required = fields.Boolean(string='Response Required?')
     response_deadline = fields.Datetime(string='Response Deadline', tracking=True)

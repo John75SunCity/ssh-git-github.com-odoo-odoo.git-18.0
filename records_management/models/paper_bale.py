@@ -16,7 +16,7 @@ class PaperBale(models.Model):
     bale_number = fields.Char(
         string="Bale Number", readonly=True, copy=False, help="Sequential bale number for identification"
     )
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True)
     active = fields.Boolean(default=True)
 
     state = fields.Selection([
@@ -37,9 +37,9 @@ class PaperBale(models.Model):
         ('occ', 'OCC (Cardboard)'),
     ], string="Paper Grade", tracking=True)
 
-    location_id = fields.Many2one('records.location', string="Current Location", tracking=True)
-    shipment_id = fields.Many2one('paper.load.shipment', string="Shipment", readonly=True)
-    load_id = fields.Many2one('paper.bale.load', string="Load")
+    location_id = fields.Many2one(comodel_name='records.location', string="Current Location", tracking=True)
+    shipment_id = fields.Many2one(comodel_name='paper.load.shipment', string="Shipment", readonly=True)
+    load_id = fields.Many2one(comodel_name='paper.bale.load', string="Load")
 
     inspection_ids = fields.One2many('paper.bale.inspection', 'bale_id', string="Inspections")
     inspection_count = fields.Integer(compute='_compute_inspection_count', string="Inspection Count")

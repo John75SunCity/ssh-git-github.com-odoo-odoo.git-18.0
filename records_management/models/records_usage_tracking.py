@@ -13,7 +13,7 @@ class RecordsUsageTracking(models.Model):
     # ============================================================================
     name = fields.Char(string="Usage Record", required=True, copy=False, readonly=True, default=lambda self: _('New'), index=True)
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('billed', 'Billed'),
@@ -32,7 +32,7 @@ class RecordsUsageTracking(models.Model):
         ('other', 'Other'),
     ], string="Service Type", required=True, tracking=True)
     quantity = fields.Float(string='Quantity', required=True, default=1.0, tracking=True)
-    uom_id = fields.Many2one('uom.uom', string="Unit of Measure", ondelete='restrict')
+    uom_id = fields.Many2one(comodel_name='uom.uom', string="Unit of Measure", ondelete='restrict')
 
     # ============================================================================
     # FINANCIALS
@@ -42,7 +42,7 @@ class RecordsUsageTracking(models.Model):
     total_cost = fields.Monetary(
         string="Total Cost", currency_field="currency_id", compute="_compute_total_cost", store=True
     )
-    currency_id = fields.Many2one('res.currency', string='Currency', related='company_id.currency_id', readonly=True)
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', related='company_id.currency_id', readonly=True)
     billable = fields.Boolean(string="Billable", default=True)
     invoice_status = fields.Selection(
         [
@@ -64,9 +64,9 @@ class RecordsUsageTracking(models.Model):
         ondelete="cascade",
         help="The billing configuration this usage record belongs to.",
     )
-    partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
-    product_id = fields.Many2one('product.product', string="Service Product", ondelete='restrict')
-    invoice_line_id = fields.Many2one('account.move.line', string="Invoice Line", readonly=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", required=True, tracking=True)
+    product_id = fields.Many2one(comodel_name='product.product', string="Service Product", ondelete='restrict')
+    invoice_line_id = fields.Many2one(comodel_name='account.move.line', string="Invoice Line", readonly=True)
 
     # Generic relation to link to the source document (e.g., work order, destruction order)
     res_model = fields.Char(string="Source Model", readonly=True)

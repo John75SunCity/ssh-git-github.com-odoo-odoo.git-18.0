@@ -11,7 +11,7 @@ class NaidComplianceActionPlan(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Action Plan Title', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
 
     # Link to the source of the action plan (e.g., an alert or checklist)
@@ -30,7 +30,7 @@ class NaidComplianceActionPlan(models.Model):
     start_date = fields.Date(string='Start Date', readonly=True)
     completion_date = fields.Date(string='Completion Date', readonly=True)
 
-    responsible_user_id = fields.Many2one('res.users', string='Plan Manager', required=True, tracking=True, default=lambda self: self.env.user)
+    responsible_user_id = fields.Many2one(comodel_name='res.users', string='Plan Manager', required=True, tracking=True, default=lambda self: self.env.user)
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -46,7 +46,7 @@ class NaidComplianceActionPlan(models.Model):
 
     estimated_cost = fields.Monetary(string='Estimated Cost', currency_field='currency_id')
     actual_cost = fields.Monetary(string='Actual Cost', currency_field='currency_id')
-    currency_id = fields.Many2one('res.currency', related='company_id.currency_id', readonly=True)
+    currency_id = fields.Many2one(comodel_name='res.currency', related='company_id.currency_id', readonly=True)
 
     days_overdue = fields.Integer(string='Days Overdue', compute='_compute_days_overdue', store=True)
     is_overdue = fields.Boolean(string='Is Overdue', compute='_compute_days_overdue', store=True)

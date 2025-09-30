@@ -25,8 +25,8 @@ class CustomerFeedback(models.Model):
     # CORE & WORKFLOW (added escalation_date + communication_count)
     # ============================================================================
     name = fields.Char(string='Subject', required=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Assigned To', default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Assigned To', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([
         ('new', 'New'),
@@ -50,8 +50,8 @@ class CustomerFeedback(models.Model):
         ('high', 'High'),
         ('critical', 'Critical'),
     ], string='Escalation Level', tracking=True, index=True)
-    escalated_to_id = fields.Many2one('res.users', string='Escalated To', tracking=True)
-    escalated_by_id = fields.Many2one('res.users', string='Escalated By', tracking=True, default=lambda self: self.env.user, readonly=True)
+    escalated_to_id = fields.Many2one(comodel_name='res.users', string='Escalated To', tracking=True)
+    escalated_by_id = fields.Many2one(comodel_name='res.users', string='Escalated By', tracking=True, default=lambda self: self.env.user, readonly=True)
 
     # Timeline / dates
     acknowledged_date = fields.Datetime(string='Acknowledged On', readonly=True)
@@ -71,10 +71,10 @@ class CustomerFeedback(models.Model):
     # ============================================================================
     # RELATIONSHIPS & CONTEXT
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    contact_id = fields.Many2one('res.partner', string='Contact')
-    team_id = fields.Many2one('crm.team', string='Sales Team', tracking=True)
-    shredding_team_id = fields.Many2one('shredding.team', string="Shredding Team")
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
+    contact_id = fields.Many2one(comodel_name='res.partner', string='Contact')
+    team_id = fields.Many2one(comodel_name='crm.team', string='Sales Team', tracking=True)
+    shredding_team_id = fields.Many2one(comodel_name='shredding.team', string="Shredding Team")
     # Primary classification (single theme) to satisfy inverse used by survey.feedback.theme.feedback_ids
     theme_id = fields.Many2one(
         'survey.feedback.theme',

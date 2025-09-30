@@ -24,13 +24,13 @@ class RecordsContainerContentLine(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, id'
 
-    content_id = fields.Many2one('container.content', string='Container Content', required=True)
+    content_id = fields.Many2one(comodel_name='container.content', string='Container Content', required=True)
     name = fields.Char(string='Item Name', required=True)
     document_type = fields.Char(string='Document Type')
     quantity = fields.Integer(string='Quantity', default=1)
     sequence = fields.Integer(string='Sequence', default=10)
     notes = fields.Text(string='Notes')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company.id, required=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
     active = fields.Boolean(string='Active', default=True)
 
     _sql_constraints = [

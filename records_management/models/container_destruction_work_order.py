@@ -33,8 +33,8 @@ class ContainerDestructionWorkOrder(models.Model):
         default=lambda self: _('New')
     )
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -56,8 +56,8 @@ class ContainerDestructionWorkOrder(models.Model):
     # ============================================================================
     # CUSTOMER & AUTHORIZATION
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    portal_request_id = fields.Many2one('portal.request', string='Portal Request', ondelete='set null')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
+    portal_request_id = fields.Many2one(comodel_name='portal.request', string='Portal Request', ondelete='set null')
     destruction_reason = fields.Text(string='Reason for Destruction')
     customer_authorized = fields.Boolean(string='Customer Authorized', readonly=True)
     customer_authorization_date = fields.Datetime(string='Authorization Date', readonly=True)
@@ -80,7 +80,7 @@ class ContainerDestructionWorkOrder(models.Model):
     estimated_weight_lbs = fields.Float(string='Estimated Weight (lbs)', compute='_compute_container_metrics', store=True)
     inventory_completed = fields.Boolean(string='Inventory Completed', readonly=True)
     inventory_date = fields.Datetime(string='Inventory Date', readonly=True)
-    inventory_user_id = fields.Many2one('res.users', string='Inventoried By', readonly=True)
+    inventory_user_id = fields.Many2one(comodel_name='res.users', string='Inventoried By', readonly=True)
 
     # ============================================================================
     # SCHEDULING & EXECUTION
@@ -89,8 +89,8 @@ class ContainerDestructionWorkOrder(models.Model):
     pickup_date = fields.Datetime(string='Pickup Date', readonly=True)
     actual_destruction_date = fields.Datetime(string='Actual Destruction Date', readonly=True)
     estimated_duration_hours = fields.Float(string='Estimated Duration (Hours)', compute='_compute_estimated_duration')
-    destruction_facility_id = fields.Many2one('records.location', string='Destruction Facility', domain="[('is_destruction_facility', '=', True)]")
-    shredding_equipment_id = fields.Many2one('maintenance.equipment', string='Shredding Equipment')
+    destruction_facility_id = fields.Many2one(comodel_name='records.location', string='Destruction Facility', domain="[('is_destruction_facility', '=', True)]")
+    shredding_equipment_id = fields.Many2one(comodel_name='maintenance.equipment', string='Shredding Equipment')
     destruction_method = fields.Selection([
         ('shredding', 'Shredding'),
         ('pulping', 'Pulping'),
@@ -104,7 +104,7 @@ class ContainerDestructionWorkOrder(models.Model):
     # ============================================================================
     witness_required = fields.Boolean(string='Witness Required')
     customer_witness_name = fields.Char(string='Customer Witness')
-    internal_witness_id = fields.Many2one('res.users', string='Internal Witness')
+    internal_witness_id = fields.Many2one(comodel_name='res.users', string='Internal Witness')
     destruction_verified = fields.Boolean(string='Destruction Verified', readonly=True)
     verification_date = fields.Datetime(string='Verification Date', readonly=True)
     verification_notes = fields.Text(string='Verification Notes')
@@ -114,8 +114,8 @@ class ContainerDestructionWorkOrder(models.Model):
     # ============================================================================
     custody_transfer_ids = fields.One2many('custody.transfer.event', 'destruction_work_order_id', string='Chain of Custody')
     custody_complete = fields.Boolean(string='Custody Complete', compute='_compute_custody_complete')
-    transport_vehicle_id = fields.Many2one('fleet.vehicle', string='Transport Vehicle')
-    driver_id = fields.Many2one('hr.employee', string='Driver')
+    transport_vehicle_id = fields.Many2one(comodel_name='fleet.vehicle', string='Transport Vehicle')
+    driver_id = fields.Many2one(comodel_name='hr.employee', string='Driver')
 
     # ============================================================================
     # POST-DESTRUCTION & CERTIFICATION
@@ -124,7 +124,7 @@ class ContainerDestructionWorkOrder(models.Model):
     destruction_start_time = fields.Datetime(string='Destruction Start Time', readonly=True)
     destruction_end_time = fields.Datetime(string='Destruction End Time', readonly=True)
     destruction_duration_minutes = fields.Integer(string='Destruction Duration (Minutes)', compute='_compute_destruction_duration')
-    certificate_id = fields.Many2one('shredding.certificate', string='Certificate of Destruction', readonly=True)
+    certificate_id = fields.Many2one(comodel_name='shredding.certificate', string='Certificate of Destruction', readonly=True)
 
     # ============================================================================
     # COMPUTE METHODS

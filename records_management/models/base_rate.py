@@ -25,14 +25,14 @@ class BaseRate(models.Model):
     # CORE IDENTIFICATION & WORKFLOW
     # ============================================================================
     name = fields.Char(string='Rate Name', required=True, tracking=True, default="Default Base Rates")
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Rate Manager', default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Rate Manager', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string='Active', default=True, help="Indicates if this rate card is currently active.")
     effective_date = fields.Date(string='Effective Date', default=fields.Date.context_today, required=True, tracking=True)
     expiration_date = fields.Date(string='Expiration Date', tracking=True)
     version = fields.Char(string='Version', default='1.0', tracking=True)
     description = fields.Text(string='Description')
-    currency_id = fields.Many2one('res.currency', related='company_id.currency_id', string='Currency', readonly=True)
+    currency_id = fields.Many2one(comodel_name='res.currency', related='company_id.currency_id', string='Currency', readonly=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),

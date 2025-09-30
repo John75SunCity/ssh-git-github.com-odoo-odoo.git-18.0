@@ -48,7 +48,7 @@ class ShreddingHardDrive(models.Model):
     ], string="Destruction Method", required=True)
 
     destruction_date = fields.Datetime(string="Destruction Date", readonly=True)
-    destruction_technician_id = fields.Many2one('res.users', string="Technician", readonly=True)
+    destruction_technician_id = fields.Many2one(comodel_name='res.users', string="Technician", readonly=True)
 
     certificate_id = fields.Many2one(
         'shredding.certificate',

@@ -40,7 +40,7 @@ class Visitor(models.Model):
     areas_accessed = fields.Text(string="Areas Accessed", help="List all secured areas the visitor was granted access to.")
 
     escort_required = fields.Boolean(string="Escort Required", default=True)
-    escort_assigned_id = fields.Many2one('res.users', string="Assigned Escort")
+    escort_assigned_id = fields.Many2one(comodel_name='res.users', string="Assigned Escort")
 
     status = fields.Selection([
         ('scheduled', 'Scheduled'),
@@ -49,7 +49,7 @@ class Visitor(models.Model):
         ('cancelled', 'Cancelled')
     ], string="Status", default='scheduled', required=True, tracking=True)
 
-    partner_id = fields.Many2one('res.partner', string="Related Customer/Vendor")
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Related Customer/Vendor")
 
     background_check_passed = fields.Boolean(string="Background Check Passed")
     safety_briefing_completed = fields.Boolean(string="Safety Briefing Completed")
@@ -61,7 +61,7 @@ class Visitor(models.Model):
     notes = fields.Text(string="General Notes")
     security_notes = fields.Text(string="Security Notes", groups="records_management.group_records_manager")
 
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
 
     # ============================================================================

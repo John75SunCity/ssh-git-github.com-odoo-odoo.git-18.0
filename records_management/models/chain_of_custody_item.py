@@ -137,7 +137,7 @@ class ChainOfCustodyItem(models.Model):
 
     # Status and verification
     verified = fields.Boolean(string='Verified', default=False, tracking=True)
-    verified_by = fields.Many2one('res.users', string='Verified By', tracking=True)
+    verified_by = fields.Many2one(comodel_name='res.users', string='Verified By', tracking=True)
     verified_date = fields.Datetime(string='Verified Date', tracking=True)
 
     # Unified stored display name (removed legacy non-stored display_name_computed to avoid

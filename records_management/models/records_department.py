@@ -16,15 +16,15 @@ class RecordsDepartment(models.Model):
     code = fields.Char(string='Code', required=True)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     # Batch 3 label disambiguation
     description = fields.Text(string='Department Description')
 
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string="Customer", required=True, ondelete='cascade', tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", required=True, ondelete='cascade', tracking=True)
     billing_contact_ids = fields.One2many('records.department.billing.contact', 'department_id', string="Billing Contacts")
     container_ids = fields.One2many('records.container', 'department_id', string="Containers")
     document_ids = fields.One2many('records.document', 'department_id', string="Documents")

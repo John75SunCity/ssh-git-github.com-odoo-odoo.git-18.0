@@ -33,8 +33,8 @@ class CustomerPortalDiagram(models.Model):
     # CORE & CONFIGURATION
     # ============================================================================
     name = fields.Char(string="Diagram Name", required=True, default="Customer Organization Diagram")
-    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
 
     # ============================================================================
@@ -46,7 +46,7 @@ class CustomerPortalDiagram(models.Model):
     # ============================================================================
     # FILTER & DISPLAY OPTIONS
     # ============================================================================
-    search_partner_id = fields.Many2one('res.partner', string="Filter by Customer")
+    search_partner_id = fields.Many2one(comodel_name='res.partner', string="Filter by Customer")
     search_department_id = fields.Many2one(
         "records.department", string="Filter by Department", domain="[('partner_id', '=', search_partner_id)]"
     )

@@ -56,8 +56,8 @@ class PickupRoute(models.Model):
     # CORE FIELDS (Enhanced with FSM Integration)
     # ============================================================================
     name = fields.Char(string='Route Name', required=True, default='New')
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Route Driver', default=lambda self: self.env.user)
+    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one(comodel_name='res.users', string='Route Driver', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
 
     # Enhanced date/time management leveraging FSM scheduling
@@ -68,8 +68,8 @@ class PickupRoute(models.Model):
     actual_end_time = fields.Datetime(string='Actual End Time')
 
     # Leverage fleet.vehicle (already updated)
-    vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle')
-    supervisor_id = fields.Many2one('res.users', string='Supervisor')
+    vehicle_id = fields.Many2one(comodel_name='fleet.vehicle', string='Vehicle')
+    supervisor_id = fields.Many2one(comodel_name='res.users', string='Supervisor')
 
     # ============================================================================
     # FSM INTEGRATION - Link to project.task for standard workflows
@@ -122,7 +122,7 @@ class PickupRoute(models.Model):
     actual_duration = fields.Float(string='Actual Duration (hours)', compute='_compute_actual_duration', store=True)
     fuel_cost = fields.Monetary(string='Fuel Cost', compute='_compute_costs', store=True, currency_field='currency_id')
     total_cost = fields.Monetary(string='Total Cost', compute='_compute_costs', store=True, currency_field='currency_id')
-    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
+    currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
     request_count = fields.Integer(string='Request Count', compute='_compute_request_count')
     completion_percentage = fields.Float(string='Completion %', compute='_compute_completion_percentage')
     efficiency_score = fields.Float(string='Efficiency Score', compute='_compute_efficiency_score')
@@ -150,7 +150,7 @@ class PickupRoute(models.Model):
     )
     customer_instructions = fields.Text(string='Customer Instructions')
 
-    backup_driver_id = fields.Many2one('res.users', string='Backup Driver')
+    backup_driver_id = fields.Many2one(comodel_name='res.users', string='Backup Driver')
 
     # Remove all the incorrect field definitions and keep only proper computed fields
     container_count = fields.Integer(string='Container Count', compute='_compute_container_count')

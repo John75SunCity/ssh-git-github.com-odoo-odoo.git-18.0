@@ -7,7 +7,7 @@ class RecordsRetrievalOrderLine(models.Model):
     _inherit = ['mail.thread']
     _order = 'priority desc, order_id, name'
 
-    order_id = fields.Many2one('records.retrieval.order', string='Retrieval Order', required=True, ondelete='cascade', index=True)
+    order_id = fields.Many2one(comodel_name='records.retrieval.order', string='Retrieval Order', required=True, ondelete='cascade', index=True)
     name = fields.Char(string='Line Reference', required=True, copy=False, default=lambda self: _('New'))
     file_name = fields.Char(string='File Name', required=True, tracking=True)
     requested_file_name = fields.Char(string='Requested File Name', help='Alias for API parity with legacy model', compute='_compute_requested_file_name', store=True)
@@ -31,8 +31,8 @@ class RecordsRetrievalOrderLine(models.Model):
         ('scan', 'Scan Target'),
         ('other', 'Other')
     ], string='Item Type', default='file')
-    container_id = fields.Many2one('records.container', string='Container')
-    location_id = fields.Many2one('records.location', string='Location', related='container_id.location_id', store=True)
+    container_id = fields.Many2one(comodel_name='records.container', string='Container')
+    location_id = fields.Many2one(comodel_name='records.location', string='Location', related='container_id.location_id', store=True)
     position_note = fields.Char(string='Position / Slot')
     barcode = fields.Char(string='Barcode')
     estimated_pages = fields.Integer(string='Est. Pages', default=0)
@@ -58,17 +58,17 @@ class RecordsRetrievalOrderLine(models.Model):
         ('2', 'High'),
         ('3', 'Urgent')
     ], string='Priority', default='1')
-    assigned_user_id = fields.Many2one('res.users', string='Assigned To')
-    retrieved_by_id = fields.Many2one('res.users', string='Retrieved By')
+    assigned_user_id = fields.Many2one(comodel_name='res.users', string='Assigned To')
+    retrieved_by_id = fields.Many2one(comodel_name='res.users', string='Retrieved By')
     date_retrieved = fields.Datetime(string='Date Retrieved')
     date_delivered = fields.Datetime(string='Date Delivered')
     notes = fields.Text(string='Notes')
-    partner_id = fields.Many2one('res.partner', string='Customer', tracking=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', tracking=True)
 
     # ------------------------------------------------------------------
     # Unified retrieval line fields
     # ------------------------------------------------------------------
-    discovery_container_id = fields.Many2one('records.container', string='Discovery Container')
+    discovery_container_id = fields.Many2one(comodel_name='records.container', string='Discovery Container')
     searched_container_ids = fields.Many2many(
         'records.container',
         'retrieval_line_searched_container_rel',
