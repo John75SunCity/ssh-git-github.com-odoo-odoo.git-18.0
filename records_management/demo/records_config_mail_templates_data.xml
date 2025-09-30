@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
+<odoo>
     <data>
         <!-- Test Notification Email Template -->
         <record id="email_template_test_notification" model="mail.template">
