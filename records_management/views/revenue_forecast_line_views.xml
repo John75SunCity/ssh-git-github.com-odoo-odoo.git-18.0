@@ -16,7 +16,7 @@
                     <field name="variance_percentage" widget="percentage" />
                     <field name="confidence_level" />
                     <field name="status" />
-                    <field name="currency_id" invisible="1" />
+                    <!-- Removed always-invisible 'currency_id'; forecast amounts use company's currency -->
                 </list>
             </field>
         </record>
@@ -41,7 +41,7 @@
                                 <field name="period_type" />
                             </group>
                             <group name="financial">
-                                <field name="currency_id" invisible="1" />
+                                <!-- Removed always-invisible 'currency_id'; redundant -->
                                 <field name="forecasted_amount" />
                                 <field name="actual_amount" />
                                 <field name="variance_amount" />

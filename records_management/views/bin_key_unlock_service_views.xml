@@ -113,7 +113,7 @@
                                         <field name="travel_cost" />
                                         <field name="additional_fees" />
                                         <field name="total_cost" readonly="1" />
-                                        <field name="currency_id" column_invisible="1" />
+                                        <!-- Removed always-invisible 'currency_id' column; not needed in unlock service list -->
                                     </group>
                                     <group name="billing" string="Billing Information">
                                         <field name="billing_method" />

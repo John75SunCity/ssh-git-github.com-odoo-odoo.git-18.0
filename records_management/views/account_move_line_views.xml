@@ -36,6 +36,7 @@ invisible="records_service_type != 'shredding'"/>
                 <group string="Records Management" col="2"
 invisible="records_related == False">
                     <!-- Field kept for technical reasons (e.g., domain, context, or automation); already hidden by group invisibility -->
+                    <!-- Technical computed relation helper field (not user facing) -->
                     <field name="records_related" invisible="1"/>
                     <field name="pickup_request_id"/>
                     <field name="destruction_service_id"/>

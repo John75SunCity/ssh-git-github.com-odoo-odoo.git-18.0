@@ -14,7 +14,7 @@
                     <field name="total_documents" />
                     <field name="total_monthly_cost" widget="monetary" />
                     <field name="user_id" />
-                    <field name="active" invisible="1" />
+                    <!-- Removed always-invisible 'active' (archived records excluded via search filters) -->
                     <field name="company_id" groups="base.group_multi_company" />
                 </list>
             </field>
@@ -40,7 +40,7 @@
                             <group name="responsibility">
                                 <field name="user_id" />
                                 <field name="company_id" groups="base.group_multi_company" />
-                                <field name="currency_id" invisible="1" />
+                                <!-- Removed always-invisible 'currency_id'; amounts derive currency contextually -->
                             </group>
                         </group>
                         <group name="summary" string="Summary">

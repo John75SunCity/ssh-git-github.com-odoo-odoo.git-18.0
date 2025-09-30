@@ -62,7 +62,7 @@
                     <field name="category" />
                     <field name="service_type" />
                     <field name="purchase_cost" widget="monetary" options="{'currency_field': 'currency_id'}" />
-                    <field name="currency_id" column_invisible="1" />
+                    <!-- Removed always-invisible 'currency_id' column; amounts display with currency symbol separately -->
                     <field name="state" />
                     <field name="active" widget="boolean_toggle" />
                     <field name="activity_ids" widget="list_activity" />

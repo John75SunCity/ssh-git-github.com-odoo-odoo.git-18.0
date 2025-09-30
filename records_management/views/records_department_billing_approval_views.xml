@@ -13,7 +13,7 @@
                     <field name="service_description"/>
                     <field name="vendor"/>
                     <field name="charge_amount" widget="monetary"/>
-                    <field name="currency_id" invisible="1"/>
+                    <!-- Removed always-invisible 'currency_id'; billing approval amounts use company currency -->
                     <field name="approval_notes"/>
                 </list>
             </field>

@@ -176,7 +176,7 @@
                                 <group string="&lt;i class=&quot;fa fa-dollar-sign&quot;&gt;&lt;/i&gt; Pricing Information">
                                     <field name="list_price" widget="monetary"/>
                                     <field name="standard_price" widget="monetary"/>
-                                    <field name="currency_id" invisible="1"/>
+                                    <!-- Removed always-invisible 'currency_id'; product form already manages currency context -->
                                     <field name="price_margin"/>
                                 </group>
                                 <group string="📏 Units &amp;amp; Measurements">

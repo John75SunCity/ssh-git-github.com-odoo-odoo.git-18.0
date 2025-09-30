@@ -56,8 +56,9 @@ Reset
 </group>
 
 <!-- Hidden fields for conditional logic -->
-        <field name="check_performed" invisible="1"/>
-        <field name="key_allowed" invisible="1"/>
+    <!-- Technical state flags controlling dynamic wizard result sections -->
+    <field name="check_performed" invisible="1"/>
+    <field name="key_allowed" invisible="1"/>
 </sheet>
 
 <footer>

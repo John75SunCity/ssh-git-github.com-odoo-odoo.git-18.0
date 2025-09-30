@@ -37,7 +37,7 @@
                                         <field name="completion_date" readonly="state != 'in_progress'"/>
                                     </group>
                                     <group name="financials" string="Financial Information">
-                                        <field name="currency_id" invisible="1"/>
+                                        <!-- Removed always-invisible 'currency_id' (monetary fields already include currency via company) -->
                                     </group>
                                 </group>
                             </page>

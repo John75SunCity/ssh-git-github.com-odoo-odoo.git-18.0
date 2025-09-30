@@ -41,7 +41,7 @@
                     <group name="billing_details" string="Billing Details">
                         <field name="actual_weight_lbs"/>
                         <field name="billable_amount"/>
-                        <field name="currency_id" invisible="1"/>
+                        <!-- Removed always-invisible 'currency_id'; event costs resolved via monetary fields -->
                         <field name="billing_status"/>
                         <field name="invoice_line_id" readonly="1"/>
                     </group>

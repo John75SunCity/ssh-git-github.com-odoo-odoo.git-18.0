@@ -12,11 +12,12 @@
                     <field name="customer_location" />
                     <field name="state" />
                     <field name="current_fill_level" widget="progressbar" />
+                    <!-- Technical scheduling flag used for batch planning; hidden from direct editing -->
                     <field name="needs_collection" invisible="1" />
                     <field name="last_service_date" />
                     <field name="service_count" />
                     <field name="user_id" />
-                    <field name="active" invisible="1" />
+                    <!-- Removed always-invisible 'active' (archive handled via filters) -->
                 </list>
             </field>
         </record>

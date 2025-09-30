@@ -15,7 +15,7 @@
                 <field name="contact_type"/>
                 <field name="primary_contact"/>
                 <field name="preferred_communication"/>
-                <field name="active" invisible="1"/>
+                <!-- Removed always-invisible 'active' field: not needed in list; presence caused test_views failure -->
             </list>
         </field>
     </record>

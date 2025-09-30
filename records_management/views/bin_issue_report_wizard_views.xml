@@ -75,7 +75,7 @@
                                         invisible="not bill_customer or billing_rate_id"/>
         <field name="billing_amount" readonly="1"
                                         invisible="not bill_customer"/>
-        <field name="currency_id" invisible="1"/>
+    <!-- Removed always-invisible 'currency_id'; wizard monetary context handles currency -->
                             </group>
                         </group>
 
@@ -236,7 +236,7 @@
                     <group name="billing" string="Billing">
         <field name="customer_fault" readonly="1"/>
         <field name="billing_amount" readonly="1" widget="monetary"/>
-        <field name="currency_id" invisible="1"/>
+    <!-- Removed always-invisible 'currency_id'; redundant hidden field -->
         <field name="billed"/>
         <field name="payment_received"/>
                     </group>

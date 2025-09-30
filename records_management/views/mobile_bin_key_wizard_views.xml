@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
+
         <record id="mobile_bin_key_wizard_view_form" model="ir.ui.view">
             <field name="name">mobile.bin.key.wizard.view.form</field>
             <field name="model">mobile.bin.key.wizard</field>
@@ -56,6 +56,7 @@
                             <field name="service_notes" placeholder="Add service notes..." />
                             <field name="photo_ids" widget="many2many_binary" />
                         </group>
+                        <!-- Technical UI state flags (managed by JS / server logic); kept hidden intentionally -->
                         <field name="show_contact_creation" invisible="1" />
                         <field name="show_key_assignment" invisible="1" />
                         <field name="show_unlock_service" invisible="1" />
@@ -67,7 +68,7 @@
                                 <button string="Cancel" class="btn btn-secondary btn-block" special="cancel" />
                             </div>
                             <div class="col-6">
-                                <button string="Execute" class="btn btn-primary btn-block" name="action_execute" type="object" invisible="action_type == False" />
+                                <button string="Execute" class="btn btn-primary btn-block" name="action_execute" type="object" invisible="not action_type" />
                             </div>
                         </div>
                     </footer>
@@ -82,9 +83,9 @@
             <field name="target">new</field>
             <field name="context">{}</field>
         </record>
-    
+
         <menuitem id="menu_mobile_bin_key_wizard" name="Mobile Key Manager" parent="records_management.menu_records_management_root" action="action_mobile_bin_key_wizard" sequence="5" groups="records_management.group_records_user" />
-    
+
         <record id="action_mobile_key_shortcut" model="ir.actions.server">
             <field name="name">Quick Key Access</field>
             <field name="model_id" ref="records_management.model_mobile_bin_key_wizard" />
@@ -100,6 +101,6 @@ action = {
 }
     </field>
         </record>
-    
+
     </data>
 </odoo>

@@ -16,7 +16,7 @@
         <field name="partner_id"/>
         <field name="invoice_id"/>
         <field name="processed" widget="boolean_toggle"/>
-        <field name="currency_id" invisible="1"/>
+    <!-- Removed always-invisible 'currency_id'; form context already supplies currency for monetary fields (first occurrence) -->
         </list>
     </field>
     </record>
@@ -38,7 +38,7 @@
         <field name="split_id" required="1"/>
         <field name="sequence"/>
         <field name="amount" widget="monetary"/>
-        <field name="currency_id" invisible="1"/>
+    <!-- Removed always-invisible 'currency_id'; redundant hidden field (second occurrence) -->
                     </group>
                     <group>
         <field name="partner_id"/>

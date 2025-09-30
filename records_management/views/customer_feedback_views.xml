@@ -17,7 +17,7 @@
                     <field name="user_id" />
                     <field name="company_id" optional="show" />
                     <field name="write_date" widget="relative" optional="show" />
-                    <field name="active" invisible="1" />
+                    <!-- Removed always-invisible 'active' field to satisfy test_views (unnecessary in tree) -->
                 </list>
             </field>
         </record>

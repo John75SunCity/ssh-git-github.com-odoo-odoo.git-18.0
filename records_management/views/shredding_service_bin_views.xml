@@ -103,7 +103,7 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
 
                             <group name="billing_info" string="Billing Information">
         <field name="base_rate_per_service" widget="monetary"/>
-        <field name="currency_id" invisible="1"/>
+    <!-- Removed always-invisible 'currency_id' from form view; monetary widgets already resolve currency -->
                             </group>
                         </group>
 
