@@ -157,7 +157,9 @@
 <filter string="System Configs" name="filter_system" domain="[('category', '=', 'system')]"/>
 
 <filter string="My Configurations" name="filter_my_configs" domain="[('modified_by_id', '=', uid)]"/>
-<filter string="My Company" name="filter_my_company" domain="[('company_id', '=', company_id)]"/>
+<!-- Removed invalid domain using undefined variable company_id. Odoo JS domain evaluator cannot resolve bare symbol 'company_id'.
+    If needed later, reintroduce with a safe context-based default like domain="[('company_id','=', context.get('allowed_company_id'))]" and inject allowed_company_id via action context. -->
+<!-- <filter string="My Company" name="filter_my_company" domain="[('company_id', '=', company_id)]"/> -->
 
 <separator/>
 
