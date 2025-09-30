@@ -33,12 +33,13 @@
                         </div>
                         <group string="Restriction History" invisible="key_issuance_allowed == True">
                             <field name="key_restriction_history_ids" nolabel="1" mode="tree">
-                                <list>
+                                <!-- Converted inner <list> to <tree> for Odoo 18 compliance; inline one2many subviews must use <tree> -->
+                                <tree>
                                     <field name="state"/>
                                     <field name="restriction_reason"/>
                                     <field name="effective_date"/>
                                     <field name="user_id" string="Approved By"/>
-                                </list>
+                                </tree>
                             </field>
                         </group>
                     </page>
