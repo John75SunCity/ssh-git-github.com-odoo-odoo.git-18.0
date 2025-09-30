@@ -92,7 +92,8 @@
                 <xpath expr="//filter[@name='supplier']" position="after">
                     <separator />
                     <filter name="key_restricted" string="Key Restricted" domain="[('key_issuance_allowed', '=', False)]" />
-                    <filter name="recent_restrictions" string="Recently Restricted" domain="[('key_restriction_date', '&gt;=', (context_today-relativedelta(days=30)).strftime('%Y-%m-%d'))]" />
+                    <!-- Replaced Python expression in domain with stored computed boolean field -->
+                    <filter name="recent_restrictions" string="Recently Restricted" domain="[('recently_restricted', '=', True)]" />
                 </xpath>
             </field>
         </record>

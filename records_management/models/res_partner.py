@@ -166,6 +166,13 @@ class ResPartner(models.Model):
         compute='_compute_restricted_unlock_count',
         help="Number of unlock services performed while customer was restricted."
     )
+    # Recent restriction helper (avoid Python expressions in search filter domains)
+    recently_restricted = fields.Boolean(
+        string='Recently Restricted (30d)',
+        compute='_compute_recently_restricted',
+        store=True,
+        help="Indicates partner has an effective key restriction whose effective date is within the last 30 days. Stored for fast filtering; updated whenever restriction fields recompute."
+    )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -549,6 +556,28 @@ class ResPartner(models.Model):
         cnt_map = {r['partner_id'][0]: r['__count'] for r in rows}
         for partner in self:
             partner.restricted_unlock_count = cnt_map.get(partner.id, 0)
+
+    @api.depends('key_restriction_date', 'key_issuance_allowed')
+    def _compute_recently_restricted(self):
+        """A partner is 'recently restricted' if:
+        - key_issuance_allowed is False, and
+        - key_restriction_date is set and within the last 30 days (inclusive)
+
+        This replaces dynamic Python expressions in XML domains which are not
+        evaluated client-side (caused clickbot test failure)."""
+        from datetime import date, timedelta
+        today = date.today()
+        threshold = today - timedelta(days=30)
+        for partner in self:
+            recent = False
+            if not partner.key_issuance_allowed and partner.key_restriction_date:
+                try:
+                    if partner.key_restriction_date >= threshold:
+                        recent = True
+                except Exception:
+                    # Defensive: if date comparison fails, leave recent False
+                    recent = False
+            partner.recently_restricted = recent
 
     # =========================================================================
     # SEARCH HELPERS for computed (non-stored) fields used in domains
