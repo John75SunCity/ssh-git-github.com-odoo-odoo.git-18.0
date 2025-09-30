@@ -51,8 +51,11 @@
             <field name="category">system</field>
             <field name="config_key">default_bale_capacity_lbs</field>
             <field name="config_type">parameter</field>
-            <field name="value_number">500</field>
-            <field name="description">Default capacity for new paper bales in pounds. Used for automatic capacity calculations and alerts.</field>
+            <field name="value_number">2300.0</field>
+            <field name="value_text" eval="False"/>
+            <field name="value_boolean" eval="False"/>
+            <field name="value_selection" eval="False"/>
+            <field name="description">Default capacity for new paper bales in pounds (average: 2,300 lbs). Used for automatic capacity calculations and alerts.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
@@ -62,8 +65,11 @@
             <field name="category">system</field>
             <field name="config_key">default_shred_bin_capacity_lbs</field>
             <field name="config_type">parameter</field>
-            <field name="value_number">1000</field>
-            <field name="description">Default capacity for new shred bins in pounds. Used for capacity monitoring and alert thresholds.</field>
+            <field name="value_number">300.0</field>
+            <field name="value_text" eval="False"/>
+            <field name="value_boolean" eval="False"/>
+            <field name="value_selection" eval="False"/>
+            <field name="description">Default capacity for new shred bins in pounds (average: 300 lbs). Used for capacity monitoring and alert thresholds.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
     </data>
