@@ -41,6 +41,13 @@ class StockLot(models.Model):
     )
     audit_notes = fields.Text(string='Audit Notes')
 
+    # ------------------------------------------------------------------
+    # VIRTUAL BOOLEAN FILTERS (replace relativedelta in XML domains)
+    # ------------------------------------------------------------------
+    created_last_7d = fields.Boolean(compute='_compute_recency_flags', search='_search_created_last_7d', string='Created Last 7 Days')
+    created_last_30d = fields.Boolean(compute='_compute_recency_flags', search='_search_created_last_30d', string='Created Last 30 Days')
+    retention_due_30d = fields.Boolean(compute='_compute_retention_flags', search='_search_retention_due_30d', string='Retention Due ≤30d')
+
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
@@ -55,6 +62,52 @@ class StockLot(models.Model):
         """Compute number of documents associated with this lot."""
         for lot in self:
             lot.document_count = len(lot.document_ids)
+
+    def _compute_recency_flags(self):
+        from datetime import timedelta
+        now = fields.Datetime.now()
+        cut7 = now - timedelta(days=7)
+        cut30 = now - timedelta(days=30)
+        for rec in self:
+            # create_date is datetime; treat missing as False
+            cdate = rec.create_date
+            rec.created_last_7d = bool(cdate and cdate >= cut7)
+            rec.created_last_30d = bool(cdate and cdate >= cut30)
+
+    def _compute_retention_flags(self):
+        from datetime import timedelta
+        today = fields.Date.today()
+        soon = today + timedelta(days=30)
+        for rec in self:
+            rd = rec.retention_date
+            rec.retention_due_30d = bool(rd and today <= rd <= soon)
+
+    # -----------------------------
+    # SEARCH HELPERS
+    # -----------------------------
+    def _search_created_last_7d(self, operator, value):
+        from datetime import timedelta
+        if operator not in ('=', '=='):
+            return [('id', '!=', 0)]
+        boundary = fields.Datetime.now() - timedelta(days=7)
+        return [('create_date', '>=', boundary)] if value else ['|', ('create_date', '=', False), ('create_date', '<', boundary)]
+
+    def _search_created_last_30d(self, operator, value):
+        from datetime import timedelta
+        if operator not in ('=', '=='):
+            return [('id', '!=', 0)]
+        boundary = fields.Datetime.now() - timedelta(days=30)
+        return [('create_date', '>=', boundary)] if value else ['|', ('create_date', '=', False), ('create_date', '<', boundary)]
+
+    def _search_retention_due_30d(self, operator, value):
+        from datetime import timedelta
+        if operator not in ('=', '=='):
+            return [('id', '!=', 0)]
+        today = fields.Date.today()
+        soon = today + timedelta(days=30)
+        if value:
+            return [('retention_date', '>=', today), ('retention_date', '<=', soon)]
+        return ['|', ('retention_date', '=', False), ('retention_date', '>', soon)]
 
     # ============================================================================
     # ACTION METHODS

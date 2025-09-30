@@ -194,7 +194,7 @@
                     <filter string="Out of Stock" name="out_of_stock" domain="[('product_qty', '=', 0)]" />
                     <separator />
                     <filter string="Past Retention" name="past_retention" domain="[('retention_date', '&lt;', context_today)]" />
-                    <filter string="Retention Due Soon (30 days)" name="retention_soon" domain="[('retention_date', '&lt;=', (context_today + relativedelta(days=30))), ('retention_date', '&gt;=', context_today)]" />
+                    <filter string="Retention Due Soon (30 days)" name="retention_soon" domain="[('retention_due_30d', '=', True)]" />
                     <filter string="Retention Current" name="retention_current" domain="[('retention_date', '&gt;=', context_today)]" />
                     <separator />
                     <filter string="Records Boxes" name="records_boxes" domain="[('is_records_box', '=', True)]" />
@@ -203,8 +203,8 @@
                     <filter string="With Reference" name="with_reference" domain="[('ref', '!=', False)]" />
                     <separator />
                     <filter string="Created Today" name="created_today" domain="[('create_date', '&gt;=', context_today)]"/>
-                    <filter string="Created This Week" name="created_this_week" domain="[('create_date', '&gt;=', (context_today - relativedelta(days=7)))]"/>
-                    <filter string="Created This Month" name="created_this_month" domain="[('create_date', '&gt;=', (context_today - relativedelta(days=30)))]"/>
+                    <filter string="Created This Week" name="created_this_week" domain="[('created_last_7d', '=', True)]"/>
+                    <filter string="Created This Month" name="created_this_month" domain="[('created_last_30d', '=', True)]"/>
                     <group expand="0" string="Group By">
                         <filter string="Product" name="group_by_product" context="{'group_by': 'product_id'}" />
                         <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company" />

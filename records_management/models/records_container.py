@@ -184,6 +184,18 @@ class RecordsContainer(models.Model):
         string="Due for Destruction", compute="_compute_is_due_for_destruction", search="_search_due_for_destruction"
     )
 
+    # Virtual search helper flags replacing relativedelta usage in XML search filters
+    stored_last_30d = fields.Boolean(
+        string="Stored Last 30 Days",
+        compute="_compute_storage_recency_flags",
+        search="_search_stored_last_30d",
+        help="True when storage_start_date is within the last 30 days.")
+    destruction_due_6m = fields.Boolean(
+        string="Destruction Due ≤6 Months",
+        compute="_compute_storage_recency_flags",
+        search="_search_destruction_due_6m",
+        help="True when destruction_due_date is within the next ~6 months (180 days).")
+
     # ============================================================================
     # MOVEMENT & SECURITY
     # ============================================================================
@@ -363,6 +375,38 @@ class RecordsContainer(models.Model):
                 rec.content_date_range_display = "%s" % (d_to)
             else:
                 rec.content_date_range_display = False
+
+    # ------------------------------------------------------------------
+    # RECENCY & DESTRUCTION VIRTUAL FLAGS
+    # ------------------------------------------------------------------
+    def _compute_storage_recency_flags(self):
+        from datetime import timedelta
+        today = fields.Date.today()
+        cutoff = today - timedelta(days=30)
+        six_months = today + timedelta(days=180)
+        for rec in self:
+            rec.stored_last_30d = bool(rec.storage_start_date and rec.storage_start_date >= cutoff)
+            rec.destruction_due_6m = bool(rec.destruction_due_date and rec.destruction_due_date <= six_months)
+
+    def _search_stored_last_30d(self, operator, value):
+        from datetime import timedelta
+        if operator not in ('=', '=='):
+            return [('id', '!=', 0)]
+        today = fields.Date.today()
+        cutoff = today - timedelta(days=30)
+        if value:
+            return [('storage_start_date', '>=', cutoff)]
+        return ['|', ('storage_start_date', '=', False), ('storage_start_date', '<', cutoff)]
+
+    def _search_destruction_due_6m(self, operator, value):
+        from datetime import timedelta
+        if operator not in ('=', '=='):
+            return [('id', '!=', 0)]
+        today = fields.Date.today()
+        six_months = today + timedelta(days=180)
+        if value:
+            return [('destruction_due_date', '<=', six_months)]
+        return ['|', ('destruction_due_date', '=', False), ('destruction_due_date', '>', six_months)]
 
     # ============================================================================
     # ONCHANGE & HELPERS (Rates ↔ Container Type)
