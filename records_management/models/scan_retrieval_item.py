@@ -133,7 +133,7 @@ class ScanRetrievalItem(models.Model):
         search='_search_scanned_this_month',
         help='Scan date is within the current calendar month.' )
 
-    @api.depends('scan_date')
+    @api.depends('scan_completion_time')
     def _compute_scan_period_flags(self):
         today = fields.Date.context_today(self)
         from datetime import timedelta as _td
@@ -141,7 +141,7 @@ class ScanRetrievalItem(models.Model):
         week_start = today - _td(days=today.weekday())
         month_start = today.replace(day=1)
         for rec in self:
-            sd = rec.scan_date.date() if rec.scan_date else None
+            sd = rec.scan_completion_time.date() if rec.scan_completion_time else None
             rec.scanned_today = bool(sd and sd == today)
             rec.scanned_this_week = bool(sd and sd >= week_start)
             rec.scanned_this_month = bool(sd and sd >= month_start)
@@ -155,11 +155,11 @@ class ScanRetrievalItem(models.Model):
         start_dt = fields.Datetime.to_datetime(str(today) + ' 00:00:00')
         end_dt = fields.Datetime.to_datetime(str(today) + ' 23:59:59')
         if operator in ('=', '==') and value in truthy:
-            return [('scan_date', '>=', start_dt), ('scan_date', '<=', end_dt)]
+            return [('scan_completion_time', '>=', start_dt), ('scan_completion_time', '<=', end_dt)]
         if operator in ('!=', '<>') and value in truthy:
-            return ['|', ('scan_date', '=', False), '|', ('scan_date', '<', start_dt), ('scan_date', '>', end_dt)]
+            return ['|', ('scan_completion_time', '=', False), '|', ('scan_completion_time', '<', start_dt), ('scan_completion_time', '>', end_dt)]
         if operator in ('=', '==') and value not in truthy:
-            return ['|', ('scan_date', '=', False), '|', ('scan_date', '<', start_dt), ('scan_date', '>', end_dt)]
+            return ['|', ('scan_completion_time', '=', False), '|', ('scan_completion_time', '<', start_dt), ('scan_completion_time', '>', end_dt)]
         return [('id', '!=', 0)]
 
     def _search_scanned_this_week(self, operator, value):
@@ -169,11 +169,11 @@ class ScanRetrievalItem(models.Model):
         week_start = today - _td(days=today.weekday())
         week_start_dt = fields.Datetime.to_datetime(str(week_start) + ' 00:00:00')
         if operator in ('=', '==') and value in truthy:
-            return [('scan_date', '>=', week_start_dt)]
+            return [('scan_completion_time', '>=', week_start_dt)]
         if operator in ('!=', '<>') and value in truthy:
-            return ['|', ('scan_date', '=', False), ('scan_date', '<', week_start_dt)]
+            return ['|', ('scan_completion_time', '=', False), ('scan_completion_time', '<', week_start_dt)]
         if operator in ('=', '==') and value not in truthy:
-            return ['|', ('scan_date', '=', False), ('scan_date', '<', week_start_dt)]
+            return ['|', ('scan_completion_time', '=', False), ('scan_completion_time', '<', week_start_dt)]
         return [('id', '!=', 0)]
 
     def _search_scanned_this_month(self, operator, value):
@@ -182,11 +182,11 @@ class ScanRetrievalItem(models.Model):
         month_start = today.replace(day=1)
         month_start_dt = fields.Datetime.to_datetime(str(month_start) + ' 00:00:00')
         if operator in ('=', '==') and value in truthy:
-            return [('scan_date', '>=', month_start_dt)]
+            return [('scan_completion_time', '>=', month_start_dt)]
         if operator in ('!=', '<>') and value in truthy:
-            return ['|', ('scan_date', '=', False), ('scan_date', '<', month_start_dt)]
+            return ['|', ('scan_completion_time', '=', False), ('scan_completion_time', '<', month_start_dt)]
         if operator in ('=', '==') and value not in truthy:
-            return ['|', ('scan_date', '=', False), ('scan_date', '<', month_start_dt)]
+            return ['|', ('scan_completion_time', '=', False), ('scan_completion_time', '<', month_start_dt)]
         return [('id', '!=', 0)]
 
     # ============================================================================
