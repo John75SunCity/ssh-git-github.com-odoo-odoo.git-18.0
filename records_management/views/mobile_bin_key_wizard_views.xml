@@ -56,11 +56,7 @@
                             <field name="service_notes" placeholder="Add service notes..." />
                             <field name="photo_ids" widget="many2many_binary" />
                         </group>
-                        <!-- Technical UI state flags (managed by JS / server logic); kept hidden intentionally -->
-                        <field name="show_contact_creation" invisible="1" />
-                        <field name="show_key_assignment" invisible="1" />
-                        <field name="show_unlock_service" invisible="1" />
-                        <field name="show_lookup_results" invisible="1" />
+                        <!-- Removed always-invisible technical UI state flags; domains still honor underlying field values -->
                     </div>
                     <footer>
                         <div class="row">

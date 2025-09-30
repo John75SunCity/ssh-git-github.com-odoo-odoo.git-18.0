@@ -46,7 +46,7 @@
                     </group>
 
                     <group name="documentation" string="Documentation">
-        <field name="require_photos" invisible="1"/>
+        <!-- Removed always-invisible field 'require_photos'; value still usable in domains -->
         <field name="gps_latitude" groups="base.group_no_one"/>
         <field name="gps_longitude" groups="base.group_no_one"/>
                         <div class="alert alert-warning" role="alert"

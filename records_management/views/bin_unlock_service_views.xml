@@ -116,8 +116,7 @@
                             <field name="unlock_services_count" readonly="1" />
                             <group>
                                 <field name="restriction_notes" nolabel="1" />
-                                <!-- Technical placeholder for dynamic note templates; intentionally hidden -->
-                                <field name="restriction_notes_placeholder" invisible="1" />
+                                <!-- Removed always-invisible 'restriction_notes_placeholder' technical placeholder -->
                             </group>
                         </group>
                         <group name="allow_details" invisible="action != 'allow'">

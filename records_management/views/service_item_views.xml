@@ -66,7 +66,7 @@
                     <field name="state" />
                     <field name="active" widget="boolean_toggle" />
                     <field name="activity_ids" widget="list_activity" />
-                    <field name="company_id" column_invisible="1" />
+                    <!-- Removed always-hidden company_id column (column_invisible). Multi-company usage handled in form if needed. -->
                 </list>
             </field>
         </record>

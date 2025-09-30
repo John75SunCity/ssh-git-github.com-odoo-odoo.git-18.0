@@ -49,8 +49,7 @@
                                 <field name="weight_processed" />
                                 <field name="containers_processed" />
                                 <field name="naid_certificate_number" placeholder="Official NAID certificate number (if applicable)" />
-                                <!-- Technical internal confirmation flag (controls workflow buttons); hidden -->
-                                <field name="destruction_confirmed" invisible="1" />
+                                <!-- Removed always-invisible 'destruction_confirmed' field display to satisfy view guidelines; buttons still reference field in invisibility domains -->
                             </group>
                         </group>
                         <group>
