@@ -82,6 +82,25 @@
                     </div>
                 </div>
 
+                <!-- Modern Owl Portal Search Component -->
+                <div class="modern-search-section mb-5">
+                    <div class="container">
+                        <h2 class="text-center mb-4">
+                            <i class="fa fa-search text-primary"></i>
+                            Smart Document Search
+                        </h2>
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <!-- Owl Component Usage Following Odoo 18 Guidelines -->
+                                <owl-component name="records_management.PortalSearchComponent" 
+                                               placeholder="Search your records, documents, certificates..."
+                                               maxSuggestions="6"
+                                               showAdvanced="true" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Feature Highlights Cards -->
                 <div class="features-section mb-5">
                     <h2 class="text-center mb-4">

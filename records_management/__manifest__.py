@@ -304,12 +304,14 @@
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
         "web.assets_frontend": [
+            # Modern Owl Portal Components (Following Odoo 18 Guidelines)
+            "records_management/static/src/portal_components/**/*",
+            
+            # Legacy Portal Assets (To be gradually migrated)
             "records_management/static/src/css/portal_tour.css",
             "records_management/static/src/css/intelligent_search.css",
             "records_management/static/src/css/customer_portal_diagram.css",
-            "records_management/static/src/js/portal_search.js",
             "records_management/static/src/js/portal_tour.js",
-            "records_management/static/src/js/portal_docs.js",
             "records_management/static/src/js/portal_inventory_highlights.js",
             "records_management/static/src/js/portal_inventory_search.js",
             "records_management/static/src/js/portal_quote_generator.js",

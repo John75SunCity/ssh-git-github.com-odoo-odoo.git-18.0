@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="records_management.PortalDocumentCenter">
+        <div class="portal-document-center">
+            <!-- Header with Search and Filters -->
+            <div class="document-center-header mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h3 class="mb-0">
+                            <i class="fa fa-folder-open text-primary mr-2"></i>
+                            Document Center
+                        </h3>
+                        <small class="text-muted">Centralized access to all your documents</small>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <div class="btn-group mr-2">
+                            <button type="button" class="btn btn-outline-primary" 
+                                    t-att-class="state.viewMode === 'grid' ? 'active' : ''"
+                                    t-on-click="() => this.setViewMode('grid')">
+                                <i class="fa fa-th"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary"
+                                    t-att-class="state.viewMode === 'list' ? 'active' : ''"
+                                    t-on-click="() => this.setViewMode('list')">
+                                <i class="fa fa-list"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-success" t-on-click="exportAllDocs">
+                            <i class="fa fa-download mr-1"></i>Export All
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Filter Tabs -->
+            <ul class="nav nav-tabs mb-4" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" 
+                       t-att-class="state.activeTab === 'all' ? 'active' : ''"
+                       t-on-click="() => this.setActiveTab('all')"
+                       href="#">
+                        All Documents
+                        <span class="badge badge-secondary ml-1" t-esc="state.stats.total"/>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       t-att-class="state.activeTab === 'invoices' ? 'active' : ''"
+                       t-on-click="() => this.setActiveTab('invoices')"
+                       href="#">
+                        Invoices
+                        <span class="badge badge-info ml-1" t-esc="state.stats.invoices"/>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       t-att-class="state.activeTab === 'quotes' ? 'active' : ''"
+                       t-on-click="() => this.setActiveTab('quotes')"
+                       href="#">
+                        Quotes
+                        <span class="badge badge-warning ml-1" t-esc="state.stats.quotes"/>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       t-att-class="state.activeTab === 'certificates' ? 'active' : ''"
+                       t-on-click="() => this.setActiveTab('certificates')"
+                       href="#">
+                        Certificates
+                        <span class="badge badge-success ml-1" t-esc="state.stats.certificates"/>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       t-att-class="state.activeTab === 'communications' ? 'active' : ''"
+                       t-on-click="() => this.setActiveTab('communications')"
+                       href="#">
+                        Communications
+                        <span class="badge badge-secondary ml-1" t-esc="state.stats.communications"/>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Search and Filter Bar -->
+            <div class="search-filter-bar mb-3">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" 
+                                   class="form-control" 
+                                   placeholder="Search documents..."
+                                   t-model="state.searchQuery"
+                                   t-on-input="onSearchInput"/>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" t-on-click="performSearch">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select class="form-control form-control-sm" t-model="state.filters.status">
+                                    <option value="">All Status</option>
+                                    <option value="draft">Draft</option>
+                                    <option value="sent">Sent</option>
+                                    <option value="paid">Paid</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control form-control-sm" t-model="state.filters.dateRange">
+                                    <option value="">All Dates</option>
+                                    <option value="week">Last Week</option>
+                                    <option value="month">Last Month</option>
+                                    <option value="quarter">Last Quarter</option>
+                                    <option value="year">Last Year</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control form-control-sm" t-model="state.sortBy">
+                                    <option value="date_desc">Date (Newest)</option>
+                                    <option value="date_asc">Date (Oldest)</option>
+                                    <option value="name_asc">Name (A-Z)</option>
+                                    <option value="name_desc">Name (Z-A)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div t-if="state.isLoading" class="text-center py-5">
+                <i class="fa fa-spinner fa-spin fa-2x text-primary"></i>
+                <p class="mt-2 text-muted">Loading documents...</p>
+            </div>
+
+            <!-- Document Content Area -->
+            <div t-else="" class="document-content">
+                <!-- Grid View -->
+                <div t-if="state.viewMode === 'grid'" class="document-grid">
+                    <div class="row">
+                        <t t-foreach="state.filteredDocuments" t-as="doc">
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                                <div class="card document-card h-100 shadow-sm">
+                                    <div class="card-header text-center bg-light">
+                                        <i t-att-class="doc.icon" class="fa-2x mb-2" t-att-style="'color: ' + doc.color"></i>
+                                        <h6 class="card-title mb-0" t-esc="doc.name"/>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text text-muted small" t-esc="doc.description"/>
+                                        <div class="document-meta">
+                                            <small class="text-muted">
+                                                <i class="fa fa-calendar mr-1"></i>
+                                                <t t-esc="doc.date"/>
+                                            </small>
+                                            <br/>
+                                            <span t-att-class="'badge badge-' + doc.statusColor + ' mt-1'" t-esc="doc.status"/>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-transparent">
+                                        <div class="btn-group btn-group-sm w-100">
+                                            <button class="btn btn-outline-primary" t-on-click="(ev) => this.viewDocument(doc)">
+                                                <i class="fa fa-eye"></i> View
+                                            </button>
+                                            <button class="btn btn-outline-secondary" t-on-click="(ev) => this.downloadDocument(doc)">
+                                                <i class="fa fa-download"></i> Download
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- List View -->
+                <div t-if="state.viewMode === 'list'" class="document-list">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Document</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.filteredDocuments" t-as="doc">
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i t-att-class="doc.icon" class="mr-2" t-att-style="'color: ' + doc.color"></i>
+                                                <div>
+                                                    <strong t-esc="doc.name"/>
+                                                    <br/>
+                                                    <small class="text-muted" t-esc="doc.description"/>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-light" t-esc="doc.type"/>
+                                        </td>
+                                        <td t-esc="doc.date"/>
+                                        <td>
+                                            <span t-att-class="'badge badge-' + doc.statusColor" t-esc="doc.status"/>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary btn-sm" t-on-click="(ev) => this.viewDocument(doc)">
+                                                    <i class="fa fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-outline-secondary btn-sm" t-on-click="(ev) => this.downloadDocument(doc)">
+                                                    <i class="fa fa-download"></i>
+                                                </button>
+                                                <button class="btn btn-outline-info btn-sm" t-on-click="(ev) => this.shareDocument(doc)">
+                                                    <i class="fa fa-share"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div t-if="state.filteredDocuments.length === 0" class="empty-state text-center py-5">
+                    <i class="fa fa-folder-open fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No documents found</h5>
+                    <p class="text-muted">Try adjusting your search criteria or filters.</p>
+                    <button class="btn btn-outline-primary" t-on-click="clearFilters">
+                        <i class="fa fa-refresh mr-1"></i>Clear Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div t-if="state.totalPages > 1" class="pagination-wrapper mt-4">
+                <nav aria-label="Document pagination">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" t-att-class="state.currentPage === 1 ? 'disabled' : ''">
+                            <a class="page-link" href="#" t-on-click.prevent="() => this.goToPage(state.currentPage - 1)">
+                                <i class="fa fa-chevron-left"></i>
+                            </a>
+                        </li>
+                        <t t-foreach="Array.from({length: state.totalPages}, (_, i) => i + 1)" t-as="page">
+                            <li class="page-item" t-att-class="state.currentPage === page ? 'active' : ''">
+                                <a class="page-link" href="#" t-on-click.prevent="() => this.goToPage(page)" t-esc="page"/>
+                            </li>
+                        </t>
+                        <li class="page-item" t-att-class="state.currentPage === state.totalPages ? 'disabled' : ''">
+                            <a class="page-link" href="#" t-on-click.prevent="() => this.goToPage(state.currentPage + 1)">
+                                <i class="fa fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </t>
+</templates>

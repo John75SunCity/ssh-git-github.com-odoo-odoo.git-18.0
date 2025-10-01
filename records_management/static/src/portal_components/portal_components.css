@@ -1,0 +1,276 @@
+/* 
+ * Modern Portal Owl Components CSS
+ * Following Odoo 18 design guidelines for portal/website components
+ */
+
+/* Portal Search Component */
+.portal-search-component {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.portal-search-component .search-container {
+    position: relative;
+}
+
+.portal-search-component .input-group {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+.portal-search-component .form-control {
+    border: none;
+    padding: 15px 25px;
+    font-size: 16px;
+    border-radius: 50px 0 0 50px;
+}
+
+.portal-search-component .form-control:focus {
+    box-shadow: none;
+    border-color: transparent;
+}
+
+.portal-search-component .btn-primary {
+    border-radius: 0 50px 50px 0;
+    padding: 15px 25px;
+    border: none;
+}
+
+/* Search Suggestions */
+.portal-search-component .search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 5px;
+}
+
+.portal-search-component .search-suggestions .card {
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.portal-search-component .list-group-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+    transition: all 0.2s ease;
+}
+
+/* Advanced Search */
+.portal-search-component .advanced-search .card {
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.portal-search-component .recent-search-tags .badge {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.portal-search-component .recent-search-tags .badge:hover {
+    transform: scale(1.05);
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+/* Portal Document Center Component */
+.portal-document-center {
+    padding: 20px 0;
+}
+
+.portal-document-center .document-center-header h3 {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Tab Navigation */
+.portal-document-center .nav-tabs {
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 20px;
+}
+
+.portal-document-center .nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+}
+
+.portal-document-center .nav-tabs .nav-link.active {
+    background-color: #007bff;
+    color: white;
+    border-bottom: 2px solid #007bff;
+}
+
+.portal-document-center .nav-tabs .nav-link:hover:not(.active) {
+    background-color: #f8f9fa;
+    color: #007bff;
+}
+
+/* Document Cards (Grid View) */
+.portal-document-center .document-card {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.portal-document-center .document-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.portal-document-center .document-card .card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.portal-document-center .document-card .btn-group {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* List View */
+.portal-document-center .document-list .table {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.portal-document-center .document-list .table thead {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+}
+
+.portal-document-center .document-list .table tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+/* Search and Filter Bar */
+.portal-document-center .search-filter-bar .form-control,
+.portal-document-center .search-filter-bar .form-control-sm {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+}
+
+.portal-document-center .search-filter-bar .form-control:focus,
+.portal-document-center .search-filter-bar .form-control-sm:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Empty State */
+.portal-document-center .empty-state {
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    border: 2px dashed #dee2e6;
+}
+
+/* Pagination */
+.portal-document-center .pagination {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.portal-document-center .page-link {
+    border: 1px solid #dee2e6;
+    color: #007bff;
+    transition: all 0.2s ease;
+}
+
+.portal-document-center .page-link:hover {
+    background-color: #007bff;
+    color: white;
+    transform: scale(1.05);
+}
+
+.portal-document-center .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Loading States */
+.portal-search-component .fa-spinner,
+.portal-document-center .fa-spinner {
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .portal-search-component .advanced-search .row .col-md-4 {
+        margin-bottom: 15px;
+    }
+    
+    .portal-document-center .document-center-header .row {
+        text-align: center;
+    }
+    
+    .portal-document-center .document-center-header .col-md-6:last-child {
+        margin-top: 15px;
+    }
+    
+    .portal-document-center .search-filter-bar .row .col-md-6:last-child {
+        margin-top: 15px;
+    }
+    
+    .portal-document-center .nav-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .portal-document-center .nav-tabs .nav-item {
+        margin-bottom: 5px;
+    }
+}
+
+/* Modern Visual Enhancements */
+.portal-search-component,
+.portal-document-center {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Smooth transitions for all interactive elements */
+.portal-search-component *,
+.portal-document-center * {
+    transition: all 0.2s ease;
+}
+
+/* Focus states for accessibility */
+.portal-search-component button:focus,
+.portal-search-component input:focus,
+.portal-document-center button:focus,
+.portal-document-center input:focus,
+.portal-document-center select:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .portal-search-component .search-suggestions .card,
+    .portal-document-center .document-card {
+        border: 2px solid #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .portal-search-component *,
+    .portal-document-center * {
+        transition: none;
+        animation: none;
+    }
+}

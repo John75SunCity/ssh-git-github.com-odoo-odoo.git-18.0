@@ -57,6 +57,22 @@
                     </div>
                 </div>
 
+                <!-- Modern Owl Document Center Component -->
+                <div class="modern-document-center mb-5">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <owl-component name="records_management.PortalDocumentCenter" 
+                                           partnerId="partner_id"
+                                           initialTab="all"
+                                           pageSize="12" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legacy Document Interface (Gradually being replaced by Owl components above) -->
+                <div class="legacy-document-interface" style="display: none;">
+                    <!-- This section is being migrated to modern Owl components -->
+
                 <!-- Document Categories Navigation - Enhanced with Accordion Option -->
                 <div class="mb-4">
                     <!-- View Toggle -->
@@ -991,6 +1007,8 @@
                 }, 2000);
             }
             </script>
+            
+            </div> <!-- End legacy-document-interface -->
         </t>
     </template>
 </odoo>

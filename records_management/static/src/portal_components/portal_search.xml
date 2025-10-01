@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="records_management.PortalSearchComponent">
+        <div class="portal-search-component">
+            <div class="search-container mb-3">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        class="form-control form-control-lg" 
+                        placeholder="Search your records, documents, certificates..." 
+                        t-model="state.searchQuery"
+                        t-on-input="onSearchInput"
+                        t-ref="searchInput"
+                    />
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" t-on-click="performSearch">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Suggestions -->
+            <div class="search-suggestions" t-if="state.suggestions.length > 0">
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <t t-foreach="state.suggestions" t-as="suggestion">
+                                <a href="#" 
+                                   class="list-group-item list-group-item-action"
+                                   t-on-click="(ev) => this.selectSuggestion(ev, suggestion)">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">
+                                            <i t-att-class="suggestion.icon" class="mr-2"></i>
+                                            <t t-esc="suggestion.name"/>
+                                        </h6>
+                                        <small class="badge badge-secondary" t-esc="suggestion.type"/>
+                                    </div>
+                                    <p class="mb-1 text-muted" t-if="suggestion.description" t-esc="suggestion.description"/>
+                                    <small class="text-muted" t-if="suggestion.location">
+                                        <i class="fa fa-map-marker mr-1"></i>
+                                        <t t-esc="suggestion.location"/>
+                                    </small>
+                                </a>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Search Filters (Expandable) -->
+            <div class="advanced-search mt-3" t-if="state.showAdvanced">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fa fa-filter mr-2"></i>Advanced Search Filters
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Document Type</label>
+                                <select class="form-control" t-model="state.filters.documentType">
+                                    <option value="">All Types</option>
+                                    <option value="container">Storage Container</option>
+                                    <option value="document">Document</option>
+                                    <option value="certificate">Certificate</option>
+                                    <option value="invoice">Invoice</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Date Range</label>
+                                <select class="form-control" t-model="state.filters.dateRange">
+                                    <option value="">Any Time</option>
+                                    <option value="week">Last Week</option>
+                                    <option value="month">Last Month</option>
+                                    <option value="year">Last Year</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Status</label>
+                                <select class="form-control" t-model="state.filters.status">
+                                    <option value="">All Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button class="btn btn-primary mr-2" t-on-click="applyFilters">
+                                    <i class="fa fa-check mr-1"></i>Apply Filters
+                                </button>
+                                <button class="btn btn-outline-secondary" t-on-click="clearFilters">
+                                    <i class="fa fa-times mr-1"></i>Clear All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toggle Advanced Search -->
+            <div class="text-center mt-2">
+                <button class="btn btn-link btn-sm" t-on-click="toggleAdvanced">
+                    <i t-att-class="state.showAdvanced ? 'fa fa-chevron-up' : 'fa fa-chevron-down'" class="mr-1"></i>
+                    <t t-if="state.showAdvanced">Hide Advanced Search</t>
+                    <t t-else="">Show Advanced Search</t>
+                </button>
+            </div>
+
+            <!-- Recent Searches -->
+            <div class="recent-searches mt-3" t-if="state.recentSearches.length > 0 and !state.searchQuery">
+                <h6 class="text-muted">
+                    <i class="fa fa-history mr-2"></i>Recent Searches
+                </h6>
+                <div class="recent-search-tags">
+                    <t t-foreach="state.recentSearches" t-as="search">
+                        <span class="badge badge-light mr-1 mb-1 cursor-pointer" 
+                              t-on-click="(ev) => this.useRecentSearch(search)">
+                            <i class="fa fa-search mr-1"></i>
+                            <t t-esc="search"/>
+                        </span>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
