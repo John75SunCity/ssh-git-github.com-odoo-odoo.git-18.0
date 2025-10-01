@@ -29,6 +29,19 @@ class RecordsContainer(models.Model):
     currency_id = fields.Many2one(related="company_id.currency_id", readonly=True, comodel_name="res.currency")
     user_id = fields.Many2one("res.users", string="Responsible", default=lambda self: self.env.user, tracking=True)
     barcode = fields.Char(string="Barcode", copy=False, index=True)
+    # Temporary barcode assigned at portal/customer creation time before a physical barcode is applied by technicians.
+    # Remains immutable once a physical barcode is assigned. Searchable and billable reference.
+    temp_barcode = fields.Char(
+        string="Temporary Barcode",
+        copy=False,
+        index=True,
+        tracking=True,
+        help="System-generated temporary tracking barcode assigned when the customer creates the container in the portal.")
+    barcode_assigned = fields.Boolean(
+        string="Physical Barcode Assigned",
+        compute="_compute_barcode_assigned",
+        store=True,
+        help="Indicates a physical warehouse barcode has been assigned (barcode field set).")
 
     # ============================================================================
     # RELATIONSHIPS
@@ -210,6 +223,7 @@ class RecordsContainer(models.Model):
     # ============================================================================
     _sql_constraints = [
         ("barcode_company_uniq", "unique(barcode, company_id)", "The barcode must be unique per company."),
+        ("temp_barcode_company_uniq", "unique(temp_barcode, company_id)", "The temporary barcode must be unique per company."),
     ]
 
     # ============================================================================
@@ -281,11 +295,22 @@ class RecordsContainer(models.Model):
                 default_type_id = self._get_default_container_type_id()
                 if default_type_id:
                     vals["container_type_id"] = default_type_id
+            # Assign a temp barcode if not provided and no physical barcode yet
+            if not vals.get("temp_barcode") and not vals.get("barcode"):
+                # Set context flag so helper can optionally audit log
+                temp_code = self.with_context(creating_temp_barcode_log=True)._generate_temp_barcode(vals)
+                vals["temp_barcode"] = temp_code
+            # Billing starts at portal creation → if storage_start_date is empty set today
+            if not vals.get("storage_start_date"):
+                vals["storage_start_date"] = fields.Date.today()
         return super().create(vals_list)
 
     def write(self, vals):
         if any(key in vals for key in ["location_id", "state"]) and "last_access_date" not in vals:
             vals["last_access_date"] = fields.Date.today()
+        # Prevent changing temp_barcode after physical barcode assigned unless superuser context flag
+        if "temp_barcode" in vals and any(rec.barcode for rec in self) and not self.env.context.get("allow_temp_barcode_edit"):
+            vals.pop("temp_barcode")
         return super().write(vals)
 
     def unlink(self):
@@ -555,6 +580,105 @@ class RecordsContainer(models.Model):
         if not self.barcode:
             self.barcode = self.env["ir.sequence"].next_by_code("records.container.barcode") or self.name
         return self.env.ref("records_management.report_container_barcode").report_action(self)
+
+    def action_assign_physical_barcode(self, barcode_value):
+        """Assign a physical (warehouse) barcode, preserving the temporary barcode.
+
+        Contract:
+        - Fails if a physical barcode already exists unless context 'force_reassign' set.
+        - Validates uniqueness via SQL constraint.
+        - Posts chatter message with both refs.
+        - Leaves temp_barcode unchanged and immutable after assignment.
+        """
+        self.ensure_one()
+        force_reassign = bool(self.env.context.get("force_reassign"))
+        if self.barcode and not force_reassign:
+            raise UserError(_("A physical barcode is already assigned. Use force_reassign in context to override."))
+        if not barcode_value:
+            raise UserError(_("A physical barcode value is required."))
+        old_barcode = self.barcode
+        self.write({"barcode": barcode_value})
+        # Distinct audit + chatter messaging paths
+        if force_reassign and old_barcode and old_barcode != barcode_value:
+            # Forced reassignment path
+            forced_msg = _("PHYSICAL BARCODE REASSIGNED (FORCED): %s → %s (temp %s)") % (
+                old_barcode,
+                barcode_value,
+                self.temp_barcode or _("N/A"),
+            )
+            try:
+                self.env['records.audit.log'].log_event(self, 'action', forced_msg)
+            except Exception:
+                pass
+            self.message_post(body=forced_msg)
+        else:
+            # Initial assignment (or non-changing reassignment edge case)
+            assign_msg = _("Physical barcode %s assigned (temporary reference %s).") % (
+                barcode_value,
+                self.temp_barcode or _("N/A"),
+            )
+            try:
+                self.env['records.audit.log'].log_event(self, 'action', assign_msg)
+            except Exception:
+                pass
+            self.message_post(body=assign_msg)
+            if old_barcode and old_barcode != barcode_value:
+                # Non-forced (should not usually occur) but keep legacy message for clarity
+                self.message_post(body=_("Physical barcode changed from %s to %s") % (old_barcode, barcode_value))
+        return True
+
+    # ==========================================================================
+    # TEMP BARCODE HELPERS
+    # ==========================================================================
+    def _generate_temp_barcode(self, vals=None):
+        """Generate a temporary barcode.
+
+        Strategy:
+        1. Try dedicated sequence 'records.container.temp.barcode'.
+        2. Fallback: TMP-<company>-<YYYYMMDD>-<zero padded sequence from container seq or random>.
+        3. Ensure uniqueness (attempt up to 5 tries on collision).
+        """
+        import random, string
+        date_part = fields.Date.today().strftime("%Y%m%d")
+        company = self.env.company.id if self.env.company else 0
+        attempt = 0
+        while attempt < 5:
+            seq = self.env["ir.sequence"].next_by_code("records.container.temp.barcode")
+            if not seq:
+                # Fallback simple random segment
+                rand_seg = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+                seq = f"TMP-{company}-{date_part}-{rand_seg}"
+            # Check uniqueness quickly (no full search if likely unique)
+            exists = self.env["records.container"].sudo().search_count([("temp_barcode", "=", seq)])
+            if not exists:
+                # Audit log only if context indicates creation phase
+                if self.env.context.get('creating_temp_barcode_log'):
+                    try:
+                        self.env['records.audit.log'].log_event(self, 'action', _("Temporary barcode %s generated") % seq)
+                    except Exception:
+                        pass
+                return seq
+            attempt += 1
+        # Final fallback with high entropy
+        rand_seg = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+        return f"TMP-{company}-{date_part}-{rand_seg}"
+
+    @api.depends("barcode")
+    def _compute_barcode_assigned(self):
+        for rec in self:
+            rec.barcode_assigned = bool(rec.barcode)
+
+    # ==========================================================================
+    # SEARCH EXTENSIONS
+    # ==========================================================================
+    def name_search(self, name='', args=None, operator='ilike', limit=100):  # type: ignore[override]
+        args = list(args or [])
+        if name:
+            # Expand search to include temp_barcode and barcode
+            domain = ['|', '|', ('name', operator, name), ('barcode', operator, name), ('temp_barcode', operator, name)]
+            records = self.search(domain + args, limit=limit)
+            return records.name_get()
+        return super().name_search(name=name, args=args, operator=operator, limit=limit)
 
     def action_store_container(self):
         """Store container - change state from indexed to stored"""

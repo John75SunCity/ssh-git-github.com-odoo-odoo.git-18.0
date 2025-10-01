@@ -190,6 +190,65 @@ class RecordsManagementController(http.Controller):
     # CONTAINER MANAGEMENT ROUTES
     # ============================================================================
 
+    @http.route("/records/containers/list", type="json", auth="user", methods=["POST"])
+    def list_containers_with_barcodes(self, **post):
+        """Return lightweight container list including temporary & physical barcode state.
+
+        Accepts optional filters: partner_id, limit, offset, search (matches name, barcode, temp_barcode).
+        This endpoint is designed for modern Owl portal components needing real-time barcode visibility.
+        """
+        if not request.env.user.has_group("records_management.group_records_user") and not request.env.user.has_group("records_management.group_portal_company_admin"):
+            return {"success": False, "error": "Insufficient permissions"}
+
+        try:
+            Container = request.env['records.container']
+            domain = []
+
+            partner_id = post.get('partner_id')
+            if partner_id and str(partner_id).isdigit():
+                domain.append(('partner_id', '=', int(partner_id)))
+
+            search_term = (post.get('search') or '').strip()
+            if search_term:
+                # Perform name_search style expansion for barcode fields
+                search_domain = ['|', '|', ('name', 'ilike', search_term), ('barcode', 'ilike', search_term), ('temp_barcode', 'ilike', search_term)]
+                if domain:
+                    domain = ['&'] + domain + [search_domain]
+                else:
+                    domain = search_domain
+
+            limit = int(post.get('limit') or 40)
+            offset = int(post.get('offset') or 0)
+
+            containers = Container.search(domain, limit=limit, offset=offset, order='create_date desc')
+            total_count = Container.search_count(domain if isinstance(domain, list) else [])
+
+            result = []
+            for c in containers:
+                result.append({
+                    'id': c.id,
+                    'name': c.name,
+                    'partner': c.partner_id.name,
+                    'location': c.location_id.name,
+                    'container_type': c.container_type_id.name,
+                    'state': c.state,
+                    'temp_barcode': c.temp_barcode,
+                    'barcode': c.barcode,
+                    'barcode_assigned': bool(c.barcode),
+                    'create_date': c.create_date and c.create_date.strftime('%Y-%m-%d') or '',
+                })
+
+            return {
+                'success': True,
+                'containers': result,
+                'total': total_count,
+                'limit': limit,
+                'offset': offset,
+            }
+        except Exception as e:
+            _logger.error("Error listing containers with barcodes: %s", e)
+            return {"success": False, "error": "Failed to load containers"}
+
     @http.route("/records/containers/bulk-update", type="json", auth="user", methods=["POST"])
     def action_bulk_container_update(self, **post):
         """

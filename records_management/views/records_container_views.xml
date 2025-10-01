@@ -18,6 +18,8 @@
         <field name="container_type_id"/>
         <field name="document_count"/>
         <field name="is_full"/>
+    <field name="temp_barcode"/>
+    <field name="barcode"/>
             <templates>
                 <t t-name="card">
                     <div class="oe_kanban_card oe_kanban_global_click">
@@ -135,6 +137,7 @@ Destroy Container</a>
 
             </header>
         <field name="name" string="Container ID"/>
+        <field name="temp_barcode" string="Temp Barcode"/>
         <field name="barcode" string="Barcode"/>
         <field name="container_type_id" string="Container Type"/>
         <field name="weight" string="Weight"/>
@@ -169,6 +172,8 @@ Destroy Container</a>
                 <button name="action_destroy" type="object" string="Destroy Container" class="btn-danger" invisible="state != 'pending_destruction'"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
                 <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
+                <!-- Modernized visibility: use barcode_assigned compute field instead of deprecated attrs expression -->
+                <button name="%(action_records_container_assign_barcode_wizard)d" type="action" string="Assign Physical Barcode" class="btn-secondary" invisible="barcode_assigned"/>
         <field name="state" widget="statusbar" statusbar_visible="draft,active,stored,retrieved,pending_destruction,destroyed"/>
             </header>
             <sheet>
@@ -180,8 +185,11 @@ Destroy Container</a>
 
                 <group>
                     <group string="Container Information">
-        <field name="name" placeholder="e.g., CONT-2024-001"/>
-        <field name="barcode" placeholder="Auto-generated on save"/>
+    <field name="name" placeholder="e.g., CONT-2024-001"/>
+    <!-- Include computed flag field (hidden) so invisible expression works reliably -->
+    <field name="barcode_assigned" invisible="1"/>
+    <field name="temp_barcode" readonly="1" invisible="barcode_assigned" context="{'allow_temp_barcode_edit': False}"/>
+    <field name="barcode" placeholder="Auto-generated on save" readonly="barcode_assigned"/>
         <field name="container_type_id" required="1"/>
         <field name="weight"/>
         <field name="cubic_feet" readonly="1"/>
@@ -292,7 +300,7 @@ Destroy Container</a>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
         <search>
-        <field name="name" string="Container" filter_domain="['|', ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
+    <field name="name" string="Container" filter_domain="['|','|', ('name', 'ilike', self), ('barcode', 'ilike', self), ('temp_barcode', 'ilike', self)]"/>
         <field name="partner_id"/>
         <field name="department_id"/>
         <field name="location_id"/>

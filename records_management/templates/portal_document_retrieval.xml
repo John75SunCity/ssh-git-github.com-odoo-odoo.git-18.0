@@ -11,7 +11,7 @@
                 <t t-set="title">Document Retrieval</t>
             </t>
 
-            <div class="container-fluid">
+            <div class="container-fluid o_portal_document_retrieval">
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="card">
@@ -28,7 +28,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <label for="calc_priority">Priority Level:</label>
-                                            <select id="calc_priority" class="form-control" onchange="updatePricing()">
+                                            <select id="calc_priority" class="form-control">
                                                 <option value="standard">Standard (48 Hours) - $25 delivery</option>
                                                 <option value="rush_eod">Rush (End of Day) - Additional fees apply</option>
                                                 <option value="rush_4h">Rush (4 Hours) - Higher fees</option>
@@ -39,7 +39,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label for="calc_items">Number of Items:</label>
-                                            <input type="number" id="calc_items" class="form-control" value="1" min="1" onchange="updatePricing()"/>
+                                            <input type="number" id="calc_items" class="form-control" value="1" min="1"/>
                                         </div>
                                     </div>
                                     <div class="mt-3">
@@ -50,7 +50,7 @@
                                 </div>
 
                                 <!-- Work Order Form -->
-                                <form method="post" action="/my/document-retrieval/create" id="retrieval-form">
+                                <form method="post" action="/my/document-retrieval/create" id="retrieval-form" t-att-data-container-options="json.dumps([(container.id, container.name) for container in containers])" t-att-data-document-options="json.dumps([(doc.id, doc.name) for doc in documents])">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
                                     <div class="row">
@@ -109,7 +109,7 @@
                                             <div id="items-container">
                                                 <!-- Items will be added here -->
                                             </div>
-                                            <button type="button" class="btn btn-sm btn-secondary" onclick="addRetrievalItem()">
+                                            <button type="button" class="btn btn-sm btn-secondary" data-action="add-item">
                                                 <i class="fa fa-plus"></i> Add Item
                                             </button>
                                         </div>
@@ -214,186 +214,7 @@
                 </div>
             </div>
 
-            <!-- JavaScript for dynamic functionality -->
-            <script>
-                <![CDATA[
-                let itemCounter = 0;
-                ]]>let containerOptions =                <t t-esc="json.dumps([(container.id, container.name) for container in containers])"/>
-                <![CDATA[
-;
-                ]]>let documentOptions =                <t t-esc="json.dumps([(doc.id, doc.name) for doc in documents])"/>
-                <![CDATA[
-;
-                
-                function updatePricing() {
-                    const priority = document.getElementById('calc_priority').value;
-                    const itemCount = parseInt(document.getElementById('calc_items').value) || 1;
-                    
-                    fetch('/my/document-retrieval/calculate-price', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            jsonrpc: '2.0',
-                            method: 'call',
-                            params: {
-                                priority: priority,
-                                item_count: itemCount
-                            }
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.result) {
-                            updatePricingDisplay(data.result);
-                        }
-                    });
-                }
-                
-                function updatePricingDisplay(pricing) {
-                    const breakdown = document.getElementById('pricing-breakdown');
-                    breakdown.innerHTML = `
-        <div class="row">
-            <div class="col-md-6">
-                <strong>Base Retrieval:</strong> $${pricing.base_retrieval_cost.toFixed(2)}<br/>
-            <strong>Priority (Items):</strong> $${pricing.priority_item_cost.toFixed(2)}
-        </div>
-        <div class="col-md-6">
-            <strong>Base Delivery:</strong> $${pricing.base_delivery_cost.toFixed(2)}<br/>
-        <strong>Priority (Order):</strong> $${pricing.priority_order_cost.toFixed(2)}
-    </div>
-</div>
-<hr/>
-<div class="text-center">
-    <h5>
-        <strong>Total: $${pricing.total_cost.toFixed(2)}</strong>
-    </h5>
-                            ${pricing.has_custom_rates ? '<small class="text-success">Custom rates applied</small>' : ''}
-</div>
-                    `;
-                }
-                
-                function addRetrievalItem() {
-                    itemCounter++;
-                    const container = document.getElementById('items-container');
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'border p-3 mb-3';
-                    itemDiv.id = `item-${itemCounter}`;
-                    
-                    itemDiv.innerHTML = `
-<div class="row">
-    <div class="col-md-3">
-        <label>Item Type:</label>
-        <select class="form-control" onchange="updateItemOptions(${itemCounter})" id="type-${itemCounter}">
-            <option value="container">Container</option>
-            <option value="document">Document</option>
-            <option value="file">File</option>
-        </select>
-    </div>
-    <div class="col-md-4">
-        <label>Select Item:</label>
-        <select class="form-control" id="item-select-${itemCounter}">
-            <option value="">Select a container...</option>
-        </select>
-    </div>
-    <div class="col-md-3">
-        <label>Barcode:</label>
-        <input type="text" class="form-control" id="barcode-${itemCounter}" placeholder="Item barcode"/>
-    </div>
-    <div class="col-md-2">
-        <label>&amp;nbsp;</label>
-        <button type="button" class="btn btn-danger btn-sm form-control" onclick="removeItem(${itemCounter})">
-            <i class="fa fa-trash"></i>
-        </button>
-    </div>
-</div>
-<div class="row mt-2">
-    <div class="col-md-12">
-        <label>Description:</label>
-        <input type="text" class="form-control" id="description-${itemCounter}" placeholder="Describe the item to retrieve"/>
-    </div>
-</div>
-                    `;
-                    
-                    container.appendChild(itemDiv);
-                    updateItemOptions(itemCounter);
-                    updateItemsData();
-                }
-                
-                function updateItemOptions(itemId) {
-                    const type = document.getElementById(`type-${itemId}`).value;
-                    const select = document.getElementById(`item-select-${itemId}`);
-                    
-                    select.innerHTML = '';
-                    
-                    if (type === 'container') {
-                        select.innerHTML = '<option value="">Select a container...</option>';
-                        containerOptions.forEach(([id, name]) => {
-                            select.innerHTML += `<option value="${id}">${name}</option>`;
-                        });
-                    } else if (type === 'document') {
-                        select.innerHTML = '<option value="">Select a document...</option>';
-                        documentOptions.forEach(([id, name]) => {
-                            select.innerHTML += `<option value="${id}">${name}</option>`;
-                        });
-                    } else {
-                        select.innerHTML = '<option value="">Not applicable</option>';
-                        select.disabled = true;
-                    }
-                }
-                
-                function removeItem(itemId) {
-                    const item = document.getElementById(`item-${itemId}`);
-                    item.remove();
-                    updateItemsData();
-                }
-                
-                function updateItemsData() {
-                    const items = [];
-                    const container = document.getElementById('items-container');
-                    const itemDivs = container.querySelectorAll('[id^="item-"]');
-                    
-                    itemDivs.forEach(div => {
-                        const id = div.id.split('-')[1];
-                        const type = document.getElementById(`type-${id}`).value;
-                        const itemSelect = document.getElementById(`item-select-${id}`);
-                        const barcode = document.getElementById(`barcode-${id}`).value;
-                        const description = document.getElementById(`description-${id}`).value;
-                        
-                        if (description || barcode || itemSelect.value) {
-                            const item = {
-                                type: type,
-                                barcode: barcode,
-                                description: description
-                            };
-                            
-                            if (type === 'container' && itemSelect.value) {
-                                item.container_id = itemSelect.value;
-                            } else if (type === 'document' && itemSelect.value) {
-                                item.document_id = itemSelect.value;
-                            }
-                            
-                            items.push(item);
-                        }
-                    });
-                    
-                    document.getElementById('items-data').value = JSON.stringify(items);
-                }
-                
-                // Initialize with one item and update pricing
-                document.addEventListener('DOMContentLoaded', function() {
-                    addRetrievalItem();
-                    updatePricing();
-                });
-                
-                // Update pricing when priority changes
-                document.getElementById('priority').addEventListener('change', function() {
-                    document.getElementById('calc_priority').value = this.value;
-                    updatePricing();
-                });
-                ]]>
-            </script>
+            <!-- Inline script removed: logic migrated to portal_document_retrieval.js -->
         </t>
     </template>
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="records_container_assign_barcode_wizard_view_form" model="ir.ui.view">
+      <field name="name">records.container.assign.barcode.wizard.view.form</field>
+      <field name="model">records.container.assign.barcode.wizard</field>
+      <field name="arch" type="xml">
+        <form string="Assign Physical Barcode" create="0" edit="0">
+          <group>
+            <field name="container_id" readonly="1" context="{'default_container_id': container_id}"/>
+            <field name="temp_barcode"/>
+            <field name="current_barcode"/>
+            <field name="new_barcode" placeholder="Scan physical barcode..."/>
+            <field name="force_reassign" attrs="{'invisible': [('current_barcode', '=', False)]}"/>
+          </group>
+          <footer>
+            <button name="action_assign" type="object" string="Assign" class="btn-primary"/>
+            <button string="Cancel" class="btn-secondary" special="cancel"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_records_container_assign_barcode_wizard" model="ir.actions.act_window">
+      <field name="name">Assign Physical Barcode</field>
+      <field name="res_model">records.container.assign.barcode.wizard</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="context">{'active_id': active_id}</field>
+    </record>
+  </data>
+</odoo>

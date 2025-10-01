@@ -187,5 +187,13 @@
             <field name="number_next">1</field>
             <field name="company_id" eval="False"/>
         </record>
+        <!-- Sequence for Temporary Container Barcodes -->
+        <record id="seq_records_container_temp_barcode" model="ir.sequence">
+            <field name="name">Temporary Container Barcode Sequence</field>
+            <field name="code">records.container.temp.barcode</field>
+            <field name="prefix">TMP</field>
+            <field name="padding">8</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>

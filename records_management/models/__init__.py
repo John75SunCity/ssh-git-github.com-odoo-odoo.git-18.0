@@ -273,6 +273,7 @@ from . import work_order_retrieval
 from . import work_order_shredding
 from . import workflow_visualization_manager
 from . import button_action_placeholders
+from . import records_container_assign_barcode_wizard
 
 import logging
 _logger = logging.getLogger(__name__)

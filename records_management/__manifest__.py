@@ -126,6 +126,7 @@
         "views/temp_inventory_reject_wizard_views.xml",
         "views/visitor_pos_wizard_views.xml",
         "views/work_order_bin_assignment_wizard_views.xml",
+    "views/records_container_assign_barcode_wizard_views.xml",
     # Key restriction + Bin Unlock Service actions must load before menus
     "views/bin_unlock_service_views.xml",
         "views/advanced_billing_contact_views.xml",
@@ -318,6 +319,12 @@
             "records_management/static/src/js/portal_signature.js",
             "records_management/static/src/js/portal_user_import.js",
             "records_management/static/src/js/field_label_customizer.js",
+            # Newly externalized portal barcode management logic (extracted from inline script)
+            "records_management/static/src/js/portal/portal_barcode_management.js",
+            # Newly externalized portal document retrieval logic
+            "records_management/static/src/js/portal/portal_document_retrieval.js",
+            # Organization diagram interactive logic
+            "records_management/static/src/js/portal/portal_organization_diagram.js",
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
             "records_management/static/src/js/customer_portal_diagram.js",
