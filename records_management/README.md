@@ -83,7 +83,7 @@ A comprehensive, enterprise-grade physical document management system with advan
 ## 📊 **IMPRESSIVE STATISTICS**
 
 - **🔧 102 Python Models** - Comprehensive business logic coverage
-- **🎨 51 XML Views** - Rich, modern user interfaces  
+- **🎨 51 XML Views** - Rich, modern user interfaces
 - **📋 1400+ Fields** - Detailed data capture and analytics
 - **📄 77 Data Files** - Complete configuration and demo data
 - **🎛️ 5 Controllers** - Advanced web integration
@@ -92,9 +92,9 @@ A comprehensive, enterprise-grade physical document management system with advan
 
 ## 🎯 **VERSION INFORMATION**
 
-**Current Version:** 18.0.7.0.0  
-**Major Update:** Enterprise Features & AI Analytics  
-**Compatibility:** Odoo 18.0  
+**Current Version:** 18.0.7.0.0
+**Major Update:** Enterprise Features & AI Analytics
+**Compatibility:** Odoo 18.0
 **Last Updated:** July 2025
 
 ## 🚀 **ENTERPRISE FEATURES**
@@ -304,6 +304,65 @@ Ensure all required Odoo modules are installed first:
 - **Portal Requests**: Customer self-service functionality
 - **Feedback System**: Customer satisfaction tracking
 - **Certificate Management**: Secure document downloads
+
+### Portal Barcode Generation (New Feature)
+
+This module introduces a lightweight, extensible generic barcode model powering on-demand barcode creation from the portal UI.
+
+Key components:
+
+* Model: `portal.barcode` (mail.thread, activity) – stores generated barcodes with lifecycle state
+* Sequence: `ir.sequence` code `portal.barcode` (prefix `PB`, padding 7, no_gap) – ensures uniqueness
+* JSON Route: `/records_management/portal/generate_barcode` (POST, `auth="user"`) – returns newly created record data + optional rendered row fragment
+* QWeb Fragment: `portal_barcode_row.xml` – server-rendered `<tr>` snippet for progressive enhancement
+* Frontend JS: `static/src/js/portal/portal_barcode_management.js` – dual implementation (Odoo widget + vanilla fallback) handling spinner, optimistic insertion, and graceful degradation
+* Access Control: Records User (create/read/update), Records Manager (full CRUD) – intentionally excludes anonymous/public users
+
+Response Schema (successful JSON call):
+
+```json
+{
+	"success": true,
+	"barcode": {
+		"id": 123,
+		"name": "PB0000123",
+		"state": "active",
+		"barcode_type": "generic",
+		"barcode_format": "code128"
+	},
+	"row_html": "<tr>...</tr>" // Present when template rendering succeeds
+}
+```
+
+Usage Flow:
+
+1. User clicks "Generate" in the portal barcode management view
+2. Button enters loading state; JSON POST issued with optional `barcode_type` / `barcode_format`
+3. Server creates record via sequence – creation audited via chatter
+4. Client inserts server-rendered row (`row_html`) at top, or builds a minimal fallback row if fragment missing
+5. Optional future association to boxes/documents can extend model via many2one fields
+
+Extension Points:
+
+* Override `generate_portal_barcode` to inject domain-specific validation or linking
+* Add new selection values for `barcode_type` / `barcode_format` (ensure related views updated)
+* Attach to container / document models by adding relational fields + adapting row template
+* Introduce scheduled expiration by adding cron to transition `state` → `expired`
+
+Security Notes:
+
+* Endpoint restricted to internal records groups (no raw portal/public access yet)
+* All dynamic HTML either QWeb-rendered or sanitized fallback; no user-supplied fragments injected
+* Sequence usage is atomic; uniqueness enforced by (name, company_id) constraint
+
+Future Enhancements (Roadmap Candidates):
+
+* Optional link to `records.box` for pre-label staging
+* Batch generation (server-side loop with streamed fragment response)
+* Printable sheet (A4 / Letter) with multiple barcodes
+* Direct embedding of SVG/PNG barcode images via rendering library
+
+---
 
 ## 🔍 Key Improvements in v6.0.0
 

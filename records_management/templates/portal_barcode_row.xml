@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Single table row for a portal.barcode record; inserted dynamically via JS after JSON generation call -->
+    <template id="portal_barcode_row" name="Portal Barcode Row">
+        <tr t-att-data-barcode-id="barcode.id">
+            <td>
+                <div class="d-flex align-items-center">
+                    <div class="barcode-display me-3">
+                        <!-- Defer server image generation; placeholder code text until image service integrated -->
+                        <code t-esc="barcode.name"/>
+                    </div>
+                    <div>
+                        <small class="text-muted">Format: <t t-esc="barcode.barcode_format"/></small>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <span t-att-class="'badge bg-secondary'"> <t t-esc="barcode.barcode_type"/> </span>
+            </td>
+            <td>-</td>
+            <td>-</td>
+            <td>
+                <t t-if="barcode.state == 'active'"><span class="badge bg-success">Active</span></t>
+                <t t-elif="barcode.state == 'inactive'"><span class="badge bg-secondary">Inactive</span></t>
+                <t t-else=""><span class="badge bg-warning">Expired</span></t>
+            </td>
+            <td><t t-esc="(barcode.create_date or '').strftime('%Y-%m-%d %H:%M') if barcode.create_date else ''"/></td>
+            <td><t t-esc="(barcode.last_scanned or '').strftime('%Y-%m-%d %H:%M') if barcode.last_scanned else '-'"/></td>
+            <td>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button class="btn btn-outline-secondary" data-barcode-action="viewBarcodeDetails" t-att-data-barcode-id="barcode.id"><i class="fa fa-eye"></i></button>
+                    <button class="btn btn-outline-secondary" data-barcode-action="printBarcode" t-att-data-barcode-id="barcode.id"><i class="fa fa-print"></i></button>
+                    <button class="btn btn-outline-secondary" data-barcode-action="duplicateBarcode" t-att-data-barcode-id="barcode.id"><i class="fa fa-copy"></i></button>
+                    <button class="btn btn-outline-secondary" data-barcode-action="deactivateBarcode" t-att-data-barcode-id="barcode.id"><i class="fa fa-ban"></i></button>
+                </div>
+            </td>
+        </tr>
+    </template>
+</odoo>

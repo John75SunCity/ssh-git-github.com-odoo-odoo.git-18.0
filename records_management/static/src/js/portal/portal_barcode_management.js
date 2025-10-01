@@ -8,6 +8,7 @@ odoo.define('records_management.portal_barcode_management', function (require) {
 
     const publicWidget = require('web.public.widget');
     const { qweb } = require('web.core');
+    const ajax = require('web.ajax');
 
     const BarcodePortal = publicWidget.Widget.extend({
         selector: '[data-rm-portal-barcode]',
@@ -33,9 +34,46 @@ odoo.define('records_management.portal_barcode_management', function (require) {
          */
         _onGenerateBarcode(ev) {
             ev.preventDefault();
-            // Placeholder for server call to generate new temporary barcode
-            // Could call a JSON route and then refresh table (future enhancement)
-            console.log('[BarcodePortal] Generate new barcode requested');
+            const $btn = $(ev.currentTarget);
+            if ($btn.prop('disabled')) {
+                return;
+            }
+            $btn.prop('disabled', true).addClass('disabled');
+            $btn.append('<span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>');
+            ajax.jsonRpc('/records_management/portal/generate_barcode', 'call', {
+                barcode_type: 'generic',
+                barcode_format: 'code128',
+            }).then(result => {
+                if (!result || !result.success) {
+                    console.error('[BarcodePortal] Generation failed', result && result.error);
+                    return;
+                }
+                const tbody = this.$('#barcodeTable tbody');
+                if (result.row_html) {
+                    // Insert at top
+                    tbody.prepend(result.row_html);
+                } else if (result.barcode) {
+                    // Fallback minimal row
+                    const b = result.barcode;
+                    const row = `<tr data-barcode-id="${b.id}">
+                        <td><code>${_.escape(b.name)}</code><br/><small class="text-muted">Format: ${_.escape(b.barcode_format)}</small></td>
+                        <td><span class="badge bg-secondary">${_.escape(b.barcode_type)}</span></td>
+                        <td>-</td><td>-</td>
+                        <td><span class="badge bg-success">${_.escape(b.state)}</span></td>
+                        <td></td><td>-</td>
+                        <td><div class="btn-group btn-group-sm" role="group">
+                            <button class="btn btn-outline-secondary" data-barcode-action="viewBarcodeDetails" data-barcode-id="${b.id}"><i class="fa fa-eye"/></button>
+                        </div></td>
+                    </tr>`;
+                    tbody.prepend(row);
+                }
+                this._filterBarcodes();
+            }).catch(err => {
+                console.error('[BarcodePortal] Generation error', err);
+            }).always(() => {
+                $btn.find('.spinner-border').remove();
+                $btn.prop('disabled', false).removeClass('disabled');
+            });
         },
 
         _onClearFilters(ev) {
@@ -224,11 +262,47 @@ odoo.define('records_management.portal_barcode_management', function (require) {
     });
   }
 
-  // --- Core Functions (logic unchanged from inline placeholders) ---
-  function generateNewBarcode() {
-    console.log('Generating new barcode...');
-    // TODO: Implement server call & refresh logic
-  }
+  // --- Core Functions (logic unchanged from inline placeholders in portal_barcode_template.xml) ---
+  /**
+   * Trigger barcode generation via server call (future enhancement).
+    // TODO: Implement server call (e.g., via Odoo JSON-RPC to /records_management/portal/generate_barcode) & refresh logic
+   * then refresh the barcode table to reflect the new entry.
+   */
+    function generateNewBarcode(ev) {
+        const btn = ev && ev.target ? ev.target.closest('[data-action="generate-barcode"]') : null;
+        if (btn && btn.disabled) return;
+        if (btn) {
+            btn.disabled = true;
+            btn.classList.add('disabled');
+            btn.insertAdjacentHTML('beforeend', '<span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>');
+        }
+        fetch('/records_management/portal/generate_barcode', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ barcode_type: 'generic', barcode_format: 'code128' })
+        }).then(r => r.json()).then(result => {
+            if (!result.success) { console.error('Generation failed', result.error); return; }
+            const tbody = q('#barcodeTable tbody', root);
+            if (result.row_html) {
+                const temp = document.createElement('tbody');
+                temp.innerHTML = result.row_html.trim();
+                const newRow = temp.firstElementChild;
+                if (newRow) tbody.prepend(newRow);
+            } else if (result.barcode) {
+                const b = result.barcode;
+                const row = document.createElement('tr');
+                row.setAttribute('data-barcode-id', b.id);
+                row.innerHTML = `<td><code>${b.name}</code><br/><small class="text-muted">Format: ${b.barcode_format}</small></td>
+                    <td><span class="badge bg-secondary">${b.barcode_type}</span></td><td>-</td><td>-</td>
+                    <td><span class="badge bg-success">${b.state}</span></td><td></td><td>-</td>
+                    <td><div class="btn-group btn-group-sm" role="group"><button class="btn btn-outline-secondary" data-barcode-action="viewBarcodeDetails" data-barcode-id="${b.id}"><i class="fa fa-eye"></i></button></div></td>`;
+                tbody.prepend(row);
+            }
+            filterBarcodes();
+        }).catch(err => console.error('Generation error', err)).finally(() => {
+            if (btn) { btn.querySelector('.spinner-border')?.remove(); btn.disabled = false; btn.classList.remove('disabled'); }
+        });
+    }
 
   function printBarcode(barcodeId) {
     console.log('Printing barcode:', barcodeId);

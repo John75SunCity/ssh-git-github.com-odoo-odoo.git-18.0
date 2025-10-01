@@ -65,6 +65,8 @@
         "data/sequence_data.xml",
         # Newly added consolidated missing sequences (must load before any records using them)
         "data/missing_sequences_data.xml",
+    # Portal barcode generic sequence (independent of container/storage specific sequences)
+    "data/portal_barcode_sequence.xml",
         "data/records_retrieval_order_sequences_data.xml",
         "data/core_records_data.xml",
         "data/load_data.xml",
@@ -262,6 +264,7 @@
         "templates/portal_certifications.xml",
         "templates/portal_certificate_templates.xml",
         "templates/portal_inventory_template.xml",
+    "templates/portal_barcode_row.xml",
         "templates/portal_mobile_export.xml",
         "templates/portal_mobile_inventory_template.xml",
         "templates/portal_mobile_settings.xml",
@@ -308,7 +311,7 @@
         "web.assets_frontend": [
             # Modern Owl Portal Components (Following Odoo 18 Guidelines)
             "records_management/static/src/portal_components/**/*",
-            
+
             # Legacy Portal Assets (To be gradually migrated)
             "records_management/static/src/css/portal_tour.css",
             "records_management/static/src/css/intelligent_search.css",
