@@ -4,7 +4,7 @@ from odoo.exceptions import UserError, AccessError
 
 class Company(models.Model):
     _inherit = 'res.company'
-    
+
     # Records Management configurations
     records_management_enabled = fields.Boolean(
         string="Enable Records Management",
@@ -12,7 +12,7 @@ class Company(models.Model):
         help="Enable Records Management features for this company"
     )
     naid_member_id = fields.Char(
-        string="NAID Member ID", 
+        string="NAID Member ID",
         help="Official NAID membership identifier for destruction certificates"
     )
 
@@ -200,8 +200,20 @@ class ResPartner(models.Model):
             ['__count']
         )
 
-        container_map = {item['partner_id'][0]: item['__count'] for item in container_data}
-        document_map = {item['partner_id'][0]: item['__count'] for item in document_data}
+        # Handle both tuple (id, name) and integer formats from _read_group
+        container_map = {}
+        for item in container_data:
+            partner_id = item['partner_id']
+            # Extract ID whether it's a tuple (id, name) or just an integer
+            partner_id_value = partner_id[0] if isinstance(partner_id, (tuple, list)) else partner_id
+            container_map[partner_id_value] = item['__count']
+
+        document_map = {}
+        for item in document_data:
+            partner_id = item['partner_id']
+            # Extract ID whether it's a tuple (id, name) or just an integer
+            partner_id_value = partner_id[0] if isinstance(partner_id, (tuple, list)) else partner_id
+            document_map[partner_id_value] = item['__count']
 
         for partner in self:
             partner.container_count = container_map.get(partner.id, 0)
