@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="records_management.PortalInventoryComponent">
+        <div class="portal-inventory-component">
+            <!-- Header / Actions -->
+            <div class="inventory-header mb-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-1">
+                            <i class="fa fa-archive text-primary mr-2"></i>
+                            Inventory
+                        </h3>
+                        <small class="text-muted">Manage boxes, documents, files with real-time filters</small>
+                    </div>
+                    <div class="btn-group mt-2 mt-md-0">
+                        <button class="btn btn-success" t-on-click="addTempInventory">
+                            <i class="fa fa-plus mr-1"></i> New Temp Item
+                        </button>
+                        <button class="btn btn-outline-primary" t-on-click="refreshData" t-att-disabled="state.isLoading">
+                            <i t-att-class="state.isLoading ? 'fa fa-spinner fa-spin' : 'fa fa-refresh'"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters / Search -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body pb-2">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="small text-muted mb-1">Search</label>
+                            <div class="input-group input-group-sm">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-search"></i></span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Search name, ref, location..." t-model="state.searchQuery" t-on-input="onSearchInput"/>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="small text-muted mb-1">Type</label>
+                            <select class="form-control form-control-sm" t-model="state.filters.type" t-on-change="applyFilters">
+                                <option value="">All</option>
+                                <option value="box">Box</option>
+                                <option value="document">Document</option>
+                                <option value="file">File</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="small text-muted mb-1">Status</label>
+                            <select class="form-control form-control-sm" t-model="state.filters.status" t-on-change="applyFilters">
+                                <option value="">All</option>
+                                <option value="active">Active</option>
+                                <option value="archived">Archived</option>
+                                <option value="destroyed">Destroyed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <label class="small text-muted mb-1">Sort</label>
+                            <select class="form-control form-control-sm" t-model="state.sortBy" t-on-change="applyFilters">
+                                <option value="date_desc">Newest</option>
+                                <option value="date_asc">Oldest</option>
+                                <option value="name_asc">Name A-Z</option>
+                                <option value="name_desc">Name Z-A</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-3 d-flex align-items-end">
+                            <div class="btn-group btn-group-sm w-100">
+                                <button class="btn btn-outline-secondary" t-on-click="clearFilters">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                                <button class="btn btn-outline-info" t-on-click="toggleView">
+                                    <i t-att-class="state.viewMode === 'grid' ? 'fa fa-th-large' : 'fa fa-list'"/>
+                                </button>
+                                <button class="btn btn-outline-dark position-relative" t-on-click="toggleSelectionMode" t-att-class="state.selectionMode ? 'active' : ''">
+                                    <i class="fa fa-check-square"></i>
+                                    <span class="badge badge-primary position-absolute" style="top:-5px; right:-5px;" t-if="state.selectedIds.size" t-esc="state.selectedIds.size"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch Actions -->
+            <div class="alert alert-primary py-2 px-3 d-flex justify-content-between align-items-center" t-if="state.selectionMode">
+                <div>
+                    <strong t-esc="state.selectedIds.size"/> selected
+                    <span class="text-muted ml-2" t-esc="state.filteredItems.length + ' shown'"/>
+                </div>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-success" t-on-click="batchToPickup" t-att-disabled="!state.selectedIds.size">
+                        <i class="fa fa-truck mr-1"/>Pickup
+                    </button>
+                    <button class="btn btn-danger" t-on-click="batchDestruction" t-att-disabled="!state.selectedIds.size">
+                        <i class="fa fa-fire mr-1"/>Destroy
+                    </button>
+                    <button class="btn btn-outline-secondary" t-on-click="clearSelection">
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="text-center my-5" t-if="state.isLoading">
+                <i class="fa fa-spinner fa-spin fa-2x text-primary"></i>
+                <p class="mt-2 text-muted">Loading inventory...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state text-center py-5" t-if="!state.isLoading and !state.filteredItems.length">
+                <i class="fa fa-archive fa-3x text-muted mb-3"/>
+                <h5 class="text-muted mb-2">No Items Found</h5>
+                <p class="text-muted">Adjust filters or add a new temporary inventory item.</p>
+                <button class="btn btn-primary" t-on-click="addTempInventory">
+                    <i class="fa fa-plus mr-1"/>Add Inventory
+                </button>
+            </div>
+
+            <!-- Grid View -->
+            <div class="inventory-grid" t-if="!state.isLoading and state.viewMode === 'grid' and state.filteredItems.length">
+                <div class="row">
+                    <t t-foreach="state.filteredItems" t-as="item" t-key="item.id">
+                        <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100 inventory-card" t-att-class="state.selectedIds.has(item.id) ? 'selected' : ''" t-on-click="(ev) => cardClick(ev, item)">
+                                <div class="card-body pb-2">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <span class="badge" t-att-class="'badge-' + item.statusColor" t-esc="item.statusLabel"/>
+                                        <span class="text-muted small" t-esc="item.displayType"/>
+                                    </div>
+                                    <h6 class="card-title mb-1" t-esc="item.name"/>
+                                    <p class="text-muted small mb-2" t-esc="item.location || 'No location'"/>
+                                    <div class="small text-truncate" t-esc="item.reference || ''"/>
+                                </div>
+                                <div class="card-footer bg-white border-0 pt-0">
+                                    <div class="btn-group btn-group-sm w-100">
+                                        <button class="btn btn-outline-primary" t-on-click.stop="() => viewItem(item)">
+                                            <i class="fa fa-eye"/>
+                                        </button>
+                                        <button class="btn btn-outline-warning" t-on-click.stop="() => requestPickup(item)">
+                                            <i class="fa fa-truck"/>
+                                        </button>
+                                        <button class="btn btn-outline-danger" t-on-click.stop="() => requestDestruction(item)" t-att-disabled="item.status === 'destroyed'">
+                                            <i class="fa fa-fire"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+            <!-- List View -->
+            <div class="inventory-list" t-if="!state.isLoading and state.viewMode === 'list' and state.filteredItems.length">
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th t-if="state.selectionMode" style="width:32px;">
+                                    <input type="checkbox" t-on-change="toggleSelectAll" t-att-checked="state.allSelected"/>
+                                </th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th style="width:120px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="state.filteredItems" t-as="item" t-key="item.id">
+                                <tr t-on-click="(ev) => rowClick(ev, item)" t-att-class="state.selectedIds.has(item.id) ? 'table-active' : ''">
+                                    <td t-if="state.selectionMode">
+                                        <input type="checkbox" t-on-change.stop="(ev) => toggleSelect(item)" t-att-checked="state.selectedIds.has(item.id)"/>
+                                    </td>
+                                    <td>
+                                        <strong t-esc="item.name"/>
+                                        <br/>
+                                        <small class="text-muted" t-esc="item.reference || ''"/>
+                                    </td>
+                                    <td><span class="badge badge-secondary" t-esc="item.displayType"/></td>
+                                    <td><span t-esc="item.location || '—'"/></td>
+                                    <td>
+                                        <span class="badge" t-att-class="'badge-' + item.statusColor" t-esc="item.statusLabel"/>
+                                    </td>
+                                    <td><span t-esc="item.date"/></td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" t-on-click.stop="() => viewItem(item)"><i class="fa fa-eye"/></button>
+                                            <button class="btn btn-outline-warning" t-on-click.stop="() => requestPickup(item)"><i class="fa fa-truck"/></button>
+                                            <button class="btn btn-outline-danger" t-on-click.stop="() => requestDestruction(item)" t-att-disabled="item.status === 'destroyed'"><i class="fa fa-fire"/></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <nav t-if="state.totalPages > 1" class="mt-3">
+                <ul class="pagination pagination-sm justify-content-center mb-0">
+                    <li class="page-item" t-att-class="state.currentPage === 1 ? 'disabled' : ''">
+                        <a class="page-link" href="#" t-on-click.prevent="() => goToPage(state.currentPage - 1)">&laquo;</a>
+                    </li>
+                    <t t-foreach="Array.from({length: state.totalPages}, (_, i) => i + 1)" t-as="page">
+                        <li class="page-item" t-att-class="state.currentPage === page ? 'active' : ''">
+                            <a class="page-link" href="#" t-on-click.prevent="() => goToPage(page)" t-esc="page"/>
+                        </li>
+                    </t>
+                    <li class="page-item" t-att-class="state.currentPage === state.totalPages ? 'disabled' : ''">
+                        <a class="page-link" href="#" t-on-click.prevent="() => goToPage(state.currentPage + 1)">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </t>
+</templates>

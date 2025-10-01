@@ -52,7 +52,13 @@
                 <t t-set="breadcrumbs_searchbar" t-value="True"/>
                 <t t-set="title">My Inventory</t>
 
-                <div class="o_portal_inventory highlight-modern">
+                <!-- Owl Inventory Component (progressive enhancement). Fallback legacy block retained below. -->
+                <div class="o_portal_inventory_modern mb-4">
+                    <owl-component name="records_management.PortalInventoryComponent"/>
+                </div>
+
+                <div class="o_portal_inventory highlight-modern legacy-inventory-fallback d-none d-md-block">
+                    <!-- NOTE: Legacy inventory UI kept for fallback; will be removed after full parity & QA. -->
                     <!-- Enhanced Search and Filter Section -->
                     <div class="card mb-4">
                         <div class="card-header bg-primary text-white">
@@ -291,19 +297,7 @@
                     </div>
                 </div>
 
-                <!-- JavaScript for Enhanced Functionality -->
-                <script type="text/javascript">
-                    // Initialize inventory management functionality
-                    $(document).ready(function() {
-                        initializeInventoryManagement();
-                    });
-
-                    // Example JS for visit date filter (add more as needed)
-                    function filterVisitsByDate(date) {
-                        // Implement client-side filtering logic here, e.g., hide/show table rows based on date
-                        console.log('Filtering visits by date:', date);
-                    }
-                </script>
+                <!-- Removed inline legacy JS: visit date filter and inventory init now handled via Owl component & future dedicated module. -->
             </t>
         </template>
 
