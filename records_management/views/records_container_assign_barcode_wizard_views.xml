@@ -11,7 +11,8 @@
             <field name="temp_barcode"/>
             <field name="current_barcode"/>
             <field name="new_barcode" placeholder="Scan physical barcode..."/>
-            <field name="force_reassign" attrs="{'invisible': [('current_barcode', '=', False)]}"/>
+            <!-- Modernized: replace deprecated attrs usage with direct invisible expression -->
+            <field name="force_reassign" invisible="not current_barcode"/>
           </group>
           <footer>
             <button name="action_assign" type="object" string="Assign" class="btn-primary"/>
