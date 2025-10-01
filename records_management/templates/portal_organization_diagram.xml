@@ -241,21 +241,9 @@
 
             </div>
 
-            <!-- Pass diagram data to JavaScript -->
+            <!-- JSON payload (consumed by JS asset) -->
             <script type="application/json" id="diagram-data">
-                {
-                    "nodes": <t t-out="diagram.node_data or '[]'"/>,
-                    "edges": <t t-out="diagram.edge_data or '[]'"/>,
-                    "stats": <t t-out="diagram.diagram_stats or '{}'"/>,
-                    "config": {
-                        "show_messaging": <t t-out="diagram.show_messaging and 'true' or 'false'"/>,
-                        "show_access_rights": <t t-out="diagram.show_access_rights and 'true' or 'false'"/>,
-                        "layout_type": "<t t-out="diagram.layout_type"/>",
-                        "diagram_id": <t t-out="diagram.id"/>,
-                        "user_id": <t t-out="user.id"/>,
-                        "partner_id": <t t-out="partner.id"/>
-                    }
-                }
+{"nodes": <t t-out="diagram.node_data or '[]'"/>, "edges": <t t-out="diagram.edge_data or '[]'"/>, "stats": <t t-out="diagram.diagram_stats or '{}'"/>, "config": {"show_messaging": <t t-out="diagram.show_messaging and 'true' or 'false'"/>, "show_access_rights": <t t-out="diagram.show_access_rights and 'true' or 'false'"/>, "layout_type": "<t t-out="diagram.layout_type"/>", "diagram_id": <t t-out="diagram.id"/>, "user_id": <t t-out="user.id"/>, "partner_id": <t t-out="partner.id"/>}}
             </script>
 
         </t>

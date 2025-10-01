@@ -195,5 +195,13 @@
             <field name="padding">8</field>
             <field name="company_id" eval="False"/>
         </record>
+        <!-- Sequence for Temporary File (Document) Barcodes -->
+        <record id="seq_records_document_temp_barcode" model="ir.sequence">
+            <field name="name">Temporary File Barcode Sequence</field>
+            <field name="code">records.document.temp.barcode</field>
+            <field name="prefix">TF</field>
+            <field name="padding">7</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>

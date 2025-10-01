@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Inherit document tree to add bulk upload and temp barcode print actions -->
+        <record id="records_document_view_tree_inherit_bulk_upload" model="ir.ui.view">
+            <field name="name">records.document.view.tree.inherit.bulk.upload</field>
+            <field name="model">records.document</field>
+            <field name="inherit_id" ref="records_management.records_document_views"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="create">true</attribute>
+                </xpath>
+                <xpath expr="//header" position="inside">
+                    <button name="%(records_document_bulk_upload_wizard_action)d" type="action" string="Bulk Upload Files" class="oe_highlight"/>
+                    <button name="%(action_report_records_document_temp_barcode_labels)d" type="action" string="Print Temp Barcodes"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Smart button on form to print a single temp barcode label sheet (just reusing multi) -->
+        <record id="records_document_view_form_inherit_temp_barcode" model="ir.ui.view">
+            <field name="name">records.document.view.form.inherit.temp.barcode</field>
+            <field name="model">records.document</field>
+            <field name="inherit_id" ref="records_management.records_document_views"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/notebook" position="before">
+                    <button name="%(action_report_records_document_temp_barcode_labels)d" type="action" string="Temp Barcode Label" class="oe_stat_button" invisible="not temp_barcode">
+                        <field name="temp_barcode" widget="badge" readonly="1"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

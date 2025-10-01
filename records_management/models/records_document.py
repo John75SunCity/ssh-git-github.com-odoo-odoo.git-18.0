@@ -59,6 +59,14 @@ class RecordsDocument(models.Model):
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     responsible_person_id = fields.Many2one(comodel_name='res.users', string='Responsible')
     reference = fields.Char(string="Reference / Barcode", copy=False, tracking=True)
+    # Temporary file barcode (distinct from physical barcode). Assigned automatically if absent.
+    temp_barcode = fields.Char(
+        string="Temporary File Barcode",
+        copy=False,
+        index=True,
+        tracking=True,
+        help="System-generated temporary barcode (prefix TF) used before any permanent document barcode is applied."
+    )
 
     # ============================================================================
     # ODOO NATIVE BARCODE FIELD
@@ -249,6 +257,10 @@ class RecordsDocument(models.Model):
     destroyed = fields.Boolean(string="Is Destroyed", compute='_compute_destroyed', store=True, help="True if the document's state is 'destroyed'.")
     recently_accessed = fields.Boolean(string="Accessed Recently", compute="_compute_recent_access", search="_search_recent_access", help="True if accessed in last 30 days.")
 
+    _sql_constraints = [
+        ("temp_file_barcode_company_uniq", "unique(temp_barcode, company_id)", "Temporary file barcode must be unique per company."),
+    ]
+
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
@@ -258,6 +270,14 @@ class RecordsDocument(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.document') or _('New')
+            # Assign TF* temp barcode if absent and no physical barcode present
+            if not vals.get('temp_barcode') and not vals.get('barcode'):
+                seq = self.env['ir.sequence'].next_by_code('records.document.temp.barcode')
+                if not seq:
+                    # Fallback pattern if sequence misconfigured
+                    today = fields.Date.context_today(self)
+                    seq = "TF%s%05d" % (today.strftime('%Y%m%d'), self.env['ir.sequence'].next_by_code('records.document') or 0)
+                vals['temp_barcode'] = seq
         docs = super().create(vals_list)
         for doc in docs:
             doc.message_post(body=_('Document "%s" created') % doc.name)

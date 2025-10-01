@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Multi-Document Temporary Barcode Label Report -->
+    <template id="report_records_document_temp_barcode_labels">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <div style="display:inline-block;width:200px;height:110px;border:1px solid #000;margin:4px;padding:4px;font-size:11px;vertical-align:top;">
+                    <div style="font-weight:bold;">Temp File Barcode</div>
+                    <div t-if="doc.temp_barcode" style="font-size:14px;">[[ doc.temp_barcode ]]</div>
+                    <div t-if="not doc.temp_barcode" style="color:red;">NO TEMP BARCODE</div>
+                    <div style="margin-top:4px;">
+                        <img t-if="doc.temp_barcode" t-att-src="'/report/barcode/Code128/%s?width=250&amp;height=50' % doc.temp_barcode" style="max-width:100%;height:50px;"/>
+                    </div>
+                    <div style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">[[ doc.display_name or doc.name ]]</div>
+                    <div style="font-size:9px;">[[ doc.partner_id.name or '' ]]</div>
+                </div>
+                <t t-if="(loop.index % 15) == 0"><div style="page-break-after:always;"></div></t>
+            </t>
+        </t>
+    </template>
+
+    <report
+        id="action_report_records_document_temp_barcode_labels"
+        model="records.document"
+        string="Temp File Barcodes"
+        report_type="qweb-html"
+        name="records_management.report_records_document_temp_barcode_labels"
+        file="records_management.report_records_document_temp_barcode_labels"
+        print_report_name="'temp_file_barcodes'"
+    />
+</odoo>
