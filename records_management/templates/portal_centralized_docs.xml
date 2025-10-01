@@ -61,7 +61,7 @@
                 <div class="modern-document-center mb-5">
                     <div class="card border-0 shadow-sm">
                         <div class="card-body">
-                            <owl-component name="records_management.PortalDocumentCenter" 
+                            <owl-component name="records_management.PortalDocumentCenter"
                                            partnerId="partner_id"
                                            initialTab="all"
                                            pageSize="12" />
@@ -84,10 +84,10 @@
                                     Business Document Center
                                 </h5>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-outline-primary active" id="tabView" onclick="switchView('tabs')">
+                                    <button type="button" class="btn btn-outline-primary active" id="tabView" data-docs-view="tabs">
                                         <i class="fa fa-th-large"></i> Tab View
                                     </button>
-                                    <button type="button" class="btn btn-outline-primary" id="accordionView" onclick="switchView('accordion')">
+                                    <button type="button" class="btn btn-outline-primary" id="accordionView" data-docs-view="accordion">
                                         <i class="fa fa-list"></i> Accordion View
                                     </button>
                                 </div>
@@ -170,7 +170,7 @@
                                                           t-esc="invoice.payment_state.replace('_', ' ').title()"/>
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control form-control-sm" 
+                                                    <input type="text" class="form-control form-control-sm"
                                                            t-att-value="invoice.ref or ''"
                                                            t-att-data-invoice-id="invoice.id"
                                                            placeholder="Enter PO#"
@@ -253,7 +253,7 @@
                                                           t-esc="quote.state.replace('_', ' ').title()"/>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="quote.validity_date" t-options="{'widget': 'date'}" 
+                                                    <span t-esc="quote.validity_date" t-options="{'widget': 'date'}"
                                                           t-att-class="'text-danger' if quote.validity_date and quote.validity_date &lt; datetime.date.today() else ''"/>
                                                 </td>
                                                 <td>
@@ -264,7 +264,7 @@
                                                         <a t-attf-href="/my/quotes/#{quote.id}/download" class="btn btn-outline-secondary btn-sm">
                                                             <i class="fa fa-download"></i>
                                                         </a>
-                                                        <button class="btn btn-outline-success btn-sm" t-if="quote.state == 'sent'" 
+                                                        <button class="btn btn-outline-success btn-sm" t-if="quote.state == 'sent'"
                                                                 t-att-onclick="'acceptQuote(' + str(quote.id) + ')'">
                                                             <i class="fa fa-check"></i> Accept
                                                         </button>
@@ -338,7 +338,7 @@
                                                         </button>
                                                         <!-- Invoice Linking -->
                                                         <t t-if="cert.linked_invoice">
-                                                            <a t-attf-href="/my/invoices/#{cert.linked_invoice.id}" 
+                                                            <a t-attf-href="/my/invoices/#{cert.linked_invoice.id}"
                                                                class="btn btn-outline-warning btn-sm ml-2"
                                                                t-att-title="'View linked invoice: ' + cert.linked_invoice.name">
                                                                 <i class="fa fa-link"></i> Invoice
@@ -403,7 +403,7 @@
                                                                     <span t-esc="comm.date" t-options="{'widget': 'datetime'}"/>
                                                                 </small>
                                                             </div>
-                                                            <button class="btn btn-outline-info btn-sm" 
+                                                            <button class="btn btn-outline-info btn-sm"
                                                                     t-att-onclick="'viewCommunication(' + str(comm.id) + ')'">
                                                                 <i class="fa fa-eye"></i>
                                                             </button>
@@ -434,7 +434,7 @@
                                                 <div class="d-flex justify-content-between align-items-start">
                                                     <div class="flex-grow-1">
                                                         <h6 class="mb-1">
-                                                            <i t-att-class="'fa fa-' + ('envelope' if comm.message_type == 'email' else 'comment' if comm.message_type == 'sms' else 'bell')" 
+                                                            <i t-att-class="'fa fa-' + ('envelope' if comm.message_type == 'email' else 'comment' if comm.message_type == 'sms' else 'bell')"
                                                                t-att-title="comm.message_type.title()"></i>
                                                             <span t-esc="comm.subject or 'Communication'"/>
                                                         </h6>
@@ -449,7 +449,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="ml-3">
-                                                        <button class="btn btn-outline-info btn-sm" 
+                                                        <button class="btn btn-outline-info btn-sm"
                                                                 t-att-onclick="'viewCommunication(' + str(comm.id) + ')'">
                                                             <i class="fa fa-eye"></i>
                                                         </button>
@@ -471,8 +471,8 @@
                         <div class="card">
                             <div class="card-header" id="invoicesHeader">
                                 <h5 class="mb-0">
-                                    <button class="btn btn-link d-flex justify-content-between w-100" type="button" 
-                                            data-toggle="collapse" data-target="#invoicesCollapse" 
+                                    <button class="btn btn-link d-flex justify-content-between w-100" type="button"
+                                            data-toggle="collapse" data-target="#invoicesCollapse"
                                             aria-expanded="true" aria-controls="invoicesCollapse">
                                         <span>
                                             <i class="fa fa-file-text-o text-primary"></i>
@@ -510,7 +510,7 @@
                                                         <td>
                                                             <t t-if="inv.linked_certificates">
                                                                 <t t-foreach="inv.linked_certificates" t-as="cert">
-                                                                    <a t-attf-href="/my/certificates/#{cert.id}/download" 
+                                                                    <a t-attf-href="/my/certificates/#{cert.id}/download"
                                                                        class="btn btn-sm btn-outline-success mb-1 d-block">
                                                                         <i class="fa fa-certificate"></i>
                                                                         <span t-esc="cert.name"/>
@@ -522,7 +522,7 @@
                                                             </t>
                                                         </td>
                                                         <td>
-                                                            <a t-attf-href="/my/invoices/#{inv.id}/download" 
+                                                            <a t-attf-href="/my/invoices/#{inv.id}/download"
                                                                class="btn btn-sm btn-outline-primary">
                                                                 <i class="fa fa-download"></i> View PDF
                                                             </a>
@@ -540,8 +540,8 @@
                         <div class="card">
                             <div class="card-header" id="quotesHeader">
                                 <h5 class="mb-0">
-                                    <button class="btn btn-link collapsed d-flex justify-content-between w-100" type="button" 
-                                            data-toggle="collapse" data-target="#quotesCollapse" 
+                                    <button class="btn btn-link collapsed d-flex justify-content-between w-100" type="button"
+                                            data-toggle="collapse" data-target="#quotesCollapse"
                                             aria-expanded="false" aria-controls="quotesCollapse">
                                         <span>
                                             <i class="fa fa-calculator text-success"></i>
@@ -577,7 +577,7 @@
                                                                   t-esc="quote.state.replace('_', ' ').title()"/>
                                                         </td>
                                                         <td>
-                                                            <a t-attf-href="/my/quotes/#{quote.id}/download" 
+                                                            <a t-attf-href="/my/quotes/#{quote.id}/download"
                                                                class="btn btn-sm btn-outline-primary">
                                                                 <i class="fa fa-download"></i> View PDF
                                                             </a>
@@ -595,8 +595,8 @@
                         <div class="card">
                             <div class="card-header" id="certsHeader">
                                 <h5 class="mb-0">
-                                    <button class="btn btn-link collapsed d-flex justify-content-between w-100" type="button" 
-                                            data-toggle="collapse" data-target="#certsCollapse" 
+                                    <button class="btn btn-link collapsed d-flex justify-content-between w-100" type="button"
+                                            data-toggle="collapse" data-target="#certsCollapse"
                                             aria-expanded="false" aria-controls="certsCollapse">
                                         <span>
                                             <i class="fa fa-certificate text-warning"></i>
@@ -633,7 +633,7 @@
                                                         </td>
                                                         <td>
                                                             <t t-if="cert.linked_invoice">
-                                                                <a t-attf-href="/my/invoices/#{cert.linked_invoice.id}" 
+                                                                <a t-attf-href="/my/invoices/#{cert.linked_invoice.id}"
                                                                    class="btn btn-sm btn-outline-warning">
                                                                     <i class="fa fa-link"></i>
                                                                     <span t-esc="cert.linked_invoice.name"/>
@@ -644,7 +644,7 @@
                                                             </t>
                                                         </td>
                                                         <td>
-                                                            <a t-attf-href="/my/certificates/#{cert.id}/download" 
+                                                            <a t-attf-href="/my/certificates/#{cert.id}/download"
                                                                class="btn btn-sm btn-outline-primary">
                                                                 <i class="fa fa-download"></i> View Cert PDF
                                                             </a>
@@ -662,8 +662,8 @@
                         <div class="card">
                             <div class="card-header" id="commsHeader">
                                 <h5 class="mb-0">
-                                    <button class="btn btn-link collapsed d-flex justify-content-between w-100" type="button" 
-                                            data-toggle="collapse" data-target="#commsCollapse" 
+                                    <button class="btn btn-link collapsed d-flex justify-content-between w-100" type="button"
+                                            data-toggle="collapse" data-target="#commsCollapse"
                                             aria-expanded="false" aria-controls="commsCollapse">
                                         <span>
                                             <i class="fa fa-envelope text-info"></i>
@@ -741,7 +741,7 @@
                                 Document Security &amp; Compliance
                             </h6>
                             <p class="mb-0">
-                                All documents are secured with NAID AAA compliance standards. 
+                                All documents are secured with NAID AAA compliance standards.
                                 Communications are encrypted and logged for audit purposes.
                             </p>
                         </div>
@@ -769,53 +769,53 @@
                 .docs-header {
                     background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
                 }
-                
+
                 .stat-card:hover {
                     transform: translateY(-5px);
                     transition: all 0.3s ease;
                     box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
                 }
-                
+
                 .border-left-info {
                     border-left: 4px solid #17a2b8 !important;
                 }
-                
+
                 .communication-item:last-child {
                     margin-bottom: 0 !important;
                 }
-                
+
                 .nav-tabs .nav-link {
                     color: #495057;
                     border: none;
                     border-bottom: 2px solid transparent;
                 }
-                
+
                 .nav-tabs .nav-link.active {
                     color: #007bff;
                     border-bottom-color: #007bff;
                     background: none;
                 }
-                
+
                 .nav-tabs .nav-link:hover {
                     border-bottom-color: #007bff;
                     background: none;
                 }
-                
+
                 @media (max-width: 768px) {
                     .display-4 {
                         font-size: 2rem;
                     }
-                    
+
                     .docs-header {
                         padding: 2rem 0 !important;
                     }
-                    
+
                     .btn-group-lg .btn {
                         font-size: 0.9rem;
                         padding: 0.5rem 1rem;
                     }
                 }
-                
+
                 /* Accordion View Enhancements */
                 .accordion .card {
                     border: none;
@@ -823,36 +823,36 @@
                     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
                     margin-bottom: 15px;
                 }
-                
+
                 .accordion .card-header {
                     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                     border-radius: 8px 8px 0 0;
                     border: none;
                 }
-                
+
                 .accordion .btn-link {
                     text-decoration: none;
                     color: #495057;
                     font-weight: 500;
                 }
-                
+
                 .accordion .btn-link:hover {
                     color: #007bff;
                     text-decoration: none;
                 }
-                
+
                 .accordion .btn-link:focus {
                     box-shadow: none;
                 }
-                
+
                 .accordion-timeline .timeline-entry {
                     position: relative;
                 }
-                
+
                 .accordion-timeline .timeline-icon {
                     position: relative;
                 }
-                
+
                 .accordion-timeline .timeline-badge {
                     width: 40px;
                     height: 40px;
@@ -864,18 +864,18 @@
                     font-size: 14px;
                     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
                 }
-                
+
                 .accordion-timeline .timeline-content .card {
                     border-left: 4px solid #007bff;
                     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
                     transition: all 0.3s ease;
                 }
-                
+
                 .accordion-timeline .timeline-content .card:hover {
                     transform: translateX(5px);
                     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
                 }
-                
+
                 .view-toggle {
                     position: sticky;
                     top: 100px;
@@ -886,13 +886,13 @@
                     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
                     margin-bottom: 20px;
                 }
-                
+
                 .view-toggle .btn {
                     border-radius: 20px;
                     font-weight: 500;
                     transition: all 0.3s ease;
                 }
-                
+
                 .view-toggle .btn.active {
                     background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
                     border: none;
@@ -900,114 +900,9 @@
                     transform: scale(1.05);
                 }
             </style>
-            
-            <!-- Enhanced JavaScript for Document Center -->
-            <script>
-            function toggleView(viewType) {
-                const tabsView = document.getElementById('tabsViewContainer');
-                const accordionView = document.getElementById('accordionViewContainer');
-                const toggleButtons = document.querySelectorAll('.view-toggle .btn');
-                
-                // Remove active class from all buttons
-                toggleButtons.forEach(btn => btn.classList.remove('active'));
-                
-                if (viewType === 'accordion') {
-                    tabsView.style.display = 'none';
-                    accordionView.style.display = 'block';
-                    document.querySelector('[onclick="toggleView(\'accordion\')"]').classList.add('active');
-                    
-                    // Animate accordion cards
-                    setTimeout(() => {
-                        document.querySelectorAll('.accordion .card').forEach((card, index) => {
-                            card.style.opacity = '0';
-                            card.style.transform = 'translateY(20px)';
-                            
-                            setTimeout(() => {
-                                card.style.transition = 'all 0.5s ease';
-                                card.style.opacity = '1';
-                                card.style.transform = 'translateY(0)';
-                            }, index * 100);
-                        });
-                    }, 50);
-                } else {
-                    tabsView.style.display = 'block';
-                    accordionView.style.display = 'none';
-                    document.querySelector('[onclick="toggleView(\'tabs\')"]').classList.add('active');
-                }
-                
-                // Store preference
-                localStorage.setItem('docsCenterView', viewType);
-            }
-            
-            function toggleTimelineView() {
-                const timelineView = document.getElementById('timelineView');
-                const listView = document.getElementById('listView');
-                const toggleBtn = document.getElementById('timelineToggle');
-                
-                if (timelineView.style.display === 'none') {
-                    timelineView.style.display = 'block';
-                    listView.style.display = 'none';
-                    toggleBtn.innerHTML = '<i class="fa fa-list"></i> List View';
-                    toggleBtn.classList.remove('btn-outline-info');
-                    toggleBtn.classList.add('btn-info');
-                } else {
-                    timelineView.style.display = 'none';
-                    listView.style.display = 'block';
-                    toggleBtn.innerHTML = '<i class="fa fa-clock-o"></i> Timeline View';
-                    toggleBtn.classList.remove('btn-info');
-                    toggleBtn.classList.add('btn-outline-info');
-                }
-            }
-            
-            // Initialize view on page load
-            document.addEventListener('DOMContentLoaded', function() {
-                const savedView = localStorage.getItem('docsCenterView') || 'tabs';
-                toggleView(savedView);
-                
-                // Add smooth scrolling to accordion navigation
-                document.querySelectorAll('.accordion .btn-link').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        setTimeout(() => {
-                            this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                        }, 350);
-                    });
-                });
-            });
-            
-            // Export functionality for documents
-            function exportAllDocs() {
-                const exportData = {
-                    invoices: [],
-                    quotes: [],
-                    certificates: [],
-                    communications: []
-                };
-                
-                // Show loading state
-                const btn = event.target;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Preparing Export...';
-                btn.disabled = true;
-                
-                // Simulate export preparation
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                    
-                    // Trigger download
-                    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'documents_export_' + new Date().toISOString().split('T')[0] + '.json';
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                }, 2000);
-            }
-            </script>
-            
+
+            <!-- Inline script removed: logic migrated to Owl component / JS module (portal_document_center controller). -->
+
             </div> <!-- End legacy-document-interface -->
         </t>
     </template>
