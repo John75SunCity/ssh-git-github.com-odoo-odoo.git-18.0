@@ -2,7 +2,7 @@
 <odoo>
     <data>
 <record id="report_naid_certificate" model="ir.actions.report">
-        <field name="name">Naid Certificate</field>
+    <field name="name">Naid Certificate</field>
         <field name="model">naid.certificate</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">records_management.report_naid_certificate_view</field>
@@ -10,6 +10,9 @@
         <field name="print_report_name">"(NAID Certificate Report) %s" % (object.name or 'N/A')</field>
         <field name="binding_model_id" ref="records_management.model_naid_certificate"/>
         <field name="binding_type">report</field>
+    <!-- Enable attachment caching for immutable certificates -->
+    <field name="attachment">(object.certificate_number and ('naid_cert_'+object.certificate_number)) or False</field>
+    <field name="attachment_use">True</field>
     </record>
 
     <!-- Backward-compatibility alias expected by Python and portal routes -->
@@ -28,43 +31,44 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>NAID Certificate of Destruction</h2>
+                        <h2 t-translate="True">NAID Certificate of Destruction</h2>
                         <div class="row">
                             <div class="col-12">
                                 <p>
-                                    <strong>Certificate Number:</strong>
+                                    <strong t-translate="True">Certificate Number:</strong>
                                     <span t-esc="doc.certificate_number or doc.name"/>
                                 </p>
                                 <p>
-                                    <strong>Customer:</strong>
+                                    <strong t-translate="True">Customer:</strong>
                                     <span t-esc="doc.partner_id and doc.partner_id.display_name or ''"/>
                                 </p>
                                 <p>
-                                    <strong>Destruction Date:</strong>
-                                    <span t-esc="doc.destruction_date and doc.destruction_date.strftime('%Y-%m-%d %H:%M:%S') or ''"/>
+                                    <strong t-translate="True">Destruction Date:</strong>
+                                    <span t-if="doc.destruction_date" t-field="doc.destruction_date" t-options="{'format': 'datetime'}"/>
                                 </p>
                                 <p>
-                                    <strong>Issue Date:</strong>
-                                    <span t-esc="doc.issue_date and doc.issue_date.strftime('%Y-%m-%d %H:%M:%S') or ''"/>
+                                    <strong t-translate="True">Issue Date:</strong>
+                                    <span t-if="doc.issue_date" t-field="doc.issue_date" t-options="{'format': 'datetime'}"/>
                                 </p>
                             </div>
                         </div>
 
                         <t t-if="doc.container_ids or doc.box_ids or doc.destruction_item_ids">
-                            <h3>Destroyed Items Summary</h3>
+                            <h3 t-translate="True">Destroyed Items Summary</h3>
                             <table class="table table-sm">
+                                <caption style="caption-side: top; text-align:left; font-size:10px;" t-translate="True">Summary of all destroyed containers, boxes, and loose items</caption>
                                 <thead>
                                     <tr>
-                                        <th>Type</th>
-                                        <th>Name</th>
-                                        <th t-attf-style="text-align:right;">Qty</th>
-                                        <th t-attf-style="text-align:right;">Weight</th>
+                                        <th t-translate="True">Type</th>
+                                        <th t-translate="True">Name</th>
+                                        <th t-attf-style="text-align:right;" t-translate="True">Qty</th>
+                                        <th t-attf-style="text-align:right;" t-translate="True">Weight (lbs)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <t t-foreach="doc.destruction_item_ids" t-as="item">
                                         <tr>
-                                            <td>Item</td>
+                                            <td t-translate="True">Item</td>
                                             <td><span t-esc="item.display_name"/></td>
                                             <td style="text-align:right"><span t-esc="item.quantity or 0"/></td>
                                             <td style="text-align:right"><span t-esc="item.weight or 0.0"/></td>
@@ -72,7 +76,7 @@
                                     </t>
                                     <t t-foreach="doc.container_ids" t-as="cont">
                                         <tr>
-                                            <td>Container</td>
+                                            <td t-translate="True">Container</td>
                                             <td><span t-esc="cont.display_name"/></td>
                                             <td style="text-align:right">1</td>
                                             <td style="text-align:right"><span t-esc="cont.cubic_feet or 0.0"/></td>
@@ -80,7 +84,7 @@
                                     </t>
                                     <t t-foreach="doc.box_ids" t-as="box">
                                         <tr>
-                                            <td>Box</td>
+                                            <td t-translate="True">Box</td>
                                             <td><span t-esc="box.display_name"/></td>
                                             <td style="text-align:right">1</td>
                                             <td style="text-align:right"><span t-esc="box.cubic_feet or 0.0"/></td>
@@ -89,17 +93,20 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="2" style="text-align:right">Totals:</th>
+                                        <th colspan="2" style="text-align:right" t-translate="True">Totals:</th>
                                         <th style="text-align:right"><span t-esc="doc.total_items or 0"/></th>
                                         <th style="text-align:right"><span t-esc="doc.total_weight or 0.0"/></th>
                                     </tr>
                                 </tfoot>
                             </table>
                         </t>
+                        <t t-else="">
+                            <p><em t-translate="True">No destruction items, containers, or boxes were recorded for this certificate.</em></p>
+                        </t>
 
                         <t t-if="doc.witness_name">
                             <p>
-                                <strong>Witness:</strong>
+                                <strong t-translate="True">Witness:</strong>
                                 <span t-esc="doc.witness_name"/>
                             </p>
                         </t>

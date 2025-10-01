@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- Container Barcode Report Action -->
+    <record id="report_container_barcode" model="ir.actions.report">
+      <field name="name">Container Barcode</field>
+      <field name="model">records.container</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">records_management.report_container_barcode_view</field>
+      <field name="report_file">records_management.report_container_barcode</field>
+      <field name="print_report_name">"(Container Barcode) %s" % (object.display_name or 'Container')</field>
+      <field name="binding_model_id" ref="records_management.model_records_container"/>
+      <field name="binding_type">report</field>
+      <!-- Attachment caching: only if a physical barcode exists (immutable physical state) -->
+      <field name="attachment">(object.barcode and ('container_barcode_'+object.barcode)) or False</field>
+      <field name="attachment_use">True</field>
+    </record>
+
+    <template id="report_container_barcode_view">
+      <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+          <t t-call="web.external_layout">
+            <div class="page" style="text-align:center; padding-top:0.8cm;">
+              <h3 style="margin:4px 0;" t-translate="True">Container Label</h3>
+              <div>
+                <strong t-esc="doc.display_name"/>
+              </div>
+              <div style="margin-top:10px;" t-if="doc.barcode">
+                <img t-att-src="'/report/barcode/Code128/%s?width=400&height=120' % doc.barcode" alt="Barcode" style="margin:8px 0;"/>
+                <div style="font-size:14px; font-weight:600;" t-esc="doc.barcode"/>
+              </div>
+              <div style="margin-top:10px;" t-elif="doc.temp_barcode">
+                <img t-att-src="'/report/barcode/Code128/%s?width=400&height=120' % doc.temp_barcode" alt="Temporary Barcode" style="margin:8px 0;"/>
+                <div style="font-size:14px; font-weight:600;" t-esc="doc.temp_barcode"/>
+                <div style="font-size:10px;" t-translate="True">Temporary Barcode</div>
+              </div>
+              <div t-else="" style="margin-top:18px;">
+                <em style="font-size:12px;" t-translate="True">No barcode assigned</em>
+              </div>
+              <div style="margin-top:6px; font-size:11px;">
+                <span t-if="doc.container_type_id" t-esc="doc.container_type_id.name"/>
+              </div>
+              <div style="margin-top:4px; font-size:9px; color:#666;">
+                <t t-translate="True">Generated</t>: <span t-esc="(datetime.datetime.utcnow()).strftime('%Y-%m-%d %H:%M UTC')"/>
+              </div>
+            </div>
+          </t>
+        </t>
+      </t>
+    </template>
+  </data>
+</odoo>

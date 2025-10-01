@@ -257,6 +257,7 @@
         "report/destruction_certificate_reports.xml",
         "report/document_search_attempt_report.xml",
         "report/naid_certificate_reports.xml",
+    "report/container_barcode_reports.xml",
         "report/report_records_management_report_customer_inventory_report.xml",
         "templates/portal_certifications.xml",
         "templates/portal_certificate_templates.xml",
