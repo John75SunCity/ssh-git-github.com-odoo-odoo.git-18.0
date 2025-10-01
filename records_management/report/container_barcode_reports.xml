@@ -26,11 +26,11 @@
                 <strong t-esc="doc.display_name"/>
               </div>
               <div style="margin-top:10px;" t-if="doc.barcode">
-                <img t-att-src="'/report/barcode/Code128/%s?width=400&height=120' % doc.barcode" alt="Barcode" style="margin:8px 0;"/>
+                <img t-att-src="'/report/barcode/Code128/%s?width=400&amp;height=120' % doc.barcode" alt="Barcode" style="margin:8px 0;"/>
                 <div style="font-size:14px; font-weight:600;" t-esc="doc.barcode"/>
               </div>
               <div style="margin-top:10px;" t-elif="doc.temp_barcode">
-                <img t-att-src="'/report/barcode/Code128/%s?width=400&height=120' % doc.temp_barcode" alt="Temporary Barcode" style="margin:8px 0;"/>
+                <img t-att-src="'/report/barcode/Code128/%s?width=400&amp;height=120' % doc.temp_barcode" alt="Temporary Barcode" style="margin:8px 0;"/>
                 <div style="font-size:14px; font-weight:600;" t-esc="doc.temp_barcode"/>
                 <div style="font-size:10px;" t-translate="True">Temporary Barcode</div>
               </div>
