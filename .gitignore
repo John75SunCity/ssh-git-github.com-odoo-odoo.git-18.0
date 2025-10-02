@@ -96,6 +96,7 @@ static/lib/
 !records_management_fsm/**/README.md
 !handbook/**/*.md
 !handbook/README.md
+!RECORDS_MANAGEMENT_HANDBOOK.md
 
 # Specifically exclude root-level documentation
 TEST_ENVIRONMENT_NOTES.md
