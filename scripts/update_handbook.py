@@ -453,9 +453,21 @@ class HandbookUpdater:
             for h in headings:
                 anchor = re.sub(r'[^a-z0-9]+', '-', h.lower()).strip('-')
                 toc_lines.append(f"- [{h}](#{anchor})")
+            # Attempt to include Quick Start Guide if present
+            quick_start_path = self.split_dir / 'quick-start-guide.md'
+            quick_start_content = ''
+            if quick_start_path.exists():
+                try:
+                    with open(quick_start_path, 'r', encoding='utf-8') as qf:
+                        quick_start_raw = qf.read().strip()
+                    quick_start_content = f"\n\n---\n\n{quick_start_raw}\n\n---\n"
+                    # Add link at top of TOC
+                    toc_lines.insert(3, '- [Quick Start Guide](#quick-start-guide---records-management-system)')
+                except Exception as qe:
+                    print(f"⚠️  Failed to embed Quick Start Guide: {qe}")
             # Add page breaks before each major section (replace '### ' with page break + heading)
             printable = re.sub(r'^### ', '\n\n---\n\n### ', content, flags=re.MULTILINE)
-            output = '\n'.join(toc_lines) + '\n\n' + printable
+            output = '\n'.join(toc_lines) + quick_start_content + '\n' + printable
             target = self.printable_dir / 'records_management_handbook_printable.md'
             with open(target, 'w', encoding='utf-8') as pf:
                 pf.write(output)
