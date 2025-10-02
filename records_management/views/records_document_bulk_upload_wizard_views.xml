@@ -1,68 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Tree view for parsed lines -->
-    <record id="records_document_bulk_upload_line_view_tree" model="ir.ui.view">
-        <field name="name">records.document.bulk.upload.line.view.tree</field>
-        <field name="model">records.document.bulk.upload.line</field>
-        <field name="arch" type="xml">
-            <list string="Bulk Upload Lines" editable="bottom" create="false" delete="false">
-                <field name="sequence"/>
-                <field name="name"/>
-                <field name="raw_description"/>
-                <field name="raw_container_ref"/>
-                <field name="raw_temp_barcode"/>
-                <field name="raw_doc_type_code"/>
-                <field name="doc_type_id"/>
-                <field name="raw_received_date"/>
-            </list>
-        </field>
-    </record>
+    <!-- Wrapped in <data> to satisfy project schema validation (was previously direct children) -->
+    <data>
+        <!-- Tree view for parsed lines -->
+        <record id="records_document_bulk_upload_line_view_tree" model="ir.ui.view">
+            <field name="name">records.document.bulk.upload.line.view.tree</field>
+            <field name="model">records.document.bulk.upload.line</field>
+            <field name="arch" type="xml">
+                <list string="Bulk Upload Lines" editable="bottom" create="false" delete="false">
+                    <field name="sequence"/>
+                    <field name="name"/>
+                    <field name="raw_description"/>
+                    <field name="raw_container_ref"/>
+                    <field name="raw_temp_barcode"/>
+                    <field name="raw_doc_type_code"/>
+                    <field name="doc_type_id"/>
+                    <field name="raw_received_date"/>
+                </list>
+            </field>
+        </record>
 
-    <!-- Form view for the bulk upload wizard -->
-    <record id="records_document_bulk_upload_wizard_view_form" model="ir.ui.view">
-        <field name="name">records.document.bulk.upload.wizard.view.form</field>
-        <field name="model">records.document.bulk.upload.wizard</field>
-        <field name="arch" type="xml">
-            <form string="Bulk Document Upload" create="false" edit="false">
-                <sheet>
-                    <group>
+        <!-- Form view for the bulk upload wizard -->
+        <record id="records_document_bulk_upload_wizard_view_form" model="ir.ui.view">
+            <field name="name">records.document.bulk.upload.wizard.view.form</field>
+            <field name="model">records.document.bulk.upload.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Bulk Document Upload" create="false" edit="false">
+                    <sheet>
                         <group>
-                            <field name="partner_id" required="1"/>
-                            <field name="container_id"/>
-                            <field name="has_header"/>
-                            <field name="state" readonly="1"/>
+                            <group>
+                                <field name="partner_id" required="1"/>
+                                <field name="container_id"/>
+                                <field name="has_header"/>
+                                <field name="state" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="upload_file" filename="filename" readonly="state != 'draft'"/>
+                                <field name="filename" readonly="state != 'draft'"/>
+                            </group>
                         </group>
-                        <group>
-                            <field name="upload_file" filename="filename" readonly="state != 'draft'"/>
-                            <field name="filename" readonly="state != 'draft'"/>
-                        </group>
-                    </group>
 
-                    <notebook>
-                        <page string="Lines" invisible="state == 'draft'">
-                            <field name="line_ids" widget="one2many_list"/>
-                        </page>
-                        <page string="Errors" invisible="not error_log">
-                            <field name="error_log" nolabel="1" readonly="1" widget="text"/>
-                        </page>
-                    </notebook>
-                </sheet>
-                <footer>
-                    <button name="action_download_template" string="Download Template" type="object" class="btn-secondary" invisible="state != 'draft'"/>
-                    <button name="action_parse" string="Parse" type="object" class="btn-primary" invisible="state != 'draft'"/>
-                    <button name="action_commit" string="Commit" type="object" class="btn-primary" invisible="state != 'parsed'"/>
-                    <button string="Close" special="cancel" class="btn-link"/>
-                </footer>
-            </form>
-        </field>
-    </record>
+                        <notebook>
+                            <page string="Lines" invisible="state == 'draft'">
+                                <field name="line_ids" widget="one2many_list"/>
+                            </page>
+                            <page string="Errors" invisible="not error_log">
+                                <field name="error_log" nolabel="1" readonly="1" widget="text"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="action_download_template" string="Download Template" type="object" class="btn-secondary" invisible="state != 'draft'"/>
+                        <button name="action_parse" string="Parse" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_commit" string="Commit" type="object" class="btn-primary" invisible="state != 'parsed'"/>
+                        <button string="Close" special="cancel" class="btn-link"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
 
-    <!-- Action to open the wizard -->
-    <record id="records_document_bulk_upload_wizard_action" model="ir.actions.act_window">
-        <field name="name">Bulk Document Upload</field>
-        <field name="res_model">records.document.bulk.upload.wizard</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="context">{}</field>
-    </record>
+        <!-- Action to open the wizard -->
+        <record id="records_document_bulk_upload_wizard_action" model="ir.actions.act_window">
+            <field name="name">Bulk Document Upload</field>
+            <field name="res_model">records.document.bulk.upload.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{}</field>
+        </record>
+    </data>
 </odoo>
