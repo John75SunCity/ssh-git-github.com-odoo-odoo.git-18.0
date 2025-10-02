@@ -1,6 +1,8 @@
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.0.3",  # bumped to rebuild assets after vis dedup
+    "version": "18.0.0.3",  # b        "report/paper_bale_reports.xml",
+        "report/pickup_request_reports.xml",
+        "report/barcode_storage_box_reports.xml",ed to rebuild assets after vis dedup
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
@@ -85,10 +87,10 @@
         "report/container_barcode_reports.xml",
         "report/document_temp_barcode_reports.xml",
         "report/destruction_certificate_reports.xml",
-        "report/miscellaneous_reports.xml",
-        "report/paper_baling_reports.xml",
-        "report/schedule_reports.xml",
-        "report/storage_box_reports.xml",
+        "report/additional_reports.xml",
+        "report/paper_bale_reports.xml",
+        "report/pickup_request_reports.xml",
+        "report/barcode_storage_box_reports.xml",
         "report/description_reports.xml",
         "report/document_search_attempt_report.xml",
         "report/naid_certificate_reports.xml",
