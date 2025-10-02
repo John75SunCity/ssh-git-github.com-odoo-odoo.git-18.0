@@ -24,7 +24,7 @@
           <input type="checkbox" name="has_header" class="form-check-input" checked="checked" id="hasHeader"/>
           <label for="hasHeader" class="form-check-label">First Row is Header</label>
         </div>
-        <button type="submit" class="btn btn-primary mt-2">Upload & Parse</button>
+        <button type="submit" class="btn btn-primary mt-2">Upload &amp; Parse</button>
       </form>
       <t t-if="wizard">
         <hr/>
