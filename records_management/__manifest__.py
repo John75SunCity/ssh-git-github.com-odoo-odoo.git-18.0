@@ -1,6 +1,6 @@
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.0.4",  # Fixed missing report files - FileNotFoundError resolved
+    "version": "18.0.0.5",  # Fixed portal template structure - portal.layout -> portal.portal_layout pattern
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",

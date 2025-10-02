@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-  <template id="portal_document_bulk_upload" name="Portal Document Bulk Upload" inherit_id="portal.layout">
-    <xpath expr="//div[@id='wrap']" position="inside">
+  <template id="portal_document_bulk_upload" name="Portal Document Bulk Upload">
+    <t t-call="portal.portal_layout">
+      <t t-set="breadcrumbs_searchbar" t-value="True"/>
       <t t-call="portal.portal_breadcrumb">
         <t t-set="breadcrumbs" t-value="[(None, 'Bulk Upload Files')]"/>
       </t>
@@ -56,6 +57,6 @@
           </form>
         </t>
       </t>
-    </xpath>
+    </t>
   </template>
 </odoo>
