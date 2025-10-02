@@ -202,7 +202,7 @@
             <nav t-if="state.totalPages > 1" class="mt-3">
                 <ul class="pagination pagination-sm justify-content-center mb-0">
                     <li class="page-item" t-att-class="state.currentPage === 1 ? 'disabled' : ''">
-                        <a class="page-link" href="#" t-on-click.prevent="() => goToPage(state.currentPage - 1)">&laquo;</a>
+                        <a class="page-link" href="#" t-on-click.prevent="() => goToPage(state.currentPage - 1)">&amp;laquo;</a>
                     </li>
                     <t t-foreach="Array.from({length: state.totalPages}, (_, i) => i + 1)" t-as="page">
                         <li class="page-item" t-att-class="state.currentPage === page ? 'active' : ''">
@@ -210,7 +210,7 @@
                         </li>
                     </t>
                     <li class="page-item" t-att-class="state.currentPage === state.totalPages ? 'disabled' : ''">
-                        <a class="page-link" href="#" t-on-click.prevent="() => goToPage(state.currentPage + 1)">&raquo;</a>
+                        <a class="page-link" href="#" t-on-click.prevent="() => goToPage(state.currentPage + 1)">&amp;raquo;</a>
                     </li>
                 </ul>
             </nav>

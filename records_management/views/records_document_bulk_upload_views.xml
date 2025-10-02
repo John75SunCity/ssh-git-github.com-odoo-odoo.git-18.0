@@ -1,35 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <!-- Inherit document tree to add bulk upload and temp barcode print actions -->
-    <record id="records_document_view_tree_inherit_bulk_upload" model="ir.ui.view">
-            <field name="name">records.document.view.tree.inherit.bulk.upload</field>
+        <!-- Add bulk operation buttons to the form view header -->
+        <record id="records_document_view_form_inherit_bulk_upload" model="ir.ui.view">
+            <field name="name">records.document.view.form.inherit.bulk.upload</field>
             <field name="model">records.document</field>
-            <!-- Inherit the main records.document tree view -->
-            <field name="inherit_id" ref="records_management.records_document_view_tree"/>
+            <field name="inherit_id" ref="records_management.records_document_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//list" position="attributes">
-                    <attribute name="create">true</attribute>
-                </xpath>
-                <xpath expr="//list" position="before">
-                    <header>
-                        <button name="%(records_document_bulk_upload_wizard_action)d" type="action" string="Bulk Upload Files" class="oe_highlight"/>
-                        <button name="%(action_report_records_document_temp_barcode_labels)d" type="action" string="Print Temp Barcodes"/>
-                    </header>
+                <xpath expr="//header/button[@name='action_view_chain_of_custody']" position="after">
+                    <button name="%(records_document_bulk_upload_wizard_action)d" type="action" string="Bulk Upload Files" class="btn-secondary"/>
+                    <button name="%(action_report_records_document_temp_barcode_labels)d" type="action" string="Print Temp Barcodes" class="btn-info"/>
                 </xpath>
             </field>
         </record>
 
-        <!-- Smart button on form to print a single temp barcode label sheet (just reusing multi) -->
+        <!-- Add smart button for temp barcode on form view -->
         <record id="records_document_view_form_inherit_temp_barcode" model="ir.ui.view">
             <field name="name">records.document.view.form.inherit.temp.barcode</field>
             <field name="model">records.document</field>
-            <!-- Inherit the main records.document form view -->
             <field name="inherit_id" ref="records_management.records_document_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//sheet/notebook" position="before">
-                    <button name="%(action_report_records_document_temp_barcode_labels)d" type="action" string="Temp Barcode Label" class="oe_stat_button" invisible="not temp_barcode">
-                        <field name="temp_barcode" widget="badge" readonly="1"/>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="%(action_report_records_document_temp_barcode_labels)d" type="action" string="Temp Barcode" class="oe_stat_button" icon="fas fa-barcode" invisible="not temp_barcode">
+                        <field name="temp_barcode" widget="statinfo"/>
                     </button>
                 </xpath>
             </field>
