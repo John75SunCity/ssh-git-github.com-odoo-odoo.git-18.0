@@ -81,6 +81,18 @@
         "report/naid_compliance_action_plan_reports.xml",
         "report/naid_compliance_alert_reports.xml",
         "report/naid_compliance_reports.xml",
+        # Report actions that will be referenced by views must load before those views
+        "report/container_barcode_reports.xml",
+        "report/document_temp_barcode_reports.xml",
+        "report/destruction_certificate_reports.xml",
+        "report/miscellaneous_reports.xml",
+        "report/paper_baling_reports.xml",
+        "report/schedule_reports.xml",
+        "report/storage_box_reports.xml",
+        "report/description_reports.xml",
+        "report/document_search_attempt_report.xml",
+        "report/naid_certificate_reports.xml",
+        "report/report_records_management_report_customer_inventory_report.xml",
         # Wizard/action definitions needed by menus must load first
         "views/field_label_helper_wizard_views.xml",
         # Actions referenced by menus (ensure before menus)
@@ -257,13 +269,6 @@
         # Ensure retrieval work order action is defined before its menu references it
         "views/records_retrieval_work_order_views.xml",
     "views/records_retrieval_work_order_menus.xml",
-        "report/description_reports.xml",
-        "report/destruction_certificate_reports.xml",
-        "report/document_search_attempt_report.xml",
-        "report/naid_certificate_reports.xml",
-        "report/container_barcode_reports.xml",
-        "report/document_temp_barcode_reports.xml",
-        "report/report_records_management_report_customer_inventory_report.xml",
         "templates/portal_certifications.xml",
         "templates/portal_certificate_templates.xml",
         "templates/portal_inventory_template.xml",
