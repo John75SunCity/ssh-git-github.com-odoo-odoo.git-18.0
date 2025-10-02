@@ -88,12 +88,15 @@ static/lib/
 # ============================================================================
 # DOCUMENTATION & REPORTS (NOT NEEDED FOR MODULE FUNCTION)
 # ============================================================================
-# Exclude all markdown files except module README files
+# Exclude all markdown files except module README files and handbook internal docs
 *.md
 !records_management/README.md
 !records_management/**/README.md
 !records_management_fsm/README.md
 !records_management_fsm/**/README.md
+!handbook/**/*.md
+!handbook/README.md
+!RECORDS_MANAGEMENT_HANDBOOK.md
 
 # Specifically exclude root-level documentation
 TEST_ENVIRONMENT_NOTES.md
