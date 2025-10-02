@@ -250,8 +250,6 @@ A comprehensive, enterprise-grade physical document management system with advan
 'hr'            # For employee management
 'sign'          # For electronic signatures
 
-```
-
 ### Python Dependencies
 
 ```bash
@@ -442,3 +440,48 @@ See CHANGELOG.md for detailed version history.
 **Note**: This module requires careful installation order. Install all dependencies first, then the Records Management module. Contact support if you encounter installation issues.
 
 <!-- Trigger rebuild: 2025-08-21 10:43 -->
+
+### Visualization Asset Policy (Updated Local-First Strategy)
+
+The module now implements a **local-first, CDN-fallback** strategy for visualization libraries (currently `vis-network`).
+
+| Aspect | Local First | CDN Fallback |
+|--------|-------------|--------------|
+| Primary Source | `static/src/lib/vis/vis-network.js/css` | `https://unpkg.com/vis-network@VERSION/*` |
+| Trigger | Diagram widgets detected | Local file missing OR placeholder stub present |
+| Benefits | Offline, reproducible, version-pinned | Zero initial bundle weight if unused |
+| Risk | Must manually upgrade | External availability / network dependency |
+
+#### How It Works
+1. `visualization_dynamic_loader.js` checks for `window.vis.Network`.
+2. If absent: inject local CSS/JS.
+3. If after local load the object is still a stub (placeholder), loader logs a warning and requests CDN assets.
+4. If CDN also fails, diagrams gracefully skip rendering (no hard crash).
+
+#### Replacing the Placeholder with Real Library
+1. Download the unminified (or prettified) JS + CSS for the desired `vis-network` version.
+2. Replace:
+   * `static/src/lib/vis/vis-network.js`
+   * `static/src/lib/vis/vis-network.css`
+3. (Optional) Remove the placeholder stub logic; not required.
+4. Increment module version (assets cache bust) in `__manifest__.py` if diagrams already used in deployments.
+5. Re-run validator and manual portal diagram smoke test.
+
+#### Version Upgrades
+- Update `CDN_VERSION` constant in `visualization_dynamic_loader.js`.
+- Replace local files with the new version.
+- Add a short CHANGELOG entry if behavior or API changed.
+
+#### Offline / Air-Gapped Environments
+No configuration change required—if local assets exist, CDN is never contacted.
+
+#### Rationale
+- Ensures future-proof functionality without hard reliance on external URLs.
+- Keeps repository lean (placeholder small) until diagrams are a priority.
+- Provides deterministic behavior in secure or isolated installations.
+
+#### Validation Notes
+- Place readable multi-line sources (avoid giant single-line minified blobs) to prevent cloc / lint warnings.
+- If adding source maps, store them alongside and ensure license compliance.
+
+---
