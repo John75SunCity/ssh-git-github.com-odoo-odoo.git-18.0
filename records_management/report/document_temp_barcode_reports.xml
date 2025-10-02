@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Multi-Document Temporary Barcode Label Report -->
+    <data>
     <template id="report_records_document_temp_barcode_labels">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
@@ -19,13 +19,16 @@
         </t>
     </template>
 
-    <report
-        id="action_report_records_document_temp_barcode_labels"
-        model="records.document"
-        string="Temp File Barcodes"
-        report_type="qweb-html"
-        name="records_management.report_records_document_temp_barcode_labels"
-        file="records_management.report_records_document_temp_barcode_labels"
-        print_report_name="'temp_file_barcodes'"
-    />
+    <!-- Report action using proper ir.actions.report structure -->
+    <record id="action_report_records_document_temp_barcode_labels" model="ir.actions.report">
+        <field name="name">Temp File Barcodes</field>
+        <field name="model">records.document</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">records_management.report_records_document_temp_barcode_labels</field>
+        <field name="report_file">records_management.report_records_document_temp_barcode_labels</field>
+        <field name="print_report_name">'temp_file_barcodes'</field>
+        <field name="binding_model_id" ref="model_records_document"/>
+        <field name="binding_type">report</field>
+    </record>
+    </data>
 </odoo>
