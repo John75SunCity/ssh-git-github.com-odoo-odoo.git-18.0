@@ -1,8 +1,6 @@
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.0.3",  # b        "report/paper_bale_reports.xml",
-        "report/pickup_request_reports.xml",
-        "report/barcode_storage_box_reports.xml",ed to rebuild assets after vis dedup
+    "version": "18.0.0.4",  # Fixed missing report files - FileNotFoundError resolved
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
