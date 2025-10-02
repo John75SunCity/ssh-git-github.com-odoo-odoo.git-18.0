@@ -81,9 +81,6 @@
         "report/naid_compliance_action_plan_reports.xml",
         "report/naid_compliance_alert_reports.xml",
         "report/naid_compliance_reports.xml",
-        # Report actions that will be referenced by views must load before those views
-        "report/container_barcode_reports.xml",
-        "report/document_temp_barcode_reports.xml",
         # Wizard/action definitions needed by menus must load first
         "views/field_label_helper_wizard_views.xml",
         # Actions referenced by menus (ensure before menus)
@@ -264,6 +261,8 @@
         "report/destruction_certificate_reports.xml",
         "report/document_search_attempt_report.xml",
         "report/naid_certificate_reports.xml",
+        "report/container_barcode_reports.xml",
+        "report/document_temp_barcode_reports.xml",
         "report/report_records_management_report_customer_inventory_report.xml",
         "templates/portal_certifications.xml",
         "templates/portal_certificate_templates.xml",
