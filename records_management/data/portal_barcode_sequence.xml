@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Sequence dedicated to portal-generated generic barcodes.
-         Distinct from container/temp/storage box sequences to avoid overlap.
-         Code referenced by new portal.barcode model (generation method / create override). -->
+    <data>
+        <!-- Portal barcode sequence for generating temporary barcodes -->
     <record id="seq_portal_barcode" model="ir.sequence">
         <field name="name">Portal Barcode</field>
         <field name="code">portal.barcode</field>
@@ -13,4 +12,5 @@
         <field name="number_increment">1</field>
         <field name="company_id" eval="False"/>
     </record>
+    </data>
 </odoo>
