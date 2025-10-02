@@ -1596,6 +1596,28 @@
 | `state` | Selection | Status | - | draft |
 | `work_order_id` | Many2one | Associated unified retrieval order for this search | - |  |
 
+#### **enhanced.fsm.integration** Fields
+**Purpose**: Enhanced FSM Integration
+**Field Count**: 15 fields
+
+| Field Name | Type | Purpose | Required | Default |
+|------------|------|---------|----------|---------|
+| `active` | Boolean | No description | - | True |
+| `auto_create_tasks` | Boolean | Automatically create FSM tasks for work orders | - | True |
+| `company_id` | Many2one | Company | - |  |
+| `description` | Text | Description of this FSM integration | - |  |
+| `enable_email_notifications` | Boolean | Send email notifications for task updates | - | True |
+| `enable_gps_tracking` | Boolean | Enable GPS tracking for field technicians | - | False |
+| `enable_mobile_checkin` | Boolean | Enable mobile check-in functionality | - | True |
+| `enable_sms_notifications` | Boolean | Send SMS notifications for task updates | - | True |
+| `integration_type` | Selection | Integration Type | ✓ | pickup_delivery |
+| `location_update_interval` | Integer | Time interval in seconds between technician GPS lo… | - | 60 |
+| `name` | Char | Integration Name | ✓ |  |
+| `target_containers` | Boolean | Integrate with container management | - | True |
+| `target_maintenance` | Boolean | Integrate with maintenance workflows | - | True |
+| `target_pickup_requests` | Boolean | Integrate with pickup request workflows | - | True |
+| `task_priority` | Selection | Default Task Priority | - | 1 |
+
 #### **feedback.improvement.area** Fields
 **Purpose**: Feedback Improvement Area
 **Field Count**: 7 fields
@@ -1672,6 +1694,86 @@
 | `requested_date` | Datetime | Requested Date | ✓ |  |
 | `retrieved_date` | Datetime | Retrieved Date | - |  |
 | `state` | Selection | State | - | draft |
+
+#### **fsm.notification** Fields
+**Purpose**: FSM Notification
+**Field Count**: 22 fields
+
+| Field Name | Type | Purpose | Required | Default |
+|------------|------|---------|----------|---------|
+| `attempts` | Integer | Attempts | - | 0 |
+| `can_retry` | Boolean | Can Retry | - |  |
+| `company_id` | Many2one | Company | - |  |
+| `custom_data` | Json | Custom Data | - |  |
+| `delivered_datetime` | Datetime | Delivered Time | - |  |
+| `delivery_method` | Selection | Delivery Method | ✓ | email |
+| `display_name` | Char | Display Name | - |  |
+| `error_message` | Text | Last Error | - |  |
+| `max_attempts` | Integer | Max Attempts | - | 3 |
+| `message` | Html | Message Body | - |  |
+| `name` | Char | Reference | ✓ |  |
+| `notification_type` | Selection | Type | ✓ | custom |
+| `partner_id` | Many2one | Recipient | ✓ |  |
+| `pickup_request_id` | Many2one | Pickup Request | - |  |
+| `priority` | Selection | Priority | - | 1 |
+| `route_id` | Many2one | Pickup Route | - |  |
+| `scheduled_datetime` | Datetime | Scheduled Time | - |  |
+| `sent_datetime` | Datetime | Sent Time | - |  |
+| `state` | Selection | Status | - | draft |
+| `subject` | Char | Subject | ✓ |  |
+| `task_id` | Many2one | FSM Task | - |  |
+| `template_id` | Many2one | Email Template | - |  |
+
+#### **fsm.notification.manager** Fields
+**Purpose**: FSM Notification Manager
+**Field Count**: 3 fields
+
+| Field Name | Type | Purpose | Required | Default |
+|------------|------|---------|----------|---------|
+| `active` | Boolean | No description | - | True |
+| `company_id` | Many2one | Company | - |  |
+| `name` | Char | Name | - | FSM Notification Man… |
+
+#### **fsm.reschedule.wizard** Fields
+**Purpose**: FSM Task Reschedule Wizard
+**Field Count**: 9 fields
+
+| Field Name | Type | Purpose | Required | Default |
+|------------|------|---------|----------|---------|
+| `current_scheduled_date_start` | Datetime | Current Start Time | - |  |
+| `customer_notification_message` | Text | This message will be sent to the customer if 'Noti… | - |  |
+| `internal_notes` | Text | Internal notes for logging and auditing purposes. | - |  |
+| `new_scheduled_date_end` | Datetime | New Scheduled End Time | ✓ |  |
+| `new_scheduled_date_start` | Datetime | New Scheduled Start Time | ✓ |  |
+| `notify_customer` | Boolean | Notify Customer | - | True |
+| `reason_details` | Text | Reason Details | - |  |
+| `reschedule_reason` | Selection | Reason for Reschedule | ✓ |  |
+| `task_id` | Many2one | FSM Task | ✓ |  |
+
+#### **fsm.task.service.line** Fields
+**Purpose**: FSM Task Service Line Item
+**Field Count**: 18 fields
+
+| Field Name | Type | Purpose | Required | Default |
+|------------|------|---------|----------|---------|
+| `added_by_id` | Many2one | Added By | - |  |
+| `added_date` | Datetime | Added Date | - |  |
+| `added_on_site` | Boolean | Added On-Site | - | False |
+| `approval_method` | Selection | Approval Method | - |  |
+| `company_id` | Many2one | Company | - |  |
+| `currency_id` | Many2one | No description | - |  |
+| `customer_approved` | Boolean | Customer Approved | - | False |
+| `description` | Text | Service Description | - |  |
+| `name` | Char | Service | - |  |
+| `partner_id` | Many2one | Customer | - |  |
+| `quantity` | Float | Quantity | - | 1.0 |
+| `sequence` | Integer | Sequence | - | 10 |
+| `service_name` | Char | Service Name | ✓ |  |
+| `service_type` | Selection | Service Type | - | maintenance |
+| `state` | Selection | Status | - | draft |
+| `task_id` | Many2one | Linked task; uses Project Task to ensure compatibi… | ✓ |  |
+| `total_price` | Monetary | Total Price | - |  |
+| `unit_price` | Monetary | Unit Price | - |  |
 
 #### **full.customization.name** Fields
 **Purpose**: Full Customization Name
@@ -2020,6 +2122,33 @@
 | `technical_name` | Char | Technical identifier for the category | ✓ |  |
 | `widget_ids` | One2many | Widgets in this category | - |  |
 
+#### **mobile.fsm.integration** Fields
+**Purpose**: Mobile FSM Integration
+**Field Count**: 20 fields
+
+| Field Name | Type | Purpose | Required | Default |
+|------------|------|---------|----------|---------|
+| `active` | Boolean | No description | - | True |
+| `company_id` | Many2one | Company | - |  |
+| `dashboard_widgets` | Many2many | Widgets to display on mobile dashboard | - |  |
+| `description` | Text | Description of this mobile integration | - |  |
+| `enable_barcode_scanning` | Boolean | Enable barcode scanning functionality | - | True |
+| `enable_biometric_auth` | Boolean | Enable biometric authentication for mobile login | - | False |
+| `enable_location_tracking` | Boolean | Enable GPS location tracking | - | True |
+| `enable_offline_mode` | Boolean | Enable offline data synchronization | - | True |
+| `enable_photo_capture` | Boolean | Enable photo capture for documentation | - | True |
+| `enable_push_notifications` | Boolean | Enable push notifications for mobile devices | - | True |
+| `enable_qr_scanning` | Boolean | Enable QR code scanning for containers and documen… | - | True |
+| `enable_signature_capture` | Boolean | Enable signature capture during mobile workflows | - | True |
+| `enable_voice_commands` | Boolean | Enable voice command functionality | - | False |
+| `location_update_interval` | Integer | Location update interval in minutes | - | 5 |
+| `max_offline_days` | Integer | Maximum days data can be stored offline | - | 7 |
+| `mobile_theme` | Selection | Mobile Theme | - | auto |
+| `name` | Char | Mobile Integration Name | ✓ |  |
+| `require_pin` | Boolean | Require PIN verification for sensitive actions | - | False |
+| `session_timeout` | Integer | Automatic logout after a period of inactivity (in … | - | 15 |
+| `sync_interval` | Integer | Data synchronization interval in minutes | - | 15 |
+
 #### **mobile.photo** Fields
 **Purpose**: Mobile Photo
 **Field Count**: 25 fields
@@ -2053,13 +2182,46 @@
 | `work_order_reference` | Reference | Related work order for this photo | - |  |
 
 #### **naid.audit.log** Fields
-**Purpose**: None
-**Field Count**: 2 fields
+**Purpose**: NAID AAA Compliance Audit Log
+**Field Count**: 35 fields
 
 | Field Name | Type | Purpose | Required | Default |
 |------------|------|---------|----------|---------|
+| `action` | Char | Action identifier. | - |  |
+| `action_type` | Selection | Action Type | ✓ |  |
+| `audit_requirement_id` | Many2one | Related NAID audit requirement for this audit log … | - |  |
+| `company_id` | Many2one | Company | - |  |
+| `compliance_id` | Many2one | Link back to the NAID compliance master record. | - |  |
+| `container_id` | Many2one | Linkage to a records container. | - |  |
+| `custody_id` | Many2one | Related chain of custody record for this audit ent… | - |  |
+| `description` | Text | Description | ✓ |  |
+| `document_id` | Many2one | Document | - |  |
+| `event_date` | Datetime | Event Date | - |  |
+| `event_id` | Many2one | Destruction Event | - |  |
+| `event_type` | Char | Free-form event type for historical records. | - |  |
+| `from_location_id` | Many2one | "From" location for transfer events. | - |  |
+| `from_user_id` | Many2one | "From" user for custody hand-offs. | - |  |
+| `ip_address` | Char | IP Address | - |  |
 | `is_recent_30d_create` | Boolean | True when create_date is within the last 30 days. | - |  |
 | `is_recent_7d_create` | Boolean | True when create_date is within the last 7 days. | - |  |
+| `item_id` | Many2one | Linkage to a custody item for location/value chang… | - |  |
+| `location_id` | Many2one | Single location reference. | - |  |
+| `naid_compliant` | Boolean | NAID Compliant Action | - | True |
+| `name` | Char | Reference | ✓ |  |
+| `new_location_id` | Many2one | New location reference used in item/location chang… | - |  |
+| `new_value` | Char | New Value | - |  |
+| `notes` | Text | Free-form notes field for historical import compat… | - |  |
+| `old_location_id` | Many2one | Previous location reference used in item/location … | - |  |
+| `old_value` | Char | Old Value | - |  |
+| `res_id` | Integer | Related Record ID | - |  |
+| `res_model` | Char | Related Model | - |  |
+| `res_name` | Char | Related Record Name | - |  |
+| `task_id` | Many2one | Task | - |  |
+| `timestamp` | Datetime | Timestamp field (prefer event_date for new records… | - |  |
+| `to_location_id` | Many2one | "To" location for transfer events. | - |  |
+| `to_user_id` | Many2one | "To" user for custody hand-offs. | - |  |
+| `user_id` | Many2one | User | ✓ |  |
+| `value_json` | Text | JSON snapshot or diff for complex value changes. | - |  |
 
 #### **naid.audit.requirement** Fields
 **Purpose**: NAID AAA Audit Requirement & Checklist
@@ -2367,13 +2529,29 @@
 | `violation_consequences` | Text | Violation Consequences | - |  |
 
 #### **naid.custody** Fields
-**Purpose**: None
-**Field Count**: 2 fields
+**Purpose**: NAID Chain of Custody Log
+**Field Count**: 18 fields
 
 | Field Name | Type | Purpose | Required | Default |
 |------------|------|---------|----------|---------|
+| `company_id` | Many2one | Company responsible for this custody record (for m… | - |  |
+| `description` | Text | Detailed description of the event (e.g., 'Picked u… | ✓ |  |
+| `display_name` | Char | Display Name | - |  |
+| `document_id` | Many2one | The document this custody event belongs to. | ✓ |  |
+| `event_date` | Datetime | Timestamp of the custody event. | ✓ |  |
+| `event_type` | Selection | Event Type | ✓ | creation |
+| `humidity` | Float | Approximate relative humidity at the time of custo… | - |  |
 | `is_recent_30d_event` | Boolean | True when event_date is within the last 30 days. | - |  |
 | `is_recent_7d_event` | Boolean | True when event_date is within the last 7 days. | - |  |
+| `location_id` | Many2one | The physical or logical location associated with t… | - |  |
+| `name` | Char | Short reference for this custody event (auto-gener… | - |  |
+| `notes` | Text | Optional internal notes for auditors or compliance… | - |  |
+| `partner_id` | Many2one | The customer associated with the document. | - |  |
+| `security_measures` | Char | Brief description of security controls applied (e.… | - |  |
+| `signature_verified` | Boolean | Indicates the signature associated with this custo… | - |  |
+| `temperature` | Float | Ambient temperature in Celsius during the custody … | - |  |
+| `user_id` | Many2one | The user responsible for this custody event. | ✓ |  |
+| `witness_present` | Boolean | A qualified witness was present during this custod… | - |  |
 
 #### **naid.custody.event** Fields
 **Purpose**: NAID Custody Event
@@ -4120,8 +4298,8 @@
 | `user_id` | Many2one | Responsible | - |  |
 
 #### **records.document** Fields
-**Purpose**: Records Document
-**Field Count**: 86 fields
+**Purpose**: None
+**Field Count**: 88 fields
 
 | Field Name | Type | Purpose | Required | Default |
 |------------|------|---------|----------|---------|
@@ -4163,6 +4341,7 @@
 | `document_type_id` | Many2one | Document Type | - |  |
 | `event_date` | Date | Date of the last significant event (e.g., access, … | - |  |
 | `expected_return_date` | Date | Expected date for document return. | - |  |
+| `expiring_30d_destruction` | Boolean | True when destruction eligible date is within next… | - |  |
 | `found_date` | Date | Date the document was located after being missing. | - |  |
 | `group_by_customer_id` | Many2one | Group by Customer | - |  |
 | `group_by_location_id` | Many2one | Group by Location | - |  |
@@ -4171,6 +4350,7 @@
 | `is_missing` | Boolean | Flagged if the document cannot be located during a… | - |  |
 | `is_overdue` | Boolean | True if the document checkout is overdue. | - |  |
 | `is_permanent` | Boolean | Mark this document to be exempt from destruction p… | - |  |
+| `is_recent_30d_last_access` | Boolean | True when last_access_date within last 30 days. | - |  |
 | `last_access_date` | Date | Last Access Date | - |  |
 | `last_access_user_id` | Many2one | Last Accessed By | - |  |
 | `last_review_date` | Date | Date of the last vital records review. | - |  |

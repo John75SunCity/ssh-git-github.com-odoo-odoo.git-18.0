@@ -11,6 +11,7 @@ import os
 import re
 import json
 import csv
+import html
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from datetime import datetime
@@ -18,22 +19,37 @@ from typing import Dict, List, Any, Optional
 
 
 class HandbookUpdater:
-    """Main class for updating Records Management handbook documentation."""
+    """Main class for updating Records Management handbook documentation.
 
-    def __init__(self, module_path: str, handbook_path: str, split: bool = False, split_dir: str = 'handbook'):
-        self.module_path = Path(module_path)
+    Enhancements (2025-10-02):
+    - Multi-module support: --module-path accepts comma-separated module roots
+    - Menu structure extraction: builds hierarchy of ir.ui.menu + linked act_window
+    - Printable mode: generates a consolidated user-friendly markdown for Word
+    """
+
+    def __init__(self, module_path: str, handbook_path: str, split: bool = False,
+                 split_dir: str = 'handbook', printable: bool = False, printable_dir: str = 'handbook/printable'):
+        # Support comma-separated module paths
+        raw_paths = [p.strip() for p in module_path.split(',') if p.strip()]
+        if not raw_paths:
+            raise ValueError("No valid module paths provided")
+        self.module_paths: List[Path] = [Path(p) for p in raw_paths]
         self.handbook_path = Path(handbook_path)
-        self.updated_sections = []
+        self.updated_sections: List[str] = []
         self.split = split
         self.split_dir = Path(split_dir)
+        self.printable = printable
+        self.printable_dir = Path(printable_dir)
         if self.split:
             self.split_dir.mkdir(parents=True, exist_ok=True)
+        if self.printable:
+            self.printable_dir.mkdir(parents=True, exist_ok=True)
 
     def run_full_update(self) -> None:
         """Run complete documentation update."""
         print("🔄 Starting documentation update...")
         self._ensure_handbook_skeleton()
-        # Update various sections
+        # Update various sections (order matters for printable readability)
         self.update_field_dictionary()
         self.update_view_mapping()
         self.update_security_matrix()
@@ -42,6 +58,9 @@ class HandbookUpdater:
 
         # Generate update summary
         self.generate_update_summary()
+        # Generate printable variant if requested
+        if self.printable:
+            self.generate_printable_version()
         print(f"✅ Documentation update complete. Updated {len(self.updated_sections)} sections.")
 
     def parse_model(self, py_file: Path) -> Optional[Dict[str, Any]]:
@@ -208,12 +227,18 @@ class HandbookUpdater:
         """Update field dictionary section in handbook."""
         print("📝 Updating field dictionary...")
 
-        models = {}
-        for py_file in self.module_path.glob('models/*.py'):
-            if py_file.name != '__init__.py':
-                model_info = self.parse_model(py_file)
-                if model_info and model_info.get('_name'):
-                    models[model_info['_name']] = model_info
+        models: Dict[str, Dict[str, Any]] = {}
+        for module_path in self.module_paths:
+            for py_file in module_path.glob('models/*.py'):
+                if py_file.name != '__init__.py':
+                    model_info = self.parse_model(py_file)
+                    if model_info and model_info.get('_name'):
+                        # Merge fields if model defined across modules (inheritance/ext)
+                        existing = models.get(model_info['_name'])
+                        if existing:
+                            existing['fields'].update(model_info['fields'])
+                        else:
+                            models[model_info['_name']] = model_info
 
         # Generate field reference section
         field_section = self._generate_field_reference(models)
@@ -226,10 +251,11 @@ class HandbookUpdater:
         """Update view mapping section in handbook."""
         print("🎨 Updating view mapping...")
 
-        views = {}
-        for xml_file in self.module_path.glob('views/*.xml'):
-            view_info = self.parse_views(xml_file)
-            views.update(view_info)
+        views: Dict[str, Dict[str, Any]] = {}
+        for module_path in self.module_paths:
+            for xml_file in module_path.glob('views/*.xml'):
+                view_info = self.parse_views(xml_file)
+                views.update(view_info)
 
         # Generate view mapping section
         view_section = self._generate_view_mapping(views)
@@ -242,14 +268,15 @@ class HandbookUpdater:
         """Update security matrix in handbook."""
         print("🔐 Updating security matrix...")
 
-        csv_file = self.module_path / 'security/ir.model.access.csv'
-        if csv_file.exists():
-            access_rights = self.parse_security_csv(csv_file)
-
-            # Generate security matrix
-            security_section = self._generate_security_matrix(access_rights)
-
-            # Update handbook
+        aggregated_access: Dict[str, List] = {}
+        for module_path in self.module_paths:
+            csv_file = module_path / 'security/ir.model.access.csv'
+            if csv_file.exists():
+                access_rights = self.parse_security_csv(csv_file)
+                for model, rights in access_rights.items():
+                    aggregated_access.setdefault(model, []).extend(rights)
+        if aggregated_access:
+            security_section = self._generate_security_matrix(aggregated_access)
             self._update_handbook_section('Access Rights Matrix', security_section)
             self.updated_sections.append('Security Matrix')
 
@@ -257,33 +284,184 @@ class HandbookUpdater:
         """Update model statistics in handbook."""
         print("📊 Updating model statistics...")
 
-        # Count models
-        model_count = len([f for f in self.module_path.glob('models/*.py')
-                          if f.name != '__init__.py'])
-
-        # Count views
-        view_count = len(list(self.module_path.glob('views/*.xml')))
-
-        # Count data files
-        data_count = len(list(self.module_path.glob('data/*.xml')))
-
-        # Update statistics section
+        # Per-module stats then total
+        combined = {
+            'Python Models': 0,
+            'XML Views': 0,
+            'Data Files': 0,
+        }
+        stats_lines = ["\n### Per-Module Breakdown"]
+        stats_lines.append("\n| **Module** | **Models** | **Views** | **Data Files** |")
+        stats_lines.append("|-----------|-----------|----------|-------------|")
+        for module_path in self.module_paths:
+            model_count = len([f for f in module_path.glob('models/*.py') if f.name != '__init__.py'])
+            view_count = len(list(module_path.glob('views/*.xml')))
+            data_count = len(list(module_path.glob('data/*.xml')))
+            combined['Python Models'] += model_count
+            combined['XML Views'] += view_count
+            combined['Data Files'] += data_count
+            stats_lines.append(f"| {module_path.name} | {model_count} | {view_count} | {data_count} |")
         stats = {
-            'Python Models': model_count,
-            'XML Views': view_count,
-            'Data Files': data_count,
+            'Python Models (Total)': combined['Python Models'],
+            'XML Views (Total)': combined['XML Views'],
+            'Data Files (Total)': combined['Data Files'],
+            'Modules Included': ', '.join([p.name for p in self.module_paths]),
             'Last Updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
 
         stats_section = self._generate_statistics_table(stats)
-        self._update_handbook_section('Module Statistics', stats_section)
+        stats_full = stats_section + '\n' + '\n'.join(stats_lines)
+        self._update_handbook_section('Module Statistics', stats_full)
         self.updated_sections.append('Model Statistics')
 
     def update_menu_structure(self) -> None:
         """Update menu structure documentation."""
         print("📋 Updating menu structure...")
-        # This would scan menu XML files and generate structure
+        menus: Dict[str, Dict[str, Any]] = {}
+        actions: Dict[str, Dict[str, Any]] = {}
+        # Parse all view XMLs for menus & actions
+        for module_path in self.module_paths:
+            for xml_file in module_path.glob('views/*.xml'):
+                try:
+                    tree = ET.parse(xml_file)
+                    root = tree.getroot()
+                    # 1. <record model="ir.ui.menu"> style (classic)
+                    for record in root.findall('.//record'):
+                        model_attr = record.get('model')
+                        rec_id = record.get('id')
+                        if not rec_id or not model_attr:
+                            continue
+                        if model_attr == 'ir.ui.menu':
+                            menu_data = {'id': rec_id, 'name': None, 'parent_id': None, 'action': None, 'file': xml_file.name}
+                            for field in record.findall('field'):
+                                fname = field.get('name')
+                                if fname == 'name':
+                                    menu_data['name'] = (field.text or '').strip()
+                                elif fname == 'parent_id':
+                                    # parent via ref attr or text
+                                    parent_ref = field.get('ref') or (field.text or '').strip()
+                                    menu_data['parent_id'] = parent_ref
+                                elif fname == 'action':
+                                    action_ref = field.get('ref') or (field.text or '').strip()
+                                    menu_data['action'] = action_ref
+                            menus[rec_id] = menu_data
+                        elif model_attr == 'ir.actions.act_window':
+                            action_data = {'id': rec_id, 'name': None, 'res_model': None, 'view_mode': None, 'file': xml_file.name}
+                            for field in record.findall('field'):
+                                fname = field.get('name')
+                                if fname == 'name':
+                                    action_data['name'] = (field.text or '').strip()
+                                elif fname == 'res_model':
+                                    action_data['res_model'] = (field.text or '').strip()
+                                elif fname == 'view_mode':
+                                    action_data['view_mode'] = (field.text or '').strip()
+                            actions[rec_id] = action_data
+
+                    # 2. <menuitem .../> shorthand style (common in Odoo menus)
+                    for mi in root.findall('.//menuitem'):
+                        rec_id = mi.get('id')
+                        if not rec_id:
+                            continue
+                        name_raw = mi.get('name') or ''
+                        # Unescape HTML entities then strip <i ...> icon tags
+                        name_unescaped = html.unescape(name_raw)
+                        name_clean = re.sub(r'<i[^>]*></i>|<i[^>]*/?>', '', name_unescaped, flags=re.IGNORECASE).strip()
+                        parent_ref = mi.get('parent')
+                        action_ref = mi.get('action')
+                        # Only create / update if not already defined via <record>
+                        if rec_id not in menus:
+                            menus[rec_id] = {
+                                'id': rec_id,
+                                'name': name_clean or name_unescaped or '(No Name)',
+                                'parent_id': parent_ref,
+                                'action': action_ref,
+                                'file': xml_file.name
+                            }
+                        else:
+                            # Augment missing data if needed
+                            if not menus[rec_id].get('name'):
+                                menus[rec_id]['name'] = name_clean or name_unescaped
+                            if not menus[rec_id].get('parent_id') and parent_ref:
+                                menus[rec_id]['parent_id'] = parent_ref
+                            if not menus[rec_id].get('action') and action_ref:
+                                menus[rec_id]['action'] = action_ref
+                except Exception as e:
+                    print(f"⚠️  Error parsing for menus/actions in {xml_file}: {e}")
+
+        if not menus:
+            self._update_handbook_section('Menu Structure', '_No menus detected in provided modules._')
+            self.updated_sections.append('Menu Structure')
+            return
+
+        menu_section = self._generate_menu_structure(menus, actions)
+        self._update_handbook_section('Menu Structure', menu_section)
         self.updated_sections.append('Menu Structure')
+
+    def _generate_menu_structure(self, menus: Dict[str, Dict[str, Any]], actions: Dict[str, Dict[str, Any]]) -> str:
+        """Build hierarchical menu markdown."""
+        # Build node graph
+        nodes = {}
+        for mid, m in menus.items():
+            nodes[mid] = {**m, 'children': []}
+        # Attach children
+        for mid, m in nodes.items():
+            parent = m.get('parent_id')
+            if parent and parent in nodes:
+                nodes[parent]['children'].append(m)
+
+        # Identify roots
+        roots = [n for n in nodes.values() if not n.get('parent_id') or n.get('parent_id') not in nodes]
+        # Sort recursively
+        def sort_children(node):
+            node['children'].sort(key=lambda c: (c.get('name') or '').lower())
+            for ch in node['children']:
+                sort_children(ch)
+        for r in roots:
+            sort_children(r)
+
+        lines = ["_Menu hierarchy generated from ir.ui.menu and ir.actions.act_window records._", ""]
+
+        def render(node, depth=0):
+            indent = '  ' * depth
+            name = node.get('name') or '(No Name)'
+            line = f"{indent}- {name}  (`{node['id']}`)"
+            action_id = node.get('action')
+            if action_id and action_id in actions:
+                act = actions[action_id]
+                ameta = f" → {act.get('name','(no title)')} [{act.get('res_model') or '?'}]"
+                if act.get('view_mode'):
+                    ameta += f" modes={act['view_mode']}"
+                line += ameta
+            lines.append(line)
+            for ch in node['children']:
+                render(ch, depth+1)
+
+        for root in sorted(roots, key=lambda r: (r.get('name') or '').lower()):
+            render(root)
+        return '\n'.join(lines)
+
+    def generate_printable_version(self) -> None:
+        """Generate a consolidated printable markdown suitable for Word import."""
+        try:
+            if not self.handbook_path.exists():
+                return
+            with open(self.handbook_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            # Collect section anchors
+            headings = re.findall(r'^### (.+)$', content, flags=re.MULTILINE)
+            toc_lines = ["# Records Management Handbook (Printable Edition)", "", "## Table of Contents"]
+            for h in headings:
+                anchor = re.sub(r'[^a-z0-9]+', '-', h.lower()).strip('-')
+                toc_lines.append(f"- [{h}](#{anchor})")
+            # Add page breaks before each major section (replace '### ' with page break + heading)
+            printable = re.sub(r'^### ', '\n\n---\n\n### ', content, flags=re.MULTILINE)
+            output = '\n'.join(toc_lines) + '\n\n' + printable
+            target = self.printable_dir / 'records_management_handbook_printable.md'
+            with open(target, 'w', encoding='utf-8') as pf:
+                pf.write(output)
+            print(f"🖨  Generated printable handbook: {target}")
+        except Exception as e:
+            print(f"⚠️  Failed generating printable version: {e}")
 
     def _generate_field_reference(self, models: Dict) -> str:
         """Generate field reference documentation."""
@@ -410,8 +588,9 @@ class HandbookUpdater:
         summary = {
             'timestamp': datetime.now().isoformat(),
             'updated_sections': self.updated_sections,
-            'module_path': str(self.module_path),
-            'handbook_path': str(self.handbook_path)
+            'module_paths': [str(p) for p in self.module_paths],
+            'handbook_path': str(self.handbook_path),
+            'printable': self.printable
         }
 
         summary_file = self.handbook_path.parent / 'update_summary.json'
@@ -446,16 +625,17 @@ def main():
 
     parser = argparse.ArgumentParser(description='Update Records Management documentation')
     parser.add_argument('--module-path', default='records_management',
-                       help='Path to records_management module')
+                       help='Path(s) to module(s). Comma-separated for multiple (e.g. records_management,records_management_fsm)')
     parser.add_argument('--handbook-path', default='RECORDS_MANAGEMENT_HANDBOOK.md',
                        help='Path to handbook file')
     parser.add_argument('--section', choices=['fields', 'views', 'security', 'stats', 'all'],
                        default='all', help='Section to update')
     parser.add_argument('--split', action='store_true', help='Also write each section to handbook/ directory')
+    parser.add_argument('--printable', action='store_true', help='Generate printable consolidated handbook version')
 
     args = parser.parse_args()
 
-    updater = HandbookUpdater(args.module_path, args.handbook_path, split=args.split)
+    updater = HandbookUpdater(args.module_path, args.handbook_path, split=args.split, printable=args.printable)
 
     if args.section == 'all':
         updater.run_full_update()
@@ -467,6 +647,9 @@ def main():
         updater.update_security_matrix()
     elif args.section == 'stats':
         updater.update_model_statistics()
+    # In non-all mode, still allow printable generation if flag passed
+    if args.section != 'all' and args.printable:
+        updater.generate_printable_version()
 
 
 if __name__ == '__main__':

@@ -431,6 +431,16 @@
 ├── document_search_attempt_view_form (document_search_attempt_views.xml)
 ```
 
+#### **enhanced.fsm.integration** Views
+```xml
+<!-- Form Views -->
+├── enhanced_fsm_integration_view_form (enhanced_fsm_integration_views.xml)
+<!-- List Views -->
+├── enhanced_fsm_integration_view_tree (enhanced_fsm_integration_views.xml)
+<!-- Search Views -->
+├── enhanced_fsm_integration_view_search (enhanced_fsm_integration_views.xml)
+```
+
 #### **feedback.improvement.area** Views
 ```xml
 <!-- Form Views -->
@@ -470,6 +480,52 @@
 ├── fleet_vehicle_view_list_records_work (records_work_vehicle_views.xml)
 ├── fleet_vehicle_view_kanban_records_work (records_work_vehicle_views.xml)
 ├── fleet_vehicle_view_search_records_work (records_work_vehicle_views.xml)
+```
+
+#### **fsm.notification** Views
+```xml
+<!-- Form Views -->
+├── fsm_notification_view_form (fsm_notification_views.xml)
+<!-- List Views -->
+├── fsm_notification_view_tree (fsm_notification_views.xml)
+<!-- Search Views -->
+├── fsm_notification_view_search (fsm_notification_views.xml)
+```
+
+#### **fsm.notification.manager** Views
+```xml
+<!-- Form Views -->
+├── fsm_notification_manager_view_form (fsm_notification_manager_views.xml)
+<!-- List Views -->
+├── fsm_notification_manager_view_tree (fsm_notification_manager_views.xml)
+<!-- Search Views -->
+├── fsm_notification_manager_view_search (fsm_notification_manager_views.xml)
+```
+
+#### **fsm.reschedule.wizard** Views
+```xml
+<!-- Form Views -->
+├── fsm_reschedule_wizard_view_form (fsm_reschedule_wizard_views.xml)
+```
+
+#### **fsm.reschedule.wizard.placeholder** Views
+```xml
+<!-- Form Views -->
+├── fsm_reschedule_wizard_placeholder_view_form (fsm_reschedule_wizard_placeholder_views.xml)
+<!-- List Views -->
+├── fsm_reschedule_wizard_placeholder_view_tree (fsm_reschedule_wizard_placeholder_views.xml)
+<!-- Search Views -->
+├── fsm_reschedule_wizard_placeholder_view_search (fsm_reschedule_wizard_placeholder_views.xml)
+```
+
+#### **fsm.task.service.line** Views
+```xml
+<!-- Form Views -->
+├── fsm_task_service_line_view_form (fsm_task_service_line_views.xml)
+<!-- List Views -->
+├── fsm_task_service_line_view_tree (fsm_task_service_line_views.xml)
+<!-- Search Views -->
+├── fsm_task_service_line_view_search (fsm_task_service_line_views.xml)
 ```
 
 #### **full.customization.name** Views
@@ -690,6 +746,16 @@
 ├── mobile_dashboard_widget_view_form (mobile_dashboard_widget_views.xml)
 ├── mobile_dashboard_widget_view_search (mobile_dashboard_widget_views.xml)
 ├── mobile_dashboard_widget_view_kanban (mobile_dashboard_widget_views.xml)
+```
+
+#### **mobile.fsm.integration** Views
+```xml
+<!-- Form Views -->
+├── mobile_fsm_integration_view_form (mobile_fsm_integration_views.xml)
+<!-- List Views -->
+├── mobile_fsm_integration_view_tree (mobile_fsm_integration_views.xml)
+<!-- Search Views -->
+├── mobile_fsm_integration_view_search (mobile_fsm_integration_views.xml)
 ```
 
 #### **mobile.photo** Views
@@ -1141,8 +1207,17 @@
 
 #### **project.task** Views
 ```xml
+<!-- Calendar Views -->
+├── fsm_task_view_calendar (fsm_task_views.xml)
 <!-- Form Views -->
 ├── work_order_dashboard_view_tree (work_order_dashboard_views.xml)
+├── fsm_task_view_form (fsm_task_views.xml)
+<!-- Kanban Views -->
+├── fsm_task_view_kanban (fsm_task_views.xml)
+<!-- List Views -->
+├── fsm_task_view_tree (fsm_task_views.xml)
+<!-- Search Views -->
+├── fsm_task_view_search (fsm_task_views.xml)
 ```
 
 #### **rate.change.confirmation.wizard** Views

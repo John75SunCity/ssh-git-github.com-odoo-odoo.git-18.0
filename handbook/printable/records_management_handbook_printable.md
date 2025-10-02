@@ -1,7 +1,23 @@
+# Records Management Handbook (Printable Edition)
+
+## Table of Contents
+- [Custom Fields Reference](#custom-fields-reference)
+- [Views & Templates Mapping](#views-templates-mapping)
+- [Access Rights Matrix](#access-rights-matrix)
+- [Module Statistics](#module-statistics)
+- [Per-Module Breakdown](#per-module-breakdown)
+- [Per-Module Breakdown](#per-module-breakdown)
+- [Per-Module Breakdown](#per-module-breakdown)
+- [Menu Structure](#menu-structure)
+
 # Records Management Handbook (Auto-Generated)
 
 Generated file – sections are updated automatically. Do not edit section bodies manually; add custom notes outside section markers.
 
+
+
+
+---
 
 ### Custom Fields Reference
 
@@ -32650,6 +32666,10 @@ Generated file – sections are updated automatically. Do not edit section bodie
 | `name` | Char | Visualization Name | ✓ |  |
 | `target_model_id` | Many2one | Model to visualize workflow for | - |  |
 | `visualization_type` | Selection | Visualization Type | ✓ | process_flow |
+
+
+---
+
 ### Views & Templates Mapping
 
 #### **account.move.line** Views
@@ -41553,6 +41573,10 @@ Generated file – sections are updated automatically. Do not edit section bodie
 ├── workflow_visualization_manager_view_form (workflow_visualization_manager_views.xml)
 ├── workflow_visualization_manager_view_search (workflow_visualization_manager_views.xml)
 ```
+
+
+---
+
 ### Access Rights Matrix
 
 | **Model** | **Group** | **Read** | **Write** | **Create** | **Delete** |
@@ -44004,6 +44028,10 @@ Generated file – sections are updated automatically. Do not edit section bodie
 | **work_order_shredding** | group_records_user | ✓ | ✓ | ✓ | - |
 | **workflow_visualization_manager** | group_records_manager | ✓ | ✓ | ✓ | ✓ |
 | **workflow_visualization_manager** | group_records_user | ✓ | ✓ | ✓ | - |
+
+
+---
+
 ### Module Statistics
 
 | **Component** | **Count** |
@@ -44013,6 +44041,10 @@ Generated file – sections are updated automatically. Do not edit section bodie
 | **Data Files (Total)** | 36 |
 | **Modules Included** | records_management, records_management_fsm |
 | **Last Updated** | 2025-10-02 01:21:09 |
+
+
+
+---
 
 ### Per-Module Breakdown
 
@@ -44027,6 +44059,10 @@ Generated file – sections are updated automatically. Do not edit section bodie
 | **Modules Included** | records_management, records_management_fsm |
 | **Last Updated** | 2025-10-02 01:19:32 |
 
+
+
+---
+
 ### Per-Module Breakdown
 
 | **Module** | **Models** | **Views** | **Data Files** |
@@ -44040,6 +44076,10 @@ Generated file – sections are updated automatically. Do not edit section bodie
 | **Modules Included** | records_management, records_management_fsm |
 | **Last Updated** | 2025-10-02 01:19:20 |
 
+
+
+---
+
 ### Per-Module Breakdown
 
 | **Module** | **Models** | **Views** | **Data Files** |
@@ -44051,6 +44091,10 @@ Generated file – sections are updated automatically. Do not edit section bodie
 | **XML Views** | 293 |
 | **Data Files** | 34 |
 | **Last Updated** | 2025-10-02 01:11:29 |
+
+
+---
+
 ### Menu Structure
 _Menu hierarchy generated from ir.ui.menu and ir.actions.act_window records._
 

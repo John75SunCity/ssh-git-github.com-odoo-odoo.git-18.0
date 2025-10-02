@@ -1,12 +1,213 @@
-# Menu Structure (Placeholder)
+# Menu Structure
 
-This placeholder file is reserved for future automated generation of the Odoo menu/action hierarchy.
+_Menu hierarchy generated from ir.ui.menu and ir.actions.act_window records._
 
-Planned content outline:
-- Top-Level Menus
-- Submenus with XML IDs
-- Window Actions (name → model → view modes)
-- Wizards / Reports entries
-- Security group restrictions (if derivable)
-
-Generation not yet implemented in `scripts/update_handbook.py`.
+- Access Documents  (`menu_container_access_document`) → Container Access Documents [container.access.document] modes=kanban,list,form
+- Access Photos  (`menu_container_access_photos`) → Container Access Photos [container.access.photo] modes=kanban,list,form
+- Access Reports  (`menu_container_access_report`) → Container Access Reports [container.access.report] modes=list,form
+- Base Rates  (`base_rates_menu`) → Base Rates [base.rates] modes=list,form
+- Billing Approvals  (`menu_records_department_billing_approval`) → Department Billing Approvals [records.department.billing.approval] modes=kanban,list,form
+- Billing Configuration  (`menu_billing_configuration`)
+  - Configuration Audit  (`menu_billing_config_audit`) → Records Audit Log [records.audit.log] modes=list,form
+- Billing Contacts  (`advanced_billing_contact_menu`) → Billing Contacts [advanced.billing.contact] modes=list,form
+- Billing Lines  (`advanced_billing_line_menu_root`)
+  - Detailed View  (`advanced_billing_line_menu_detailed`) → Detailed Billing Lines [advanced.billing.line] modes=list,form
+  - Simple View  (`advanced_billing_line_menu_simple`) → Simple Billing Lines [advanced.billing.line] modes=list,form
+- Billing Periods  (`billing_period_menu`) → Billing Periods [billing.period] modes=list,form
+- Billing Profiles  (`advanced_billing_profile_menu`) → Billing Profiles [advanced.billing.profile] modes=list,form
+- Billing Records  (`records_billing_menu`) → Billing Records [records.billing] modes=list,form
+- Bin Issue Billing  (`menu_bin_issue_billing`) → Bin Issue Billing [bin.issue.record] modes=list,form
+- Categories  (`menu_records_category_root`) → Categories [records.category] modes=list,form
+- Configuration  (`menu_records_config_settings`) → Records Management Configuration [res.config.settings] modes=form
+- Customization Configurations  (`full_customization_name_menu`) → Customization Configurations [full.customization.name] modes=list,form
+- Department Users  (`menu_records_storage_department_user`) → Department User Assignments [records.storage.department.user] modes=list,form
+- Destruction Certificates  (`menu_destruction_certificates`) → Destruction Certificates [destruction.certificate] modes=kanban,list,form,calendar
+- Draft Requests  (`portal_request_draft_menu`) → Portal Requests [portal.request] modes=kanban,list,form
+- Enhanced Features  (`menu_enhanced_features`)
+  - Analytics & Reporting  (`menu_analytics_reporting`)
+    - FSM Analytics  (`menu_fsm_analytics`)
+    - Mobile Analytics  (`menu_mobile_analytics`)
+    - Workflow Analytics  (`menu_workflow_analytics`)
+  - FSM Integration  (`menu_fsm_integration`)
+    - Enhanced FSM Integration  (`menu_enhanced_fsm_integration`)
+    - Mobile FSM Integration  (`menu_mobile_fsm_integration`)
+  - Mobile Features  (`menu_mobile_features`)
+    - Mobile Dashboard  (`menu_mobile_dashboard`)
+    - Mobile Settings  (`menu_mobile_settings`)
+  - Workflow Visualization  (`menu_workflow_visualization`) → Workflow Visualizations [workflow.visualization.manager] modes=list,form
+- Field Label Customization  (`menu_field_label_customization`) → Field Label Customizations [field.label.customization] modes=list,form
+- Fleet & Route Management  (`menu_records_fleet_fsm`)
+  - Fleet Management  (`menu_records_fleet`)
+    - Records Vehicles  (`menu_records_fleet_vehicles`)
+    - Standard Fleet  (`menu_standard_fleet`)
+  - Integration Tools  (`menu_integration_tools`)
+    - Integration Dashboard  (`menu_fleet_fsm_dashboard`)
+  - Route Management  (`menu_records_routes`)
+    - FSM Route Projects  (`menu_fsm_route_projects`) → FSM Route Projects [project.project] modes=kanban,tree,form
+    - Pickup Routes  (`menu_pickup_routes`)
+    - Route Analytics  (`menu_route_analytics`) → Route Analytics [pickup.route] modes=graph,pivot
+- Flowchart Configuration  (`menu_system_flowchart_config`) →  [system.diagram.data] modes=kanban,list,form
+- Key Checker  (`menu_key_checker_shortcut`) → Key Restriction Checker [key.restriction.checker.wizard] modes=form
+- Key Restriction Checker  (`menu_key_restriction_checker`) → Key Restriction Checker [key.restriction.checker.wizard] modes=form
+- Mobile Key Manager  (`menu_mobile_bin_key_wizard`) → Mobile Key Management [mobile.bin.key.wizard] modes=form
+- My Shred Bins  (`menu_shred_bin_portal`) → My Shred Bins [shred.bin] modes=kanban,list,form
+- Payment Management  (`menu_payment_management`)
+  - Payment Splits  (`menu_payment_split_lines`) → Payment Split Lines [payment.split.line] modes=list,form
+- Performance Analytics  (`menu_performance_analytics`)
+  - Retrieval Metrics  (`menu_document_retrieval_metrics`) → Retrieval Metrics [retrieval.metric] modes=list,form
+- Pickup Locations  (`pickup_location_menu`) → Pickup Locations [pickup.location] modes=list,form
+- Policy Versions  (`menu_retention_policy_versions`) → Retention Policy Versions [records.retention.policy.version] modes=list,form,kanban
+- Portal Requests  (`portal_request_menu`) → Portal Requests [portal.request] modes=kanban,list,form
+- Rate Management  (`menu_rate_management`)
+  - Base Service Rates  (`menu_base_rates`) → Base Service Rates [base.rate] modes=list,form
+  - Customer Negotiated Rates  (`menu_customer_negotiated_rates`) → Customer Negotiated Rate [customer.negotiated.rate] modes=list,form
+  - Rate Analysis Tools  (`menu_rate_analysis`) → Rate Analysis [rate.change.confirmation.wizard] modes=form
+  - Revenue Forecaster  (`menu_revenue_forecaster`) → Revenue Forecaster [revenue.forecaster] modes=form
+- Records Management  (`menu_records_management_root`)
+  - Billing & Finance  (`menu_records_billing`)
+    - Advanced Billing  (`menu_advanced_billing`) → Billing Profiles [advanced.billing.profile] modes=list,form
+    - Billing Configuration  (`menu_billing_config`) → Records Billing Config [records.billing.config] modes=list,form
+    - Customer Rates  (`menu_customer_rates`) → Customer Negotiated Rate [customer.negotiated.rate] modes=list,form
+  - Bulk User Import  (`records_bulk_user_import_menu`) → Bulk User Import [records.bulk.user.import] modes=list,form
+  - Configuration  (`menu_records_configuration`)
+    - Barcode Configuration  (`menu_barcode_config`) → Barcode Generation History [barcode.generation.history] modes=list,form
+      - Seasonal Pricing  (`barcode_seasonal_pricing_menu`) → Seasonal Pricing [barcode.seasonal.pricing] modes=list,form
+    - Department Billing Contacts  (`menu_department_billing_contacts`) → Billing Contacts [advanced.billing.contact] modes=list,form
+    - Diagram Configuration  (`menu_customer_portal_diagram_config`) → Portal Diagram Configuration [customer.portal.diagram] modes=list,form
+    - Document Retrieval Rates  (`menu_document_retrieval_rates`)
+      - Base Rates  (`menu_document_retrieval_base_rates`)
+    - Master Data  (`menu_records_master_data`)
+      - Classification Tags  (`menu_records_tags`) → Records Tags [records.tag] modes=list,form
+      - Document Types  (`menu_records_document_type`) → Document Types [records.document.type] modes=kanban,list,form
+      - Records Departments  (`menu_records_departments`) → Customer Departments [records.department] modes=kanban,list,form
+      - Storage Locations  (`menu_records_location`) → Storage Locations [records.location] modes=kanban,list,form
+    - Module Configuration  (`menu_rm_module_configurator`) → Records Management Configurator [rm.module.configurator] modes=kanban,list,form
+    - Products & Services  (`menu_records_products`)
+      - Product Variants  (`menu_records_product_variants`)
+      - Service Products  (`menu_records_products_list`)
+    - Retention Policies  (`menu_records_retention_policy`) → Retention Policies [records.retention.policy] modes=pivot,kanban,list,form
+    - Security & Access  (`menu_records_security`)
+      - Bin Key Management  (`menu_bin_key_management`) → Bin Key Management [bin.key] modes=kanban,list,form
+      - Key Access Restrictions  (`menu_key_restriction`) → Key Access Restrictions [res.partner.key.restriction] modes=list,form
+      - Physical Bin Keys  (`menu_bin_keys`) → Bin Keys [bin.key] modes=list,kanban,form
+    - Service Configuration  (`menu_service_item_configuration`)
+    - Service Items  (`menu_service_item_main`)
+      - Active Service Items  (`menu_service_item_active`) → Active Services [service.item] modes=kanban,list,form
+      - All Service Items  (`menu_service_item_list`) → Service Items [service.item] modes=kanban,list,form
+      - Mobile & FSM  (`menu_service_item_mobile`)
+        - FSM Integration  (`menu_service_item_fsm`) → FSM Integration [service.item] modes=kanban,list,form
+        - Mobile Service Tasks  (`menu_service_item_mobile_tasks`) → Mobile Service Tasks [service.item] modes=kanban,list,form
+      - Portal Integration  (`menu_service_item_portal`)
+        - Portal Service Requests  (`menu_service_item_portal_requests`) → Portal Service Requests [service.item] modes=kanban,list,form
+        - Self-Service Setup  (`menu_service_item_self_service`) → Self-Service Setup [service.item] modes=list,form
+      - Reports & Analytics  (`menu_service_item_reports`)
+        - Performance Report  (`menu_service_item_performance_report`) → Performance Report [service.item] modes=pivot,graph,list
+        - Revenue Report  (`menu_service_item_revenue_report`) → Revenue Report [service.item] modes=pivot,graph,list
+        - Usage Analytics  (`menu_service_item_analytics`) → Usage Analytics [service.item] modes=pivot,graph,list
+      - Service Categories  (`menu_service_item_categories`) → Service Categories [service.item] modes=list,form
+      - Service Items Dashboard  (`menu_service_item_dashboard`) → Service Dashboard [service.item] modes=kanban,list,form
+      - Service Operations  (`menu_service_item_operations`)
+        - Service Billing  (`menu_service_item_billing`) → Service Billing [service.item] modes=list,form
+        - Service Requests  (`menu_service_item_requests`) → Service Requests [service.item] modes=list,form
+        - Service Scheduling  (`menu_service_item_scheduling`) → Service Scheduling [service.item] modes=list,form
+      - Service Settings  (`menu_service_item_settings`)
+        - Pricing Rules  (`menu_service_item_pricing`) → Pricing Rules [service.item] modes=list,form
+        - Quality Controls  (`menu_service_item_quality`) → Quality Controls [service.item] modes=list,form
+      - Service Templates  (`menu_service_item_templates`) → Service Templates [service.item] modes=list,form
+    - System Configuration  (`menu_system_config`)
+  - Customer Feedback  (`customer_feedback_menu`) → Customer Feedback [customer.feedback] modes=list,form
+  - Customer Portal  (`menu_records_portal`)
+    - Customer Feedback  (`menu_customer_feedback`) → Customer Feedback [customer.feedback] modes=list,form
+    - Portal Requests  (`menu_portal_requests`) → Portal Requests [portal.request] modes=kanban,list,form
+  - Documents  (`menu_records_management_documents`)
+    - Digital Scans  (`menu_records_digital_scan`) → Digital Scans [records.digital.scan] modes=list,form
+  - Inventory  (`menu_records_inventory`)
+    - Customer Inventory  (`menu_customer_inventory`) → Customer Inventory [res.partner] modes=list
+    - Inventory Documents  (`menu_inventory_documents`) → Inventory Item [inventory.item] modes=list,form
+    - Retention Policies  (`menu_records_retention`) → Retention Policies [records.retention.policy] modes=pivot,kanban,list,form
+  - NAID Audits  (`naid_audit_menu`)
+    - Audit Requirements  (`naid_audit_requirement_menu`) → NAID Audit Requirements [naid.audit.requirement] modes=list,kanban,form,pivot,graph
+    - Create Default Checklist  (`naid_create_checklist_menu`) → Create Default NAID Checklist [naid.audit.requirement] modes=form
+  - NAID Certification  (`naid_certification_menu`)
+    - Operator Certifications  (`naid_operator_certification_menu`) → NAID Operator Certifications [naid.operator.certification] modes=list,form
+    - Training Schedule  (`naid_training_schedule_menu`) → Training Schedule [naid.training.schedule] modes=list,form
+  - NAID Compliance  (`menu_records_compliance`)
+    - Audit Logs  (`menu_naid_audit_logs`) → NAID Audit Logs [naid.audit.log] modes=kanban,list,form
+    - Chain of Custody  (`menu_chain_custody`) → Chain of Custody [chain.of.custody] modes=kanban,list,form
+    - Compliance Records  (`menu_naid_compliance`) → NAID Compliance [naid.compliance] modes=kanban,list,form,calendar
+    - Destruction Certificates  (`menu_naid_certificates`) → Certificates of Destruction [naid.certificate] modes=list,form
+  - Operations  (`menu_records_operations`)
+    - Bales  (`menu_paper_model_bales`) → Paper Model Bales [paper.model_bale] modes=list,kanban,form
+    - Bin Inventory  (`menu_bin_barcode_inventory_root`)
+      - Bin Barcode Inventory  (`menu_bin_barcode_inventory`) → Bin Barcode Inventory [bin.barcode.inventory] modes=kanban,list,form,graph,pivot
+      - Reset Bin Sequences  (`menu_bin_sequence_reset`) → Reset Bin Sequence [shredding.bin.sequence.reset.wizard] modes=form
+      - Route Dashboard  (`menu_bin_route_dashboard`) → Route Load Dashboard [bin.barcode.inventory] modes=pivot,graph
+    - Bin Issues  (`menu_bin_issues`) → Bin Issue Records [bin.issue.record] modes=kanban,list,form
+    - Bulk Convert Container Types  (`menu_container_type_converter`) → Bulk Convert Container Types [records.container.type.converter] modes=form
+    - Container Field Labels  (`menu_container_field_label_helper`) → Field Label Helper [field.label.helper.wizard] modes=form
+    - Containers  (`menu_records_containers`) → Storage Containers [records.container] modes=list,kanban,form,calendar,graph
+    - Destruction Services  (`menu_destruction_services`) → Records.Destruction [records.destruction] modes=list,form
+    - Document Retrieval Orders  (`menu_document_retrieval_work_orders`) → Retrieval Orders [records.retrieval.order] modes=list,form
+    - Files  (`menu_records_documents`) → Documents [records.document] modes=list,form
+    - FSM Services  (`menu_fsm_service_management`)
+      - Service Lines  (`menu_fsm_service_lines`) → FSM Integration [service.item] modes=kanban,list,form
+    - Pickup Requests  (`menu_pickup_requests`) → Pickup Requests [pickup.request] modes=list,form
+    - Requests  (`menu_records_request`) → Records Requests [records.request] modes=list,form
+    - Retrieval Orders  (`menu_records_retrieval_orders`) → Retrieval Orders [records.retrieval.order] modes=list,form
+    - Scans PDF  (`menu_records_boxes`) → Digital Scans [records.digital.scan] modes=list,form
+    - Serial Numbers  (`menu_stock_lots`) → Serial Numbers / Lots [stock.lot] modes=kanban,list,form
+    - Shred Bins  (`menu_shred_bin`) → Customer Shred Bins [shred.bin] modes=kanban,list,form
+    - Shred Bins  (`menu_shred_model_bins`) → Shred Model Bins [shred.model_bin] modes=list,kanban,form
+    - Shredding Bins  (`menu_shredding_bins`) → Shredding Service Bins [shredding.service.bin] modes=kanban,list,form
+    - Shredding Documentation  (`menu_shredding_documentation`)
+      - Service Photos  (`menu_shredding_service_photos`) → Shredding Service Photos [shredding.service.photo] modes=list,form
+    - Shredding Services  (`menu_shredding_services`) → Shredding Services [shredding.service] modes=kanban,list,form
+    - SMS Validations  (`stock_move_sms_validation_menu`) → SMS Validations [stock.move.sms.validation] modes=list,form
+    - Work Order Coordinators  (`menu_work_order_coordinators`) → Work Order Coordinators [work.order.coordinator] modes=kanban,list,form
+    - Work Vehicles  (`menu_fleet_vehicle_records_work`) → Records Work Vehicles [fleet.vehicle] modes=kanban,list,form
+    - Workflow Visualizations  (`menu_workflow_visualizations`) → Workflow Visualizations [workflow.visualization.manager] modes=list,form
+  - Paper Recycling  (`menu_paper_recycling`)
+    - Dashboard  (`menu_paper_recycling_dashboard`) → Paper Recycling Dashboard [paper.load.shipment] modes=kanban,list,form
+    - Load Shipments  (`menu_load_shipments`) → Load Shipments [paper.load.shipment] modes=kanban,list,form
+  - Photos  (`photo_menu_root`)
+    - All Photos  (`photo_menu_list`) → Photo [photo] modes=list,form
+  - Portal Feedback  (`menu_portal_feedback`) → Portal Feedback [portal.feedback] modes=kanban,list,form
+    - Analytics Dashboard  (`menu_feedback_analytics`) → Feedback Analytics [portal.feedback.analytic] modes=list,form
+  - Portal Organization  (`menu_customer_portal_diagram`) → Portal Diagram Configuration [customer.portal.diagram] modes=list,form
+  - Reports  (`menu_records_reporting`)
+    - Barcode History  (`menu_barcode_history`) → Barcode Generation History [barcode.generation.history] modes=list,form
+    - Compliance Reports  (`menu_compliance_reports`) → Compliance Reports [naid.compliance.policy] modes=list
+    - Customer Inventory Reports  (`menu_customer_inventory_report`) → Customer Inventory Reports [customer.inventory.report] modes=kanban,list,form
+    - Inventory Reports  (`menu_inventory_reports`) → Customer Inventory Reports [customer.inventory.report] modes=kanban,list,form
+    - Reporting Hub  (`menu_reports`)
+    - Storage Reports  (`menu_records_reports`) → Storage Reports [records.container] modes=list
+  - Retrieval Work Orders  (`records_retrieval_work_order_menu`) → Records Retrieval Work Orders [records.retrieval.work.order] modes=kanban,list,form
+  - System Flowchart  (`system_flowchart_wizard_menu`) → System Architecture Flowchart [system.flowchart.wizard] modes=form
+- Records Management Configuration  (`menu_rm_configurator_admin`) → Records Management Configurator [rm.module.configurator] modes=kanban,list,form
+- Request Lines  (`menu_records_request_line`) → Request Lines [records.request.line] modes=list,form
+- Request Types  (`menu_records_request_type`) → Request Types [records.request.type] modes=list,form
+- Retrieval Lines  (`menu_inventory_item_retrieval_line`) → Inventory Retrieval Lines [inventory.item.retrieval.line] modes=list,form
+- Revenue Forecasting  (`menu_revenue_forecasting`)
+  - Forecast Lines  (`menu_revenue_forecast_lines`) → Revenue Forecast Lines [revenue.forecast.line] modes=list,form
+- Search Attempts  (`menu_document_search_attempt`) → Document Search Attempts [document.search.attempt] modes=list,form
+- Search Configuration  (`menu_intelligent_search_config`)
+  - Field Label Customization  (`menu_field_label_customization_sub`) → Field Label Customizations [field.label.customization] modes=list,form
+- Series  (`menu_records_series`) → Records Series [records.series] modes=list,form
+- Shredding Inventory  (`menu_shredding_inventory_root`)
+  - Inventory Items  (`menu_shredding_inventory_items`) → Shredding Inventory Items [shredding.inventory.item] modes=list,form
+  - Picklist Items  (`menu_shredding_picklist_items`) → Picklist Items [shredding.picklist.item] modes=list,form
+- Storage Boxes  (`records_storage_box_menu`) → Storage Boxes [records.storage.box] modes=list,form
+- Submitted Requests  (`portal_request_submitted_menu`) → Portal Requests [portal.request] modes=kanban,list,form
+- System Architecture  (`menu_system_architecture`)
+  - System Analysis  (`menu_system_analysis`)
+    - Company Overview  (`menu_system_flowchart_company`) →  [system.diagram.data] modes=form
+    - Interactive Flowcharts  (`menu_system_flowchart_main`) →  [system.diagram.data] modes=kanban,list,form
+    - Model Structure Explorer  (`menu_system_flowchart_model`) →  [system.diagram.data] modes=form
+    - User Access Analysis  (`menu_system_flowchart_user`) →  [system.diagram.data] modes=form
+- System Overview  (`menu_system_overview_quick`)
+- Temporary Inventory  (`menu_temp_inventory_root`)
+  - Audit Trail  (`menu_temp_inventory_audit`) → Inventory Audit Trail [temp.inventory.audit] modes=list
+  - Inventories  (`menu_temp_inventory`) → Temporary Inventory [temp.inventory] modes=list,form
+  - Movements  (`menu_temp_inventory_movement`) → Inventory Movements [temp.inventory.movement] modes=list,form
+- Unlock Services  (`menu_bin_key_unlock_service`) → Bin Key Unlock Services [bin.key.unlock.service] modes=kanban,list,form
+- Volume Calculator  (`custom_box_volume_calculator_menu`) → Box Volume Calculator [custom.box.volume.calculator] modes=list,form

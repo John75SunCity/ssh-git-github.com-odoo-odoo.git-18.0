@@ -3,7 +3,15 @@
 
 | **Component** | **Count** |
 |---------------|-----------|
-| **Python Models** | 303 |
-| **XML Views** | 293 |
-| **Data Files** | 34 |
-| **Last Updated** | 2025-10-02 01:11:29 |
+| **Python Models (Total)** | 312 |
+| **XML Views (Total)** | 302 |
+| **Data Files (Total)** | 36 |
+| **Modules Included** | records_management, records_management_fsm |
+| **Last Updated** | 2025-10-02 01:21:09 |
+
+### Per-Module Breakdown
+
+| **Module** | **Models** | **Views** | **Data Files** |
+|-----------|-----------|----------|-------------|
+| records_management | 303 | 293 | 34 |
+| records_management_fsm | 9 | 9 | 2 |
