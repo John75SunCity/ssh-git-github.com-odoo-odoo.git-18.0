@@ -1,0 +1,303 @@
+name: Update Documentation
+
+on:
+  push:
+    paths:
+      - 'records_management/models/**'
+      - 'records_management/views/**'
+      - 'records_management/security/**'
+      - 'records_management_fsm/models/**'
+      - 'records_management_fsm/views/**'
+  pull_request:
+    paths:
+      - 'records_management/models/**'
+      - 'records_management/views/**'
+      - 'records_management/security/**'
+      - 'records_management_fsm/models/**'
+      - 'records_management_fsm/views/**'
+  workflow_dispatch:
+    inputs:
+      section:
+        description: 'Section to update'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - fields
+          - views
+          - security
+          - stats
+
+jobs:
+  update-documentation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install lxml xmltodict
+
+      - name: Update Records Management Documentation
+        run: |
+          python scripts/update_handbook.py \
+            --module-path records_management \
+            --handbook-path RECORDS_MANAGEMENT_HANDBOOK.md \
+            --section ${{ github.event.inputs.section || 'all' }}
+
+      - name: Update FSM Documentation (if exists)
+        if: hashFiles('records_management_fsm/models/*.py') != ''
+        run: |
+          python scripts/update_handbook.py \
+            --module-path records_management_fsm \
+            --handbook-path RECORDS_MANAGEMENT_HANDBOOK.md \
+            --section ${{ github.event.inputs.section || 'all' }}
+
+      - name: Check for changes
+        id: verify-changed-files
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate documentation summary
+        if: steps.verify-changed-files.outputs.changed == 'true'
+        run: |
+          echo "## 📚 Documentation Update Summary" > doc_summary.md
+          echo "" >> doc_summary.md
+          echo "**Timestamp**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> doc_summary.md
+          echo "**Trigger**: ${{ github.event_name }}" >> doc_summary.md
+          
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "**Commit**: ${{ github.sha }}" >> doc_summary.md
+            echo "**Changed Files**:" >> doc_summary.md
+            git diff --name-only HEAD~1 HEAD | grep -E '\.(py|xml)$' | head -10 | sed 's/^/- /' >> doc_summary.md
+          fi
+          
+          echo "" >> doc_summary.md
+          echo "**Updated Sections**:" >> doc_summary.md
+          
+          if [ -f "update_summary.json" ]; then
+            python -c "
+import json
+with open('update_summary.json', 'r') as f:
+    data = json.load(f)
+    for section in data.get('updated_sections', []):
+        print(f'- {section}')
+            " >> doc_summary.md
+          fi
+          
+          echo "" >> doc_summary.md
+          echo "### 📊 Statistics" >> doc_summary.md
+          echo "- **Models**: $(find records_management/models -name '*.py' | grep -v __init__ | wc -l)" >> doc_summary.md
+          echo "- **Views**: $(find records_management/views -name '*.xml' | wc -l)" >> doc_summary.md
+          echo "- **FSM Models**: $(find records_management_fsm/models -name '*.py' 2>/dev/null | grep -v __init__ | wc -l || echo 0)" >> doc_summary.md
+
+      - name: Commit documentation changes
+        if: steps.verify-changed-files.outputs.changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add RECORDS_MANAGEMENT_HANDBOOK.md
+          git add documentation/
+          git add update_summary.json
+          
+          # Create commit message
+          if [ "${{ github.event_name }}" = "push" ]; then
+            COMMIT_MSG="📚 Auto-update documentation
+            
+Triggered by push to ${{ github.ref_name }}
+Updated handbook sections based on code changes
+
+$(cat doc_summary.md)"
+          else
+            COMMIT_MSG="📚 Auto-update documentation
+            
+Triggered by ${{ github.event_name }}
+Section: ${{ github.event.inputs.section || 'all' }}
+
+$(cat doc_summary.md)"
+          fi
+          
+          git commit -m "$COMMIT_MSG" || exit 0
+
+      - name: Push changes
+        if: steps.verify-changed-files.outputs.changed == 'true' && github.event_name != 'pull_request'
+        run: |
+          git push
+
+      - name: Create documentation artifact
+        if: steps.verify-changed-files.outputs.changed == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: updated-documentation
+          path: |
+            RECORDS_MANAGEMENT_HANDBOOK.md
+            documentation/
+            update_summary.json
+            doc_summary.md
+          retention-days: 30
+
+      - name: Add PR comment with changes
+        if: steps.verify-changed-files.outputs.changed == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let comment = '## 📚 Documentation Changes\n\n';
+            
+            if (fs.existsSync('doc_summary.md')) {
+              const summary = fs.readFileSync('doc_summary.md', 'utf8');
+              comment += summary;
+            }
+            
+            comment += '\n\n> 📝 This documentation will be automatically updated when the PR is merged.';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  validate-documentation:
+    runs-on: ubuntu-latest
+    needs: update-documentation
+    if: always()
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install markdown validation tools
+        run: |
+          pip install markdown-link-check
+          npm install -g markdownlint-cli
+
+      - name: Validate handbook markdown
+        run: |
+          # Check markdown syntax
+          markdownlint RECORDS_MANAGEMENT_HANDBOOK.md || true
+          
+          # Validate internal links
+          python -c "
+import re
+import os
+
+with open('RECORDS_MANAGEMENT_HANDBOOK.md', 'r') as f:
+    content = f.read()
+
+# Find all internal links
+internal_links = re.findall(r'\[.*?\]\(#(.*?)\)', content)
+headers = re.findall(r'^#+\s+(.+)$', content, re.MULTILINE)
+
+# Convert headers to link format
+header_links = []
+for header in headers:
+    link = header.lower()
+    link = re.sub(r'[^\w\s-]', '', link)
+    link = re.sub(r'[-\s]+', '-', link)
+    header_links.append(link)
+
+print('Internal Link Validation:')
+for link in internal_links:
+    if link in header_links:
+        print(f'✅ {link}')
+    else:
+        print(f'❌ {link} - Target not found')
+        print(f'   Available targets: {[h for h in header_links if link.split(\"-\")[0] in h][:3]}')
+          "
+
+      - name: Check documentation completeness
+        run: |
+          python -c "
+import os
+from pathlib import Path
+
+print('📋 Documentation Completeness Check:')
+
+# Check if all major models have documentation
+models_dir = Path('records_management/models')
+documented_models = []
+
+with open('RECORDS_MANAGEMENT_HANDBOOK.md', 'r') as f:
+    handbook_content = f.read()
+
+model_files = [f for f in models_dir.glob('*.py') if f.name != '__init__.py']
+print(f'Total model files: {len(model_files)}')
+
+# Check coverage
+documented_count = 0
+for model_file in model_files[:10]:  # Check first 10 for brevity
+    model_name = model_file.stem
+    if model_name in handbook_content:
+        documented_count += 1
+        print(f'✅ {model_name}')
+    else:
+        print(f'❌ {model_name} - Not documented')
+
+coverage = (documented_count / min(len(model_files), 10)) * 100
+print(f'Documentation coverage: {coverage:.1f}%')
+          "
+
+      - name: Generate documentation metrics
+        run: |
+          python -c "
+import os
+from pathlib import Path
+
+print('📊 Documentation Metrics:')
+
+# Handbook size
+handbook_size = os.path.getsize('RECORDS_MANAGEMENT_HANDBOOK.md')
+print(f'Handbook size: {handbook_size:,} bytes ({handbook_size/1024:.1f} KB)')
+
+# Line count
+with open('RECORDS_MANAGEMENT_HANDBOOK.md', 'r') as f:
+    lines = len(f.readlines())
+print(f'Total lines: {lines:,}')
+
+# Word count (approximate)
+with open('RECORDS_MANAGEMENT_HANDBOOK.md', 'r') as f:
+    words = len(f.read().split())
+print(f'Approximate word count: {words:,}')
+
+# Section count
+with open('RECORDS_MANAGEMENT_HANDBOOK.md', 'r') as f:
+    content = f.read()
+    
+import re
+sections = len(re.findall(r'^##\s+', content, re.MULTILINE))
+subsections = len(re.findall(r'^###\s+', content, re.MULTILINE))
+
+print(f'Main sections: {sections}')
+print(f'Subsections: {subsections}')
+
+# Code blocks
+code_blocks = len(re.findall(r'```', content)) // 2
+print(f'Code blocks: {code_blocks}')
+
+# Tables
+tables = len(re.findall(r'^\|.*\|$', content, re.MULTILINE))
+print(f'Table rows: {tables}')
+          "
