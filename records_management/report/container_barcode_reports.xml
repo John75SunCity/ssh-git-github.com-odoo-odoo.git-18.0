@@ -21,7 +21,7 @@
         <t t-foreach="docs" t-as="doc">
           <t t-call="web.external_layout">
             <div class="page" style="text-align:center; padding-top:0.8cm;">
-              <h3 style="margin:4px 0;" t-translate="True">Container Label</h3>
+              <h3 style="margin:4px 0;">Container Label</h3>
               <div>
                 <strong t-esc="doc.display_name"/>
               </div>
@@ -32,16 +32,16 @@
               <div style="margin-top:10px;" t-elif="doc.temp_barcode">
                 <img t-att-src="'/report/barcode/Code128/%s?width=400&amp;height=120' % doc.temp_barcode" alt="Temporary Barcode" style="margin:8px 0;"/>
                 <div style="font-size:14px; font-weight:600;" t-esc="doc.temp_barcode"/>
-                <div style="font-size:10px;" t-translate="True">Temporary Barcode</div>
+                <div style="font-size:10px;">Temporary Barcode</div>
               </div>
               <div t-else="" style="margin-top:18px;">
-                <em style="font-size:12px;" t-translate="True">No barcode assigned</em>
+                <em style="font-size:12px;">No barcode assigned</em>
               </div>
               <div style="margin-top:6px; font-size:11px;">
                 <span t-if="doc.container_type_id" t-esc="doc.container_type_id.name"/>
               </div>
               <div style="margin-top:4px; font-size:9px; color:#666;">
-                <t t-translate="True">Generated</t>: <span t-esc="(datetime.datetime.utcnow()).strftime('%Y-%m-%d %H:%M UTC')"/>
+                <span>Generated</span>: <span t-esc="(datetime.datetime.utcnow()).strftime('%Y-%m-%d %H:%M UTC')"/>
               </div>
             </div>
           </t>

@@ -182,6 +182,7 @@ from . import records_document
 from . import records_document_type
 from . import records_installer
 from . import records_inventory_dashboard
+from . import records_management_dashboard
 from . import records_location
 from . import records_location_inspection
 from . import records_policy_version

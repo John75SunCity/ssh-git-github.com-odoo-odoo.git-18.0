@@ -105,6 +105,11 @@
 
 </group>
 </page>
+<page string="Reporting & Dashboards" name="reporting_dashboards">
+    <group string="Management Dashboard">
+        <field name="enable_management_dashboard"/>
+    </group>
+</page>
 </notebook>
 </sheet>
 <div class="oe_chatter">

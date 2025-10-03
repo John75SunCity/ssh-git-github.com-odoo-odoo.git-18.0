@@ -105,6 +105,11 @@ class RmModuleConfigurator(models.Model):
         default=True,
         help="Enables intelligent container/file search widgets (container_search, file_search) in backend forms.",
     )
+    # Management dashboard master toggle (controls Records Management > Reporting > Management Dashboards menu visibility)
+    enable_management_dashboard = fields.Boolean(
+        default=True,
+        help="Master switch for the Management Dashboard feature (model records.management.dashboard, KPIs, reporting menu). Disable to hide the dashboard menu without uninstalling data.",
+    )
 
     # Additional referenced toggles kept (avoid view breakage)
     bulk_user_import_enabled = fields.Boolean(default=True)
@@ -270,6 +275,8 @@ class RmModuleConfigurator(models.Model):
             self.action_apply_fsm_visibility_toggle()
         if 'key_restriction_enabled' in updated_keys:
             self.action_apply_key_restriction_toggle()
+        if 'enable_management_dashboard' in updated_keys:
+            self.action_apply_management_dashboard_toggle()
 
     def _collect_updated_feature_keys(self, vals_list):
         keys = set()
@@ -278,7 +285,7 @@ class RmModuleConfigurator(models.Model):
                 for rec in self.filtered(lambda r: r.config_type == 'feature_toggle'):
                     keys.add(rec.config_key)
             # direct boolean feature toggles tracked explicitly
-            for direct in ['bin_inventory_enabled', 'enable_fsm_features', 'enable_flowchart_visualization', 'enable_portal_diagram', 'enable_intelligent_search', 'key_restriction_enabled']:
+            for direct in ['bin_inventory_enabled', 'enable_fsm_features', 'enable_flowchart_visualization', 'enable_portal_diagram', 'enable_intelligent_search', 'key_restriction_enabled', 'enable_management_dashboard']:
                 if direct in vals:
                     keys.add(direct)
         return keys
@@ -434,6 +441,24 @@ class RmModuleConfigurator(models.Model):
         self.ensure_one()
         enabled = self.get_config_parameter('key_restriction_enabled', True)
         menu = self.env.ref("records_management.menu_key_restriction", raise_if_not_found=False)
+        if menu:
+            try:
+                menu.active = bool(enabled)
+            except Exception:
+                pass
+
+    def action_apply_management_dashboard_toggle(self):
+        """Activate/deactivate Management Dashboard menu based on feature toggle.
+
+        We mirror the chain_of_custody toggle pattern: any configurator record with
+        enable_management_dashboard = True keeps the menu active. This avoids
+        reliance on a dedicated parameter record and matches existing direct
+        boolean toggle approach in this model.
+        """
+        self.ensure_one()
+        # Determine if at least one record enables the dashboard
+        enabled = any(r.enable_management_dashboard for r in self.search([]))
+        menu = self.env.ref("records_management.records_management_dashboard_menu", raise_if_not_found=False)
         if menu:
             try:
                 menu.active = bool(enabled)

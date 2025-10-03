@@ -187,7 +187,6 @@ Destroy Container</a>
                     <group string="Container Information">
     <field name="name" placeholder="e.g., CONT-2024-001"/>
     <!-- Include computed flag field (hidden) so invisible expression works reliably -->
-    <field name="barcode_assigned" invisible="1"/>
     <field name="temp_barcode" readonly="1" invisible="barcode_assigned" context="{'allow_temp_barcode_edit': False}"/>
     <field name="barcode" placeholder="Auto-generated on save" readonly="barcode_assigned"/>
         <field name="container_type_id" required="1"/>
