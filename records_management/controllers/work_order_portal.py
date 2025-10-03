@@ -182,16 +182,22 @@ class WorkOrderPortal(CustomerPortal):
         end = start + 20
         work_orders = all_work_orders[start:end]
 
+        # Provide the context variables expected by the generic portal searchbar template.
+        # Without these, the base template may attempt to concatenate None (default_url) with strings
+        # producing a TypeError in QWeb (observed portal.portal_searchbar crash).
         values.update({
             'work_orders': work_orders,
             'page_name': 'work_orders',
             'pager': pager,
             'searchbar_sortings': searchbar_sortings,
             'searchbar_filters': searchbar_filters,
+            'searchbar_inputs': self._prepare_work_order_searchbar_inputs(),  # expected by portal searchbar
             'sortby': sortby,
             'filterby': filterby,
             'search': search,
             'search_in': search_in,
+            # Explicit default_url so portal.portal_searchbar can safely build links
+            'default_url': '/my/work_orders',
         })
 
         return request.render("records_management.portal_my_work_orders", values)

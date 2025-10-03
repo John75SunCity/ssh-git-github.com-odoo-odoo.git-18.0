@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal Record Rules for Work Order Models
+         Ensures portal users only access records tied to their commercial partner.
+         Defense in depth complementing controller domain filtering. -->
+
+    <!-- Retrieval Orders -->
+    <record id="records_retrieval_order_rule_portal" model="ir.rule">
+        <field name="name">records.retrieval.order portal own partner</field>
+        <field name="model_id" ref="records_management.model_records_retrieval_order"/>
+        <field name="domain_force">['|', ('partner_id.id', 'in', [user.partner_id.commercial_partner_id.id]), ('company_id', '=', user.company_id.id)]</field>
+        <field name="groups" eval="[(4, ref('records_management.group_portal_readonly_employee')), (4, ref('records_management.group_portal_department_user')), (4, ref('records_management.group_portal_department_admin')), (4, ref('records_management.group_portal_company_admin'))]"/>
+    </record>
+
+    <!-- Container Access Work Orders -->
+    <record id="container_access_work_order_rule_portal" model="ir.rule">
+        <field name="name">container.access.work.order portal own partner</field>
+        <field name="model_id" ref="records_management.model_container_access_work_order"/>
+        <field name="domain_force">['|', ('partner_id.id', 'in', [user.partner_id.commercial_partner_id.id]), ('company_id', '=', user.company_id.id)]</field>
+        <field name="groups" eval="[(4, ref('records_management.group_portal_readonly_employee')), (4, ref('records_management.group_portal_department_user')), (4, ref('records_management.group_portal_department_admin')), (4, ref('records_management.group_portal_company_admin'))]"/>
+    </record>
+
+    <!-- Container Destruction Work Orders -->
+    <record id="container_destruction_work_order_rule_portal" model="ir.rule">
+        <field name="name">container.destruction.work.order portal own partner</field>
+        <field name="model_id" ref="records_management.model_container_destruction_work_order"/>
+        <field name="domain_force">['|', ('partner_id.id', 'in', [user.partner_id.commercial_partner_id.id]), ('company_id', '=', user.company_id.id)]</field>
+        <field name="groups" eval="[(4, ref('records_management.group_portal_readonly_employee')), (4, ref('records_management.group_portal_department_user')), (4, ref('records_management.group_portal_department_admin')), (4, ref('records_management.group_portal_company_admin'))]"/>
+    </record>
+</odoo>

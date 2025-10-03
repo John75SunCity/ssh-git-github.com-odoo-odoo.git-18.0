@@ -166,9 +166,16 @@ class MobileBinKeyWizard(models.TransientModel):
         self._apply_action_type_side_effects_internal()
         return True
 
-    def action_apply_action_type_side_effects_internal(self):
-        """Apply side effects based on action type"""
-        self.ensure_one()
+    def _apply_action_type_side_effects_internal(self):
+        """Apply side effects based on action type
+
+        Renamed from action_apply_action_type_side_effects_internal to
+        _apply_action_type_side_effects_internal so that both the onchange
+        handler (_onchange_action_type) and the explicit action button method
+        (action_apply_action_type) can invoke the same internal helper.
+        This resolves runtime AttributeError raised when the onchange tried
+        to call a non-existent _apply_action_type_side_effects_internal method.
+        """
         for wizard in self:
             if wizard.action_type != 'quick_lookup':
                 wizard.key_lookup_results = False

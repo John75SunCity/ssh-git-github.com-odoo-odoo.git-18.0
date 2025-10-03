@@ -1,7 +1,7 @@
 {
     "name": "Records Management - Enterprise Edition",
     # Bumped after fixing NAID certificate report translation directives (t-translate -> t-translation)
-        'version': '18.0.0.7',
+    'version': '18.0.0.8',  # Bumped for addition of portal work order record rules
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
@@ -57,7 +57,8 @@
         "security/destruction_certificate_security.xml",
         "security/intelligent_search_security.xml",
         "security/naid_security.xml",
-        "security/portal_request_security.xml",
+    "security/portal_request_security.xml",
+    "security/work_order_portal_rules.xml",  # New portal record rules (company/partner scoping)
         "security/ir.model.access.csv",
         # Root menus must be available before any child menus declared in scattered views
         "views/records_management_root_menus.xml",
