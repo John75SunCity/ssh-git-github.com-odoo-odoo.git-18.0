@@ -105,7 +105,7 @@
 
 </group>
 </page>
-<page string="Reporting & Dashboards" name="reporting_dashboards">
+<page string="Reporting &amp; Dashboards" name="reporting_dashboards">
     <group string="Management Dashboard">
         <field name="enable_management_dashboard"/>
     </group>
