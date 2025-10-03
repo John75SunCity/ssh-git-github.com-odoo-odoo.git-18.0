@@ -43,11 +43,11 @@ class ResUsers(models.Model):
         - Remove any prior records_management profile groups then add the mapped one. Implied groups chain handles extended rights.
         - Keep any unrelated groups (e.g., accounting) intact.
         """
-    base_group_user = self.env.ref('base.group_user')
-    base_group_portal = self.env.ref('base.group_portal')
+        base_group_user = self.env.ref('base.group_user')
+        base_group_portal = self.env.ref('base.group_portal')
 
-    # Build once
-    xmlid_map = {**self._RM_INTERNAL_MAP, **self._RM_PORTAL_MAP}
+        # Build once
+        xmlid_map = {**self._RM_INTERNAL_MAP, **self._RM_PORTAL_MAP}
 
         for user in self:
             profile = user.records_user_profile
