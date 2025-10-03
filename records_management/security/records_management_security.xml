@@ -3,6 +3,15 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
 -->
 <odoo>
     <data>
+        <!-- Internal Portal Configurator: internal-only helper group that can view portal-scoped data exactly as a company admin portal user would.
+             Not assigned to actual portal users; used for support/impersonation & configuration validation.
+        -->
+        <record id="group_portal_internal_configurator" model="res.groups">
+            <field name="name">Portal Internal Configurator</field>
+            <field name="category_id" ref="base.module_category_website"/>
+            <field name="implied_ids" eval="[(4, ref('records_management.group_portal_company_admin'))]"/>
+            <field name="comment">Internal group granting portal company admin visibility for testing and support without changing internal ACL coverage.</field>
+        </record>
         <!-- Existing security groups/rules -->
 
         <record id="group_records_user" model="res.groups">

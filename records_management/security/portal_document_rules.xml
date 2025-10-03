@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Portal Record Rules for Document Visibility -->
+    <data>
+        <record id="records_document_rule_portal" model="ir.rule">
+            <field name="name">Records Document Portal Rule</field>
+            <field name="model_id" ref="model_records_document"/>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin')), (4, ref('records_management.group_portal_department_admin')), (4, ref('records_management.group_portal_department_user')), (4, ref('records_management.group_portal_readonly_employee'))]"/>
+            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+        </record>
+    </data>
+</odoo>
