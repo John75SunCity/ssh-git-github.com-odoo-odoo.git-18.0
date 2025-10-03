@@ -12,32 +12,44 @@
         <field name="binding_type">report</field>
     </record>
 
-    <template id="report_paper_bale_view">
+    <template id="report_paper_bale_view" name="Paper Bale Report" t-name="records_management.report_paper_bale_view">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Paper Bale Report</h2>
-                        <table class="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-if="doc.field_ids">
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
-                                </tr>
-                            </t>
-                            </tbody>
-                        </table>
+                        <h2 t-esc="doc.name"/>
+                        <p>
+                            <strong>Status:</strong>
+                            <span t-esc="dict(doc._fields['state'].selection).get(doc.state) if 'state' in doc._fields else doc.state"/>
+                        </p>
+                        <p>
+                            <strong>Weight (kg):</strong>
+                            <span t-esc="doc.weight"/>
+                        </p>
+                        <p>
+                            <strong>Paper Grade:</strong>
+                            <span t-esc="doc.paper_grade"/>
+                        </p>
+                        <p>
+                            <strong>Location:</strong>
+                            <span t-esc="doc.location_id.display_name"/>
+                        </p>
+                        <p>
+                            <strong>Source Type:</strong>
+                            <span t-esc="doc.source_type"/>
+                        </p>
+                        <p>
+                            <strong>Notes:</strong>
+                            <span t-esc="doc.notes"/>
+                        </p>
+                        <h3>Inspection Summary</h3>
+                        <p>
+                            Total Inspections: <span t-esc="doc.inspection_count"/>
+                        </p>
+                        <h3>Movement Summary</h3>
+                        <p>
+                            Total Movements: <span t-esc="doc.movement_count"/>
+                        </p>
                     </div>
                 </t>
             </t>

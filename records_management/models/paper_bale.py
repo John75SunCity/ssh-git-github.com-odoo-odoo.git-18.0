@@ -82,7 +82,7 @@ class PaperBale(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Inspections for %s') % self.name,
             'res_model': 'paper.bale.inspection',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('bale_id', '=', self.id)],
             'context': {'default_bale_id': self.id},
         }
@@ -93,7 +93,7 @@ class PaperBale(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Movements for %s') % self.name,
             'res_model': 'paper.bale.movement',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('bale_id', '=', self.id)],
             'context': {'default_bale_id': self.id},
         }
@@ -160,7 +160,7 @@ class PaperBale(models.Model):
             'type': 'ir.actions.act_window',
             'name': _("Inspection Details %s") % self.name,
             'res_model': 'paper.bale.inspection',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('bale_id', '=', self.id)],
             'context': {'default_bale_id': self.id},
         }
