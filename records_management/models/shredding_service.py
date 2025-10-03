@@ -227,6 +227,14 @@ class ShreddingService(models.Model):
         help="Destruction certificates generated for this service"
     )
 
+    # Report Convenience Field (referenced in QWeb template report_shredding_service)
+    certificate_issued = fields.Boolean(
+        string='Certificate Issued',
+        compute='_compute_certificate_issued',
+        store=True,
+        help="Indicates whether at least one destruction certificate has been generated for this service (computed)."
+    )
+
     # Computed Fields
     total_requests = fields.Integer(
         string='Total Requests',
@@ -355,6 +363,16 @@ class ShreddingService(models.Model):
                 record.last_used_date = max(record.destruction_request_ids.mapped('create_date'))
             else:
                 record.last_used_date = False
+
+    @api.depends('certificate_ids')
+    def _compute_certificate_issued(self):
+        """Set certificate_issued True if any certificate exists.
+
+        Kept very lightweight; stored to avoid recomputation in large list views
+        and satisfy QWeb report field access (report_shredding_service).
+        """
+        for record in self:
+            record.certificate_issued = bool(record.certificate_ids)
 
     # Validation
     @api.constrains('base_price', 'price_per_container', 'price_per_lb')
