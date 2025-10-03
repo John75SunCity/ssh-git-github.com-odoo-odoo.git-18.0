@@ -385,7 +385,8 @@
         <field name="name"><i class='fa fa-bullseye'></i> Interactive System Flowchart</field>
         <field name="tag">records_management.system_flowchart_interactive</field>
         <field name="target">current</field>
-        <field name="params" eval="{'fullscreen': True, 'withControlPanel': True}"/>
+        <!-- Removed 'fullscreen': True to avoid referencing website.fullscreen_indication template when website module not installed -->
+        <field name="params" eval="{'withControlPanel': True}"/>
     </record>
 
     <!-- ============================================================================ -->

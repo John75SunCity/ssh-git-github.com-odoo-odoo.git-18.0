@@ -184,36 +184,41 @@ class ResPartner(models.Model):
             partner.department_count = len(partner.department_ids)
 
     def _compute_records_stats(self):
-        """Computes the count of containers and documents for the partner.
+        """Compute container_count & document_count in batch.
 
-        This method is optimized for batch computation using _read_group for efficiency,
-        avoiding per-record searches and improving performance.
+        Previous implementation misused _read_group (passing ['__count'] as the groupby
+        parameter) which resulted in low-level tuple structures and a runtime TypeError
+        when treating each item as a dict. We now use the public read_group API with
+        proper arguments (domain, fields, groupby) and robustly extract the partner id.
         """
-        container_data = self.env['records.container']._read_group(
+        if not self:
+            return
+
+        # read_group automatically supplies '__count' for each grouped row
+        container_rows = self.env['records.container'].read_group(
             [('partner_id', 'in', self.ids)],
             ['partner_id'],
-            ['__count']
+            ['partner_id']
         )
-        document_data = self.env['records.document']._read_group(
+        document_rows = self.env['records.document'].read_group(
             [('partner_id', 'in', self.ids)],
             ['partner_id'],
-            ['__count']
+            ['partner_id']
         )
 
-        # Handle both tuple (id, name) and integer formats from _read_group
-        container_map = {}
-        for item in container_data:
-            partner_id = item['partner_id']
-            # Extract ID whether it's a tuple (id, name) or just an integer
-            partner_id_value = partner_id[0] if isinstance(partner_id, (tuple, list)) else partner_id
-            container_map[partner_id_value] = item['__count']
+        def build_map(rows):
+            result = {}
+            for row in rows or []:
+                # row['partner_id'] is usually (id, display_name) for m2o group
+                raw = row.get('partner_id')
+                if not raw:
+                    continue
+                pid = raw[0] if isinstance(raw, (list, tuple)) else raw
+                result[pid] = row.get('__count', 0)
+            return result
 
-        document_map = {}
-        for item in document_data:
-            partner_id = item['partner_id']
-            # Extract ID whether it's a tuple (id, name) or just an integer
-            partner_id_value = partner_id[0] if isinstance(partner_id, (tuple, list)) else partner_id
-            document_map[partner_id_value] = item['__count']
+        container_map = build_map(container_rows)
+        document_map = build_map(document_rows)
 
         for partner in self:
             partner.container_count = container_map.get(partner.id, 0)
