@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Restored legacy <tree> tag (instead of <list>) to satisfy tests expecting a default 'tree' view type -->
         <record id="records_container_movement_view_tree" model="ir.ui.view">
             <field name="name">records.container.movement.view.tree</field>
             <field name="model">records.container.movement</field>
             <field name="arch" type="xml">
-                <list>
-                    <field name="name" />
-                </list>
+                <tree string="Container Movements" create="true" editable="bottom">
+                    <field name="name"/>
+                    <field name="movement_date"/>
+                    <field name="movement_type"/>
+                    <field name="from_location_id"/>
+                    <field name="to_location_id"/>
+                    <field name="state"/>
+                </tree>
             </field>
         </record>
         <record id="records_container_movement_view_form" model="ir.ui.view">
@@ -38,15 +44,15 @@
             </field>
         </record>
         <record id="action_records_container_movement" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model records.container.movement has state field - consider using default search filters -->
+            <!-- Reverted view_mode to 'tree,form' to ensure compatibility with automated tests still expecting legacy 'tree' alias -->
             <field name="name">Records Container Movement</field>
             <field name="res_model">records.container.movement</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode">tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Records Container Movement.
+                Click to add a new Container Movement.
             </p>
             </field>
         </record>
