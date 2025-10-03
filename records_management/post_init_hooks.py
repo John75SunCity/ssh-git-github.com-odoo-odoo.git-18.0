@@ -111,3 +111,10 @@ def post_init_hook(env):  # pragma: no cover - executed at install
     except Exception:
         # Non-fatal; do not block installation on sanitation edge cases.
         pass
+
+    # Ensure configurator singleton exists for downstream feature toggles.
+    try:  # pragma: no cover (best-effort)
+        env['rm.module.configurator'].get_singleton()
+    except Exception:
+        # Never block install if singleton creation races with another thread.
+        pass

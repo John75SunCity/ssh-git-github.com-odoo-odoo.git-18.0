@@ -589,3 +589,61 @@ class RmModuleConfigurator(models.Model):
             _logger.debug("Configurator chatter suppressed: missing user email for uid=%s", self.env.user.id)
             return False
         return True
+
+    # ------------------------------------------------------------------
+    # SINGLETON ACCESSORS
+    # ------------------------------------------------------------------
+    @api.model
+    def get_singleton(self):
+        """Return or lazily create a core singleton configuration record.
+
+        Purpose:
+        - Guarantees downstream code relying on direct boolean columns always
+          has a record to read (avoids empty recordset edge cases during early
+          install / partial upgrade sequences).
+        - Uses a dedicated config_key ('rm.core.singleton') to remain unique
+          under the existing SQL constraint (config_key, company_id).
+        - Idempotent: repeated calls are cheap (single indexed search).
+        """
+        domain = [
+            ('config_key', '=', 'rm.core.singleton'),
+            ('company_id', '=', self.env.company.id),
+        ]
+        rec = self.search(domain, limit=1)
+        if rec:
+            return rec
+        vals = {
+            'name': 'Records Management Core Configuration',
+            'config_key': 'rm.core.singleton',
+            'config_type': 'parameter',  # neutral type; stores future scalar overrides if needed
+            'category': 'system',
+        }
+        try:
+            return self.create(vals)
+        except Exception:
+            # Fallback: another transaction may have created it; retry search once
+            return self.search(domain, limit=1)
+
+    @api.model
+    def flags(self):
+        """Return a dict snapshot of key feature toggles from singleton.
+
+        Centralizes flag access for controllers / portal / wizards; avoids
+        scattering field lookups & potential empty searches.
+        """
+        s = self.get_singleton()
+        field_names = [
+            'work_orders_portal_enabled',
+            'enable_management_dashboard',
+            'enable_fsm_features',
+            'enable_flowchart_visualization',
+            'enable_portal_diagram',
+            'enable_intelligent_search',
+            'key_restriction_enabled',
+        ]
+        data = {}
+        for name in field_names:
+            # Defensive: some fields may be removed in future iterations; skip silently
+            if name in self._fields:
+                data[name] = bool(s[name])
+        return data
