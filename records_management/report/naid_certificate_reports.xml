@@ -31,44 +31,45 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2 t-translate="True">NAID Certificate of Destruction</h2>
+                        <!-- Replaced invalid t-translate with t-translation (official directive) -->
+                        <h2 t-translation="on">NAID Certificate of Destruction</h2>
                         <div class="row">
                             <div class="col-12">
                                 <p>
-                                    <strong t-translate="True">Certificate Number:</strong>
+                                    <strong t-translation="on">Certificate Number:</strong>
                                     <span t-esc="doc.certificate_number or doc.name"/>
                                 </p>
                                 <p>
-                                    <strong t-translate="True">Customer:</strong>
+                                    <strong t-translation="on">Customer:</strong>
                                     <span t-esc="doc.partner_id and doc.partner_id.display_name or ''"/>
                                 </p>
                                 <p>
-                                    <strong t-translate="True">Destruction Date:</strong>
+                                    <strong t-translation="on">Destruction Date:</strong>
                                     <span t-if="doc.destruction_date" t-field="doc.destruction_date" t-options="{'format': 'datetime'}"/>
                                 </p>
                                 <p>
-                                    <strong t-translate="True">Issue Date:</strong>
+                                    <strong t-translation="on">Issue Date:</strong>
                                     <span t-if="doc.issue_date" t-field="doc.issue_date" t-options="{'format': 'datetime'}"/>
                                 </p>
                             </div>
                         </div>
 
                         <t t-if="doc.container_ids or doc.box_ids or doc.destruction_item_ids">
-                            <h3 t-translate="True">Destroyed Items Summary</h3>
+                            <h3 t-translation="on">Destroyed Items Summary</h3>
                             <table class="table table-sm">
-                                <caption style="caption-side: top; text-align:left; font-size:10px;" t-translate="True">Summary of all destroyed containers, boxes, and loose items</caption>
+                                <caption style="caption-side: top; text-align:left; font-size:10px;" t-translation="on">Summary of all destroyed containers, boxes, and loose items</caption>
                                 <thead>
                                     <tr>
-                                        <th t-translate="True">Type</th>
-                                        <th t-translate="True">Name</th>
-                                        <th t-attf-style="text-align:right;" t-translate="True">Qty</th>
-                                        <th t-attf-style="text-align:right;" t-translate="True">Weight (lbs)</th>
+                                        <th t-translation="on">Type</th>
+                                        <th t-translation="on">Name</th>
+                                        <th t-attf-style="text-align:right;" t-translation="on">Qty</th>
+                                        <th t-attf-style="text-align:right;" t-translation="on">Weight (lbs)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <t t-foreach="doc.destruction_item_ids" t-as="item">
                                         <tr>
-                                            <td t-translate="True">Item</td>
+                                            <td t-translation="on">Item</td>
                                             <td><span t-esc="item.display_name"/></td>
                                             <td style="text-align:right"><span t-esc="item.quantity or 0"/></td>
                                             <td style="text-align:right"><span t-esc="item.weight or 0.0"/></td>
@@ -76,7 +77,7 @@
                                     </t>
                                     <t t-foreach="doc.container_ids" t-as="cont">
                                         <tr>
-                                            <td t-translate="True">Container</td>
+                                            <td t-translation="on">Container</td>
                                             <td><span t-esc="cont.display_name"/></td>
                                             <td style="text-align:right">1</td>
                                             <td style="text-align:right"><span t-esc="cont.cubic_feet or 0.0"/></td>
@@ -84,7 +85,7 @@
                                     </t>
                                     <t t-foreach="doc.box_ids" t-as="box">
                                         <tr>
-                                            <td t-translate="True">Box</td>
+                                            <td t-translation="on">Box</td>
                                             <td><span t-esc="box.display_name"/></td>
                                             <td style="text-align:right">1</td>
                                             <td style="text-align:right"><span t-esc="box.cubic_feet or 0.0"/></td>
@@ -93,7 +94,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="2" style="text-align:right" t-translate="True">Totals:</th>
+                                        <th colspan="2" style="text-align:right" t-translation="on">Totals:</th>
                                         <th style="text-align:right"><span t-esc="doc.total_items or 0"/></th>
                                         <th style="text-align:right"><span t-esc="doc.total_weight or 0.0"/></th>
                                     </tr>
@@ -101,12 +102,12 @@
                             </table>
                         </t>
                         <t t-else="">
-                            <p><em t-translate="True">No destruction items, containers, or boxes were recorded for this certificate.</em></p>
+                            <p><em t-translation="on">No destruction items, containers, or boxes were recorded for this certificate.</em></p>
                         </t>
 
                         <t t-if="doc.witness_name">
                             <p>
-                                <strong t-translate="True">Witness:</strong>
+                                <strong t-translation="on">Witness:</strong>
                                 <span t-esc="doc.witness_name"/>
                             </p>
                         </t>
