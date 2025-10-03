@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Odoo.sh post-build hook: Fast targeted upgrade for records_management modules
+# This script runs after the build step but before the instance is marked ready.
+# Goal: accelerate feedback by upgrading only selected custom modules instead of full rebuild of all dependencies.
+# Safe for dev/staging; avoid in production unless you understand partial upgrade implications.
+
+set -euo pipefail
+
+MODULES=("records_management" "records_management_fsm")
+
+# Allow override via environment variable FAST_UPGRADE_MODULES (space-separated)
+if [[ -n "${FAST_UPGRADE_MODULES:-}" ]]; then
+  # shellcheck disable=SC2206
+  MODULES=(${FAST_UPGRADE_MODULES})
+fi
+
+# If FULL_REBUILD is set, skip fast path to let regular process handle everything
+if [[ -n "${FULL_REBUILD:-}" ]]; then
+  echo "[fast-upgrade] FULL_REBUILD detected; skipping targeted module upgrade." >&2
+  exit 0
+fi
+
+# Compose -u list
+UPGRADE_LIST=$(IFS=,; echo "${MODULES[*]}")
+
+echo "[fast-upgrade] Targeted module upgrade: ${UPGRADE_LIST}" >&2
+
+# Run odoo-bin with upgrade. ODOO_RC should point to the config Odoo.sh uses.
+# Fallback arguments rely on Odoo.sh environment variables when present.
+
+EXECUTABLE="odoo"
+if command -v odoo-bin >/dev/null 2>&1; then
+  EXECUTABLE="odoo-bin"
+fi
+
+# Basic safety: ensure database name present
+if [[ -z "${PGDATABASE:-}" && -z "${DB_NAME:-}" ]]; then
+  echo "[fast-upgrade] No database name (PGDATABASE/DB_NAME) detected; skipping to avoid unintended db creation." >&2
+  exit 0
+fi
+DB_NAME="${PGDATABASE:-${DB_NAME:-}}"
+
+# Attempt upgrade with minimal logging for speed; adjust log-level via FAST_UPGRADE_LOG_LEVEL if desired
+LOG_LEVEL=${FAST_UPGRADE_LOG_LEVEL:-info}
+
+${EXECUTABLE} -d "${DB_NAME}" -u "${UPGRADE_LIST}" --log-level=${LOG_LEVEL} || {
+  echo "[fast-upgrade] Upgrade failed; allowing platform to continue so you can inspect logs." >&2
+}
+
+echo "[fast-upgrade] Completed targeted upgrade attempt." >&2

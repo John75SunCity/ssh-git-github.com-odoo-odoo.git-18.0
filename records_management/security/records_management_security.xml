@@ -3,16 +3,10 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
 -->
 <odoo>
     <data>
-        <!-- Internal Portal Configurator: internal-only helper group that can view portal-scoped data exactly as a company admin portal user would.
-             Not assigned to actual portal users; used for support/impersonation & configuration validation.
-        -->
-        <record id="group_portal_internal_configurator" model="res.groups">
-            <field name="name">Portal Internal Configurator</field>
-            <field name="category_id" ref="base.module_category_website"/>
-            <field name="implied_ids" eval="[(4, ref('records_management.group_portal_company_admin'))]"/>
-            <field name="comment">Internal group granting portal company admin visibility for testing and support without changing internal ACL coverage.</field>
-        </record>
-        <!-- Existing security groups/rules -->
+       <!-- NOTE: Moved definition of internal configurator group BELOW the portal tier groups so that
+           its implied_ids reference to group_portal_company_admin resolves at load time.
+           (Fix for ParseError: external ID not found). -->
+       <!-- Existing security groups/rules -->
 
         <record id="group_records_user" model="res.groups">
             <field name="name">Records User</field>
@@ -70,6 +64,16 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="name">Portal Customer Company Admin</field>
             <field name="implied_ids" eval="[(4, ref('records_management.group_portal_department_admin'))]"/>
             <field name="comment">Can enable/disable all rules for anyone below them. Full control over delegation and settings.</field>
+        </record>
+
+        <!-- Internal Portal Configurator: internal-only helper group that can view portal-scoped data exactly as a company admin portal user would.
+             Not assigned to actual portal users; used for support/impersonation & configuration validation.
+             Positioned after portal tier groups so its implied_ids resolves (company admin defined above). -->
+        <record id="group_portal_internal_configurator" model="res.groups">
+            <field name="name">Portal Internal Configurator</field>
+            <field name="category_id" ref="base.module_category_website"/>
+            <field name="implied_ids" eval="[(4, ref('records_management.group_portal_company_admin'))]"/>
+            <field name="comment">Internal group granting portal company admin visibility for testing and support without changing internal ACL coverage.</field>
         </record>
 
         <record id="group_naid_compliance_officer" model="res.groups">
