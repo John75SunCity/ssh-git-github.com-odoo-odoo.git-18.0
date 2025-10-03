@@ -16,7 +16,7 @@ class ResUsers(models.Model):
         string='Records Profile',
         help="High-level role abstraction that automatically assigns the correct security groups for the Records Management module (internal + portal tiers).",
         default='records_user',
-        tracking=True,
+        # tracking removed: res.users may not inherit mail.thread in all editions / variants; parameter caused warnings
     )
 
     # Mapping constants (XML IDs) -> kept here for clarity & single-point maintenance

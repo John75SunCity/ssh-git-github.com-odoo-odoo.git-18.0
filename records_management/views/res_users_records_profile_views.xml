@@ -7,8 +7,9 @@
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_form"/>
             <field name="arch" type="xml">
-                <!-- Insert profile field near access rights section: locate existing groups_id (user groups widget) -->
-                <xpath expr="//field[@name='groups_id']" position="before">
+                <!-- Robust insertion: some variants of the user form may not expose groups_id directly at this hierarchy level.
+                     We fall back to appending our group near the end of the main sheet to avoid xpath failures. -->
+                <xpath expr="//sheet" position="inside">
                     <group string="Records Management Access" colspan="2">
                         <field name="records_user_profile" widget="statusbar" options="{'clickable': True}"/>
                     </group>
