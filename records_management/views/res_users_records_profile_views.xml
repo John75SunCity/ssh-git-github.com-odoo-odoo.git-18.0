@@ -13,13 +13,9 @@
                         <field name="records_user_profile" widget="statusbar" options="{'clickable': True}"/>
                     </group>
                 </xpath>
-                <!-- Ensure partner_id is visible (some Odoo variants hide it); if already present, this will duplicate? Use position='attributes' if exists else add after name -->
+                <!-- Ensure partner_id is visible (some Odoo variants hide it) -->
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="invisible">0</attribute>
-                </xpath>
-                <!-- Fallback: if partner field not found, add after name field -->
-                <xpath expr="//field[@name='name']" position="after">
-                    <field name="partner_id" attrs="{'invisible': [('partner_id','!=',False)]}" context="{'show_vat': True}" optional="show"/>
                 </xpath>
             </field>
         </record>
