@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Inherit base user form to inject Records Profile selector and ensure Related Partner visible -->
+        <record id="view_users_form_inherit_records_profile" model="ir.ui.view">
+            <field name="name">res.users.view.form.inherit.records.profile</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <!-- Insert profile field near access rights section: locate existing groups_id (user groups widget) -->
+                <xpath expr="//field[@name='groups_id']" position="before">
+                    <group string="Records Management Access" colspan="2">
+                        <field name="records_user_profile" widget="statusbar" options="{'clickable': True}"/>
+                    </group>
+                </xpath>
+                <!-- Ensure partner_id is visible (some Odoo variants hide it); if already present, this will duplicate? Use position='attributes' if exists else add after name -->
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+                <!-- Fallback: if partner field not found, add after name field -->
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="partner_id" attrs="{'invisible': [('partner_id','!=',False)]}" context="{'show_vat': True}" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

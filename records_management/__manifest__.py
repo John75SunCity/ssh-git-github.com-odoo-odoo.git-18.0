@@ -266,6 +266,8 @@
         "views/inventory_item_views.xml",
         # Ensure res partner key restriction action is defined before menus reference it
         "views/res_partner_key_restriction_views.xml",
+    # User profile selector (Records Management role abstraction)
+    "views/res_users_records_profile_views.xml",
 
         # Menus moved to end to ensure all referenced actions are defined beforehand
         "views/records_management_menus.xml",

@@ -299,6 +299,37 @@ Ensure all required Odoo modules are installed first:
 ### Billing & Portal
 
 - **Advanced Billing**: Automated rate calculation and invoicing
+
+### Records Profile (User Role Abstraction)
+
+The module adds a high-level "Records Profile" selector on the User form (res.users) to simplify access provisioning.
+
+Selection values map to security groups as follows (implied groups handle cascading privileges):
+
+| Profile Key | Label                       | Primary Group XML ID                                        | Base Tier |
+|-------------|-----------------------------|--------------------------------------------------------------|-----------|
+| records_admin | Records Admin             | records_management.group_records_admin                      | Internal  |
+| records_user  | Records User              | records_management.group_records_user                       | Internal  |
+| portal_company_admin | Portal Company Admin | records_management.group_portal_company_admin             | Portal    |
+| portal_department_admin | Portal Department Admin | records_management.group_portal_department_admin     | Portal    |
+| portal_user | Portal User                 | records_management.group_portal_department_user             | Portal    |
+| portal_read_only | Portal Read Only       | records_management.group_portal_readonly_employee           | Portal    |
+
+Behavior Rules:
+* Internal profiles enforce membership in base.group_user and remove base.group_portal.
+* Portal profiles enforce membership in base.group_portal and remove base.group_user.
+* Switching profiles removes any prior Records profile groups to avoid privilege leakage.
+* Hierarchical implied_ids already defined in security XML continue to cascade permissions (e.g., Admin → Manager → User).
+
+Implementation Details:
+* Field: res.users.records_user_profile (selection, tracking enabled)
+* Synchronization executed post-create and on write when the profile changes.
+* Logic lives in models/res_users.py (_apply_records_user_profile) and assigns groups atomically with (6, 0, ids) to prevent residual links.
+
+Customization:
+* To introduce a new tier, define a new res.groups record, add its XML ID to the mapping dictionaries in models/res_users.py, and extend the selection field choices.
+* For per-company overrides, inherit res.users and override _apply_records_user_profile adding contextual conditions.
+
 - **Portal Requests**: Customer self-service functionality
 - **Feedback System**: Customer satisfaction tracking
 - **Certificate Management**: Secure document downloads
