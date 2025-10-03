@@ -80,6 +80,16 @@ class ContainerAccessWorkOrder(models.Model):
         ('3', 'Urgent')
     ], string='Priority', default='1', tracking=True)
 
+    # ------------------------------------------------------------------
+    # PORTAL VISIBILITY
+    # ------------------------------------------------------------------
+    portal_visible = fields.Boolean(
+        string='Portal Visible',
+        default=True,
+        help='Controls whether this access work order is visible in the customer portal.\n'
+             'Used by portal controller domain filtering. Disable to hide sensitive or internal-only sessions.'
+    )
+
     # ============================================================================
     # REQUEST & CUSTOMER DETAILS
     # ============================================================================

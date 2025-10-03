@@ -53,6 +53,16 @@ class ContainerDestructionWorkOrder(models.Model):
         ('2', 'Urgent')
     ], string='Priority', default='0')
 
+    # ------------------------------------------------------------------
+    # PORTAL VISIBILITY
+    # ------------------------------------------------------------------
+    portal_visible = fields.Boolean(
+        string='Portal Visible',
+        default=True,
+        help='Controls whether this destruction work order is visible in the customer portal.\n'
+             'Used by unified work order portal controller domain filtering. Disable to hide sensitive or internal-only orders.'
+    )
+
     # ============================================================================
     # CUSTOMER & AUTHORIZATION
     # ============================================================================
@@ -280,4 +290,3 @@ class ContainerDestructionWorkOrder(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('container.destruction.work.order') or _('New')
         return super().create(vals_list)
-

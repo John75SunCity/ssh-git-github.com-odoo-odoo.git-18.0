@@ -20,6 +20,7 @@
                     <field name="scheduled_date" optional="show" />
                     <field name="estimated_completion_date" optional="show" />
                     <field name="user_id" optional="show" />
+                    <field name="portal_visible" widget="boolean_toggle" optional="show"/>
                 </list>
             </field>
         </record>
@@ -59,6 +60,7 @@
                                 <field name="partner_id" options="{'no_create': True}" />
                                 <field name="portal_request_id" optional="show" />
                                 <field name="security_level" />
+                                <field name="portal_visible"/>
                             </group>
                             <group string="Assignment">
                                 <field name="user_id" />

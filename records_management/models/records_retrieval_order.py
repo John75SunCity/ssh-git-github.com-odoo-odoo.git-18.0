@@ -119,6 +119,16 @@ class RecordsRetrievalOrder(models.Model):
     access_coordination_needed = fields.Boolean(string='Access Coordination Required')
     notes = fields.Text(string='Internal Notes')
 
+    # ------------------------------------------------------------------
+    # PORTAL VISIBILITY
+    # ------------------------------------------------------------------
+    portal_visible = fields.Boolean(
+        string='Portal Visible',
+        default=True,
+        help='Controls whether this retrieval order is visible in the customer portal.\n'
+             'Referenced by portal controller domain filtering. Disable to hide sensitive or internal-only orders.'
+    )
+
     # Computes
     @api.depends('name', 'partner_id', 'item_count')
     def _compute_display_name(self):
@@ -301,13 +311,13 @@ class RecordsRetrievalOrder(models.Model):
             raise UserError(_("Cannot escalate: SLA is not breached"))
         if self.state in ['completed', 'cancelled']:
             raise UserError(_("Cannot escalate: Order is already completed or cancelled"))
-        
+
         # Apply escalation logic
         if self.priority in ['0', '1']:
             self.priority = '2'
         elif self.priority == '2':
             self.priority = '3'
-        
+
         self.escalation_reason = _("Manual escalation due to SLA breach")
         self.message_post(body=_("Order manually escalated due to SLA breach"))
         return True

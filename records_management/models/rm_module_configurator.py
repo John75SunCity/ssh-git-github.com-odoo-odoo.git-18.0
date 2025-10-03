@@ -111,6 +111,13 @@ class RmModuleConfigurator(models.Model):
         help="Master switch for the Management Dashboard feature (model records.management.dashboard, KPIs, reporting menu). Disable to hide the dashboard menu without uninstalling data.",
     )
 
+    # Global portal visibility toggle for work orders (retrieval, destruction, access)
+    work_orders_portal_enabled = fields.Boolean(
+        default=True,
+        help="Master switch controlling whether ANY work orders are displayed in the customer portal.\n"
+             "If disabled, the unified work order portal pages will show zero results regardless of per-record 'Portal Visible' flags."
+    )
+
     # Additional referenced toggles kept (avoid view breakage)
     bulk_user_import_enabled = fields.Boolean(default=True)
     retrieval_work_order_enabled = fields.Boolean(default=True)
@@ -285,7 +292,7 @@ class RmModuleConfigurator(models.Model):
                 for rec in self.filtered(lambda r: r.config_type == 'feature_toggle'):
                     keys.add(rec.config_key)
             # direct boolean feature toggles tracked explicitly
-            for direct in ['bin_inventory_enabled', 'enable_fsm_features', 'enable_flowchart_visualization', 'enable_portal_diagram', 'enable_intelligent_search', 'key_restriction_enabled', 'enable_management_dashboard']:
+            for direct in ['bin_inventory_enabled', 'enable_fsm_features', 'enable_flowchart_visualization', 'enable_portal_diagram', 'enable_intelligent_search', 'key_restriction_enabled', 'enable_management_dashboard', 'work_orders_portal_enabled']:
                 if direct in vals:
                     keys.add(direct)
         return keys

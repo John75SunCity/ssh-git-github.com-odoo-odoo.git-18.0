@@ -110,6 +110,11 @@
         <field name="enable_management_dashboard"/>
     </group>
 </page>
+<page string="Portal Features" name="portal_features">
+    <group string="Work Order Portal">
+        <field name="work_orders_portal_enabled"/>
+    </group>
+</page>
 </notebook>
 </sheet>
 <div class="oe_chatter">

@@ -42,6 +42,13 @@ class WorkOrderPortal(CustomerPortal):
         values = super()._prepare_home_portal_values(counters)
         partner = request.env.user.partner_id
 
+        # Global portal gating: if disabled via configurator, suppress counts
+        config_enabled = request.env['rm.module.configurator'].sudo().get_config_parameter('work_orders_portal_enabled', True)
+        if not config_enabled:
+            if 'work_order_count' in counters:
+                values['work_order_count'] = 0
+            return values
+
         if 'work_order_count' in counters:
             # Count all work orders for the customer
             domain = [('partner_id', '=', partner.id), ('portal_visible', '=', True)]
@@ -77,6 +84,24 @@ class WorkOrderPortal(CustomerPortal):
         """Display customer work orders in portal"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
+
+        # Respect global portal toggle: if disabled, render page with no results (avoids controller removal complexity)
+        config_enabled = request.env['rm.module.configurator'].sudo().get_config_parameter('work_orders_portal_enabled', True)
+        if not config_enabled:
+            values.update({
+                'work_orders': [],
+                'page_name': 'work_orders',
+                'pager': portal_pager(url='/my/work_orders', total=0, page=page, step=20),
+                'searchbar_sortings': {},
+                'searchbar_filters': {},
+                'searchbar_inputs': {},
+                'sortby': None,
+                'filterby': None,
+                'search': None,
+                'search_in': None,
+                'default_url': '/my/work_orders',
+            })
+            return request.render("records_management.portal_my_work_orders", values)
 
         # Domain for all work orders
         domain = [('partner_id', '=', partner.id), ('portal_visible', '=', True)]
