@@ -1,10 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
+
 <!-- Root + primary level menus loaded early to satisfy parent references in subsequent view files -->
-    
-        <menuitem id="menu_records_management_root" name="Records Management" sequence="50" web_icon="records_management,static/description/icon.png"/>
+
+        <!-- Default dashboard action for Records Management root menu -->
+        <record id="action_records_management_dashboard" model="ir.actions.act_window">
+            <field name="name">Records Management Dashboard</field>
+            <field name="res_model">records.container</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context">{
+                'search_default_stored': 1,
+                'search_default_active': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Welcome to Records Management!
+                </p>
+                <p>
+                    <b>Enterprise Container Management System:</b><br/>
+                    • Manage storage containers and documents<br/>
+                    • Track pickup requests and shredding services<br/>
+                    • Monitor NAID compliance and audit logs<br/>
+                    • Generate reports and analytics<br/>
+                    • Configure billing and customer portal
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_records_management_root" name="Records Management" sequence="50" web_icon="records_management,static/description/icon.png" action="action_records_management_dashboard"/>
         <menuitem id="menu_records_operations" name="Operations" parent="menu_records_management_root" sequence="10" groups="records_management.group_records_user"/>
         <menuitem id="menu_records_portal" name="Customer Portal" parent="menu_records_management_root" sequence="15" groups="records_management.group_records_user"/>
         <menuitem id="menu_records_inventory" name="Inventory" parent="menu_records_management_root" sequence="20" groups="records_management.group_records_user"/>
@@ -12,7 +36,7 @@
         <menuitem id="menu_records_billing" name="Billing &amp; Finance" parent="menu_records_management_root" sequence="30" groups="records_management.group_records_manager"/>
         <menuitem id="menu_records_reporting" name="Reports" parent="menu_records_management_root" sequence="40" groups="records_management.group_records_user"/>
         <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="90" groups="records_management.group_records_manager,base.group_system"/>
-    
-    
+
+
     </data>
 </odoo>
