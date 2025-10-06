@@ -136,6 +136,10 @@ backup/**
 *.orig
 *.rej
 
+# Duplicate file artifacts (prevent system/editor duplicates)
+* 2.*
+*\ 2.*
+
 # Editor temp/lock files
 *.swp
 *.swo
