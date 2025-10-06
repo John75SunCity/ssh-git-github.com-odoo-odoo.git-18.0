@@ -127,6 +127,39 @@ Destroy Container</a>
     </record>
 
 <!-- List view for Enhanced -->
+    <!-- Tree/List view for Enhanced -->
+    <record id="records_container_view_tree" model="ir.ui.view">
+        <field name="name">records.container.view.tree</field>
+        <field name="model">records.container</field>
+        <field name="arch" type="xml">
+        <tree decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
+            <header>
+<button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
+
+            </header>
+        <field name="name" string="Container ID"/>
+        <field name="temp_barcode" string="Temp Barcode"/>
+        <field name="barcode" string="Barcode"/>
+        <field name="container_type_id" string="Container Type"/>
+        <field name="weight" string="Weight"/>
+        <field name="partner_id" string="Customer"/>
+        <field name="department_id" string="Department"/>
+        <field name="location_id" string="Location"/>
+        <field name="state" string="Status" widget="badge"/>
+        <field name="document_count" string="Documents" sum="Total Documents"/>
+        <field name="storage_start_date" string="Storage Start"/>
+        <field name="destruction_due_date" string="Due Date"/>
+        <field name="is_due_for_destruction" string="Due" widget="boolean_toggle"/>
+        <field name="security_level" string="Security"/>
+        <field name="active" string="Active" widget="boolean_toggle"/>
+            <button name="action_view_documents" type="object" string="View Docs" icon="fas fa-file-text-o" class="btn-link"/>
+            <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fas fa-barcode" class="btn-link"/>
+            <button name="action_generate_qr_code" type="object" string="QR Code" icon="fas fa-qrcode" class="btn-link"/>
+        </tree>
+    </field>
+    </record>
+
+    <!-- Also keep a list view for modern Odoo -->
     <record id="records_container_view_list" model="ir.ui.view">
         <field name="name">records.container.view.list</field>
         <field name="model">records.container</field>
