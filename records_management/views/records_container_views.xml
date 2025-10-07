@@ -132,7 +132,7 @@ Destroy Container</a>
         <field name="name">records.container.view.tree</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-        <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
+        <tree decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
             <header>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
@@ -155,7 +155,7 @@ Destroy Container</a>
             <button name="action_view_documents" type="object" string="View Docs" icon="fas fa-file-text-o" class="btn-link"/>
             <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fas fa-barcode" class="btn-link"/>
             <button name="action_generate_qr_code" type="object" string="QR Code" icon="fas fa-qrcode" class="btn-link"/>
-        </list>
+        </tree>
     </field>
     </record>
 
