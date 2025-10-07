@@ -9,7 +9,6 @@
             <field name="name">Records Management Dashboard</field>
             <field name="res_model">records.container</field>
             <field name="view_mode">kanban,list,form</field>
-            <field name="view_id" ref="records_container_view_kanban"/>
             <field name="context">{
                 'search_default_stored': 1,
                 'search_default_active': 1
