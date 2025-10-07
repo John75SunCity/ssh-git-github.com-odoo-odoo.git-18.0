@@ -41,7 +41,8 @@
                 "msoffice.microsoft-office-add-in-debugger",
                 "ms-vscode.vscode-websearchforcopilot",
                 "ndestates.grok-integration",
-                "VisualStudioExptTeam.vscodeintellicode"
+                "VisualStudioExptTeam.vscodeintellicode",
+                "GitHub.codespaces"
             ],
             "settings": {
                 "terminal.integrated.defaultProfile.linux": "bash",

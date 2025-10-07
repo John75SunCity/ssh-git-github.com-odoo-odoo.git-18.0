@@ -444,5 +444,7 @@
   "xml.format.preservedNewlines": 10,
   "xml.format.trimFinalNewlines": false,
   "xml.format.trimTrailingWhitespace": false,
-  "todo-tree.tree.scanMode": "workspace only"
+  "todo-tree.tree.scanMode": "workspace only",
+  "remoteHub.richNavigation.enabled": true,
+  "git-graph.dialog.popStash.reinstateIndex": true
 }

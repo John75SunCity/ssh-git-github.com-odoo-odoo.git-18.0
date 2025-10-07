@@ -5,7 +5,8 @@
             <!-- OPTIMIZATION: Model records.container has state field - consider using default search filters -->
             <field name="name">Storage Containers</field>
             <field name="res_model">records.container</field>
-            <field name="view_mode">tree,kanban,form,calendar,graph</field>
+            <field name="view_mode">list,kanban,form,calendar,graph</field>
+            <field name="view_id" ref="records_container_view_tree"/>
             <field name="context">{
             'search_default_stored': 1,
             'search_default_active': 1
