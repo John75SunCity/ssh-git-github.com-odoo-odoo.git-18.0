@@ -303,11 +303,11 @@
             <field name="model">records.department.billing.contact</field>
             <field name="priority" eval="0"/>
             <field name="arch" type="xml">
-                <tree string="Billing Contacts (Technical)">
+                <list string="Billing Contacts (Technical)">
                     <field name="contact_name"/>
                     <field name="department_id"/>
                     <field name="billing_role"/>
-                </tree>
+                </list>
             </field>
         </record>
     </data>

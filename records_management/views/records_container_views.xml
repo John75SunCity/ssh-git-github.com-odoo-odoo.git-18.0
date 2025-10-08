@@ -384,11 +384,11 @@ Destroy Container</a>
         <!-- High priority so it does NOT override primary list usage (higher number = lower precedence) -->
         <field name="priority" eval="0"/>
         <field name="arch" type="xml">
-            <tree string="Containers (Technical)">
+            <list string="Containers (Technical)">
                 <field name="name"/>
                 <field name="barcode"/>
                 <field name="state"/>
-            </tree>
+            </list>
         </field>
     </record>
     </data>

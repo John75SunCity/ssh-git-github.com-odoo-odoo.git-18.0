@@ -62,14 +62,14 @@
             <field name="model">records.container.movement</field>
             <field name="priority" eval="0"/>
             <field name="arch" type="xml">
-                <tree string="Container Movements (Technical)">
+                <list string="Container Movements (Technical)">
                     <field name="name"/>
                     <field name="movement_date"/>
                     <field name="movement_type"/>
                     <field name="from_location_id"/>
                     <field name="to_location_id"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
     </data>
