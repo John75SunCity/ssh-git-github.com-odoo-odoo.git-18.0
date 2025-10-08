@@ -99,9 +99,7 @@ class BinKey(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _sql_constraints = [
-        ('key_code_company_uniq', 'unique(key_code, company_id)', 'The key code must be unique per company.')
-    ]
+    key_code_company_uniq = models.Constraint('unique(key_code, company_id)', _('The key code must be unique per company.'))
 
     # ============================================================================
     # COMPUTE METHODS

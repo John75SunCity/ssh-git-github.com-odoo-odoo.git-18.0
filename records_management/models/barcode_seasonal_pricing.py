@@ -41,13 +41,11 @@ class BarcodeSeasonalPricing(models.Model):
     ], string='Status', default='draft', required=True, tracking=True)
     notes = fields.Text(string='Internal Notes')
 
-    _sql_constraints = [
-        (
-            'price_multiplier_positive',
-            'CHECK(price_multiplier > 0)',
-            'Multiplier must be greater than zero.'
-        ),
-    ]
+    # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
+    _price_multiplier_positive = models.Constraint(
+        'CHECK(price_multiplier > 0)',
+        _('Multiplier must be greater than zero.'),
+    )
 
     @api.constrains('start_date', 'end_date')
     def _check_dates(self):

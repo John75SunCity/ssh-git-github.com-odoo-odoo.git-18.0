@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, _
 
 
 class RecordsTagCategory(models.Model):
@@ -13,6 +13,8 @@ class RecordsTagCategory(models.Model):
     tag_ids = fields.One2many('records.tag', 'category_id', string='Tags')
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
 
-    _sql_constraints = [
-        ('name_uniq', 'unique (name, company_id)', "A tag category with this name already exists in this company."),
-    ]
+    # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
+    _name_uniq = models.Constraint(
+        'UNIQUE(name, company_id)',
+        _('A tag category with this name already exists in this company.'),
+    )

@@ -96,9 +96,7 @@ class RecordsStorageDepartmentUser(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _sql_constraints = [
-        ('unique_user_department', 'unique(user_id, department_id)', 'A user can only be assigned to a department once.')
-    ]
+    unique_user_department = models.Constraint('unique(user_id, department_id)', _('A user can only be assigned to a department once.'))
 
     # ============================================================================
     # COMPUTE METHODS

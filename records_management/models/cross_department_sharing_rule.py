@@ -10,7 +10,7 @@ Version: 19.0.0.1
 License: LGPL-3
 """
 
-from odoo import models, fields
+from odoo import models, fields, _
 
 
 class CrossDepartmentSharingRule(models.Model):
@@ -30,10 +30,7 @@ class CrossDepartmentSharingRule(models.Model):
     rule_id = fields.Many2one("ir.rule", string="Access Rule", required=True, ondelete="cascade")
     expires_at = fields.Datetime(string="Expires At", help="When this access rule should be automatically removed")
 
-    _sql_constraints = [
-        (
-            "unique_sharing_rule",
-            "unique(sharing_id, rule_id)",
-            "Each sharing record can only have one rule per access rule.",
-        ),
-    ]
+    unique_sharing_rule = models.Constraint(
+        "unique(sharing_id, rule_id)",
+        _("Each sharing record can only have one rule per access rule."),
+    )

@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, _
 
 class RecordsContainerContentLine(models.Model):
     """
@@ -33,10 +33,7 @@ class RecordsContainerContentLine(models.Model):
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
     active = fields.Boolean(string='Active', default=True)
 
-    _sql_constraints = [
-        (
-            'quantity_positive',
-            'CHECK(quantity > 0)',
-            'Quantity must be positive.'
-        ),
-    ]
+    quantity_positive = models.Constraint(
+        'CHECK(quantity > 0)',
+        _('Quantity must be positive.')
+    )

@@ -55,10 +55,8 @@ class RecordsContainerType(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _sql_constraints = [
-        ('code_company_uniq', 'unique(code, company_id)', 'The container type code must be unique per company.'),
-        ('name_company_uniq', 'unique(name, company_id)', 'The container type name must be unique per company.'),
-    ]
+    code_company_uniq = models.Constraint('unique(code, company_id)', _('The container type code must be unique per company.'))
+    name_company_uniq = models.Constraint('unique(name, company_id)', _('The container type name must be unique per company.'))
 
     # ============================================================================
     # COMPUTE METHODS

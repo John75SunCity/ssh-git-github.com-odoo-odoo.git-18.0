@@ -6,7 +6,7 @@ This model categorizes dashboard widgets for better organization and management.
 Provides a hierarchical structure for mobile dashboard widget classification.
 """
 
-from odoo import fields, models
+from odoo import fields, models, _
 
 
 class MobileDashboardWidgetCategory(models.Model):
@@ -58,15 +58,12 @@ class MobileDashboardWidgetCategory(models.Model):
     )
 
     # Constraints
-    _sql_constraints = [
-        (
-            "name_company_uniq",
-            "unique(name, company_id)",
-            "Category name must be unique per company",
-        ),
-        (
-            "technical_name_company_uniq",
-            "unique(technical_name, company_id)",
-            "Technical name must be unique per company",
-        ),
+    name_company_uniq = models.Constraint(
+        "unique(name, company_id)",
+        _("Category name must be unique per company"),
+    )
+    technical_name_company_uniq = models.Constraint(
+        "unique(technical_name, company_id)",
+        _("Technical name must be unique per company"),
+    )
     ]

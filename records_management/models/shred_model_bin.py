@@ -52,9 +52,7 @@ class ShredModelBin(models.Model):
     # ============================================================================
     # CONSTRAINTS & VALIDATION
     # ============================================================================
-    _sql_constraints = [
-        ("barcode_unique", "unique(barcode)", "Barcode must be unique across all bins"),
-    ]
+    barcode_unique = models.Constraint("unique(barcode)", _("Barcode must be unique across all bins"))
 
     @api.constrains("barcode")
     def _check_barcode_format(self):

@@ -5,7 +5,7 @@ offered in the records management workflow (e.g., shredding, pickup, storage).
 Includes fields for name, code, description, company, and active status.
 """
 
-from odoo import models, fields
+from odoo import models, fields, _
 
 class RecordsServiceType(models.Model):
     """Model for defining service types used in records management operations.
@@ -36,6 +36,4 @@ class RecordsServiceType(models.Model):
         ('archived', 'Archived'),
     ], string='Status', default='active', tracking=True)
 
-    _sql_constraints = [
-        ('code_unique', 'unique(code, company_id)', 'The code must be unique per company!'),
-    ]
+    code_unique = models.Constraint('unique(code, company_id)', _('The code must be unique per company!'))

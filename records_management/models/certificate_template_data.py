@@ -11,7 +11,7 @@ Version: 19.0.0.1
 License: LGPL-3
 """
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 class CertificateTemplateData(models.Model):
     _name = 'certificate.template.data'
@@ -87,9 +87,7 @@ class CertificateTemplateData(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _sql_constraints = [
-        ('name_company_uniq', 'unique(name, company_id)', 'A certificate template with this name already exists for this company.')
-    ]
+    name_company_uniq = models.Constraint('unique(name, company_id)', _('A certificate template with this name already exists for this company.'))
 
     # ============================================================================
     # COMPUTE METHODS

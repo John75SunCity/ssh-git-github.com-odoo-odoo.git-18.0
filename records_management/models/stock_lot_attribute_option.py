@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, _
 
 class StockLotAttributeOption(models.Model):
     _name = 'stock.lot.attribute.option'
@@ -19,6 +19,8 @@ class StockLotAttributeOption(models.Model):
         ondelete='cascade'
     )
 
-    _sql_constraints = [
-        ('name_attribute_uniq', 'unique(name, attribute_id)', 'Options must be unique per attribute!')
-    ]
+    # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
+    _name_attribute_uniq = models.Constraint(
+        'UNIQUE(name, attribute_id)',
+        _('Options must be unique per attribute!'),
+    )

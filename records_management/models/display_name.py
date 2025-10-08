@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, _
 
 class DisplayName(models.Model):
     """
@@ -30,7 +30,5 @@ class DisplayName(models.Model):
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
 
-    _sql_constraints = [
-        ('name_model_unique', 'unique(name, model_name, company_id)',
-         'Template name must be unique per model and company.'),
-    ]
+    name_model_unique = models.Constraint('unique(name, model_name, company_id)',
+         _('Template name must be unique per model and company.'))

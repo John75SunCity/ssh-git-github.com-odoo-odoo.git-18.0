@@ -584,23 +584,18 @@ class NaidCertificate(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _sql_constraints = [
-        (
-            "unique_certificate_number",
-            "unique(certificate_number)",
-            "Certificate number must be unique",
-        ),
-        (
-            "check_positive_weight",
-            "CHECK(total_weight >= 0)",
-            "Total weight must be positive",
-        ),
-        (
-            "check_positive_items",
-            "CHECK(total_items >= 0)",
-            "Total items must be positive",
-        ),
-    ]
+    unique_certificate_number = models.Constraint(
+        "unique(certificate_number)",
+        _("Certificate number must be unique"),
+    )
+    check_positive_weight = models.Constraint(
+        "CHECK(total_weight >= 0)",
+        _("Total weight must be positive"),
+    )
+    check_positive_items = models.Constraint(
+        "CHECK(total_items >= 0)",
+        _("Total items must be positive"),
+    )
 
     # -------------------------------------------------------------
     # Placeholder buttons referenced in XML views (safe stubs)

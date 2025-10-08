@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, _
 
 class PickupRequestLine(models.Model):
     """
@@ -36,10 +36,7 @@ class PickupRequestLine(models.Model):
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
     active = fields.Boolean(string='Active', default=True)
 
-    _sql_constraints = [
-        (
-            'quantity_non_negative',
-            'CHECK(quantity >= 0)',
-            'Quantity must be zero or positive.'
-        ),
-    ]
+    quantity_non_negative = models.Constraint(
+        'CHECK(quantity >= 0)',
+        _('Quantity must be zero or positive.')
+    )

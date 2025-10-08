@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, _
 
 class InventoryItemType(models.Model):
     """
@@ -36,6 +36,4 @@ class InventoryItemType(models.Model):
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
 
-    _sql_constraints = [
-        ('code_unique', 'unique(code, company_id)', 'Type code must be unique per company.'),
-    ]
+    code_unique = models.Constraint('unique(code, company_id)', _('Type code must be unique per company.'))

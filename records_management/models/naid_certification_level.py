@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 
 
 class NAIDCertificationLevel(models.Model):
@@ -51,9 +51,7 @@ class NAIDCertificationLevel(models.Model):
     active = fields.Boolean(string='Active', default=True)
 
     # Constraints
-    _sql_constraints = [
-        ('level_code_unique', 'unique(level_code)', 'Level code must be unique!'),
-    ]
+    level_code_unique = models.Constraint('unique(level_code)', _('Level code must be unique!'))
 
     @api.depends('name', 'level_code')
     def _compute_display_name(self):
