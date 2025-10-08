@@ -618,11 +618,23 @@ class ComprehensiveValidator:
         """Detect legacy <tree> tag usage (should be <list> in Odoo 18).
 
         Blocking error: each occurrence increments total issues.
+        
+        EXCEPTION: Technical fallback views with type='tree' are required by Odoo 18
+        for One2many mode='tree' rendering and should not be flagged as legacy.
         """
         if '<tree' not in content:
             return []
         # Avoid false positives inside comments by naive exclusion of <!-- ... --> blocks
         stripped = re.sub(r'<!--.*?-->', '', content, flags=re.DOTALL)
+        
+        # Check if this is a technical fallback view with type='tree'
+        # These are required for One2many fallback and should not be flagged
+        has_type_tree = '<field name="type">tree</field>' in content
+        has_priority_zero = 'priority" eval="0"' in content or 'priority">0</field>' in content
+        
+        if has_type_tree and has_priority_zero:
+            return []
+        
         matches = re.findall(r'<tree\b', stripped)
         if not matches:
             return []
