@@ -224,15 +224,16 @@
         <record id="records_location_view_tree_technical" model="ir.ui.view">
             <field name="name">records.location.view.tree.technical</field>
             <field name="model">records.location</field>
+            <field name="type">tree</field>
             <field name="priority" eval="0"/>
             <field name="arch" type="xml">
-                <list string="Locations (Technical)">
+                <tree string="Locations (Technical)">
                     <field name="name"/>
                     <!-- Use correct hierarchy parent field -->
                     <field name="parent_location_id"/>
                     <!-- Show utilization percentage (existing compute field) instead of non-existent capacity_utilization -->
                     <field name="utilization_percentage"/>
-                </list>
+                </tree>
             </field>
         </record>
     </data>
