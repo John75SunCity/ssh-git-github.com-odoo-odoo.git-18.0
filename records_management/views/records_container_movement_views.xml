@@ -55,11 +55,10 @@
             </p>
             </field>
         </record>
-        <!-- Technical tree view for One2many fallback -->
+        <!-- Technical fallback view with priority 0 for One2many mode="tree" -->
         <record id="records_container_movement_view_tree_technical" model="ir.ui.view">
             <field name="name">records.container.movement.view.tree.technical</field>
             <field name="model">records.container.movement</field>
-            <field name="type">tree</field>
             <field name="priority" eval="0"/>
             <field name="arch" type="xml">
                 <tree string="Container Movements (Technical)">

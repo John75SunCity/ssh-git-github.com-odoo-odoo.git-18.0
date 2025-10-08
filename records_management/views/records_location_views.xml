@@ -224,7 +224,6 @@
         <record id="records_location_view_tree_technical" model="ir.ui.view">
             <field name="name">records.location.view.tree.technical</field>
             <field name="model">records.location</field>
-            <field name="type">tree</field>
             <field name="priority" eval="0"/>
             <field name="arch" type="xml">
                 <tree string="Locations (Technical)">

@@ -301,7 +301,6 @@
         <record id="records_department_billing_contact_view_tree_technical" model="ir.ui.view">
             <field name="name">records.department.billing.contact.view.tree.technical</field>
             <field name="model">records.department.billing.contact</field>
-            <field name="type">tree</field>
             <field name="priority" eval="0"/>
             <field name="arch" type="xml">
                 <tree string="Billing Contacts (Technical)">

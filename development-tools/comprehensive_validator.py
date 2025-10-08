@@ -619,20 +619,21 @@ class ComprehensiveValidator:
 
         Blocking error: each occurrence increments total issues.
         
-        EXCEPTION: Technical fallback views with type='tree' are required by Odoo 18
+        EXCEPTION: Technical fallback views with priority=0 and <tree> tags are required by Odoo 18
         for One2many mode='tree' rendering and should not be flagged as legacy.
+        Note: Odoo 18 removed 'tree' as a valid view type, so we check for priority=0 only.
         """
         if '<tree' not in content:
             return []
         # Avoid false positives inside comments by naive exclusion of <!-- ... --> blocks
         stripped = re.sub(r'<!--.*?-->', '', content, flags=re.DOTALL)
         
-        # Check if this is a technical fallback view with type='tree'
+        # Check if this is a technical fallback view with priority=0
         # These are required for One2many fallback and should not be flagged
-        has_type_tree = '<field name="type">tree</field>' in content
+        # Note: We no longer check for type='tree' since Odoo 18 removed it as valid view type
         has_priority_zero = 'priority" eval="0"' in content or 'priority">0</field>' in content
         
-        if has_type_tree and has_priority_zero:
+        if has_priority_zero:
             return []
         
         matches = re.findall(r'<tree\b', stripped)

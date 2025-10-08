@@ -2,8 +2,19 @@
 <odoo>
     <data>
 
-<!--                    <filter name="low_value" string="Low Value (&lt;$100)" domain="[('charge_amount','&lt;',100)]"/> List View -->
-        <record id="records_department_billing_approval_view_tree" model="ir.ui.view">
+        <!-- Technical fallback view with priority 0 for One2many mode="tree" -->
+        <record id="records_department_billing_approval_view_tree_technical" model="ir.ui.view">
+            <field name="name">records.department.billing.approval.view.tree.technical</field>
+            <field name="model">records.department.billing.approval</field>
+            <field name="priority" eval="0"/>
+            <field name="arch" type="xml">
+                <tree string="Billing Approvals (Technical)">
+                    <field name="billing_contact_id"/>
+                    <field name="approval_date"/>
+                    <field name="charge_amount"/>
+                </tree>
+            </field>
+        </record>        <record id="records_department_billing_approval_view_tree" model="ir.ui.view">
 <field name="name">records.department.billing.approval.view.tree</field>
             <field name="model">records.department.billing.approval</field>
         <field name="arch" type="xml">
