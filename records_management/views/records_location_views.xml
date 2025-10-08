@@ -228,8 +228,10 @@
             <field name="arch" type="xml">
                 <tree string="Locations (Technical)">
                     <field name="name"/>
-                    <field name="parent_id"/>
-                    <field name="capacity_utilization"/>
+                    <!-- Use correct hierarchy parent field -->
+                    <field name="parent_location_id"/>
+                    <!-- Show utilization percentage (existing compute field) instead of non-existent capacity_utilization -->
+                    <field name="utilization_percentage"/>
                 </tree>
             </field>
         </record>
