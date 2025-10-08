@@ -1,12 +1,14 @@
 {
     "name": "Records Management FSM Integration",
-    "version": "18.0.0.1",
+    "version": "19.0.0.1",
     "category": "Records Management",
     "summary": "FSM integration for Records Management",
     "author": "Your Name",
     "license": "LGPL-3",
     # Ensure all referenced actions exist (fleet vehicles menu uses fleet action)
-    "depends": ["records_management", "industry_fsm", "project", "fleet"],
+    "depends": ["records_management", "project", "fleet"],
+    # Optional dependency: uncomment if industry_fsm is available
+    # "depends": ["records_management", "industry_fsm", "project", "fleet"],
     # Load order: security first, then data, then views/actions, menus last
     "data": [
         "security/ir.model.access.csv",
@@ -28,5 +30,5 @@
         ],
     },
     "installable": True,
-    "auto_install": True,
+    "auto_install": False,
 }
