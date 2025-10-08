@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Odoo 18 uses <list>; provide enhanced list view (cannot use legacy <tree>) -->
+        <!-- Odoo 19 uses <list>; provide enhanced list view (cannot use legacy <tree>) -->
         <record id="records_container_movement_view_tree" model="ir.ui.view">
             <field name="name">records.container.movement.view.list</field>
             <field name="model">records.container.movement</field>

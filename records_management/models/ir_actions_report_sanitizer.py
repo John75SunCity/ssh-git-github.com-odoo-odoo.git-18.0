@@ -36,7 +36,7 @@ class IrActionsReport(models.Model):
     def _render_qweb_html(self, report_ref, docids=None, data=None, **kwargs):  # noqa: D401
         """Render QWeb HTML with structural post-processing.
 
-        Odoo 18 core uses the parameter name ``docids`` (older custom code in
+        Odoo 19 core uses the parameter name ``docids`` (older custom code in
         this module previously used ``res_ids`` and passed it as a keyword).
         The earlier override forwarded ``res_ids`` to ``super()`` causing
         ``TypeError: unexpected keyword argument 'res_ids'`` after framework

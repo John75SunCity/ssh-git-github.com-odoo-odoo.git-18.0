@@ -2,7 +2,7 @@
 <odoo noupdate="1">
     <data>
         <!-- Scheduled action to auto-escalate breached retrieval orders
-             Odoo 18 best practice: use numbercall=-1 (infinite), avoid legacy max_calls/catchup mix
+             Odoo 19 best practice: use numbercall=-1 (infinite), avoid legacy max_calls/catchup mix
              Runs hourly; adjust interval_number if escalation window changes. -->
         <record id="ir_cron_records_retrieval_order_sla_escalation" model="ir.cron">
             <field name="name">Retrieval Orders SLA Escalation</field>

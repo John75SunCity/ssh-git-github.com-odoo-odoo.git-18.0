@@ -7,7 +7,7 @@ monitoring, and operational oversight within the Records Management system.
 Provides comprehensive logging of who accessed containers, when, why, and what was done.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

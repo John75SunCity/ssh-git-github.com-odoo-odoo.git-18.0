@@ -490,7 +490,7 @@ class ShreddingCertificate(models.Model):
     # ============================================================================
     # SEARCH & NAME METHODS
     # ============================================================================
-    # Deprecated name_get in Odoo 18; using computed display_name
+    # Deprecated name_get in Odoo 19; using computed display_name
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
 
     @api.depends('name', 'partner_id')

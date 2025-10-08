@@ -6,7 +6,7 @@ Provides web interface for Records Management dashboard with comprehensive
 analytics, real-time data, and mobile-responsive interface.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

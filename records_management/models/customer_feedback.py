@@ -6,7 +6,7 @@ Manages customer feedback, including complaints, suggestions, and compliments,
 with AI-ready sentiment analysis and a structured resolution workflow.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

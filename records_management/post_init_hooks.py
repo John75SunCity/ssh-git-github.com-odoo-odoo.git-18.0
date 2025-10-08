@@ -21,7 +21,7 @@ Strategy:
 This provides forward / backward compatibility without repeated manual edits.
 """
 
-"""Post-init hook uses Odoo 18 signature: post_init_hook(env)."""
+"""Post-init hook uses Odoo 19 signature: post_init_hook(env)."""
 
 # No direct API decorators needed; the registry passes an Environment
 

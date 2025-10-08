@@ -6,7 +6,7 @@ Manages special pricing agreements with customers for specific services or
 container types, including an approval workflow and automated application.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

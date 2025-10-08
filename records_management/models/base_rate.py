@@ -7,7 +7,7 @@ Records Management system. This model serves as the foundation for customer
 billing and can be customized with volume and location-based modifiers.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

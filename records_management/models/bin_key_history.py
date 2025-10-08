@@ -6,7 +6,7 @@ Logs all significant events related to the lifecycle of a bin access key,
 providing a complete audit trail for NAID compliance.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

@@ -8,7 +8,7 @@ This model includes intelligent classification based on barcode length and
 integrates with standard business container specifications.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

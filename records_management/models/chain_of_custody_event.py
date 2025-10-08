@@ -131,7 +131,7 @@ class ChainOfCustodyEvent(models.Model):
         help="Hours elapsed since the previous event in this custody chain"
     )
 
-    # Unified display name (stored) for Odoo 18 compliance.
+    # Unified display name (stored) for Odoo 19 compliance.
     # Previous intermediate non-stored field display_name_computed removed to avoid
     # registry warnings about inconsistent compute/store attributes.
 
@@ -324,7 +324,7 @@ class ChainOfCustodyEvent(models.Model):
             user_id=self.env.user.id,
         )
 
-    # Stored display name for Odoo 18 compliance (definition moved above compute)
+    # Stored display name for Odoo 19 compliance (definition moved above compute)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
 
     @api.constrains('event_date', 'custody_id')

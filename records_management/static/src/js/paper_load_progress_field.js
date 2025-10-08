@@ -24,7 +24,7 @@ export class PaperLoadProgressField extends Component {
     };
 }
 
-// Register the field widget (Odoo 18 expects an object with `component`)
+// Register the field widget (Odoo 19 expects an object with `component`)
 registry.category("fields").add("paper_load_progress", {
     component: PaperLoadProgressField,
     displayName: "Paper Load Progress",

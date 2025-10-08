@@ -91,7 +91,7 @@
                         </h2>
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
-                                <!-- Owl Component Usage Following Odoo 18 Guidelines -->
+                                <!-- Owl Component Usage Following Odoo 19 Guidelines -->
                                 <owl-component name="records_management.PortalSearchComponent" 
                                                placeholder="Search your records, documents, certificates..."
                                                maxSuggestions="6"

@@ -101,7 +101,7 @@ class ResPartnerKeyRestriction(models.Model):
     def _get_default_tree_view(self):  # Odoo core still asks for 'tree' in some test helpers
         """Provide a minimal fallback list (tree) view structure for automated tests.
 
-        Odoo 18 uses <list/> arch tag, but internal test utilities may still request
+        Odoo 19 uses <list/> arch tag, but internal test utilities may still request
         a default 'tree' view for x2many placeholders when no explicit list view is
         preloaded. Returning a valid list arch prevents UserError during base tests.
         """

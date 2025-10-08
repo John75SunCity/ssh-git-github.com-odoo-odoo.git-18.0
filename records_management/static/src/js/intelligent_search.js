@@ -623,7 +623,7 @@ class FileSearchWidget extends Component {
 // WIDGET REGISTRATION
 // ============================================================================
 
-// Register the field widgets with proper Odoo 18 registry pattern
+// Register the field widgets with proper Odoo 19 registry pattern
 registry.category("fields").add("container_search", {
     component: ContainerSearchWidget,
     displayName: "Container Search",

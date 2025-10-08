@@ -6,7 +6,7 @@ Manages requests for unlocking secure bins, typically performed by a technician.
 This model tracks the service from request to completion, including billing.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

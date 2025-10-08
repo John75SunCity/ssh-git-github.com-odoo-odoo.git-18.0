@@ -5,7 +5,7 @@ Customer Inventory Report Wizard
 This wizard is used to generate customer inventory reports based on user-selected criteria.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

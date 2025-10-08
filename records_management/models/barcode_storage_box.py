@@ -7,7 +7,7 @@ This model tracks capacity, dimensions, location, and integrates with
 the Records Management system's business rules for container types.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

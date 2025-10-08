@@ -47,7 +47,7 @@ class FullCustomizationName(models.Model):
             else:
                 record.display_name = record.name
 
-    # Deprecated name_get: Odoo 18 uses computed display_name
+    # Deprecated name_get: Odoo 19 uses computed display_name
 
     @api.constrains('name')
     def _check_name_unique(self):

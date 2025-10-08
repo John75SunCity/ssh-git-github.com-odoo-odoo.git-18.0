@@ -1,7 +1,7 @@
 {
     "name": "Records Management - Enterprise Edition",
-    # Bumped after fixing NAID certificate report translation directives (t-translate -> t-translation)
-    'version': '18.0.0.10',  # Bumped for Odoo 18 view compatibility fixes - technical list views for One2many fallback
+    # Version updated for Odoo 19 compatibility and modernization
+    'version': '19.0.0.1',  # Updated for Odoo 19 release - enterprise records management with full compatibility
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
@@ -328,7 +328,7 @@
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
         "web.assets_frontend": [
-            # Modern Owl Portal Components (Following Odoo 18 Guidelines)
+            # Modern Owl Portal Components (Following Odoo 19 Guidelines)
             "records_management/static/src/portal_components/**/*",
 
             # Legacy Portal Assets (To be gradually migrated)

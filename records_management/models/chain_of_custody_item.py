@@ -269,7 +269,7 @@ class ChainOfCustodyItem(models.Model):
 
         return True
 
-    # Stored display name for Odoo 18 compliance (definition placed after compute)
+    # Stored display name for Odoo 19 compliance (definition placed after compute)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
 
     @api.model_create_multi

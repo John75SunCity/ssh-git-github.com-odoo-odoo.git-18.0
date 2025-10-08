@@ -87,4 +87,4 @@ class PickupLocation(models.Model):
         if self.country_id and self.state_id.country_id != self.country_id:
             self.state_id = False
     
-    # Deprecated name_get: rely on computed display_name for Odoo 18
+    # Deprecated name_get: rely on computed display_name for Odoo 19

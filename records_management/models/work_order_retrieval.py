@@ -154,7 +154,7 @@ class WorkOrderRetrieval(models.Model):
         return super().create(vals_list)
 
     # ===================== CRUD / DISPLAY HELPERS =====================
-    # Deprecated name_get in Odoo 18; rely on computed display_name
+    # Deprecated name_get in Odoo 19; rely on computed display_name
 
     # Replaces former _name_search (removed to follow _search_<field> convention)
     def _search_display_name(self, operator, value):

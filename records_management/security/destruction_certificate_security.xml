@@ -4,7 +4,7 @@
         <record id="destruction_certificate_rule_portal_paid" model="ir.rule">
             <field name="name">Destruction Certificates: Portal Paid Visibility</field>
                 <field name="model_id" ref="model_destruction_certificate"/>
-                <!-- Odoo 18: portal group xmlid is base.group_portal (not portal.group_portal) -->
+                <!-- Odoo 19: portal group xmlid is base.group_portal (not portal.group_portal) -->
                 <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
 
 

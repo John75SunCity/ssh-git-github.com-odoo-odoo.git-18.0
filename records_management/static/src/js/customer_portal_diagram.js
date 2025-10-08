@@ -1,6 +1,6 @@
 /** @odoo-module **/
 /**
- * Customer Portal Diagram (Odoo 18 Compatible)
+ * Customer Portal Diagram (Odoo 19 Compatible)
  * Simplified version to prevent asset bundle errors
  */
 
@@ -13,7 +13,7 @@ console.log("Customer Portal Diagram module loaded (simplified version)");
 
 class CustomerPortalDiagramComponent extends Component {
     static template = `<div class="o_customer_portal_diagram">
-        <p>Customer Portal Diagram - Odoo 18 Compatible</p>
+        <p>Customer Portal Diagram - Odoo 19 Compatible</p>
     </div>`;
 }
 

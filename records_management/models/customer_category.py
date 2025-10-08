@@ -6,7 +6,7 @@ Defines categories for customers to apply specific billing models,
 service level agreements (SLAs), and priority levels.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

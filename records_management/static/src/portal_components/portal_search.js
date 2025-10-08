@@ -1,7 +1,7 @@
 /** @odoo-module **/
 /**
  * Modern Owl Portal Search Component
- * Following Odoo 18 best practices for portal/website Owl components
+ * Following Odoo 19 best practices for portal/website Owl components
  */
 
 import { Component, useState, useRef, onMounted } from "@odoo/owl";

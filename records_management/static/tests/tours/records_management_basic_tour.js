@@ -1,7 +1,7 @@
 /** @odoo-module **/
 /**
  * Basic navigation tour for Records Management module.
- * Simplified version for Odoo 18 compatibility
+ * Simplified version for Odoo 19 compatibility
  */
 
 import { registry } from '@web/core/registry';
@@ -29,7 +29,7 @@ const steps = [
     },
 ];
 
-// Register tour using Odoo 18 standard pattern
+// Register tour using Odoo 19 standard pattern
 try {
     registry.category('web_tour.tours').add('records_management_basic_tour', {
         url: '/web',

@@ -7,7 +7,7 @@ Certificates of Destruction. This model allows for dynamic and customizable
 certificate layouts.
 
 Author: Records Management System
-Version: 18.0.6.0.0
+Version: 19.0.0.1
 License: LGPL-3
 """
 

@@ -11,7 +11,7 @@
     - Ensures all enhancements are conditionally visible and do not interfere with standard accounting workflows.
     - Follows Odoo view inheritance and extension best practices.
 
-    This file is part of the enterprise-grade Records Management module for Odoo 18.0.
+    This file is part of the enterprise-grade Records Management module for Odoo 19.0.
 -->
 <odoo>
     <data>

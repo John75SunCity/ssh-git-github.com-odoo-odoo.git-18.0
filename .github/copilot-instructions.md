@@ -1,6 +1,6 @@
-## GitHub Copilot: Project-Specific Instructions (Odoo 18 – Records Management)
+## GitHub Copilot: Project-Specific Instructions (Odoo 19 – Records Management)
 
-This repo is an enterprise Odoo 18 module: `records_management` (NAID AAA compliant DMS). Use these concise rules to be productive and avoid Odoo-specific pitfalls.
+This repo is an enterprise Odoo 19 module: `records_management` (NAID AAA compliant DMS). Use these concise rules to be productive and avoid Odoo-specific pitfalls.
 
 ## Odoo Coding Guidelines (Enforced for this Repo)
 
