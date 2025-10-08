@@ -377,5 +377,19 @@ Destroy Container</a>
         </search>
     </field>
     </record>
+    <!-- Technical tree view (needed for x2many fallback + view tests expecting a real <tree> root) -->
+    <record id="records_container_view_tree_technical" model="ir.ui.view">
+        <field name="name">records.container.view.tree.technical</field>
+        <field name="model">records.container</field>
+        <!-- High priority so it does NOT override primary list usage (higher number = lower precedence) -->
+        <field name="priority" eval="200"/>
+        <field name="arch" type="xml">
+            <tree string="Containers (Technical)">
+                <field name="name"/>
+                <field name="barcode"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
     </data>
 </odoo>

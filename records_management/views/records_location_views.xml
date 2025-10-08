@@ -220,5 +220,18 @@
                 </ul>
             </field>
         </record>
+        <!-- Technical tree view to satisfy default tree view resolution in x2many and tests -->
+        <record id="records_location_view_tree_technical" model="ir.ui.view">
+            <field name="name">records.location.view.tree.technical</field>
+            <field name="model">records.location</field>
+            <field name="priority" eval="200"/>
+            <field name="arch" type="xml">
+                <tree string="Locations (Technical)">
+                    <field name="name"/>
+                    <field name="parent_id"/>
+                    <field name="capacity_utilization"/>
+                </tree>
+            </field>
+        </record>
     </data>
 </odoo>

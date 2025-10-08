@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
+
 <!--                    <filter name="low_value" string="Low Value (&lt;$100)" domain="[('charge_amount','&lt;',100)]"/> List View -->
         <record id="records_department_billing_approval_view_tree" model="ir.ui.view">
 <field name="name">records.department.billing.approval.view.tree</field>
@@ -153,7 +153,12 @@
         <record id="records_department_billing_approval_action" model="ir.actions.act_window">
             <field name="name">Department Billing Approvals</field>
             <field name="res_model">records.department.billing.approval</field>
-            <field name="view_mode">kanban,list,form</field>
+            <!-- Explicit ordering: list first so list view loads before kanban; prevents fallback to _get_default_tree_view during cold cache -->
+            <field name="view_mode">list,kanban,form</field>
+            <!-- Ensure explicit list view binding to avoid default resolution edge cases -->
+            <field name="view_id" ref="records_management.records_department_billing_approval_view_tree"/>
+            <!-- Add search view reference for consistent search domain application -->
+            <field name="search_view_id" ref="records_management.records_department_billing_approval_view_search"/>
             <field name="context">{'search_default_this_month': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
@@ -166,12 +171,25 @@
         </record>
 
         <!-- Menu Item -->
-    
+
         <menuitem id="menu_records_department_billing_approval"
                 name="Billing Approvals"
                 parent="records_management.menu_records_billing"
                 action="records_department_billing_approval_action"
                 sequence="20"/>
+        <!-- Technical tree view for approval model -->
+        <record id="records_department_billing_approval_view_tree_technical" model="ir.ui.view">
+            <field name="name">records.department.billing.approval.view.tree.technical</field>
+            <field name="model">records.department.billing.approval</field>
+            <field name="priority" eval="200"/>
+            <field name="arch" type="xml">
+                <tree string="Billing Approvals (Technical)">
+                    <field name="billing_contact_id"/>
+                    <field name="approval_date"/>
+                    <field name="charge_amount"/>
+                </tree>
+            </field>
+        </record>
     
     
     </data>
