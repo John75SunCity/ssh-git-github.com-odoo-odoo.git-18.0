@@ -181,7 +181,7 @@
         <record id="records_department_billing_approval_view_tree_technical" model="ir.ui.view">
             <field name="name">records.department.billing.approval.view.tree.technical</field>
             <field name="model">records.department.billing.approval</field>
-            <field name="priority" eval="200"/>
+            <field name="priority" eval="0"/>
             <field name="arch" type="xml">
                 <list string="Billing Approvals (Technical)">
                     <field name="billing_contact_id"/>

@@ -382,7 +382,7 @@ Destroy Container</a>
         <field name="name">records.container.view.tree.technical</field>
         <field name="model">records.container</field>
         <!-- High priority so it does NOT override primary list usage (higher number = lower precedence) -->
-        <field name="priority" eval="200"/>
+        <field name="priority" eval="0"/>
         <field name="arch" type="xml">
             <list string="Containers (Technical)">
                 <field name="name"/>

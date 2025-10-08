@@ -55,5 +55,19 @@
             </p>
             </field>
         </record>
+        <!-- Technical tree view for One2many fallback -->
+        <record id="records_container_movement_view_tree_technical" model="ir.ui.view">
+            <field name="name">records.container.movement.view.tree.technical</field>
+            <field name="model">records.container.movement</field>
+            <field name="priority" eval="0"/>
+            <field name="arch" type="xml">
+                <list string="Container Movements (Technical)">
+                    <field name="name"/>
+                    <field name="movement_date"/>
+                    <field name="movement_type"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
     </data>
 </odoo>
