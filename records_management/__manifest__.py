@@ -37,19 +37,19 @@
         "http_routing",
         "base_setup",
         "base_import",
-        # Optional enterprise modules (comment out if not available)
-        # "sms", 
-        # "maintenance",
-        # "point_of_sale",
-        # "barcodes",
-        # "industry_fsm",
-        # "sign",
-        # "survey", 
-        # "documents",
-        # "helpdesk",
-        # "mass_mailing",
-        # "website_slides",
-        # "quality"
+        # Enterprise / optional modules (intentionally enabled to preserve full feature scope; comment only if environment lacks module)
+        "sms",
+        "maintenance",
+        "point_of_sale",
+        "barcodes",
+        "industry_fsm",
+        "sign",
+        "survey", 
+        "documents",
+        "helpdesk",
+        "mass_mailing",
+        "website_slides",
+        "quality"
     ],
     "data": [
         # Security ordering: core groups first, then model security, then access CSV last

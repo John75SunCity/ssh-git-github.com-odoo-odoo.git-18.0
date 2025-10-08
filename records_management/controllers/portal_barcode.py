@@ -11,7 +11,8 @@ class PortalBarcodeController(http.Controller):
     dedicated rule).
     """
 
-    @http.route(['/records_management/portal/generate_barcode'], type='json', auth='user', methods=['POST'], csrf=True)
+    # Updated for Odoo 19: type='json' deprecated -> use 'jsonrpc'
+    @http.route(['/records_management/portal/generate_barcode'], type='jsonrpc', auth='user', methods=['POST'], csrf=True)
     def generate_portal_barcode(self, barcode_type='generic', barcode_format='code128'):
         env = request.env
         if not (request.env.user.has_group('records_management.group_records_user') or request.env.user.has_group('records_management.group_records_manager')):

@@ -98,6 +98,17 @@ class NaidOperatorCertification(models.Model):
     attachment_ids = fields.Many2many('ir.attachment', 'naid_operator_cert_attachment_rel', 'certification_id', 'attachment_id', string='Supporting Documents', help='Certificates, training records, etc.')
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
+    # Explicit override of hr.employee's bank_account_ids to ensure a unique relation table.
+    # Odoo 19 registry error reported a collision: Many2many fields share the same table/columns.
+    # We provide a distinct relation table name to avoid conflict with hr.employee's default.
+    bank_account_ids = fields.Many2many(
+        comodel_name='res.partner.bank',
+        relation='naid_operator_cert_bank_rel',  # unique relation table
+        column1='cert_id',  # FK to this certification model
+        column2='bank_id',  # FK to res.partner.bank
+        string='Bank Accounts',
+        help='Bank accounts associated specifically with this operator certification record'
+    )
 
     # ------------------------------------------------------------------
     # VIEW-REFERENCED FIELDS (Added to satisfy missing field audit)

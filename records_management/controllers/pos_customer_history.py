@@ -14,7 +14,8 @@ class PosCustomerHistoryController(http.Controller):
     Only accessible to authenticated users with PoS access. Respects company.
     """
 
-    @http.route(['/records_management/pos/customer_history'], type='json', auth='user')
+    # Updated for Odoo 19: type='json' deprecated -> use 'jsonrpc'
+    @http.route(['/records_management/pos/customer_history'], type='jsonrpc', auth='user')
     def get_pos_customer_history(self, partner_id=None, limit=15):
         if not partner_id:
             return {'orders': []}
