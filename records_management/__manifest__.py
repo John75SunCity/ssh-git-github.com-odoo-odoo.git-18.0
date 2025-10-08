@@ -1,7 +1,7 @@
 {
     "name": "Records Management - Enterprise Edition",
     # Bumped after fixing NAID certificate report translation directives (t-translate -> t-translation)
-    'version': '18.0.0.9',  # Bumped for addition of expanded portal record rules (containers, documents, financial, certificates)
+    'version': '18.0.0.10',  # Bumped for Odoo 18 view compatibility fixes - technical list views for One2many fallback
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
