@@ -28,7 +28,6 @@ License: LGPL-3
 from odoo import http, _
 from odoo.http import request
 from odoo.exceptions import AccessError, MissingError
-from odoo.osv.expression import OR
 
 # Odoo addons imports
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
@@ -156,19 +155,14 @@ class WorkOrderPortal(CustomerPortal):
 
         # Apply search
         if search and search_in:
-            search_domain = []
-            if search_in in ('all', 'name'):
-                search_domain = OR([search_domain, [('name', 'ilike', search)]])
-            if search_in in ('all', 'description'):
-                search_domain = OR([search_domain, [('description', 'ilike', search)]])
-
-            # Filter work orders by search
+            # Filter in-memory list since we aggregated multiple models; no need for OR domain constructs
+            needle = search.lower()
             filtered_orders = []
             for wo in all_work_orders:
-                record_name = wo['record'].name or ''
-                record_description = wo['record'].description or ''
-                if search.lower() in record_name.lower() or \
-                   search.lower() in record_description.lower():
+                record_name = (wo['record'].name or '').lower()
+                record_description = (wo['record'].description or '').lower()
+                if ((search_in in ('all', 'name') and needle in record_name) or
+                    (search_in in ('all', 'description') and needle in record_description)):
                     filtered_orders.append(wo)
             all_work_orders = filtered_orders
 

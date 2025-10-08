@@ -7,9 +7,11 @@ class StockLotAttributeValue(models.Model):
     _description = 'Stock Lot Attribute Value'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'display_name'
-    _sql_constraints = [
-        ('unique_lot_attribute', 'unique(lot_id, attribute_id)', 'Each attribute must be unique per stock lot.')
-    ]
+    # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
+    _unique_lot_attribute = models.Constraint(
+        'UNIQUE(lot_id, attribute_id)',
+        _('Each attribute must be unique per stock lot.'),
+    )
 
     # ============================================================================
     # FIELDS

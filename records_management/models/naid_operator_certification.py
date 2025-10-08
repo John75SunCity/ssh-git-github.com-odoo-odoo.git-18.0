@@ -110,6 +110,18 @@ class NaidOperatorCertification(models.Model):
         help='Bank accounts associated specifically with this operator certification record'
     )
 
+    # Explicit override of hr.employee's goals_ids to ensure a unique relation table.
+    # Similar registry collision observed for goals_ids (performance/gamification goals) on Odoo 19.
+    # We provide a distinct relation table and column names to isolate this model's linkage.
+    goals_ids = fields.Many2many(
+        comodel_name='gamification.goal',
+        relation='naid_operator_cert_goal_rel',  # unique relation table distinct from hr.employee default
+        column1='cert_id',  # FK to this certification model
+        column2='goal_id',  # FK to gamification.goal
+        string='Performance Goals',
+        help='Gamification / performance goals tracked specifically for this operator certification'
+    )
+
     # ------------------------------------------------------------------
     # VIEW-REFERENCED FIELDS (Added to satisfy missing field audit)
     # ------------------------------------------------------------------
