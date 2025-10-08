@@ -183,14 +183,14 @@
             <field name="model">records.department.billing.approval</field>
             <field name="priority" eval="200"/>
             <field name="arch" type="xml">
-                <tree string="Billing Approvals (Technical)">
+                <list string="Billing Approvals (Technical)">
                     <field name="billing_contact_id"/>
                     <field name="approval_date"/>
                     <field name="charge_amount"/>
-                </tree>
+                </list>
             </field>
         </record>
-    
-    
+
+
     </data>
 </odoo>
