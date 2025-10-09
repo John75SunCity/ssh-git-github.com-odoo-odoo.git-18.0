@@ -76,7 +76,7 @@
                     <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]" />
                     <filter string="Done" name="done" domain="[('state', '=', 'done')]" />
                     <separator />
-                    <group expand="0" string="Group By">
+                    <group string="Group By">
                         <filter string="Document" name="group_document" context="{'group_by': 'document_id'}" />
                         <filter string="Scanned By" name="group_scanned_by" context="{'group_by': 'scanned_by_id'}" />
                         <filter string="File Format" name="group_format" context="{'group_by': 'file_format'}" />
