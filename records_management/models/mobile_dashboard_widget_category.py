@@ -66,4 +66,3 @@ class MobileDashboardWidgetCategory(models.Model):
         "unique(technical_name, company_id)",
         _("Technical name must be unique per company"),
     )
-    ]
