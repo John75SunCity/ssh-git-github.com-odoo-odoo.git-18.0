@@ -5,7 +5,7 @@
         <record id="service_storage_fee" model="product.product">
             <field name="name">Monthly Storage Fee</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-STORAGE</field>
             <field name="list_price">0.32</field>
             <field name="standard_price">0.15</field>

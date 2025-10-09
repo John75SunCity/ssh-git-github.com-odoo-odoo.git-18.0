@@ -7,7 +7,7 @@
         <record id="product_storage_container" model="product.product">
             <field name="name">Document Storage Container</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-CONTAINER</field>
             <field name="list_price">15.00</field>
             <field name="standard_price">8.50</field>
@@ -18,12 +18,11 @@
         <record id="product_storage_service" model="product.product">
             <field name="name">Monthly Storage Service</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-STORAGE</field>
             <field name="list_price">0.95</field>
             <field name="standard_price">0.65</field>
             <field name="uom_id" ref="uom.product_uom_unit"/>
-            <field name="uom_po_id" ref="uom.product_uom_unit"/>
             <field name="description">Monthly storage service per container (industry standard rate)</field>
         </record>
 
@@ -31,12 +30,11 @@
         <record id="product_shredding_service" model="product.product">
             <field name="name">Document Shredding Service</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-SHRED</field>
             <field name="list_price">12.50</field>
             <field name="standard_price">7.50</field>
             <field name="uom_id" ref="uom.product_uom_unit"/>
-            <field name="uom_po_id" ref="uom.product_uom_unit"/>
             <field name="description">NAID-compliant secure destruction per container</field>
         </record>
 
@@ -60,7 +58,7 @@
         <record id="product_storage_type01" model="product.product">
             <field name="name">TYPE 01 Standard Box Storage</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-TYPE01</field>
             <field name="list_price">0.95</field>
             <field name="standard_price">0.65</field>
@@ -70,7 +68,7 @@
         <record id="product_storage_type02" model="product.product">
             <field name="name">TYPE 02 Legal/Banker Box Storage</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-TYPE02</field>
             <field name="list_price">1.45</field>
             <field name="standard_price">0.95</field>
@@ -80,7 +78,7 @@
         <record id="product_storage_type03" model="product.product">
             <field name="name">TYPE 03 Map Box Storage</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-TYPE03</field>
             <field name="list_price">0.85</field>
             <field name="standard_price">0.55</field>
@@ -90,7 +88,7 @@
         <record id="product_storage_type04" model="product.product">
             <field name="name">TYPE 04 Odd Size/Temp Storage</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-TYPE04</field>
             <field name="list_price">2.75</field>
             <field name="standard_price">1.85</field>
@@ -100,7 +98,7 @@
         <record id="product_storage_type06" model="product.product">
             <field name="name">TYPE 06 Pathology Box Storage</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-TYPE06</field>
             <field name="list_price">0.45</field>
             <field name="standard_price">0.25</field>
@@ -111,7 +109,7 @@
         <record id="product_pickup_service" model="product.product">
             <field name="name">Pickup and Delivery Service</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-PICKUP</field>
             <field name="list_price">125.00</field>
             <field name="standard_price">85.00</field>
@@ -121,19 +119,18 @@
         <record id="product_indexing_service" model="product.product">
             <field name="name">Document Indexing Service</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-INDEX</field>
             <field name="list_price">1.85</field>
             <field name="standard_price">1.15</field>
             <field name="uom_id" ref="uom.product_uom_unit"/>
-            <field name="uom_po_id" ref="uom.product_uom_unit"/>
             <field name="description">Professional document cataloging and indexing per document</field>
         </record>
 
         <record id="product_retrieval_service" model="product.product">
             <field name="name">Document Retrieval Service</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-RETRIEVAL</field>
             <field name="list_price">35.00</field>
             <field name="standard_price">22.00</field>
@@ -143,12 +140,11 @@
         <record id="product_scanning_service" model="product.product">
             <field name="name">Document Scanning Service</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-SCAN</field>
             <field name="list_price">0.65</field>
             <field name="standard_price">0.35</field>
             <field name="uom_id" ref="uom.product_uom_unit"/>
-            <field name="uom_po_id" ref="uom.product_uom_unit"/>
             <field name="description">High-quality document scanning per page (300 DPI minimum)</field>
         </record>
 
@@ -156,7 +152,7 @@
         <record id="product_naid_certificate" model="product.product">
             <field name="name">NAID Destruction Certificate</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-CERT</field>
             <field name="list_price">25.00</field>
             <field name="standard_price">12.00</field>
@@ -166,7 +162,7 @@
         <record id="product_compliance_audit" model="product.product">
             <field name="name">Compliance Audit Service</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-AUDIT</field>
             <field name="list_price">485.00</field>
             <field name="standard_price">285.00</field>
@@ -177,7 +173,7 @@
         <record id="product_rush_service" model="product.product">
             <field name="name">Rush Service Surcharge</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-RUSH</field>
             <field name="list_price">75.00</field>
             <field name="standard_price">35.00</field>
@@ -187,7 +183,7 @@
         <record id="product_emergency_service" model="product.product">
             <field name="name">Emergency Response Service</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="default_code">REC-EMERGENCY</field>
             <field name="list_price">750.00</field>
             <field name="standard_price">425.00</field>
@@ -197,22 +193,22 @@
         <!-- Product Categories for Better Organization -->
         <record id="category_storage_services" model="product.category">
             <field name="name">Storage Services</field>
-            <field name="parent_id" ref="product.product_category_all"/>
+            <field name="parent_id" ref="product_category_paper_scrap"/>
         </record>
 
         <record id="category_destruction_services" model="product.category">
             <field name="name">Destruction Services</field>
-            <field name="parent_id" ref="product.product_category_all"/>
+            <field name="parent_id" ref="product_category_paper_scrap"/>
         </record>
 
         <record id="category_value_added_services" model="product.category">
             <field name="name">Value-Added Services</field>
-            <field name="parent_id" ref="product.product_category_all"/>
+            <field name="parent_id" ref="product_category_paper_scrap"/>
         </record>
 
         <record id="category_compliance_services" model="product.category">
             <field name="name">Compliance Services</field>
-            <field name="parent_id" ref="product.product_category_all"/>
+            <field name="parent_id" ref="product_category_paper_scrap"/>
         </record>
 
         <!-- Post-creation updates: Assign products to their categories after all categories have been created. -->
