@@ -9,6 +9,10 @@ and customer communication features.
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 
 class ShreddingCertificate(models.Model):
     """Model for managing shredding certificates with NAID compliance tracking.

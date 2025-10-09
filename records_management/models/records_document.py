@@ -12,6 +12,10 @@ from dateutil.relativedelta import relativedelta  # type: ignore
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 _logger = logging.getLogger(__name__)
 
 # ============================================================================

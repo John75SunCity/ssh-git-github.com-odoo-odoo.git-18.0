@@ -1,6 +1,10 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 
 class PortalBarcode(models.Model):
     _name = 'portal.barcode'

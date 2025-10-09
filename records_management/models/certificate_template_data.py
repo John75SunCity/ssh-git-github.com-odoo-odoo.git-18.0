@@ -13,6 +13,10 @@ License: LGPL-3
 
 from odoo import models, fields, api, _
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 class CertificateTemplateData(models.Model):
     _name = 'certificate.template.data'
     _description = 'Certificate Template Data'

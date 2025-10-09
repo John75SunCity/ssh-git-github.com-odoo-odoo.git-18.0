@@ -2,6 +2,10 @@
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 class HardDriveScanWizard(models.TransientModel):
     """
     A streamlined wizard for barcode scanning of hard drives during pickup and verification.

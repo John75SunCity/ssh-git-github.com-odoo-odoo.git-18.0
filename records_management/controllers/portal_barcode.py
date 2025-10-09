@@ -11,7 +11,7 @@ class PortalBarcodeController(http.Controller):
     dedicated rule).
     """
 
-    # Updated for Odoo 19: type='json' deprecated -> use 'jsonrpc'
+    # Updated for Odoo 19: type="jsonrpc" deprecated -> use 'jsonrpc'
     @http.route(['/records_management/portal/generate_barcode'], type='jsonrpc', auth='user', methods=['POST'], csrf=True)
     def generate_portal_barcode(self, barcode_type='generic', barcode_format='code128'):
         env = request.env

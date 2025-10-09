@@ -5,6 +5,10 @@ from io import BytesIO
 from odoo import models, fields, api, _  # pyright: ignore[reportMissingModuleSource, reportAttributeAccessIssue]
 from odoo.exceptions import ValidationError, UserError
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 # Replace direct qrcode import with guarded import (removes unused type: ignore)
 try:
     import qrcode  # noqa: F401

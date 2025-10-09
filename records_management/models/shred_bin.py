@@ -1,6 +1,10 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 class ShredBin(models.Model):
     _name = 'shred.bin'
     _description = 'Customer Shred Bin'

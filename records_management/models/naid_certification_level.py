@@ -2,6 +2,10 @@
 
 from odoo import api, fields, models, _
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 
 class NAIDCertificationLevel(models.Model):
     _name = 'naid.certification.level'

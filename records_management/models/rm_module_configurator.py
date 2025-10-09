@@ -15,6 +15,10 @@ from odoo.exceptions import UserError, ValidationError
 import re  # placed after odoo imports previously; retained but allowed
 import logging
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 _logger = logging.getLogger(__name__)
 
 

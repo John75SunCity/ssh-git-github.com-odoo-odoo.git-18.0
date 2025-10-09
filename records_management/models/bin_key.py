@@ -14,6 +14,10 @@ License: LGPL-3
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 class BinKey(models.Model):
     _name = 'bin.key'
     _description = 'Bin Access Key'

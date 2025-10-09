@@ -13,6 +13,10 @@ License: LGPL-3
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 
 class ContainerContent(models.Model):
     _name = 'container.content'

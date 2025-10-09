@@ -1,6 +1,10 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 class RecordsTag(models.Model):
     """Tag for records management with category, color, and key-value support."""
     _name = 'records.tag'

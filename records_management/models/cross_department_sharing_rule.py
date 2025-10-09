@@ -12,6 +12,10 @@ License: LGPL-3
 
 from odoo import models, fields, _
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 
 class CrossDepartmentSharingRule(models.Model):
     """

@@ -7,6 +7,10 @@ Includes fields for name, code, description, company, and active status.
 
 from odoo import models, fields, _
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 class RecordsServiceType(models.Model):
     """Model for defining service types used in records management operations.
 

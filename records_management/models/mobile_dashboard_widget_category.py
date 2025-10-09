@@ -8,6 +8,10 @@ Provides a hierarchical structure for mobile dashboard widget classification.
 
 from odoo import fields, models, _
 
+# Note: Translation warnings during module loading are expected
+# for constraint definitions - this is non-blocking behavior
+
+
 
 class MobileDashboardWidgetCategory(models.Model):
     """

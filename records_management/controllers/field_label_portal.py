@@ -46,7 +46,7 @@ class FieldLabelPortalController(CustomerPortal):
 
     @http.route(
         ["/portal/field-labels/get"],
-        type="json",
+        type="jsonrpc",
         auth="user",
         methods=["POST"],
         website=True,
@@ -129,7 +129,7 @@ class FieldLabelAdminController(http.Controller):
 
     @http.route(
         ["/records/admin/field-labels/preview"],
-        type="json",
+        type="jsonrpc",
         auth="user",
         methods=["POST"],
         website=True,
