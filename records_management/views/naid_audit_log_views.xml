@@ -27,11 +27,11 @@
         <form string="NAID Audit Log Entry" create="false" edit="false" delete="false">
             <sheet>
                 <div class="oe_title">
-                    <label for="name" class="oe_edit_only" />
+                    <label for="name" class="oe_edit_only"/>
                     <h1>
-        <field name="name" readonly="1" />
+        <field name="name" readonly="1"/>
                     </h1>
-                    <div class="oe_title">
+                    <div class="o_audit_log_status_badges">
 <span class="badge badge-success" invisible="naid_compliant == False">NAID AAA Compliant</span>
 <span class="badge badge-danger" invisible="naid_compliant == True">Non-Compliant</span>
                     </div>
@@ -194,7 +194,7 @@
             <filter string="Access Events" name="access_events" domain="[('action_type', '=', 'access')]" />
 
             <separator />
-            <!-- Refactored to dynamic search helper booleans provided by rm.recent.window.mixin -->
+            <filter string="Today" name="filter_today" domain="[('create_date', '>=', context_today)]"/>
             <filter string="Last 7 Days" name="filter_last_7_days" domain="[('is_recent_7d_create', '=', True)]" />
             <filter string="Last 30 Days" name="filter_last_30_days" domain="[('is_recent_30d_create', '=', True)]" />
 
