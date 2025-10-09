@@ -21,6 +21,7 @@ class WorkOrderShredding(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('verified', 'Verified'),
+        ('invoiced', 'Invoiced'),
         ('cancelled', 'Cancelled'),
     ], string="Status", default='draft', required=True, tracking=True)
 
@@ -69,6 +70,10 @@ class WorkOrderShredding(models.Model):
     certificate_required = fields.Boolean(string="Certificate Required", default=True)
     certificate_id = fields.Many2one(comodel_name='naid.certificate', string="Destruction Certificate", readonly=True, copy=False)
 
+    # Invoice related fields
+    invoice_id = fields.Many2one(comodel_name='account.move', string='Invoice', readonly=True, copy=False)
+    invoiced = fields.Boolean(string="Invoiced", compute='_compute_invoiced', store=True)
+
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     currency_id = fields.Many2one(comodel_name='res.currency', related='company_id.currency_id')
     active = fields.Boolean(default=True)
@@ -91,6 +96,11 @@ class WorkOrderShredding(models.Model):
                 order.actual_duration = delta.total_seconds() / 3600.0
             else:
                 order.actual_duration = 0.0
+
+    @api.depends('state', 'invoice_id')
+    def _compute_invoiced(self):
+        for order in self:
+            order.invoiced = order.state == 'invoiced' or bool(order.invoice_id)
 
     # ============================================================================
     # ORM OVERRIDES
@@ -144,8 +154,8 @@ class WorkOrderShredding(models.Model):
 
     def action_cancel(self):
         self.ensure_one()
-        if self.state in ['completed', 'verified', 'cancelled']:
-            raise UserError(_("Cannot cancel a work order that is already completed, verified, or cancelled."))
+        if self.state in ['completed', 'verified', 'invoiced', 'cancelled']:
+            raise UserError(_("Cannot cancel a work order that is already completed, verified, invoiced, or cancelled."))
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Work order cancelled."))
 
@@ -153,6 +163,14 @@ class WorkOrderShredding(models.Model):
         self.ensure_one()
         self.write({'state': 'draft'})
         self.message_post(body=_("Work order reset to draft."))
+
+    def action_invoice(self):
+        """Mark work order as invoiced"""
+        self.ensure_one()
+        if self.state not in ['completed', 'verified']:
+            raise UserError(_("Only completed or verified work orders can be invoiced."))
+        self.write({'state': 'invoiced'})
+        self.message_post(body=_("Work order marked as invoiced."))
 
     def action_view_certificate(self):
         self.ensure_one()
