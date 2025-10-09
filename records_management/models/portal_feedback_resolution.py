@@ -11,7 +11,7 @@ class PortalFeedbackResolution(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string='Resolution Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string='Resolution Reference', required=True, copy=False, readonly=True, default=lambda self: "New")
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
     active = fields.Boolean(default=True)
 

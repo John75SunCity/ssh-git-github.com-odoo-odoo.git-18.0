@@ -7,7 +7,7 @@ class PortalFeedbackEscalation(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'escalation_date desc, id desc'
 
-    name = fields.Char(string='Escalation Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string='Escalation Reference', required=True, copy=False, readonly=True, default=lambda self: "New")
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
     active = fields.Boolean(default=True)
 

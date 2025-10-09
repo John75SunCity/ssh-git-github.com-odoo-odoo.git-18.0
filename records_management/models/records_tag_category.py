@@ -16,5 +16,5 @@ class RecordsTagCategory(models.Model):
     # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
     _name_uniq = models.Constraint(
         'UNIQUE(name, company_id)',
-        _('A tag category with this name already exists in this company.'),
+        "A tag category with this name already exists in this company.",
     )

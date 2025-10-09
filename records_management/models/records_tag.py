@@ -73,7 +73,7 @@ class RecordsTag(models.Model):
     # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
     _name_uniq = models.Constraint(
         'UNIQUE(name, company_id)',
-        _('A tag with this name already exists in this company.'),
+        "A tag with this name already exists in this company.",
     )
 
     @api.depends('name', 'category_id')

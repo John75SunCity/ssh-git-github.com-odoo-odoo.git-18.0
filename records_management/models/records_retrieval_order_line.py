@@ -8,7 +8,7 @@ class RecordsRetrievalOrderLine(models.Model):
     _order = 'priority desc, order_id, name'
 
     order_id = fields.Many2one(comodel_name='records.retrieval.order', string='Retrieval Order', required=True, ondelete='cascade', index=True)
-    name = fields.Char(string='Line Reference', required=True, copy=False, default=lambda self: _('New'))
+    name = fields.Char(string='Line Reference', required=True, copy=False, default=lambda self: "New")
     file_name = fields.Char(string='File Name', required=True, tracking=True)
     requested_file_name = fields.Char(string='Requested File Name', help='Alias for API parity with legacy model', compute='_compute_requested_file_name', store=True)
     file_description = fields.Char(string='Description')

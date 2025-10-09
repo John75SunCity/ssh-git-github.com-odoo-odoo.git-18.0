@@ -64,9 +64,9 @@ class MobileDashboardWidgetCategory(models.Model):
     # Constraints
     _name_company_uniq = models.Constraint(
         "unique(name, company_id)",
-        _("Category name must be unique per company"),
+        "Category name must be unique per company",
     )
     _technical_name_company_uniq = models.Constraint(
         "unique(technical_name, company_id)",
-        _("Technical name must be unique per company"),
+        "Technical name must be unique per company",
     )

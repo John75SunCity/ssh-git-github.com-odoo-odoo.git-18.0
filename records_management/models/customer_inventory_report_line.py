@@ -25,7 +25,7 @@ class CustomerInventoryReportLine(models.Model):
     # ============================================================================
     # CORE & RELATIONSHIPS
     # ============================================================================
-    name = fields.Char(string="Line Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string="Line Reference", required=True, copy=False, readonly=True, default=lambda self: "New")
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
     user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user)

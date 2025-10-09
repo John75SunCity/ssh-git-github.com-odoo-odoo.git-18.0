@@ -16,7 +16,7 @@ class ShreddingHardDrive(models.Model):
         required=True,
         index=True,
         copy=False,
-        default=lambda self: _('New')
+        default=lambda self: "New"
     )
     serial_number = fields.Char(string="Serial Number", required=True, copy=False, index=True)
 

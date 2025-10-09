@@ -30,7 +30,7 @@ class ContainerDestructionWorkOrder(models.Model):
         required=True,
         copy=False,
         readonly=True,
-        default=lambda self: _('New')
+        default=lambda self: "New"
     )
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)

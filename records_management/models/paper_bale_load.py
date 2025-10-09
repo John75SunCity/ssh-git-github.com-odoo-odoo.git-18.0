@@ -12,7 +12,7 @@ class Load(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string='Load Number', required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string='Load Number', required=True, copy=False, readonly=True, default=lambda self: "New")
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
     priority = fields.Selection([('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')

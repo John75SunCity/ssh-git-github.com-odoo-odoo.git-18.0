@@ -15,7 +15,7 @@ class RecordsDestruction(models.Model):
     name = fields.Char(
         string='Name',
         required=True,
-        default=lambda self: _('New'),
+        default=lambda self: "New",
         tracking=True,
         index=True
     )

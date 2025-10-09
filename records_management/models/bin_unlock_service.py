@@ -14,7 +14,7 @@ class BinUnlockService(models.Model):
         string='Reference',
         required=True,
         copy=False,
-        default=lambda self: _('New Unlock Service'),
+        default=lambda self: "New Unlock Service",
         tracking=True,
     )
     service_number = fields.Char(string='Service Number', copy=False, tracking=True)

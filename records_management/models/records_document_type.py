@@ -17,7 +17,7 @@ class RecordsDocumentType(models.Model):
     # FIELDS - Core Information
     # ============================================================================
     name = fields.Char(string="Document Type Name", required=True, tracking=True)
-    code = fields.Char(string="Code", required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    code = fields.Char(string="Code", required=True, copy=False, readonly=True, default=lambda self: "New")
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
     active = fields.Boolean(default=True)

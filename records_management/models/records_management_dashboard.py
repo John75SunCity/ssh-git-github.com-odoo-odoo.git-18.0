@@ -19,7 +19,7 @@ class RecordsManagementDashboard(models.Model):
     _description = "Records Management Dashboard"
     _order = "create_date desc"
 
-    name = fields.Char(string="Name", required=True, default=lambda self: _("Management Dashboard"))
+    name = fields.Char(string="Name", required=True, default=lambda self: "Management Dashboard")
     company_id = fields.Many2one(
         comodel_name="res.company", string="Company", required=True, default=lambda self: self.env.company
     )

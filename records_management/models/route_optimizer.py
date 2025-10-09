@@ -25,7 +25,7 @@ class RouteOptimizer(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Optimization Name", required=True, default=lambda self: _('New'))
+    name = fields.Char(string="Optimization Name", required=True, default=lambda self: "New")
     company_id = fields.Many2one(
         comodel_name='res.company',
         string='Company',

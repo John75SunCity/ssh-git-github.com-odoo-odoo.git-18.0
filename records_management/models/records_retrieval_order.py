@@ -12,7 +12,7 @@ class RecordsRetrievalOrder(models.Model):
     _rec_name = 'display_name'
 
     # Core identification
-    name = fields.Char(string='Order #', required=True, copy=False, index=True, default=lambda self: _('New'), tracking=True)
+    name = fields.Char(string='Order #', required=True, copy=False, index=True, default=lambda self: "New", tracking=True)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True)

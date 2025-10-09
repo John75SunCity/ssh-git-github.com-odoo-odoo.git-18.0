@@ -38,7 +38,7 @@ class ContainerAccessActivity(models.Model):
         required=True,
         tracking=True,
         index=True,
-        default=lambda self: _("New Activity"),
+        default=lambda self: "New Activity",
         help="Unique reference for this access activity"
     )
 

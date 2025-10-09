@@ -11,7 +11,7 @@ class RecordsUsageTracking(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Usage Record", required=True, copy=False, readonly=True, default=lambda self: _('New'), index=True)
+    name = fields.Char(string="Usage Record", required=True, copy=False, readonly=True, default=lambda self: "New", index=True)
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     state = fields.Selection([

@@ -9,7 +9,7 @@ class ContainerAccessDocument(models.Model):
     _description = 'Container Access Document'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Name', default=lambda self: _('Activity Document'))
+    name = fields.Char(string='Name', default=lambda self: "Activity Document")
     company_id = fields.Many2one('res.company', string='Company', default=lambda s: s.env.company)
 
     activity_id = fields.Many2one(

@@ -6,7 +6,7 @@ class RecordsDestructionJob(models.Model):
     _description = 'Records Destruction Job'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Name', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
+    name = fields.Char(string='Name', required=True, copy=False, readonly=True, index=True, default=lambda self: "New")
     destruction_date = fields.Date(string='Destruction Date', required=True, tracking=True)
     state = fields.Selection([
         ('draft', 'Draft'),

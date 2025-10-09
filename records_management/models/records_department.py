@@ -74,7 +74,7 @@ class RecordsDepartment(models.Model):
     # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
     _name_partner_uniq = models.Constraint(
         'UNIQUE(name, partner_id, company_id)',
-        _('The department name must be unique per customer.'),
+        "The department name must be unique per customer.",
     )
 
     # ============================================================================

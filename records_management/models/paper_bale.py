@@ -12,7 +12,7 @@ class PaperBale(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string="Bale Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string="Bale Reference", required=True, copy=False, readonly=True, default=lambda self: "New")
     bale_number = fields.Char(
         string="Bale Number", readonly=True, copy=False, help="Sequential bale number for identification"
     )

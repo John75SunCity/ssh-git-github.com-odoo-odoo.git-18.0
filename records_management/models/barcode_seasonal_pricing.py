@@ -48,7 +48,7 @@ class BarcodeSeasonalPricing(models.Model):
     # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
     _price_multiplier_positive = models.Constraint(
         'CHECK(price_multiplier > 0)',
-        _('Multiplier must be greater than zero.'),
+        "Multiplier must be greater than zero.",
     )
 
     @api.constrains('start_date', 'end_date')

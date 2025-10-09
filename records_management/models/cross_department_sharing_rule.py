@@ -36,5 +36,5 @@ class CrossDepartmentSharingRule(models.Model):
 
     _unique_sharing_rule = models.Constraint(
         "unique(sharing_id, rule_id)",
-        _("Each sharing record can only have one rule per access rule."),
+        "Each sharing record can only have one rule per access rule.",
     )

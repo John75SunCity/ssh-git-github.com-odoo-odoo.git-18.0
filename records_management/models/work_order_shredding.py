@@ -11,7 +11,7 @@ class WorkOrderShredding(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string="Work Order #", required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string="Work Order #", required=True, copy=False, readonly=True, default=lambda self: "New")
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
 
     state = fields.Selection([

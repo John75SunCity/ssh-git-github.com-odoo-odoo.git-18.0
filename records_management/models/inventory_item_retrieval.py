@@ -5,7 +5,7 @@ class InventoryItemRetrieval(models.Model):
     _description = 'Inventory Item Retrieval'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Retrieval Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string='Retrieval Reference', required=True, copy=False, readonly=True, default=lambda self: "New")
     retrieval_date = fields.Datetime(string='Retrieval Date', required=True, default=fields.Datetime.now)
     responsible_id = fields.Many2one(comodel_name='res.users', string='Responsible', required=True, tracking=True)
     item_ids = fields.One2many('inventory.item.retrieval.line', 'retrieval_id', string='Retrieval Lines')

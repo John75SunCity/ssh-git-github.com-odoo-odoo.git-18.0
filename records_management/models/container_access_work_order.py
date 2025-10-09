@@ -39,7 +39,7 @@ class ContainerAccessWorkOrder(models.Model):
         copy=False,
         readonly=True,
         index=True,
-        default=lambda self: _('New')
+        default=lambda self: "New"
     )
     display_name = fields.Char(
         string='Display Name',

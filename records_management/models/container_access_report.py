@@ -9,7 +9,7 @@ class ContainerAccessReport(models.Model):
     _description = 'Container Access Report'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Report Name', default=lambda self: _('Access Report'))
+    name = fields.Char(string='Report Name', default=lambda self: "Access Report")
     company_id = fields.Many2one('res.company', string='Company', default=lambda s: s.env.company)
 
     activity_id = fields.Many2one(

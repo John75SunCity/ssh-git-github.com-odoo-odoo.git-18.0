@@ -14,7 +14,7 @@ class RecordsBulkUserImport(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string='Import Batch Name', required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string='Import Batch Name', required=True, copy=False, readonly=True, default=lambda self: "New")
     csv_file = fields.Binary(
         string="CSV File",
         required=True,

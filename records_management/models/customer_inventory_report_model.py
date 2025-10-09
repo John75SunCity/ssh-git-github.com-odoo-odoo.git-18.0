@@ -17,7 +17,7 @@ class CustomerInventoryReport(models.Model):
     _order = 'report_date desc, partner_id'
 
     # Core
-    name = fields.Char(string='Name', default=lambda self: _('Customer Inventory Report'), tracking=True)
+    name = fields.Char(string='Name', default=lambda self: "Customer Inventory Report", tracking=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
     user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user)
     active = fields.Boolean(default=True)

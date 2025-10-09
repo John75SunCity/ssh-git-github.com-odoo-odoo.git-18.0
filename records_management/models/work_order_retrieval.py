@@ -13,7 +13,7 @@ class WorkOrderRetrieval(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string='Work Order', required=True, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string='Work Order', required=True, readonly=True, default=lambda self: "New")
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(default=True)

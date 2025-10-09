@@ -23,7 +23,7 @@ class PaperBaleRecycling(models.Model):
         required=True,
         copy=False,
         readonly=True,
-        default=lambda self: _('New')
+        default=lambda self: "New"
     )
     bale_id = fields.Many2one(
         'paper.bale',

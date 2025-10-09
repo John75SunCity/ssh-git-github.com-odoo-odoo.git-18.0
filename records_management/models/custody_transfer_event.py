@@ -36,7 +36,7 @@ class CustodyTransferEvent(models.Model):
         copy=False,
         readonly=True,
         index=True,
-        default=lambda self: _('New')
+        default=lambda self: "New"
     )
     company_id = fields.Many2one(
         'res.company',

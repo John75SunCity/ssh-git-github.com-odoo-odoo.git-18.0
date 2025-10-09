@@ -25,7 +25,7 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Container Name", required=True, copy=False, readonly=True, default=lambda self: _("New"))
+    name = fields.Char(string="Container Name", required=True, copy=False, readonly=True, default=lambda self: "New")
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company, required=True, readonly=True
@@ -225,8 +225,8 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _barcode_company_uniq = models.Constraint("unique(barcode, company_id)", _("The barcode must be unique per company."))
-    _temp_barcode_company_uniq = models.Constraint("unique(temp_barcode, company_id)", _("The temporary barcode must be unique per company."))
+    _barcode_company_uniq = models.Constraint("unique(barcode, company_id)", "The barcode must be unique per company.")
+    _temp_barcode_company_uniq = models.Constraint("unique(temp_barcode, company_id)", "The temporary barcode must be unique per company.")
 
     # ============================================================================
     # ORM OVERRIDES

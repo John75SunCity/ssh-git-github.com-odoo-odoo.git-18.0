@@ -6,7 +6,7 @@ class RecordsStorageBox(models.Model):
     _description = 'Records Storage Box'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Name', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
+    name = fields.Char(string='Name', required=True, copy=False, readonly=True, index=True, default=lambda self: "New")
     active = fields.Boolean(default=True)
     box_size = fields.Selection([
         ('small', 'Small'),

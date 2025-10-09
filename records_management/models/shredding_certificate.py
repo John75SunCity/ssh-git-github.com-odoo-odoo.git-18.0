@@ -44,7 +44,7 @@ class ShreddingCertificate(models.Model):
         required=True,
         copy=False,
         readonly=True,
-        default=lambda self: _('New'),
+        default=lambda self: "New",
         index=True
     )
     company_id = fields.Many2one(
@@ -180,8 +180,8 @@ class ShreddingCertificate(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _name_unique = models.Constraint('unique(name, company_id)', _('Certificate number must be unique per company!'))
-    _chain_of_custody_unique = models.Constraint('unique(chain_of_custody_number)', _('Chain of Custody number must be unique!'))
+    _name_unique = models.Constraint('unique(name, company_id)', "Certificate number must be unique per company!")
+    _chain_of_custody_unique = models.Constraint('unique(chain_of_custody_number)', "Chain of Custody number must be unique!")
 
     # ============================================================================
     # ORM OVERRIDES

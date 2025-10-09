@@ -15,7 +15,7 @@ class CustomerInventory(models.Model):
     _rec_name = 'name'
 
     # CORE & WORKFLOW ---------------------------------------------------------
-    name = fields.Char(string='Inventory Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string='Inventory Reference', required=True, copy=False, readonly=True, default=lambda self: "New")
     company_id = fields.Many2one(comodel_name='res.company', string='Company', required=True, default=lambda self: self.env.company)
     user_id = fields.Many2one(comodel_name='res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string='Active', default=True)

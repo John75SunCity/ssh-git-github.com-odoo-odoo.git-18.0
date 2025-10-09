@@ -32,7 +32,6 @@
             <field name="list_price">0.05</field> <!-- Example price per lb -->
             <field name="standard_price">0.0</field>
             <field name="uom_id" ref="uom.product_uom_lb"/>
-            <field name="uom_po_id" ref="uom.product_uom_lb"/>
             <field name="description">Sale of sorted white paper scrap.</field>
             <field name="default_code">SCRAP-WHT</field>
             <field name="categ_id" ref="product_category_paper_scrap"/>
@@ -45,7 +44,6 @@
             <field name="list_price">0.03</field> <!-- Example price per lb -->
             <field name="standard_price">0.0</field>
             <field name="uom_id" ref="uom.product_uom_lb"/>
-            <field name="uom_po_id" ref="uom.product_uom_lb"/>
             <field name="description">Sale of mixed office paper scrap.</field>
             <field name="default_code">SCRAP-MIX</field>
             <field name="categ_id" ref="product_category_paper_scrap"/>
@@ -58,7 +56,6 @@
             <field name="list_price">0.02</field> <!-- Example price per lb -->
             <field name="standard_price">0.0</field>
             <field name="uom_id" ref="uom.product_uom_lb"/>
-            <field name="uom_po_id" ref="uom.product_uom_lb"/>
             <field name="description">Sale of old corrugated cardboard scrap.</field>
             <field name="default_code">SCRAP-OCC</field>
             <field name="categ_id" ref="product_category_paper_scrap"/>

@@ -14,7 +14,7 @@ class ContainerAccessPhoto(models.Model):
     _description = 'Container Access Photo'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Name', default=lambda self: _('Activity Photo'))
+    name = fields.Char(string='Name', default=lambda self: "Activity Photo")
     company_id = fields.Many2one('res.company', string='Company', default=lambda s: s.env.company)
 
     # Link back to the access activity (inverse field for One2many)

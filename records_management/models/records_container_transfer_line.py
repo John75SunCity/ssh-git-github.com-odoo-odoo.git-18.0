@@ -11,4 +11,4 @@ class RecordsContainerTransferLine(models.Model):
     to_location_id = fields.Many2one(related='transfer_id.to_location_id', string="To Location", store=True, readonly=True, comodel_name='stock.location')
     state = fields.Selection(related='transfer_id.state', string="Transfer Status", store=True, readonly=True)
 
-    _container_transfer_uniq = models.Constraint('unique(transfer_id, container_id)', _('A container can only be listed once per transfer.'))
+    _container_transfer_uniq = models.Constraint('unique(transfer_id, container_id)', "A container can only be listed once per transfer.")

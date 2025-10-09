@@ -13,7 +13,7 @@ class RecordsDeletionRequest(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Request ID", required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string="Request ID", required=True, copy=False, readonly=True, default=lambda self: "New")
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)

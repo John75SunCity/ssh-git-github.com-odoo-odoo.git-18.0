@@ -26,7 +26,7 @@ class NaidCertificate(models.Model):
         required=True,
         copy=False,
         readonly=True,
-        default=lambda self: _("New"),
+        default=lambda self: "New",
     )
     company_id = fields.Many2one(
         "res.company",

@@ -12,7 +12,7 @@ class DocumentSearchAttempt(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string="Search Reference", required=True, index=True, copy=False, default=lambda self: _('New'))
+    name = fields.Char(string="Search Reference", required=True, index=True, copy=False, default=lambda self: "New")
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)

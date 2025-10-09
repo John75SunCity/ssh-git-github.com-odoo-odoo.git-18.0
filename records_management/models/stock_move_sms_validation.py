@@ -9,7 +9,7 @@ class StockMoveSMSValidation(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # Core fields
-    name = fields.Char(string="Reference", required=True, copy=False, default=lambda self: _('New'))
+    name = fields.Char(string="Reference", required=True, copy=False, default=lambda self: "New")
     stock_move_id = fields.Many2one(comodel_name='stock.move', string="Stock Move", required=True)
     partner_id = fields.Many2one(related='stock_move_id.partner_id', string="Customer", readonly=True)
 

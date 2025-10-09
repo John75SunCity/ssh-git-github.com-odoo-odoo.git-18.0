@@ -14,7 +14,7 @@ class FileRetrievalItem(models.Model):
         required=True,
         copy=False,
         readonly=True,
-        default=lambda self: _('New')
+        default=lambda self: "New"
     )
     
     # File information

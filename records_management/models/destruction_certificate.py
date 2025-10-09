@@ -29,7 +29,7 @@ class DestructionCertificate(models.Model):
     # ============================================================================
     # CORE FIELDS
     # ============================================================================
-    name = fields.Char(string="Certificate Number", required=True, copy=False, default=lambda self: _("New"))
+    name = fields.Char(string="Certificate Number", required=True, copy=False, default=lambda self: "New")
     certificate_date = fields.Date(
         string="Certificate Date", required=True, default=fields.Date.context_today, tracking=True
     )

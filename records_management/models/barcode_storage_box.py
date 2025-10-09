@@ -35,7 +35,7 @@ class BarcodeStorageBox(models.Model):
         required=True,
         copy=False,
         index=True,
-        default=lambda self: _('New')
+        default=lambda self: "New"
     )
     display_name = fields.Char(
         string='Display Name',

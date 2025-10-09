@@ -11,7 +11,7 @@ class RecordsDigitalScan(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Scan Name", required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string="Scan Name", required=True, copy=False, readonly=True, default=lambda self: "New")
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)

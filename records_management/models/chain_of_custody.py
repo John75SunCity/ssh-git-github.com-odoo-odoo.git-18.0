@@ -36,7 +36,7 @@ class ChainOfCustody(models.Model):
 
     _name_company_uniq = models.Constraint(
         "unique(name, company_id)",
-        _("Custody Reference must be unique per company!"),
+        "Custody Reference must be unique per company!",
     )
 
     # Centralized prefix for custody references to avoid mismatches
@@ -49,7 +49,7 @@ class ChainOfCustody(models.Model):
         copy=False,
         index=True,
         help="Unique reference for this custody record",
-        default=lambda self: _("New"),
+        default=lambda self: "New",
     )
 
     display_name = fields.Char(

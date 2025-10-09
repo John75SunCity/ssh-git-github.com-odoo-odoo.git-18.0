@@ -10,7 +10,7 @@ class TempInventoryMovement(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string="Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string="Reference", required=True, copy=False, readonly=True, default=lambda self: "New")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),

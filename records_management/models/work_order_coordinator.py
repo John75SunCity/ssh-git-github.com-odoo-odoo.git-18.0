@@ -12,7 +12,7 @@ class WorkOrderCoordinator(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string="Coordination Reference", required=True, copy=False, readonly=True,
-                        default=lambda self: _('New'))
+                        default=lambda self: "New")
     partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", required=True, tracking=True)
     portal_request_id = fields.Many2one(comodel_name='portal.request', string="Portal Request", ondelete='set null')
 

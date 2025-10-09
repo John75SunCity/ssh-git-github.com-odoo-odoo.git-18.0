@@ -56,7 +56,7 @@ class RecordsLocation(models.Model):
     # ============================================================================
     name = fields.Char(string="Location Name", required=True, tracking=True)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
-    code = fields.Char(string="Location Code", required=True, copy=False, readonly=True, default=lambda self: _('New'), tracking=True)
+    code = fields.Char(string="Location Code", required=True, copy=False, readonly=True, default=lambda self: "New", tracking=True)
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)

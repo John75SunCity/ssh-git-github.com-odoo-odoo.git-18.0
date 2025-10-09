@@ -11,7 +11,7 @@ class MobilePhoto(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string="Photo Name", required=True, default=lambda self: _('New Photo'))
+    name = fields.Char(string="Photo Name", required=True, default=lambda self: "New Photo")
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string="Active", default=True)
 

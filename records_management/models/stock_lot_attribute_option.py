@@ -22,5 +22,5 @@ class StockLotAttributeOption(models.Model):
     # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
     _name_attribute_uniq = models.Constraint(
         'UNIQUE(name, attribute_id)',
-        _('Options must be unique per attribute!'),
+        "Options must be unique per attribute!",
     )

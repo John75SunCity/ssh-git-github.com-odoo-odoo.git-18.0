@@ -33,7 +33,7 @@ class BinKey(models.Model):
         required=True,
         copy=False,
         readonly=True,
-        default=lambda self: _('New')
+        default=lambda self: "New"
     )
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     company_id = fields.Many2one(
@@ -103,7 +103,7 @@ class BinKey(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _key_code_company_uniq = models.Constraint('unique(key_code, company_id)', _('The key code must be unique per company.'))
+    _key_code_company_uniq = models.Constraint('unique(key_code, company_id)', "The key code must be unique per company.")
 
     # ============================================================================
     # COMPUTE METHODS

@@ -14,7 +14,7 @@ class StockLotAttributeValue(models.Model):
     # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
     _unique_lot_attribute = models.Constraint(
         'UNIQUE(lot_id, attribute_id)',
-        _('Each attribute must be unique per stock lot.'),
+        "Each attribute must be unique per stock lot.",
     )
 
     # ============================================================================

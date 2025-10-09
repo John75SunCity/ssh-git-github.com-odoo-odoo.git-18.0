@@ -10,7 +10,7 @@ class NAIDPerformanceHistory(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string='Reference', required=True, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string='Reference', required=True, readonly=True, default=lambda self: "New")
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, readonly=True)
 
     date_start = fields.Date(string='Period Start Date', required=True)

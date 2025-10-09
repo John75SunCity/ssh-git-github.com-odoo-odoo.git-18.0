@@ -37,7 +37,7 @@ class BarcodeGenerationHistory(models.Model):
         tracking=True,
         index=True,
         copy=False,
-        default=lambda self: _('New')
+        default=lambda self: "New"
     )
     company_id = fields.Many2one(
         'res.company',
