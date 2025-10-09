@@ -3,25 +3,21 @@
         <!-- NAID Security Groups -->
         <record id="group_naid_security_officer" model="res.groups">
             <field name="name">NAID Security Officer</field>
-            <field name="category_id" ref="base.module_category_human_resources"/>
             <field name="comment">NAID Security Officers can review audit logs, verify compliance, and manage security policies.</field>
         </record>
 
         <record id="group_naid_destruction_operator" model="res.groups">
             <field name="name">NAID Destruction Operator</field>
-            <field name="category_id" ref="base.module_category_human_resources"/>
             <field name="comment">NAID Destruction Operators can perform destruction processes and witness destruction activities.</field>
         </record>
 
         <record id="group_naid_auditor" model="res.groups">
             <field name="name">NAID Auditor</field>
-            <field name="category_id" ref="base.module_category_human_resources"/>
             <field name="comment">NAID Auditors can access all audit logs and compliance reports for review purposes.</field>
         </record>
 
         <record id="group_naid_compliance_manager" model="res.groups">
             <field name="name">NAID Compliance Manager</field>
-            <field name="category_id" ref="base.module_category_human_resources"/>
             <field name="comment">NAID Compliance Managers can manage all compliance policies, employee credentials, and audit requirements.</field>
         </record>
 
