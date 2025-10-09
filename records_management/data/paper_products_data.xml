@@ -8,9 +8,8 @@
         <record id="product_paper_white" model="product.product">
             <field name="name">White Paper Bale</field>
             <field name="type">consu</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="uom_id" ref="uom.product_uom_lb"/>
-            <field name="uom_po_id" ref="uom.product_uom_lb"/>
             <field name="list_price">0.00</field>  <!-- Default price - configure via Product Management -->
             <field name="standard_price">0.00</field>
             <field name="default_code">PAPER-WHITE</field>
@@ -20,9 +19,8 @@
         <record id="product_paper_mixed" model="product.product">
             <field name="name">Mixed Paper Bale</field>
             <field name="type">consu</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="uom_id" ref="uom.product_uom_lb"/>
-            <field name="uom_po_id" ref="uom.product_uom_lb"/>
             <field name="list_price">0.00</field>  <!-- Default price - configure via Product Management -->
             <field name="standard_price">0.00</field>
             <field name="default_code">PAPER-MIXED</field>
@@ -32,9 +30,8 @@
         <record id="product_paper_cardboard" model="product.product">
             <field name="name">Cardboard Bale</field>
             <field name="type">consu</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="uom_id" ref="uom.product_uom_lb"/>
-            <field name="uom_po_id" ref="uom.product_uom_lb"/>
             <field name="list_price">0.00</field>  <!-- Default price - configure via Product Management -->
             <field name="standard_price">0.00</field>
             <field name="default_code">PAPER-CARDBOARD</field>
@@ -45,9 +42,8 @@
         <record id="product_baling_service" model="product.product">
             <field name="name">Paper Baling Service</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="uom_id" ref="uom.product_uom_unit"/>
-            <field name="uom_po_id" ref="uom.product_uom_unit"/>
             <field name="list_price">0.00</field>  <!-- Default price - configure via Product Management -->
             <field name="standard_price">0.00</field>
             <field name="default_code">SVC-BALING</field>
@@ -57,9 +53,8 @@
         <record id="product_load_transport" model="product.product">
             <field name="name">Load Transportation</field>
             <field name="type">service</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
             <field name="uom_id" ref="uom.product_uom_unit"/>
-            <field name="uom_po_id" ref="uom.product_uom_unit"/>
             <field name="list_price">0.00</field>  <!-- Default price - configure via Product Management -->
             <field name="standard_price">0.00</field>
             <field name="default_code">SVC-TRANSPORT</field>
