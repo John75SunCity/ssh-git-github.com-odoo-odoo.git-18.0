@@ -76,12 +76,10 @@
                     <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]" />
                     <filter string="Done" name="done" domain="[('state', '=', 'done')]" />
                     <separator />
-                    <group string="Group By">
-                        <filter string="Document" name="group_document" context="{'group_by': 'document_id'}" />
-                        <filter string="Scanned By" name="group_scanned_by" context="{'group_by': 'scanned_by_id'}" />
-                        <filter string="File Format" name="group_format" context="{'group_by': 'file_format'}" />
-                        <filter string="State" name="group_state" context="{'group_by': 'state'}" />
-                    </group>
+                    <filter string="Group by Document" name="group_document" context="{'group_by': 'document_id'}" />
+                    <filter string="Group by Scanned By" name="group_scanned_by" context="{'group_by': 'scanned_by_id'}" />
+                    <filter string="Group by File Format" name="group_format" context="{'group_by': 'file_format'}" />
+                    <filter string="Group by State" name="group_state" context="{'group_by': 'state'}" />
                 </search>
             </field>
         </record>
