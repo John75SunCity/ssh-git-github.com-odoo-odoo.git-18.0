@@ -51,7 +51,7 @@ class NAIDCertificationLevel(models.Model):
     active = fields.Boolean(string='Active', default=True)
 
     # Constraints
-    level_code_unique = models.Constraint('unique(level_code)', _('Level code must be unique!'))
+    _level_code_unique = models.Constraint('unique(level_code)', _('Level code must be unique!'))
 
     @api.depends('name', 'level_code')
     def _compute_display_name(self):

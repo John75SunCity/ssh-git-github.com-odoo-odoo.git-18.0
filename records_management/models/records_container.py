@@ -221,8 +221,8 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    barcode_company_uniq = models.Constraint("unique(barcode, company_id)", _("The barcode must be unique per company."))
-    temp_barcode_company_uniq = models.Constraint("unique(temp_barcode, company_id)", _("The temporary barcode must be unique per company."))
+    _barcode_company_uniq = models.Constraint("unique(barcode, company_id)", _("The barcode must be unique per company."))
+    _temp_barcode_company_uniq = models.Constraint("unique(temp_barcode, company_id)", _("The temporary barcode must be unique per company."))
 
     # ============================================================================
     # ORM OVERRIDES

@@ -257,7 +257,7 @@ class RecordsDocument(models.Model):
     destroyed = fields.Boolean(string="Is Destroyed", compute='_compute_destroyed', store=True, help="True if the document's state is 'destroyed'.")
     recently_accessed = fields.Boolean(string="Accessed Recently", compute="_compute_recent_access", search="_search_recent_access", help="True if accessed in last 30 days.")
 
-    temp_file_barcode_company_uniq = models.Constraint("unique(temp_barcode, company_id)", _("Temporary file barcode must be unique per company."))
+    _temp_file_barcode_company_uniq = models.Constraint("unique(temp_barcode, company_id)", _("Temporary file barcode must be unique per company."))
 
     # ============================================================================
     # ORM OVERRIDES

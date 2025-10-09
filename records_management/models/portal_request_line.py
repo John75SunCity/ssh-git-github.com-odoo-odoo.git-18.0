@@ -46,7 +46,7 @@ class PortalRequestLine(models.Model):
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
     active = fields.Boolean(string='Active', default=True)
 
-    quantity_positive = models.Constraint(
+    _quantity_positive = models.Constraint(
         'CHECK(quantity > 0)',
         _('Quantity must be positive.')
     )

@@ -236,4 +236,4 @@ class HardDriveScanWizardLine(models.TransientModel):
                 vals['verified'] = True
         return super().create(vals_list)
 
-    serial_number_wizard_uniq = models.Constraint('unique(wizard_id, serial_number)', _('Serial numbers must be unique within a single scan session.'))
+    _serial_number_wizard_uniq = models.Constraint('unique(wizard_id, serial_number)', _('Serial numbers must be unique within a single scan session.'))

@@ -30,7 +30,7 @@ class ChainOfCustody(models.Model):
     _order = "sequence, transfer_date desc, id desc"
     _rec_name = "display_name"
 
-    name_company_uniq = models.Constraint(
+    _name_company_uniq = models.Constraint(
         "unique(name, company_id)",
         _("Custody Reference must be unique per company!"),
     )

@@ -37,7 +37,7 @@ class InventoryItemProfile(models.Model):
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
 
-    retention_period_positive = models.Constraint(
+    _retention_period_positive = models.Constraint(
         'CHECK(retention_period > 0)',
         _('Retention period must be positive.')
     )

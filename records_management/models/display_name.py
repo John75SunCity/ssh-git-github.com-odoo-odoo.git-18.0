@@ -30,5 +30,5 @@ class DisplayName(models.Model):
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
 
-    name_model_unique = models.Constraint('unique(name, model_name, company_id)',
+    _name_model_unique = models.Constraint('unique(name, model_name, company_id)',
          _('Template name must be unique per model and company.'))

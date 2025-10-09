@@ -76,8 +76,8 @@ class ShredBin(models.Model):
     needs_collection = fields.Boolean(string="Needs Collection", compute='_compute_needs_collection', store=True)
     product_id = fields.Many2one(comodel_name='barcode.product', string='Barcode Product', ondelete='set null', index=True, help='Optional link to a barcode product template associated with this shred bin.')
 
-    name_company_uniq = models.Constraint('unique(name, company_id)', _('The Bin Number must be unique per company.'))
-    barcode_company_uniq = models.Constraint('unique(barcode, company_id)', _('The Barcode must be unique per company if set.'))
+    _name_company_uniq = models.Constraint('unique(name, company_id)', _('The Bin Number must be unique per company.'))
+    _barcode_company_uniq = models.Constraint('unique(barcode, company_id)', _('The Barcode must be unique per company if set.'))
 
     # ============================================================================
     # CONSTRAINTS
