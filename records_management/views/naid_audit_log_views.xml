@@ -204,7 +204,7 @@
             <filter string="Has Task" name="has_task" domain="[('task_id', '!=', False)]" />
             <filter string="Has Related Record" name="has_related" domain="[('res_id', '!=', False)]" />
 
-            <group expand="0" string="Group By">
+            <group string="Group By">
                 <filter string="User" name="group_by_user" context="{'group_by':'user_id'}" />
                 <filter string="Action Type" name="group_by_action_type" context="{'group_by':'action_type'}" />
                 <filter string="Model" name="group_by_model" context="{'group_by':'res_model'}" />
