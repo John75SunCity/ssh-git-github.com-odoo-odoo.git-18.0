@@ -13,6 +13,12 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
+        <!-- Paper Scrap Product Category -->
+        <record id="product_category_paper_scrap" model="product.category">
+            <field name="name">Paper Scrap</field>
+            <field name="parent_id" eval="False"/>
+        </record>
+
         <!--
             Product Definitions for Paper Scrap
             These products are used when creating customer invoices for the loads.
@@ -29,7 +35,7 @@
             <field name="uom_po_id" ref="uom.product_uom_lb"/>
             <field name="description">Sale of sorted white paper scrap.</field>
             <field name="default_code">SCRAP-WHT</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
         </record>
 
         <record id="product_paper_mix" model="product.product">
@@ -42,7 +48,7 @@
             <field name="uom_po_id" ref="uom.product_uom_lb"/>
             <field name="description">Sale of mixed office paper scrap.</field>
             <field name="default_code">SCRAP-MIX</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
         </record>
 
         <record id="product_paper_occ" model="product.product">
@@ -55,7 +61,7 @@
             <field name="uom_po_id" ref="uom.product_uom_lb"/>
             <field name="description">Sale of old corrugated cardboard scrap.</field>
             <field name="default_code">SCRAP-OCC</field>
-            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="categ_id" ref="product_category_paper_scrap"/>
         </record>
     </data>
 </odoo>
