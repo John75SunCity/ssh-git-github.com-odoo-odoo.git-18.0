@@ -74,7 +74,7 @@ class RecordsManagementController(http.Controller):
         }
         return request.render('records_management.enhanced_dashboard', context)
 
-    @http.route("/records/dashboard/data", type="jsonrpc", auth="user", methods=["POST"])
+    @http.route("/records/dashboard/data", type="json", auth="user", methods=["POST"])
     def get_dashboard_data(self, **post):
         """
         JSON endpoint for AJAX dashboard data updates.
@@ -190,7 +190,7 @@ class RecordsManagementController(http.Controller):
     # CONTAINER MANAGEMENT ROUTES
     # ============================================================================
 
-    @http.route("/records/containers/list", type="jsonrpc", auth="user", methods=["POST"])
+    @http.route("/records/containers/list", type="json", auth="user", methods=["POST"])
     def list_containers_with_barcodes(self, **post):
         """Return lightweight container list including temporary & physical barcode state.
 
@@ -249,7 +249,7 @@ class RecordsManagementController(http.Controller):
             _logger.error("Error listing containers with barcodes: %s", e)
             return {"success": False, "error": "Failed to load containers"}
 
-    @http.route("/records/containers/bulk-update", type="jsonrpc", auth="user", methods=["POST"])
+    @http.route("/records/containers/bulk-update", type="json", auth="user", methods=["POST"])
     def action_bulk_container_update(self, **post):
         """
         Bulk update operations for containers.
@@ -398,7 +398,7 @@ class RecordsManagementController(http.Controller):
     # VALIDATION AND CONSTRAINT HELPER ROUTES
     # ============================================================================
 
-    @http.route("/records/validate/container-number", type="jsonrpc", auth="user", methods=["POST"])
+    @http.route("/records/validate/container-number", type="json", auth="user", methods=["POST"])
     def _check_container_number_availability(self, **post):
         """
         Validate container number availability and suggest alternatives.
@@ -437,7 +437,7 @@ class RecordsManagementController(http.Controller):
     # SYSTEM MONITORING ROUTES
     # ============================================================================
 
-    @http.route("/records/system/health", type="jsonrpc", auth="user", methods=["POST"])
+    @http.route("/records/system/health", type="json", auth="user", methods=["POST"])
     def _check_system_health(self):
         """
         System health check endpoint for monitoring.

@@ -73,7 +73,7 @@ class IntelligentSearchController(http.Controller):
     # ============================================================================
 
     @http.route(
-        ["/records/search/containers"], type="jsonrpc", auth="user", methods=["POST"]
+        ["/records/search/containers"], type="json", auth="user", methods=["POST"]
     )
     def _search_containers_autocomplete(self, query="", limit=10, customer_id=None):
         """
@@ -147,7 +147,7 @@ class IntelligentSearchController(http.Controller):
 
     @http.route(
         ["/records/search/recommend_containers"],
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -333,7 +333,7 @@ class IntelligentSearchController(http.Controller):
     # ============================================================================
 
     @http.route(
-        ["/my/records/search"], type="jsonrpc", auth="user", website=True, methods=["POST"]
+        ["/my/records/search"], type="json", auth="user", website=True, methods=["POST"]
     )
     def _search_portal_containers(self, **kwargs):
         """
@@ -365,7 +365,7 @@ class IntelligentSearchController(http.Controller):
     # ============================================================================
 
     @http.route(
-        ["/records/search/fulltext"], type="jsonrpc", auth="user", methods=["POST"]
+        ["/records/search/fulltext"], type="json", auth="user", methods=["POST"]
     )
     def _search_fulltext_containers(self, query="", customer_id=None, limit=20):
         """
@@ -486,7 +486,7 @@ class IntelligentSearchController(http.Controller):
 
     @http.route(
         ["/records/search/suggestions/config"],
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["GET"],
     )
