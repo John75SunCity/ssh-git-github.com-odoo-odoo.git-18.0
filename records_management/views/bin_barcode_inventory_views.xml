@@ -201,7 +201,7 @@ lbs
             <!-- OPTIMIZATION: Model bin.barcode.inventory has state field - consider using default search filters -->
             <field name="name">Bin Barcode Inventory</field>
             <field name="res_model">bin.barcode.inventory</field>
-            <field name="view_mode>list,form,graph,pivot</field>
+            <field name="view_mode">list,form,graph,pivot</field>
             <field name="context">{
             'search_default_available': 1,
         }</field>

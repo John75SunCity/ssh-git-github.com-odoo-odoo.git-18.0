@@ -47,7 +47,7 @@
     <record id="action_records_approval_workflow_line" model="ir.actions.act_window">
         <field name="name">Records.Approval.Workflow.Line</field>
         <field name="res_model">records.approval.workflow.line</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

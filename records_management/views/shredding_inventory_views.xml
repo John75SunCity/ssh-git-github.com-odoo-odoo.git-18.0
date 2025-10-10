@@ -88,7 +88,7 @@
     <record id="action_shredding_inventory_item" model="ir.actions.act_window">
         <field name="name">Shredding Inventory Items</field>
         <field name="res_model">shredding.inventory.item</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     
@@ -151,7 +151,7 @@
     <record id="action_shredding_picklist_item" model="ir.actions.act_window">
         <field name="name">Picklist Items</field>
         <field name="res_model">shredding.picklist.item</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     

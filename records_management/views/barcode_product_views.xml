@@ -318,7 +318,7 @@
             <field name="name">
                 <i class="fa fa-box" /> Barcode Product Management</field>
             <field name="res_model">barcode.product</field>
-            <field name="view_mode>list,form,graph,pivot</field>
+            <field name="view_mode">list,form,graph,pivot</field>
             <field name="search_view_id" ref="barcode_product_view_search" />
             <field name="context">{
             'search_default_active': 1,

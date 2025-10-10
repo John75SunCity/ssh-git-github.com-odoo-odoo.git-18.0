@@ -189,7 +189,7 @@
             <!-- OPTIMIZATION: Model records.retrieval.order has state field - consider using default search filters -->
             <field name="name">Retrieval Orders</field>
             <field name="res_model">records.retrieval.order</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="records_retrieval_order_view_search" />
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">Create your first Retrieval Order</p>

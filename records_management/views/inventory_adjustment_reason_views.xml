@@ -51,7 +51,7 @@
     <record id="action_inventory_adjustment_reason" model="ir.actions.act_window">
         <field name="name">Inventory Adjustment Reason</field>
         <field name="res_model">inventory.adjustment.reason</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- Menu -->

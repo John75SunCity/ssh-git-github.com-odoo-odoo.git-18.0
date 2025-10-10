@@ -51,7 +51,7 @@
         <record id="action_location_group" model="ir.actions.act_window">
             <field name="name">Location Group</field>
             <field name="res_model">location.group</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
         </record>
     </data>
 </odoo>

@@ -65,7 +65,7 @@
             <!-- OPTIMIZATION: Model rate.change.confirmation.wizard has state field - consider using default search filters -->
             <field name="name">Rate Change Confirmation Wizard</field>
             <field name="res_model">rate.change.confirmation.wizard</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

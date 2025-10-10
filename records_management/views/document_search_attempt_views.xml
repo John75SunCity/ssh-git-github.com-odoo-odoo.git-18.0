@@ -69,7 +69,7 @@
             <!-- OPTIMIZATION: Model document.search.attempt has state field - consider using default search filters -->
             <field name="name">Document Search Attempts</field>
             <field name="res_model">document.search.attempt</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="document_search_attempt_view_search" />
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">

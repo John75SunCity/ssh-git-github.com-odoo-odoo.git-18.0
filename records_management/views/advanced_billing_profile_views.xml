@@ -94,7 +94,7 @@
             <!-- OPTIMIZATION: Model advanced.billing.profile has state field - consider using default search filters -->
             <field name="name">Billing Profiles</field>
             <field name="res_model">advanced.billing.profile</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="view_id" ref="advanced_billing_profile_view_tree" />
             <field name="search_view_id" ref="advanced_billing_profile_view_search" />
             <field name="context">{'search_default_filter_active': 1}</field>

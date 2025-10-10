@@ -52,7 +52,7 @@
         <record id="action_records_request_type" model="ir.actions.act_window">
             <field name="name">Request Types</field>
             <field name="res_model">records.request.type</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
         <!-- Menu -->

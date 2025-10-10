@@ -36,7 +36,7 @@
     <record id="action_description" model="ir.actions.act_window">
         <field name="name">Description</field>
         <field name="res_model">description</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     </data>
 </odoo>

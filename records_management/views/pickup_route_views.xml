@@ -307,7 +307,7 @@
             <!-- OPTIMIZATION: Model pickup.route has state field - consider using default search filters -->
             <field name="name">Pickup Routes</field>
             <field name="res_model">pickup.route</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{
                 'default_user_id': uid,

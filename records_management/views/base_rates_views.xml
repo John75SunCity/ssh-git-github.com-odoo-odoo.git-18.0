@@ -88,7 +88,7 @@
     <record id="base_rates_action" model="ir.actions.act_window">
         <field name="name">Base Rates</field>
         <field name="res_model">base.rates</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'search_default_active': 1, 'search_default_current': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

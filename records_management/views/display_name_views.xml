@@ -48,7 +48,7 @@
             <!-- OPTIMIZATION: Model display_name has state field - consider using default search filters -->
             <field name="name">Display Name</field>
             <field name="res_model">display_name</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
         </record>
     </data>
 </odoo>

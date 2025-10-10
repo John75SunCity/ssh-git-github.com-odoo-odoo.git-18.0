@@ -221,7 +221,7 @@
             <!-- OPTIMIZATION: Model records.retention.policy.version has state field - consider using default search filters -->
             <field name="name">Retention Policy Versions</field>
             <field name="res_model">records.retention.policy.version</field>
-            <field name="view_mode>list,form,kanban</field>
+            <field name="view_mode">list,form,kanban</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

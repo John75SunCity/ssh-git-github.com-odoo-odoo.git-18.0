@@ -55,7 +55,7 @@
     <record id="action_paper_bale_line" model="ir.actions.act_window">
         <field name="name">Paper Bale Line</field>
         <field name="res_model">paper.bale.line</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     </data>
 </odoo>

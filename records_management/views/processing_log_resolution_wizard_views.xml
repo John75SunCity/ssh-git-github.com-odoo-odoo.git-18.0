@@ -60,7 +60,7 @@
     <record id="action_processing_log_resolution_wizard" model="ir.actions.act_window">
         <field name="name">Resolve Processing Log</field>
         <field name="res_model">processing.log.resolution.wizard</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="help" type="html">
         <p class="oe_view_nocontent_create">

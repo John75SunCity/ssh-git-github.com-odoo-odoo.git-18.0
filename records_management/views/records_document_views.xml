@@ -315,7 +315,7 @@
             <!-- OPTIMIZATION: Model records.document has state field - consider using default search filters -->
             <field name="name">Document Management</field>
             <field name="res_model">records.document</field>
-            <field name="view_mode>list,form,calendar</field>
+            <field name="view_mode">list,form,calendar</field>
             <field name="search_view_id" ref="records_document_view_search" />
             <field name="context">{
             'search_default_active': 1

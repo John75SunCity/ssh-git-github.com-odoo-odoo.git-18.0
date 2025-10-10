@@ -250,7 +250,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Service Items</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{
         'search_default_active': 1,
@@ -271,7 +271,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Active Services</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('active', '=', True)]</field>
             <field name="context">{
         'search_default_group_category': 1,
@@ -281,7 +281,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">NAID Compliant Services</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('category', '=', 'equipment'), ('active', '=', True)]</field>
             <field name="context">{
         'search_default_group_category': 1,
@@ -291,7 +291,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Portal Services</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('state', '=', 'available'), ('active', '=', True)]</field>
             <field name="context">{
         'search_default_group_category': 1,
@@ -301,7 +301,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Service Dashboard</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('active', '=', True)]</field>
             <field name="context">{
     'search_default_active': 1,
@@ -316,7 +316,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Service Categories</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('category','!=',False)]</field>
             <field name="context">{
     'search_default_group_category': 1,
@@ -330,7 +330,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Service Templates</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('active', '=', True), ('state','=','draft')]</field>
             <field name="help" type="html">
                 <p>Internal reusable templates not exposed on the portal.</p>
@@ -340,7 +340,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Service Requests</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('state', '=', 'available'), ('active','=',True)]</field>
             <field name="context">{'search_default_available': 1}</field>
             <field name="help" type="html">
@@ -351,7 +351,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Service Scheduling</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('state', '=', 'in_use'), ('active','=',True)]</field>
             <field name="help" type="html">
                 <p>Services that automatically create tasks when requested.</p>
@@ -361,7 +361,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Service Billing</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('maintenance_cost','>',0)]</field>
             <field name="help" type="html">
                 <p>Billable services with at least one pricing rule.</p>
@@ -382,7 +382,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Usage Analytics</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>tree</field>
+            <field name="view_mode">tree</field>
             <field name="domain">[('total_revenue','&gt;',0)]</field>
             <field name="context">{'pivot_measures':['total_revenue','monthly_revenue','request_count']}</field>
             <field name="help" type="html">
@@ -393,7 +393,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Revenue Report</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>tree</field>
+            <field name="view_mode">tree</field>
             <field name="domain">[('total_revenue', '&gt;', 0)]</field>
             <field name="context">{'pivot_measures':['total_revenue','monthly_revenue']}</field>
             <field name="help" type="html">
@@ -404,7 +404,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Pricing Rules</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('maintenance_cost', '>', 0)]</field>
             <field name="help" type="html">
                 <p>Services with conditional pricing logic.</p>
@@ -414,7 +414,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Quality Controls</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('is_maintenance_due', '=', True)]</field>
             <field name="help" type="html">
                 <p>Services that require quality checks or audit trails.</p>
@@ -424,7 +424,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Mobile Service Tasks</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('state', '=', 'available'), ('category','=','service')]</field>
             <field name="help" type="html">
                 <p>Portal-visible services that also generate tasks for mobile/FSM workflows.</p>
@@ -434,7 +434,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">FSM Integration</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('service_request_count', '>', 0)]</field>
             <field name="help" type="html">
                 <p>Services configured for Field Service task automation.</p>
@@ -444,7 +444,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Portal Service Requests</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('state', '=', 'available'), ('category','=','service')]</field>
             <field name="help" type="html">
                 <p>Portal-visible services that customers may request.</p>
@@ -454,7 +454,7 @@
             <!-- OPTIMIZATION: Model service.item has state field - consider using default search filters -->
             <field name="name">Self-Service Setup</field>
             <field name="res_model">service.item</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('state', '=', 'draft'), ('category','!=','equipment')]</field>
             <field name="help" type="html">
                 <p>Portal-visible informational services not requestable directly.</p>

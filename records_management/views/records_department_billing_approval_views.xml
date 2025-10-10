@@ -165,7 +165,7 @@
             <field name="name">Department Billing Approvals</field>
             <field name="res_model">records.department.billing.approval</field>
             <!-- Explicit ordering: list first so list view loads before kanban; prevents fallback to _get_default_tree_view during cold cache -->
-            <field name="view_mode>tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form</field>
             <!-- Ensure explicit list view binding to avoid default resolution edge cases -->
             <field name="view_id" ref="records_management.records_department_billing_approval_view_tree"/>
             <!-- Add search view reference for consistent search domain application -->

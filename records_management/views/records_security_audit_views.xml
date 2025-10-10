@@ -47,7 +47,7 @@
 <record id="action_records_security_audit" model="ir.actions.act_window">
     <field name="name">Records Security Audit</field>
     <field name="res_model">records.security.audit</field>
-    <field name="view_mode>list,form</field>
+    <field name="view_mode">list,form</field>
     <field name="domain">[]</field>
     <field name="context">{}</field>
     <field name="help" type="html">

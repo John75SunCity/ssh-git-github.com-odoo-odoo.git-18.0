@@ -41,7 +41,7 @@
             <!-- OPTIMIZATION: Model paper.bale.movement has state field - consider using default search filters -->
             <field name="name">Paper Bale Movement</field>
             <field name="res_model">paper.bale.movement</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

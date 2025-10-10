@@ -307,7 +307,7 @@ Deprecate</a>
             <!-- OPTIMIZATION: Model records.document.type has state field - consider using default search filters -->
             <field name="name">Document Types</field>
             <field name="res_model">records.document.type</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="records_document_type_view_search" />
             <field name="context">{'search_default_active': 1, 'search_default_active_state': 1}</field>
             <field name="help" type="html">

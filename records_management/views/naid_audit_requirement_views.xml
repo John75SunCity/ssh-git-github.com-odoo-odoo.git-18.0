@@ -230,7 +230,7 @@
     <record id="naid_audit_requirement_action" model="ir.actions.act_window">
         <field name="name">NAID Audit Requirements</field>
         <field name="res_model">naid.audit.requirement</field>
-        <field name="view_mode>tree,kanban,form,pivot,graph</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
         <field name="search_view_id" ref="naid_audit_requirement_view_search"/>
         <field name="help">Manage NAID AAA audit requirements and compliance checklists</field>
     </record>

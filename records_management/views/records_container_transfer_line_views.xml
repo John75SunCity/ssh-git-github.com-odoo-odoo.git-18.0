@@ -41,7 +41,7 @@
             <!-- OPTIMIZATION: Model records.container.transfer.line has state field - consider using default search filters -->
             <field name="name">Records Container Transfer Line</field>
             <field name="res_model">records.container.transfer.line</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

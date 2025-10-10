@@ -202,7 +202,7 @@
             <!-- OPTIMIZATION: Model shred.bin has state field - consider using default search filters -->
             <field name="name">Customer Shred Bins</field>
             <field name="res_model">shred.bin</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="context">{'search_default_in_service': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
@@ -236,7 +236,7 @@
             <!-- OPTIMIZATION: Model shred.bin has state field - consider using default search filters -->
             <field name="name">My Shred Bins</field>
             <field name="res_model">shred.bin</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">['&amp;', ('partner_id', '=', user.partner_id.commercial_partner_id.id), '|', ('department_id', '=', False), ('department_id.user_ids', 'in', [user.id])]</field>
             <field name="context">{'create': False, 'delete': False, 'edit': False}</field>
             <field name="help" type="html">

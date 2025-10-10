@@ -90,7 +90,7 @@
         <record id="action_res_partner_key_restriction" model="ir.actions.act_window">
             <field name="name">Key Access Restrictions</field>
             <field name="res_model">res.partner.key.restriction</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="view_id" ref="res_partner_key_restriction_view_tree"/>
             <field name="domain">[('active', '=', True)]</field>
             <field name="context">{'search_default_active_restrictions': 1}</field>
@@ -113,7 +113,7 @@
         <!-- View References for Action - Must come AFTER main action -->
         <record id="action_res_partner_key_restriction_view_tree" model="ir.actions.act_window.view">
             <field name="sequence" eval="1"/>
-            <field name="view_mode>tree</field>
+            <field name="view_mode">tree</field>
             <field name="view_id" ref="res_partner_key_restriction_view_tree"/>
             <field name="act_window_id" ref="action_res_partner_key_restriction"/>
         </record>

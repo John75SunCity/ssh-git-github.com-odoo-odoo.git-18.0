@@ -39,7 +39,7 @@
     <record id="billing_period_action" model="ir.actions.act_window">
         <field name="name">Billing Periods</field>
         <field name="res_model">billing.period</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     <!-- Updated XML ID to follow convention -->
 

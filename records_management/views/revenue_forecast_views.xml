@@ -41,7 +41,7 @@
             <!-- OPTIMIZATION: Model revenue.forecast has state field - consider using default search filters -->
             <field name="name">Revenue.Forecast</field>
             <field name="res_model">revenue.forecast</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

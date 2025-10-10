@@ -67,7 +67,7 @@ These definitions allow administrators to manage Odoo view records directly from
     <record id="action_ir_ui_view" model="ir.actions.act_window">
         <field name="name">View</field>
         <field name="res_model">ir.ui.view</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
     <!-- Menu -->

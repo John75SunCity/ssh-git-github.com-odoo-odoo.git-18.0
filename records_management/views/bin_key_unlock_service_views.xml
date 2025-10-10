@@ -237,7 +237,7 @@
             <!-- OPTIMIZATION: Model bin.key.unlock.service has state field - consider using default search filters -->
             <field name="name">Bin Key Unlock Services</field>
             <field name="res_model">bin.key.unlock.service</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

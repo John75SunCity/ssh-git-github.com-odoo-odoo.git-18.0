@@ -203,7 +203,7 @@
             <field name="name">Work Order Retrievals</field>
             <field name="res_model">work.order.retrieval</field>
             <!-- Added activity, graph, and pivot views for analytical and scheduling capabilities -->
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{
             'search_default_in_progress': 1,
@@ -232,7 +232,7 @@
             <!-- OPTIMIZATION: Model work.order.retrieval has sequence field - consider adding _order="sequence" to model -->
             <field name="name">My Retrievals</field>
             <field name="res_model">work.order.retrieval</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('assigned_technician_id', '=', uid)]</field>
             <field name="context">{
             'search_default_today': 1,

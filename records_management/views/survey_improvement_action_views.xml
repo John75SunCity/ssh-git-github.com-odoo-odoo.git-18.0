@@ -113,7 +113,7 @@
         <record id="action_survey_improvement_action" model="ir.actions.act_window">
             <field name="name">Survey Improvement Actions</field>
             <field name="res_model">survey.improvement.action</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">

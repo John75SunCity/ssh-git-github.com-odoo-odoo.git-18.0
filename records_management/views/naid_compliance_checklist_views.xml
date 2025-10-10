@@ -80,7 +80,7 @@
             <!-- OPTIMIZATION: Model naid.compliance.checklist has state field - consider using default search filters -->
             <field name="name">NAID Compliance Checklists</field>
             <field name="res_model">naid.compliance.checklist</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="naid_compliance_checklist_view_search" />
             <field name="domain">[]</field>
             <field name="context">{}</field>

@@ -153,7 +153,7 @@
             <!-- OPTIMIZATION: Model bin.key has state field - consider using default search filters -->
             <field name="name">Bin Keys</field>
             <field name="res_model">bin.key</field>
-            <field name="view_mode>tree,kanban,form</field>
+            <field name="view_mode">tree,kanban,form</field>
             <field name="domain">[]</field>
             <field name="context">{'search_default_available': 1}</field>
             <field name="help" type="html">

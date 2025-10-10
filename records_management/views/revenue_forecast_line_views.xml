@@ -105,7 +105,7 @@
             <!-- OPTIMIZATION: Model revenue.forecast.line has state field - consider using default search filters -->
             <field name="name">Revenue Forecast Lines</field>
             <field name="res_model">revenue.forecast.line</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
@@ -135,7 +135,7 @@
             <!-- OPTIMIZATION: Model revenue.forecast.line has state field - consider using default search filters -->
             <field name="name">Revenue Forecast Lines</field>
             <field name="res_model">revenue.forecast.line</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
             <field name="context">{}</field>
             <field name="domain">[]</field>
             <field name="help" type="html">

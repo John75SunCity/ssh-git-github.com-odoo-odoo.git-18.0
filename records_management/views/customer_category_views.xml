@@ -61,7 +61,7 @@
     <record id="action_customer_category" model="ir.actions.act_window">
         <field name="name">Customer Category</field>
         <field name="res_model">customer.category</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     </data>
 </odoo>

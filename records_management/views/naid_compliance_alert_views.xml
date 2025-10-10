@@ -47,7 +47,7 @@
     <record id="action_naid_compliance_alert" model="ir.actions.act_window">
         <field name="name">Naid Compliance Alert</field>
         <field name="res_model">naid.compliance.alert</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

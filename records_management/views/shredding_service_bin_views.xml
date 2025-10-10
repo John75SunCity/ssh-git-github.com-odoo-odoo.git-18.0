@@ -277,7 +277,7 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
     <record id="action_shredding_service_bin" model="ir.actions.act_window">
         <field name="name">Shredding Service Bins</field>
         <field name="res_model">shredding.service.bin</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{
         'search_default_filter_active': 1,
     }</field>
@@ -297,7 +297,7 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
     <record id="action_shredding_service_bin_available" model="ir.actions.act_window">
         <field name="name">Available Bins</field>
         <field name="res_model">shredding.service.bin</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('status', '=', 'available')]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
@@ -314,7 +314,7 @@ class="btn-primary" icon="fa-tasks" title="View Work Orders"
     <record id="action_shredding_service_bin_maintenance" model="ir.actions.act_window">
         <field name="name">Bins in Maintenance</field>
         <field name="res_model">shredding.service.bin</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('status', '=', 'maintenance')]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

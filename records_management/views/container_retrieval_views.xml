@@ -54,7 +54,7 @@
     <record id="action_container_retrieval" model="ir.actions.act_window">
         <field name="name">Container Retrieval</field>
         <field name="res_model">container.retrieval</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     </data>
 </odoo>

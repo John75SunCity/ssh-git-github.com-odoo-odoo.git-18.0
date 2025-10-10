@@ -61,7 +61,7 @@
     <record id="action_portal_request_line" model="ir.actions.act_window">
         <field name="name">Portal Request Line</field>
         <field name="res_model">portal.request.line</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
     </record>
     </data>
 </odoo>

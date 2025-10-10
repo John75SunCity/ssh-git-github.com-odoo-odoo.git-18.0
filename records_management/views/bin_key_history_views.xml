@@ -194,7 +194,7 @@
     <record id="action_bin_key_history" model="ir.actions.act_window">
         <field name="name">Bin Key History</field>
         <field name="res_model">bin.key.history</field>
-        <field name="view_mode>tree,kanban,form</field>
+        <field name="view_mode">tree,kanban,form</field>
         <field name="domain">[]</field>
         <field name="context">{'search_default_this_month': 1}</field>
         <field name="help" type="html">

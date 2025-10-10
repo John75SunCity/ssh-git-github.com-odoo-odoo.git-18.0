@@ -348,7 +348,7 @@
     <record id="action_product_template_records" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-briefcase'/> Records Management Products</field>
         <field name="res_model">product.template</field>
-        <field name="view_mode>list,form</field>
+        <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="product_template_view_search"/>
         <field name="context">{
             'search_default_active': 1,

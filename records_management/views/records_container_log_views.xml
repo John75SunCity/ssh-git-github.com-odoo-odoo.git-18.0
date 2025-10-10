@@ -57,7 +57,7 @@
         <record id="action_records_container_log" model="ir.actions.act_window">
             <field name="name">Records Container Log</field>
             <field name="res_model">records.container.log</field>
-            <field name="view_mode>list,form</field>
+            <field name="view_mode">list,form</field>
         </record>
     </data>
 </odoo>
