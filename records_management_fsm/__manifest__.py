@@ -1,6 +1,6 @@
 {
     "name": "Records Management FSM Integration",
-    "version": "19.0.0.1",
+    "version": "18.0.1.0.0",
     "category": "Records Management",
     "summary": "FSM integration for Records Management",
     "author": "Your Name",
