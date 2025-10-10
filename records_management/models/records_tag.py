@@ -70,15 +70,11 @@ class RecordsTag(models.Model):
         store=True
     )
 
-    # SQL constraints
+        # SQL constraints
     _sql_constraints = [
         ('name_category_company_uniq', 'unique(name, category_id, company_id)', 'Tag names must be unique per category and company.'),
         ('color_category_company_uniq', 'unique(color, category_id, company_id)', 'Tag colors must be unique per category and company.'),
     ]
-    _name_uniq = models.Constraint(
-        'UNIQUE(name, company_id)',
-        "A tag with this name already exists in this company.",
-    )
 
     @api.depends('name', 'category_id')
     def _compute_display_name(self):

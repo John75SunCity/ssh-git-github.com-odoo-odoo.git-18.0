@@ -101,7 +101,10 @@ class ContainerContent(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _name_container_uniq = models.Constraint('unique(name, container_id)', "Content name must be unique within a container.")
+    # SQL constraints
+    _sql_constraints = [
+        ('name_container_uniq', 'unique(name, container_id)', 'Content name must be unique within a container.'),
+    ]
 
     # ============================================================================
     # COMPUTE METHODS

@@ -40,4 +40,7 @@ class RecordsServiceType(models.Model):
         ('archived', 'Archived'),
     ], string='Status', default='active', tracking=True)
 
-    _code_unique = models.Constraint('unique(code, company_id)', "The code must be unique per company!")
+    # SQL constraints
+    _sql_constraints = [
+        ('code_unique', 'unique(code, company_id)', 'The code must be unique per company!'),
+    ]

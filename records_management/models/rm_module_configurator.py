@@ -132,7 +132,9 @@ class RmModuleConfigurator(models.Model):
     current_value = fields.Char(compute="_compute_current_value", store=True)
     display_name = fields.Char(compute="_compute_display_name", store=True)
 
-    _config_key_company_uniq = models.Constraint("unique(config_key, company_id)", "Configuration key must be unique per company.")
+    _sql_constraints = [
+        ('config_key_company_uniq', 'unique(config_key, company_id)', 'Configuration key must be unique per company.'),
+    ]
 
     # ------------------------------------------------------------------
     # COMPUTE METHODS

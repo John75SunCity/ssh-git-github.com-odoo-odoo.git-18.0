@@ -11,14 +11,11 @@ class StockLotAttributeValue(models.Model):
     _description = 'Stock Lot Attribute Value'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'display_name'
-    # SQL constraints
+        # SQL constraints
     _sql_constraints = [
         ('value_attribute_lot_uniq', 'unique(value, attribute_id, lot_id)', 'Attribute values must be unique per lot and attribute.'),
+        ('unique_lot_attribute', 'unique(lot_id, attribute_id)', 'Each attribute can only have one value per lot.'),
     ]
-    _unique_lot_attribute = models.Constraint(
-        'UNIQUE(lot_id, attribute_id)',
-        "Each attribute must be unique per stock lot.",
-    )
 
     # ============================================================================
     # FIELDS

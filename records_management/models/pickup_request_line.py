@@ -36,4 +36,6 @@ class PickupRequestLine(models.Model):
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
     active = fields.Boolean(string='Active', default=True)
 
-    _quantity_non_negative = models.Constraint('CHECK(quantity >= 0)', "Quantity must be zero or positive.")
+    _sql_constraints = [
+        ('quantity_non_negative', 'CHECK(quantity >= 0)', 'Quantity must be zero or positive.'),
+    ]

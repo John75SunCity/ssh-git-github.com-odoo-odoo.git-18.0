@@ -33,4 +33,7 @@ class RecordsContainerContentLine(models.Model):
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)
     active = fields.Boolean(string='Active', default=True)
 
-    _quantity_positive = models.Constraint('CHECK(quantity > 0)', "Quantity must be positive.")
+    # SQL constraints
+    _sql_constraints = [
+        ('quantity_positive', 'CHECK(quantity > 0)', 'Quantity must be positive.'),
+    ]

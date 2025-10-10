@@ -91,7 +91,9 @@ class CertificateTemplateData(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _name_company_uniq = models.Constraint('unique(name, company_id)', "A certificate template with this name already exists for this company.")
+    _sql_constraints = [
+        ('name_company_uniq', 'unique(name, company_id)', 'A certificate template with this name already exists for this company.'),
+    ]
 
     # ============================================================================
     # COMPUTE METHODS

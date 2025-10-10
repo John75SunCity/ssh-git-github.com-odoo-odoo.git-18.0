@@ -61,12 +61,8 @@ class MobileDashboardWidgetCategory(models.Model):
         help="Company this category belongs to",
     )
 
-    # Constraints
-    _name_company_uniq = models.Constraint(
-        "unique(name, company_id)",
-        "Category name must be unique per company",
-    )
-    _technical_name_company_uniq = models.Constraint(
-        "unique(technical_name, company_id)",
-        "Technical name must be unique per company",
-    )
+    # SQL Constraints
+    _sql_constraints = [
+        ('name_company_uniq', 'unique(name, company_id)', 'Category name must be unique per company'),
+        ('technical_name_company_uniq', 'unique(technical_name, company_id)', 'Technical name must be unique per company'),
+    ]

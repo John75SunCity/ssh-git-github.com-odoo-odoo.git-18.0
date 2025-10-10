@@ -34,7 +34,7 @@ class CrossDepartmentSharingRule(models.Model):
     rule_id = fields.Many2one("ir.rule", string="Access Rule", required=True, ondelete="cascade")
     expires_at = fields.Datetime(string="Expires At", help="When this access rule should be automatically removed")
 
-    _unique_sharing_rule = models.Constraint(
-        "unique(sharing_id, rule_id)",
-        "Each sharing record can only have one rule per access rule.",
-    )
+    # SQL constraints
+    _sql_constraints = [
+        ('unique_sharing_rule', 'unique(sharing_department_id, shared_department_id)', 'Sharing rule must be unique per department pair.'),
+    ]

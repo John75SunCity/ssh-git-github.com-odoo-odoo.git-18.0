@@ -34,10 +34,10 @@ class ChainOfCustody(models.Model):
     _order = "sequence, transfer_date desc, id desc"
     _rec_name = "display_name"
 
-    _name_company_uniq = models.Constraint(
-        "unique(name, company_id)",
-        "Custody Reference must be unique per company!",
-    )
+        # SQL constraints
+    _sql_constraints = [
+        ('name_company_uniq', 'unique(name, company_id)', 'Chain of custody name must be unique per company.'),
+    ]
 
     # Centralized prefix for custody references to avoid mismatches
     _CUSTODY_PREFIX = "COC"

@@ -75,11 +75,8 @@ class RecordsDepartment(models.Model):
     _sql_constraints = [
         ('name_company_uniq', 'unique(name, company_id)', 'Department name must be unique per company.'),
         ('code_company_uniq', 'unique(code, company_id)', 'Department code must be unique per company.'),
+        ('name_partner_uniq', 'UNIQUE(name, partner_id, company_id)', 'The department name must be unique per customer.'),
     ]
-    _name_partner_uniq = models.Constraint(
-        'UNIQUE(name, partner_id, company_id)',
-        "The department name must be unique per customer.",
-    )
 
     # ============================================================================
     # COMPUTE METHODS

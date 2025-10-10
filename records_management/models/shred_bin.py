@@ -83,8 +83,10 @@ class ShredBin(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _name_company_uniq = models.Constraint('unique(name, company_id)', 'The Bin Number must be unique per company.')
-    _barcode_company_uniq = models.Constraint('unique(barcode, company_id)', 'The Barcode must be unique per company if set.')
+    _sql_constraints = [
+        ('name_company_uniq', 'unique(name, company_id)', 'The Bin Number must be unique per company.'),
+        ('barcode_company_uniq', 'unique(barcode, company_id)', 'The Barcode must be unique per company if set.'),
+    ]
 
     # ============================================================================
     # CONSTRAINTS

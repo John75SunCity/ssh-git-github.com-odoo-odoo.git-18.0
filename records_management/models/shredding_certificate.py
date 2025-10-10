@@ -180,8 +180,10 @@ class ShreddingCertificate(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _name_unique = models.Constraint('unique(name, company_id)', "Certificate number must be unique per company!")
-    _chain_of_custody_unique = models.Constraint('unique(chain_of_custody_number)', "Chain of Custody number must be unique!")
+    _sql_constraints = [
+        ('name_unique', 'unique(name, company_id)', 'Certificate number must be unique per company!'),
+        ('chain_of_custody_unique', 'unique(chain_of_custody_number)', 'Chain of Custody number must be unique!'),
+    ]
 
     # ============================================================================
     # ORM OVERRIDES

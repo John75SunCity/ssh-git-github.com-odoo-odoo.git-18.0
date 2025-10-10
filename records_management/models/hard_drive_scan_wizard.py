@@ -243,4 +243,6 @@ class HardDriveScanWizardLine(models.TransientModel):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    _serial_number_wizard_uniq = models.Constraint('unique(wizard_id, serial_number)', 'Serial numbers must be unique within a single scan session.')
+    _sql_constraints = [
+        ('serial_number_wizard_uniq', 'unique(wizard_id, serial_number)', 'Serial numbers must be unique within a single scan session.'),
+    ]

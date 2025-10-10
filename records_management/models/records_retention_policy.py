@@ -289,8 +289,10 @@ class RecordsRetentionPolicy(models.Model):
     )
 
     # === SQL CONSTRAINTS ===
-    _name_company_uniq = models.Constraint('unique (name, company_id)', "Policy Name must be unique per company!")
-    _code_company_uniq = models.Constraint('unique (code, company_id)', "Policy Code must be unique per company!")
+    _sql_constraints = [
+        ('name_company_uniq', 'unique (name, company_id)', 'Policy Name must be unique per company!'),
+        ('code_company_uniq', 'unique (code, company_id)', 'Policy Code must be unique per company!'),
+    ]
 
     # === SMART STATE MANAGEMENT ===
     # Automatic state transitions based on actions and dates

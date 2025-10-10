@@ -40,10 +40,6 @@ class StockLotAttribute(models.Model):
         ('name_company_uniq', 'unique(name, company_id)', 'Attribute names must be unique per company.'),
         ('technical_name_company_uniq', 'unique(technical_name, company_id)', 'Technical names must be unique per company.'),
     ]
-    _name_company_uniq = models.Constraint(
-        'UNIQUE(name, company_id)',
-        "Attribute name must be unique per company!",
-    )
 
     # ============================================================================
     # METHODS
