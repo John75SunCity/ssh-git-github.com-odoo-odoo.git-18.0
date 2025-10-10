@@ -183,7 +183,7 @@
             <!-- OPTIMIZATION: Model temp.inventory has state field - consider using default search filters -->
             <field name="name">Temporary Inventory</field>
             <field name="res_model">temp.inventory</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create your first temporary inventory!
@@ -198,7 +198,7 @@
             <!-- OPTIMIZATION: Model temp.inventory.movement has state field - consider using default search filters -->
             <field name="name">Inventory Movements</field>
             <field name="res_model">temp.inventory.movement</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
         </record>
         <record id="action_temp_inventory_audit" model="ir.actions.act_window">
             <field name="name">Inventory Audit Trail</field>

@@ -75,7 +75,7 @@
             <!-- OPTIMIZATION: Model customer.inventory has state field - consider using default search filters -->
             <field name="name">Customer Inventory</field>
             <field name="res_model">customer.inventory</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     <i class="fa fa-bar-chart" /> No customer inventory data yet!

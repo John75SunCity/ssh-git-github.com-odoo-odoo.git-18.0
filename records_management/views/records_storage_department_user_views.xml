@@ -126,8 +126,8 @@
             <!-- OPTIMIZATION: Model records.storage.department.user has state field - consider using default search filters -->
             <field name="name">Department User Assignments</field>
             <field name="res_model">records.storage.department.user</field>
-            <field name="view_mode>tree,form</field>
-            <field name="view_ids" eval="[(5, 0, 0),         (0, 0, {'view_mode>tree')}),         (0, 0, {'view_mode': 'form', 'view_id': ref('records_storage_department_user_view_form')})]" />
+            <field name="view_mode>list,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),         (0, 0, {'view_mode': 'list'}),         (0, 0, {'view_mode': 'form', 'view_id': ref('records_storage_department_user_view_form')})]" />
             <field name="domain">[]</field>
             <field name="context">{
         'search_default_active': 1,

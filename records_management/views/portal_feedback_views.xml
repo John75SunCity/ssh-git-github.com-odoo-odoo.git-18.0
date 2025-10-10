@@ -185,7 +185,7 @@
             <!-- OPTIMIZATION: Model portal.feedback has state field - consider using default search filters -->
             <field name="name">Customer Feedback</field>
             <field name="res_model">portal.feedback</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="search_view_id" ref="portal_feedback_view_search" />
             <field name="context">{'search_default_needs_response': 1}</field>
             <field name="help" type="html">

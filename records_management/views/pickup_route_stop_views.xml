@@ -298,7 +298,7 @@
             <!-- OPTIMIZATION: Model pickup.route.stop has state field - consider using default search filters -->
             <field name="name">Pickup Route Stops</field>
             <field name="res_model">pickup.route.stop</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="domain">[]</field>
             <field name="context">{
             'default_user_id': uid,

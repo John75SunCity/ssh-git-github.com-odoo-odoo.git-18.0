@@ -100,7 +100,7 @@ invisible="status not in ('expired', 'active')"
     <record id="action_naid_operator_certification" model="ir.actions.act_window">
         <field name="name">NAID Operator Certification</field>
         <field name="res_model">naid.operator.certification</field>
-        <field name="view_mode>tree,form</field>
+        <field name="view_mode>list,form</field>
     </record>
     </data>
 </odoo>

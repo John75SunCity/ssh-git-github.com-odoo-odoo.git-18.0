@@ -41,7 +41,7 @@
             <!-- OPTIMIZATION: Model records.container.type.converter.wizard has state field - consider using default search filters -->
             <field name="name">Records Container Type Converter Wizard</field>
             <field name="res_model">records.container.type.converter.wizard</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

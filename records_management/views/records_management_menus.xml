@@ -5,7 +5,7 @@
             <!-- OPTIMIZATION: Model records.container has state field - consider using default search filters -->
             <field name="name">Storage Containers</field>
             <field name="res_model">records.container</field>
-            <field name="view_mode>tree,kanban,form,calendar,graph</field>
+            <field name="view_mode">list,kanban,form,calendar,graph</field>
             <field name="context">{
             'search_default_stored': 1,
             'search_default_active': 1
@@ -32,7 +32,7 @@
             <!-- OPTIMIZATION: Model records.document has state field - consider using default search filters -->
             <field name="name">Documents</field>
             <field name="res_model">records.document</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="context">{
             'search_default_active': 1
         }</field>
@@ -71,7 +71,7 @@
         <record id="action_feedback_responses" model="ir.actions.act_window">
             <field name="name">Portal Feedback</field>
             <field name="res_model">portal.feedback</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="context">{'search_default_needs_response': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">

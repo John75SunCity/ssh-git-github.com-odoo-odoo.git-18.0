@@ -53,13 +53,13 @@
             <!-- OPTIMIZATION: Model destruction.event has state field - consider using default search filters -->
             <field name="name">Destruction Events</field>
             <field name="res_model">destruction.event</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
         </record>
         <record id="action_destruction_event" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model destruction.event has state field - consider using default search filters -->
             <field name="name">Destruction Events</field>
             <field name="res_model">destruction.event</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="domain">[("certificate_id", "=", active_id)]</field>
             <field name="context">{"default_certificate_id": active_id}</field>
         </record>

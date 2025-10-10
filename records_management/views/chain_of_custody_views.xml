@@ -153,7 +153,7 @@
             <!-- OPTIMIZATION: Model chain.of.custody has state field - consider using default search filters -->
             <field name="name">Chain of Custody</field>
             <field name="res_model">chain.of.custody</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="search_view_id" ref="chain_of_custody_view_search" />
             <field name="context">{'search_default_draft': 1, 'search_default_in_progress': 1}</field>
             <field name="help" type="html">
@@ -170,7 +170,7 @@
             <!-- OPTIMIZATION: Model chain.of.custody has state field - consider using default search filters -->
             <field name="name">Customer Chain of Custody</field>
             <field name="res_model">chain.of.custody</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="search_view_id" ref="chain_of_custody_view_search" />
             <field name="domain">[('partner_id', '=', active_id)]</field>
             <field name="context">{'default_partner_id': active_id, 'search_default_draft': 1, 'search_default_in_progress': 1}</field>

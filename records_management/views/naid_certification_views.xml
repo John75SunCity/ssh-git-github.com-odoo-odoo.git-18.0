@@ -171,14 +171,14 @@
     <record id="naid_operator_certification_action" model="ir.actions.act_window">
         <field name="name">NAID Operator Certifications</field>
         <field name="res_model">naid.operator.certification</field>
-        <field name="view_mode>tree,form</field>
+        <field name="view_mode>list,form</field>
         <field name="help">Manage NAID operator certifications and training requirements</field>
     </record>
 
     <record id="naid_training_schedule_action" model="ir.actions.act_window">
         <field name="name">Training Schedule</field>
         <field name="res_model">naid.training.schedule</field>
-        <field name="view_mode>tree,form</field>
+        <field name="view_mode>list,form</field>
         <field name="help">Manage training schedules for NAID certifications</field>
     </record>
 

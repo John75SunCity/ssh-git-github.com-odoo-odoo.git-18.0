@@ -41,7 +41,7 @@
             <!-- OPTIMIZATION: Model records.installer has state field - consider using default search filters -->
             <field name="name">Records.Installer</field>
             <field name="res_model">records.installer</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

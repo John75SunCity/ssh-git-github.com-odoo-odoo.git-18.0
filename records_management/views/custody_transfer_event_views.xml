@@ -58,7 +58,7 @@
     <record id="action_custody_transfer_event" model="ir.actions.act_window">
         <field name="name">Custody Transfer Event</field>
         <field name="res_model">custody.transfer.event</field>
-        <field name="view_mode>tree,form</field>
+        <field name="view_mode>list,form</field>
     </record>
 
     <!-- Menu -->

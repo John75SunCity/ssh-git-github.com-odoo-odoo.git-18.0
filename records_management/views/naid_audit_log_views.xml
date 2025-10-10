@@ -221,7 +221,7 @@
     <record id="action_naid_audit_log" model="ir.actions.act_window">
         <field name="name">NAID Audit Logs</field>
         <field name="res_model">naid.audit.log</field>
-        <field name="view_mode>tree,form</field>
+        <field name="view_mode>list,form</field>
         <field name="search_view_id" ref="naid_audit_log_view_search" />
         <field name="context">{'search_default_filter_today': 1, 'search_default_naid_compliant': 1}</field>
         <field name="help" type="html">

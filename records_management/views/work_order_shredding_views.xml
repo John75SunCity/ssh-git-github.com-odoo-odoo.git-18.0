@@ -299,7 +299,7 @@ lbs
             <field name="name">Shredding Work Orders</field>
             <field name="res_model">work.order.shredding</field>
             <!-- Added activity, graph, pivot for analytics and scheduling -->
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="domain">[]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
             <field name="help" type="html">
@@ -317,7 +317,7 @@ lbs
             <!-- OPTIMIZATION: Model work.order.shredding has state field - consider using default search filters -->
             <field name="name">My Shredding Orders</field>
             <field name="res_model">work.order.shredding</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="domain">[('coordinator_id.user_id', '=', uid)]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
         </record>
@@ -325,7 +325,7 @@ lbs
             <!-- OPTIMIZATION: Model work.order.shredding has state field - consider using default search filters -->
             <field name="name">Urgent Shredding Orders</field>
             <field name="res_model">work.order.shredding</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="domain">[('priority', '=', 'urgent'), ('state', 'not in', ['completed', 'cancelled'])]</field>
             <field name="context">{'default_priority': 'urgent'}</field>
         </record>
@@ -333,7 +333,7 @@ lbs
             <!-- OPTIMIZATION: Model work.order.shredding has state field - consider using default search filters -->
             <field name="name">NAID Compliance Orders</field>
             <field name="res_model">work.order.shredding</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="domain">[('naid_compliant', '=', True)]</field>
             <field name="context">{'search_default_group_state': 1}</field>
         </record>
@@ -341,7 +341,7 @@ lbs
             <!-- OPTIMIZATION: Model work.order.shredding has state field - consider using default search filters -->
             <field name="name">Today's Shredding Orders</field>
             <field name="res_model">work.order.shredding</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="domain">[('scheduled_date', '&gt;=', datetime.datetime.combine(context_today, datetime.time(0,0,0))), ('scheduled_date', '&lt;=', datetime.datetime.combine(context_today, datetime.time(23,59,59)))]</field>
             <field name="context">{'search_default_group_coordinator': 1}</field>
         </record>

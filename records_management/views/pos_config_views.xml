@@ -376,7 +376,7 @@
     <record id="action_pos_config_records" model="ir.actions.act_window">
         <field name="name">🏪 POS Configuration</field>
         <field name="res_model">pos.config</field>
-        <field name="view_mode>tree,form,graph,pivot</field>
+        <field name="view_mode>list,form,graph,pivot</field>
         <field name="search_view_id" ref="view_pos_config_search"/>
         <field name="context">{
         'search_default_active': 1

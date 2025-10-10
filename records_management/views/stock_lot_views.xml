@@ -219,7 +219,7 @@
             <!-- OPTIMIZATION: Model stock.lot has state field - consider using default search filters -->
             <field name="name">Serial Numbers / Lots</field>
             <field name="res_model">stock.lot</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="search_view_id" ref="stock_lot_view_search" />
             <field name="context">{'search_default_in_stock': 1}</field>
             <field name="help" type="html">

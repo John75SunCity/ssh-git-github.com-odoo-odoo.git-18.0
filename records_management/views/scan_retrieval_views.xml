@@ -47,7 +47,7 @@
     <record id="action_scan_retrieval" model="ir.actions.act_window">
         <field name="name">Scan.Retrieval</field>
         <field name="res_model">scan.retrieval</field>
-        <field name="view_mode>tree,form</field>
+        <field name="view_mode>list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

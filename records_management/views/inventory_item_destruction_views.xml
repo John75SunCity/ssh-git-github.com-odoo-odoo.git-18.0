@@ -48,7 +48,7 @@
             <!-- OPTIMIZATION: Model inventory.item.destruction has state field - consider using default search filters -->
             <field name="name">Inventory Item Destruction</field>
             <field name="res_model">inventory.item.destruction</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
         </record>
     </data>
 </odoo>

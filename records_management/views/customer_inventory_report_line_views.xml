@@ -59,7 +59,7 @@
             <!-- OPTIMIZATION: Model customer.inventory.report.line has sequence field - consider adding _order="sequence" to model -->
             <field name="name">Customer Inventory Report Line</field>
             <field name="res_model">customer.inventory.report.line</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
         </record>
     </data>
 </odoo>

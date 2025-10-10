@@ -62,7 +62,7 @@
             <!-- OPTIMIZATION: Model container.content has state field - consider using default search filters -->
             <field name="name">Container Content</field>
             <field name="res_model">container.content</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
         </record>
     </data>
 </odoo>

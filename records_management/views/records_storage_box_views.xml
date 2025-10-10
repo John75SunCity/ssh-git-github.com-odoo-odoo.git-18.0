@@ -75,7 +75,7 @@
             <!-- OPTIMIZATION: Model records.storage.box has state field - consider using default search filters -->
             <field name="name">Storage Boxes</field>
             <field name="res_model">records.storage.box</field>
-            <field name="view_mode>tree,form</field>
+            <field name="view_mode>list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                 Create a new storage box.
