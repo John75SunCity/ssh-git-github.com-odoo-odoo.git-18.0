@@ -326,8 +326,8 @@ class RecordsManagementController(http.Controller):
 
         return request.render('records_management.inventory_template', context)
 
-    # Updated for Odoo 19: type="jsonrpc" deprecated -> use 'jsonrpc'
-    @http.route('/my/inventory/data', type='jsonrpc', auth='user', methods=['POST'])
+    # Updated for Odoo 18: type="jsonrpc" not supported -> use 'json'
+    @http.route('/my/inventory/data', type='json', auth='user', methods=['POST'])
     def get_inventory_data(self, **post):
         """
         JSON endpoint for AJAX inventory data retrieval.

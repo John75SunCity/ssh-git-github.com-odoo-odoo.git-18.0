@@ -80,8 +80,8 @@ class RecordsManagementController(http.Controller):
                 "records_management.dashboard_error", {"error_message": _("Dashboard loading failed: %s", str(e))}  # no-translation-lint
             )
 
-    # Updated for Odoo 19: type="jsonrpc" deprecated in favor of 'jsonrpc'
-    @http.route(['/records/api/dashboard_data'], type='jsonrpc', auth='user')
+    # Updated for Odoo 18: type="jsonrpc" not supported -> use 'json'
+    @http.route(['/records/api/dashboard_data'], type='json', auth='user')
     def get_dashboard_data_json(self, filters=None, **kw):
         """
         AJAX endpoint for real-time dashboard data updates
