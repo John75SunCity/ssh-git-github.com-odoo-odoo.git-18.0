@@ -20,13 +20,13 @@
         <field name="name">full.customization.name.tree</field>
         <field name="model">full.customization.name</field>
     <field name="arch" type="xml">
-            <tree string="Customization Configurations">
+            <list string="Customization Configurations">
                 <field name="name"/>
                 <field name="user_id"/>
                 <field name="company_id"/>
                 <field name="create_date"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 

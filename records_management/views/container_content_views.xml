@@ -5,9 +5,9 @@
             <field name="name">container.content.view.tree</field>
             <field name="model">container.content</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="container_content_view_form" model="ir.ui.view">

@@ -6,7 +6,7 @@
         <field name="name">paper.bale.line.view.list</field>
         <field name="model">paper.bale.line</field>
     <field name="arch" type="xml">
-            <tree string="Paper Bale Line">
+            <list string="Paper Bale Line">
                 <field name="name"/>
                 <field name="display_name"/>
                 <field name="company_id"/>
@@ -14,7 +14,7 @@
                 <field name="bale_id"/>
                 <field name="weight_lbs"/>
                 <field name="material_type"/>
-            </tree>
+            </list>
         </field>
     </record>
 

@@ -5,9 +5,9 @@
             <field name="name">customer.negotiated.rate.view.list</field>
             <field name="model">customer.negotiated.rate</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="customer_negotiated_rate_view_form" model="ir.ui.view">

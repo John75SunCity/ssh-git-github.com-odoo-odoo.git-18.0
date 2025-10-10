@@ -5,9 +5,9 @@
             <field name="name">barcode.generation.history.view.tree</field>
             <field name="model">barcode.generation.history</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="barcode_generation_history_view_form" model="ir.ui.view">

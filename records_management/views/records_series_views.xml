@@ -6,13 +6,13 @@
             <field name="name">records.series.view.tree</field>
             <field name="model">records.series</field>
             <field name="arch" type="xml">
-                <tree string="Records Series">
+                <list string="Records Series">
                     <field name="name" />
                     <field name="code" />
                     <field name="retention_policy_id" />
                     <field name="document_count" />
                     <field name="active" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_series_view_form" model="ir.ui.view">

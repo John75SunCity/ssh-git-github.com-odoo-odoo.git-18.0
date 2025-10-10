@@ -126,7 +126,7 @@
         <field name="name">custom.box.volume.calculator.view.tree</field>
         <field name="model">custom.box.volume.calculator</field>
         <field name="arch" type="xml">
-        <tree string="Volume Calculations">
+        <list string="Volume Calculations">
         <field name="name"/>
         <field name="user_id"/>
         <field name="calculation_date"/>
@@ -136,7 +136,7 @@
         <field name="recommended_container_type"/>
         <field name="custom_box_price"/>
         <field name="fsm_task_id"/>
-</tree>
+</list>
 </field>
     </record>
 

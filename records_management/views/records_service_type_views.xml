@@ -5,9 +5,9 @@
             <field name="name">records.service.type.view.tree</field>
             <field name="model">records.service.type</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_service_type_view_form" model="ir.ui.view">

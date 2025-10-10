@@ -75,7 +75,7 @@
             <field name="name">bin.barcode.inventory.view.tree</field>
             <field name="model">bin.barcode.inventory</field>
             <field name="arch" type="xml">
-                <tree string="Bin Barcode Inventory" decoration-success="state == 'available'" decoration-warning="state == 'in_use'" decoration-danger="state == 'full'" decoration-muted="state == 'retired'">
+                <list string="Bin Barcode Inventory" decoration-success="state == 'available'" decoration-warning="state == 'in_use'" decoration-danger="state == 'full'" decoration-muted="state == 'retired'">
                     <field name="barcode" />
                     <field name="bin_size" />
                     <field name="bin_type" />
@@ -93,7 +93,7 @@
                     <field name="last_service_date" />
                     <field name="is_imported" widget="boolean_toggle" />
                     <field name="is_generated" widget="boolean_toggle" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="bin_barcode_inventory_view_kanban" model="ir.ui.view">

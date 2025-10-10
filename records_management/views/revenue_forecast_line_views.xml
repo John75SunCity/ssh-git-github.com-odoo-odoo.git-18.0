@@ -6,7 +6,7 @@
             <field name="name">revenue.forecast.line.view.tree</field>
             <field name="model">revenue.forecast.line</field>
             <field name="arch" type="xml">
-                <tree string="Revenue Forecast Lines" decoration-success="status=='achieved'" decoration-warning="status=='in_progress'" decoration-danger="status=='missed'">
+                <list string="Revenue Forecast Lines" decoration-success="status=='achieved'" decoration-warning="status=='in_progress'" decoration-danger="status=='missed'">
                     <field name="customer_id" />
                     <field name="service_type" />
                     <field name="period_type" />
@@ -17,7 +17,7 @@
                     <field name="confidence_level" />
                     <field name="status" />
                     <!-- Removed always-invisible 'currency_id'; forecast amounts use company's currency -->
-                </tree>
+                </list>
             </field>
         </record>
         <record id="revenue_forecast_line_view_form" model="ir.ui.view">

@@ -5,7 +5,7 @@
             <field name="name">temp.inventory.view.tree</field>
             <field name="model">temp.inventory</field>
             <field name="arch" type="xml">
-                <tree string="Temporary Inventory" decoration-bf="state=='active'" decoration-warning="state=='full'" decoration-danger="state=='archived'">
+                <list string="Temporary Inventory" decoration-bf="state=='active'" decoration-warning="state=='full'" decoration-danger="state=='archived'">
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="location_id" />
@@ -16,7 +16,7 @@
                     <field name="priority" />
                     <field name="user_id" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="temp_inventory_view_form" model="ir.ui.view">
@@ -73,22 +73,22 @@
                         <notebook>
                             <page string="Documents" invisible="document_count == 0">
                                 <field name="document_ids">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="document_type_id" />
                                         <field name="state" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Containers" invisible="container_count == 0">
                                 <field name="container_ids">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="container_type_id" />
                                         <field name="cubic_feet"/>
                                         <field name="monthly_rate_effective"/>
                                         <field name="state" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
@@ -127,7 +127,7 @@
             <field name="name">temp.inventory.movement.view.tree</field>
             <field name="model">temp.inventory.movement</field>
             <field name="arch" type="xml">
-                <tree string="Inventory Movements" create="false" edit="false">
+                <list string="Inventory Movements" create="false" edit="false">
                     <field name="create_date" />
                     <field name="name" />
                     <field name="product_id" />
@@ -138,7 +138,7 @@
                     <field name="state" />
                     <field name="user_id" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="temp_inventory_movement_view_form" model="ir.ui.view">
@@ -169,14 +169,14 @@
             <field name="name">temp.inventory.audit.view.tree</field>
             <field name="model">temp.inventory.audit</field>
             <field name="arch" type="xml">
-                <tree string="Inventory Audit Trail" create="false" edit="false">
+                <list string="Inventory Audit Trail" create="false" edit="false">
                     <field name="date" />
                     <field name="inventory_id" />
                     <field name="event_type" />
                     <field name="user_id" />
                     <field name="details" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="action_temp_inventory" model="ir.actions.act_window">

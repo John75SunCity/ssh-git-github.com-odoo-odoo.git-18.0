@@ -96,7 +96,7 @@
             <field name="name">stock.lot.view.list</field>
             <field name="model">stock.lot</field>
             <field name="arch" type="xml">
-                <tree decoration-success="product_qty &gt; 0" decoration-warning="retention_date and retention_date &lt; context_today" decoration-info="ref != False" decoration-danger="destruction_eligible == True">
+                <list decoration-success="product_qty &gt; 0" decoration-warning="retention_date and retention_date &lt; context_today" decoration-info="ref != False" decoration-danger="destruction_eligible == True">
                     <field name="name" string="Serial/Lot Number" />
                     <field name="product_id" string="Product" />
                     <field name="product_qty" string="Quantity" />
@@ -108,7 +108,7 @@
                     <field name="company_id" string="Company" groups="base.group_multi_company" optional="hide" />
                     <button name="action_view_stock_moves" type="object" string="Movements" icon="fa-exchange" class="btn-link" title="View Stock Movements" />
                     <button name="action_view_documents" type="object" string="Documents" icon="fa-file-text" class="btn-link" title="View Documents in Box" invisible="not is_records_box"/>
-                </tree>
+                </list>
             </field>
         </record>
         <record id="stock_lot_view_form" model="ir.ui.view">
@@ -154,12 +154,12 @@
                         <notebook>
                             <page string="Documents" name="documents" invisible="not is_records_box">
                                 <field name="document_ids" readonly="1">
-                                    <tree>
+                                    <list>
                                         <field name="name"/>
                                         <field name="document_type_id"/>
                                         <field name="description"/>
                                         <field name="create_date"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Stock Information" name="stock_info">

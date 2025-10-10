@@ -5,9 +5,9 @@
             <field name="name">name.view.tree</field>
             <field name="model">name</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="name_view_form" model="ir.ui.view">

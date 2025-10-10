@@ -5,7 +5,7 @@
         <field name="name">customer.inventory.line.view.tree</field>
         <field name="model">customer.inventory.line</field>
         <field name="arch" type="xml">
-            <tree string="Customer Inventory Line">
+            <list string="Customer Inventory Line">
         <field name="container_id" />
         <field name="location_id" />
         <field name="file_count" />
@@ -18,7 +18,7 @@
         <field name="variance_amount" />
         <field name="variance_percentage" />
 
-            </tree>
+            </list>
         </field>
     </record>
 

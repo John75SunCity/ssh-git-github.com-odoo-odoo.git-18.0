@@ -5,14 +5,14 @@
             <field name="name">records.retrieval.work.order.view.list</field>
             <field name="model">records.retrieval.work.order</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="user_id"/>
                     <field name="state"/>
                     <field name="delivery_method"/>
                     <field name="completion_date"/>
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_retrieval_work_order_view_form" model="ir.ui.view">

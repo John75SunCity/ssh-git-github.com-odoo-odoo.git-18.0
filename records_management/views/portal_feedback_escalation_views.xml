@@ -5,9 +5,9 @@
             <field name="name">portal.feedback.escalation.view.tree</field>
             <field name="model">portal.feedback.escalation</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="portal_feedback_escalation_view_form" model="ir.ui.view">

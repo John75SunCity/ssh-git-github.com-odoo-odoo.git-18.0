@@ -6,14 +6,14 @@
             <field name="name">records.container.movement.view.tree</field>
             <field name="model">records.container.movement</field>
             <field name="arch" type="xml">
-                <tree string="Container Movements" create="true" editable="bottom">
+                <list string="Container Movements" create="true" editable="bottom">
                     <field name="name"/>
                     <field name="movement_date"/>
                     <field name="movement_type"/>
                     <field name="from_location_id"/>
                     <field name="to_location_id"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_container_movement_view_form" model="ir.ui.view">
@@ -62,14 +62,14 @@
             <field name="model">records.container.movement</field>
             <field name="priority" eval="0"/>
             <field name="arch" type="xml">
-                <tree string="Container Movements (Technical)">
+                <list string="Container Movements (Technical)">
                     <field name="name"/>
                     <field name="movement_date"/>
                     <field name="movement_type"/>
                     <field name="from_location_id"/>
                     <field name="to_location_id"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
     </data>

@@ -5,9 +5,9 @@
             <field name="name">revenue.analytic.view.tree</field>
             <field name="model">revenue.analytic</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="revenue_analytic_view_form" model="ir.ui.view">

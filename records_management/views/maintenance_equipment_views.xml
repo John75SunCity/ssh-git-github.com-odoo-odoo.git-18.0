@@ -39,12 +39,12 @@
     <notebook>
         <page string="Destruction History" invisible="equipment_category != 'shredding'">
         <field name="destruction_service_ids" mode="tree">
-                            <tree>
+                            <list>
         <field name="service_date"/>
         <field name="total_weight"/>
         <field name="certificate_number"/>
         <field name="state"/>
-                            </tree>
+                            </list>
                     </field>
             </page>
     </notebook>

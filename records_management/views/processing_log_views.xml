@@ -6,9 +6,9 @@
         <field name="name">processing.log.view.tree</field>
         <field name="model">processing.log</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

@@ -10,7 +10,7 @@
         <field name="name">shred.model.bin.view.tree</field>
         <field name="model">shred.model_bin</field>
         <field name="arch" type="xml">
-    <tree string="Shred Model Bins" decoration-danger="status=='full'" decoration-warning="status=='partial'" decoration-success="status=='empty'">
+    <list string="Shred Model Bins" decoration-danger="status=='full'" decoration-warning="status=='partial'" decoration-success="status=='empty'">
         <field name="name"/>
         <field name="barcode"/>
         <field name="barcode_inventory_id"/>
@@ -20,7 +20,7 @@
         <field name="status"/>
         <field name="location_id"/>
         <field name="last_emptied"/>
-    </tree>
+    </list>
 </field>
     </record>
 

@@ -6,9 +6,9 @@
         <field name="name">stock.lot.attribute.view.tree</field>
         <field name="model">stock.lot.attribute</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

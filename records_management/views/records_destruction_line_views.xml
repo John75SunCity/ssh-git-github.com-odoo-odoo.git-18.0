@@ -5,7 +5,7 @@
             <field name="name">records.destruction.line.view.tree</field>
             <field name="model">records.destruction.line</field>
             <field name="arch" type="xml">
-                <tree string="Records Destruction Line">
+                <list string="Records Destruction Line">
                     <field name="job_id" />
                     <field name="box_id" />
                     <field name="container_id" />
@@ -13,7 +13,7 @@
                     <field name="state" />
                     <field name="user_id" />
                     <field name="company_id" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_destruction_line_view_form" model="ir.ui.view">

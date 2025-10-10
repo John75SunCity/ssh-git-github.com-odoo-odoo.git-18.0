@@ -57,7 +57,7 @@
             <field name="name">service.item.view.tree</field>
             <field name="model">service.item</field>
             <field name="arch" type="xml">
-                <tree string="Service Items" decoration-muted="not active">
+                <list string="Service Items" decoration-muted="not active">
                     <field name="name" />
                     <field name="category" />
                     <field name="service_type" />
@@ -67,7 +67,7 @@
                     <field name="active" widget="boolean_toggle" />
                     <field name="activity_ids" widget="list_activity" />
                     <!-- Removed always-hidden company_id column (column_invisible). Multi-company usage handled in form if needed. -->
-                </tree>
+                </list>
             </field>
         </record>
         <record id="service_item_view_form" model="ir.ui.view">
@@ -159,13 +159,13 @@
                             </page>
                             <page string="Maintenance Requests" name="maintenance_requests">
                                 <field name="maintenance_request_ids" nolabel="1">
-                                    <tree editable="bottom">
+                                    <list editable="bottom">
                                         <field name="name" />
                                         <field name="maintenance_type" />
                                         <field name="schedule_date" />
                                         <field name="stage_id" />
                                         <field name="cost" widget="monetary" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Assignment &amp; Settings" name="assignment">

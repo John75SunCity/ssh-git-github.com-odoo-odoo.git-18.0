@@ -6,7 +6,7 @@
             <field name="name">paper.load.shipment.view.tree</field>
             <field name="model">paper.load.shipment</field>
             <field name="arch" type="xml">
-                <tree string="Load Shipments" decoration-success="state=='completed'" decoration-info="state=='delivered'" decoration-warning="state=='in_transit'" decoration-primary="state=='ready'">
+                <list string="Load Shipments" decoration-success="state=='completed'" decoration-info="state=='delivered'" decoration-warning="state=='in_transit'" decoration-primary="state=='ready'">
                     <field name="name" />
                     <field name="scheduled_pickup_date" />
                     <field name="driver_id" />
@@ -17,7 +17,7 @@
                     <field name="mixed_count" />
                     <field name="cardboard_count" />
                     <field name="state" widget="badge" decoration-success="state=='completed'" decoration-info="state=='delivered'" decoration-warning="state=='in_transit'" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="paper_load_shipment_view_form" model="ir.ui.view">
@@ -85,14 +85,14 @@
                         <notebook>
                             <page string="Bales in Load" name="bales">
                                 <field name="bale_ids" nolabel="1">
-                                    <tree string="Paper Bales">
+                                    <list string="Paper Bales">
                                         <field name="name" />
                                         <field name="bale_number" />
                                         <field name="paper_grade" />
                                         <field name="weight" sum="Total Weight" />
                                         <field name="source_date" />
                                         <field name="state" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Notes" name="notes">

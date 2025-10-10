@@ -5,12 +5,12 @@
             <field name="name">rate.change.confirmation.wizard.view.tree</field>
             <field name="model">rate.change.confirmation.wizard</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="forecast_id" />
                     <field name="effective_date" />
                     <field name="revenue_impact" />
                     <field name="customer_count" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="rate_change_confirmation_wizard_view_form" model="ir.ui.view">

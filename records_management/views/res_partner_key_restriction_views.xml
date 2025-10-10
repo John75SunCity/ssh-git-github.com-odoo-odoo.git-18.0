@@ -5,7 +5,7 @@
             <field name="name">res.partner.key.restriction.view.tree</field>
             <field name="model">res.partner.key.restriction</field>
             <field name="arch" type="xml">
-                <tree string="Key Access Restrictions">
+                <list string="Key Access Restrictions">
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="key_issuance_allowed" />
@@ -13,7 +13,7 @@
                     <field name="effective_date" />
                     <field name="expiry_date" />
                     <field name="user_id" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="res_partner_key_restriction_view_form" model="ir.ui.view">

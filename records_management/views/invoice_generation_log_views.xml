@@ -6,9 +6,9 @@
         <field name="name">invoice.generation.log.view.list</field>
         <field name="model">invoice.generation.log</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

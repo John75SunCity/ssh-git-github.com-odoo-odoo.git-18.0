@@ -5,7 +5,7 @@
         <record id="shred_bin_view_tree" model="ir.ui.view">
             <field name="model">shred.bin</field>
             <field name="arch" type="xml">
-                <tree string="Customer Shred Bins" decoration-danger="state=='full'" decoration-warning="current_fill_level &amp;gt;= 75 and state=='in_service'" decoration-success="state=='in_service' and current_fill_level &amp;lt; 75" decoration-info="state=='deployed'" decoration-muted="state=='retired'" decoration-bf="state=='maintenance'" class="o_list_view_shred_bins">
+                <list string="Customer Shred Bins" decoration-danger="state=='full'" decoration-warning="current_fill_level &amp;gt;= 75 and state=='in_service'" decoration-success="state=='in_service' and current_fill_level &amp;lt; 75" decoration-info="state=='deployed'" decoration-muted="state=='retired'" decoration-bf="state=='maintenance'" class="o_list_view_shred_bins">
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="bin_size" />
@@ -18,7 +18,7 @@
                     <field name="service_count" />
                     <field name="user_id" />
                     <!-- Removed always-invisible 'active' (archive handled via filters) -->
-                </tree>
+                </list>
             </field>
         </record>
         <record id="shred_bin_view_form" model="ir.ui.view">
@@ -68,24 +68,24 @@
                         <notebook>
                             <page string="Service History" invisible="current_billing_period_services == 0">
                                 <field name="shredding_service_ids" readonly="1">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="service_date" />
                                         <field name="service_type" />
                                         <field name="state" />
                                         <field name="actual_weight" string="Weight Destroyed" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Collection Requests">
                                 <field name="pickup_request_ids" readonly="1">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="request_date" />
                                         <field name="urgency" />
                                         <field name="state" />
                                         <field name="notes" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>

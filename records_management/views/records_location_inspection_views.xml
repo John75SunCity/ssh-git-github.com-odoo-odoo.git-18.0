@@ -5,9 +5,9 @@
             <field name="name">records.location.inspection.view.tree</field>
             <field name="model">records.location.inspection</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_location_inspection_view_form" model="ir.ui.view">

@@ -7,7 +7,7 @@
             <field name="model">records.retention.policy.version</field>
             <field name="type">list</field>
             <field name="arch" type="xml">
-                <tree decoration-success="is_current == True" decoration-muted="active == False" decoration-info="state == 'draft'" decoration-warning="state == 'archived'">
+                <list decoration-success="is_current == True" decoration-muted="active == False" decoration-info="state == 'draft'" decoration-warning="state == 'archived'">
                     <field name="policy_id" string="Policy" />
                     <field name="version" string="Version" />
                     <field name="effective_date" string="Effective" />
@@ -18,7 +18,7 @@
                     <field name="created_date" string="Created On" />
                     <button name="action_activate" type="object" string="Activate" icon="fa-play" class="btn-link" invisible="is_current == True" />
                     <button name="action_compare_versions" type="object" string="Compare" icon="fa-code-fork" class="btn-link" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_retention_policy_version_view_form" model="ir.ui.view">
@@ -110,14 +110,14 @@
                             </page>
                             <page string="Version History" name="history">
                                 <field name="superseded_by_id" readonly="1">
-                                    <tree>
+                                    <list>
                                         <field name="version" />
                                         <field name="effective_date" />
                                         <field name="expiry_date" />
                                         <field name="created_by_id" />
                                         <field name="state" widget="badge" />
                                         <field name="is_current" widget="boolean_toggle" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>

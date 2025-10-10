@@ -8,14 +8,14 @@
         <field name="name">retrieval.metric.view.tree</field>
         <field name="model">retrieval.metric</field>
         <field name="arch" type="xml">
-        <tree string="Retrieval Metrics" default_order="metric_date desc">
+        <list string="Retrieval Metrics" default_order="metric_date desc">
         <field name="name"/>
         <field name="metric_type"/>
         <field name="metric_value"/>
         <field name="metric_unit"/>
         <field name="performance_rating"/>
         <field name="metric_date"/>
-        </tree>
+        </list>
     </field>
     </record>
 

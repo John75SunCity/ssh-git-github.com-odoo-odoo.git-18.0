@@ -5,9 +5,9 @@
             <field name="name">shredding.team.view.tree</field>
             <field name="model">shredding.team</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="shredding_team_view_form" model="ir.ui.view">

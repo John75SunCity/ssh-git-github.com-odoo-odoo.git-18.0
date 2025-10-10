@@ -5,9 +5,9 @@
             <field name="name">retrieval.metric.view.tree</field>
             <field name="model">retrieval.metric</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="retrieval_metric_view_form" model="ir.ui.view">

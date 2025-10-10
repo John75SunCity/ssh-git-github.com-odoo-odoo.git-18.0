@@ -81,14 +81,14 @@
             <field name="name">records.location.view.tree</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" string="Location Name" />
                     <field name="parent_location_id" optional="show"/>
                     <field name="location_type" string="Type" />
                     <field name="storage_capacity" string="Capacity" />
                     <field name="active" string="Active" />
                     <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link" />
-                </tree>
+                </list>
             </field>
         </record>
         <!-- Hierarchy View for Locations -->
@@ -136,12 +136,12 @@
                         <notebook>
                             <page name="containers" string="Stored Containers">
                                 <field name="container_ids" mode="tree">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="partner_id" />
                                         <field name="state" />
                                         <field name="storage_start_date" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page name="details" string="Details &amp; Notes">
@@ -226,13 +226,13 @@
             <field name="model">records.location</field>
             <field name="priority" eval="0"/>
             <field name="arch" type="xml">
-                <tree string="Locations (Technical)">
+                <list string="Locations (Technical)">
                     <field name="name"/>
                     <!-- Use correct hierarchy parent field -->
                     <field name="parent_location_id"/>
                     <!-- Show utilization percentage (existing compute field) instead of non-existent capacity_utilization -->
                     <field name="utilization_percentage"/>
-                </tree>
+                </list>
             </field>
         </record>
     </data>

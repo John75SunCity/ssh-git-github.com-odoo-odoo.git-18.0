@@ -6,9 +6,9 @@
         <field name="name">work.order.bin.assignment.wizard.view.tree</field>
         <field name="model">work.order.bin.assignment.wizard</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

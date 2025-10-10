@@ -5,10 +5,10 @@
             <field name="name">container.destruction.work.order.view.tree</field>
             <field name="model">container.destruction.work.order</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
                     <field name="portal_visible" widget="boolean_toggle" optional="show"/>
-                </tree>
+                </list>
             </field>
         </record>
         <record id="container_destruction_work_order_view_form" model="ir.ui.view">

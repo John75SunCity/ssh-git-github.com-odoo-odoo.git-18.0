@@ -6,7 +6,7 @@
             <field name="name">records.container.log.view.list</field>
             <field name="model">records.container.log</field>
         <field name="arch" type="xml">
-                <tree string="Records Container Log">
+                <list string="Records Container Log">
                     <field name="name"/>
                     <field name="display_name"/>
                     <field name="company_id"/>
@@ -15,7 +15,7 @@
                     <field name="event_type"/>
                     <field name="date"/>
                     <field name="user_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 

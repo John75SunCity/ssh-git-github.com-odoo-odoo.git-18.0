@@ -7,14 +7,14 @@
         <field name="name">billing.period.tree</field>
         <field name="model">billing.period</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
                 <field name="active"/>
                 <!-- Added note field for completeness, matching form view -->
                 <field name="note"/>
-            </tree>
+            </list>
         </field>
     </record>
     <!-- Updated XML ID to follow convention -->

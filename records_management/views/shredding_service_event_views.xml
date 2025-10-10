@@ -6,13 +6,13 @@
         <field name="name">shredding.service.event.view.list</field>
         <field name="model">shredding.service.event</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
             <field name="service_date"/>
             <field name="service_type"/>
             <field name="service_customer_id"/>
             <field name="billable_amount"/>
             <field name="notes"/>
-        </tree>
+        </list>
     </field>
     </record>
 

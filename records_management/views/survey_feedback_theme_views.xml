@@ -6,13 +6,13 @@
             <field name="name">survey.feedback.theme.view.tree</field>
             <field name="model">survey.feedback.theme</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="description"/>
                     <field name="feedback_count" string="Feedback Count"/>
                     <field name="active"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
+                </list>
             </field>
         </record>
 

@@ -6,9 +6,9 @@
         <field name="name">records.billing.config.view.tree</field>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 
@@ -149,7 +149,7 @@ Terms: <field name="payment_terms"/>
         <field name="name">records.billing.config.view.tree</field>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
-        <tree decoration-success="active == True and auto_billing == True"
+        <list decoration-success="active == True and auto_billing == True"
             decoration-warning="billing_model == 'custom'"
             decoration-info="payment_terms == 'net_30'">
         <field name="name" string="Configuration Name"/>
@@ -165,7 +165,7 @@ Terms: <field name="payment_terms"/>
                     icon="fa-file-text" class="btn-link"/>
             <button name="action_view_analytics" type="object" string="Analytics"
                     icon="fa-bar-chart" class="btn-link"/>
-        </tree>
+        </list>
     </field>
     </record>
 
@@ -236,7 +236,7 @@ Terms: <field name="payment_terms"/>
                 <notebook>
                     <page string="Rate Structure" name="rates">
         <field name="billing_rate_ids" mode="list">
-                            <tree editable="bottom">
+                            <list editable="bottom">
         <field name="service_type"/>
         <field name="rate_type"/>
         <field name="base_rate"/>
@@ -245,7 +245,7 @@ Terms: <field name="payment_terms"/>
         <field name="discount_percentage"/>
         <field name="effective_date"/>
         <field name="active"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
                     <page string="Usage Tracking" name="usage">
@@ -264,7 +264,7 @@ Terms: <field name="payment_terms"/>
                             </group>
                         </group>
         <field name="usage_tracking_ids" mode="list">
-                            <tree>
+                            <list>
         <field name="date"/>
         <field name="service_type"/>
         <field name="quantity"/>
@@ -272,7 +272,7 @@ Terms: <field name="payment_terms"/>
         <field name="total_cost"/>
         <field name="billable"/>
         <field name="invoice_status"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
                     <page string="Invoice Generation" name="invoicing">
@@ -291,7 +291,7 @@ Terms: <field name="payment_terms"/>
                             </group>
                         </group>
         <field name="invoice_generation_log_ids" mode="list">
-                            <tree>
+                            <list>
         <field name="generation_date"/>
         <field name="invoice_number"/>
         <field name="period_start"/>
@@ -299,12 +299,12 @@ Terms: <field name="payment_terms"/>
         <field name="amount"/>
         <field name="status"/>
                                 <button name="action_view_invoice" type="object" string="View" icon="fa-eye" class="btn-link"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
                     <page string="Discounts &amp; Promotions" name="discounts">
         <field name="discount_rule_ids" mode="list">
-                            <tree editable="bottom">
+                            <list editable="bottom">
         <field name="name"/>
         <field name="rule_type"/>
         <field name="threshold"/>
@@ -315,7 +315,7 @@ Terms: <field name="payment_terms"/>
         <field name="priority"/>
         <field name="state"/>
         <field name="active"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
                     <page string="Revenue Analytics" name="analytics">
@@ -334,14 +334,14 @@ Terms: <field name="payment_terms"/>
                             </group>
                         </group>
         <field name="revenue_analytics_ids" mode="list">
-                            <tree>
+                            <list>
         <field name="period"/>
         <field name="service_category"/>
         <field name="total_revenue"/>
         <field name="actual_costs"/>
         <field name="profit_margin"/>
         <field name="customer_count"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
                     <page string="Notifications &amp; Alerts" name="notifications">

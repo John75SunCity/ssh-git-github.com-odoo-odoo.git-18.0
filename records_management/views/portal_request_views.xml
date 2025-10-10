@@ -82,7 +82,7 @@
             <field name="name">portal.request.view.tree</field>
             <field name="model">portal.request</field>
             <field name="arch" type="xml">
-                <tree string="Portal Requests" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
+                <list string="Portal Requests" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
                     <field name="name" />
                     <field name="request_type" />
                     <field name="partner_id" />
@@ -90,7 +90,7 @@
                     <field name="priority" />
                     <field name="state" />
                     <field name="user_id" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="portal_request_view_form" model="ir.ui.view">

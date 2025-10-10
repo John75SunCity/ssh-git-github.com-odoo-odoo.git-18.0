@@ -6,9 +6,9 @@
         <field name="name">file.retrieval.item.view.list</field>
         <field name="model">file.retrieval.item</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
         <field name="name"/>
-        </tree>
+        </list>
     </field>
     </record>
 

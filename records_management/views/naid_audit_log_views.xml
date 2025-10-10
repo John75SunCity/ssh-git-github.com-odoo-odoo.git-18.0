@@ -5,7 +5,7 @@
         <field name="name">naid.audit.log.view.tree</field>
         <field name="model">naid.audit.log</field>
         <field name="arch" type="xml">
-        <tree decoration-success="naid_compliant == True" decoration-danger="naid_compliant == False" decoration-info="action_type == 'security'" decoration-warning="action_type in ('login_failure', 'unlink')">
+        <list decoration-success="naid_compliant == True" decoration-danger="naid_compliant == False" decoration-info="action_type == 'security'" decoration-warning="action_type in ('login_failure', 'unlink')">
         <field name="create_date" string="Timestamp" widget="datetime" />
         <field name="name" string="Reference" />
         <field name="user_id" string="User" />
@@ -15,7 +15,7 @@
         <field name="naid_compliant" string="NAID Compliant" widget="boolean_toggle" />
         <field name="ip_address" string="IP Address" optional="hide" />
         <field name="company_id" string="Company" optional="hide" groups="base.group_multi_company" />
-        </tree>
+        </list>
     </field>
     </record>
 

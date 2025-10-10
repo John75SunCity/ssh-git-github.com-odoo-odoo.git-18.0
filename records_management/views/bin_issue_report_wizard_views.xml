@@ -161,7 +161,7 @@
         <field name="name">bin.issue.record.view.list</field>
         <field name="model">bin.issue.record</field>
         <field name="arch" type="xml">
-        <tree string="Bin Issue Records" decoration-danger="resolution_status == 'reported'"
+        <list string="Bin Issue Records" decoration-danger="resolution_status == 'reported'"
                 decoration-warning="resolution_status in ('assigned', 'in_progress')"
                 decoration-success="resolution_status == 'resolved'">
         <field name="name"/>
@@ -176,7 +176,7 @@
         <field name="billing_amount" sum="Total Billing" widget="monetary"/>
         <field name="billed" widget="boolean_toggle"/>
         <field name="payment_received" widget="boolean_toggle"/>
-        </tree>
+        </list>
     </field>
     </record>
 

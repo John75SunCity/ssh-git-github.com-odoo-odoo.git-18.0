@@ -5,14 +5,14 @@
             <field name="name">records.audit.log.view.tree</field>
             <field name="model">records.audit.log</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="description" />
                     <field name="event_type" />
                     <field name="user_id" />
                     <field name="timestamp" />
                     <field name="res_model" />
                     <field name="res_name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_audit_log_view_form" model="ir.ui.view">

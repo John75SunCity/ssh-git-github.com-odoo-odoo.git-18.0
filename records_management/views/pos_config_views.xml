@@ -78,7 +78,7 @@
         <field name="name">pos.config.view.tree</field>
         <field name="model">pos.config</field>
         <field name="arch" type="xml">
-        <tree string="POS Configuration Management" decoration-success="state=='active'" decoration-muted="state=='inactive'" decoration-danger="state=='deprecated'" multi_edit="1" sample="1">
+        <list string="POS Configuration Management" decoration-success="state=='active'" decoration-muted="state=='inactive'" decoration-danger="state=='deprecated'" multi_edit="1" sample="1">
             <header>
                 <button name="action_activate" type="object" string="Activate"/>
                 <button name="action_deactivate" type="object" string="Deactivate"/>
@@ -94,7 +94,7 @@
         <field name="last_session_closing_date" string="Last Closed" widget="datetime"/>
         <field name="state" string="Status" widget="badge" decoration-success="state=='active'" decoration-muted="state=='inactive'" decoration-danger="state=='deprecated'"/>
         <field name="activity_exception_decoration" widget="activity_exception"/>
-        </tree>
+        </list>
     </field>
     </record>
 
@@ -196,14 +196,14 @@
                         </group>
                         <separator string="Service Products"/>
         <field name="service_product_ids" mode="list" invisible="enable_walk_in_service != True">
-                            <tree string="Available Services" editable="bottom">
+                            <list string="Available Services" editable="bottom">
         <field name="product_id"/>
         <field name="pos_category_id"/>
         <field name="list_price" widget="monetary"/>
         <field name="available_in_pos" widget="boolean_toggle"/>
         <field name="service_type"/>
         <field name="requires_appointment" widget="boolean_toggle"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
                     <page string="Interface Settings" name="interface_settings">
@@ -245,14 +245,14 @@
                     </page>
                     <page string="Payment Methods" name="payment_methods">
         <field name="payment_method_ids" mode="list">
-                            <tree string="Payment Methods" editable="bottom">
+                            <list string="Payment Methods" editable="bottom">
         <field name="name"/>
         <field name="journal_id"/>
         <field name="type"/>
         <field name="use_payment_terminal"/>
         <field name="split_transactions" widget="boolean_toggle"/>
         <field name="open_session_ids" invisible="1"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
                     <page string="Inventory" name="inventory">
@@ -289,14 +289,14 @@
                         </group>
                         <separator string="Recent Performance Data"/>
         <field name="performance_data_ids" mode="list">
-                            <tree string="Performance Metrics">
+                            <list string="Performance Metrics">
         <field name="date"/>
         <field name="session_count"/>
         <field name="total_sales" widget="monetary"/>
         <field name="transaction_count"/>
         <field name="avg_transaction_value" widget="monetary"/>
         <field name="customer_count"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
                 </notebook>

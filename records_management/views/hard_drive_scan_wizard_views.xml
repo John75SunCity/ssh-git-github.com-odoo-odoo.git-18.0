@@ -52,13 +52,13 @@
 
                     <separator string="📋 Scanned Hard Drives"/>
                     <field name="scan_line_ids" nolabel="1">
-                        <tree editable="bottom">
+                        <list editable="bottom">
                             <field name="serial_number" readonly="1"/>
                             <field name="verified" widget="boolean_toggle"
                                 invisible="context.get('default_scan_step') == 'pickup' or parent.manager_bypass"/>
                             <field name="scanned_at_pickup" readonly="1" optional="hide"/>
                             <field name="scanned_at_facility" readonly="1" optional="hide"/>
-                        </tree>
+                        </list>
                     </field>
 
                     <div class="oe_button_box" invisible="not scan_line_ids">

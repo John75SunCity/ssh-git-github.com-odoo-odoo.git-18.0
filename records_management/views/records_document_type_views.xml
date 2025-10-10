@@ -5,7 +5,7 @@
             <field name="name">records.document.type.view.tree</field>
             <field name="model">records.document.type</field>
             <field name="arch" type="xml">
-                <tree decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="state == 'deprecated'" decoration-info="state == 'draft'">
+                <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="state == 'deprecated'" decoration-info="state == 'draft'">
                     <field name="sequence" widget="handle" />
                     <field name="name" string="Document Type" />
                     <field name="code" string="Code" />
@@ -17,7 +17,7 @@
                     <field name="state" string="Status" widget="badge" />
                     <field name="active" string="Active" />
                     <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link" title="View Documents" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_document_type_view_form" model="ir.ui.view">
@@ -107,45 +107,45 @@
                             </page>
                             <page string="Documents" name="documents">
                                 <field name="document_ids" mode="list" limit="20">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="reference" />
                                         <field name="state" />
                                         <field name="received_date" />
                                         <field name="destruction_eligible_date" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Containers" name="containers">
                                 <field name="container_ids" mode="list" limit="20">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="state" />
                                         <field name="storage_start_date" />
                                         <field name="location_id" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Child Types" name="children">
                                 <field name="child_type_ids" mode="list">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="code" />
                                         <field name="category" />
                                         <field name="state" />
                                         <field name="document_count" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Retention Rules" name="retention">
                                 <field name="retention_rule_ids" mode="list">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="retention_period" />
                                         <field name="retention_unit" />
                                         <field name="action_on_expiry" />
                                         <field name="active" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>

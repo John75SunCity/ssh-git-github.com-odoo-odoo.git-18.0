@@ -7,7 +7,7 @@
             <field name="name">records.document.bulk.upload.line.view.tree</field>
             <field name="model">records.document.bulk.upload.line</field>
             <field name="arch" type="xml">
-                <tree string="Bulk Upload Lines" editable="bottom" create="false" delete="false">
+                <list string="Bulk Upload Lines" editable="bottom" create="false" delete="false">
                     <field name="sequence"/>
                     <field name="name"/>
                     <field name="raw_description"/>
@@ -16,7 +16,7 @@
                     <field name="raw_doc_type_code"/>
                     <field name="doc_type_id"/>
                     <field name="raw_received_date"/>
-                </tree>
+                </list>
             </field>
         </record>
 

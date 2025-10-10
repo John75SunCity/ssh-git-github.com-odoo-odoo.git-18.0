@@ -6,7 +6,7 @@
       <field name="name">records.management.dashboard.view.list</field>
       <field name="model">records.management.dashboard</field>
       <field name="arch" type="xml">
-        <tree string="Management Dashboards" create="true" editable="bottom">
+        <list string="Management Dashboards" create="true" editable="bottom">
           <field name="name"/>
           <field name="snapshot_date"/>
           <field name="total_boxes"/>
@@ -15,7 +15,7 @@
           <field name="kpi_total_containers"/>
           <field name="kpi_monthly_revenue"/>
           <field name="kpi_monthly_shredded"/>
-        </tree>
+        </list>
       </field>
     </record>
 

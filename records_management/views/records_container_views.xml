@@ -132,7 +132,7 @@ Destroy Container</a>
         <field name="name">records.container.view.tree</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-        <tree decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
+        <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
             <header>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
@@ -155,7 +155,7 @@ Destroy Container</a>
             <button name="action_view_documents" type="object" string="View Docs" icon="fas fa-file-text-o" class="btn-link"/>
             <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fas fa-barcode" class="btn-link"/>
             <button name="action_generate_qr_code" type="object" string="QR Code" icon="fas fa-qrcode" class="btn-link"/>
-        </tree>
+        </list>
     </field>
     </record>
 
@@ -164,7 +164,7 @@ Destroy Container</a>
         <field name="name">records.container.view.list</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-        <tree decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
+        <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
             <header>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
@@ -187,7 +187,7 @@ Destroy Container</a>
             <button name="action_view_documents" type="object" string="View Docs" icon="fas fa-file-text-o" class="btn-link"/>
             <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fas fa-barcode" class="btn-link"/>
             <button name="action_generate_qr_code" type="object" string="QR Code" icon="fas fa-qrcode" class="btn-link"/>
-        </tree>
+        </list>
     </field>
     </record>
 
@@ -267,12 +267,12 @@ Destroy Container</a>
                 <notebook>
                     <page string="Documents" name="documents">
         <field name="document_ids" mode="tree,form" context="{'default_container_id': id}">
-                            <tree string="Documents">
+                            <list string="Documents">
         <field name="name"/>
         <field name="document_type_id"/>
         <field name="state"/>
         <field name="create_date"/>
-                            </tree>
+                            </list>
                             <form string="Document">
                                 <group>
         <field name="name"/>
@@ -377,18 +377,18 @@ Destroy Container</a>
         </search>
     </field>
     </record>
-    <!-- Technical tree view (needed for x2many fallback + view tests expecting a real <tree> root) -->
+    <!-- Technical tree view (needed for x2many fallback + view tests expecting a real <list> root) -->
     <record id="records_container_view_tree_technical" model="ir.ui.view">
         <field name="name">records.container.view.tree.technical</field>
         <field name="model">records.container</field>
         <!-- High priority so it does NOT override primary list usage (higher number = lower precedence) -->
         <field name="priority" eval="0"/>
         <field name="arch" type="xml">
-            <tree string="Containers (Technical)">
+            <list string="Containers (Technical)">
                 <field name="name"/>
                 <field name="barcode"/>
                 <field name="state"/>
-            </tree>
+            </list>
         </field>
     </record>
     </data>

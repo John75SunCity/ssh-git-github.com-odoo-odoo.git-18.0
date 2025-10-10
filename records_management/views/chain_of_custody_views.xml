@@ -5,7 +5,7 @@
             <field name="name">chain.of.custody.view.list</field>
             <field name="model">chain.of.custody</field>
             <field name="arch" type="xml">
-                <tree decoration-success="state == 'completed'" decoration-warning="state == 'in_progress'" decoration-danger="state == 'cancelled'">
+                <list decoration-success="state == 'completed'" decoration-warning="state == 'in_progress'" decoration-danger="state == 'cancelled'">
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="transfer_date" />
@@ -17,7 +17,7 @@
                     <button name="action_start" type="object" string="Start" class="btn-link" icon="fa-play" invisible="state != 'draft'" />
                     <button name="action_complete" type="object" string="Complete" class="btn-link" icon="fa-check" invisible="state != 'in_progress'" />
                     <button name="action_cancel" type="object" string="Cancel" class="btn-link" icon="fa-times" invisible="state in ['completed','cancelled']" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="chain_of_custody_view_form" model="ir.ui.view">

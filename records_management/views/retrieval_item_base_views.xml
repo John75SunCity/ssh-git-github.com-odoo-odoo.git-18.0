@@ -5,9 +5,9 @@
             <field name="name">retrieval.item.base.view.list</field>
             <field name="model">retrieval.item.base</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="retrieval_item_base_view_form" model="ir.ui.view">

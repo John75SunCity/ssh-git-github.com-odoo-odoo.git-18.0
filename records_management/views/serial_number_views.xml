@@ -5,9 +5,9 @@
             <field name="name">serial_number.view.tree</field>
             <field name="model">serial_number</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="serial_number_view_form" model="ir.ui.view">

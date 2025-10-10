@@ -5,9 +5,9 @@
             <field name="name">records.promotional.discount.view.tree</field>
             <field name="model">records.promotional.discount</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_promotional_discount_view_form" model="ir.ui.view">

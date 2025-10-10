@@ -6,7 +6,7 @@
             <field name="name">destruction.certificate.view.list</field>
             <field name="model">destruction.certificate</field>
             <field name="arch" type="xml">
-                <tree string="Destruction Certificates" default_order="certificate_date desc">
+                <list string="Destruction Certificates" default_order="certificate_date desc">
                     <field name="name" />
                     <field name="certificate_date" />
                     <field name="partner_id" />
@@ -15,7 +15,7 @@
                     <field name="weight_processed" optional="hide" />
                     <field name="state" widget="badge" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="destruction_certificate_view_form" model="ir.ui.view">

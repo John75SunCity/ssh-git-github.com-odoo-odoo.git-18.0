@@ -5,9 +5,9 @@
             <field name="name">paper.bale.movement.view.tree</field>
             <field name="model">paper.bale.movement</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="paper_bale_movement_view_form" model="ir.ui.view">

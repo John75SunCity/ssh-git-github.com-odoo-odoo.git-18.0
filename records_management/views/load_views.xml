@@ -73,7 +73,7 @@
             <field name="name">paper.bale.load.view.list</field>
             <field name="model">paper.bale.load</field>
             <field name="arch" type="xml">
-                <tree string="Paper Bale Load Management" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'" decoration-muted="state=='cancelled'" multi_edit="1" sample="1">
+                <list string="Paper Bale Load Management" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'" decoration-muted="state=='cancelled'" multi_edit="1" sample="1">
                     <header>
                         <button name="action_prepare_load" type="object" string="Prepare Load" />
                         <button name="action_start_loading" type="object" string="Start Loading" />
@@ -90,7 +90,7 @@
                     <field name="shipping_date" string="Ship Date" widget="date" />
                     <field name="state" string="Status" widget="badge" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'" />
                     <field name="activity_exception_decoration" widget="activity_exception" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="load_view_form" model="ir.ui.view">
@@ -172,7 +172,7 @@
                         <notebook>
                             <page string="Load Items" name="load_items">
                                 <field name="bale_ids" mode="tree,kanban">
-                                    <tree string="Paper Bales" editable="bottom">
+                                    <list string="Paper Bales" editable="bottom">
                                         <field name="bale_number" />
                                         <field name="weight" sum="Total Weight" />
                                         <field name="quality_grade" />
@@ -180,7 +180,7 @@
                                         <field name="contamination_notes" />
                                         <field name="production_date" widget="date" />
                                         <field name="value_per_ton" widget="monetary" />
-                                    </tree>
+                                    </list>
                                     <kanban>
                                         <field name="bale_number" />
                                         <field name="weight" />
@@ -263,12 +263,12 @@
                             </page>
                             <page string="Communication" name="communication">
                                 <field name="message_ids" mode="list">
-                                    <tree string="Communications">
+                                    <list string="Communications">
                                         <field name="date" />
                                         <field name="author_id" />
                                         <field name="subject" />
                                         <field name="message_type" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>

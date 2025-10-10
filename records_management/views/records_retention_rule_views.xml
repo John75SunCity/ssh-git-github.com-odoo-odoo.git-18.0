@@ -5,9 +5,9 @@
             <field name="name">records.retention.rule.view.tree</field>
             <field name="model">records.retention.rule</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_retention_rule_view_form" model="ir.ui.view">

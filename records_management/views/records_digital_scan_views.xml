@@ -5,7 +5,7 @@
             <field name="name">records.digital.scan.view.list</field>
             <field name="model">records.digital.scan</field>
             <field name="arch" type="xml">
-                <tree string="Digital Scans">
+                <list string="Digital Scans">
                     <field name="name" />
                     <field name="document_id" />
                     <field name="scan_date" />
@@ -14,7 +14,7 @@
                     <field name="scan_quality" />
                     <field name="scanned_by_id" />
                     <field name="state" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_digital_scan_view_form" model="ir.ui.view">

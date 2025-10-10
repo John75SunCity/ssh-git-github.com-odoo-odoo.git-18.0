@@ -6,7 +6,7 @@
         <field name="name">pickup.location.view.list</field>
         <field name="model">pickup.location</field>
     <field name="arch" type="xml">
-            <tree string="Pickup Location">
+            <list string="Pickup Location">
                 <field name="name"/>
                 <field name="address"/>
                 <field name="city"/>
@@ -16,7 +16,7 @@
                 <field name="active"/>
                 <field name="company_id"/>
                 <field name="user_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 

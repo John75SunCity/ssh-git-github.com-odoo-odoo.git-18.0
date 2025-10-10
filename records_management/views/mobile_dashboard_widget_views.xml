@@ -5,12 +5,12 @@
         <field name="name">mobile.dashboard.widget.view.list</field>
         <field name="model">mobile.dashboard.widget</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
         <field name="name"/>
         <field name="widget_type"/>
         <field name="category_id"/>
         <field name="is_active"/>
-            </tree>
+            </list>
         </field>
     </record>
 

@@ -7,7 +7,7 @@
         <field name="name">advanced.billing.contact.view.tree</field>
         <field name="model">advanced.billing.contact</field>
         <field name="arch" type="xml">
-            <tree string="Billing Contacts" default_order="sequence">
+            <list string="Billing Contacts" default_order="sequence">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="email"/>
@@ -16,7 +16,7 @@
                 <field name="primary_contact"/>
                 <field name="preferred_communication"/>
                 <!-- Removed always-invisible 'active' field: not needed in list; presence caused test_views failure -->
-            </tree>
+            </list>
         </field>
     </record>
 

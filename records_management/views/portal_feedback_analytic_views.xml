@@ -5,9 +5,9 @@
             <field name="name">portal.feedback.analytic.view.tree</field>
             <field name="model">portal.feedback.analytic</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="portal_feedback_analytic_view_form" model="ir.ui.view">

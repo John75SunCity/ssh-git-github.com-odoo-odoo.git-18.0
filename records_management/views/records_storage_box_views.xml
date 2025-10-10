@@ -6,13 +6,13 @@
             <field name="name">records.storage.box.view.tree</field>
             <field name="model">records.storage.box</field>
             <field name="arch" type="xml">
-                <tree string="Storage Boxes">
+                <list string="Storage Boxes">
                     <field name="name" />
                     <field name="box_size" />
                     <field name="location_id" />
                     <field name="state" />
                     <field name="document_count" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_storage_box_view_form" model="ir.ui.view">

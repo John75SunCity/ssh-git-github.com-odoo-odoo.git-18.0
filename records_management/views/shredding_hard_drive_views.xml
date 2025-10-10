@@ -5,9 +5,9 @@
             <field name="name">shredding.hard_drive.view.tree</field>
             <field name="model">shredding.hard_drive</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="shredding_hard_drive_view_form" model="ir.ui.view">
@@ -82,9 +82,9 @@
                         </group>
                         <separator string="Scanned Hard Drives" />
                         <field name="scan_line_ids">
-                            <tree editable="bottom">
+                            <list editable="bottom">
                                 <field name="serial_number" />
-                            </tree>
+                            </list>
                         </field>
                     </sheet>
                 </form>
@@ -94,7 +94,7 @@
             <field name="name">shredding.hard_drive.view.tree</field>
             <field name="model">shredding.hard_drive</field>
             <field name="arch" type="xml">
-                <tree string="Hard Drives for Shredding" decoration-success="state=='destroyed'" decoration-warning="state=='scanned'" decoration-info="state=='draft'">
+                <list string="Hard Drives for Shredding" decoration-success="state=='destroyed'" decoration-warning="state=='scanned'" decoration-info="state=='draft'">
                     <field name="serial_number" />
                     <field name="state" widget="badge" />
                     <field name="destruction_date" />
@@ -103,7 +103,7 @@
                     <field name="fsm_task_id" />
                     <field name="partner_id" />
                     <field name="certificate_id" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="shredding_hard_drive_view_form" model="ir.ui.view">

@@ -106,7 +106,7 @@
             <field name="name">pickup.route.stop.view.tree</field>
             <field name="model">pickup.route.stop</field>
             <field name="arch" type="xml">
-                <tree decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'" decoration-danger="priority == 'urgent'">
+                <list decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'" decoration-danger="priority == 'urgent'">
                     <field name="sequence" />
                     <field name="display_name" />
                     <field name="route_id" />
@@ -120,7 +120,7 @@
                     <field name="priority" widget="priority" />
                     <field name="pickup_request_id" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="pickup_route_stop_view_form" model="ir.ui.view">

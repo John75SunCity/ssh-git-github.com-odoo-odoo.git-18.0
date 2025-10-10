@@ -9,7 +9,7 @@
         <field name="name">naid.audit.requirement.view.tree</field>
         <field name="model">naid.audit.requirement</field>
         <field name="arch" type="xml">
-        <tree decoration-danger="status == 'overdue'" decoration-warning="status == 'scheduled'" decoration-success="status == 'completed'">
+        <list decoration-danger="status == 'overdue'" decoration-warning="status == 'scheduled'" decoration-success="status == 'completed'">
         <field name="name"/>
         <field name="audit_type"/>
         <field name="checklist_category"/>
@@ -20,7 +20,7 @@
         <field name="compliance_score"/>
         <field name="critical_item"/>
         <field name="active"/>
-</tree>
+</list>
         </field>
     </record>
 
@@ -101,45 +101,45 @@
                         </page>
                         <page string="Audit History">
         <field name="related_audit_ids">
-                                <tree>
+                                <list>
         <field name="audit_date"/>
         <field name="auditor_id"/>
         <field name="result"/>
         <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Tasks &amp; Events">
                             <group>
                                 <group string="Project Tasks">
         <field name="task_ids">
-                                        <tree>
+                                        <list>
         <field name="name"/>
         <field name="user_ids"/>
         <field name="date_deadline"/>
         <field name="stage_id"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
                                 <group string="Calendar Events">
         <field name="calendar_event_ids">
-                                        <tree>
+                                        <list>
         <field name="name"/>
         <field name="start"/>
         <field name="stop"/>
         <field name="partner_ids"/>
-                                        </tree>
+                                        </list>
                                     </field>
                                 </group>
                             </group>
                         </page>
                         <page string="Signature Requests">
         <field name="sign_request_ids">
-                                <tree>
+                                <list>
         <field name="reference"/>
         <field name="request_item_ids"/>
         <field name="state"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>

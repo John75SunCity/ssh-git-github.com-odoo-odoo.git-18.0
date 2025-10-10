@@ -6,9 +6,9 @@
             <field name="name">base.rate.view.tree</field>
             <field name="model">base.rate</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="base_rate_view_form" model="ir.ui.view">
@@ -55,7 +55,7 @@
             <field name="name">base.rate.view.tree</field>
             <field name="model">base.rate</field>
             <field name="arch" type="xml">
-                <tree decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-muted="state == 'archived'">
+                <list decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-muted="state == 'archived'">
                     <field name="name"/>
                     <field name="version"/>
                     <field name="active"/>
@@ -67,7 +67,7 @@
                     <field name="customers_using_rates" optional="hide"/>
                     <field name="containers_at_base_rates" optional="hide"/>
                     <field name="company_id" optional="hide"/>
-                </tree>
+                </list>
             </field>
         </record>
         <record id="base_rates_view_form" model="ir.ui.view">
@@ -299,7 +299,7 @@
                         <notebook invisible="analysis_complete == False">
                             <page string="Customer Impact Analysis">
                                 <field name="forecast_line_ids" readonly="1">
-                                    <tree decoration-success="revenue_change &lt; 0" decoration-danger="revenue_change &gt; 0">
+                                    <list decoration-success="revenue_change &lt; 0" decoration-danger="revenue_change &gt; 0">
                                         <field name="partner_id" />
                                         <field name="customer_segment" />
                                         <field name="container_count" />
@@ -308,7 +308,7 @@
                                         <field name="revenue_change" />
                                         <field name="revenue_change_percentage" />
                                         <field name="risk_level" widget="badge" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>

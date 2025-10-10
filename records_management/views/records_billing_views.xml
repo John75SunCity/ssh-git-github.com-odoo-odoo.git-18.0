@@ -6,7 +6,7 @@
             <field name="name">records.billing.view.tree</field>
             <field name="model">records.billing</field>
             <field name="arch" type="xml">
-                <tree string="Billing Records" default_order="date desc">
+                <list string="Billing Records" default_order="date desc">
                     <field name="name" />
                     <field name="date" />
                     <field name="partner_id" />
@@ -14,7 +14,7 @@
                     <field name="currency_id" />
                     <field name="state" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_billing_view_form" model="ir.ui.view">
@@ -51,12 +51,12 @@
                         <notebook>
                             <page string="Billing Lines">
                                 <field name="billing_line_ids">
-                                    <tree>
+                                    <list>
                                         <field name="name" />
                                         <field name="amount_total" />
                                         <field name="currency_id" />
                                         <field name="billing_profile_id" />
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Invoice">

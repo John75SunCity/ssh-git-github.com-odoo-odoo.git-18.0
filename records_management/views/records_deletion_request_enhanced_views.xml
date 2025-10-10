@@ -5,14 +5,14 @@
             <field name="name">records.deletion.request.enhanced.view.list</field>
             <field name="model">records.deletion.request</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="request_date" />
                     <field name="state" />
                     <field name="priority" />
                     <field name="total_items_count" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_deletion_request_enhanced_view_form" model="ir.ui.view">

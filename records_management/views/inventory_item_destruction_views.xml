@@ -5,12 +5,12 @@
             <field name="name">inventory.item.destruction.view.tree</field>
             <field name="model">inventory.item.destruction</field>
             <field name="arch" type="xml">
-                <tree string="Inventory Item Destruction">
+                <list string="Inventory Item Destruction">
                     <field name="name" />
                     <field name="date" />
                     <field name="responsible_id" />
                     <field name="state" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="inventory_item_destruction_view_form" model="ir.ui.view">

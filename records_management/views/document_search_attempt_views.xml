@@ -6,7 +6,7 @@
             <field name="name">document.search.attempt.view.search</field>
             <field name="model">document.search.attempt</field>
             <field name="arch" type="xml">
-                <tree string="Document Search Attempts">
+                <list string="Document Search Attempts">
                     <field name="search_date" />
                     <field name="retrieval_item_id" />
                     <field name="requested_file_name" />
@@ -14,7 +14,7 @@
                     <field name="searched_by_id" />
                     <field name="found" />
                     <field name="customer_id" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="document_search_attempt_view_form" model="ir.ui.view">

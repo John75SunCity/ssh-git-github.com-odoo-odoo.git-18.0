@@ -5,9 +5,9 @@
             <field name="name">records.usage.tracking.view.tree</field>
             <field name="model">records.usage.tracking</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name" />
-                </tree>
+                </list>
             </field>
         </record>
         <record id="records_usage_tracking_view_form" model="ir.ui.view">
