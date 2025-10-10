@@ -35,7 +35,10 @@ class PaperModelBale(models.Model):
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
-    # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
+    # SQL constraints
+    _sql_constraints = [
+        ('bale_number_company_uniq', 'unique(bale_number, company_id)', 'Bale number must be unique per company.'),
+    ]
     _bale_number_unique = models.Constraint(
         'UNIQUE(bale_number)',
         "Bale number must be unique across all bales.",

@@ -35,7 +35,11 @@ class StockLotAttribute(models.Model):
     selection_option_ids = fields.One2many('stock.lot.attribute.option', 'attribute_id', string="Selection Options")
     option_count = fields.Integer(compute='_compute_option_count', string="Option Count")
 
-    # Migrated from _sql_constraints (Odoo 18) to models.Constraint (Odoo 19)
+    # SQL constraints
+    _sql_constraints = [
+        ('name_company_uniq', 'unique(name, company_id)', 'Attribute names must be unique per company.'),
+        ('technical_name_company_uniq', 'unique(technical_name, company_id)', 'Technical names must be unique per company.'),
+    ]
     _name_company_uniq = models.Constraint(
         'UNIQUE(name, company_id)',
         "Attribute name must be unique per company!",
