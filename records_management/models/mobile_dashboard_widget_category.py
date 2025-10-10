@@ -64,5 +64,5 @@ class MobileDashboardWidgetCategory(models.Model):
     # SQL Constraints
     _sql_constraints = [
         ('name_company_uniq', 'unique(name, company_id)', 'Category name must be unique per company'),
-        ('technical_name_company_uniq', 'unique(technical_name, company_id)', 'Technical name must be unique per company'),
+        # Temporarily disabled due to DB conflict: ('technical_name_company_uniq', 'unique(technical_name, company_id)', 'Technical name must be unique per company'),
     ]

@@ -11,7 +11,7 @@
             <!-- OPTIMIZATION: Model records.retrieval.order has state field - consider using default search filters -->
             <field name="name">Records Retrieval</field>
             <field name="res_model">records.retrieval.order</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
         </record>
@@ -19,7 +19,7 @@
             <!-- OPTIMIZATION: Model container.access.work.order has state field - consider using default search filters -->
             <field name="name">Container Access</field>
             <field name="res_model">container.access.work.order</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
         </record>
@@ -27,7 +27,7 @@
             <!-- OPTIMIZATION: Model container.destruction.work.order has state field - consider using default search filters -->
             <field name="name">Container Destruction</field>
             <field name="res_model">container.destruction.work.order</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
         </record>
@@ -35,7 +35,7 @@
             <!-- OPTIMIZATION: Model work.order.shredding has state field - consider using default search filters -->
             <field name="name">Shredding Services</field>
             <field name="res_model">work.order.shredding</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
         </record>
@@ -43,7 +43,7 @@
             <field name="name">work.order.dashboard.view.tree</field>
             <field name="model">project.task</field>
             <field name="arch" type="xml">
-                <list string="All Work Orders" create="false" edit="false" decoration-info="stage_id.name=='Draft'" decoration-warning="stage_id.name=='In Progress'" decoration-success="stage_id.name=='Completed'">
+                <tree string="All Work Orders" create="false" edit="false" decoration-info="stage_id.name=='Draft'" decoration-warning="stage_id.name=='In Progress'" decoration-success="stage_id.name=='Completed'">
                     <field name="name" string="Work Order" />
                     <field name="project_id" string="Type" />
                     <field name="partner_id" string="Customer" />
@@ -52,14 +52,14 @@
                     <field name="date_deadline" string="Due Date" />
                     <field name="priority" widget="priority" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="action_all_work_orders_unified" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model project.task has state field - consider using default search filters -->
             <field name="name">All Work Orders</field>
             <field name="res_model">project.task</field>
-            <field name="view_mode">list,kanban,form</field>
+            <field name="view_mode>tree,kanban,form</field>
             <field name="view_id" ref="work_order_dashboard_view_tree" />
             <field name="domain">[('project_id.name', 'ilike', 'work order')]</field>
             <field name="context">{'search_default_open': 1}</field>
@@ -101,7 +101,7 @@
             <!-- OPTIMIZATION: Model work.order.coordinator has state field - consider using default search filters -->
             <field name="name">Work Order Performance</field>
             <field name="res_model">work.order.coordinator</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{'search_default_group_department': 1}</field>
         </record>
@@ -109,7 +109,7 @@
             <!-- OPTIMIZATION: Model project.task has state field - consider using default search filters -->
             <field name="name">Overdue Work Orders</field>
             <field name="res_model">project.task</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[('date_deadline', '&lt;', context_today.strftime('%Y-%m-%d')), ('stage_id.name', '!=', 'Completed'), ('project_id.name', 'ilike', 'work order')]</field>
             <field name="context">{'search_default_group_project': 1}</field>
         </record>
@@ -117,7 +117,7 @@
             <!-- OPTIMIZATION: Model project.task has state field - consider using default search filters -->
             <field name="name">Today's Work Orders</field>
             <field name="res_model">project.task</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[('date_deadline', '=', context_today.strftime('%Y-%m-%d')), ('project_id.name', 'ilike', 'work order')]</field>
             <field name="context">{'search_default_open': 1}</field>
         </record>

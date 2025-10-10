@@ -5,7 +5,7 @@
             <field name="name">chain.of.custody.view.list</field>
             <field name="model">chain.of.custody</field>
             <field name="arch" type="xml">
-                <list decoration-success="state == 'completed'" decoration-warning="state == 'in_progress'" decoration-danger="state == 'cancelled'">
+                <tree decoration-success="state == 'completed'" decoration-warning="state == 'in_progress'" decoration-danger="state == 'cancelled'">
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="transfer_date" />
@@ -17,7 +17,7 @@
                     <button name="action_start" type="object" string="Start" class="btn-link" icon="fa-play" invisible="state != 'draft'" />
                     <button name="action_complete" type="object" string="Complete" class="btn-link" icon="fa-check" invisible="state != 'in_progress'" />
                     <button name="action_cancel" type="object" string="Cancel" class="btn-link" icon="fa-times" invisible="state in ['completed','cancelled']" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="chain_of_custody_view_form" model="ir.ui.view">
@@ -59,7 +59,7 @@
                         </group>
                         <notebook>
                             <page string="Events">
-                                <field name="custody_event_ids" mode="list,form" />
+                                <field name="custody_event_ids" mode="tree,form" />
                             </page>
                             <page string="Notes">
                                 <field name="notes" widget="text" />
@@ -153,7 +153,7 @@
             <!-- OPTIMIZATION: Model chain.of.custody has state field - consider using default search filters -->
             <field name="name">Chain of Custody</field>
             <field name="res_model">chain.of.custody</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="search_view_id" ref="chain_of_custody_view_search" />
             <field name="context">{'search_default_draft': 1, 'search_default_in_progress': 1}</field>
             <field name="help" type="html">
@@ -170,7 +170,7 @@
             <!-- OPTIMIZATION: Model chain.of.custody has state field - consider using default search filters -->
             <field name="name">Customer Chain of Custody</field>
             <field name="res_model">chain.of.custody</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="search_view_id" ref="chain_of_custody_view_search" />
             <field name="domain">[('partner_id', '=', active_id)]</field>
             <field name="context">{'default_partner_id': active_id, 'search_default_draft': 1, 'search_default_in_progress': 1}</field>

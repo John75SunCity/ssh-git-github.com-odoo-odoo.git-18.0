@@ -20,7 +20,7 @@
         <field name="name">inventory.item.location.transfer.view.list</field>
         <field name="model">inventory.item.location.transfer</field>
     <field name="arch" type="xml">
-            <list string="Inventory Item Location Transfer">
+            <tree string="Inventory Item Location Transfer">
                 <field name="name"/>
                 <field name="item_id"/>
                 <field name="from_location_id"/>
@@ -30,7 +30,7 @@
                 <field name="notes"/>
                 <field name="active"/>
                 <field name="company_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -78,7 +78,7 @@
     <record id="action_inventory_item_location_transfer" model="ir.actions.act_window">
         <field name="name">Inventory Item Location Transfer</field>
         <field name="res_model">inventory.item.location.transfer</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
     </record>
 
     <!-- Menu (optional - provide a real parent ID when enabling)

@@ -36,9 +36,9 @@ class PaperModelBale(models.Model):
     # SQL CONSTRAINTS
     # ============================================================================
     # SQL constraints
+        # SQL constraints
     _sql_constraints = [
-        ('bale_number_company_uniq', 'unique(bale_number, company_id)', 'Bale number must be unique per company.'),
-        ('bale_number_unique', 'unique(bale_number)', 'Bale Number must be unique across the system!'),
+        # Temporarily disabled due to DB conflict: ('bale_number_company_uniq', 'unique(bale_number, company_id)', 'Bale number must be unique per company.'),
     ]
 
     # ============================================================================

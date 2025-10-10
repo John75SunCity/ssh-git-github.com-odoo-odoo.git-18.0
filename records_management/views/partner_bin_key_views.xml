@@ -6,9 +6,9 @@
         <field name="name">partner.bin.key.view.tree</field>
         <field name="model">partner.bin.key</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="name"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -47,7 +47,7 @@
     <record id="action_partner_bin_key" model="ir.actions.act_window">
         <field name="name">Partner.Bin.Key</field>
         <field name="res_model">partner.bin.key</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

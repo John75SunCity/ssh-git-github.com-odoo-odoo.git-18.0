@@ -98,7 +98,7 @@
         <field name="name">product.template.view.tree</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
-            <list decoration-success="sale_ok == True and active == True" decoration-warning="type == 'service'" decoration-info="purchase_ok == True">
+            <tree decoration-success="sale_ok == True and active == True" decoration-warning="type == 'service'" decoration-info="purchase_ok == True">
                 <field name="name" string="Product Name"/>
                 <field name="default_code" string="Internal Reference"/>
                 <field name="categ_id" string="Category"/>
@@ -111,7 +111,7 @@
                 <field name="active" string="Status" widget="boolean_toggle"/>
                 <button name="action_view_sales" type="object" string="Sales" icon="fa-line-chart" class="btn-link"/>
                 <button name="action_configure_pricing" type="object" string="Pricing" icon="fa-money" class="btn-link"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -250,14 +250,14 @@
                         </page>
                         <page string="Product Variants" name="variants">
                             <field name="product_variant_ids" mode="list">
-                                <list>
+                                <tree>
                                     <field name="default_code"/>
                                     <field name="display_name"/>
                                     <field name="lst_price"/>
                                     <field name="standard_price"/>
                                     <field name="qty_available" invisible="parent.type != 'product'"/>
                                     <field name="active"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Analytics" name="analytics">
@@ -348,7 +348,7 @@
     <record id="action_product_template_records" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-briefcase'/> Records Management Products</field>
         <field name="res_model">product.template</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="search_view_id" ref="product_template_view_search"/>
         <field name="context">{
             'search_default_active': 1,

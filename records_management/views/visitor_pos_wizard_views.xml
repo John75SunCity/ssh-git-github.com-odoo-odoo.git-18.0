@@ -61,7 +61,7 @@
         <field name="name">visitor.pos.wizard.view.list</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
-            <list string="Visitor POS Processing History">
+            <tree string="Visitor POS Processing History">
                 <field name="visitor_id" string="Visitor"/>
                 <field name="product_id" string="Product/Service"/>
                 <field name="quantity" string="Quantity"/>
@@ -69,7 +69,7 @@
                 <field name="pos_config_id" string="POS Terminal"/>
                 <field name="partner_id" string="Customer"/>
                 <field name="create_new_customer" string="New Customer" widget="boolean_toggle"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -124,7 +124,7 @@
     <record id="action_visitor_pos_wizard" model="ir.actions.act_window">
         <field name="name">Visitor POS Processing</field>
         <field name="res_model">visitor.pos.wizard</field>
-        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="view_mode>tree,form,graph,pivot</field>
         <field name="search_view_id" ref="visitor_pos_wizard_view_search"/>
         <field name="context">{}</field>
         <field name="help" type="html">

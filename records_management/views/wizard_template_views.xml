@@ -6,11 +6,11 @@
         <field name="name">wizard.template.view.tree</field>
         <field name="model">wizard.template</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="reason"/>
         <field name="confirm_action"/>
 
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -56,7 +56,7 @@
     <record id="action_wizard_template" model="ir.actions.act_window">
         <field name="name">Wizard Template</field>
         <field name="res_model">wizard.template</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

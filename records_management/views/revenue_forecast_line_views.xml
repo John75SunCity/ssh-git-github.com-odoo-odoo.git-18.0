@@ -6,7 +6,7 @@
             <field name="name">revenue.forecast.line.view.tree</field>
             <field name="model">revenue.forecast.line</field>
             <field name="arch" type="xml">
-                <list string="Revenue Forecast Lines" decoration-success="status=='achieved'" decoration-warning="status=='in_progress'" decoration-danger="status=='missed'">
+                <tree string="Revenue Forecast Lines" decoration-success="status=='achieved'" decoration-warning="status=='in_progress'" decoration-danger="status=='missed'">
                     <field name="customer_id" />
                     <field name="service_type" />
                     <field name="period_type" />
@@ -17,7 +17,7 @@
                     <field name="confidence_level" />
                     <field name="status" />
                     <!-- Removed always-invisible 'currency_id'; forecast amounts use company's currency -->
-                </list>
+                </tree>
             </field>
         </record>
         <record id="revenue_forecast_line_view_form" model="ir.ui.view">
@@ -105,7 +105,7 @@
             <!-- OPTIMIZATION: Model revenue.forecast.line has state field - consider using default search filters -->
             <field name="name">Revenue Forecast Lines</field>
             <field name="res_model">revenue.forecast.line</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
@@ -135,7 +135,7 @@
             <!-- OPTIMIZATION: Model revenue.forecast.line has state field - consider using default search filters -->
             <field name="name">Revenue Forecast Lines</field>
             <field name="res_model">revenue.forecast.line</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="context">{}</field>
             <field name="domain">[]</field>
             <field name="help" type="html">

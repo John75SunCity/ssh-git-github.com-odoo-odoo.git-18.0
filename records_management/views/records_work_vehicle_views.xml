@@ -138,7 +138,7 @@
             <field name="name">fleet.vehicle.list.records.work</field>
             <field name="model">fleet.vehicle</field>
             <field name="arch" type="xml">
-                <list string="Records Work Vehicles" create="true" edit="true" delete="true">
+                <tree string="Records Work Vehicles" create="true" edit="true" delete="true">
                     <field name="name"/>
                     <field name="model_id"/>
                     <field name="license_plate"/>
@@ -148,7 +148,7 @@
                     <field name="max_container_capacity"/>
                     <field name="driver_id"/>
                     <field name="pickup_route_ids" widget="many2many_tags"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -316,10 +316,10 @@
         <record id="action_fleet_vehicle_records_work" model="ir.actions.act_window">
             <field name="name">Records Work Vehicles</field>
             <field name="res_model">fleet.vehicle</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="view_ids" eval="[(5, 0, 0),
                 (0, 0, {'view_mode': 'kanban', 'view_id': ref('fleet_vehicle_view_kanban_records_work')}),
-                (0, 0, {'view_mode': 'list', 'view_id': ref('fleet_vehicle_view_list_records_work')}),
+                (0, 0, {'view_mode>tree_records_work')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('fleet_vehicle_view_form_records_work')})]"/>
             <field name="search_view_id" ref="fleet_vehicle_view_search_records_work"/>
             <field name="domain">[('records_vehicle_type','!=',False)]</field>

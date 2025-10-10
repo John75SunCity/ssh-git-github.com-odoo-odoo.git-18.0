@@ -6,7 +6,7 @@
             <field name="name">barcode.seasonal.pricing.view.tree</field>
             <field name="model">barcode.seasonal.pricing</field>
             <field name="arch" type="xml">
-                <list string="Seasonal Pricing" create="true" edit="true">
+                <tree string="Seasonal Pricing" create="true" edit="true">
                     <field name="name" />
                     <field name="season_name" />
                     <field name="product_id" />
@@ -15,7 +15,7 @@
                     <field name="price_multiplier" />
                     <field name="state" />
                     <field name="active" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="barcode_seasonal_pricing_view_form" model="ir.ui.view">
@@ -54,7 +54,7 @@
             <!-- OPTIMIZATION: Model barcode.seasonal.pricing has state field - consider using default search filters -->
             <field name="name">Seasonal Pricing</field>
             <field name="res_model">barcode.seasonal.pricing</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
         </record>
     
         <menuitem id="barcode_seasonal_pricing_menu" name="Seasonal Pricing" parent="menu_barcode_config" action="barcode_seasonal_pricing_action" sequence="95" />

@@ -5,7 +5,7 @@
             <field name="name">work.order.shredding.view.tree</field>
             <field name="model">work.order.shredding</field>
             <field name="arch" type="xml">
-                <list string="Shredding Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'" decoration-danger="priority=='urgent'">
+                <tree string="Shredding Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'" decoration-danger="priority=='urgent'">
                     <header>
                         <button name="action_bulk_confirm" string="Bulk Confirm" type="object" class="btn-primary" />
                         <button name="action_bulk_start" string="Bulk Start" type="object" class="btn-warning" />
@@ -21,7 +21,7 @@
                     <field name="state" widget="badge" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" />
                     <field name="completion_percentage" widget="progressbar" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="work_order_shredding_view_form" model="ir.ui.view">
@@ -88,7 +88,7 @@
                         <notebook>
                             <page name="containers" string=" Containers &amp; Items">
                                 <field name="container_ids">
-                                    <list editable="bottom" decoration-muted="is_shredded">
+                                    <tree editable="bottom" decoration-muted="is_shredded">
                                         <field name="name" />
                                         <field name="container_type" />
                                         <field name="location_id" />
@@ -97,7 +97,7 @@
                                         <field name="shredding_priority" widget="priority" />
                                         <field name="is_shredded" widget="boolean_toggle" />
                                         <field name="shredded_date" />
-                                    </list>
+                                    </tree>
                                 </field>
                                 <group class="oe_subtotal_footer">
                                     <field name="total_weight" class="oe_subtotal_footer_separator" />
@@ -139,24 +139,24 @@
                                 </group>
                                 <separator string=" Compliance Checklist" />
                                 <field name="compliance_checklist_ids">
-                                    <list editable="bottom">
+                                    <tree editable="bottom">
                                         <field name="check_item" />
                                         <field name="is_completed" widget="boolean_toggle" />
                                         <field name="completed_by" />
                                         <field name="completion_date" />
                                         <field name="notes" />
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page name="timeline" string=" Timeline &amp; Tracking">
                                 <field name="timeline_ids">
-                                    <list create="false" delete="false">
+                                    <tree create="false" delete="false">
                                         <field name="timestamp" />
                                         <field name="event_type" />
                                         <field name="description" />
                                         <field name="user_id" />
                                         <field name="duration" />
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page name="notes" string=" Notes &amp; Instructions">
@@ -299,7 +299,7 @@ lbs
             <field name="name">Shredding Work Orders</field>
             <field name="res_model">work.order.shredding</field>
             <!-- Added activity, graph, pivot for analytics and scheduling -->
-            <field name="view_mode">activity,kanban,graph,pivot,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
             <field name="help" type="html">
@@ -317,7 +317,7 @@ lbs
             <!-- OPTIMIZATION: Model work.order.shredding has state field - consider using default search filters -->
             <field name="name">My Shredding Orders</field>
             <field name="res_model">work.order.shredding</field>
-            <field name="view_mode">activity,kanban,graph,pivot,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[('coordinator_id.user_id', '=', uid)]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
         </record>
@@ -325,7 +325,7 @@ lbs
             <!-- OPTIMIZATION: Model work.order.shredding has state field - consider using default search filters -->
             <field name="name">Urgent Shredding Orders</field>
             <field name="res_model">work.order.shredding</field>
-            <field name="view_mode">activity,kanban,graph,pivot,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[('priority', '=', 'urgent'), ('state', 'not in', ['completed', 'cancelled'])]</field>
             <field name="context">{'default_priority': 'urgent'}</field>
         </record>
@@ -333,7 +333,7 @@ lbs
             <!-- OPTIMIZATION: Model work.order.shredding has state field - consider using default search filters -->
             <field name="name">NAID Compliance Orders</field>
             <field name="res_model">work.order.shredding</field>
-            <field name="view_mode">activity,kanban,graph,pivot,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[('naid_compliant', '=', True)]</field>
             <field name="context">{'search_default_group_state': 1}</field>
         </record>
@@ -341,7 +341,7 @@ lbs
             <!-- OPTIMIZATION: Model work.order.shredding has state field - consider using default search filters -->
             <field name="name">Today's Shredding Orders</field>
             <field name="res_model">work.order.shredding</field>
-            <field name="view_mode">activity,kanban,graph,pivot,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[('scheduled_date', '&gt;=', datetime.datetime.combine(context_today, datetime.time(0,0,0))), ('scheduled_date', '&lt;=', datetime.datetime.combine(context_today, datetime.time(23,59,59)))]</field>
             <field name="context">{'search_default_group_coordinator': 1}</field>
         </record>

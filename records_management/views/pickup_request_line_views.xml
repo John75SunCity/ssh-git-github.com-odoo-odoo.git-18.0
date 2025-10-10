@@ -5,7 +5,7 @@
         <field name="name">pickup.request.line.view.tree</field>
         <field name="model">pickup.request.line</field>
     <field name="arch" type="xml">
-            <list string="Pickup Request Line">
+            <tree string="Pickup Request Line">
                 request_id
                 container_id
                 item_description
@@ -14,7 +14,7 @@
                 notes
                 company_id
                 active
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -57,7 +57,7 @@
     <record id="action_pickup_request_line" model="ir.actions.act_window">
         <field name="name">Pickup Request Line</field>
         <field name="res_model">pickup.request.line</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
     </record>
     </data>
 </odoo>

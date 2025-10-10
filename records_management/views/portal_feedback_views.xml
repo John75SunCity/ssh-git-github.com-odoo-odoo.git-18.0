@@ -72,7 +72,7 @@
             <field name="name">portal.feedback.view.tree</field>
             <field name="model">portal.feedback</field>
             <field name="arch" type="xml">
-                <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="state=='resolved'" decoration-muted="state=='closed'" multi_edit="1">
+                <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="state=='resolved'" decoration-muted="state=='closed'" multi_edit="1">
                     <field name="name" />
                     <field name="create_date" widget="date" />
                     <field name="partner_id" />
@@ -84,7 +84,7 @@
                     <field name="state" widget="badge" />
                     <field name="assigned_to_id" widget="many2one_avatar_user" />
                     <field name="activity_exception_decoration" widget="activity_exception" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="portal_feedback_view_form" model="ir.ui.view">
@@ -185,7 +185,7 @@
             <!-- OPTIMIZATION: Model portal.feedback has state field - consider using default search filters -->
             <field name="name">Customer Feedback</field>
             <field name="res_model">portal.feedback</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="search_view_id" ref="portal_feedback_view_search" />
             <field name="context">{'search_default_needs_response': 1}</field>
             <field name="help" type="html">

@@ -6,9 +6,9 @@
             <field name="name">base.rate.view.tree</field>
             <field name="model">base.rate</field>
             <field name="arch" type="xml">
-                <list>
+                <tree>
                     <field name="name" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="base_rate_view_form" model="ir.ui.view">
@@ -42,7 +42,7 @@
             <!-- OPTIMIZATION: Model base.rate has state field - consider using default search filters -->
             <field name="name">Base Rate</field>
             <field name="res_model">base.rate</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
@@ -55,7 +55,7 @@
             <field name="name">base.rate.view.tree</field>
             <field name="model">base.rate</field>
             <field name="arch" type="xml">
-                <list decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-muted="state == 'archived'">
+                <tree decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-muted="state == 'archived'">
                     <field name="name"/>
                     <field name="version"/>
                     <field name="active"/>
@@ -67,7 +67,7 @@
                     <field name="customers_using_rates" optional="hide"/>
                     <field name="containers_at_base_rates" optional="hide"/>
                     <field name="company_id" optional="hide"/>
-                </list>
+                </tree>
             </field>
         </record>
         <record id="base_rates_view_form" model="ir.ui.view">
@@ -299,7 +299,7 @@
                         <notebook invisible="analysis_complete == False">
                             <page string="Customer Impact Analysis">
                                 <field name="forecast_line_ids" readonly="1">
-                                    <list decoration-success="revenue_change &lt; 0" decoration-danger="revenue_change &gt; 0">
+                                    <tree decoration-success="revenue_change &lt; 0" decoration-danger="revenue_change &gt; 0">
                                         <field name="partner_id" />
                                         <field name="customer_segment" />
                                         <field name="container_count" />
@@ -308,7 +308,7 @@
                                         <field name="revenue_change" />
                                         <field name="revenue_change_percentage" />
                                         <field name="risk_level" widget="badge" />
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                         </notebook>
@@ -380,7 +380,7 @@
             <!-- OPTIMIZATION: Model base.rate has state field - consider using default search filters -->
             <field name="name">Base Service Rates</field>
             <field name="res_model">base.rate</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
@@ -396,7 +396,7 @@
         <record id="action_customer_negotiated_rate" model="ir.actions.act_window">
             <field name="name">Customer Negotiated Rate</field>
             <field name="res_model">customer.negotiated.rate</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

@@ -75,7 +75,7 @@
             <field name="name">bin.barcode.inventory.view.tree</field>
             <field name="model">bin.barcode.inventory</field>
             <field name="arch" type="xml">
-                <list string="Bin Barcode Inventory" decoration-success="state == 'available'" decoration-warning="state == 'in_use'" decoration-danger="state == 'full'" decoration-muted="state == 'retired'">
+                <tree string="Bin Barcode Inventory" decoration-success="state == 'available'" decoration-warning="state == 'in_use'" decoration-danger="state == 'full'" decoration-muted="state == 'retired'">
                     <field name="barcode" />
                     <field name="bin_size" />
                     <field name="bin_type" />
@@ -93,7 +93,7 @@
                     <field name="last_service_date" />
                     <field name="is_imported" widget="boolean_toggle" />
                     <field name="is_generated" widget="boolean_toggle" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="bin_barcode_inventory_view_kanban" model="ir.ui.view">
@@ -201,7 +201,7 @@ lbs
             <!-- OPTIMIZATION: Model bin.barcode.inventory has state field - consider using default search filters -->
             <field name="name">Bin Barcode Inventory</field>
             <field name="res_model">bin.barcode.inventory</field>
-            <field name="view_mode">kanban,list,form,graph,pivot</field>
+            <field name="view_mode>tree,form,graph,pivot</field>
             <field name="context">{
             'search_default_available': 1,
         }</field>

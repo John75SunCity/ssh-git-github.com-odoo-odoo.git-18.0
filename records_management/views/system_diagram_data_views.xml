@@ -9,7 +9,7 @@
         <field name="name">system.diagram.data.view.tree</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-            <list string="System Diagrams" decoration-info="search_type=='user'" decoration-success="search_type=='model'" decoration-warning="search_type=='company'">
+            <tree string="System Diagrams" decoration-info="search_type=='user'" decoration-success="search_type=='model'" decoration-warning="search_type=='company'">
                 <field name="name"/>
                 <field name="search_type" widget="badge"/>
                 <field name="search_query"/>
@@ -19,7 +19,7 @@
                 <field name="create_date" string="Created"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <button name="action_generate_diagram" type="object" string="Generate" class="btn-primary" icon="fa-refresh"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -255,7 +255,7 @@
     <record id="action_system_diagram_data" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-bar-chart'></i> System Diagrams</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
@@ -280,7 +280,7 @@
     <record id="action_system_diagram_user_analysis" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-user'></i> User Access Analysis</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="domain">[('search_type', '=', 'user')]</field>
         <field name="context">{'default_search_type': 'user', 'default_show_access_only': True}</field>
     </record>
@@ -288,7 +288,7 @@
     <record id="action_system_diagram_model_explorer" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-building-o'></i> Model Structure Explorer</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="domain">[('search_type', '=', 'model')]</field>
         <field name="context">{'default_search_type': 'model'}</field>
     </record>
@@ -296,7 +296,7 @@
     <record id="action_system_diagram_company_overview" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-building'></i> Company System Overview</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="domain">[('search_type', '=', 'company')]</field>
         <field name="context">{'default_search_type': 'company'}</field>
     </record>
@@ -307,7 +307,7 @@
     <record id="action_system_flowchart" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-bar-chart'></i> System Architecture Flowchart</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="target">current</field>
         <field name="context">{
             'search_default_with_nodes': 1,

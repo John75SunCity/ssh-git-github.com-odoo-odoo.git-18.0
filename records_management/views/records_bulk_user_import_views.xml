@@ -6,12 +6,12 @@
             <field name="name">records.bulk.user.import.view.tree</field>
             <field name="model">records.bulk.user.import</field>
             <field name="arch" type="xml">
-                <list string="Bulk User Imports">
+                <tree string="Bulk User Imports">
                     <field name="name" />
                     <field name="filename" />
                     <field name="state" />
                     <field name="create_date" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="records_bulk_user_import_view_form" model="ir.ui.view">
@@ -57,7 +57,7 @@
             <!-- OPTIMIZATION: Model records.bulk.user.import has state field - consider using default search filters -->
             <field name="name">Bulk User Import</field>
             <field name="res_model">records.bulk.user.import</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="view_id" ref="records_bulk_user_import_view_tree" />
         </record>
     

@@ -5,9 +5,9 @@
             <field name="name">naid.performance.history.view.list</field>
             <field name="model">naid.performance.history</field>
             <field name="arch" type="xml">
-                <list>
+                <tree>
                     <field name="name" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="naid_performance_history_view_form" model="ir.ui.view">
@@ -41,7 +41,7 @@
             <!-- OPTIMIZATION: Model naid.performance.history has state field - consider using default search filters -->
             <field name="name">Naid.Performance.History</field>
             <field name="res_model">naid.performance.history</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

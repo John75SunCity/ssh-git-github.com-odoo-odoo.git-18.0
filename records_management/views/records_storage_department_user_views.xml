@@ -6,7 +6,7 @@
             <field name="name">records.storage.department.user.view.list</field>
             <field name="model">records.storage.department.user</field>
             <field name="arch" type="xml">
-                <list decoration-success="state=='active'" decoration-muted="state=='inactive'">
+                <tree decoration-success="state=='active'" decoration-muted="state=='inactive'">
                     <field name="display_name" />
                     <field name="user_id" />
                     <field name="department_id" />
@@ -18,7 +18,7 @@
                     <field name="end_date" />
                     <field name="state" widget="badge" decoration-success="state=='active'" decoration-muted="state=='inactive'" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="records_storage_department_user_view_form" model="ir.ui.view">
@@ -73,12 +73,12 @@
                             </page>
                             <page string="History" name="history">
                                 <field name="history_ids" readonly="1">
-                                    <list>
+                                    <tree>
                                         <field name="change_date" />
                                         <field name="change_type" widget="badge" />
                                         <field name="change_summary" />
                                         <field name="changed_by_id" />
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                         </notebook>
@@ -126,8 +126,8 @@
             <!-- OPTIMIZATION: Model records.storage.department.user has state field - consider using default search filters -->
             <field name="name">Department User Assignments</field>
             <field name="res_model">records.storage.department.user</field>
-            <field name="view_mode">list,form</field>
-            <field name="view_ids" eval="[(5, 0, 0),         (0, 0, {'view_mode': 'list', 'view_id': ref('records_storage_department_user_view_list')}),         (0, 0, {'view_mode': 'form', 'view_id': ref('records_storage_department_user_view_form')})]" />
+            <field name="view_mode>tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),         (0, 0, {'view_mode>tree')}),         (0, 0, {'view_mode': 'form', 'view_id': ref('records_storage_department_user_view_form')})]" />
             <field name="domain">[]</field>
             <field name="context">{
         'search_default_active': 1,

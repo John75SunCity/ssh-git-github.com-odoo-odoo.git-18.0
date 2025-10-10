@@ -5,14 +5,14 @@
         <field name="name">certificate.template.data.view.tree</field>
         <field name="model">certificate.template.data</field>
     <field name="arch" type="xml">
-            <list string="Certificate Template Data">
+            <tree string="Certificate Template Data">
                 <field name="name"/>
                 <field name="template_type"/>
                 <field name="template_format"/>
                 <field name="certification_authority"/>
                 <field name="company_id"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -55,7 +55,7 @@
     <record id="action_certificate_template_data" model="ir.actions.act_window">
         <field name="name">Certificate Template Data</field>
         <field name="res_model">certificate.template.data</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
     </record>
     </data>
 </odoo>

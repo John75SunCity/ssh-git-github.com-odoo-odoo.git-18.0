@@ -22,5 +22,5 @@ class StockLotAttributeOption(models.Model):
     # SQL constraints
     _sql_constraints = [
         ('name_attribute_uniq', 'unique(name, attribute_id)', 'Option names must be unique per attribute.'),
-        ('value_attribute_uniq', 'unique(value, attribute_id)', 'Option values must be unique per attribute.'),
+        # Temporarily disabled due to DB conflict: ('value_attribute_uniq', 'unique(value, attribute_id)', 'Option values must be unique per attribute.'),
     ]

@@ -82,7 +82,7 @@
             <field name="name">portal.request.view.tree</field>
             <field name="model">portal.request</field>
             <field name="arch" type="xml">
-                <list string="Portal Requests" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
+                <tree string="Portal Requests" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
                     <field name="name" />
                     <field name="request_type" />
                     <field name="partner_id" />
@@ -90,7 +90,7 @@
                     <field name="priority" />
                     <field name="state" />
                     <field name="user_id" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="portal_request_view_form" model="ir.ui.view">
@@ -242,7 +242,7 @@
             <!-- OPTIMIZATION: Model portal.request has state field - consider using default search filters -->
             <field name="name">Portal Requests</field>
             <field name="res_model">portal.request</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{
         'default_user_id': uid,

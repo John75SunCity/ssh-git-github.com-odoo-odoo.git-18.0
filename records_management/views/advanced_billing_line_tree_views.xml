@@ -6,14 +6,14 @@
         <field name="name">advanced.billing.line.view.tree</field>
         <field name="model">advanced.billing.line</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
         <field name="name"/>
         <field name="type"/>
         <field name="amount"/>
         <field name="currency_id"/>
         <field name="billing_id"/>
         <field name="sequence"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -22,7 +22,7 @@
         <field name="name">advanced.billing.line.view.tree</field>
         <field name="model">advanced.billing.line</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="sequence" widget="handle"/>
         <field name="name"/>
         <field name="type"/>
@@ -37,7 +37,7 @@
         <field name="billing_id"/>
         <field name="billing_profile_id"/>
         <field name="active" widget="boolean_toggle"/>
-</list>
+</tree>
         </field>
     </record>
     </data>

@@ -5,7 +5,7 @@
             <field name="name">naid.certificate.view.tree</field>
             <field name="model">naid.certificate</field>
             <field name="arch" type="xml">
-                <list decoration-success="state=='issued'" decoration-muted="state=='cancelled'" decoration-info="state=='draft'">
+                <tree decoration-success="state=='issued'" decoration-muted="state=='cancelled'" decoration-info="state=='draft'">
                     <field name="certificate_number" />
                     <field name="partner_id" />
                     <field name="issue_date" />
@@ -13,7 +13,7 @@
                     <field name="total_weight" sum="Total Weight" />
                     <field name="state" widget="badge" decoration-success="state == 'issued'" decoration-info="state == 'draft'" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="naid_certificate_view_form" model="ir.ui.view">
@@ -49,12 +49,12 @@
                         <notebook>
                             <page string="Destroyed Items" name="destroyed_items">
                                 <field name="destruction_item_ids">
-                                    <list editable="bottom">
+                                    <tree editable="bottom">
                                         <field name="name" />
                                         <field name="material_type" />
                                         <field name="quantity" />
                                         <field name="weight" sum="Total Weight" />
-                                    </list>
+                                    </tree>
                                 </field>
                                 <separator string="Destroyed Containers" />
                                 <field name="container_ids" widget="many2many_tags" options="{'no_create': True}" placeholder="Add containers..." />
@@ -107,7 +107,7 @@
             <!-- OPTIMIZATION: Model naid.certificate has state field - consider using default search filters -->
             <field name="name">Certificates of Destruction</field>
             <field name="res_model">naid.certificate</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="search_view_id" ref="naid_certificate_view_search" />
             <field name="context">{}</field>
             <field name="help" type="html">

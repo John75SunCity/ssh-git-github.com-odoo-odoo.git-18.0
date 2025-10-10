@@ -6,7 +6,7 @@
             <field name="name">records.container.log.view.list</field>
             <field name="model">records.container.log</field>
         <field name="arch" type="xml">
-                <list string="Records Container Log">
+                <tree string="Records Container Log">
                     <field name="name"/>
                     <field name="display_name"/>
                     <field name="company_id"/>
@@ -15,7 +15,7 @@
                     <field name="event_type"/>
                     <field name="date"/>
                     <field name="user_id"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -57,7 +57,7 @@
         <record id="action_records_container_log" model="ir.actions.act_window">
             <field name="name">Records Container Log</field>
             <field name="res_model">records.container.log</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
         </record>
     </data>
 </odoo>

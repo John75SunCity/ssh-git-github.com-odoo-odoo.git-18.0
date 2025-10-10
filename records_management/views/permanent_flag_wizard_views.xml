@@ -61,7 +61,7 @@ Remove PERMANENT Flag (Admin Only)
         <div class="mt-3">
 <h4><i class='fa fa-clipboard'/> Selected Documents:</h4>
         <field name="document_ids" mode="list" nolabel="1">
-        <list decoration-success="is_permanent == True" decoration-muted="is_permanent == False">
+        <tree decoration-success="is_permanent == True" decoration-muted="is_permanent == False">
         <field name="name"/>
         <field name="partner_id"/>
         <field name="storage_box_id"/>
@@ -71,7 +71,7 @@ Remove PERMANENT Flag (Admin Only)
 
         <field name="permanent_user_id" string="Set By" invisible="not is_permanent"/>
         <field name="permanent_date" string="Set Date" invisible="not is_permanent"/>
-</list>
+</tree>
 </field>
 </div>
 </sheet>

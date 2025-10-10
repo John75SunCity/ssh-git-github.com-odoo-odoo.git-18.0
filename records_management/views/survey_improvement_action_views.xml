@@ -5,7 +5,7 @@
             <field name="name">survey.improvement.action.view.list</field>
             <field name="model">survey.improvement.action</field>
             <field name="arch" type="xml">
-                <list decoration-danger="priority == '3'" 
+                <tree decoration-danger="priority == '3'" 
                     decoration-warning="priority == '2'" 
                     decoration-info="state == 'in_progress'"
                     decoration-muted="state in ('done', 'cancelled')">
@@ -21,7 +21,7 @@
                     <field name="deadline"/>
                     <field name="feedback_id"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -113,7 +113,7 @@
         <record id="action_survey_improvement_action" model="ir.actions.act_window">
             <field name="name">Survey Improvement Actions</field>
             <field name="res_model">survey.improvement.action</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">

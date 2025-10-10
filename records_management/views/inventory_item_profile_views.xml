@@ -7,14 +7,14 @@
         <field name="name">inventory.item.profile.view.tree</field>
         <field name="model">inventory.item.profile</field>
     <field name="arch" type="xml">
-            <list string="Inventory Item Profile">
+            <tree string="Inventory Item Profile">
                 <field name="name"/>
                 <field name="item_type"/>
                 <field name="default_location_id"/>
                 <field name="retention_period"/>
                 <field name="active"/>
                 <field name="company_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -56,7 +56,7 @@
     <record id="action_inventory_item_profile" model="ir.actions.act_window">
         <field name="name">Inventory Item Profile</field>
         <field name="res_model">inventory.item.profile</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
     </record>
 
     <!-- Menu -->

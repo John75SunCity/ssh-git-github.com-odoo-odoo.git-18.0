@@ -6,7 +6,7 @@
             <field name="name">destruction.certificate.view.list</field>
             <field name="model">destruction.certificate</field>
             <field name="arch" type="xml">
-                <list string="Destruction Certificates" default_order="certificate_date desc">
+                <tree string="Destruction Certificates" default_order="certificate_date desc">
                     <field name="name" />
                     <field name="certificate_date" />
                     <field name="partner_id" />
@@ -15,7 +15,7 @@
                     <field name="weight_processed" optional="hide" />
                     <field name="state" widget="badge" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="destruction_certificate_view_form" model="ir.ui.view">
@@ -200,7 +200,7 @@
             <!-- OPTIMIZATION: Model destruction.certificate has state field - consider using default search filters -->
             <field name="name">Destruction Certificates</field>
             <field name="res_model">destruction.certificate</field>
-            <field name="view_mode">kanban,list,form,calendar</field>
+            <field name="view_mode>tree,form,calendar</field>
             <field name="search_view_id" ref="destruction_certificate_view_search" />
             <field name="context">{'search_default_draft': 1}</field>
             <field name="help" type="html">

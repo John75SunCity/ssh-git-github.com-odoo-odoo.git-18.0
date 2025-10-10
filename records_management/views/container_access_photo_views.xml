@@ -6,14 +6,14 @@
         <field name="name">container.access.photo.view.tree</field>
         <field name="model">container.access.photo</field>
         <field name="arch" type="xml">
-        <list string="Container Access Photos" decoration-info="is_primary==True">
+        <tree string="Container Access Photos" decoration-info="is_primary==True">
         <field name="activity_id" />
         <field name="photo_type" />
         <field name="description" />
         <field name="is_primary" />
         <field name="photo_timestamp" />
         <field name="create_date" string="Created" />
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -156,7 +156,7 @@
     <record id="action_container_access_photo" model="ir.actions.act_window">
         <field name="name">Container Access Photos</field>
         <field name="res_model">container.access.photo</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

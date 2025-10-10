@@ -6,7 +6,7 @@
         <field name="name">bin.key.history.view.tree</field>
         <field name="model">bin.key.history</field>
         <field name="arch" type="xml">
-        <list string="Bin Key History" decoration-info="action_type == 'assigned'" decoration-success="action_type == 'returned'" decoration-warning="action_type == 'lost'" decoration-danger="action_type == 'emergency_override'">
+        <tree string="Bin Key History" decoration-info="action_type == 'assigned'" decoration-success="action_type == 'returned'" decoration-warning="action_type == 'lost'" decoration-danger="action_type == 'emergency_override'">
         <field name="key_id"/>
         <field name="assigned_to"/>
         <field name="action_type" widget="badge"/>
@@ -16,7 +16,7 @@
         <field name="authorized_by"/>
         <field name="company_id" groups="base.group_multi_company"/>
 
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -194,7 +194,7 @@
     <record id="action_bin_key_history" model="ir.actions.act_window">
         <field name="name">Bin Key History</field>
         <field name="res_model">bin.key.history</field>
-        <field name="view_mode">list,kanban,form</field>
+        <field name="view_mode>tree,kanban,form</field>
         <field name="domain">[]</field>
         <field name="context">{'search_default_this_month': 1}</field>
         <field name="help" type="html">

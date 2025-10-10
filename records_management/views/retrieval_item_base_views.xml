@@ -5,9 +5,9 @@
             <field name="name">retrieval.item.base.view.list</field>
             <field name="model">retrieval.item.base</field>
             <field name="arch" type="xml">
-                <list>
+                <tree>
                     <field name="name" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="retrieval_item_base_view_form" model="ir.ui.view">
@@ -41,7 +41,7 @@
             <!-- OPTIMIZATION: Model retrieval.item.base has state field - consider using default search filters -->
             <field name="name">Retrieval.Item.Base</field>
             <field name="res_model">retrieval.item.base</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

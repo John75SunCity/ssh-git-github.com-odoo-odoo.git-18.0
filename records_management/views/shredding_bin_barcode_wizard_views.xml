@@ -6,13 +6,13 @@
         <field name="name">shredding.bin.barcode.wizard.view.tree</field>
         <field name="model">shredding.bin.barcode.wizard</field>
         <field name="arch" type="xml">
-        <list>
+        <tree>
         <field name="bin_id"/>
         <field name="current_barcode"/>
         <field name="scan_issue"/>
         <field name="new_barcode"/>
 
-</list>
+</tree>
     </field>
     </record>
 
@@ -76,7 +76,7 @@ This ensures users only enter a new barcode when not using manual override.
     <record id="shredding_bin_barcode_wizard_action" model="ir.actions.act_window">
         <field name="name">Shredding Bin Barcode Wizard</field>
         <field name="res_model">shredding.bin.barcode.wizard</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="help" type="html">
         <p class="oe_view_nocontent_create">
 There are no examples. Click here to add a new Shredding Bin Barcode Wizard.

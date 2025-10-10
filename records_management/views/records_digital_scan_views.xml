@@ -5,7 +5,7 @@
             <field name="name">records.digital.scan.view.list</field>
             <field name="model">records.digital.scan</field>
             <field name="arch" type="xml">
-                <list string="Digital Scans">
+                <tree string="Digital Scans">
                     <field name="name" />
                     <field name="document_id" />
                     <field name="scan_date" />
@@ -14,7 +14,7 @@
                     <field name="scan_quality" />
                     <field name="scanned_by_id" />
                     <field name="state" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="records_digital_scan_view_form" model="ir.ui.view">
@@ -87,7 +87,7 @@
             <!-- OPTIMIZATION: Model records.digital.scan has state field - consider using default search filters -->
             <field name="name">Digital Scans</field>
             <field name="res_model">records.digital.scan</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="search_view_id" ref="records_digital_scan_view_search" />
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">

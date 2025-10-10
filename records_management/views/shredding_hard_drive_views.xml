@@ -5,9 +5,9 @@
             <field name="name">shredding.hard_drive.view.tree</field>
             <field name="model">shredding.hard_drive</field>
             <field name="arch" type="xml">
-                <list>
+                <tree>
                     <field name="name" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="shredding_hard_drive_view_form" model="ir.ui.view">
@@ -41,7 +41,7 @@
             <!-- OPTIMIZATION: Model shredding.hard_drive has state field - consider using default search filters -->
             <field name="name">Shredding Hard_drive</field>
             <field name="res_model">shredding.hard_drive</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
@@ -82,9 +82,9 @@
                         </group>
                         <separator string="Scanned Hard Drives" />
                         <field name="scan_line_ids">
-                            <list editable="bottom">
+                            <tree editable="bottom">
                                 <field name="serial_number" />
-                            </list>
+                            </tree>
                         </field>
                     </sheet>
                 </form>
@@ -94,7 +94,7 @@
             <field name="name">shredding.hard_drive.view.tree</field>
             <field name="model">shredding.hard_drive</field>
             <field name="arch" type="xml">
-                <list string="Hard Drives for Shredding" decoration-success="state=='destroyed'" decoration-warning="state=='scanned'" decoration-info="state=='draft'">
+                <tree string="Hard Drives for Shredding" decoration-success="state=='destroyed'" decoration-warning="state=='scanned'" decoration-info="state=='draft'">
                     <field name="serial_number" />
                     <field name="state" widget="badge" />
                     <field name="destruction_date" />
@@ -103,7 +103,7 @@
                     <field name="fsm_task_id" />
                     <field name="partner_id" />
                     <field name="certificate_id" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="shredding_hard_drive_view_form" model="ir.ui.view">
@@ -147,7 +147,7 @@
             <!-- OPTIMIZATION: Model shredding.hard_drive has state field - consider using default search filters -->
             <field name="name">Hard Drives</field>
             <field name="res_model">shredding.hard_drive</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
             Create a hard drive record for tracking serial numbers through the destruction process.

@@ -5,9 +5,9 @@
             <field name="name">signed.document.view.list</field>
             <field name="model">signed.document</field>
             <field name="arch" type="xml">
-                <list>
+                <tree>
                     <field name="name" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="signed_document_view_form" model="ir.ui.view">
@@ -41,7 +41,7 @@
             <!-- OPTIMIZATION: Model signed.document has state field - consider using default search filters -->
             <field name="name">Signed Document</field>
             <field name="res_model">signed.document</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

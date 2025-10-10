@@ -117,7 +117,7 @@
 
         <!-- BIO PAPPEL DEPARTMENTS -->
         <record id="dept_bio_pappel_general" model="records.department">
-            <field name="name">General Business Records</field>
+            <field name="name">Bio Pappel General Records</field>
             <field name="code">BP-GEN</field>
             <field name="partner_id" ref="customer_bio_pappel"/>
             

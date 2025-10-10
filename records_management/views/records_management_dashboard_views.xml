@@ -6,7 +6,7 @@
       <field name="name">records.management.dashboard.view.list</field>
       <field name="model">records.management.dashboard</field>
       <field name="arch" type="xml">
-        <list string="Management Dashboards" create="true" editable="bottom">
+        <tree string="Management Dashboards" create="true" editable="bottom">
           <field name="name"/>
           <field name="snapshot_date"/>
           <field name="total_boxes"/>
@@ -15,7 +15,7 @@
           <field name="kpi_total_containers"/>
           <field name="kpi_monthly_revenue"/>
           <field name="kpi_monthly_shredded"/>
-        </list>
+        </tree>
       </field>
     </record>
 
@@ -92,7 +92,7 @@
     <record id="records_management_dashboard_action" model="ir.actions.act_window">
       <field name="name">Management Dashboards</field>
       <field name="res_model">records.management.dashboard</field>
-  <field name="view_mode">list,form</field>
+  <field name="view_mode>tree,form</field>
       <field name="search_view_id" ref="records_management.records_management_dashboard_view_search"/>
       <field name="context">{}</field>
     </record>

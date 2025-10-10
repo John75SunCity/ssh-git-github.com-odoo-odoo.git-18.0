@@ -6,9 +6,9 @@
             <field name="name">transitory.field.config.view.tree</field>
             <field name="model">transitory.field.config</field>
             <field name="arch" type="xml">
-                <list>
+                <tree>
                     <field name="name" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="transitory_field_config_view_form" model="ir.ui.view">
@@ -42,7 +42,7 @@
             <!-- OPTIMIZATION: Model transitory.field.config has state field - consider using default search filters -->
             <field name="name">Transitory Field Config</field>
             <field name="res_model">transitory.field.config</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
@@ -158,7 +158,7 @@
             <field name="name">field.label.customization.view.tree</field>
             <field name="model">field.label.customization</field>
             <field name="arch" type="xml">
-                <list string="Field Label Customizations">
+                <tree string="Field Label Customizations">
                     <field name="name" />
                     <field name="scope_display" />
                     <field name="partner_id" />
@@ -166,7 +166,7 @@
                     <field name="priority" />
                     <field name="customized_label_count" />
                     <field name="active" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="field_label_customization_view_search" model="ir.ui.view">
@@ -195,7 +195,7 @@
         <record id="action_field_label_customization" model="ir.actions.act_window">
             <field name="name">Field Label Customizations</field>
             <field name="res_model">field.label.customization</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                 Create custom field labels for your organization

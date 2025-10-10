@@ -38,13 +38,13 @@
                         </div>
                         <group string="Restriction History" invisible="key_issuance_allowed == True">
                             <field name="key_restriction_history_ids" nolabel="1">
-                                <!-- Inline one2many list view (modern Odoo 19 <list/> tag). Using <list> instead of legacy <tree> to ensure proper comodel context (res.partner.key.restriction) so nested fields are not resolved against res.partner. -->
-                                <list string="Key Restriction History">
+                                <!-- Inline one2many list view (modern Odoo 19 <tree/> tag). Using <tree> instead of legacy <tree> to ensure proper comodel context (res.partner.key.restriction) so nested fields are not resolved against res.partner. -->
+                                <tree string="Key Restriction History">
                                     <field name="state"/>
                                     <field name="restriction_reason"/>
                                     <field name="effective_date"/>
                                     <field name="user_id" string="Approved By"/>
-                                </list>
+                                </tree>
                             </field>
                         </group>
                     </page>
@@ -175,7 +175,7 @@
             <field name="name">bin.unlock.service.view.tree</field>
             <field name="model">bin.unlock.service</field>
             <field name="arch" type="xml">
-                <list string="Bin Unlock Services" decoration-success="state == 'invoiced'" decoration-info="state == 'completed'">
+                <tree string="Bin Unlock Services" decoration-success="state == 'invoiced'" decoration-info="state == 'completed'">
                     <field name="service_number"/>
                     <field name="partner_id"/>
                     <field name="request_date"/>
@@ -188,7 +188,7 @@
                     <field name="assigned_technician_id"/>
                     <field name="state"/>
                     <field name="invoice_id"/>
-                </list>
+                </tree>
             </field>
         </record>
         <record id="bin_unlock_service_view_form" model="ir.ui.view">
@@ -270,7 +270,7 @@
             <!-- OPTIMIZATION: Model bin.key has state field - consider using default search filters -->
             <field name="name">Bin Key Management</field>
             <field name="res_model">bin.key</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_create">
@@ -295,7 +295,7 @@
             <!-- OPTIMIZATION: Model bin.unlock.service has state field - consider using default search filters -->
             <field name="name">Bin Unlock Services</field>
             <field name="res_model">bin.unlock.service</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="context">{'search_default_this_month': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_create">

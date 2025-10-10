@@ -5,7 +5,7 @@
         <field name="name">naid.custody.view.list</field>
         <field name="model">naid.custody</field>
         <field name="arch" type="xml">
-            <list decoration-success="event_type == 'creation'" decoration-info="event_type == 'pickup'" decoration-warning="event_type == 'transfer'" decoration-danger="event_type == 'destruction'">
+            <tree decoration-success="event_type == 'creation'" decoration-info="event_type == 'pickup'" decoration-warning="event_type == 'transfer'" decoration-danger="event_type == 'destruction'">
                 <field name="event_date" widget="datetime" />
                 <field name="document_id" />
                 <field name="event_type" widget="badge" />
@@ -13,7 +13,7 @@
                 <field name="location_id" optional="hide" />
                 <field name="partner_id" optional="hide" />
                 <field name="notes" optional="show" />  
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -145,7 +145,7 @@
     <record id="action_naid_custody" model="ir.actions.act_window">
         <field name="name">NAID Chain of Custody</field>
         <field name="res_model">naid.custody</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="search_view_id" ref="naid_custody_view_search" />
         <field name="context">{'search_default_filter_today': 1}</field>
         <field name="help" type="html">

@@ -5,10 +5,10 @@
             <field name="name">field.label.helper.wizard.view.tree</field>
             <field name="model">field.label.helper.wizard</field>
             <field name="arch" type="xml">
-                <list string="Field Label Helper">
+                <tree string="Field Label Helper">
                     <field name="model_id" />
                     <field name="field_id" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="field_label_helper_wizard_view_form" model="ir.ui.view">

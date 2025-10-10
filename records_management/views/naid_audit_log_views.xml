@@ -5,7 +5,7 @@
         <field name="name">naid.audit.log.view.tree</field>
         <field name="model">naid.audit.log</field>
         <field name="arch" type="xml">
-        <list decoration-success="naid_compliant == True" decoration-danger="naid_compliant == False" decoration-info="action_type == 'security'" decoration-warning="action_type in ('login_failure', 'unlink')">
+        <tree decoration-success="naid_compliant == True" decoration-danger="naid_compliant == False" decoration-info="action_type == 'security'" decoration-warning="action_type in ('login_failure', 'unlink')">
         <field name="create_date" string="Timestamp" widget="datetime" />
         <field name="name" string="Reference" />
         <field name="user_id" string="User" />
@@ -15,7 +15,7 @@
         <field name="naid_compliant" string="NAID Compliant" widget="boolean_toggle" />
         <field name="ip_address" string="IP Address" optional="hide" />
         <field name="company_id" string="Company" optional="hide" groups="base.group_multi_company" />
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -221,7 +221,7 @@
     <record id="action_naid_audit_log" model="ir.actions.act_window">
         <field name="name">NAID Audit Logs</field>
         <field name="res_model">naid.audit.log</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="search_view_id" ref="naid_audit_log_view_search" />
         <field name="context">{'search_default_filter_today': 1, 'search_default_naid_compliant': 1}</field>
         <field name="help" type="html">

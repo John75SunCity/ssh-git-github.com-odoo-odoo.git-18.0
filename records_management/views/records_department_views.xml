@@ -5,7 +5,7 @@
             <field name="name">records.department.view.tree</field>
             <field name="model">records.department</field>
             <field name="arch" type="xml">
-                <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
+                <tree decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
                     <field name="display_name" string="Department" />
                     <field name="parent_department_id" optional="show"/>
                     <field name="partner_id" string="Customer" />
@@ -16,7 +16,7 @@
                     <field name="user_id" string="👨‍ Responsible" />
                     <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link" />
                     <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="records_department_view_form" model="ir.ui.view">
@@ -77,13 +77,13 @@
                             <page string="Child Departments" name="children">
                                 <!-- Removed invalid context referencing 'active_id'; One2many inverse handles linkage automatically -->
                                 <field name="child_department_ids">
-                                    <list editable="bottom">
+                                    <tree editable="bottom">
                                         <field name="name" />
                                         <field name="code" />
                                         <field name="partner_id" optional="show"/>
                                         <field name="user_id" optional="show"/>
                                         <field name="state" widget="badge"/>
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page string="Users &amp; Access" name="users">
@@ -91,32 +91,32 @@
                             </page>
                             <page string="Billing Contacts" name="billing">
                                 <field name="billing_contact_ids">
-                                    <list>
+                                    <tree>
                                         <field name="name" />
                                         <field name="email" />
                                         <field name="phone" />
                                         <field name="billing_role" />
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page string="Recent Containers" name="containers">
                                 <field name="container_ids" mode="list" limit="10">
-                                    <list>
+                                    <tree>
                                         <field name="name" />
                                         <field name="state" />
                                         <field name="storage_start_date" />
                                         <field name="location_id" />
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page string="Recent Documents" name="documents">
                                 <field name="document_ids" mode="list" limit="10">
-                                    <list>
+                                    <tree>
                                         <field name="name" />
                                         <field name="reference" />
                                         <field name="state" />
                                         <field name="received_date" />
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                         </notebook>
@@ -252,7 +252,7 @@
             <!-- OPTIMIZATION: Model records.department has state field - consider using default search filters -->
             <field name="name">Customer Departments</field>
             <field name="res_model">records.department</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="search_view_id" ref="records_department_view_search" />
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">

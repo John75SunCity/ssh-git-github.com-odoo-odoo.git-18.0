@@ -36,5 +36,5 @@ class CrossDepartmentSharingRule(models.Model):
 
     # SQL constraints
     _sql_constraints = [
-        ('unique_sharing_rule', 'unique(sharing_department_id, shared_department_id)', 'Sharing rule must be unique per department pair.'),
+        ('unique_sharing_rule', 'unique(sharing_id, rule_id)', 'Sharing rule must be unique per sharing record and rule pair.'),
     ]

@@ -42,23 +42,23 @@
                     <notebook name="retrieval_team_notebook">
                         <page string="Service Locations" name="service_locations">
                             <field name="service_location_ids" nolabel="1">
-                                <list editable="bottom">
+                                <tree editable="bottom">
                                     <field name="name"/>
                                     <field name="address"/>
                                     <field name="location_type"/>
                                     <field name="active"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Maintenance Requests" name="maintenance_requests">
                             <field name="maintenance_request_ids" nolabel="1">
-                                <list create="false" edit="false">
+                                <tree create="false" edit="false">
                                     <field name="name"/>
                                     <field name="equipment_id"/>
                                     <field name="request_date"/>
                                     <field name="stage_id"/>
                                     <field name="priority" widget="priority"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                     </notebook>

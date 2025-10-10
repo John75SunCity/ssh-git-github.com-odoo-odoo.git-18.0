@@ -7,12 +7,12 @@
         <field name="name">inventory.adjustment.reason.view.tree</field>
         <field name="model">inventory.adjustment.reason</field>
     <field name="arch" type="xml">
-            <list string="Inventory Adjustment Reason">
+            <tree string="Inventory Adjustment Reason">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="description"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -51,7 +51,7 @@
     <record id="action_inventory_adjustment_reason" model="ir.actions.act_window">
         <field name="name">Inventory Adjustment Reason</field>
         <field name="res_model">inventory.adjustment.reason</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
     </record>
 
     <!-- Menu -->

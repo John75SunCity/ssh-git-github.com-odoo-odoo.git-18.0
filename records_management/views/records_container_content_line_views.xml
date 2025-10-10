@@ -6,7 +6,7 @@
         <field name="name">records.container.content.line.view.tree</field>
         <field name="model">records.container.content.line</field>
     <field name="arch" type="xml">
-            <list string="Records Container Content Line">
+            <tree string="Records Container Content Line">
                 <field name="content_id"/>
                 <field name="name"/>
                 <field name="document_type"/>
@@ -15,7 +15,7 @@
                 <field name="notes"/>
                 <field name="company_id"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -58,7 +58,7 @@
     <record id="action_records_container_content_line" model="ir.actions.act_window">
         <field name="name">Records Container Content Line</field>
         <field name="res_model">records.container.content.line</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
     </record>
     </data>
 </odoo>

@@ -6,13 +6,13 @@
             <field name="name">location.group.view.tree</field>
             <field name="model">location.group</field>
             <field name="arch" type="xml">
-                <list string="Location Group">
+                <tree string="Location Group">
                     <field name="name"/>
                     <field name="code"/>
                     <field name="manager_id"/>
                     <field name="company_id"/>
                     <field name="active"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -51,7 +51,7 @@
         <record id="action_location_group" model="ir.actions.act_window">
             <field name="name">Location Group</field>
             <field name="res_model">location.group</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
         </record>
     </data>
 </odoo>

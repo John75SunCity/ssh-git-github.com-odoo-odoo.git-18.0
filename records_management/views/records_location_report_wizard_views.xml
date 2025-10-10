@@ -6,12 +6,12 @@
         <field name="name">location.report.wizard.view.tree</field>
         <field name="model">location.report.wizard</field>
         <field name="arch" type="xml">
-            <list>
+            <tree>
                 <field name="location_id"/>
                 <field name="include_child_locations"/>
                 <field name="report_date"/>
                 <field name="company_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 

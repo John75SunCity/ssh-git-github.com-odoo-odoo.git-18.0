@@ -5,9 +5,9 @@
             <field name="name">records.usage.tracking.view.tree</field>
             <field name="model">records.usage.tracking</field>
             <field name="arch" type="xml">
-                <list>
+                <tree>
                     <field name="name" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="records_usage_tracking_view_form" model="ir.ui.view">
@@ -41,7 +41,7 @@
             <!-- OPTIMIZATION: Model records.usage.tracking has state field - consider using default search filters -->
             <field name="name">Records Usage Tracking</field>
             <field name="res_model">records.usage.tracking</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

@@ -5,7 +5,7 @@
             <field name="name">records.container.line.view.tree</field>
             <field name="model">records.container.line</field>
             <field name="arch" type="xml">
-                <list string="Records Container Line">
+                <tree string="Records Container Line">
                     <field name="sequence" widget="handle" />
                     <field name="name" />
                     <field name="container_id" />
@@ -15,7 +15,7 @@
                     <field name="state" />
                     <field name="date_added" />
                     <field name="company_id" groups="base.group_multi_company" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="records_container_line_view_form" model="ir.ui.view">
@@ -84,7 +84,7 @@
             <!-- OPTIMIZATION: Model records.container.line has state field - consider using default search filters -->
             <field name="name">Records Container Line</field>
             <field name="res_model">records.container.line</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
         </record>
     </data>
 </odoo>

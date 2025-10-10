@@ -6,12 +6,12 @@
         <field name="name">records.category.view.list</field>
         <field name="model">records.category</field>
         <field name="arch" type="xml">
-            <list string="Records Categories">
+            <tree string="Records Categories">
                 <field name="name" />
                 <field name="complete_name" />
                 <field name="parent_id" />
                 <field name="document_count" />
-            </list>
+            </tree>
         </field>
     </record>
     <record id="records_category_view_form" model="ir.ui.view">
@@ -28,11 +28,11 @@
                     <notebook>
                         <page string="Document Types">
                             <field name="document_type_ids">
-                                <list string="Document Types" editable="bottom">
+                                <tree string="Document Types" editable="bottom">
                                     <field name="name" />
                                     <field name="code" />
                                     <field name="state" />
-                                </list>
+                                </tree>
                             </field>
                         </page>
                     </notebook>
@@ -58,8 +58,8 @@
         <!-- OPTIMIZATION: Model records.category has state field - consider using default search filters -->
         <field name="name">Categories</field>
         <field name="res_model">records.category</field>
-        <field name="view_mode">list,form</field>
-        <field name="view_ids" eval="[(5, 0, 0),             (0, 0, {'view_mode': 'list', 'view_id': ref('records_category_view_list')}),             (0, 0, {'view_mode': 'form', 'view_id': ref('records_category_view_form')})]" />
+        <field name="view_mode>tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),             (0, 0, {'view_mode>tree')}),             (0, 0, {'view_mode': 'form', 'view_id': ref('records_category_view_form')})]" />
         <field name="search_view_id" ref="records_category_view_search" />
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

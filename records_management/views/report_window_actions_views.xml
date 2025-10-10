@@ -5,14 +5,14 @@
             <field name="name">records.container.view.list.storage</field>
             <field name="model">records.container</field>
             <field name="arch" type="xml">
-                <list string="Containers" create="false" edit="false" delete="false">
+                <tree string="Containers" create="false" edit="false" delete="false">
                     <field name="name" />
                     <field name="state" />
                     <field name="location_id" />
                     <field name="cubic_feet" />
                     <field name="document_count" />
                     <field name="partner_id" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="records_container_view_search" model="ir.ui.view">
@@ -36,7 +36,7 @@
             <!-- OPTIMIZATION: Model records.container has state field - consider using default search filters -->
             <field name="name">Storage Reports</field>
             <field name="res_model">records.container</field>
-            <field name="view_mode">list</field>
+            <field name="view_mode>tree</field>
             <field name="view_id" ref="records_management.records_container_view_tree_report" />
             <field name="search_view_id" ref="records_management.records_container_view_search" />
             <field name="context">{"search_default_state_active": 1}</field>
@@ -46,13 +46,13 @@
             <field name="name">naid.compliance.policy.view.list.report</field>
             <field name="model">naid.compliance.policy</field>
             <field name="arch" type="xml">
-                <list string="Compliance Policies" create="false" edit="false" delete="false">
+                <tree string="Compliance Policies" create="false" edit="false" delete="false">
                     <field name="name" />
                     <field name="state" />
                     <field name="responsible_id" />
                     <field name="last_review_date" />
                     <field name="next_review_date" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="naid_compliance_policy_view_search" model="ir.ui.view">
@@ -74,7 +74,7 @@
             <!-- OPTIMIZATION: Model naid.compliance.policy has state field - consider using default search filters -->
             <field name="name">Compliance Reports</field>
             <field name="res_model">naid.compliance.policy</field>
-            <field name="view_mode">list</field>
+            <field name="view_mode>tree</field>
             <field name="view_id" ref="records_management.naid_compliance_policy_view_tree" />
             <field name="search_view_id" ref="records_management.naid_compliance_policy_view_search" />
             <field name="context">{"search_default_state_active": 1}</field>
@@ -84,14 +84,14 @@
             <field name="name">res.partner.view.list</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <list string="Customer Inventory" create="false" edit="false" delete="false">
+                <tree string="Customer Inventory" create="false" edit="false" delete="false">
                     <field name="name" />
                     <field name="company_type" />
                     <field name="parent_id" />
                     <field name="user_id" />
                     <field name="phone" />
                     <field name="email" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="res_partner_view_search" model="ir.ui.view">
@@ -113,7 +113,7 @@
             <!-- OPTIMIZATION: Model res.partner has sequence field - consider adding _order="sequence" to model -->
             <field name="name">Customer Inventory</field>
             <field name="res_model">res.partner</field>
-            <field name="view_mode">list</field>
+            <field name="view_mode>tree</field>
             <field name="view_id" ref="records_management.res_partner_view_tree" />
             <field name="search_view_id" ref="records_management.res_partner_view_search" />
             <field name="domain">['|', ('is_company','=',True), ('company_type','=','company')]</field>

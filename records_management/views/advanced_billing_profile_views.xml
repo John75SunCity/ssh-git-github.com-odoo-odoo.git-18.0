@@ -6,12 +6,12 @@
             <field name="name">advanced.billing.profile.view.tree</field>
             <field name="model">advanced.billing.profile</field>
             <field name="arch" type="xml">
-                <list string="Billing Profiles">
+                <tree string="Billing Profiles">
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="billing_frequency" />
                     <field name="state" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="advanced_billing_profile_view_form" model="ir.ui.view">
@@ -49,21 +49,21 @@
                             </page>
                             <page string="Contacts">
                                 <field name="contact_ids">
-                                    <list>
+                                    <tree>
                                         <field name="name" />
                                         <field name="email" />
                                         <field name="phone" />
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page string="Services">
                                 <field name="billing_line_ids">
-                                    <list>
+                                    <tree>
                                         <field name="name" />
                                         <field name="type" />
                                         <field name="amount" />
                                         <field name="quantity" />
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                         </notebook>
@@ -75,10 +75,10 @@
             <field name="name">advanced.billing.profile.view.tree</field>
             <field name="model">advanced.billing.profile</field>
             <field name="arch" type="xml">
-                <list>
+                <tree>
                     <field name="name" />
                     <field name="primary_contact_id" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="advanced_billing_profile_view_search" model="ir.ui.view">
@@ -94,7 +94,7 @@
             <!-- OPTIMIZATION: Model advanced.billing.profile has state field - consider using default search filters -->
             <field name="name">Billing Profiles</field>
             <field name="res_model">advanced.billing.profile</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="view_id" ref="advanced_billing_profile_view_tree" />
             <field name="search_view_id" ref="advanced_billing_profile_view_search" />
             <field name="context">{'search_default_filter_active': 1}</field>

@@ -6,7 +6,7 @@
         <field name="name">media.type.view.list</field>
         <field name="model">media.type</field>
     <field name="arch" type="xml">
-            <list string="Media Type">
+            <tree string="Media Type">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="category"/>
@@ -14,7 +14,7 @@
                 <field name="destruction_method"/>
                 <field name="is_electronic"/>
                 <field name="active"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -55,7 +55,7 @@
     <record id="action_media_type" model="ir.actions.act_window">
         <field name="name">Media Type</field>
         <field name="res_model">media.type</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
     </record>
     </data>
 </odoo>

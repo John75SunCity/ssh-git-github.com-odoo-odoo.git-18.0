@@ -6,7 +6,7 @@
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
             <field name="arch" type="xml">
-                <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-danger="review_state == 'expired'" decoration-warning="review_state == 'overdue'" decoration-info="state == 'draft'">
+                <tree decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-danger="review_state == 'expired'" decoration-warning="review_state == 'overdue'" decoration-info="state == 'draft'">
                     <field name="sequence" widget="handle" />
                     <field name="name" />
                     <field name="code" />
@@ -19,7 +19,7 @@
                     <field name="document_count" />
                     <field name="rule_count" />
                     <field name="overdue_days" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="records_retention_policy_view_form" model="ir.ui.view">
@@ -191,12 +191,12 @@
                                     </group>
                                 </group>
                                 <field name="version_ids">
-                                    <list>
+                                    <tree>
                                         <field name="version" />
                                         <field name="state" />
                                         <field name="create_date" />
                                         <field name="create_uid" />
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page string="Supersession" name="supersession">
@@ -326,7 +326,7 @@
             <!-- OPTIMIZATION: Model records.retention.policy has state field - consider using default search filters -->
             <field name="name">Retention Policies</field>
             <field name="res_model">records.retention.policy</field>
-            <field name="view_mode">pivot,kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="view_id" ref="records_retention_policy_view_form" />
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">

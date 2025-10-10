@@ -10,7 +10,7 @@
     <field name="name">paper.model.bale.view.tree</field>
     <field name="model">paper.model_bale</field>
     <field name="arch" type="xml">
-        <list string="Paper Model Bales">
+        <tree string="Paper Model Bales">
             <field name="name"/>
             <field name="bale_number"/>
             <field name="weight"/>
@@ -18,7 +18,7 @@
             <field name="material_type"/>
             <field name="date_created"/>
             <field name="location_id"/>
-        </list>
+        </tree>
     </field>
 </record>
 
@@ -137,7 +137,7 @@
 <record id="action_paper_model_bale" model="ir.actions.act_window">
     <field name="name">Paper Model Bales</field>
     <field name="res_model">paper.model_bale</field>
-    <field name="view_mode">list,kanban,form</field>
+    <field name="view_mode>tree,kanban,form</field>
     <field name="view_id" ref="paper_model_bale_view_tree"/>
     <field name="help">Manage paper model bales for records management</field>
 </record>

@@ -8,7 +8,7 @@
             <field name="name">records.department.billing.contact.view.tree</field>
             <field name="model">records.department.billing.contact</field>
             <field name="arch" type="xml">
-                <list decoration-danger="budget_utilization &gt; 90" decoration-warning="budget_utilization &gt; 75" decoration-success="budget_utilization &lt;= 50">
+                <tree decoration-danger="budget_utilization &gt; 90" decoration-warning="budget_utilization &gt; 75" decoration-success="budget_utilization &lt;= 50">
                     <field name="contact_name" string="Contact"/>
                     <field name="department_id" string="Department"/>
                     <field name="billing_role" string="Role"/>
@@ -20,7 +20,7 @@
                     <field name="approval_authority" string="Approver" widget="boolean_toggle"/>
                     <field name="active" string="Active" widget="boolean_toggle"/>
                     <button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link" title="Generate Budget Report"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -70,13 +70,13 @@
                         <notebook>
                             <page string="Approval History" name="approvals">
                                 <field name="approval_history_ids" mode="tree">
-                                    <list>
+                                    <tree>
                                         <field name="approval_date"/>
                                         <field name="charge_amount"/>
                                         <field name="service_description"/>
                                         <field name="vendor"/>
                                         <field name="approval_notes"/>
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page string="Budget Analysis" name="budget">
@@ -263,7 +263,7 @@
         <record id="action_department_billing" model="ir.actions.act_window">
             <field name="name">Departmental Billing</field>
             <field name="res_model">records.department.billing.contact</field>
-            <field name="view_mode">kanban,list,form,graph</field>
+            <field name="view_mode>tree,form,graph</field>
             <field name="search_view_id" ref="records_department_billing_contact_view_search"/>
             <field name="context">{
                 'search_default_active': 1,
@@ -303,11 +303,11 @@
             <field name="model">records.department.billing.contact</field>
             <field name="priority" eval="0"/>
             <field name="arch" type="xml">
-                <list string="Billing Contacts (Technical)">
+                <tree string="Billing Contacts (Technical)">
                     <field name="contact_name"/>
                     <field name="department_id"/>
                     <field name="billing_role"/>
-                </list>
+                </tree>
             </field>
         </record>
     </data>

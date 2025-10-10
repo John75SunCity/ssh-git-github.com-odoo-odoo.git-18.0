@@ -161,7 +161,7 @@
         <field name="name">bin.issue.record.view.list</field>
         <field name="model">bin.issue.record</field>
         <field name="arch" type="xml">
-        <list string="Bin Issue Records" decoration-danger="resolution_status == 'reported'"
+        <tree string="Bin Issue Records" decoration-danger="resolution_status == 'reported'"
                 decoration-warning="resolution_status in ('assigned', 'in_progress')"
                 decoration-success="resolution_status == 'resolved'">
         <field name="name"/>
@@ -176,7 +176,7 @@
         <field name="billing_amount" sum="Total Billing" widget="monetary"/>
         <field name="billed" widget="boolean_toggle"/>
         <field name="payment_received" widget="boolean_toggle"/>
-        </list>
+        </tree>
     </field>
     </record>
 
@@ -403,7 +403,7 @@
     <record id="bin_issue_record_action" model="ir.actions.act_window">
         <field name="name">Bin Issue Records</field>
         <field name="res_model">bin.issue.record</field>
-        <field name="view_mode">kanban,list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="context">{
         'search_default_filter_unresolved': 1,
     }</field>
@@ -422,7 +422,7 @@
     <record id="bin_issue_billing_action" model="ir.actions.act_window">
         <field name="name">Bin Issue Billing</field>
         <field name="res_model">bin.issue.record</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="domain">[('customer_fault', '=', True), ('billing_amount', '>', 0)]</field>
         <field name="context">{
         'search_default_filter_unbilled': 1,

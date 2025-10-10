@@ -5,14 +5,14 @@
             <field name="name">records.audit.log.view.tree</field>
             <field name="model">records.audit.log</field>
             <field name="arch" type="xml">
-                <list>
+                <tree>
                     <field name="description" />
                     <field name="event_type" />
                     <field name="user_id" />
                     <field name="timestamp" />
                     <field name="res_model" />
                     <field name="res_name" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="records_audit_log_view_form" model="ir.ui.view">
@@ -64,7 +64,7 @@
             <!-- OPTIMIZATION: Model records.audit.log has state field - consider using default search filters -->
             <field name="name">Records Audit Log</field>
             <field name="res_model">records.audit.log</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">

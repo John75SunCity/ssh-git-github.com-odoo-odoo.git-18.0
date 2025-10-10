@@ -6,13 +6,13 @@
             <field name="name">records.storage.box.view.tree</field>
             <field name="model">records.storage.box</field>
             <field name="arch" type="xml">
-                <list string="Storage Boxes">
+                <tree string="Storage Boxes">
                     <field name="name" />
                     <field name="box_size" />
                     <field name="location_id" />
                     <field name="state" />
                     <field name="document_count" />
-                </list>
+                </tree>
             </field>
         </record>
         <record id="records_storage_box_view_form" model="ir.ui.view">
@@ -75,7 +75,7 @@
             <!-- OPTIMIZATION: Model records.storage.box has state field - consider using default search filters -->
             <field name="name">Storage Boxes</field>
             <field name="res_model">records.storage.box</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                 Create a new storage box.

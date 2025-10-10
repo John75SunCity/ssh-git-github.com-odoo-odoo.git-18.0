@@ -6,7 +6,7 @@
         <field name="name">rm.module.configurator.view.tree</field>
         <field name="model">rm.module.configurator</field>
         <field name="arch" type="xml">
-<list decoration-info="active == True" decoration-muted="active == False" decoration-success="value_boolean == True" decoration-danger="value_boolean == False">
+<tree decoration-info="active == True" decoration-muted="active == False" decoration-success="value_boolean == True" decoration-danger="value_boolean == False">
     <field name="name" string="Configuration Name"/>
 
 <field name="category" widget="badge"/>
@@ -21,7 +21,7 @@
 <field name="modified_by_id" widget="many2one_avatar_user" string="Owner" optional="hide"/>
 <field name="last_modified" string="Modified" optional="hide"/>
 
-</list>
+</tree>
 </field>
 </record>
 
@@ -269,7 +269,7 @@ Inactive
 <record id="action_rm_module_configurator" model="ir.actions.act_window">
 <field name="name">Records Management Configurator</field>
 <field name="res_model">rm.module.configurator</field>
-            <field name="view_mode">kanban,list,form</field>
+            <field name="view_mode>tree,form</field>
 <field name="search_view_id" ref="rm_module_configurator_view_search"/>
 <field name="domain">[]</field>
 <field name="context">{

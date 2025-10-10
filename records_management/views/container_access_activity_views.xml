@@ -19,7 +19,7 @@
             <field name="name">container.access.activity.view.tree</field>
             <field name="model">container.access.activity</field>
         <field name="arch" type="xml">
-                <list string="Container Access Activity" decoration-info="status == 'in_progress'" decoration-success="status == 'completed'">
+                <tree string="Container Access Activity" decoration-info="status == 'in_progress'" decoration-success="status == 'completed'">
                     <field name="name"/>
                     <field name="visitor_id"/>
                     <field name="container_id"/>
@@ -28,7 +28,7 @@
                     <field name="description"/>
                     <field name="status"/>
                     <field name="authorized_by_id"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -102,7 +102,7 @@
         <record id="action_container_access_activity" model="ir.actions.act_window">
             <field name="name">Container Access Activity</field>
             <field name="res_model">container.access.activity</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode>tree,form</field>
         </record>
 
         <!-- Menu -->

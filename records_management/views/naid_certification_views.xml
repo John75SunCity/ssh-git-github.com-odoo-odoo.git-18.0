@@ -7,7 +7,7 @@
         <field name="name">naid.operator.certification.view.tree</field>
         <field name="model">naid.operator.certification</field>
         <field name="arch" type="xml">
-        <list string="NAID Operator Certifications">
+        <tree string="NAID Operator Certifications">
         <field name="certification_number"/>
         <field name="name"/>
         <field name="state"/>
@@ -16,7 +16,7 @@
         <field name="training_progress"/>
         <field name="refresher_overdue"/>
         <field name="company_id"/>
-</list>
+</tree>
         </field>
     </record>
 
@@ -71,13 +71,13 @@
                         </page>
                         <page string="Training Schedule">
         <field name="training_schedule_ids">
-        <list>
+        <tree>
         <field name="training_id"/>
         <field name="scheduled_date"/>
         <field name="state"/>
         <field name="completed_date"/>
         <field name="instructor_id"/>
-</list>
+</tree>
                             </field>
                         </page>
                         <page string="Related Records">
@@ -128,14 +128,14 @@
         <field name="name">naid.training.schedule.view.tree</field>
         <field name="model">naid.training.schedule</field>
         <field name="arch" type="xml">
-        <list string="Training Schedule">
+        <tree string="Training Schedule">
         <field name="certification_id"/>
         <field name="training_id"/>
         <field name="scheduled_date"/>
         <field name="state"/>
         <field name="completed_date"/>
         <field name="instructor_id"/>
-</list>
+</tree>
         </field>
     </record>
 
@@ -171,14 +171,14 @@
     <record id="naid_operator_certification_action" model="ir.actions.act_window">
         <field name="name">NAID Operator Certifications</field>
         <field name="res_model">naid.operator.certification</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="help">Manage NAID operator certifications and training requirements</field>
     </record>
 
     <record id="naid_training_schedule_action" model="ir.actions.act_window">
         <field name="name">Training Schedule</field>
         <field name="res_model">naid.training.schedule</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode>tree,form</field>
         <field name="help">Manage training schedules for NAID certifications</field>
     </record>
 
