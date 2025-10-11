@@ -537,14 +537,33 @@ class RecordsManagementPortal(CustomerPortal):
     def _prepare_home_portal_values(self, counters):
         """Add Records Management counters to portal home"""
         values = super()._prepare_home_portal_values(counters)
+        partner = request.env.user.partner_id
 
         if 'container_count' in counters:
-            domain = [('partner_id', '=', request.env.user.partner_id.id)]
+            domain = [('partner_id', '=', partner.id)]
             values['container_count'] = request.env['records.container'].search_count(domain)
 
         if 'pickup_request_count' in counters:
-            domain = [('partner_id', '=', request.env.user.partner_id.id)]
+            domain = [('partner_id', '=', partner.id)]
             values['pickup_request_count'] = request.env['pickup.request'].search_count(domain)
+
+        # Add work order counts from WorkOrderPortal functionality
+        if 'work_order_count' in counters:
+            domain = [('partner_id', '=', partner.id), ('portal_visible', '=', True)]
+            work_order_count = 0
+            for model in ['records.retrieval.order', 'container.destruction.work.order', 'container.access.work.order']:
+                try:
+                    work_order_count += request.env[model].search_count(domain)
+                except Exception:
+                    pass
+            values['work_order_count'] = work_order_count
+
+        if 'coordinator_count' in counters:
+            domain = [('partner_id', '=', partner.id), ('customer_visible', '=', True)]
+            try:
+                values['coordinator_count'] = request.env['work.order.coordinator'].search_count(domain)
+            except Exception:
+                values['coordinator_count'] = 0
 
         return values
 
