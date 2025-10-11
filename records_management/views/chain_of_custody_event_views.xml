@@ -56,7 +56,7 @@
                             <field name="responsible_person"/>
                             <field name="responsible_user_id"/>
                         </group>
-                        <group string="Location & Movement">
+                        <group string="Location &amp; Movement">
                             <field name="from_location_id"/>
                             <field name="to_location_id"/>
                             <field name="location"/>
@@ -65,7 +65,7 @@
                         </group>
                     </group>
                     <group>
-                        <group string="Items & Inventory">
+                        <group string="Items &amp; Inventory">
                             <field name="affected_items"/>
                             <field name="item_count"/>
                         </group>
@@ -75,7 +75,7 @@
                         </group>
                     </group>
                     <group>
-                        <group string="Compliance & Audit">
+                        <group string="Compliance &amp; Audit">
                             <field name="audit_reference"/>
                             <field name="signature_verified"/>
                             <field name="signature_data" widget="binary" filename="signature.png" attrs="{'invisible': [('signature_data', '=', False)]}"/>
