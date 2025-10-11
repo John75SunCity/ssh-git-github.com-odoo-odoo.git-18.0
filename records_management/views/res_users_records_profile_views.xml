@@ -16,24 +16,31 @@
                     </group>
                     <!-- Portal User Instructions -->
                     <div class="alert alert-info" role="alert" invisible="partner_required == False">
-                        <strong>Portal User Setup Required:</strong>
-                        Since this is a portal user, you must select an existing customer company in the "Related Partner" field below.
-                        This ensures the user can only access records for their assigned company.
-                        <br/>
-                        <em>Important: If you don't see the company you need, create it first in Contacts → Customers, then return here to assign it.</em>
+                        <strong>🏢 Portal User Company Assignment Required</strong>
+                        <br/>Portal users represent a specific customer company and can only access that company's data.
+                        You must select an existing customer company in the "Related Partner" field below.
+                        <br/><br/>
+                        <strong>How it works:</strong>
+                        <ul>
+                            <li>Portal user sees only their company's records (invoices, orders, documents, etc.)</li>
+                            <li>Company-based access control ensures data security</li>
+                            <li>User inherits permissions based on their assigned company</li>
+                        </ul>
+                        <em>💡 Tip: If the company doesn't exist, create it first in Contacts → Customers, then return here.</em>
                     </div>
                 </xpath>
                 <!-- Enhance partner_id field for portal users with proper domain and help text -->
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="invisible">0</attribute>
-                    <attribute name="readonly">0</attribute>
+                    <attribute name="readonly">partner_required == False</attribute>
                     <attribute name="force_save">1</attribute>
                     <attribute name="domain">[('is_company', '=', True), ('customer_rank', '>', 0)]</attribute>
-                    <attribute name="context">{'search_default_is_company': 1, 'search_default_customer': 1}</attribute>
-                    <attribute name="help">For Portal users, select an existing customer company that this user represents. For Internal users, this will be auto-created.</attribute>
-                    <attribute name="placeholder">Select a customer company...</attribute>
-                    <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
+                    <attribute name="context">{'search_default_is_company': 1, 'search_default_customer': 1, 'default_is_company': True}</attribute>
+                    <attribute name="help">🏢 Portal User Company Assignment: Select the customer company this user represents. This determines which records they can access through the portal. For internal users, this field is auto-managed.</attribute>
+                    <attribute name="placeholder">🔍 Search and select customer company...</attribute>
+                    <attribute name="options">{'no_create': True, 'no_create_edit': True, 'no_quick_create': True}</attribute>
                     <attribute name="required">partner_required == True</attribute>
+                    <attribute name="string">Customer Company</attribute>
                 </xpath>
             </field>
         </record>
