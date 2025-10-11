@@ -5,7 +5,7 @@
         <field name="name">chain.of.custody.event.view.list</field>
         <field name="model">chain.of.custody.event</field>
         <field name="arch" type="xml">
-            <tree string="Chain of Custody Events" default_order="event_date desc">
+            <list string="Chain of Custody Events" default_order="event_date desc">
                 <field name="event_date"/>
                 <field name="event_type"/>
                 <field name="custody_id"/>
@@ -17,7 +17,7 @@
                 <field name="signature_verified" widget="boolean_toggle"/>
                 <field name="item_count"/>
                 <field name="duration_since_previous" widget="float_time"/>
-            </tree>
+            </list>
         </field>
     </record>
 
