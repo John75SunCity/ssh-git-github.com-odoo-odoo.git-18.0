@@ -147,3 +147,24 @@ class RecordsDepartmentBillingContact(models.Model):
         self.ensure_one()
         self.message_post(body=_('Billing notification sent.'))
         return True
+
+    # =========================================================================
+    # DEFAULT VIEW FALLBACK (Test Support)
+    # =========================================================================
+    def _get_default_tree_view(self):  # Odoo core still asks for 'tree' in some test helpers
+        """Provide a minimal fallback list (tree) view structure for automated tests.
+
+        Odoo 19 uses <list/> arch tag, but internal test utilities may still request
+        a default 'tree' view for x2many placeholders when no explicit list view is
+        preloaded. Returning a valid list arch prevents UserError during base tests.
+        """
+        from lxml import etree
+        arch = etree.fromstring(
+            "<list string='Billing Contacts'>"
+            "<field name='name'/>"
+            "<field name='email'/>"
+            "<field name='phone'/>"
+            "<field name='department_id'/>"
+            "</list>"
+        )
+        return arch

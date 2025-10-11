@@ -357,7 +357,8 @@ class ChainOfCustodyEvent(models.Model):
         a default 'tree' view for x2many placeholders when no explicit list view is
         preloaded. Returning a valid list arch prevents UserError during base tests.
         """
-        return (
+        from lxml import etree
+        arch = etree.fromstring(
             "<list string='Chain of Custody Events'>"
             "<field name='event_date'/>"
             "<field name='event_type'/>"
@@ -365,3 +366,4 @@ class ChainOfCustodyEvent(models.Model):
             "<field name='notes'/>"
             "</list>"
         )
+        return arch

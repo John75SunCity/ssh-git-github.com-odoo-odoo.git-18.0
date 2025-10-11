@@ -207,7 +207,8 @@ class RecordsContainerMovement(models.Model):
         a default 'tree' view for x2many placeholders when no explicit list view is
         preloaded. Returning a valid list arch prevents UserError during base tests.
         """
-        return (
+        from lxml import etree
+        arch = etree.fromstring(
             "<list string='Container Movements'>"
             "<field name='movement_date'/>"
             "<field name='movement_type'/>"
@@ -215,3 +216,4 @@ class RecordsContainerMovement(models.Model):
             "<field name='state'/>"
             "</list>"
         )
+        return arch

@@ -31,7 +31,8 @@ class RecordsDepartmentBillingApproval(models.Model):
         a default 'tree' view for x2many placeholders when no explicit list view is
         preloaded. Returning a valid list arch prevents UserError during base tests.
         """
-        return (
+        from lxml import etree
+        arch = etree.fromstring(
             "<list string='Billing Approvals'>"
             "<field name='approval_date'/>"
             "<field name='charge_amount'/>"
@@ -39,3 +40,4 @@ class RecordsDepartmentBillingApproval(models.Model):
             "<field name='vendor'/>"
             "</list>"
         )
+        return arch

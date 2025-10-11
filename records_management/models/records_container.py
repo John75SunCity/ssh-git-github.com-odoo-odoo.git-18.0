@@ -761,7 +761,7 @@ class RecordsContainer(models.Model):
             if record.weight and record.weight < 0:
                 raise ValidationError(_("Weight must be a positive value."))
 
-    @api.constrains("storage_start_date", "destruction_due_date")
+        @api.constrains("storage_start_date", "destruction_due_date")
     def _check_date_consistency(self):
         for record in self:
             if (
@@ -770,3 +770,24 @@ class RecordsContainer(models.Model):
                 and record.storage_start_date > record.destruction_due_date
             ):
                 raise ValidationError(_("Destruction date cannot be before storage start date"))
+
+    # =========================================================================
+    # DEFAULT VIEW FALLBACK (Test Support)
+    # =========================================================================
+    def _get_default_tree_view(self):  # Odoo core still asks for 'tree' in some test helpers
+        """Provide a minimal fallback list (tree) view structure for automated tests.
+
+        Odoo 19 uses <list/> arch tag, but internal test utilities may still request
+        a default 'tree' view for x2many placeholders when no explicit list view is
+        preloaded. Returning a valid list arch prevents UserError during base tests.
+        """
+        from lxml import etree
+        arch = etree.fromstring(
+            "<list string='Records Containers'>"
+            "<field name='display_name'/>"
+            "<field name='state'/>"
+            "<field name='partner_id'/>"
+            "<field name='location_id'/>"
+            "</list>"
+        )
+        return arch

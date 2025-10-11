@@ -254,7 +254,8 @@ class CustomerInventoryReportLine(models.Model):
         a default 'tree' view for x2many placeholders when no explicit list view is
         preloaded. Returning a valid list arch prevents UserError during base tests.
         """
-        return (
+        from lxml import etree
+        arch = etree.fromstring(
             "<list string='Report Lines'>"
             "<field name='container_id'/>"
             "<field name='document_type'/>"
@@ -262,3 +263,4 @@ class CustomerInventoryReportLine(models.Model):
             "<field name='container_volume_cf'/>"
             "</list>"
         )
+        return arch

@@ -241,3 +241,24 @@ class RecordsLocation(models.Model):
         # DEPRECATED (Phase 1): prefer direct write/statebar; kept for compatibility.
         # Minimal no-logic wrapper retained for backward compatibility with existing buttons or server actions.
         self.write({'active': False, 'state': 'inactive'})
+
+    # =========================================================================
+    # DEFAULT VIEW FALLBACK (Test Support)
+    # =========================================================================
+    def _get_default_tree_view(self):  # Odoo core still asks for 'tree' in some test helpers
+        """Provide a minimal fallback list (tree) view structure for automated tests.
+
+        Odoo 19 uses <list/> arch tag, but internal test utilities may still request
+        a default 'tree' view for x2many placeholders when no explicit list view is
+        preloaded. Returning a valid list arch prevents UserError during base tests.
+        """
+        from lxml import etree
+        arch = etree.fromstring(
+            "<list string='Records Locations'>"
+            "<field name='display_name'/>"
+            "<field name='state'/>"
+            "<field name='container_count'/>"
+            "<field name='utilization_percentage'/>"
+            "</list>"
+        )
+        return arch
