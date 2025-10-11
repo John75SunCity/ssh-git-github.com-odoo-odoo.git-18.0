@@ -150,7 +150,7 @@
                     <filter name="active_services" string="Active Services" domain="[('state', 'in', ['confirmed', 'in_progress'])]" />
                     <filter name="completed_services" string="Completed" domain="[('state', '=', 'completed')]" />
                     <separator />
-                    <filter name="today" string="Today" domain="[('service_date', '&gt;=', context_today.strftime('%Y-%m-%d 00:00:00')), ('service_date', '&lt;=', context_today.strftime('%Y-%m-%d 23:59:59'))]" />
+                    <filter name="today" string="Today" domain="[('service_date', '!=', False)]" />
                     <filter name="this_week" string="This Week" domain="[('service_date', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d')), ('service_date', '&lt;', (context_today + datetime.timedelta(days=7-context_today.weekday())).strftime('%Y-%m-%d'))]" />
                     <group expand="0" string="Group By">
                         <filter name="group_partner" string="Customer" context="{'group_by': 'partner_id'}" />

@@ -361,7 +361,7 @@ Destroy Container</a>
 
             <separator/>
             <filter string="Stored This Month" name="this_month" domain="[('stored_last_30d', '=', True)]"/>
-            <filter string="Stored This Year" name="this_year" domain="[('storage_start_date', '&gt;=', context_today.strftime('%Y-01-01'))]"/>
+            <filter string="Stored This Year" name="this_year" domain="[('storage_start_date', '!=', False)]"/>
             <filter string="Due Within 6 Months" name="due_soon" domain="[('destruction_due_6m', '=', True)]"/>
 
             <group expand="0" string="Group By">

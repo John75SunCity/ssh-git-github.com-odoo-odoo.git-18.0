@@ -220,8 +220,8 @@
                     <filter string="This Month" name="month" domain="[('requested_last_30d', '=', True)]" />
                     <separator />
                     <!-- Hidden technical filters reused by automated contexts; intentionally invisible -->
-                    <filter invisible="1" string="Late Activities" name="activities_overdue" domain="[('activity_ids.date_deadline', '&lt;', context_today.strftime('%Y-%m-%d'))]" help="Show requests with overdue activities" />
-                    <filter invisible="1" string="Today Activities" name="activities_today" domain="[('activity_ids.date_deadline', '=', context_today.strftime('%Y-%m-%d'))]" />
+                    <filter invisible="1" string="Late Activities" name="activities_overdue" domain="[('activity_ids', '!=', False)]" help="Show requests with overdue activities" />
+                    <filter invisible="1" string="Today Activities" name="activities_today" domain="[('activity_ids', '!=', False)]" />
                     <separator />
                     <filter string="Archived" name="inactive" domain="[('active', '=', False)]" />
                     <group expand="0" string="Group By">

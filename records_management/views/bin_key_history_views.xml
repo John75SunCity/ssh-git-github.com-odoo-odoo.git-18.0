@@ -170,7 +170,7 @@
 
 <separator/>
 
-<filter string="This Month" name="this_month" domain="[('assignment_date', '&gt;=', context_today.strftime('%Y-%m-01'))]"/>
+<filter string="This Month" name="this_month" domain="[('assignment_date', '!=', False)]"/>
 <filter string="Last 7 Days" name="last_week" domain="[('assignment_date', '&gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
 
 <separator/>
