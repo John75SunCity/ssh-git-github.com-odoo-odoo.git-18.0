@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Chain of Custody Event List View -->
-    <record id="chain_of_custody_event_view_list" model="ir.ui.view">
+    <data>
+        <!-- Chain of Custody Event List View -->
+        <record id="chain_of_custody_event_view_list" model="ir.ui.view">
         <field name="name">chain.of.custody.event.view.list</field>
         <field name="model">chain.of.custody.event</field>
         <field name="arch" type="xml">
@@ -243,4 +244,5 @@
               sequence="45"
               groups="records_management.group_records_user"/>
 
+    </data>
 </odoo>
