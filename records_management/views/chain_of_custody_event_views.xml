@@ -238,8 +238,9 @@
     <!-- Menu Item for Chain of Custody Events -->
     <menuitem id="chain_of_custody_event_menu"
               name="Custody Events"
-              parent="menu_chain_custody"
+              parent="menu_records_compliance"
               action="chain_of_custody_event_action"
-              sequence="20"/>
+              sequence="45"
+              groups="records_management.group_records_user"/>
 
 </odoo>
