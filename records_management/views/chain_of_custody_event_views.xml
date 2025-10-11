@@ -148,7 +148,7 @@
                 <field name="location"/>
                 <field name="item_count"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_dropdown_kanban dropdown">
                                 <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
@@ -183,19 +183,19 @@
                                     </div>
                                     <div class="o_kanban_record_body">
                                         <div class="o_kanban_record_subtitle">
-                                            <i class="fa fa-link"/> <field name="custody_id"/>
+                                            <i class="fa fa-link" title="Custody Chain"/> <field name="custody_id"/>
                                         </div>
                                         <div class="o_kanban_record_subtitle" t-if="record.partner_id.raw_value">
-                                            <i class="fa fa-user"/> <field name="partner_id"/>
+                                            <i class="fa fa-user" title="Customer"/> <field name="partner_id"/>
                                         </div>
                                         <div class="o_kanban_record_subtitle" t-if="record.location.raw_value">
-                                            <i class="fa fa-map-marker"/> <field name="location"/>
+                                            <i class="fa fa-map-marker" title="Location"/> <field name="location"/>
                                         </div>
                                         <div class="o_kanban_record_subtitle" t-if="record.responsible_person.raw_value">
-                                            <i class="fa fa-user-circle"/> <field name="responsible_person"/>
+                                            <i class="fa fa-user-circle" title="Responsible Person"/> <field name="responsible_person"/>
                                         </div>
                                         <div class="o_kanban_record_subtitle" t-if="record.item_count.raw_value">
-                                            <i class="fa fa-cubes"/> <field name="item_count"/> items
+                                            <i class="fa fa-cubes" title="Item Count"/> <field name="item_count"/> items
                                         </div>
                                     </div>
                                     <div class="o_kanban_record_bottom">
@@ -238,7 +238,7 @@
     <!-- Menu Item for Chain of Custody Events -->
     <menuitem id="chain_of_custody_event_menu"
               name="Custody Events"
-              parent="records_management.menu_chain_custody"
+              parent="menu_chain_custody"
               action="chain_of_custody_event_action"
               sequence="20"/>
 
