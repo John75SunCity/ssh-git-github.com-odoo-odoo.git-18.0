@@ -53,6 +53,23 @@
 			}
 		},
 		{
+			"label": "Deploy to Both Branches (Dual Sync)",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"scripts/sync_both_branches.sh",
+				"fix: Automated dual-branch deployment"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"dependsOn": "Validate Records Management Module"
+		},
+		{
 			"label": "Deploy to GitHub (Git Push)",
 			"type": "shell",
 			"command": "git",
