@@ -29,11 +29,11 @@
             <form string="Chain of Custody Event">
                 <header>
                     <button name="action_verify_signature" string="Verify Signature" type="object"
-                            class="btn-primary" attrs="{'invisible': ['|', ('signature_data', '=', False), ('signature_verified', '=', True)]}"/>
+                            class="btn-primary" invisible="signature_data == False or signature_verified == True"/>
                     <button name="action_mark_compliant" string="Mark Compliant" type="object"
-                            class="btn-success" attrs="{'invisible': [('compliance_status', '=', 'compliant')]}"/>
+                            class="btn-success" invisible="compliance_status == 'compliant'"/>
                     <button name="action_flag_non_compliant" string="Flag Non-Compliant" type="object"
-                            class="btn-danger" attrs="{'invisible': [('compliance_status', '=', 'non_compliant')]}"/>
+                            class="btn-danger" invisible="compliance_status == 'non_compliant'"/>
                     <field name="compliance_status" widget="statusbar" statusbar_visible="compliant,pending_review,non_compliant"/>
                 </header>
                 <sheet>
@@ -73,7 +73,7 @@
                         <group string="Compliance &amp; Audit">
                             <field name="audit_reference"/>
                             <field name="signature_verified"/>
-                            <field name="signature_data" widget="binary" filename="signature.png" attrs="{'invisible': [('signature_data', '=', False)]}"/>
+                            <field name="signature_data" widget="binary" filename="signature.png" invisible="signature_data == False"/>
                         </group>
                     </group>
                     <group string="Documentation">
