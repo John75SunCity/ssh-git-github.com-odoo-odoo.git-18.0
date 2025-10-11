@@ -36,7 +36,7 @@
 -->
 <odoo>
     <data>
-    
+
 <!-- ==================================================================== -->
         <!-- RECORDS WORK VEHICLES - FSM & WORK INTEGRATION FOCUSED             -->
         <!-- ==================================================================== -->
@@ -319,7 +319,7 @@
             <field name="view_mode">list,form</field>
             <field name="view_ids" eval="[(5, 0, 0),
                 (0, 0, {'view_mode': 'kanban', 'view_id': ref('fleet_vehicle_view_kanban_records_work')}),
-                (0, 0, {'view_mode>tree_records_work')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('fleet_vehicle_view_tree_records_work')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('fleet_vehicle_view_form_records_work')})]"/>
             <field name="search_view_id" ref="fleet_vehicle_view_search_records_work"/>
             <field name="domain">[('records_vehicle_type','!=',False)]</field>
@@ -348,7 +348,7 @@
             * Security groups for proper access control
             * Direct action binding for seamless navigation
         -->
-    
+
         <menuitem
             id="menu_fleet_vehicle_records_work"
             name="Work Vehicles"
@@ -356,7 +356,7 @@
             action="action_fleet_vehicle_records_work"
             sequence="30"
             groups="fleet.fleet_group_manager,fleet.fleet_group_user"/>
-    
-    
+
+
     </data>
 </odoo>
