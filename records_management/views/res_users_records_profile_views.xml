@@ -16,16 +16,18 @@
                     </group>
                     <!-- Portal User Instructions -->
                     <div class="alert alert-info" role="alert" invisible="partner_required == False">
-                        <strong>Portal User Setup:</strong>
-                        For portal users, you must select an existing customer company in the "Related Partner" field above.
+                        <strong>Portal User Setup Required:</strong>
+                        Since this is a portal user, you must select an existing customer company in the "Related Partner" field below.
                         This ensures the user can only access records for their assigned company.
                         <br/>
-                        <em>Tip: If you don't see the company you need, create it first in Contacts → Customers, then return here to assign it.</em>
+                        <em>Important: If you don't see the company you need, create it first in Contacts → Customers, then return here to assign it.</em>
                     </div>
                 </xpath>
                 <!-- Enhance partner_id field for portal users with proper domain and help text -->
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="invisible">0</attribute>
+                    <attribute name="readonly">0</attribute>
+                    <attribute name="force_save">1</attribute>
                     <attribute name="domain">[('is_company', '=', True), ('customer_rank', '>', 0)]</attribute>
                     <attribute name="context">{'search_default_is_company': 1, 'search_default_customer': 1}</attribute>
                     <attribute name="help">For Portal users, select an existing customer company that this user represents. For Internal users, this will be auto-created.</attribute>
