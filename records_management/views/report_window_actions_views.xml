@@ -36,7 +36,7 @@
             <!-- OPTIMIZATION: Model records.container has state field - consider using default search filters -->
             <field name="name">Storage Reports</field>
             <field name="res_model">records.container</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
             <field name="view_id" ref="records_management.records_container_view_tree_report" />
             <field name="search_view_id" ref="records_management.records_container_view_search" />
             <field name="context">{"search_default_state_active": 1}</field>
@@ -74,7 +74,7 @@
             <!-- OPTIMIZATION: Model naid.compliance.policy has state field - consider using default search filters -->
             <field name="name">Compliance Reports</field>
             <field name="res_model">naid.compliance.policy</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
             <field name="view_id" ref="records_management.naid_compliance_policy_view_tree" />
             <field name="search_view_id" ref="records_management.naid_compliance_policy_view_search" />
             <field name="context">{"search_default_state_active": 1}</field>
@@ -113,7 +113,7 @@
             <!-- OPTIMIZATION: Model res.partner has sequence field - consider adding _order="sequence" to model -->
             <field name="name">Customer Inventory</field>
             <field name="res_model">res.partner</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
             <field name="view_id" ref="records_management.res_partner_view_tree" />
             <field name="search_view_id" ref="records_management.res_partner_view_search" />
             <field name="domain">['|', ('is_company','=',True), ('company_type','=','company')]</field>
