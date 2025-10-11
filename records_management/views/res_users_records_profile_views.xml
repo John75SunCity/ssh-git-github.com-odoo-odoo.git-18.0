@@ -15,9 +15,9 @@
                         <field name="partner_required" invisible="1"/>
                     </group>
                     <!-- Portal User Instructions -->
-                    <div class="alert alert-info" attrs="{'invisible': [('partner_required', '=', False)]}">
-                        <strong>Portal User Setup:</strong> 
-                        For portal users, you must select an existing customer company in the "Related Partner" field above. 
+                    <div class="alert alert-info" role="alert" invisible="partner_required == False">
+                        <strong>Portal User Setup:</strong>
+                        For portal users, you must select an existing customer company in the "Related Partner" field above.
                         This ensures the user can only access records for their assigned company.
                         <br/>
                         <em>Tip: If you don't see the company you need, create it first in Contacts → Customers, then return here to assign it.</em>
@@ -31,7 +31,7 @@
                     <attribute name="help">For Portal users, select an existing customer company that this user represents. For Internal users, this will be auto-created.</attribute>
                     <attribute name="placeholder">Select a customer company...</attribute>
                     <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
-                    <attribute name="attrs">{'required': [('partner_required', '=', True)]}</attribute>
+                    <attribute name="required">partner_required == True</attribute>
                 </xpath>
             </field>
         </record>
