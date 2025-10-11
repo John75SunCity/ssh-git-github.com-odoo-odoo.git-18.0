@@ -243,3 +243,22 @@ class CustomerInventoryReportLine(models.Model):
         return res
 
     # Deprecated name_get: rely on computed display_name
+
+    # =========================================================================
+    # DEFAULT VIEW FALLBACK (Test Support)
+    # =========================================================================
+    def _get_default_tree_view(self):  # Odoo core still asks for 'tree' in some test helpers
+        """Provide a minimal fallback list (tree) view structure for automated tests.
+
+        Odoo 19 uses <list/> arch tag, but internal test utilities may still request
+        a default 'tree' view for x2many placeholders when no explicit list view is
+        preloaded. Returning a valid list arch prevents UserError during base tests.
+        """
+        return (
+            "<list string='Report Lines'>"
+            "<field name='container_id'/>"
+            "<field name='document_type'/>"
+            "<field name='document_count'/>"
+            "<field name='container_volume_cf'/>"
+            "</list>"
+        )

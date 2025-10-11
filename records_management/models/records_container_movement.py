@@ -196,3 +196,22 @@ class RecordsContainerMovement(models.Model):
         for record in self:
             if record.actual_start_time and record.actual_end_time and record.actual_start_time > record.actual_end_time:
                 raise ValidationError(_("The start time cannot be after the end time."))
+
+    # =========================================================================
+    # DEFAULT VIEW FALLBACK (Test Support)
+    # =========================================================================
+    def _get_default_tree_view(self):  # Odoo core still asks for 'tree' in some test helpers
+        """Provide a minimal fallback list (tree) view structure for automated tests.
+
+        Odoo 19 uses <list/> arch tag, but internal test utilities may still request
+        a default 'tree' view for x2many placeholders when no explicit list view is
+        preloaded. Returning a valid list arch prevents UserError during base tests.
+        """
+        return (
+            "<list string='Container Movements'>"
+            "<field name='movement_date'/>"
+            "<field name='movement_type'/>"
+            "<field name='container_id'/>"
+            "<field name='state'/>"
+            "</list>"
+        )
