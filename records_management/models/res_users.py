@@ -1,4 +1,5 @@
 from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class ResUsers(models.Model):
@@ -18,6 +19,14 @@ class ResUsers(models.Model):
         default='records_user',
         # tracking removed: res.users may not inherit mail.thread in all editions / variants; parameter caused warnings
     )
+
+    @api.depends('records_user_profile')
+    def _compute_partner_required(self):
+        """Make partner selection required for portal users"""
+        for user in self:
+            user.partner_required = user.records_user_profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']
+
+    partner_required = fields.Boolean(string='Partner Required', compute='_compute_partner_required', store=False)
 
     # Mapping constants (XML IDs) -> kept here for clarity & single-point maintenance
     _RM_INTERNAL_MAP = {
@@ -98,14 +107,53 @@ class ResUsers(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        # Validate portal users have proper partner assignment before creation
+        for vals in vals_list:
+            profile = vals.get('records_user_profile')
+            if profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
+                if not vals.get('partner_id'):
+                    raise ValidationError(_(
+                        "Portal users must be assigned to an existing customer company. "
+                        "Please select a Related Partner from the dropdown list before saving."
+                    ))
+                # Verify the selected partner is a customer (not auto-created)
+                partner = self.env['res.partner'].browse(vals['partner_id'])
+                if partner and not partner.is_company:
+                    raise ValidationError(_(
+                        "Portal users must be assigned to a company partner, not an individual contact. "
+                        "Please select a company from the Related Partner dropdown."
+                    ))
+
         records = super().create(vals_list)
         # Post-create apply (need real record with m2m)
         records._apply_records_user_profile()
         return records
 
     def write(self, vals):
+        # Validate portal users have proper partner assignment
+        if 'records_user_profile' in vals or 'partner_id' in vals:
+            for user in self:
+                profile = vals.get('records_user_profile', user.records_user_profile)
+                partner_id = vals.get('partner_id', user.partner_id.id if user.partner_id else False)
+
+                if profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
+                    if not partner_id:
+                        raise ValidationError(_(
+                            "Portal users must be assigned to an existing customer company. "
+                            "Please select a Related Partner from the dropdown list before saving."
+                        ))
+                    # Verify the selected partner is a customer company
+                    partner = self.env['res.partner'].browse(partner_id)
+                    if partner and not partner.is_company:
+                        raise ValidationError(_(
+                            "Portal users must be assigned to a company partner, not an individual contact. "
+                            "Please select a company from the Related Partner dropdown."
+                        ))
+
         res = super().write(vals)
         # Only apply if the profile changed or explicitly requested (avoid extra writes)
         if 'records_user_profile' in vals:
             self._apply_records_user_profile()
         return res
+
+    def _update_last_login(self):\n        \"\"\"Override to prevent partner auto-creation side effects\"\"\"\n        return super()._update_last_login()\n\n    @api.model\n    def _get_default_image(self):\n        \"\"\"Override to prevent partner auto-creation during user setup\"\"\"\n        return super()._get_default_image()

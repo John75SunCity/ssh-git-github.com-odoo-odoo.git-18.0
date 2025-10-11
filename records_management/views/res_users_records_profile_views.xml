@@ -12,11 +12,26 @@
                 <xpath expr="//sheet" position="inside">
                     <group string="Records Management Access" colspan="2">
                         <field name="records_user_profile" widget="statusbar" options="{'clickable': True}"/>
+                        <field name="partner_required" invisible="1"/>
                     </group>
+                    <!-- Portal User Instructions -->
+                    <div class="alert alert-info" attrs="{'invisible': [('partner_required', '=', False)]}">
+                        <strong>Portal User Setup:</strong> 
+                        For portal users, you must select an existing customer company in the "Related Partner" field above. 
+                        This ensures the user can only access records for their assigned company.
+                        <br/>
+                        <em>Tip: If you don't see the company you need, create it first in Contacts → Customers, then return here to assign it.</em>
+                    </div>
                 </xpath>
-                <!-- Ensure partner_id is visible (some Odoo variants hide it) -->
+                <!-- Enhance partner_id field for portal users with proper domain and help text -->
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                     <attribute name="invisible">0</attribute>
+                    <attribute name="domain">[('is_company', '=', True), ('customer_rank', '>', 0)]</attribute>
+                    <attribute name="context">{'search_default_is_company': 1, 'search_default_customer': 1}</attribute>
+                    <attribute name="help">For Portal users, select an existing customer company that this user represents. For Internal users, this will be auto-created.</attribute>
+                    <attribute name="placeholder">Select a customer company...</attribute>
+                    <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
+                    <attribute name="attrs">{'required': [('partner_required', '=', True)]}</attribute>
                 </xpath>
             </field>
         </record>
