@@ -761,7 +761,7 @@ class RecordsContainer(models.Model):
             if record.weight and record.weight < 0:
                 raise ValidationError(_("Weight must be a positive value."))
 
-        @api.constrains("storage_start_date", "destruction_due_date")
+    @api.constrains("storage_start_date", "destruction_due_date")
     def _check_date_consistency(self):
         for record in self:
             if (
