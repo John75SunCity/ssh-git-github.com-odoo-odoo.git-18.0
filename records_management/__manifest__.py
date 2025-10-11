@@ -114,6 +114,7 @@
         "views/naid_compliance_checklist_views.xml",
         "views/naid_compliance_policy_views.xml",
         "views/naid_custody_views.xml",
+        "views/chain_of_custody_event_views.xml",
     "views/naid_compliance_views.xml",
         "data/feedback_survey_data.xml",
         "data/intelligent_search_indexes_data.xml",
