@@ -107,10 +107,13 @@ class ResUsers(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        # Validate portal users have proper partner assignment before creation
+        # Only validate when explicitly setting our custom records_user_profile
+        # Allow standard portal creation to work without interference
         for vals in vals_list:
             profile = vals.get('records_user_profile')
-            if profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
+            # Only validate if user is explicitly setting a portal profile
+            # Skip validation for standard portal user creation (via portal wizard)
+            if profile and profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
                 if not vals.get('partner_id'):
                     raise ValidationError(_(
                         "Portal users must be assigned to an existing customer company. "
@@ -125,18 +128,21 @@ class ResUsers(models.Model):
                     ))
 
         records = super().create(vals_list)
-        # Post-create apply (need real record with m2m)
-        records._apply_records_user_profile()
+        # Apply profile settings after creation, but only if profile was set
+        for record in records:
+            if record.records_user_profile:
+                record._apply_records_user_profile()
         return records
 
     def write(self, vals):
-        # Validate portal users have proper partner assignment
-        if 'records_user_profile' in vals or 'partner_id' in vals:
+        # Only validate when explicitly changing our custom records_user_profile
+        # Allow standard portal user modifications (group changes) to work
+        if 'records_user_profile' in vals:
             for user in self:
-                profile = vals.get('records_user_profile', user.records_user_profile)
-                partner_id = vals.get('partner_id', user.partner_id.id if user.partner_id else False)
-
-                if profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
+                profile = vals.get('records_user_profile')
+                # Only validate if explicitly setting a portal profile
+                if profile and profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
+                    partner_id = vals.get('partner_id', user.partner_id.id if user.partner_id else False)
                     if not partner_id:
                         raise ValidationError(_(
                             "Portal users must be assigned to an existing customer company. "
@@ -151,9 +157,39 @@ class ResUsers(models.Model):
                         ))
 
         res = super().write(vals)
-        # Only apply if the profile changed or explicitly requested (avoid extra writes)
-        if 'records_user_profile' in vals:
+        # Only apply if our custom profile was explicitly changed
+        if 'records_user_profile' in vals and vals.get('records_user_profile'):
             self._apply_records_user_profile()
         return res
 
-    def _update_last_login(self):\n        \"\"\"Override to prevent partner auto-creation side effects\"\"\"\n        return super()._update_last_login()\n\n    @api.model\n    def _get_default_image(self):\n        \"\"\"Override to prevent partner auto-creation during user setup\"\"\"\n        return super()._get_default_image()
+    def _update_last_login(self):
+        """Override to prevent partner auto-creation side effects"""
+        return super()._update_last_login()
+
+    @api.model
+    def _get_default_image(self):
+        """Override to prevent partner auto-creation during user setup"""
+        return super()._get_default_image()
+
+    @api.model
+    def _prevent_user_type_conflicts(self):
+        """Ensure users don't have conflicting base groups (internal + portal)"""
+        base_group_user = self.env.ref('base.group_user', raise_if_not_found=False)
+        base_group_portal = self.env.ref('base.group_portal', raise_if_not_found=False)
+        
+        if not (base_group_user and base_group_portal):
+            return
+        
+        # Find users with both groups (conflicting state)
+        conflicted_users = self.search([
+            ('groups_id', 'in', [base_group_user.id]),
+            ('groups_id', 'in', [base_group_portal.id])
+        ])
+        
+        for user in conflicted_users:
+            # If user has our portal profile, prioritize portal
+            if user.records_user_profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
+                user.groups_id = [(3, base_group_user.id)]  # Remove internal group
+            # Otherwise, prioritize internal
+            else:
+                user.groups_id = [(3, base_group_portal.id)]  # Remove portal group
