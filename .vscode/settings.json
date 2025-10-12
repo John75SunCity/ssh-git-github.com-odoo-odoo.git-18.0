@@ -8,6 +8,7 @@
   "github.copilot.chat.agent.thinkingTool": true,
   "github.copilot.chat.edits.temporalContext.enabled": true,
   "github.copilot.chat.enableRetryAfterFilteredResponse": true,
+  "github-enterprise.uri": "",
   "odoo.selectedProfile": "",
   "odoo.serverLogLevel": "error",
   "odooServer.trace.server": "off",
@@ -446,5 +447,6 @@
   "xml.format.trimTrailingWhitespace": false,
   "todo-tree.tree.scanMode": "workspace only",
   "remoteHub.richNavigation.enabled": true,
-  "git-graph.dialog.popStash.reinstateIndex": true
+  "git-graph.dialog.popStash.reinstateIndex": true,
+  "github-actions.use-enterprise": false
 }

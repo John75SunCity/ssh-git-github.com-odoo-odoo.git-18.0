@@ -54,7 +54,6 @@
     "data": [
         # Security ordering: core groups first, then model security, then access CSV last
         "security/records_management_security.xml",
-        "security/admin_portal_access.xml",  # Admin access to portal functionality
         "security/additional_models_security.xml",
         "security/destruction_certificate_security.xml",
         "security/intelligent_search_security.xml",

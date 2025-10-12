@@ -3,26 +3,17 @@
     <data>
         
         <!-- ========================================================================= -->
-        <!-- ADMIN PORTAL VISIBILITY: Give admins portal group access                 -->
-        <!-- This allows admins to see portal-only views and functionality            -->
+        <!-- ADMIN ACCESS CONFIGURATION                                                -->
+        <!-- This file configures admin visibility without changing user types         -->
+        <!-- Portal menus are made visible through admin_super_access.xml             -->
         <!-- ========================================================================= -->
         
-        <!-- Update Records Admin to include top-level portal access for visibility -->
-        <record id="group_records_admin" model="res.groups">
-            <field name="implied_ids" eval="[(4, ref('records_management.group_records_manager')), (4, ref('records_management.group_portal_company_admin'))]"/>
-        </record>
+        <!-- Note: We do NOT add portal groups to internal users (admins)             -->
+        <!-- This would violate Odoo's "one user type" rule and cause errors          -->
+        <!-- Instead, menu visibility is controlled in admin_super_access.xml         -->
         
-        <!-- Ensure base system admin can also see portal functionality -->
-        <record id="base.group_system" model="res.groups">
-            <field name="implied_ids" eval="[(4, ref('records_management.group_portal_company_admin'))]"/>
-        </record>
-        
-        <!-- ========================================================================= -->
-        <!-- WIZARD ACCESS: Ensure all wizards are accessible to admin users          -->
-        <!-- ========================================================================= -->
-        
-        <!-- Note: Most wizards inherit access from their parent menus, but we'll -->
-        <!-- create a comprehensive wizard access rule to be safe -->
+        <!-- Admin users can see portal functionality through menu groups assignment  -->
+        <!-- See views/admin_super_access.xml for complete menu visibility setup     -->
         
     </data>
 </odoo>
