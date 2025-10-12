@@ -171,7 +171,7 @@
                         </group>
                         <notebook>
                             <page string="Load Items" name="load_items">
-                                <field name="bale_ids" mode="tree,kanban">
+                                <field name="bale_ids" mode="list,kanban">
                                     <list string="Paper Bales" editable="bottom">
                                         <field name="bale_number" />
                                         <field name="weight" sum="Total Weight" />

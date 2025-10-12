@@ -90,7 +90,7 @@
                         </group>
                         <notebook>
                             <page string="Lines" name="lines">
-                                <field name="line_ids" context="{'default_order_id': id}" mode="tree,form" colspan="4">
+                                <field name="line_ids" context="{'default_order_id': id}" mode="list,form" colspan="4">
                                     <list editable="bottom" decoration-success="status in ['delivered','completed']" decoration-danger="status == 'not_found'" decoration-warning="status == 'pending'">
                                         <field name="name" />
                                         <field name="item_type" />

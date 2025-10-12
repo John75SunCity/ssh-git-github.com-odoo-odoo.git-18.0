@@ -135,7 +135,7 @@
                         </group>
                         <notebook>
                             <page name="containers" string="Stored Containers">
-                                <field name="container_ids" mode="tree">
+                                <field name="container_ids" mode="list">
                                     <list>
                                         <field name="name" />
                                         <field name="partner_id" />

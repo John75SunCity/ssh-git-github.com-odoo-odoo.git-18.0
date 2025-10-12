@@ -69,7 +69,7 @@
 
                         <notebook>
                             <page string="Approval History" name="approvals">
-                                <field name="approval_history_ids" mode="tree">
+                                <field name="approval_history_ids" mode="list">
                                     <list>
                                         <field name="approval_date"/>
                                         <field name="charge_amount"/>

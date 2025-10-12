@@ -59,7 +59,7 @@
                         </group>
                         <notebook>
                             <page string="Events">
-                                <field name="custody_event_ids" mode="tree,form" />
+                                <field name="custody_event_ids" mode="list,form" />
                             </page>
                             <page string="Notes">
                                 <field name="notes" widget="text" />
