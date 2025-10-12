@@ -65,7 +65,6 @@
         "security/portal_financial_rules.xml",   # New: financial/negotiated rates portal scoping
         "security/portal_certificate_rules.xml", # New: destruction certificate portal scoping
         "security/ir.model.access.csv",
-        "security/admin_wizard_access.csv",  # Admin access to all wizards
         # Root menus must be available before any child menus declared in scattered views
         "views/records_management_root_menus.xml",
         # Admin super access - ensures admins can see all menus including portal menus
