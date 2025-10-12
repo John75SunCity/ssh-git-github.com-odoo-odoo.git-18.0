@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- ========================================================================= -->
+        <!-- ADMIN PORTAL VISIBILITY: Give admins portal group access                 -->
+        <!-- This allows admins to see portal-only views and functionality            -->
+        <!-- ========================================================================= -->
+        
+        <!-- Update Records Admin to include top-level portal access for visibility -->
+        <record id="group_records_admin" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('records_management.group_records_manager')), (4, ref('records_management.group_portal_company_admin'))]"/>
+        </record>
+        
+        <!-- Ensure base system admin can also see portal functionality -->
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('records_management.group_portal_company_admin'))]"/>
+        </record>
+        
+        <!-- ========================================================================= -->
+        <!-- WIZARD ACCESS: Ensure all wizards are accessible to admin users          -->
+        <!-- ========================================================================= -->
+        
+        <!-- Note: Most wizards inherit access from their parent menus, but we'll -->
+        <!-- create a comprehensive wizard access rule to be safe -->
+        
+    </data>
+</odoo>

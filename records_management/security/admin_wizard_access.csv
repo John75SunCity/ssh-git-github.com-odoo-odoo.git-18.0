@@ -1,0 +1,98 @@
+# Admin Super Access Rules for Wizards
+# Ensures admin and system users can access all wizards regardless of their original group restrictions
+
+# Document Bulk Upload Wizard - Admin Access
+access_records_document_bulk_upload_wizard_admin,records_document_bulk_upload_wizard,model_records_document_bulk_upload_wizard,records_management.group_records_admin,1,1,1,1
+access_records_document_bulk_upload_wizard_system,records_document_bulk_upload_wizard,model_records_document_bulk_upload_wizard,base.group_system,1,1,1,1
+
+# Container Assign Barcode Wizard - Admin Access
+access_records_container_assign_barcode_wizard_admin,records_container_assign_barcode_wizard,model_records_container_assign_barcode_wizard,records_management.group_records_admin,1,1,1,1
+access_records_container_assign_barcode_wizard_system,records_container_assign_barcode_wizard,model_records_container_assign_barcode_wizard,base.group_system,1,1,1,1
+
+# Customer Inventory Report Wizard - Admin Access
+access_customer_inventory_report_wizard_admin,customer_inventory_report_wizard,model_customer_inventory_report_wizard,records_management.group_records_admin,1,1,1,1
+access_customer_inventory_report_wizard_system,customer_inventory_report_wizard,model_customer_inventory_report_wizard,base.group_system,1,1,1,1
+
+# Field Label Helper Wizard - Admin Access
+access_field_label_helper_wizard_admin,field_label_helper_wizard,model_field_label_helper_wizard,records_management.group_records_admin,1,1,1,1
+access_field_label_helper_wizard_system,field_label_helper_wizard,model_field_label_helper_wizard,base.group_system,1,1,1,1
+
+# Hard Drive Scan Wizard - Admin Access
+access_hard_drive_scan_wizard_admin,hard_drive_scan_wizard,model_hard_drive_scan_wizard,records_management.group_records_admin,1,1,1,1
+access_hard_drive_scan_wizard_system,hard_drive_scan_wizard,model_hard_drive_scan_wizard,base.group_system,1,1,1,1
+
+# Location Report Wizard - Admin Access
+access_location_report_wizard_admin,location_report_wizard,model_location_report_wizard,records_management.group_records_admin,1,1,1,1
+access_location_report_wizard_system,location_report_wizard,model_location_report_wizard,base.group_system,1,1,1,1
+
+# Mobile Bin Key Wizard - Admin Access
+access_mobile_bin_key_wizard_admin,mobile_bin_key_wizard,model_mobile_bin_key_wizard,records_management.group_records_admin,1,1,1,1
+access_mobile_bin_key_wizard_system,mobile_bin_key_wizard,model_mobile_bin_key_wizard,base.group_system,1,1,1,1
+
+# Paper Bale Inspection Wizard - Admin Access
+access_paper_bale_inspection_wizard_admin,paper_bale_inspection_wizard,model_paper_bale_inspection_wizard,records_management.group_records_admin,1,1,1,1
+access_paper_bale_inspection_wizard_system,paper_bale_inspection_wizard,model_paper_bale_inspection_wizard,base.group_system,1,1,1,1
+
+# Paper Bale Weigh Wizard - Admin Access
+access_paper_bale_weigh_wizard_admin,paper_bale_weigh_wizard,model_paper_bale_weigh_wizard,records_management.group_records_admin,1,1,1,1
+access_paper_bale_weigh_wizard_system,paper_bale_weigh_wizard,model_paper_bale_weigh_wizard,base.group_system,1,1,1,1
+
+# Permanent Flag Wizard - Admin Access
+access_permanent_flag_wizard_admin,permanent_flag_wizard,model_permanent_flag_wizard,records_management.group_records_admin,1,1,1,1
+access_permanent_flag_wizard_system,permanent_flag_wizard,model_permanent_flag_wizard,base.group_system,1,1,1,1
+
+# Pickup Schedule Wizard - Admin Access
+access_pickup_schedule_wizard_admin,pickup_schedule_wizard,model_pickup_schedule_wizard,records_management.group_records_admin,1,1,1,1
+access_pickup_schedule_wizard_system,pickup_schedule_wizard,model_pickup_schedule_wizard,base.group_system,1,1,1,1
+
+# Records Container Type Converter - Admin Access
+access_records_container_type_converter_admin,records_container_type_converter,model_records_container_type_converter,records_management.group_records_admin,1,1,1,1
+access_records_container_type_converter_system,records_container_type_converter,model_records_container_type_converter,base.group_system,1,1,1,1
+
+# Shredding Bin Barcode Wizard - Admin Access
+access_shredding_bin_barcode_wizard_admin,shredding_bin_barcode_wizard,model_shredding_bin_barcode_wizard,records_management.group_records_admin,1,1,1,1
+access_shredding_bin_barcode_wizard_system,shredding_bin_barcode_wizard,model_shredding_bin_barcode_wizard,base.group_system,1,1,1,1
+
+# Shredding Bin Sequence Reset Wizard - Admin Access
+access_shredding_bin_sequence_reset_wizard_admin,shredding_bin_sequence_reset_wizard,model_shredding_bin_sequence_reset_wizard,records_management.group_records_admin,1,1,1,1
+access_shredding_bin_sequence_reset_wizard_system,shredding_bin_sequence_reset_wizard,model_shredding_bin_sequence_reset_wizard,base.group_system,1,1,1,1
+
+# System Flowchart Wizard - Admin Access
+access_system_flowchart_wizard_admin,system_flowchart_wizard,model_system_flowchart_wizard,records_management.group_records_admin,1,1,1,1
+access_system_flowchart_wizard_system,system_flowchart_wizard,model_system_flowchart_wizard,base.group_system,1,1,1,1
+
+# Temp Inventory Reject Wizard - Admin Access
+access_temp_inventory_reject_wizard_admin,temp_inventory_reject_wizard,model_temp_inventory_reject_wizard,records_management.group_records_admin,1,1,1,1
+access_temp_inventory_reject_wizard_system,temp_inventory_reject_wizard,model_temp_inventory_reject_wizard,base.group_system,1,1,1,1
+
+# User Management Wizards - Admin Access
+access_user_management_wizards_admin,user_management_wizards,model_user_management_wizards,records_management.group_records_admin,1,1,1,1
+access_user_management_wizards_system,user_management_wizards,model_user_management_wizards,base.group_system,1,1,1,1
+
+# Work Order Bin Assignment Wizard - Admin Access
+access_work_order_bin_assignment_wizard_admin,work_order_bin_assignment_wizard,model_work_order_bin_assignment_wizard,records_management.group_records_admin,1,1,1,1
+access_work_order_bin_assignment_wizard_system,work_order_bin_assignment_wizard,model_work_order_bin_assignment_wizard,base.group_system,1,1,1,1
+
+# Custom Box Volume Calculator - Admin Access
+access_custom_box_volume_calculator_admin,custom_box_volume_calculator,model_custom_box_volume_calculator,records_management.group_records_admin,1,1,1,1
+access_custom_box_volume_calculator_system,custom_box_volume_calculator,model_custom_box_volume_calculator,base.group_system,1,1,1,1
+
+# Key Restriction Management Wizard - Admin Access
+access_key_restriction_management_wizard_admin,key_restriction_management_wizard,model_key_restriction_management_wizard,records_management.group_records_admin,1,1,1,1
+access_key_restriction_management_wizard_system,key_restriction_management_wizard,model_key_restriction_management_wizard,base.group_system,1,1,1,1
+
+# Key Restriction Checker - Admin Access
+access_key_restriction_checker_admin,key_restriction_checker,model_key_restriction_checker,records_management.group_records_admin,1,1,1,1
+access_key_restriction_checker_system,key_restriction_checker,model_key_restriction_checker,base.group_system,1,1,1,1
+
+# Unlock Service Reschedule Wizard - Admin Access
+access_unlock_service_reschedule_wizard_admin,unlock_service_reschedule_wizard,model_unlock_service_reschedule_wizard,records_management.group_records_admin,1,1,1,1
+access_unlock_service_reschedule_wizard_system,unlock_service_reschedule_wizard,model_unlock_service_reschedule_wizard,base.group_system,1,1,1,1
+
+# Bin Issue Report Wizard - Admin Access
+access_bin_issue_report_wizard_admin,bin_issue_report_wizard,model_bin_issue_report_wizard,records_management.group_records_admin,1,1,1,1
+access_bin_issue_report_wizard_system,bin_issue_report_wizard,model_bin_issue_report_wizard,base.group_system,1,1,1,1
+
+# NAID Audit Verification Wizard - Admin Access
+access_naid_audit_verification_wizard_admin,naid_audit_verification_wizard,model_naid_audit_verification_wizard,records_management.group_records_admin,1,1,1,1
+access_naid_audit_verification_wizard_system,naid_audit_verification_wizard,model_naid_audit_verification_wizard,base.group_system,1,1,1,1
