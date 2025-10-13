@@ -99,6 +99,7 @@ static/lib/
 !RECORDS_MANAGEMENT_HANDBOOK.md
 !VIEWS_AND_JS_FILES_OUTLINE.md
 !QUICK_REFERENCE_VIEWS_JS.md
+!README_DOCUMENTATION.md
 
 # Specifically exclude root-level documentation
 TEST_ENVIRONMENT_NOTES.md
