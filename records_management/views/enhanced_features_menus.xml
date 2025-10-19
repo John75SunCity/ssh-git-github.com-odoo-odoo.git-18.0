@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
+
 <!-- Enhanced Features Menu Structure -->
 
     <!-- Main Enhanced Features Menu -->
 
-    <menuitem id="menu_enhanced_features" name="Enhanced Features" parent="records_management.menu_records_management_root" sequence="100" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_enhanced_features" name="Enhanced Features" parent="records_management.menu_records_configuration" sequence="100" groups="records_management.group_records_manager"/>
 
 
     <!-- Workflow Visualization Submenu -->

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
-    
-    <menuitem id="records_retrieval_work_order_menu" name="Retrieval Work Orders" parent="menu_records_management_root" action="action_records_retrieval_work_order" sequence="50" />
+
+
+        <!-- Retrieval Work Order Menu -->
+    <menuitem id="menu_records_retrieval_work_order"
+              name="Retrieval Work Orders"
+              parent="menu_records_operations"
+              action="action_records_retrieval_work_order"
+              sequence="85"/>
     
     
     </data>

@@ -29,13 +29,18 @@
         </record>
 
         <menuitem id="menu_records_management_root" name="Records Management" sequence="50" web_icon="records_management,static/description/icon.png" action="action_records_management_dashboard"/>
+        
+        <!-- 5 Main Menus -->
         <menuitem id="menu_records_operations" name="Operations" parent="menu_records_management_root" sequence="10" groups="records_management.group_records_user"/>
-        <menuitem id="menu_records_portal" name="Customer Portal" parent="menu_records_management_root" sequence="15" groups="records_management.group_records_user"/>
         <menuitem id="menu_records_inventory" name="Inventory" parent="menu_records_management_root" sequence="20" groups="records_management.group_records_user"/>
-        <menuitem id="menu_records_compliance" name="NAID Compliance" parent="menu_records_management_root" sequence="25" groups="records_management.group_records_user"/>
         <menuitem id="menu_records_billing" name="Billing &amp; Finance" parent="menu_records_management_root" sequence="30" groups="records_management.group_records_manager"/>
-        <menuitem id="menu_records_reporting" name="Reports" parent="menu_records_management_root" sequence="40" groups="records_management.group_records_user"/>
-        <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="90" groups="records_management.group_records_manager,base.group_system"/>
+        <menuitem id="menu_records_compliance_reports" name="Compliance &amp; Reports" parent="menu_records_management_root" sequence="40" groups="records_management.group_records_user"/>
+        <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="50" groups="records_management.group_records_manager,base.group_system"/>
+        
+        <!-- Legacy menu aliases for backward compatibility -->
+        <menuitem id="menu_records_compliance" name="NAID Compliance" parent="menu_records_compliance_reports" sequence="10" groups="records_management.group_records_user"/>
+        <menuitem id="menu_records_reporting" name="Reports" parent="menu_records_compliance_reports" sequence="20" groups="records_management.group_records_user"/>
+        <menuitem id="menu_records_portal" name="Portal Feedback" parent="menu_records_compliance_reports" sequence="30" groups="records_management.group_records_user"/>
 
 
     </data>
