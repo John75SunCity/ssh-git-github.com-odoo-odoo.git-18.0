@@ -165,6 +165,8 @@
         "views/custody_transfer_event_views.xml",
         "views/customer_feedback_views.xml",
     "views/customer_inventory_report_views.xml",
+    # Ensure customer inventory action loads before menus reference it
+    "views/customer_inventory_views.xml",
     # Ensure destruction event action loads before certificate referencing it
     "views/destruction_event_views.xml",
         "views/destruction_certificate_views.xml",
