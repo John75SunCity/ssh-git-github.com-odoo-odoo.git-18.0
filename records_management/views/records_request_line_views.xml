@@ -85,7 +85,8 @@
             </field>
         </record>
     
-        <menuitem id="menu_records_request_line" name="Request Lines" parent="records_management.menu_records_management_root" action="records_request_line_action" sequence="25" />
+        <!-- Request Lines moved to Operations menu -->
+        <menuitem id="menu_records_request_line" name="Request Lines" parent="menu_records_operations" action="records_request_line_action" sequence="85" />
     
     
     </data>
