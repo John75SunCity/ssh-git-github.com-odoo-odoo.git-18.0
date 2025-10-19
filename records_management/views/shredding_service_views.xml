@@ -213,9 +213,107 @@
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                💥 Create your first shredding service!
-            </p>
-                <p>Schedule secure document destruction with NAID AAA compliance tracking.</p>
+                    <i class="fa fa-scissors"/> No shredding services scheduled yet!
+                </p>
+                <p>
+                    <b>⚠️ PREREQUISITES - Required before shredding:</b><br/>
+                    • <b>Destruction Authorization:</b> Customer signed approval<br/>
+                    • <b>Retention Policy Check:</b> Verify documents eligible for destruction<br/>
+                    • <b>Legal Hold Review:</b> Confirm no litigation holds active<br/>
+                    • <b>NAID Certificate:</b> Valid NAID AAA certification<br/>
+                    • <b>Chain of Custody:</b> Complete tracking from storage to destruction
+                </p>
+                <p>
+                    <b>� NAID AAA Certified Destruction Process:</b><br/>
+                    NAID (National Association for Information Destruction) AAA certification ensures:<br/>
+                    • <b>Security:</b> Secure transportation and destruction<br/>
+                    • <b>Accountability:</b> Complete chain of custody<br/>
+                    • <b>Compliance:</b> Meets legal requirements (HIPAA, FACTA, GLBA, SOX)<br/>
+                    • <b>Certification:</b> Certificate of Destruction issued
+                </p>
+                <p>
+                    <b>📋 To schedule a shredding service:</b>
+                </p>
+                <ol>
+                    <li>Click <b>New</b> button above</li>
+                    <li>Select <b>Customer</b> requesting destruction</li>
+                    <li>Choose <b>Service Type</b>:
+                        <ul>
+                            <li><b>On-Site Shredding:</b> Mobile shredding at customer location (most secure)</li>
+                            <li><b>Off-Site Shredding:</b> Transport to facility for destruction</li>
+                            <li><b>Drop-Off:</b> Customer brings materials to facility</li>
+                            <li><b>Scheduled Purge:</b> Recurring destruction service</li>
+                        </ul>
+                    </li>
+                    <li>Set <b>Service Date</b> and <b>Time Window</b></li>
+                    <li>Add <b>Documents/Containers</b> to be destroyed:
+                        <ul>
+                            <li>Select from inventory (recommended - ensures tracking)</li>
+                            <li>Or manually enter quantity and description</li>
+                            <li>Verify <b>retention period met</b></li>
+                            <li>Check <b>no legal holds</b> active</li>
+                        </ul>
+                    </li>
+                    <li>Choose <b>Destruction Method</b>:
+                        <ul>
+                            <li><b>Cross-Cut Shredding:</b> Standard (NAID P-4 level)</li>
+                            <li><b>Micro-Cut Shredding:</b> High security (NAID P-5 level)</li>
+                            <li><b>Pulverization:</b> Maximum security (NAID P-6 level)</li>
+                            <li><b>Incineration:</b> Complete destruction (NAID P-7 level)</li>
+                        </ul>
+                    </li>
+                    <li>Estimate <b>Total Weight</b> (used for billing and capacity planning)</li>
+                    <li>Set <b>Witness Required</b> (if customer wants to witness destruction)</li>
+                    <li>Configure <b>Pricing</b>:
+                        <ul>
+                            <li>Per pound rate</li>
+                            <li>Per container rate</li>
+                            <li>Flat fee service</li>
+                            <li>Certificate fee</li>
+                        </ul>
+                    </li>
+                    <li>Click <b>Schedule</b> to confirm booking</li>
+                </ol>
+                <p>
+                    <b>🔄 Shredding Workflow:</b><br/>
+                    <b>Draft</b> → Service being planned<br/>
+                    <b>Scheduled</b> → Date and time confirmed<br/>
+                    <b>Authorized</b> → Customer approval received<br/>
+                    <b>In Progress</b> → Destruction underway<br/>
+                    <b>Completed</b> → Destruction finished<br/>
+                    <b>Certified</b> → Certificate of Destruction issued<br/>
+                    <b>Invoiced</b> → Customer billed for service
+                </p>
+                <p>
+                    <b>📝 Required Documentation:</b><br/>
+                    • <b>Destruction Authorization:</b> Customer signature (electronic or physical)<br/>
+                    • <b>Chain of Custody Form:</b> Complete tracking log<br/>
+                    • <b>Inventory List:</b> All boxes/documents destroyed<br/>
+                    • <b>Certificate of Destruction:</b> NAID AAA compliant (keep permanently)<br/>
+                    • <b>Weight Ticket:</b> Actual weight destroyed (for billing)<br/>
+                    • <b>Photos/Video:</b> Optional proof of destruction<br/>
+                    • <b>Witness Statement:</b> If customer witnessed destruction
+                </p>
+                <p>
+                    <b>🎯 Compliance Requirements:</b><br/>
+                    • <b>HIPAA:</b> Medical records must be unreadable and unusable<br/>
+                    • <b>FACTA:</b> Consumer info must be destroyed to prevent identity theft<br/>
+                    • <b>GLBA:</b> Financial records require secure destruction<br/>
+                    • <b>SOX:</b> Corporate records destruction must be documented<br/>
+                    • <b>GDPR:</b> Personal data must be irreversibly destroyed<br/>
+                    • <b>State Laws:</b> Many states have additional requirements
+                </p>
+                <p>
+                    <b>💡 Quick Tips:</b><br/>
+                    • <b>Always verify retention dates</b> before scheduling<br/>
+                    • <b>Check legal holds DAILY</b> - litigation can happen anytime<br/>
+                    • Use <b>Scheduled Purges</b> for regular destruction cycles<br/>
+                    • Keep <b>Certificates of Destruction FOREVER</b> (never destroy these!)<br/>
+                    • <b>Photograph bins</b> before and after destruction<br/>
+                    • Link to <b>Destruction Certificate</b> record automatically<br/>
+                    • Send <b>Certificate to Customer</b> immediately after completion<br/>
+                    • Use <b>Baling Service</b> to compact shredded paper for recycling
+                </p>
             </field>
         </record>
     </data>
