@@ -201,7 +201,8 @@
 
 <!-- List view for Main -->
 
-    <menuitem id="menu_customer_portal_diagram" name="Portal Organization" parent="menu_records_management_root" action="action_customer_portal_diagram_admin" sequence="7" groups="records_management.group_records_manager"/>
+    <!-- Portal Organization moved to Configuration menu -->
+    <menuitem id="menu_customer_portal_diagram" name="Portal Organization" parent="menu_records_configuration" action="action_customer_portal_diagram_admin" sequence="65" groups="records_management.group_records_manager"/>
 
 
 <!-- List view for Submenu -->

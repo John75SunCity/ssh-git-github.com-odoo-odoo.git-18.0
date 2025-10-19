@@ -248,7 +248,8 @@
     <!-- Menu -->
 <!-- Updated parent from missing records_management.menu_records_root to existing menu_records_management_root -->
 
-    <menuitem id="naid_audit_menu" name="NAID Audits" parent="menu_records_management_root" sequence="30"/>
+    <!-- NAID Audits moved to Compliance & Reports menu -->
+    <menuitem id="naid_audit_menu" name="NAID Audits" parent="menu_records_compliance_reports" sequence="45"/>
 
     <menuitem id="naid_audit_requirement_menu" name="Audit Requirements" parent="naid_audit_menu" action="naid_audit_requirement_action" sequence="10"/>
     <menuitem id="naid_create_checklist_menu" name="Create Default Checklist" parent="naid_audit_menu" action="action_create_default_naid_checklist" sequence="5"/>

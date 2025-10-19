@@ -156,7 +156,8 @@
 
     
 
-    <menuitem id="menu_shredding_inventory_root" name="Shredding Inventory" parent="records_management.menu_records_management_root" sequence="35" />
+    <!-- Shredding Inventory moved to Inventory menu -->
+    <menuitem id="menu_shredding_inventory_root" name="Shredding Inventory" parent="menu_records_inventory" sequence="30" />
 
     <menuitem id="menu_shredding_inventory_items" name="Inventory Items" parent="menu_shredding_inventory_root" action="action_shredding_inventory_item" sequence="10" />
 

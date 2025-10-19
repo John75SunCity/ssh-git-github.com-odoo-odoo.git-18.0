@@ -71,7 +71,8 @@
         </field>
     </record>
 
-    <menuitem id="menu_records_category_root" name="Categories" parent="records_management.menu_records_management_root" action="action_records_category" sequence="30" />
+    <!-- Categories moved to Configuration > Master Data -->
+    <menuitem id="menu_records_category_root" name="Categories" parent="records_management.menu_records_master_data" action="action_records_category" sequence="40" />
 
     
     </data>

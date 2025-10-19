@@ -84,7 +84,8 @@ Manage customer feedback items. Use stages to track progress from New to Closed.
             </field>
         </record>
 
-    <menuitem id="customer_feedback_menu" name="Customer Feedback" parent="menu_records_management_root" action="customer_feedback_action" sequence="40" />
+    <!-- Customer Feedback duplicate removed - already in Operations via records_management_menus.xml -->
+    <!-- <menuitem id="customer_feedback_menu" name="Customer Feedback" parent="menu_records_management_root" action="customer_feedback_action" sequence="40" /> -->
 
 
     </data>

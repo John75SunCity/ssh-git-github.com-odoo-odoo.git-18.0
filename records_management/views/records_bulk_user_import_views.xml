@@ -61,7 +61,8 @@
             <field name="view_id" ref="records_bulk_user_import_view_tree" />
         </record>
     
-        <menuitem id="records_bulk_user_import_menu" name="Bulk User Import" parent="menu_records_management_root" action="records_bulk_user_import_action" groups="records_management.group_records_manager" sequence="50" />
+        <!-- Bulk User Import moved to Configuration menu -->
+        <menuitem id="records_bulk_user_import_menu" name="Bulk User Import" parent="menu_records_configuration" action="records_bulk_user_import_action" groups="records_management.group_records_manager" sequence="75" />
     
     
     </data>
