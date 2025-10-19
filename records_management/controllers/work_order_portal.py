@@ -142,7 +142,8 @@ class WorkOrderPortal(CustomerPortal):
 
         for model_name, type_label in work_order_models.items():
             try:
-                orders = request.env[model_name].search(domain, order=order)
+                # Use model's default _order instead of specifying field that may not exist in all models
+                orders = request.env[model_name].search(domain, order=order if order != 'scheduled_date desc' else False)
                 for order in orders:
                     all_work_orders.append({
                         'record': order,
@@ -260,7 +261,8 @@ class WorkOrderPortal(CustomerPortal):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
-        domain = [('partner_id', '=', partner.id), ('customer_visible', '=', True)]
+        # Domain: Only show coordinators for current customer
+        domain = [('partner_id', '=', partner.id)]
 
         # Date filters
         if date_begin and date_end:
