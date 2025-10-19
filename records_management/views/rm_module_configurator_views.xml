@@ -278,38 +278,41 @@ Inactive
             }</field>
 <field name="help" type="html">
     <p class="o_view_nocontent_smiling_face">
-<i class="fa fa-cog" title="Configuration Settings"/>
-Welcome to the Records Management Configurator!
-</p>
-<p>
-<b>
-    <i class="fa fa-bullseye" title="Target Configuration"/>
-Centralized Configuration Management:</b>
-<br/>
-                    •<i class="fa fa-wrench" title="Tools"/>
-<b>Feature Toggles:</b> Enable/disable optional functionality across the system<br/>
-                    •<i class="fa fa-paint-brush" title="Customization"/>
-<b>UI Customization:</b> Control field visibility and interface elements<br/>
-                    •<i class="fa fa-lock" title="Security"/>
-<b>Security Settings:</b> Configure access controls and permissions<br/>
-                    •<i class="fa fa-money" title="Financial"/>
-<b>Billing Options:</b> Manage financial and billing configurations<br/>
-                    •<i class="fa fa-mobile" title="Mobile Features"/>
-<b>Mobile Features:</b> Control mobile app and FSM functionality<br/>
-                    •<i class="fa fa-bar-chart" title="Analytics"/>
-<b>Reporting:</b> Configure analytics and report generation<br/>
-                    •<i class="fa fa-link" title="External Connections"/>
-<b>Integrations:</b> Manage external system connections<br/>
-                    •<i class="fa fa-balance-scale" title="Compliance"/>
-<b>Compliance:</b> NAID and regulatory compliance controls<br/>
-                    •<i class="fa fa-building" title="Organization"/>
-<b>Department-Specific:</b> Multi-tenant configuration management
-</p>
-<p>
-<i>
-    <i class="fa fa-rocket" title="Launch"/>
-This centralized configurator ensures consistent system behavior and provides granular control over all Records Management features.</i>
-</p>
+        <i class="fa fa-cog"/> Welcome to the Records Management Configurator!
+    </p>
+    <p>
+        <b>📋 First Time Setup - Essential Configurations:</b>
+    </p>
+    <ol>
+        <li><b>Enable Auto-Barcode Generation</b> - Find: "Auto-assign Storage Location" → Set to <i>True</i></li>
+        <li><b>Configure Billing Cycle</b> - Find: "Billing Configuration" → Set billing frequency</li>
+        <li><b>Enable NAID Audit Logging</b> - Find: "Enable NAID Compliance" → Set to <i>True</i></li>
+        <li><b>Portal Features</b> - Find: "Enable Customer Portal" → Set to <i>True</i></li>
+        <li><b>Advanced Search</b> - Find: "Enable Advanced Search" → Set to <i>True</i></li>
+    </ol>
+    <p>
+        <b>🎯 Configuration Categories:</b>
+    </p>
+    <ul>
+        <li><i class="fa fa-wrench"/> <b>Feature Toggles:</b> Enable/disable optional functionality across the system</li>
+        <li><i class="fa fa-paint-brush"/> <b>UI Customization:</b> Control field visibility and interface elements</li>
+        <li><i class="fa fa-lock"/> <b>Security Settings:</b> Configure access controls and permissions</li>
+        <li><i class="fa fa-money"/> <b>Billing Options:</b> Manage financial and billing configurations</li>
+        <li><i class="fa fa-mobile"/> <b>Mobile Features:</b> Control mobile app and FSM functionality</li>
+        <li><i class="fa fa-bar-chart"/> <b>Reporting:</b> Configure analytics and report generation</li>
+        <li><i class="fa fa-link"/> <b>Integrations:</b> Manage external system connections</li>
+        <li><i class="fa fa-balance-scale"/> <b>Compliance:</b> NAID and regulatory compliance controls</li>
+    </ul>
+    <p>
+        <b>💡 Tips:</b><br/>
+        • Use <b>Group by Category</b> filter to organize settings<br/>
+        • Toggle <b>Active</b> to show/hide inactive configurations<br/>
+        • Click <b>New</b> to create custom configuration parameters<br/>
+        • Changes take effect immediately - no restart required
+    </p>
+    <p>
+        <i class="fa fa-rocket"/> <i>This centralized configurator ensures consistent system behavior and provides granular control over all Records Management features.</i>
+    </p>
 </field>
 </record>
 

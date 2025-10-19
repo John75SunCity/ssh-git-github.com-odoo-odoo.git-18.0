@@ -12,20 +12,39 @@
         }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                Create your first storage container!
-    </p>
+                    <i class="fa fa-cube"/> No storage containers yet!
+                </p>
                 <p>
-                    <b>Enterprise Container Management:</b>
-                    <br />
-                • Visual kanban boards for container tracking<br />
-                • Automated barcode generation and printing<br />
-                • QR code generation for mobile scanning<br />
-                • Real-time location tracking with movement history<br />
-                • Document association and content management<br />
-                • Service request integration and workflows<br />
-                • Advanced analytics and reporting<br />
-                • Mobile-optimized for warehouse operations
-</p>
+                    <b>⚠️ Before creating containers, ensure you have configured:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Storage Locations</b> - Go to: <i>Configuration > Master Data > Storage Locations</i></li>
+                    <li>✓ <b>Container Types</b> - Go to: <i>Configuration > Products & Services > Service Products</i></li>
+                    <li>✓ <b>Customer & Department</b> - Go to: <i>Contacts > Create Company</i> (check "Is a Records Management Customer")</li>
+                    <li>✓ <b>Barcode Sequences</b> - Go to: <i>Configuration > Barcode Configuration</i> (auto-created on first use)</li>
+                </ul>
+                <p>
+                    <b>📋 To create your first container:</b>
+                </p>
+                <ol>
+                    <li>Click the <b>New</b> button above</li>
+                    <li>Select a <b>Customer</b> and <b>Department</b></li>
+                    <li>Choose a <b>Container Type</b> (e.g., "Bankers Box 15x12x10")</li>
+                    <li>Assign a <b>Storage Location</b> (e.g., "Warehouse A > Section A1 > Spot A1-001")</li>
+                    <li>Click <b>Save</b> - barcode will auto-generate</li>
+                    <li>Use <b>Generate QR Code</b> or <b>Generate Barcode</b> buttons to print labels</li>
+                </ol>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Visual kanban boards for container tracking<br/>
+                    • Automated barcode and QR code generation<br/>
+                    • Real-time location tracking with movement history<br/>
+                    • Document association and content management<br/>
+                    • Mobile-optimized for warehouse operations
+                </p>
+                <p>
+                    <b>💡 Quick Tip:</b> Use filters to view containers by status (Stored, Indexed, Retrieved, Destroyed)
+                </p>
             </field>
         </record>
         <record id="action_records_document" model="ir.actions.act_window">
@@ -38,15 +57,35 @@
         }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                Manage your document records!
-    </p>
+                    <i class="fa fa-file-text-o"/> No documents yet!
+                </p>
                 <p>
-                    <b>Document Management:</b>
-                    <br />
-                • Track document lifecycle and status<br />
-                • Associate documents with containers<br />
-                • Manage retention policies<br />
-                • Generate compliance reports<br />
+                    <b>⚠️ Before creating documents, ensure you have:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Storage Containers</b> created - Go to: <i>Operations > Containers</i></li>
+                    <li>✓ <b>Document Types</b> defined - Go to: <i>Configuration > Master Data > Document Types</i></li>
+                    <li>✓ <b>Retention Policies</b> (optional) - Go to: <i>Configuration > Master Data > Retention Policies</i></li>
+                </ul>
+                <p>
+                    <b>📋 To add your first document:</b>
+                </p>
+                <ol>
+                    <li>Click the <b>New</b> button above</li>
+                    <li>Enter a <b>Title</b> for the document</li>
+                    <li>Select the <b>Container</b> where this document is stored</li>
+                    <li>Choose a <b>Document Type</b> (e.g., "Legal", "Financial", "Medical")</li>
+                    <li>Add <b>Tags</b> for better organization (optional)</li>
+                    <li>Set a <b>Retention Policy</b> if applicable</li>
+                    <li>Upload the actual file using the <b>Attachment</b> field</li>
+                    <li>Click <b>Save</b></li>
+                </ol>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                • Track document lifecycle and status<br/>
+                • Associate documents with containers<br/>
+                • Manage retention policies and destruction dates<br/>
+                • Generate compliance reports<br/><br />
                 • Mobile document scanning
 </p>
             </field>
