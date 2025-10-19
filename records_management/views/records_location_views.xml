@@ -225,10 +225,10 @@
                 <p>
                     <b>Example hierarchy:</b><br/>
                     📦 Warehouse A<br/>
-                    &nbsp;&nbsp;&nbsp;└─ 📁 Section A1<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ 📍 Spot A1-001<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ 📍 Spot A1-002<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ 📍 Spot A1-003
+                    &#160;&#160;&#160;└─ 📁 Section A1<br/>
+                    &#160;&#160;&#160;&#160;&#160;&#160;├─ 📍 Spot A1-001<br/>
+                    &#160;&#160;&#160;&#160;&#160;&#160;├─ 📍 Spot A1-002<br/>
+                    &#160;&#160;&#160;&#160;&#160;&#160;└─ 📍 Spot A1-003
                 </p>
                 <p>
                     <b>🚀 Key Features:</b><br/>
