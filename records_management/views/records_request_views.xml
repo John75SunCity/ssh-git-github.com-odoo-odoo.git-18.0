@@ -84,7 +84,71 @@
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    Create a new records request.
+                    <i class="fa fa-inbox"/> No records requests yet!
+                </p>
+                <p>
+                    <b>⚠️ Prerequisites for records requests:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Request Types</b> configured - Go to: <i>Configuration &gt; Master Data &gt; Request Types</i></li>
+                    <li>✓ <b>Customer Setup</b> - Verify customer has valid contact information</li>
+                    <li>✓ <b>Documents/Containers</b> - Items must exist in the system to request</li>
+                    <li>✓ <b>Assigned Users</b> - Ensure team members are available to process requests</li>
+                </ul>
+                <p>
+                    <b>📋 Common Request Types:</b>
+                </p>
+                <ul>
+                    <li><b>Retrieval:</b> Customer needs temporary access to specific documents/containers</li>
+                    <li><b>Permanent Withdrawal:</b> Customer requests permanent return of items</li>
+                    <li><b>Destruction:</b> Customer authorizes destruction of retained items</li>
+                    <li><b>Inventory Report:</b> Customer requests list of stored items</li>
+                    <li><b>Service Request:</b> Additional services (scanning, indexing, etc.)</li>
+                </ul>
+                <p>
+                    <b>🎯 To create a records request:</b>
+                </p>
+                <ol>
+                    <li>Click the <b>New</b> button above</li>
+                    <li>Select <b>Request Type</b> (determines workflow and fields)</li>
+                    <li>Choose <b>Customer</b> and <b>Department</b></li>
+                    <li>Enter <b>Request Date</b> (when customer submitted)</li>
+                    <li>Set <b>Required Date</b> (customer's deadline/need-by date)</li>
+                    <li>Add <b>Requested Items</b>:
+                        <ul>
+                            <li>Link specific <b>Documents</b> or <b>Containers</b></li>
+                            <li>Or provide description if items not yet in system</li>
+                        </ul>
+                    </li>
+                    <li>Assign <b>Responsible User</b> (who will fulfill the request)</li>
+                    <li>Add <b>Notes</b> (special instructions, delivery details)</li>
+                    <li>Click <b>Submit</b> to activate the request</li>
+                    <li>Use <b>In Progress</b> when work begins</li>
+                    <li>Click <b>Complete</b> when customer need is fulfilled</li>
+                </ol>
+                <p>
+                    <b>📊 Request Lifecycle:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> Request being prepared, not yet submitted</li>
+                    <li><b>Submitted:</b> Request sent to processing queue</li>
+                    <li><b>In Progress:</b> Team member actively working on request</li>
+                    <li><b>Completed:</b> Request fulfilled, customer notified</li>
+                    <li><b>Cancelled:</b> Request withdrawn or no longer needed</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Automated workflow routing by request type<br/>
+                    • Priority levels (Low, Normal, High, Urgent)<br/>
+                    • Email notifications to customer and team<br/>
+                    • Service Level Agreement (SLA) tracking<br/>
+                    • Multi-item request support<br/>
+                    • Customer portal integration<br/>
+                    • Complete audit trail and history<br/>
+                    • Integration with FSM for field service tasks
+                </p>
+                <p>
+                    <b>💡 Pro Tip:</b> Use filters to view <i>My Requests</i> or <i>Urgent</i> items. Group by <i>Request Type</i> to organize your workload efficiently.
                 </p>
             </field>
         </record>
