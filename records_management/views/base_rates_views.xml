@@ -92,10 +92,61 @@
         <field name="context">{'search_default_active': 1, 'search_default_current': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first base rate!
+                <i class="fa fa-usd"/> No base rates defined yet!
             </p>
             <p>
-                Define base rates for storage, retrieval, destruction, and other services.
+                <b>⚠️ IMPORTANT:</b> Base rates are the foundation of your billing system. Set these up BEFORE creating billing configurations.
+            </p>
+            <p>
+                <b>📋 To create base rates:</b>
+            </p>
+            <ol>
+                <li>Click <b>New</b> button above</li>
+                <li>Enter <b>Rate Name</b> (e.g., "Standard Storage - Per Container")</li>
+                <li>Select <b>Service Type</b>:
+                    <ul>
+                        <li><b>Storage:</b> Monthly container storage fee</li>
+                        <li><b>Retrieval:</b> Document retrieval/delivery charge</li>
+                        <li><b>Destruction:</b> Shredding and certificate fee</li>
+                        <li><b>Pickup:</b> Pickup service charge</li>
+                        <li><b>Special Handling:</b> Climate control, oversized, etc.</li>
+                    </ul>
+                </li>
+                <li>Choose <b>Rate Type</b>:
+                    <ul>
+                        <li><b>Per Container:</b> $X.XX per box per month</li>
+                        <li><b>Per Cubic Foot:</b> $X.XX per cubic foot per month</li>
+                        <li><b>Per Item:</b> $X.XX per document/item</li>
+                        <li><b>Flat Fee:</b> One-time charge</li>
+                        <li><b>Hourly:</b> $X.XX per hour (labor)</li>
+                    </ul>
+                </li>
+                <li>Set <b>Rate Amount</b> (dollar value)</li>
+                <li>Set <b>Effective Date</b> (when rate becomes active)</li>
+                <li>Add <b>End Date</b> (optional - for rate changes)</li>
+                <li>Click <b>Save</b></li>
+            </ol>
+            <p>
+                <b>💰 Example Standard Rates:</b><br/>
+                • <b>Container Storage:</b> $0.50 per container per month<br/>
+                • <b>Document Retrieval:</b> $15.00 per retrieval request<br/>
+                • <b>On-Site Shredding:</b> $75.00 per hour<br/>
+                • <b>Destruction Certificate:</b> $25.00 per certificate<br/>
+                • <b>Pickup Service:</b> $50.00 per pickup trip
+            </p>
+            <p>
+                <b>🔄 Rate Management:</b><br/>
+                • Create <b>new rate</b> with future effective date for rate increases<br/>
+                • Old rates remain in system for historical billing<br/>
+                • Use <b>Filters</b> to see current vs. historical rates<br/>
+                • <b>Duplicate</b> existing rates to create new versions
+            </p>
+            <p>
+                <b>💡 Quick Tips:</b><br/>
+                • Set up ALL service types you'll bill for<br/>
+                • Use <b>Rate Codes</b> for easy reference (e.g., "STOR-STD", "RETR-DOC")<br/>
+                • Document your <b>Rate Calculation</b> in notes field<br/>
+                • Customer-specific rates go in <b>Billing Config</b>, not here
             </p>
         </field>
     </record>

@@ -331,10 +331,78 @@
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <span class="o_text_muted">Create your first retention policy!</span>
+                    <i class="fa fa-calendar-check-o"/> No retention policies defined yet!
                 </p>
                 <p>
-                    <span class="o_text_muted">Retention policies define how long documents should be kept and how they should be destroyed. Create policies for different document types and compliance requirements.</span>
+                    <b>⚠️ CRITICAL:</b> Retention policies define legal requirements for document storage and destruction. Consult legal counsel before creating policies.
+                </p>
+                <p>
+                    <b>⚖️ What are Retention Policies?</b><br/>
+                    Policies that define:<br/>
+                    • How long documents MUST be kept (legal requirements)<br/>
+                    • When documents CAN be destroyed (compliance dates)<br/>
+                    • How documents must be destroyed (method)<br/>
+                    • Who can approve destruction (authorization)<br/>
+                    • Audit trail requirements (NAID AAA compliance)
+                </p>
+                <p>
+                    <b>📋 To create a retention policy:</b>
+                </p>
+                <ol>
+                    <li>Click <b>New</b> button above</li>
+                    <li>Enter <b>Policy Name</b> (e.g., "Tax Records - 7 Years")</li>
+                    <li>Select <b>Document Types</b> this policy applies to</li>
+                    <li>Set <b>Retention Period</b>:
+                        <ul>
+                            <li><b>Duration:</b> Number of years/months</li>
+                            <li><b>Start Date:</b> When retention begins (received date, fiscal year end, etc.)</li>
+                        </ul>
+                    </li>
+                    <li>Choose <b>Destruction Method</b>:
+                        <ul>
+                            <li><b>On-Site Shredding:</b> Secure destruction at your facility</li>
+                            <li><b>Off-Site Shredding:</b> NAID certified facility destruction</li>
+                            <li><b>Pulverization:</b> Complete document destruction</li>
+                            <li><b>Incineration:</b> For high-security documents</li>
+                        </ul>
+                    </li>
+                    <li>Set <b>Legal Hold</b> (if documents cannot be destroyed due to litigation)</li>
+                    <li>Configure <b>Approval Requirements</b>:
+                        <ul>
+                            <li>Manager approval required?</li>
+                            <li>Legal department approval?</li>
+                            <li>Customer approval?</li>
+                        </ul>
+                    </li>
+                    <li>Enable <b>NAID Compliance</b> (destruction certificate required)</li>
+                    <li>Add <b>Regulatory References</b> (legal citations)</li>
+                    <li>Click <b>Activate</b> to enforce policy</li>
+                </ol>
+                <p>
+                    <b>📜 Common Retention Periods (US):</b><br/>
+                    • <b>Tax Records:</b> 7 years (IRS requirement)<br/>
+                    • <b>Employee Records:</b> 7 years after termination (FLSA)<br/>
+                    • <b>Medical Records:</b> 7-10 years (HIPAA)<br/>
+                    • <b>Contracts:</b> 7 years after expiration<br/>
+                    • <b>Legal Files:</b> Permanent (or per statute of limitations)<br/>
+                    • <b>Financial Statements:</b> 7 years (SOX)<br/>
+                    • <b>Payroll Records:</b> 3-7 years (varies by state)
+                </p>
+                <p>
+                    <b>🛡️ Compliance Considerations:</b><br/>
+                    • <b>NAID AAA:</b> Requires certified destruction and certificate<br/>
+                    • <b>HIPAA:</b> Minimum 6 years for medical records<br/>
+                    • <b>SOX:</b> 7 years for financial records<br/>
+                    • <b>GDPR:</b> "Right to be forgotten" after purpose fulfilled<br/>
+                    • <b>State Laws:</b> May have longer requirements than federal
+                </p>
+                <p>
+                    <b>💡 Quick Tips:</b><br/>
+                    • <b>Always verify</b> retention requirements with legal counsel<br/>
+                    • Use <b>Auto-Destruction Alerts</b> to notify when eligible<br/>
+                    • Enable <b>Legal Hold</b> immediately if litigation occurs<br/>
+                    • Keep <b>Destruction Certificates</b> permanently for audit trail<br/>
+                    • Review policies <b>annually</b> for regulatory changes
                 </p>
             </field>
         </record>

@@ -63,10 +63,40 @@
         <field name="search_view_id" ref="records_category_view_search" />
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first records category
+                <i class="fa fa-folder-open"/> No container categories yet!
             </p>
             <p>
-                Categories help organize your document types hierarchically.
+                <b>📁 What are Categories?</b><br/>
+                Categories organize your containers hierarchically for easier management and reporting.<br/>
+                Think of them as "container types" or "storage groups."
+            </p>
+            <p>
+                <b>📋 To create a category:</b>
+            </p>
+            <ol>
+                <li>Click <b>New</b> button above</li>
+                <li>Enter <b>Category Name</b> (e.g., "Standard Boxes", "Legal Files", "Medical Records")</li>
+                <li>Add a <b>Description</b> (optional but recommended)</li>
+                <li>Choose <b>Parent Category</b> (optional - for hierarchies):<br/>
+                    <small>Example hierarchy: Legal → Litigation → Case Files</small>
+                </li>
+                <li>Set <b>Color</b> (for visual identification in kanban view)</li>
+                <li>Click <b>Save</b></li>
+            </ol>
+            <p>
+                <b>📦 Common Category Examples:</b><br/>
+                • <b>By Industry:</b> Legal, Medical, Financial, Government, Retail<br/>
+                • <b>By Type:</b> Active Files, Archive, Permanent, Temporary<br/>
+                • <b>By Size:</b> Standard Boxes, Oversize, Document Boxes, File Boxes<br/>
+                • <b>By Security:</b> Public, Confidential, Highly Confidential<br/>
+                • <b>By Department:</b> HR, Accounting, Operations, Sales
+            </p>
+            <p>
+                <b>💡 Quick Tips:</b><br/>
+                • Use categories to <b>group by type</b> in list views<br/>
+                • Create <b>hierarchies</b> for complex organizational needs<br/>
+                • Assign categories to <b>document types</b> for auto-classification<br/>
+                • Use categories in <b>filters</b> and <b>reports</b> for analysis
             </p>
         </field>
     </record>
