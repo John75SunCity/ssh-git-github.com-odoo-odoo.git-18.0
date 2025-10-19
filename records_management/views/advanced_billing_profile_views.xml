@@ -98,7 +98,66 @@
             <field name="view_id" ref="advanced_billing_profile_view_tree" />
             <field name="search_view_id" ref="advanced_billing_profile_view_search" />
             <field name="context">{'search_default_filter_active': 1}</field>
-            <field name="help">Manage customer billing profiles</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-user-circle"/> No advanced billing profiles yet!
+                </p>
+                <p>
+                    <b>⚠️ PREREQUISITES - Set up these first:</b><br/>
+                    • <b>Base Rates:</b> Configuration → Billing → Base Rates<br/>
+                    • <b>Billing Config:</b> Configuration → Billing → Billing Config<br/>
+                    • <b>Customer:</b> Must have active Records Management customer
+                </p>
+                <p>
+                    <b>💼 What are Advanced Billing Profiles?</b><br/>
+                    Profiles allow you to create custom billing arrangements for specific customers with:<br/>
+                    • Volume-based discounts (tiered pricing)<br/>
+                    • Custom rate overrides (negotiated rates)<br/>
+                    • Special billing terms (extended payment periods)<br/>
+                    • Service bundles (combined service packages)<br/>
+                    • Minimum monthly charges
+                </p>
+                <p>
+                    <b>📋 To create an advanced billing profile:</b>
+                </p>
+                <ol>
+                    <li>Click <b>New</b> button above</li>
+                    <li>Enter <b>Profile Name</b> (e.g., "Enterprise Tier - XYZ Corp")</li>
+                    <li>Select <b>Customer</b> (linked to billing config)</li>
+                    <li>Choose <b>Profile Type</b>:
+                        <ul>
+                            <li><b>Tiered Pricing:</b> Different rates for volume brackets</li>
+                            <li><b>Custom Rates:</b> Negotiated flat rates per service</li>
+                            <li><b>Service Bundle:</b> Package of services at discount</li>
+                            <li><b>Minimum Charge:</b> Minimum monthly billing amount</li>
+                        </ul>
+                    </li>
+                    <li>Configure <b>Rate Tiers</b> (if tiered):
+                        <ul>
+                            <li>1-100 containers: $0.50/box</li>
+                            <li>101-500 containers: $0.45/box</li>
+                            <li>501+ containers: $0.40/box</li>
+                        </ul>
+                    </li>
+                    <li>Set <b>Discount Percentage</b> (if applicable)</li>
+                    <li>Add <b>Effective Date</b> and <b>Expiration Date</b> (optional)</li>
+                    <li>Click <b>Activate</b> to apply profile</li>
+                </ol>
+                <p>
+                    <b>🎯 Common Profile Examples:</b><br/>
+                    • <b>High-Volume Discount:</b> 10% off for 500+ containers<br/>
+                    • <b>Long-Term Contract:</b> 15% off for 3-year agreement<br/>
+                    • <b>Bundle Package:</b> Storage + Retrieval + Destruction at 20% off<br/>
+                    • <b>Minimum Monthly:</b> $500 minimum regardless of usage
+                </p>
+                <p>
+                    <b>💡 Quick Tips:</b><br/>
+                    • Profiles override base rates when active<br/>
+                    • Use <b>Templates</b> to copy profiles to similar customers<br/>
+                    • Set <b>Auto-Apply</b> to automatically use profile for all billing<br/>
+                    • Track profile usage in <b>Billing Analytics</b> dashboard
+                </p>
+            </field>
         </record>
     
         <menuitem id="advanced_billing_profile_menu" name="Billing Profiles" parent="records_management.menu_records_billing" action="advanced_billing_profile_action" sequence="21" />

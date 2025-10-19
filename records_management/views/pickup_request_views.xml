@@ -8,11 +8,97 @@
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-            Create your first record
-        </p>
+                    <i class="fa fa-truck"/> No pickup requests yet!
+                </p>
                 <p>
-            Schedule and manage document pickup services.
-        </p>
+                    <b>⚠️ PREREQUISITES - Configure these first:</b><br/>
+                    • <b>Customers:</b> Must have Records Management customers setup<br/>
+                    • <b>Locations:</b> Storage locations for delivery (if applicable)<br/>
+                    • <b>Container Types:</b> Define box types being picked up<br/>
+                    • <b>Service Items:</b> Pricing for pickup service (optional)
+                </p>
+                <p>
+                    <b>🚚 To create a pickup request:</b>
+                </p>
+                <ol>
+                    <li>Click <b>New</b> button above</li>
+                    <li>Select <b>Customer</b> (partner requesting pickup)</li>
+                    <li>Enter <b>Pickup Address</b>:
+                        <ul>
+                            <li>Use customer's address or enter custom location</li>
+                            <li>Include <b>floor, suite, contact person</b></li>
+                            <li>Add <b>special instructions</b> (loading dock, stairs, etc.)</li>
+                        </ul>
+                    </li>
+                    <li>Choose <b>Pickup Date</b> (requested date)</li>
+                    <li>Select <b>Time Window</b>:
+                        <ul>
+                            <li>Morning (8am-12pm)</li>
+                            <li>Afternoon (12pm-5pm)</li>
+                            <li>All Day (8am-5pm)</li>
+                            <li>Specific time (if offered)</li>
+                        </ul>
+                    </li>
+                    <li>Estimate <b>Number of Boxes</b> (helps plan truck capacity)</li>
+                    <li>Add <b>Container Details</b>:
+                        <ul>
+                            <li>Select <b>Container Type</b> (Standard, Legal, Archive, etc.)</li>
+                            <li>Enter quantity per type</li>
+                            <li>Add descriptions if mixed content</li>
+                        </ul>
+                    </li>
+                    <li>Set <b>Delivery Location</b> (your storage facility)</li>
+                    <li>Choose <b>Service Type</b>:
+                        <ul>
+                            <li><b>Standard Pickup:</b> Regular service during business hours</li>
+                            <li><b>Rush Pickup:</b> Same-day or next-day service (premium)</li>
+                            <li><b>Scheduled Pickup:</b> Recurring pickup schedule</li>
+                            <li><b>Large Volume:</b> Requires special truck/crew</li>
+                        </ul>
+                    </li>
+                    <li>Add <b>Special Requirements</b>:
+                        <ul>
+                            <li>☑ Climate-controlled transport</li>
+                            <li>☑ Chain of custody documentation</li>
+                            <li>☑ Certified destruction on-site</li>
+                            <li>☑ Packing materials needed</li>
+                        </ul>
+                    </li>
+                    <li>Click <b>Save</b>, then <b>Confirm</b> to schedule</li>
+                </ol>
+                <p>
+                    <b>🔄 Pickup Workflow:</b><br/>
+                    <b>Draft</b> → Customer submits request<br/>
+                    <b>Confirmed</b> → Scheduled on route<br/>
+                    <b>Assigned</b> → Driver/crew assigned<br/>
+                    <b>In Transit</b> → Pickup in progress<br/>
+                    <b>Delivered</b> → Boxes received at facility<br/>
+                    <b>Processed</b> → Containers entered into inventory
+                </p>
+                <p>
+                    <b>📍 Route Planning Features:</b><br/>
+                    • <b>Group by Geography:</b> Optimize routes by zip code/area<br/>
+                    • <b>Assign to Pickup Route:</b> Add to existing route<br/>
+                    • <b>Fleet Integration:</b> Track vehicle and driver<br/>
+                    • <b>Time Estimates:</b> Calculate travel and loading time
+                </p>
+                <p>
+                    <b>📝 Documentation Required:</b><br/>
+                    • <b>Pickup Receipt:</b> Customer signature on collection<br/>
+                    • <b>Chain of Custody:</b> Unbroken tracking from pickup to storage<br/>
+                    • <b>Box Inventory:</b> List of all boxes collected<br/>
+                    • <b>Photos:</b> Document condition and quantity<br/>
+                    • <b>Destruction Authorization:</b> If immediate shredding requested
+                </p>
+                <p>
+                    <b>💡 Quick Tips:</b><br/>
+                    • <b>Request 48 hours advance notice</b> for best scheduling<br/>
+                    • Use <b>Recurring Pickups</b> for regular customers<br/>
+                    • <b>Send Confirmation Email</b> to customer automatically<br/>
+                    • <b>SMS Reminders</b> to customer day before pickup<br/>
+                    • Track <b>Completion Time</b> for route optimization<br/>
+                    • Link to <b>Sales Order</b> for billing pickup fees
+                </p>
             </field>
         </record>
     </data>
