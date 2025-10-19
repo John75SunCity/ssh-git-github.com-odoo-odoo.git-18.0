@@ -80,9 +80,9 @@
         <menuitem id="menu_stock_lots" name="Serial Numbers" parent="menu_records_operations" action="action_stock_lot" sequence="50" groups="records_management.group_records_user" />
         <menuitem id="menu_work_order_coordinators" name="Work Order Coordinators" parent="menu_records_operations" action="action_work_order_coordinator" sequence="55" groups="records_management.group_records_user" />
         <menuitem id="menu_workflow_visualizations" name="Workflow Visualizations" parent="menu_records_operations" action="action_workflow_visualization_manager" sequence="60" groups="records_management.group_records_manager" />
-        <menuitem id="menu_records_portal" name="Customer Portal" parent="menu_records_management_root" sequence="15" groups="records_management.group_records_user" />
-        <menuitem id="menu_portal_requests" name="Portal Requests" parent="menu_records_portal" action="action_portal_request" sequence="10" groups="records_management.group_records_user" />
-        <menuitem id="menu_customer_feedback" name="Customer Feedback" parent="menu_records_portal" action="customer_feedback_action" sequence="20" groups="records_management.group_records_user" />
+        <!-- Customer Portal menu items now nested under Operations -->
+        <menuitem id="menu_portal_requests" name="Portal Requests" parent="menu_records_operations" action="action_portal_request" sequence="65" groups="records_management.group_records_user" />
+        <menuitem id="menu_customer_feedback" name="Customer Feedback" parent="menu_records_operations" action="customer_feedback_action" sequence="70" groups="records_management.group_records_user" />
         <record id="action_feedback_responses" model="ir.actions.act_window">
             <field name="name">Portal Feedback</field>
             <field name="res_model">portal.feedback</field>
@@ -95,10 +95,11 @@
                 <p>Customer feedback submitted through the portal will appear here.</p>
             </field>
         </record>
-        <menuitem id="menu_portal_feedback" name="Portal Feedback" parent="menu_records_portal" action="action_feedback_responses" sequence="30" groups="records_management.group_records_manager" />
+        <menuitem id="menu_portal_feedback" name="Portal Feedback" parent="menu_records_operations" action="action_feedback_responses" sequence="75" groups="records_management.group_records_manager" />
         <menuitem id="menu_feedback_analytics" name="Feedback Analytics" parent="menu_portal_feedback" action="action_feedback_analytics" sequence="10" groups="records_management.group_records_manager" />
-        <menuitem id="menu_records_inventory" name="Inventory" parent="menu_records_management_root" sequence="20" groups="records_management.group_records_user" />
-        <menuitem id="menu_records_management_documents" name="Documents" parent="menu_records_management_root" sequence="22" groups="records_management.group_records_user" />
+        <!-- Duplicate menu_records_inventory removed - already defined in root menus -->
+        <!-- Documents menu nested under Inventory instead of top-level -->
+        <menuitem id="menu_records_management_documents" name="Documents" parent="menu_records_inventory" sequence="5" groups="records_management.group_records_user" />
         <menuitem id="menu_records_digital_scan" name="Digital Scans" parent="menu_records_management_documents" action="action_records_digital_scan" sequence="10" groups="records_management.group_records_user" />
             <!-- Customer Inventory Menu -->
     <menuitem id="menu_customer_inventory"
@@ -106,19 +107,19 @@
               parent="menu_records_inventory"
               action="action_customer_inventory"
               sequence="10"/>
-    <menuitem id="menu_inventory_documents" name="Inventory Documents" parent="menu_records_inventory" action="action_inventory_item" sequence="15" groups="records_management.group_records_user" />
+        <menuitem id="menu_inventory_documents" name="Inventory Documents" parent="menu_records_inventory" action="action_inventory_item" sequence="15" groups="records_management.group_records_user" />
         <!-- Retention Policy Menu is defined in records_retention_policy_views.xml -->
-        <menuitem id="menu_records_compliance" name="NAID Compliance" parent="menu_records_management_root" sequence="25" groups="records_management.group_records_user" />
-        <menuitem id="menu_naid_compliance" name="Compliance Records" parent="menu_records_compliance" action="action_naid_compliance" sequence="10" groups="records_management.group_records_user" />
+        <!-- Duplicate menu_records_compliance removed - using menu_records_compliance_reports from root menus -->
+        <menuitem id="menu_naid_compliance" name="Compliance Records" parent="menu_records_compliance_reports" action="action_naid_compliance" sequence="20" groups="records_management.group_records_user" />
             <!-- Destruction Certificate Menu - MOVED TO COMPLIANCE -->
     <menuitem id="menu_destruction_certificate"
               name="Destruction Certificates"
               parent="menu_records_compliance_reports"
               action="action_destruction_certificate"
               sequence="10"/>
-        <menuitem id="menu_naid_audit_logs" name="Audit Logs" parent="menu_records_compliance" action="action_naid_audit_log" sequence="30" groups="records_management.group_records_manager" />
-        <menuitem id="menu_chain_custody" name="Chain of Custody" parent="menu_records_compliance" action="action_chain_of_custody" sequence="40" groups="records_management.group_records_user" />
-        <menuitem id="menu_records_billing" name="Billing &amp; Finance" parent="menu_records_management_root" sequence="30" groups="records_management.group_records_manager" />
+        <menuitem id="menu_naid_audit_logs" name="Audit Logs" parent="menu_records_compliance_reports" action="action_naid_audit_log" sequence="30" groups="records_management.group_records_manager" />
+        <menuitem id="menu_chain_custody" name="Chain of Custody" parent="menu_records_compliance_reports" action="action_chain_of_custody" sequence="40" groups="records_management.group_records_user" />
+        <!-- Duplicate menu_records_billing removed - already defined in root menus -->
             <!-- Billing Configuration Menu - MOVED TO BILLING & FINANCE -->
     <menuitem id="menu_billing_config"
               name="Billing Configuration"
@@ -127,12 +128,12 @@
         <menuitem id="menu_advanced_billing" name="Advanced Billing" parent="menu_records_billing" action="advanced_billing_profile_action" sequence="20" groups="records_management.group_records_manager" />
         <menuitem id="menu_base_rates" name="Base Rates" parent="menu_records_billing" action="action_base_rates" sequence="30" groups="records_management.group_records_manager" />
     <menuitem id="menu_customer_rates" name="Customer Rates" parent="menu_records_billing" action="action_customer_negotiated_rate" sequence="40" groups="records_management.group_records_manager" />
-        <menuitem id="menu_records_reporting" name="Reports" parent="menu_records_management_root" sequence="40" groups="records_management.group_records_user" />
-        <menuitem id="menu_reports" name="Reporting Hub" parent="menu_records_reporting" sequence="41" groups="records_management.group_records_user" />
-        <menuitem id="menu_records_reports" name="Storage Reports" parent="menu_records_reporting" action="action_storage_reports" sequence="10" groups="records_management.group_records_user" />
-    <menuitem id="menu_inventory_reports" name="Inventory Reports" parent="menu_records_reporting" action="customer_inventory_report_action" sequence="20" groups="records_management.group_records_user" />
-        <menuitem id="menu_compliance_reports" name="Compliance Reports" parent="menu_records_reporting" action="action_compliance_reports" sequence="30" groups="records_management.group_records_manager" />
-        <menuitem id="menu_revenue_forecaster" name="Revenue Forecasting" parent="menu_records_reporting" action="action_revenue_forecaster" sequence="40" groups="records_management.group_records_manager" />
+        <!-- Duplicate menu_records_reporting removed - using menu_records_compliance_reports from root menus -->
+        <menuitem id="menu_reports" name="Reporting Hub" parent="menu_records_compliance_reports" sequence="5" groups="records_management.group_records_user" />
+        <menuitem id="menu_records_reports" name="Storage Reports" parent="menu_records_compliance_reports" action="action_storage_reports" sequence="10" groups="records_management.group_records_user" />
+    <menuitem id="menu_inventory_reports" name="Inventory Reports" parent="menu_records_compliance_reports" action="customer_inventory_report_action" sequence="20" groups="records_management.group_records_user" />
+        <menuitem id="menu_compliance_reports" name="Compliance Reports" parent="menu_records_compliance_reports" action="action_compliance_reports" sequence="30" groups="records_management.group_records_manager" />
+        <menuitem id="menu_revenue_forecaster" name="Revenue Forecasting" parent="menu_records_compliance_reports" action="action_revenue_forecaster" sequence="50" groups="records_management.group_records_manager" />
         <!-- Configuration menu is defined in records_management_root_menus.xml -->
         <menuitem id="menu_records_master_data" name="Master Data" parent="menu_records_configuration" sequence="10" groups="records_management.group_records_manager" />
         <menuitem id="menu_records_location" name="Storage Locations" parent="menu_records_master_data" action="action_records_location" sequence="10" groups="records_management.group_records_manager" />
