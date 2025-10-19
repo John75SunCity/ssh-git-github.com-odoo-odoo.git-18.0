@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
+
 <!-- List view for Department -->
 
 <!-- List view for Menu -->
 
-<menuitem id="menu_department_billing_contacts" 
-            name="Department Billing Contacts" 
-            parent="menu_records_configuration"
-            action="advanced_billing_contact_action"
-            sequence="26"
-            groups="records_management.group_records_manager"/>
+    <!-- Departmental Billing Contacts Menu -->
+    <menuitem id="menu_records_department_billing_contact"
+              name="Billing Contacts"
+              parent="menu_records_billing_finance"
+              action="action_records_department_billing_contact"
+              sequence="10"/>
 
     
     </data>

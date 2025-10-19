@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
+
 <!-- List view for Portal -->
 
 <!-- List view for Main -->
 
-<menuitem id="menu_portal_feedback" 
-            name="Portal Feedback" 
-            parent="menu_records_management_root" 
-            action="action_feedback_responses"
-            sequence="60"
-            groups="records_management.group_records_manager"/>
+    <!-- Portal Feedback Menu (Under Compliance & Reports) -->
+    <menuitem id="menu_portal_feedback_root"
+              name="Portal Feedback"
+              parent="menu_records_compliance_reports"
+              sequence="30"/>
 
 
 <!-- List view for Analytics -->

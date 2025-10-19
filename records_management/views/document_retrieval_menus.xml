@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
+
 <!-- List view for Document -->
 
     <!-- List view for Work -->
 
-    <menuitem id="menu_document_retrieval_work_orders" name="Document Retrieval Orders" parent="menu_records_operations" action="action_records_retrieval_order" sequence="15" groups="records_management.group_records_user"/>
+        <!-- Document Retrieval Menu -->
+    <menuitem id="menu_document_retrieval"
+              name="Document Retrieval"
+              parent="menu_records_operations"
+              sequence="80"/>
 
 
     <!-- List view for Rates -->
