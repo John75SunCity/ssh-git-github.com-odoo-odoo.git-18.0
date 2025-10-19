@@ -45,9 +45,65 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Records Container Type.
-        </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-cube"/> No container types defined yet!
+                </p>
+                <p>
+                    <b>📦 What are Container Types?</b><br/>
+                    Container types define the physical boxes/containers used for document storage.<br/>
+                    Each type has specific dimensions, capacity, and billing rates.
+                </p>
+                <p>
+                    <b>📋 To create a container type:</b>
+                </p>
+                <ol>
+                    <li>Click <b>New</b> button above</li>
+                    <li>Enter <b>Type Name</b> (e.g., "Standard Letter Box", "Legal File Box", "Archive Box")</li>
+                    <li>Add <b>Type Code</b> (e.g., "STD-LTR", "LGL-BOX", "ARCH-01")</li>
+                    <li>Set <b>Physical Dimensions</b>:
+                        <ul>
+                            <li><b>Length:</b> inches (e.g., 15")</li>
+                            <li><b>Width:</b> inches (e.g., 12")</li>
+                            <li><b>Height:</b> inches (e.g., 10")</li>
+                            <li><b>System calculates:</b> Cubic feet automatically</li>
+                        </ul>
+                    </li>
+                    <li>Enter <b>Max Weight</b> (pounds - for handling safety)</li>
+                    <li>Set <b>Default Storage Rate</b> (monthly charge per box)</li>
+                    <li>Choose <b>Barcode Format</b> (if using barcode labels)</li>
+                    <li>Add <b>Description/Notes</b> (handling instructions, special requirements)</li>
+                    <li>Click <b>Save</b> and <b>Activate</b></li>
+                </ol>
+                <p>
+                    <b>📏 Standard Industry Container Types:</b><br/>
+                    • <b>Letter/Legal Box:</b> 15" × 12" × 10" (1.04 cu ft) - Most common<br/>
+                    • <b>Archive Box:</b> 18" × 14" × 12" (1.75 cu ft) - High volume<br/>
+                    • <b>File Storage Box:</b> 12" × 15" × 10" (1.04 cu ft) - Standard files<br/>
+                    • <b>Oversize Box:</b> 24" × 16" × 12" (2.67 cu ft) - Large documents<br/>
+                    • <b>Banker's Box:</b> 12" × 10" × 15" (1.04 cu ft) - Vertical files
+                </p>
+                <p>
+                    <b>💰 Billing Considerations:</b><br/>
+                    • Rates typically charged <b>per container per month</b><br/>
+                    • Some customers prefer <b>per cubic foot</b> pricing<br/>
+                    • Set default rate in container type, override in billing config<br/>
+                    • Track <b>actual dimensions</b> vs. <b>billed dimensions</b> separately
+                </p>
+                <p>
+                    <b>🏷️ Barcode Integration:</b><br/>
+                    • Enable <b>Auto-Generate Barcodes</b> in RM Module Configurator<br/>
+                    • Choose barcode format: <b>Code 128</b> (most common), <b>QR Code</b>, or <b>EAN-13</b><br/>
+                    • Configure <b>Sequence</b> in Configuration → Technical → Sequences<br/>
+                    • Print labels directly from container form view
+                </p>
+                <p>
+                    <b>💡 Quick Tips:</b><br/>
+                    • Start with <b>2-3 standard types</b>, add specialized types as needed<br/>
+                    • Use <b>Type Codes</b> that match your physical label system<br/>
+                    • Set <b>realistic max weights</b> for employee safety<br/>
+                    • Create separate types for <b>special handling</b> (climate control, fireproof, etc.)<br/>
+                    • Link container types to <b>document types</b> for auto-suggestions
+                </p>
             </field>
         </record>
     </data>

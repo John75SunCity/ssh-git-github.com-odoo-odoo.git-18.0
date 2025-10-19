@@ -108,7 +108,49 @@
             <field name="view_id" ref="records_billing_view_tree" />
             <field name="search_view_id" ref="records_billing_view_search" />
             <field name="context">{'search_default_filter_draft': 1}</field>
-            <field name="help">Manage billing records for the Records Management system</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-money"/> No billing records yet!
+                </p>
+                <p>
+                    <b>⚠️ PREREQUISITES - Configure these first:</b><br/>
+                    • <b>Customers:</b> Contacts → Customers (mark "Is a Records Management Customer")<br/>
+                    • <b>Base Rates:</b> Configuration → Billing → Base Rates<br/>
+                    • <b>Billing Config:</b> Configuration → Billing → Billing Config<br/>
+                    • <b>Containers/Services:</b> Must have active containers or services to bill
+                </p>
+                <p>
+                    <b>📋 To create a billing record (invoice):</b>
+                </p>
+                <ol>
+                    <li>Click <b>New</b> button above</li>
+                    <li>Select <b>Customer</b> (must have billing config setup)</li>
+                    <li>Choose <b>Billing Period</b> (monthly, quarterly, etc.)</li>
+                    <li>Set <b>Billing Date</b> (invoice date)</li>
+                    <li><b>Add Billing Lines:</b>
+                        <ul>
+                            <li>Storage charges (container count × rate)</li>
+                            <li>Retrieval fees (per request)</li>
+                            <li>Destruction services</li>
+                            <li>Special services (pickup, delivery)</li>
+                        </ul>
+                    </li>
+                    <li>Review <b>Total Amount</b> (auto-calculated)</li>
+                    <li>Click <b>Confirm</b> to lock billing record</li>
+                    <li>Click <b>Create Invoice</b> to generate accounting invoice</li>
+                </ol>
+                <p>
+                    <b>🔄 Billing Workflow:</b><br/>
+                    <b>Draft</b> → Add/edit lines → <b>Confirm</b> → Generate invoice → <b>Invoiced</b> → Collect payment → <b>Paid</b>
+                </p>
+                <p>
+                    <b>💡 Quick Tips:</b><br/>
+                    • Use <b>Filters</b> to find draft/unpaid invoices<br/>
+                    • <b>Group by Customer</b> to see all customer billing<br/>
+                    • Set up <b>Automatic Billing</b> in customer billing config<br/>
+                    • Use <b>Billing Run</b> wizard to generate multiple invoices at once
+                </p>
+            </field>
         </record>
     
         <menuitem id="records_billing_menu" name="Billing Records" parent="records_management.menu_records_billing" action="records_billing_action" sequence="10" />

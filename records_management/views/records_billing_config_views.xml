@@ -51,10 +51,58 @@
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Records Billing Config.
-        </p>
-    </field>
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fa fa-cogs"/> No billing configurations yet!
+            </p>
+            <p>
+                <b>⚠️ PREREQUISITES - Set up these first:</b><br/>
+                • <b>Base Rates:</b> Configuration → Billing → Base Rates<br/>
+                • <b>Customers:</b> Must have at least one Records Management customer<br/>
+                • <b>Billing Day:</b> Decide monthly billing cycle (1-28th of month)
+            </p>
+            <p>
+                <b>📋 To create a billing configuration:</b>
+            </p>
+            <ol>
+                <li>Click <b>New</b> button above</li>
+                <li>Select <b>Customer</b> (partner)</li>
+                <li>Choose <b>Billing Model</b>:
+                    <ul>
+                        <li><b>Per Container:</b> Charge per storage box (most common)</li>
+                        <li><b>Per Cubic Foot:</b> Charge by volume occupied</li>
+                        <li><b>Flat Rate:</b> Fixed monthly fee regardless of quantity</li>
+                        <li><b>Tiered:</b> Different rates for different volume brackets</li>
+                    </ul>
+                </li>
+                <li>Set <b>Billing Cycle</b>:
+                    <ul>
+                        <li>Monthly (most common)</li>
+                        <li>Quarterly</li>
+                        <li>Annually</li>
+                        <li>On-Demand</li>
+                    </ul>
+                </li>
+                <li>Configure <b>Billing Day</b> (e.g., "15" for 15th of each month)</li>
+                <li>Set <b>Payment Terms</b> (Net 30, Net 15, Due on Receipt, etc.)</li>
+                <li>Add <b>Rate Overrides</b> (if customer has negotiated rates)</li>
+                <li>Enable <b>Auto-Generate Invoices</b> (optional - recommended)</li>
+                <li>Click <b>Save</b> and <b>Activate</b></li>
+            </ol>
+            <p>
+                <b>🎯 Common Configurations:</b><br/>
+                • <b>Standard Storage:</b> Per container + Monthly + Net 30 terms<br/>
+                • <b>High-Volume:</b> Tiered rates + Monthly + Net 15 terms<br/>
+                • <b>Government:</b> Per cubic foot + Quarterly + Net 60 terms<br/>
+                • <b>Small Business:</b> Flat rate + Monthly + Due on receipt
+            </p>
+            <p>
+                <b>💡 Quick Tips:</b><br/>
+                • One config per customer (or per customer location)<br/>
+                • Use <b>Templates</b> to duplicate configs for similar customers<br/>
+                • Set up <b>Email Notifications</b> for invoice generation<br/>
+                • Review <b>Billing History</b> tab to track all invoices
+            </p>
+        </field>
     </record>
 
 <!-- List view for ENTERPRISE -->

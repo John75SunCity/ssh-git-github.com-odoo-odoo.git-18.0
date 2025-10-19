@@ -257,17 +257,46 @@
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-building" title="Department" /> Create your first customer department!
-            </p>
+                    <i class="fa fa-building"/> No departments yet!
+                </p>
                 <p>
-                    <b>Department Management:</b>
-                    <br />
-                • <i class="fa fa-users" title="Users" /> Organize customer departments with user access control<br />
-                • <i class="fa fa-box" title="Containers" /> Track containers and documents by department<br />
-                • <i class="fa fa-money" title="Billing" /> Manage billing contacts and approval workflows<br />
-                • <i class="fa fa-bar-chart" title="Analytics" /> Monitor department activity and analytics<br />
-                • <i class="fa fa-unlock" title="Access Control" /> Control access with granular permissions
-            </p>
+                    <b>⚠️ PREREQUISITE:</b> Departments require a <b>Customer Company</b> record first.
+                </p>
+                <p>
+                    <b>📋 To create a department:</b>
+                </p>
+                <ol>
+                    <li><b>First, ensure you have a customer:</b>
+                        <ul>
+                            <li>Go to: <i>Contacts > Create</i></li>
+                            <li>Check ☑ <b>Is a Company</b></li>
+                            <li>Check ☑ <b>Customer</b></li>
+                            <li>Check ☑ <b>Is a Records Management Customer</b></li>
+                            <li>Save the customer record</li>
+                        </ul>
+                    </li>
+                    <li><b>Then create the department:</b>
+                        <ul>
+                            <li>Click <b>New</b> button above</li>
+                            <li>Enter <b>Department Name</b> (e.g., "Legal Department", "HR Department")</li>
+                            <li>Select the <b>Customer</b> company</li>
+                            <li>Optionally add <b>Department Users</b> for access control</li>
+                            <li>Set a <b>Billing Contact</b> if different from main contact</li>
+                            <li>Click <b>Save</b></li>
+                        </ul>
+                    </li>
+                </ol>
+                <p>
+                    <b>🚀 Why departments matter:</b><br/>
+                    • <b>Organization:</b> Separate containers and documents by business unit<br/>
+                    • <b>Access Control:</b> Granular permissions per department<br/>
+                    • <b>Billing:</b> Track costs and invoicing by department<br/>
+                    • <b>Compliance:</b> Department-specific retention and destruction rules<br/>
+                    • <b>Portal Access:</b> Department users see only their records
+                </p>
+                <p>
+                    <b>💡 Example:</b> Acme Corp might have "Legal Dept", "Finance Dept", and "HR Dept" as separate departments.
+                </p>
             </field>
         </record>
     </data>

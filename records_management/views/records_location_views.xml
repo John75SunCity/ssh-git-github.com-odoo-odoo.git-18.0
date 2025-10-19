@@ -188,36 +188,55 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    Create your first storage location!
+                    <i class="fa fa-map-marker"/> No storage locations yet!
                 </p>
                 <p>
-                    <b>
-                        <i class="fa fa-building" aria-hidden="true" />
-                        Enterprise Storage Management:
-                    </b>
+                    <b>⚠️ IMPORTANT:</b> Storage locations are <b>REQUIRED</b> before creating containers.
                 </p>
-                <ul>
-                    <li>
-                        <i class="fa fa-cube" aria-hidden="true" />
-                        Track box locations with visual kanban boards
+                <p>
+                    <b>📋 Creating a hierarchical location structure:</b>
+                </p>
+                <ol>
+                    <li>Click <b>New</b> to create a <b>top-level location</b> (e.g., "Warehouse A")
+                        <ul>
+                            <li>Enter a name (e.g., "Warehouse A")</li>
+                            <li>Leave <b>Parent Location</b> empty</li>
+                            <li>Set <b>Location Type</b> to "Warehouse"</li>
+                            <li>Enter <b>Max Capacity</b> (optional)</li>
+                        </ul>
                     </li>
-                    <li>
-                        <i class="fa fa-bar-chart" aria-hidden="true" />
-                        Monitor capacity utilization in real-time
+                    <li>Create <b>sub-locations</b> (e.g., "Section A1")
+                        <ul>
+                            <li>Click <b>New</b> again</li>
+                            <li>Enter name "Section A1"</li>
+                            <li>Set <b>Parent Location</b> to "Warehouse A"</li>
+                            <li>Set <b>Location Type</b> to "Section"</li>
+                        </ul>
                     </li>
-                    <li>
-                        <i class="fa fa-search" aria-hidden="true" />
-                        Smart search with advanced filters
+                    <li>Create <b>storage spots</b> (e.g., "Spot A1-001")
+                        <ul>
+                            <li>Click <b>New</b> once more</li>
+                            <li>Enter name "Spot A1-001"</li>
+                            <li>Set <b>Parent Location</b> to "Section A1"</li>
+                            <li>Set <b>Location Type</b> to "Storage Spot"</li>
+                        </ul>
                     </li>
-                    <li>
-                        <i class="fa fa-sitemap" aria-hidden="true" />
-                        Hierarchical location organization
-                    </li>
-                    <li>
-                        <i class="fa fa-mobile" aria-hidden="true" />
-                        Mobile-optimized for facility operations
-                    </li>
-                </ul>
+                </ol>
+                <p>
+                    <b>Example hierarchy:</b><br/>
+                    📦 Warehouse A<br/>
+                    &nbsp;&nbsp;&nbsp;└─ 📁 Section A1<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ 📍 Spot A1-001<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├─ 📍 Spot A1-002<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ 📍 Spot A1-003
+                </p>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Hierarchical location organization<br/>
+                    • Real-time capacity tracking<br/>
+                    • Visual kanban boards<br/>
+                    • Mobile-optimized for facility operations
+                </p>
             </field>
         </record>
         <!-- Technical tree view to satisfy default tree view resolution in x2many and tests -->
