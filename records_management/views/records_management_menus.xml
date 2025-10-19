@@ -110,7 +110,7 @@
         <!-- Retention Policy Menu -->
     <menuitem id="menu_retention_policy"
               name="Retention Policies"
-              parent="menu_records_management_config"
+              parent="menu_records_configuration"
               action="action_retention_policy"
               sequence="20"/>
         <menuitem id="menu_records_compliance" name="NAID Compliance" parent="menu_records_management_root" sequence="25" groups="records_management.group_records_user" />
@@ -127,7 +127,7 @@
             <!-- Billing Configuration Menu - MOVED TO BILLING & FINANCE -->
     <menuitem id="menu_billing_config"
               name="Billing Configuration"
-              parent="menu_records_billing_finance"
+              parent="menu_records_billing"
               sequence="30"/>
         <menuitem id="menu_advanced_billing" name="Advanced Billing" parent="menu_records_billing" action="advanced_billing_profile_action" sequence="20" groups="records_management.group_records_manager" />
         <menuitem id="menu_base_rates" name="Base Rates" parent="menu_records_billing" action="action_base_rates" sequence="30" groups="records_management.group_records_manager" />
@@ -138,20 +138,20 @@
     <menuitem id="menu_inventory_reports" name="Inventory Reports" parent="menu_records_reporting" action="customer_inventory_report_action" sequence="20" groups="records_management.group_records_user" />
         <menuitem id="menu_compliance_reports" name="Compliance Reports" parent="menu_records_reporting" action="action_compliance_reports" sequence="30" groups="records_management.group_records_manager" />
         <menuitem id="menu_revenue_forecaster" name="Revenue Forecasting" parent="menu_records_reporting" action="action_revenue_forecaster" sequence="40" groups="records_management.group_records_manager" />
-        <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="90" groups="records_management.group_records_manager" />
+        <!-- Configuration menu is defined in records_management_root_menus.xml -->
         <menuitem id="menu_records_master_data" name="Master Data" parent="menu_records_configuration" sequence="10" groups="records_management.group_records_manager" />
         <menuitem id="menu_records_location" name="Storage Locations" parent="menu_records_master_data" action="action_records_location" sequence="10" groups="records_management.group_records_manager" />
             <!-- Document Types Menu -->
     <menuitem id="menu_records_document_type"
               name="Document Types"
-              parent="menu_records_management_config"
+              parent="menu_records_configuration"
               action="action_records_document_type"
               sequence="10"/>
         <menuitem id="menu_records_tags" name="Classification Tags" parent="menu_records_master_data" action="action_records_tag_simple" sequence="30" groups="records_management.group_records_manager" />
             <!-- Departments Menu -->
     <menuitem id="menu_records_department"
               name="Departments"
-              parent="menu_records_management_config"
+              parent="menu_records_configuration"
               action="action_records_department"
               sequence="30"/>
         <menuitem id="menu_records_products" name="Products &amp; Services" parent="menu_records_configuration" sequence="20" groups="records_management.group_records_manager" />
