@@ -51,7 +51,10 @@
             <field name="category">system</field>
             <field name="config_key">temp_inventory_retention_days</field>
             <field name="config_type">parameter</field>
+            <field name="value_text" eval="False"/>
+            <field name="value_boolean" eval="False"/>
             <field name="value_number">30</field>
+            <field name="value_selection" eval="False"/>
             <field name="description">Number of days to retain temporary inventory records before automatic cleanup. Must be between 1 and 365 days.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
