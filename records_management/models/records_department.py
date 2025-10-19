@@ -119,22 +119,29 @@ class RecordsDepartment(models.Model):
 
     def action_view_containers(self):
         self.ensure_one()
+        tree_view_id = self.env.ref('records_management.records_container_view_tree').id
+        form_view_id = self.env.ref('records_management.records_container_view_form').id
+        kanban_view_id = self.env.ref('records_management.records_container_view_kanban').id
         return {
             'name': _('Containers'),
             'type': 'ir.actions.act_window',
             'res_model': 'records.container',
             'view_mode': 'tree,form,kanban',
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form'), (kanban_view_id, 'kanban')],
             'domain': [('department_id', '=', self.id)],
             'context': {'default_department_id': self.id, 'default_partner_id': self.partner_id.id}
         }
 
     def action_view_documents(self):
         self.ensure_one()
+        tree_view_id = self.env.ref('records_management.records_document_view_tree').id
+        form_view_id = self.env.ref('records_management.records_document_view_form').id
         return {
             'name': _('Documents'),
             'type': 'ir.actions.act_window',
             'res_model': 'records.document',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'tree,form',
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'domain': [('department_id', '=', self.id)],
             'context': {'default_department_id': self.id, 'default_partner_id': self.partner_id.id}
         }
