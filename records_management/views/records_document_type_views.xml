@@ -312,18 +312,58 @@ Deprecate</a>
             <field name="context">{'search_default_active': 1, 'search_default_active_state': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-Create your first document type!
-            </p>
+                    <i class="fa fa-file-text-o"/> No document types yet!
+                </p>
                 <p>
-                    <b>Document Type Management:</b>
-                    <br />
-• Organize documents by category and security level<br />
-                • Configure compliance requirements (NAID, HIPAA, SOX, GDPR)<br />
-                • Set retention policies and destruction schedules<br />
-                • Define physical storage requirements<br />
-                • Configure indexing, barcoding, and encryption settings<br />
-                • NAID AAA certified document classification system
-</p>
+                    <b>⚠️ IMPORTANT:</b> Document types are used to classify and organize your documents.
+                </p>
+                <p>
+                    <b>📋 To create a document type:</b>
+                </p>
+                <ol>
+                    <li>Click <b>New</b> button above</li>
+                    <li>Enter a <b>Name</b> (e.g., "Legal Documents", "Financial Records", "Medical Records")</li>
+                    <li>Add a <b>Description</b> (optional but recommended)</li>
+                    <li>Set <b>Security Level</b>:
+                        <ul>
+                            <li><b>Public:</b> No special handling required</li>
+                            <li><b>Confidential:</b> Restricted access</li>
+                            <li><b>Highly Confidential:</b> Strict access controls</li>
+                        </ul>
+                    </li>
+                    <li>Choose <b>Compliance Requirements</b> (if applicable):
+                        <ul>
+                            <li>☑ NAID AAA Certified</li>
+                            <li>☑ HIPAA Compliant (medical records)</li>
+                            <li>☑ SOX Compliant (financial records)</li>
+                            <li>☑ GDPR Compliant (EU personal data)</li>
+                        </ul>
+                    </li>
+                    <li>Set <b>Default Retention Period</b> (e.g., "7 years")</li>
+                    <li>Configure <b>Storage Requirements</b>:
+                        <ul>
+                            <li>Climate controlled?</li>
+                            <li>Fireproof storage?</li>
+                            <li>Special handling?</li>
+                        </ul>
+                    </li>
+                    <li>Click <b>Save</b></li>
+                </ol>
+                <p>
+                    <b>📝 Common document type examples:</b><br/>
+                    • <b>Legal Documents:</b> Contracts, agreements, litigation files<br/>
+                    • <b>Financial Records:</b> Invoices, tax documents, ledgers<br/>
+                    • <b>Medical Records:</b> Patient files, lab results (HIPAA)<br/>
+                    • <b>Personnel Files:</b> Employee records, HR documents<br/>
+                    • <b>Business Documents:</b> General correspondence, reports
+                </p>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • NAID AAA certified document classification<br/>
+                    • Automated retention policy enforcement<br/>
+                    • Compliance tracking (NAID, HIPAA, SOX, GDPR)<br/>
+                    • Custom indexing and barcoding rules
+                </p>
             </field>
         </record>
     </data>
