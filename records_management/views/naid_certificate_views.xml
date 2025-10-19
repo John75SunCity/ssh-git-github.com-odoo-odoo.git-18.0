@@ -112,11 +112,58 @@
             <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    No Certificates of Destruction found.
+                    <i class="fa fa-certificate"/> No Certificates of Destruction found.
                 </p>
                 <p>
-                    This is where you can create, manage, and issue NAID-compliant
-                    Certificates of Destruction for your customers.
+                    <b>⚠️ Prerequisites for issuing certificates:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Completed Destruction</b> - Destruction must be physically complete with all items processed</li>
+                    <li>✓ <b>Customer Information</b> - Go to: <i>Contacts</i> (verify customer has valid email and address)</li>
+                    <li>✓ <b>Witness Signatures</b> - All required witnesses must sign off on the destruction</li>
+                    <li>✓ <b>Weight Verification</b> - Total weight must be recorded and verified</li>
+                    <li>✓ <b>NAID Compliance</b> - Active NAID certification required for compliant certificates</li>
+                </ul>
+                <p>
+                    <b>📋 To issue a Certificate of Destruction:</b>
+                </p>
+                <ol>
+                    <li>Click the <b>New</b> button above (or auto-generate from destruction record)</li>
+                    <li>Select the <b>Customer</b> (partner receiving the certificate)</li>
+                    <li>Set <b>Destruction Date</b> (when physical destruction occurred)</li>
+                    <li>Add <b>Destroyed Items</b> in the items tab:</li>
+                    <ul>
+                        <li>Enter <b>Item Name</b> (e.g., "Confidential Documents", "Hard Drives")</li>
+                        <li>Select <b>Material Type</b> (Paper, Electronic Media, etc.)</li>
+                        <li>Enter <b>Quantity</b> and <b>Weight</b></li>
+                    </ul>
+                    <li>Link <b>Containers</b> and <b>Boxes</b> that were destroyed</li>
+                    <li>Add <b>Witness Information</b> and digital signature (required for AAA)</li>
+                    <li>Review <b>Total Items</b> and <b>Total Weight</b> summary</li>
+                    <li>Click <b>Issue Certificate</b> - certificate number auto-generates</li>
+                    <li>Use <b>Send by Email</b> to deliver to customer</li>
+                </ol>
+                <p>
+                    <b>📊 Certificate Status Lifecycle:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> Certificate being prepared, can be edited</li>
+                    <li><b>Issued:</b> Certificate finalized with unique number, PDF generated</li>
+                    <li><b>Sent:</b> Certificate delivered to customer via email/portal</li>
+                    <li><b>Cancelled:</b> Certificate voided (can reset to draft if needed)</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • NAID-compliant certificate format with unique numbering<br/>
+                    • Detailed item-by-item destruction records<br/>
+                    • Digital witness signatures for verification<br/>
+                    • Automatic PDF generation with embedded QR codes<br/>
+                    • Email delivery with tracking<br/>
+                    • Complete audit trail integration<br/>
+                    • Multi-company support with company branding
+                </p>
+                <p>
+                    <b>💡 Pro Tip:</b> Use the <b>My Certificates</b> filter to quickly find certificates you created. Link containers/boxes for complete traceability.
                 </p>
             </field>
         </record>
