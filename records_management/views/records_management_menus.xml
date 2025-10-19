@@ -18,10 +18,10 @@
                     <b>⚠️ Before creating containers, ensure you have configured:</b>
                 </p>
                 <ul>
-                    <li>✓ <b>Storage Locations</b> - Go to: <i>Configuration > Master Data > Storage Locations</i></li>
-                    <li>✓ <b>Container Types</b> - Go to: <i>Configuration > Products & Services > Service Products</i></li>
-                    <li>✓ <b>Customer & Department</b> - Go to: <i>Contacts > Create Company</i> (check "Is a Records Management Customer")</li>
-                    <li>✓ <b>Barcode Sequences</b> - Go to: <i>Configuration > Barcode Configuration</i> (auto-created on first use)</li>
+                    <li>✓ <b>Storage Locations</b> - Go to: <i>Configuration &gt; Master Data &gt; Storage Locations</i></li>
+                    <li>✓ <b>Container Types</b> - Go to: <i>Configuration &gt; Products &amp; Services &gt; Service Products</i></li>
+                    <li>✓ <b>Customer &amp; Department</b> - Go to: <i>Contacts &gt; Create Company</i> (check "Is a Records Management Customer")</li>
+                    <li>✓ <b>Barcode Sequences</b> - Go to: <i>Configuration &gt; Barcode Configuration</i> (auto-created on first use)</li>
                 </ul>
                 <p>
                     <b>📋 To create your first container:</b>
@@ -30,7 +30,7 @@
                     <li>Click the <b>New</b> button above</li>
                     <li>Select a <b>Customer</b> and <b>Department</b></li>
                     <li>Choose a <b>Container Type</b> (e.g., "Bankers Box 15x12x10")</li>
-                    <li>Assign a <b>Storage Location</b> (e.g., "Warehouse A > Section A1 > Spot A1-001")</li>
+                    <li>Assign a <b>Storage Location</b> (e.g., "Warehouse A &gt; Section A1 &gt; Spot A1-001")</li>
                     <li>Click <b>Save</b> - barcode will auto-generate</li>
                     <li>Use <b>Generate QR Code</b> or <b>Generate Barcode</b> buttons to print labels</li>
                 </ol>
@@ -63,9 +63,9 @@
                     <b>⚠️ Before creating documents, ensure you have:</b>
                 </p>
                 <ul>
-                    <li>✓ <b>Storage Containers</b> created - Go to: <i>Operations > Containers</i></li>
-                    <li>✓ <b>Document Types</b> defined - Go to: <i>Configuration > Master Data > Document Types</i></li>
-                    <li>✓ <b>Retention Policies</b> (optional) - Go to: <i>Configuration > Master Data > Retention Policies</i></li>
+                    <li>✓ <b>Storage Containers</b> created - Go to: <i>Operations &gt; Containers</i></li>
+                    <li>✓ <b>Document Types</b> defined - Go to: <i>Configuration &gt; Master Data &gt; Document Types</i></li>
+                    <li>✓ <b>Retention Policies</b> (optional) - Go to: <i>Configuration &gt; Master Data &gt; Retention Policies</i></li>
                 </ul>
                 <p>
                     <b>📋 To add your first document:</b>
