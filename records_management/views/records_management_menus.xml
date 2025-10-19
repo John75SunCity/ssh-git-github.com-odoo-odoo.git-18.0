@@ -107,12 +107,7 @@
               action="action_customer_inventory"
               sequence="10"/>
     <menuitem id="menu_inventory_documents" name="Inventory Documents" parent="menu_records_inventory" action="action_inventory_item" sequence="15" groups="records_management.group_records_user" />
-        <!-- Retention Policy Menu -->
-    <menuitem id="menu_retention_policy"
-              name="Retention Policies"
-              parent="menu_records_configuration"
-              action="action_retention_policy"
-              sequence="20"/>
+        <!-- Retention Policy Menu is defined in records_retention_policy_views.xml -->
         <menuitem id="menu_records_compliance" name="NAID Compliance" parent="menu_records_management_root" sequence="25" groups="records_management.group_records_user" />
         <menuitem id="menu_naid_compliance" name="Compliance Records" parent="menu_records_compliance" action="action_naid_compliance" sequence="10" groups="records_management.group_records_user" />
             <!-- Destruction Certificate Menu - MOVED TO COMPLIANCE -->
