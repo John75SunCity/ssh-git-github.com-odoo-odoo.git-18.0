@@ -81,6 +81,7 @@
         "data/naid_certificate_data.xml",
         "data/paper_products_data.xml",
         "data/paper_shred_configurator_data.xml",
+        "data/naid_configurator_data.xml",
         "data/document_retrieval_rates_data.xml",
         "data/products_data.xml",
         "data/storage_fee_data.xml",
