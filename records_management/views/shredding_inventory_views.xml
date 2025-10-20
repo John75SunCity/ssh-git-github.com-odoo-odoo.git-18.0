@@ -85,11 +85,85 @@
         </field>
     </record>
 
-    <record id="action_shredding_inventory_item" model="ir.actions.act_window">
+        <record id="shredding_inventory_item_action" model="ir.actions.act_window">
+        <!-- OPTIMIZATION: Model shredding.inventory.item has state field - consider using default search filters -->
         <field name="name">Shredding Inventory Items</field>
         <field name="res_model">shredding.inventory.item</field>
         <field name="view_mode">list,form</field>
-    </record>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fa fa-scissors"/> Create your first shredding inventory item
+            </p>
+            <p><b>⚠️ Prerequisites:</b></p>
+            <ul>
+                <li>✓ <b>Work order created</b> - Go to: <i>Work Orders &gt; Shredding</i></li>
+                <li>✓ <b>Containers or documents ready</b> - Items must be in system</li>
+                <li>✓ <b>Locations defined</b> - Both current and original locations</li>
+            </ul>
+            <p><b>📋 To create a shredding item:</b></p>
+            <ol>
+                <li>Click <b>New</b> to open the shredding item form</li>
+                <li>Auto-generated <b>Display Name</b></li>
+                <li>Link to a <b>Work Order</b> (shredding job)</li>
+                <li>Set <b>Sequence</b> (order within work order)</li>
+                <li>Select <b>Containers</b> (if shredding full boxes) OR <b>Document</b> (single file)</li>
+                <li>Set <b>Current Location</b> (where item is now)</li>
+                <li>Record <b>Original Location</b> (permanent storage location)</li>
+                <li>Track through these <b>States</b>:
+                    <ul>
+                        <li><b>Draft:</b> Item added to work order</li>
+                        <li><b>Pending Pickup:</b> Awaiting retrieval</li>
+                        <li><b>Retrieved:</b> Item in possession</li>
+                        <li><b>Destroyed:</b> Shredding complete</li>
+                    </ul>
+                </li>
+                <li>Review <b>Costing</b>:
+                    <ul>
+                        <li><b>Retrieval Cost:</b> Getting the item</li>
+                        <li><b>Permanent Removal Cost:</b> Offsite disposal</li>
+                        <li><b>Shredding Cost:</b> Destruction fee</li>
+                        <li><b>Total Cost:</b> Auto-calculated sum</li>
+                    </ul>
+                </li>
+                <li>Manage <b>Approvals</b>:
+                    <ul>
+                        <li>Click <b>Approve for Destruction</b> (when in draft)</li>
+                        <li><b>Customer Approved:</b> Client authorization</li>
+                        <li><b>Supervisor Approved:</b> Internal clearance</li>
+                        <li><b>Approval Date:</b> When authorization granted</li>
+                    </ul>
+                </li>
+                <li>Progress through workflow:
+                    <ul>
+                        <li>Click <b>Mark Retrieved</b> (when picked up)</li>
+                        <li>Record <b>Retrieved Date</b> and <b>Retrieved By</b></li>
+                        <li>Click <b>Mark Destroyed</b> (after shredding)</li>
+                        <li>Record <b>Destruction Date</b> and <b>Destroyed By</b></li>
+                    </ul>
+                </li>
+                <li>Add <b>Retrieval Notes</b> (pickup details)</li>
+                <li>Add <b>Destruction Notes</b> (witness statements)</li>
+                <li>Use <b>Chatter</b> for activity tracking</li>
+                <li>Click <b>Save</b> to create the item</li>
+            </ol>
+            <p><b>🚀 Key Features:</b><br/>
+            • <b>Dual approval:</b> Customer + supervisor authorization<br/>
+            • <b>Cost breakdown:</b> Retrieval, removal, shredding tracked separately<br/>
+            • <b>State workflow:</b> Draft → Pending Pickup → Retrieved → Destroyed<br/>
+            • <b>Location tracking:</b> Current vs original locations<br/>
+            • <b>Personnel accountability:</b> Track who retrieved and destroyed<br/>
+            • <b>Date stamping:</b> Approval, retrieval, destruction dates<br/>
+            • <b>Work order linking:</b> Batch items into jobs<br/>
+            • <b>Notes system:</b> Document pickup and destruction details<br/>
+            </p>
+            <p><b>💡 Pro Tips:</b><br/>
+            • Get dual approval BEFORE retrieval (compliance requirement)<br/>
+            • Record actual costs for accurate billing<br/>
+            • Use retrieval notes to document witness signatures<br/>
+            • Mark destroyed immediately after shredding (audit trail)<br/>
+            • Sequence items for efficient pickup routing<br/>
+            </p>
+        </field>
 
     
     <record id="shredding_picklist_item_view_tree" model="ir.ui.view">

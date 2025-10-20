@@ -78,8 +78,56 @@
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                Create a new storage box.
-            </p>
+                    <i class="fa fa-archive"/> Create your first storage box
+                </p>
+                <p><b>⚠️ Prerequisites:</b></p>
+                <ul>
+                    <li>✓ <b>Locations defined</b> - Go to: <i>Records Management &gt; Configuration &gt; Locations</i></li>
+                    <li>✓ <b>Box sizes standardized</b> - Define standard box dimensions</li>
+                </ul>
+                <p><b>📋 To create a storage box:</b></p>
+                <ol>
+                    <li>Click <b>New</b> to create a new box</li>
+                    <li>Auto-generated <b>Name</b> (e.g., BOX/2024/00001)</li>
+                    <li>Select <b>Box Size</b>:
+                        <ul>
+                            <li><b>Letter/Legal:</b> Standard office documents</li>
+                            <li><b>Letter/Legal Extra Deep:</b> High-volume storage</li>
+                            <li><b>Custom:</b> Non-standard dimensions</li>
+                        </ul>
+                    </li>
+                    <li>Assign a <b>Location</b> (warehouse shelf position)</li>
+                    <li>Track the box through <b>States</b>:
+                        <ul>
+                            <li><b>Draft:</b> Box is being configured</li>
+                            <li><b>In Use:</b> Box is actively storing documents</li>
+                            <li><b>Archived:</b> Box is closed/inactive</li>
+                        </ul>
+                    </li>
+                    <li>View <b>Document Count</b> (auto-calculated)</li>
+                    <li>Assign a <b>User</b> (box manager/owner)</li>
+                    <li>Select <b>Company</b> (for multi-company setups)</li>
+                    <li>Add <b>Documents</b> stored in this box</li>
+                    <li>Use <b>Chatter</b> for notes and activity tracking</li>
+                    <li>Click <b>Save</b> to create the storage box</li>
+                </ol>
+                <p><b>🚀 Key Features:</b><br/>
+                • <b>Standardized sizes:</b> Letter/Legal, Extra Deep, Custom<br/>
+                • <b>Location tracking:</b> Precise warehouse positioning<br/>
+                • <b>State workflow:</b> Draft → In Use → Archived<br/>
+                • <b>Document linking:</b> Direct connection to stored files<br/>
+                • <b>Auto-counting:</b> Track number of documents per box<br/>
+                • <b>User assignment:</b> Box ownership and responsibility<br/>
+                • <b>Chatter integration:</b> Notes and activity timeline<br/>
+                • <b>Search filters:</b> Find boxes by status or location<br/>
+                </p>
+                <p><b>💡 Pro Tips:</b><br/>
+                • Use "In Use" state for active boxes only<br/>
+                • Archive boxes when full to prevent accidental additions<br/>
+                • Group by location to visualize warehouse layout<br/>
+                • Link all documents during box setup (easier tracking)<br/>
+                • Use search filters to find boxes by status<br/>
+                </p>
             </field>
         </record>
     

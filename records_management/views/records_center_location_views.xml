@@ -63,6 +63,50 @@
             <field name="name">Records Center Location</field>
             <field name="res_model">records.center.location</field>
             <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-building-o"/> Create your first records center
+                </p>
+                <p><b>⚠️ Prerequisites:</b></p>
+                <ul>
+                    <li>✓ <b>Company configured</b> - Go to: <i>Settings &gt; Companies</i></li>
+                    <li>✓ <b>Manager assigned</b> - Facility manager user account</li>
+                    <li>✓ <b>Country/state data</b> - Localization configured</li>
+                </ul>
+                <p><b>📋 To create a records center:</b></p>
+                <ol>
+                    <li>Click <b>New</b> to open the center form</li>
+                    <li>Enter a <b>Center Name</b> (e.g., "Phoenix North Warehouse")</li>
+                    <li>Assign a unique <b>Code</b> (e.g., "PHX-N", "DFW-1")</li>
+                    <li>Select <b>Company</b> (which organization owns this center)</li>
+                    <li>Mark as <b>Active</b> (uncheck to close facility)</li>
+                    <li>Enter complete <b>Address</b> (full street address)</li>
+                    <li>Enter <b>City</b> name</li>
+                    <li>Select <b>State</b> (province/region)</li>
+                    <li>Enter <b>ZIP Code</b></li>
+                    <li>Select <b>Country</b></li>
+                    <li>Assign <b>Manager</b> (facility supervisor)</li>
+                    <li>Enter <b>Capacity</b> in cubic feet (total storage volume)</li>
+                    <li>Add <b>Notes</b> (operating hours, security protocols, special features)</li>
+                    <li>Click <b>Save</b> to create the records center</li>
+                </ol>
+                <p><b>🚀 Key Features:</b><br/>
+                • <b>Capacity tracking:</b> Monitor storage in cubic feet<br/>
+                • <b>Facility codes:</b> Quick identification and routing<br/>
+                • <b>Manager assignment:</b> Define facility leadership<br/>
+                • <b>Complete addressing:</b> Full location details<br/>
+                • <b>Active/inactive status:</b> Manage facility lifecycle<br/>
+                • <b>Multi-company:</b> Support for multiple organizations<br/>
+                • <b>Notes system:</b> Document operating procedures<br/>
+                </p>
+                <p><b>💡 Pro Tips:</b><br/>
+                • Use 2-4 character codes for easy reference (e.g., LA-1, NYC-2)<br/>
+                • Calculate capacity: Length × Width × Height<br/>
+                • Include operating hours and holiday schedule in notes<br/>
+                • Document security protocols and access requirements<br/>
+                • Mark as inactive when closing facility (preserve history)<br/>
+                </p>
+            </field>
         </record>
     </data>
 </odoo>

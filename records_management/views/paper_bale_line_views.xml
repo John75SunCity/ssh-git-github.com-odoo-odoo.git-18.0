@@ -56,6 +56,50 @@
         <field name="name">Paper Bale Line</field>
         <field name="res_model">paper.bale.line</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fa fa-archive"/> Create your first bale line item
+            </p>
+            <p><b>⚠️ Prerequisites:</b></p>
+            <ul>
+                <li>✓ <b>Paper bale created</b> - Go to: <i>Recycling &gt; Paper Bales</i></li>
+                <li>✓ <b>Material types defined</b> - White, mixed, cardboard, newsprint</li>
+            </ul>
+            <p><b>📋 To create a bale line:</b></p>
+            <ol>
+                <li>Click <b>New</b> to add a line item</li>
+                <li>Auto-generated <b>Name</b></li>
+                <li>Link to parent <b>Bale</b> (which paper bale this line belongs to)</li>
+                <li>Enter <b>Weight</b> in pounds</li>
+                <li>Select <b>Material Type</b>:
+                    <ul>
+                        <li><b>White Paper:</b> Highest value, office paper</li>
+                        <li><b>Mixed Paper:</b> Moderate value, various types</li>
+                        <li><b>Cardboard (OCC):</b> Corrugated boxes</li>
+                        <li><b>Newsprint:</b> Lowest value, newspapers</li>
+                    </ul>
+                </li>
+                <li>Mark as <b>Active</b> (uncheck to archive line)</li>
+                <li>Select <b>Company</b> (for multi-company setups)</li>
+                <li>Add <b>Notes</b> (contamination, quality issues)</li>
+                <li>View <b>Display Name</b> (auto-generated description)</li>
+                <li>Click <b>Save</b> to add the line</li>
+            </ol>
+            <p><b>🚀 Key Features:</b><br/>
+            • <b>Weight tracking:</b> Individual line weights in pounds<br/>
+            • <b>Material classification:</b> White, mixed, cardboard, newsprint<br/>
+            • <b>Bale linking:</b> Multiple lines per bale<br/>
+            • <b>Auto-naming:</b> System-generated identifiers<br/>
+            • <b>Active status:</b> Archive old lines<br/>
+            • <b>Notes system:</b> Document quality and contamination<br/>
+            </p>
+            <p><b>💡 Pro Tips:</b><br/>
+            • Separate material types for accurate pricing<br/>
+            • Document contamination in notes (affects resale value)<br/>
+            • Weight each material type separately before baling<br/>
+            • Use consistent material classifications for reporting<br/>
+            </p>
+        </field>
     </record>
     </data>
 </odoo>
