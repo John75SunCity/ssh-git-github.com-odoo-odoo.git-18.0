@@ -43,15 +43,78 @@
         </record>
         <record id="action_container_access_work_order" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model container.access.work.order has state field - consider using default search filters -->
-            <field name="name">Container Access Work Order</field>
+            <field name="name">Container Access Work Orders</field>
             <field name="res_model">container.access.work.order</field>
             <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Container Access Work Order.
-        </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-unlock-alt"/> No container access work orders yet!
+                </p>
+                <p>
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Customer Containers</b> - Go to: <i>Records Management &gt; Containers</i></li>
+                    <li>✓ <b>Secure Access Room</b> - Go to: <i>Records Management &gt; Locations</i></li>
+                    <li>✓ <b>Staff Supervision</b> - Go to: <i>Employees &gt; Access Control Team</i></li>
+                </ul>
+                <p>
+                    <b>📋 To schedule container access:</b>
+                </p>
+                <ol>
+                    <li>Click "Create" and select <b>Customer/Partner</b></li>
+                    <li>Choose <b>Container(s)</b> customer wants to access</li>
+                    <li>Set <b>Access Date/Time</b> and <b>Duration</b></li>
+                    <li>Assign <b>Supervising Staff Member</b> (required for security)</li>
+                    <li>Specify <b>Access Location</b> (viewing room, secure area)</li>
+                    <li>Add <b>Visitor Information</b> (name, ID verification, company)</li>
+                    <li>Set <b>Access Type</b>:
+                        <ul>
+                            <li><b>View Only:</b> Customer looks at documents, no removal</li>
+                            <li><b>Add Documents:</b> Customer adds new items to container</li>
+                            <li><b>Remove Documents:</b> Customer pulls specific files (logged)</li>
+                            <li><b>Full Access:</b> Complete container manipulation with audit trail</li>
+                        </ul>
+                    </li>
+                    <li>Enable <b>Portal Visible</b> if customer can see work order status in their portal</li>
+                    <li>Click <b>Confirm</b> to schedule and notify customer</li>
+                    <li>Staff pulls containers to viewing room before appointment</li>
+                    <li>Log <b>Check-In Time</b> when visitor arrives (with ID verification)</li>
+                    <li>Supervisor monitors access and logs any document removals</li>
+                    <li>Take <b>Before/After Photos</b> of container if documents removed</li>
+                    <li>Visitor signs <b>Access Activity Log</b> confirming items taken</li>
+                    <li>Click <b>Complete</b> when visitor leaves, container returned to storage</li>
+                </ol>
+                <p>
+                    <b>📊 Access States:</b>
+                </p>
+                <ul>
+                    <li><b>Scheduled:</b> Appointment booked, containers identified, supervisor assigned</li>
+                    <li><b>Prepared:</b> Containers pulled from storage, viewing room ready, awaiting visitor</li>
+                    <li><b>In Progress:</b> Visitor actively accessing containers under staff supervision</li>
+                    <li><b>Completed:</b> Access finished, containers returned, audit log sealed, photos attached</li>
+                    <li><b>Cancelled:</b> Visitor no-show or reschedule request, containers returned to storage</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Security Compliance:</b> Mandatory staff supervision, ID verification, video monitoring<br/>
+                    • <b>Audit Trail:</b> Complete log of who accessed what, when, for how long, what was removed<br/>
+                    • <b>Document Tracking:</b> Log every document removed with description, reason, authorization<br/>
+                    • <b>Photo Documentation:</b> Before/after container photos for chain of custody<br/>
+                    • <b>Visitor Management:</b> Check-in/check-out times, ID copies, signature capture<br/>
+                    • <b>Portal Integration:</b> Customers can request/track access appointments online<br/>
+                    • <b>Access Reports:</b> Generate visitor access reports for customer billing or compliance<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Always verify <b>visitor ID</b> and match to authorized access list before allowing entry<br/>
+                    • Use <b>Portal Visible</b> toggle to let customers track appointment status in real-time<br/>
+                    • Take <b>photos</b> if ANY documents removed - protects against later disputes<br/>
+                    • Set <b>time limits</b> for access - prevents excessive viewing room occupation<br/>
+                    • <b>Bill separately</b> for access appointments - labor cost + room reservation fee<br/>
+                </p>
             </field>
         </record>
     </data>

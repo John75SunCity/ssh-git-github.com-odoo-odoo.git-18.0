@@ -58,6 +58,54 @@
         <field name="name">Inventory Item</field>
         <field name="res_model">inventory.item</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fa fa-cube"/> Create your first inventory item
+            </p>
+            <p><b>⚠️ Prerequisites:</b></p>
+            <ul>
+                <li>✓ <b>Products configured</b> - Go to: <i>Inventory &gt; Products</i></li>
+                <li>✓ <b>Storage locations defined</b> - Go to: <i>Records Management &gt; Configuration &gt; Locations</i></li>
+                <li>✓ <b>Serial numbering active</b> - Enable in product settings</li>
+            </ul>
+            <p><b>📋 To create an inventory item:</b></p>
+            <ol>
+                <li>Click <b>New</b> to open the form</li>
+                <li>Enter a unique <b>Name</b> for the item (e.g., "Storage Box #12345")</li>
+                <li>Select the <b>Product</b> from configured products</li>
+                <li>Assign a <b>Serial Number</b> (auto-generated or manual)</li>
+                <li>Choose a <b>Location</b> where the item is stored</li>
+                <li>Set the <b>Status</b>:
+                    <ul>
+                        <li><b>Available:</b> Item is ready for use</li>
+                        <li><b>In Use:</b> Item is currently assigned</li>
+                        <li><b>Maintenance:</b> Item requires repair</li>
+                        <li><b>Retired:</b> Item is no longer usable</li>
+                    </ul>
+                </li>
+                <li>Enter <b>Acquisition Date</b> (when the item was received)</li>
+                <li>Add any relevant <b>Notes</b> (condition, history, specifications)</li>
+                <li>Set <b>Active</b> status (unchecked items are archived)</li>
+                <li>Select the <b>Company</b> (multi-company setups)</li>
+                <li>Click <b>Save</b> to create the inventory item</li>
+            </ol>
+            <p><b>🚀 Key Features:</b><br/>
+            • <b>Serial tracking:</b> Unique identification for each item<br/>
+            • <b>Location history:</b> Track item movements across storage areas<br/>
+            • <b>Status lifecycle:</b> Manage item availability and condition<br/>
+            • <b>Product linking:</b> Connect items to product templates<br/>
+            • <b>Date tracking:</b> Record acquisition and lifecycle dates<br/>
+            • <b>Notes system:</b> Document item condition and history<br/>
+            • <b>Multi-company:</b> Separate inventories per organization<br/>
+            </p>
+            <p><b>💡 Pro Tips:</b><br/>
+            • Use consistent serial number formats (e.g., BOX-2024-00001)<br/>
+            • Update status immediately when items are moved or repaired<br/>
+            • Archive retired items rather than deleting (maintain history)<br/>
+            • Use filters to quickly find items by location or status<br/>
+            • Add detailed notes for maintenance schedules and repair history<br/>
+            </p>
+        </field>
     </record>
 
     <!-- Menu -->

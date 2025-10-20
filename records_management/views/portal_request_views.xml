@@ -251,21 +251,89 @@
     }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-globe" /> Create your first Portal Request!
-        </p>
+                    <i class="fa fa-globe"/> No portal requests yet!
+                </p>
                 <p>
-                    <b>Enterprise Portal Request Management:</b>
-                    <br />
-            • <i class="fa fa-pencil" /> Streamlined customer request processing<br />
-            • <i class="fa fa-exchange" /> Advanced workflow automation and approvals<br />
-            • <i class="fa fa-bar-chart" /> Real-time status tracking and notifications<br />
-            • <i class="fa fa-link" /> Full integration with Records Management system<br />
-            • <i class="fa fa-users" /> Collaborative request handling with activity tracking<br />
-            • <i class="fa fa-line-chart" /> Comprehensive analytics and reporting<br />
-            • <i class="fa fa-bolt" /> Automated notifications and escalations<br />
-            • <i class="fa fa-lock" /> NAID compliance and audit trail management<br />
-            • <i class="fa fa-mobile" /> Mobile-friendly portal access and management
-        </p>
+                    <b>⚠️ Prerequisites for portal requests:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Customer Portal Access</b> - Go to: <i>Settings &gt; Users</i> (grant portal access to customers)</li>
+                    <li>✓ <b>Request Types</b> configured - Define available request types (retrieval, destruction, service)</li>
+                    <li>✓ <b>Approval Workflow</b> - Set up approval rules and authorized signers</li>
+                    <li>✓ <b>Email Templates</b> - Configure notification templates for each stage</li>
+                    <li>✓ <b>Assigned Team</b> - Ensure staff are assigned to process requests</li>
+                </ul>
+                <p>
+                    <b>📋 Understanding Portal Requests:</b>
+                </p>
+                <p>
+                    Portal Requests enable <b>self-service customer interactions</b> through the customer portal. 
+                    Customers can submit requests online, track progress in real-time, sign documents electronically, 
+                    and receive notifications automatically. This streamlines operations and improves customer satisfaction.
+                </p>
+                <p>
+                    <b>💻 Customer Portal Workflow (Customer Side):</b>
+                </p>
+                <ol>
+                    <li>Customer logs into portal at: <i>yourcompany.odoo.com/my</i></li>
+                    <li>Navigates to <b>Records Management</b> section</li>
+                    <li>Clicks <b>Create Request</b> button</li>
+                    <li>Selects <b>Request Type</b> (e.g., "Document Destruction Request")</li>
+                    <li>Fills in details and uploads supporting documents</li>
+                    <li>Adds items to request (selects containers/documents)</li>
+                    <li>Reviews and clicks <b>Submit Request</b></li>
+                    <li>Receives email confirmation with request number</li>
+                    <li>Tracks status in portal (Draft &rarr; Submitted &rarr; Approved &rarr; Completed)</li>
+                    <li>Signs documents electronically when required</li>
+                    <li>Downloads certificates/reports when ready</li>
+                </ol>
+                <p>
+                    <b>⚙️ Internal Processing Workflow (Staff Side):</b>
+                </p>
+                <ol>
+                    <li>Portal request appears in <b>Portal Requests</b> menu automatically</li>
+                    <li>System sends notification to assigned team members</li>
+                    <li>Staff reviews request details and attached items</li>
+                    <li>Click <b>Approve</b> or <b>Reject</b> (with reason if rejected)</li>
+                    <li>If approved, request auto-creates:
+                        <ul>
+                            <li><b>Retrieval Order</b> (for document requests)</li>
+                            <li><b>Destruction Certificate</b> (for destruction requests)</li>
+                            <li><b>Service Task</b> (for service requests)</li>
+                        </ul>
+                    </li>
+                    <li>Process the related records (fulfill retrieval, complete destruction, etc.)</li>
+                    <li>Click <b>Complete</b> on portal request</li>
+                    <li>Customer receives completion notification with certificates/documents</li>
+                </ol>
+                <p>
+                    <b>📊 Portal Request States:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> Customer creating request, not yet submitted</li>
+                    <li><b>Submitted:</b> Awaiting internal review and approval</li>
+                    <li><b>Approved:</b> Approved and in processing queue</li>
+                    <li><b>In Progress:</b> Actively being processed by staff</li>
+                    <li><b>Completed:</b> Request fulfilled, customer notified</li>
+                    <li><b>Rejected:</b> Request denied (with explanation)</li>
+                    <li><b>Cancelled:</b> Customer or staff cancelled request</li>
+                </ul>
+                <p>
+                    <b>🚀 Enterprise Features:</b><br/>
+                    • Streamlined customer request processing<br/>
+                    • Advanced workflow automation and approvals<br/>
+                    • Real-time status tracking and notifications<br/>
+                    • Full integration with Records Management system<br/>
+                    • Collaborative request handling with activity tracking<br/>
+                    • Electronic signature integration (Odoo Sign)<br/>
+                    • Comprehensive analytics and reporting<br/>
+                    • Automated notifications and escalations<br/>
+                    • NAID compliance and audit trail management<br/>
+                    • Mobile-friendly portal access
+                </p>
+                <p>
+                    <b>💡 Pro Tip:</b> Use <i>My Requests</i> filter to see only your assigned requests. Enable email notifications to stay updated. Group by <i>Request Type</i> to organize your workload.
+                </p>
             </field>
         </record>
     

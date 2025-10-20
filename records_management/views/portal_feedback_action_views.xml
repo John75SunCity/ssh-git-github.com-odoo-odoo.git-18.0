@@ -51,10 +51,33 @@
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Portal Feedback Action.
-        </p>
-    </field>
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fa fa-reply"/> Define your first feedback action
+            </p>
+            <p><b>⚠️ Prerequisites:</b></p>
+            <ul>
+                <li>✓ <b>Portal active</b> - Go to: <i>Settings &gt; Users &amp; Companies &gt; Portal</i></li>
+                <li>✓ <b>Customer feedback received</b> - Go to: <i>Customer Feedback</i></li>
+            </ul>
+            <p><b>📋 To create a feedback action:</b></p>
+            <ol>
+                <li>Click <b>New</b> to define an action</li>
+                <li>Enter an <b>Action Name</b> (e.g., "Follow-up Call", "Service Improvement", "Escalate to Manager")</li>
+                <li>Click <b>Save</b> to create the action</li>
+                <li>Link this action to customer feedback records</li>
+            </ol>
+            <p><b>🚀 Key Features:</b><br/>
+            • <b>Action templates:</b> Pre-defined response categories<br/>
+            • <b>Feedback linking:</b> Connect actions to customer feedback<br/>
+            • <b>Standardized responses:</b> Consistent follow-up procedures<br/>
+            • <b>Group by name:</b> Organize actions by type<br/>
+            </p>
+            <p><b>💡 Pro Tips:</b><br/>
+            • Create standard actions: "Call Customer", "Email Follow-up", "Site Visit"<br/>
+            • Use consistent naming for better filtering<br/>
+            • Link actions to feedback for complete audit trail<br/>
+            </p>
+        </field>
     </record>
     </data>
 </odoo>

@@ -45,9 +45,71 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Paper Bale Movement.
-        </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-truck"/> No bale movements recorded yet!
+                </p>
+                <p>
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Paper Bale Exists</b> - Go to: <i>Operations &gt; Paper Recycling &gt; Paper Bales</i></li>
+                    <li>✓ <b>Storage Locations</b> - Go to: <i>Configuration &gt; Locations</i> (staging, warehouse, loading dock)</li>
+                    <li>✓ <b>Warehouse Layout</b> - Map storage zones with location codes (ZONE-A-01, ZONE-B-12)</li>
+                </ul>
+                <p>
+                    <b>📋 Automatic Movement Tracking:</b>
+                </p>
+                <ol>
+                    <li>Movement records <b>auto-create</b> when bale location changes</li>
+                    <li><b>Initial Movement:</b> Bale weighing creates first record (NULL → Staging Area)</li>
+                    <li><b>Storage Movement:</b> Assign to warehouse location after inspection (Staging → ZONE-A-12)</li>
+                    <li><b>Loading Dock Movement:</b> Move to loading dock when shipment ready (ZONE-A-12 → Loading Dock 3)</li>
+                    <li><b>Truck Loading:</b> Final movement when loaded on truck (Loading Dock 3 → In Transit)</li>
+                    <li>Each movement logs: <b>From Location</b>, <b>To Location</b>, <b>User</b>, <b>Timestamp</b></li>
+                    <li>GPS coordinates captured if mobile device used for warehouse moves</li>
+                    <li>System tracks <b>dwell time</b> at each location (hours/days)</li>
+                    <li>Alerts trigger if bale sits in one location &gt; 30 days (stagnant inventory)</li>
+                </ol>
+                <p>
+                    <b>📊 Typical Movement Sequence:</b>
+                </p>
+                <ul>
+                    <li><b>Step 1:</b> NULL → Staging Area (bale created + weighed)</li>
+                    <li><b>Step 2:</b> Staging Area → Inspection Zone (quality check)</li>
+                    <li><b>Step 3:</b> Inspection Zone → Warehouse ZONE-A-12 (pass inspection, store)</li>
+                    <li><b>Step 4:</b> Warehouse ZONE-A-12 → Loading Dock 3 (shipment scheduled)</li>
+                    <li><b>Step 5:</b> Loading Dock 3 → Truck #47 (physical loading)</li>
+                    <li><b>Step 6:</b> Truck #47 → Recycling Mill (delivered)</li>
+                </ul>
+                <p>
+                    <b>🔍 Movement Search &amp; Filtering:</b>
+                </p>
+                <ul>
+                    <li>Filter by <b>Bale ID</b> to see complete movement history of single bale</li>
+                    <li>Filter by <b>From Location</b> to find all bales leaving specific zone</li>
+                    <li>Filter by <b>To Location</b> to see what's arriving at a warehouse section</li>
+                    <li>Filter by <b>User</b> to audit which employee moved which bales</li>
+                    <li>Filter by <b>Date Range</b> to analyze movements during specific period</li>
+                    <li>Group by <b>To Location</b> to see current inventory distribution across zones</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Automatic Creation:</b> Triggers fire on every bale location change<br/>
+                    • <b>Complete Audit Trail:</b> Immutable log for compliance and dispute resolution<br/>
+                    • <b>Dwell Time Analytics:</b> Calculate hours/days at each location for efficiency analysis<br/>
+                    • <b>GPS Integration:</b> Capture coordinates for physical location verification<br/>
+                    • <b>Stagnation Alerts:</b> Flag bales not moved in 30+ days for inventory cleanup<br/>
+                    • <b>User Accountability:</b> Every movement tied to employee ID for error tracking<br/>
+                    • <b>Transit Time Reporting:</b> Average time from weighing to shipment by grade<br/>
+            </p>
+            <p>
+                <b>💡 Pro Tips:</b><br/>
+                • Review <b>dwell time</b> report weekly - long dwell indicates inventory bottlenecks<br/>
+                • Use <b>Group by To Location</b> to visualize current warehouse space utilization<br/>
+                • Filter by <b>today</b> to see all movements for daily operations audit<br/>
+                • <b>Export movement history</b> for customer proof of bale handling dates<br/>
+                • Check <b>User filter</b> if investigating damaged bales - identify handler<br/>
+            </p>
             </field>
         </record>
     </data>

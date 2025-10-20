@@ -54,6 +54,54 @@
             <field name="name">Destruction Events</field>
             <field name="res_model">destruction.event</field>
             <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-trash-o"/> Record your first destruction event
+                </p>
+                <p><b>⚠️ Prerequisites:</b></p>
+                <ul>
+                    <li>✓ <b>Technician assigned</b> - Go to: <i>Employees</i> or <i>Users</i></li>
+                    <li>✓ <b>Requestor identified</b> - Select customer contact</li>
+                    <li>✓ <b>Location type determined</b> - On-site vs facility destruction</li>
+                </ul>
+                <p><b>📋 To record a destruction event:</b></p>
+                <ol>
+                    <li>Click <b>New</b> to create a destruction event</li>
+                    <li>Enter an <b>Event Name</b> (e.g., "Smith Corp On-Site Shredding - Jan 2024")</li>
+                    <li>Set the <b>Date</b> of the destruction event</li>
+                    <li>Record the <b>Time</b> of the event (for audit purposes)</li>
+                    <li>Assign a <b>Technician</b> (person performing the shredding)</li>
+                    <li>Select the <b>Requestor</b> (customer representative present)</li>
+                    <li>Choose <b>Location Type</b>:
+                        <ul>
+                            <li><b>On-Site:</b> Shredding at customer location</li>
+                            <li><b>Off-Site:</b> Destruction at secure facility</li>
+                        </ul>
+                    </li>
+                    <li>List <b>Shredded Items</b> (boxes, bins, documents)</li>
+                    <li>Enter <b>Quantity</b> destroyed</li>
+                    <li>Select <b>Unit of Measure</b> (boxes, pounds, bins)</li>
+                    <li>Add <b>Notes</b> (witness details, special circumstances)</li>
+                    <li>Click <b>Save</b> to record the event</li>
+                </ol>
+                <p><b>🚀 Key Features:</b><br/>
+                • <b>Date/time tracking:</b> Precise event timestamping<br/>
+                • <b>Technician assignment:</b> Personnel accountability<br/>
+                • <b>Requestor tracking:</b> Customer authorization<br/>
+                • <b>Location logging:</b> On-site vs facility destruction<br/>
+                • <b>Quantity measurement:</b> Multiple unit types (boxes/lbs/bins)<br/>
+                • <b>Item listing:</b> Detailed destroyed items log<br/>
+                • <b>Notes system:</b> Witness statements and special conditions<br/>
+                • <b>Certificate linking:</b> Auto-generate destruction certificates<br/>
+                </p>
+                <p><b>💡 Pro Tips:</b><br/>
+                • Record events immediately after destruction (best practice)<br/>
+                • Include witness names in notes field for compliance<br/>
+                • Use consistent naming: CUSTOMER-DATE-TYPE<br/>
+                • Link to destruction certificates for legal proof<br/>
+                • Track both count and weight for recycling records<br/>
+                </p>
+            </field>
         </record>
         <record id="action_destruction_event" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model destruction.event has state field - consider using default search filters -->

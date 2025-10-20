@@ -45,9 +45,61 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Barcode Pricing Tier.
-        </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-dollar"/> No pricing tiers configured yet!
+                </p>
+                <p>
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Barcode Products Defined</b> - Go to: <i>Configuration &gt; Barcode Management &gt; Barcode Products</i></li>
+                    <li>✓ <b>Customer Volume Data</b> - Analyze monthly barcode usage patterns</li>
+                    <li>✓ <b>Pricing Strategy</b> - Define volume discount model (bronze/silver/gold tiers)</li>
+                </ul>
+                <p>
+                    <b>📋 To configure volume-based pricing tiers:</b>
+                </p>
+                <ol>
+                    <li>Click <b>Create</b> to add new pricing tier</li>
+                    <li>Enter <b>Tier Name</b>: Bronze, Silver, Gold, Platinum (or custom)</li>
+                    <li>Set <b>Minimum Quantity</b>: Barcodes/month required to qualify</li>
+                    <li>Set <b>Maximum Quantity</b>: Upper limit for this tier (or leave blank for unlimited)</li>
+                    <li>Enter <b>Price Per Barcode</b>: Cost per unit at this volume</li>
+                    <li>Or enter <b>Discount Percentage</b>: % off standard pricing (e.g., 10% for Silver)</li>
+                    <li>Select <b>Barcode Type</b>: Storage box, shred bin, document label (or All)</li>
+                    <li>Set <b>Start Date</b> and <b>End Date</b> for seasonal/promotional pricing</li>
+                    <li>Choose <b>Customer Type</b>: Standard, Premium, Enterprise (or All)</li>
+                    <li>Activate <b>Auto-Apply</b> to automatically assign tier based on monthly usage</li>
+                    <li>System monitors customer usage, auto-upgrades/downgrades tier monthly</li>
+                    <li>Invoices auto-calculate using tier pricing for billing period</li>
+                </ol>
+                <p>
+                    <b>📊 Example Tier Structure:</b>
+                </p>
+                <ul>
+                    <li><b>Bronze (0-100 barcodes/month):</b> $1.50 per barcode (standard rate)</li>
+                    <li><b>Silver (101-500 barcodes/month):</b> $1.20 per barcode (20% discount)</li>
+                    <li><b>Gold (501-1000 barcodes/month):</b> $1.00 per barcode (33% discount)</li>
+                    <li><b>Platinum (1001+ barcodes/month):</b> $0.75 per barcode (50% discount)</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Volume-Based Discounts:</b> Reward high-volume customers with automatic savings<br/>
+                    • <b>Auto-Tier Assignment:</b> System monitors usage, upgrades/downgrades tier monthly<br/>
+                    • <b>Type-Specific Pricing:</b> Different rates for storage boxes vs shred bins<br/>
+                    • <b>Customer Segmentation:</b> Special tiers for enterprise vs standard customers<br/>
+                    • <b>Seasonal Pricing:</b> Date-based pricing for promotions or peak seasons<br/>
+                    • <b>Invoice Integration:</b> Auto-applies tier pricing on monthly invoices<br/>
+                    • <b>Tier Analytics:</b> Track customer distribution across tiers, revenue by tier<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Set <b>overlapping date ranges</b> to test new pricing before removing old<br/>
+                    • Use <b>Customer Type filter</b> to offer enterprise discounts without lowering standard pricing<br/>
+                    • Review <b>customer tier distribution</b> quarterly - adjust minimums to balance tiers<br/>
+                    • Enable <b>Auto-Apply</b> for hassle-free tier management (customers auto-upgrade)<br/>
+                    • <b>Communicate tier benefits</b> to customers - incentivizes increased usage<br/>
+                </p>
             </field>
         </record>
     </data>

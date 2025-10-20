@@ -45,9 +45,30 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-            Click to add a new naid.performance.history.
-        </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-history"/> Record your first NAID performance metric
+                </p>
+                <p><b>⚠️ Prerequisites:</b></p>
+                <ul>
+                    <li>✓ <b>NAID certification active</b> - Go to: <i>Configuration &gt; NAID Certification</i></li>
+                    <li>✓ <b>Compliance events tracked</b> - Destruction, audits, inspections</li>
+                </ul>
+                <p><b>📋 To record performance history:</b></p>
+                <ol>
+                    <li>Click <b>New</b> to create a performance record</li>
+                    <li>Enter a <b>Name/Description</b> (e.g., "Q1 2024 NAID Audit - Passed")</li>
+                    <li>Click <b>Save</b> to record the history</li>
+                </ol>
+                <p><b>🚀 Key Features:</b><br/>
+                • <b>Historical tracking:</b> Maintain NAID compliance records<br/>
+                • <b>State management:</b> Track performance status<br/>
+                • <b>Group by name:</b> Organize records by category<br/>
+                </p>
+                <p><b>💡 Pro Tips:</b><br/>
+                • Record all NAID audits and inspection results<br/>
+                • Use consistent naming: "YYYY-QN Event Type - Result"<br/>
+                • Keep complete history for certification renewals<br/>
+                </p>
             </field>
         </record>
     </data>

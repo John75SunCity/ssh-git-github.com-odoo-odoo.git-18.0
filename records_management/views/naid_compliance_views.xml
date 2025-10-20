@@ -370,21 +370,66 @@
         }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-trophy" title="NAID" /> Set up your first NAID compliance certification!
-            </p>
+                    <i class="fa fa-trophy"/> Set up your first NAID compliance certification!
+                </p>
                 <p>
-                    <b>Enterprise NAID AAA Compliance Management:</b>
-                    <br />
-                • <i class="fa fa-certificate" aria-hidden="true" title="Certification" /> Complete NAID AAA/AA/A certification tracking<br />
-                • <i class="fa fa-search" title="Search" /> Automated audit scheduling and management<br />
-                • <i class="fa fa-certificate" title="Certificate" /> Digital certificate generation and tracking<br />
-                • <i class="fa fa-shield" aria-hidden="true" title="Security" /> Comprehensive security standards compliance<br />
-                • <i class="fa fa-users" title="Users" /> Multi-level personnel security verification<br />
-                • <i class="fa fa-bar-chart" title="Analytics" /> Real-time performance metrics and analytics<br />
-                • <i class="fa fa-bell" title="Notifications" /> Proactive expiry and renewal notifications<br />
-                • <i class="fa fa-clipboard" title="Checklist" /> Detailed compliance checklists and workflows<br />
-                • <i class="fa fa-link" title="Integration" /> Integration with destruction and shredding services
-            </p>
+                    <b>⚠️ Before creating NAID compliance records:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>NAID Membership</b> - Ensure your organization has active NAID membership</li>
+                    <li>✓ <b>Facility Information</b> - Prepare facility name, address, and contact details</li>
+                    <li>✓ <b>Compliance Team</b> - Identify compliance officer, facility manager, and security officer</li>
+                    <li>✓ <b>Audit Schedule</b> - Plan for initial and ongoing audit frequency (annual recommended)</li>
+                    <li>✓ <b>Equipment Certification</b> - Verify all destruction equipment meets NAID standards</li>
+                </ul>
+                <p>
+                    <b>📋 NAID Certification Levels:</b>
+                </p>
+                <ul>
+                    <li><b>🥇 AAA (Highest):</b> Plant-based operations, rigorous security, annual audits</li>
+                    <li><b>🥈 AA (Standard):</b> Mobile destruction services, enhanced protocols, bi-annual audits</li>
+                    <li><b>🥉 A (Basic):</b> Off-site destruction, standard security, annual audits</li>
+                </ul>
+                <p>
+                    <b>🎯 To set up NAID compliance:</b>
+                </p>
+                <ol>
+                    <li>Click the <b>New</b> button above</li>
+                    <li>Enter <b>Compliance Record Name</b> (e.g., "NAID-2025-AAA-001")</li>
+                    <li>Select your target <b>NAID Level</b> (AAA, AA, or A)</li>
+                    <li>Enter <b>NAID Member ID</b> and <b>Facility Name</b></li>
+                    <li>Set <b>Certification Date</b> and <b>Expiry Date</b> (typically 1 year)</li>
+                    <li>Assign <b>Compliance Officer</b> and other team members</li>
+                    <li>Configure <b>Audit Frequency</b> and next audit date</li>
+                    <li>Complete the <b>Compliance Checklist</b> in the checklist tab</li>
+                    <li>Verify all <b>NAID Standards</b> (Physical, Personnel, Information, Operational Security)</li>
+                    <li>Click <b>Conduct Audit</b> to schedule initial certification audit</li>
+                </ol>
+                <p>
+                    <b>📊 Compliance Status Workflow:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> Initial setup, compliance checklist in progress</li>
+                    <li><b>Pending Audit:</b> Awaiting scheduled audit inspection</li>
+                    <li><b>Certified:</b> Active certification, all requirements met</li>
+                    <li><b>Non-Compliant:</b> Failed audit, corrective action required</li>
+                    <li><b>Expired:</b> Certification expired, renewal needed</li>
+                </ul>
+                <p>
+                    <b>🚀 Enterprise Features:</b><br/>
+                    • Complete NAID AAA/AA/A certification tracking<br/>
+                    • Automated audit scheduling and management<br/>
+                    • Digital certificate generation and tracking<br/>
+                    • Comprehensive security standards compliance<br/>
+                    • Multi-level personnel security verification<br/>
+                    • Real-time performance metrics and analytics<br/>
+                    • Proactive expiry and renewal notifications<br/>
+                    • Detailed compliance checklists and workflows<br/>
+                    • Integration with destruction and shredding services
+                </p>
+                <p>
+                    <b>💡 Best Practice:</b> Schedule audits 60 days before expiry to allow time for corrective actions if needed. Enable <b>Auto Renewal</b> for continuous compliance.
+                </p>
             </field>
         </record>
     </data>

@@ -55,6 +55,60 @@
         <field name="name">Container Retrieval</field>
         <field name="res_model">container.retrieval</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fa fa-download"/> Create your first retrieval request
+            </p>
+            <p><b>⚠️ Prerequisites:</b></p>
+            <ul>
+                <li>✓ <b>Container stored</b> - Go to: <i>Records Management &gt; Containers</i></li>
+                <li>✓ <b>Customer contact</b> - Verify requestor in <i>Contacts</i></li>
+                <li>✓ <b>Storage location known</b> - Check container location</li>
+            </ul>
+            <p><b>📋 To create a retrieval request:</b></p>
+            <ol>
+                <li>Click <b>New</b> to open retrieval form</li>
+                <li>Auto-generated <b>Name</b> (e.g., RET/2024/00123)</li>
+                <li>Select the <b>Container</b> to retrieve</li>
+                <li>Choose the <b>Customer</b> requesting retrieval</li>
+                <li>Verify the <b>Location</b> (delivery address)</li>
+                <li>Confirm <b>Storage Location</b> (where to get the container)</li>
+                <li>Set <b>Status</b>:
+                    <ul>
+                        <li><b>Draft:</b> Request is being prepared</li>
+                        <li><b>Pending:</b> Awaiting approval</li>
+                        <li><b>In Progress:</b> Retrieval underway</li>
+                        <li><b>Completed:</b> Container delivered</li>
+                        <li><b>Cancelled:</b> Request cancelled</li>
+                    </ul>
+                </li>
+                <li>Assign <b>Priority</b> (low/normal/high/urgent)</li>
+                <li>Enter <b>Estimated Time</b> (minutes to retrieve)</li>
+                <li>Set <b>Retrieval Date</b> (when scheduled)</li>
+                <li>Assign <b>Retrieved By</b> (technician name)</li>
+                <li>Enter <b>Retrieval Cost</b> (if billable)</li>
+                <li>Select <b>Currency</b> (for multi-currency)</li>
+                <li>Track <b>Actual Time</b> after completion</li>
+                <li>Click <b>Save</b> to create the retrieval</li>
+            </ol>
+            <p><b>🚀 Key Features:</b><br/>
+            • <b>Priority system:</b> Urgent requests get immediate attention<br/>
+            • <b>Time tracking:</b> Estimated vs actual duration<br/>
+            • <b>Cost calculation:</b> Billable retrieval services<br/>
+            • <b>Status workflow:</b> Draft → Pending → In Progress → Completed<br/>
+            • <b>Technician assignment:</b> Personnel accountability<br/>
+            • <b>Location tracking:</b> From storage to delivery<br/>
+            • <b>Multi-currency:</b> Support for global operations<br/>
+            • <b>Active flag:</b> Archive old retrievals for history<br/>
+            </p>
+            <p><b>💡 Pro Tips:</b><br/>
+            • Set priority to "Urgent" for same-day retrievals<br/>
+            • Track actual time to improve future estimates<br/>
+            • Use filters to view retrievals by status or priority<br/>
+            • Link retrieval costs to customer invoices<br/>
+            • Archive completed retrievals after 90 days<br/>
+            </p>
+        </field>
     </record>
     </data>
 </odoo>

@@ -50,9 +50,59 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                Click to add a new Container Movement.
-            </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-exchange"/> Track your first container movement
+                </p>
+                <p><b>⚠️ Prerequisites:</b></p>
+                <ul>
+                    <li>✓ <b>Container exists</b> - Go to: <i>Records Management &gt; Containers</i></li>
+                    <li>✓ <b>Locations defined</b> - Go to: <i>Records Management &gt; Configuration &gt; Locations</i></li>
+                    <li>✓ <b>Movement types configured</b> - Receive, transfer, retrieve, return</li>
+                </ul>
+                <p><b>📋 To record a container movement:</b></p>
+                <ol>
+                    <li>Click <b>New</b> (or add directly in editable list view)</li>
+                    <li>Auto-generated <b>Movement Name</b> (e.g., MOVE/2024/00123)</li>
+                    <li>Set <b>Movement Date</b> (when the transfer occurred)</li>
+                    <li>Select <b>Movement Type</b>:
+                        <ul>
+                            <li><b>Receive:</b> Container arriving at facility</li>
+                            <li><b>Transfer:</b> Moving between internal locations</li>
+                            <li><b>Retrieve:</b> Sending container out (customer pickup/delivery)</li>
+                            <li><b>Return:</b> Container coming back from customer</li>
+                            <li><b>Destroy:</b> Moving to destruction area</li>
+                        </ul>
+                    </li>
+                    <li>Select <b>From Location</b> (origin warehouse position)</li>
+                    <li>Select <b>To Location</b> (destination warehouse position)</li>
+                    <li>Track through <b>States</b>:
+                        <ul>
+                            <li><b>Draft:</b> Movement planned but not executed</li>
+                            <li><b>In Progress:</b> Container is being moved</li>
+                            <li><b>Completed:</b> Movement finished and verified</li>
+                            <li><b>Cancelled:</b> Movement cancelled</li>
+                        </ul>
+                    </li>
+                    <li>Click <b>Save</b> (or tab to next row in list view)</li>
+                </ol>
+                <p><b>🚀 Key Features:</b><br/>
+                • <b>Auto-naming:</b> Sequential movement identifiers<br/>
+                • <b>Date tracking:</b> Precise movement timestamping<br/>
+                • <b>Type classification:</b> Receive, transfer, retrieve, return, destroy<br/>
+                • <b>Location tracking:</b> From-to warehouse positions<br/>
+                • <b>State workflow:</b> Draft → In Progress → Completed<br/>
+                • <b>Editable list:</b> Quick entry directly in list view<br/>
+                • <b>Group by name:</b> Organize movements by identifier<br/>
+                • <b>Movement history:</b> Complete audit trail per container<br/>
+                </p>
+                <p><b>💡 Pro Tips:</b><br/>
+                • Use editable list view for fast bulk entry<br/>
+                • Record movements in real-time (scan on move)<br/>
+                • Use "Transfer" type for internal warehouse moves<br/>
+                • Filter by movement type to analyze traffic patterns<br/>
+                • Group by location to visualize high-traffic areas<br/>
+                • Complete state immediately after physical move<br/>
+                </p>
             </field>
         </record>
 

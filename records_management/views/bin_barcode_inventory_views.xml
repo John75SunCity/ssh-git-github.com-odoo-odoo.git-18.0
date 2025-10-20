@@ -207,12 +207,84 @@ lbs
         }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                Create your first bin barcode inventory record!
-            </p>
+                    <i class="fa fa-trash"/> No shredding bins tracked yet!
+                </p>
                 <p>
-                Manage your shredding bin inventory with sophisticated barcode sequencing,
-                capacity tracking, and customer assignments.
-            </p>
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Bin Sizes Configured</b> - Go to: <i>Configuration &gt; Barcode Management &gt; Barcode Products</i></li>
+                    <li>✓ <b>Service Routes Defined</b> - Go to: <i>Field Service &gt; Configuration &gt; Service Routes</i></li>
+                    <li>✓ <b>Customers Active</b> - Go to: <i>Contacts</i> (customers with shredding services)</li>
+                    <li>✓ <b>Barcode Labels Printed</b> - Physical labels affixed to bins (QR code + bin number)</li>
+                </ul>
+                <p>
+                    <b>📋 Bin Lifecycle Management:</b>
+                </p>
+                <ol>
+                    <li><b>Initial Bin Creation:</b></li>
+                    <li>Click <b>Create</b> to add new bin to inventory</li>
+                    <li>System auto-assigns <b>Barcode</b> (e.g., BIN-23G-00001 for 23-gallon bin #1)</li>
+                    <li>Select <b>Bin Size</b>: 23G, 32G, 32C (console), 64G, 96G gallons</li>
+                    <li>System auto-sets <b>Capacity (lbs)</b>: 23G=50lbs, 32G=70lbs, 64G=140lbs, 96G=200lbs</li>
+                    <li>Print <b>Barcode Label</b> and affix to physical bin</li>
+                    <li>Bin status: <b>Available</b> (ready for customer deployment)</li>
+                    <li><b>Customer Deployment:</b></li>
+                    <li>Assign <b>Customer</b> when bin delivered to client site</li>
+                    <li>Set <b>Location</b> (customer address or internal location code)</li>
+                    <li>Assign to <b>Service Route</b> for regular pickup scheduling</li>
+                    <li>Set <b>Next Service Date</b> (when bin scheduled for pickup/exchange)</li>
+                    <li>Bin status changes to <b>In Use</b></li>
+                    <li><b>Fill Level Tracking:</b></li>
+                    <li>Driver updates <b>Fill Level</b> during route visits: Empty, 25%, 50%, 75%, Full</li>
+                    <li>System estimates <b>Current Weight</b> based on fill % × capacity</li>
+                    <li><b>Fill Percentage</b> auto-calculates (visual progress bar in Kanban)</li>
+                    <li>When fill &gt;80%, system flags for <b>priority pickup</b></li>
+                    <li><b>Full Bin Service:</b></li>
+                    <li>Driver marks <b>Set Full</b> when bin ready for pickup</li>
+                    <li>Bin status: <b>Full</b> (needs service)</li>
+                    <li>System creates FSM task for shredding/exchange</li>
+                    <li>Driver picks up full bin, delivers empty replacement</li>
+                    <li>Log <b>Last Service Date</b>, calculate <b>Next Service Date</b> (30/60/90 days)</li>
+                    <li>Full bin returns to facility for shredding</li>
+                    <li>Click <b>Service Complete</b> after shredding</li>
+                    <li>Bin status returns to <b>Available</b> (ready for redeployment)</li>
+                    <li><b>Maintenance &amp; Retirement:</b></li>
+                    <li>Mark <b>Maintenance</b> if bin damaged (removed from service)</li>
+                    <li>After repair, click <b>Set Available</b></li>
+                    <li>For permanent damage, archive bin (Active = False)</li>
+                    <li>Retired bins move to <b>Archived</b> filter</li>
+                </ol>
+                <p>
+                    <b>📊 Bin States &amp; Workflow:</b>
+                </p>
+                <ul>
+                    <li><b>Available:</b> At facility, ready for customer deployment</li>
+                    <li><b>In Use:</b> Deployed at customer site, collecting documents</li>
+                    <li><b>Full:</b> Needs pickup, scheduled for shredding service</li>
+                    <li><b>Maintenance:</b> Damaged/broken, removed from service for repair</li>
+                    <li><b>Retired:</b> Archived (permanently removed from circulation)</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Auto-Barcode Generation:</b> Sequential numbering by size (BIN-23G-00001, BIN-32G-00001)<br/>
+                    • <b>Capacity Tracking:</b> Weight limits pre-configured, fill percentage auto-calculated<br/>
+                    • <b>Kanban Workflow:</b> Visual pipeline (Available → In Use → Full → Available)<br/>
+                    • <b>Route Integration:</b> Links to service routes for automated scheduling<br/>
+                    • <b>FSM Task Creation:</b> Auto-generate pickup tasks when bin marked full<br/>
+                    • <b>Mobile Scanning:</b> Drivers scan QR codes to update bin status in field<br/>
+                    • <b>Analytics Dashboards:</b> Route load pivot, fill % graphs, utilization reports<br/>
+                    • <b>Import/Generation Flags:</b> Track which bins imported vs newly generated<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Use <b>Full filter</b> daily to prioritize pickup scheduling<br/>
+                    • Review <b>Route Dashboard</b> to balance route loads (total weight per route)<br/>
+                    • <b>Kanban view</b> grouped by state shows visual pipeline for bin circulation<br/>
+                    • <b>Group by Customer</b> to see all bins deployed at each client site<br/>
+                    • Filter by <b>Bin Size</b> to optimize truck loads (mix 23G + 64G for capacity)<br/>
+                    • <b>Next Service Date</b> filter shows bins due for pickup this week<br/>
+                </p>
             </field>
         </record>
         <record id="bin_barcode_inventory_view_pivot" model="ir.ui.view">

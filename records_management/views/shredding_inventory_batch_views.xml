@@ -45,9 +45,31 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Shredding Inventory Batch.
-        </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-cubes"/> Create your first shredding batch
+                </p>
+                <p><b>⚠️ Prerequisites:</b></p>
+                <ul>
+                    <li>✓ <b>Shredding items ready</b> - Go to: <i>Shredding &gt; Inventory Items</i></li>
+                    <li>✓ <b>Work orders created</b> - Group items into jobs</li>
+                </ul>
+                <p><b>📋 To create a shredding batch:</b></p>
+                <ol>
+                    <li>Click <b>New</b> to create a batch</li>
+                    <li>Enter a <b>Batch Name</b> (e.g., "Weekly Shredding - Jan 15, 2024")</li>
+                    <li>Group multiple shredding inventory items</li>
+                    <li>Click <b>Save</b> to create the batch</li>
+                </ol>
+                <p><b>🚀 Key Features:</b><br/>
+                • <b>Batch processing:</b> Group multiple items for efficiency<br/>
+                • <b>State tracking:</b> Monitor batch progress<br/>
+                • <b>Group by name:</b> Organize batches by date or type<br/>
+                </p>
+                <p><b>💡 Pro Tips:</b><br/>
+                • Batch items by customer for consolidated billing<br/>
+                • Use consistent naming: "YYYY-MM-DD CustomerName" or "WeekN-YYYY"<br/>
+                • Group by route for efficient pickup scheduling<br/>
+                </p>
             </field>
         </record>
     </data>

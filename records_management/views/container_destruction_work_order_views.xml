@@ -43,15 +43,79 @@
         </record>
         <record id="action_container_destruction_work_order" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model container.destruction.work.order has state field - consider using default search filters -->
-            <field name="name">Container Destruction Work Order</field>
+            <field name="name">Container Destruction Work Orders</field>
             <field name="res_model">container.destruction.work.order</field>
             <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Container Destruction Work Order.
-        </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-trash"/> No container destruction work orders yet!
+                </p>
+                <p>
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Retention Policy Compliance</b> - Go to: <i>Records Management &gt; Retention Policies</i></li>
+                    <li>✓ <b>Customer Authorization</b> - Go to: <i>Portal &gt; Destruction Requests</i></li>
+                    <li>✓ <b>NAID Certification Active</b> - Go to: <i>Compliance &gt; NAID Settings</i></li>
+                    <li>✓ <b>Destruction Equipment Ready</b> - Go to: <i>Configuration &gt; Shredding Equipment</i></li>
+                </ul>
+                <p>
+                    <b>📋 To execute container destruction:</b>
+                </p>
+                <ol>
+                    <li>Ensure <b>retention period expired</b> or customer provided <b>written authorization</b></li>
+                    <li>Click "Create" and select <b>Customer/Partner</b></li>
+                    <li>Add <b>Container(s)</b> approved for destruction</li>
+                    <li>Set <b>Destruction Date</b> and <b>Method</b> (shredding/pulping/incineration)</li>
+                    <li>Assign <b>Destruction Coordinator</b> and <b>Equipment Operator</b></li>
+                    <li>Select <b>NAID Compliance Level</b> (AAA/AA/A) based on document sensitivity</li>
+                    <li>Enable <b>Witness Required</b> if customer wants to observe destruction</li>
+                    <li>Add <b>Witness Information</b> (name, company, contact) if applicable</li>
+                    <li>Click <b>Confirm</b> to schedule destruction and lock container contents</li>
+                    <li>Pull containers from storage to destruction area before scheduled time</li>
+                    <li>Click <b>Start Destruction</b> when equipment ready and witnesses present</li>
+                    <li>Destroy containers following NAID procedures (particle size compliance)</li>
+                    <li>Log <b>Destruction Method</b> details, equipment used, particle size verification</li>
+                    <li>Capture <b>Witness Signatures</b> (customer witness + staff witness + operator)</li>
+                    <li>Record <b>Weight of Destroyed Material</b> for environmental reporting</li>
+                    <li>Click <b>Complete</b> - system auto-generates <b>Certificate of Destruction</b></li>
+                    <li>System sends certificate PDF to customer email automatically</li>
+                    <li>Enable <b>Portal Visible</b> so customer can download certificate from portal</li>
+                </ol>
+                <p>
+                    <b>📊 Destruction States:</b>
+                </p>
+                <ul>
+                    <li><b>Pending Authorization:</b> Awaiting customer approval or retention policy expiration</li>
+                    <li><b>Scheduled:</b> Customer approved, destruction date set, resources assigned</li>
+                    <li><b>Prepared:</b> Containers pulled to destruction area, equipment ready, witnesses notified</li>
+                    <li><b>In Progress:</b> Active destruction underway, NAID procedures being followed</li>
+                    <li><b>Completed:</b> Destruction finished, certificate issued, containers permanently removed from inventory</li>
+                    <li><b>Cancelled:</b> Customer withdrawal, legal hold imposed, destruction authorization revoked</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>NAID AAA Compliance:</b> Meets highest industry standard for secure document destruction<br/>
+                    • <b>Triple Witness System:</b> Customer witness + Staff witness + Equipment operator signatures<br/>
+                    • <b>Auto-Certificate Generation:</b> Professional PDF with NAID logo, company seal, all required fields<br/>
+                    • <b>Retention Policy Enforcement:</b> Only allows destruction after retention period expires<br/>
+                    • <b>Legal Hold Protection:</b> Blocks destruction of containers under litigation hold<br/>
+                    • <b>Environmental Tracking:</b> Log weight destroyed for recycling/sustainability reports<br/>
+                    • <b>Portal Integration:</b> Customers can request destruction and download certificates online<br/>
+                    • <b>Particle Size Verification:</b> Ensure shredded material meets NAID particle size standards<br/>
+                    • <b>Audit Trail:</b> Immutable log from authorization through destruction to certificate delivery<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Verify <b>no legal holds</b> on containers before destruction - check retention policy status<br/>
+                    • Use <b>Portal Visible</b> to let customers track destruction status and download certificates<br/>
+                    • <b>NAID AAA</b> requires witness signatures - ensure witnesses present before starting<br/>
+                    • <b>Photograph particle size</b> for extra compliance documentation (attach to work order)<br/>
+                    • Always send <b>certificate within 24 hours</b> of destruction for customer satisfaction<br/>
+                    • Record <b>environmental metrics</b> (recycled weight) for corporate sustainability reporting<br/>
+                </p>
             </field>
         </record>
     </data>

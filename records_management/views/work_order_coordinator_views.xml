@@ -211,12 +211,59 @@
             <field name="domain">[]</field>
             <field name="context">{'search_default_active': 1}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to create a new Work Order Coordinator.
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-sitemap"/> No work order coordinators yet!
                 </p>
                 <p>
-                    Work Order Coordinators manage and coordinate multiple work orders,
-                    assign resources, and ensure efficient execution of retrieval and destruction orders.
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>FSM Project</b> - Go to: <i>Records Management &gt; Configuration &gt; FSM Projects</i></li>
+                    <li>✓ <b>Employees</b> - Go to: <i>Employees &gt; Field Service Teams</i></li>
+                    <li>✓ <b>Vehicles</b> - Go to: <i>Fleet &gt; Vehicles</i></li>
+                    <li>✓ <b>Work Orders</b> - Go to: <i>Records Management &gt; Operations &gt; Retrieval/Destruction Orders</i></li>
+                </ul>
+                <p>
+                    <b>📋 To create a coordinator:</b>
+                </p>
+                <ol>
+                    <li>Click "Create" and enter <b>Coordinator Name</b></li>
+                    <li>Select <b>Customer/Partner</b> for the coordination session</li>
+                    <li>Add <b>Retrieval Orders</b> and <b>Destruction Orders</b> to coordinate</li>
+                    <li>Assign <b>Employees</b> and <b>Vehicles</b> from resource pools</li>
+                    <li>Set <b>Scheduled Date</b> for coordinated execution</li>
+                    <li>Enable <b>Consolidated Billing</b> if combining multiple orders into one invoice</li>
+                    <li>Click <b>Start Coordination</b> to activate resource assignments</li>
+                    <li>Use <b>Create FSM Tasks</b> to generate Field Service mobile tasks</li>
+                    <li>Monitor <b>Coordination Progress</b> bar (% of work orders completed)</li>
+                    <li>Click <b>Consolidate Billing</b> when all work complete to generate unified invoice</li>
+                </ol>
+                <p>
+                    <b>📊 Coordinator States:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> Planning phase, resources being assigned, orders not yet coordinated</li>
+                    <li><b>In Progress:</b> Active coordination session, field teams executing assigned work orders</li>
+                    <li><b>Completed:</b> All work orders finished, billing consolidated if enabled, session archived</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Multi-Order Coordination:</b> Manage retrieval + destruction + access orders in single session<br/>
+                    • <b>Resource Optimization:</b> Auto-assign employees/vehicles across multiple orders efficiently<br/>
+                    • <b>Consolidated Billing:</b> Combine multiple service charges into one unified customer invoice<br/>
+                    • <b>FSM Integration:</b> Sync work orders to Field Service Management mobile app for real-time updates<br/>
+                    • <b>Progress Tracking:</b> Visual progress bar showing % completion across all coordinated orders<br/>
+                    • <b>Equipment Management:</b> Track specialized equipment usage (shredders, scanners, etc.)<br/>
+                    • <b>Portal Integration:</b> Link to customer portal requests for full service visibility<br/>
+                    • <b>Smart Statistics:</b> Real-time counters for total orders, completed orders, and progress metrics<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Use <b>Consolidated Billing</b> for same-day multi-service visits to simplify invoicing<br/>
+                    • Assign <b>same field team</b> to related orders (e.g., retrieval + immediate destruction)<br/>
+                    • Monitor <b>progress percentage</b> to identify delayed orders requiring supervisor intervention<br/>
+                    • Set <b>priority levels</b> to ensure urgent orders are resourced first<br/>
+                    • Review <b>FSM task status</b> to track mobile worker progress in real-time<br/>
                 </p>
             </field>
         </record>
