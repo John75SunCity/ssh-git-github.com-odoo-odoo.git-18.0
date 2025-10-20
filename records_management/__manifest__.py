@@ -126,6 +126,8 @@
         "data/scheduled_actions_data.xml",
         "data/field_label_customization_batch_data.xml",
         "data/temp_inventory_configurator_data.xml",
+        # Menus must load before wizard views that reference them
+        "views/records_management_menus.xml",
         "views/report_window_actions_views.xml",
         "views/bin_issue_report_wizard_views.xml",
         "views/customer_inventory_report_wizard_views.xml",
@@ -273,9 +275,7 @@
     # User profile selector (Records Management role abstraction)
     "views/res_users_records_profile_views.xml",
 
-        # Menus moved to end to ensure all referenced actions are defined beforehand
-        "views/records_management_menus.xml",
-        # Additional menus split by domain (loaded after actions)
+        # Additional menus split by domain (loaded after main menu structure)
         "views/service_item_menus.xml",
         "views/document_retrieval_menus.xml",
         # Ensure retrieval work order action is defined before its menu references it
