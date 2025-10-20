@@ -211,20 +211,80 @@
         }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                Create your first work order retrieval!
-</p>
+                    <i class="fa fa-hand-grab-o"/> No work order retrievals yet!
+                </p>
                 <p>
-                Work order retrievals help you manage the process of collecting documents and records from customer locations.
-                Track progress, assign technicians, and maintain audit trails for compliance.
-</p>
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Parent Work Order</b> - Go to: <i>Records Management &gt; Work Orders &gt; Retrieval Orders</i></li>
+                    <li>✓ <b>Warehouse Locations</b> - Go to: <i>Records Management &gt; Locations</i></li>
+                    <li>✓ <b>Field Technicians</b> - Go to: <i>Employees &gt; Retrieval Teams</i></li>
+                    <li>✓ <b>Items to Retrieve</b> - Go to: <i>Records Management &gt; Containers/Documents</i></li>
+                </ul>
                 <p>
-                    <strong>Key Features:</strong>
-                    <br />
-                • Real-time progress tracking<br />
-                • Technician assignment and scheduling<br />
-                • Digital signatures and audit trails<br />
-                • Integration with work orders and inventory
-</p>
+                    <b>📋 To execute a work order retrieval:</b>
+                </p>
+                <ol>
+                    <li>Auto-created from parent <b>Retrieval Order</b> (or create manually)</li>
+                    <li>Review <b>Customer</b> and <b>Work Order Reference</b></li>
+                    <li>Set <b>Retrieval Date</b> and <b>Estimated Duration</b></li>
+                    <li>Assign <b>Field Technician</b> to execute retrieval</li>
+                    <li>Select <b>Storage Location</b> where items are kept</li>
+                    <li>Add <b>Pickup Address</b> if retrieving from customer site (vs warehouse)</li>
+                    <li>Enter <b>Special Instructions</b> (access codes, parking, contact person)</li>
+                    <li>Set <b>Priority</b> (0-3 stars) for urgent same-day retrievals</li>
+                    <li>List <b>Items to Retrieve</b> (boxes, documents, containers) with descriptions</li>
+                    <li>Specify <b>Retrieval Type</b>:
+                        <ul>
+                            <li><b>Temporary:</b> Return to storage after customer use (e.g., viewing/scanning)</li>
+                            <li><b>Permanent:</b> Deliver to customer, remove from inventory</li>
+                            <li><b>Inspection:</b> Pull for quality check, damage assessment, inventory audit</li>
+                        </ul>
+                    </li>
+                    <li>Note <b>Equipment Needed</b> (hand truck, ladder, pallet jack)</li>
+                    <li>Log <b>Access Requirements</b> (security clearance, building access, elevators)</li>
+                    <li>Add <b>Safety Notes</b> (heavy boxes, fragile items, hazmat)</li>
+                    <li>Click <b>Start Retrieval</b> when technician begins work (auto-logs start time)</li>
+                    <li>Technician checks off <b>Retrieved</b> checkbox for each item as found</li>
+                    <li>Progress bar updates in real-time as items completed</li>
+                    <li>Technician adds <b>Notes</b> for any missing/damaged items</li>
+                    <li>Capture <b>Customer Signature</b> if delivering to customer site</li>
+                    <li>Capture <b>Technician Signature</b> for chain of custody</li>
+                    <li>Click <b>Complete Retrieval</b> (auto-logs completion time, calculates actual duration)</li>
+                    <li>System auto-attaches photos, updates audit trail, notifies customer</li>
+                </ol>
+                <p>
+                    <b>📊 Retrieval States:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> New retrieval created, items being listed, technician not yet assigned</li>
+                    <li><b>In Progress:</b> Technician actively retrieving items, real-time progress tracking enabled</li>
+                    <li><b>Completed:</b> All items retrieved, signatures captured, duration recorded, audit sealed</li>
+                    <li><b>Cancelled:</b> Retrieval terminated (customer cancellation, items not found, access denied)</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Real-Time Progress:</b> Visual progress bar shows % completion, items remaining<br/>
+                    • <b>Technician Dashboard:</b> "My Retrievals" view filtered to assigned user with today\'s tasks<br/>
+                    • <b>Duration Tracking:</b> Auto-calculates actual vs estimated time for labor cost accuracy<br/>
+                    • <b>Item-Level Tracking:</b> Check off each box/document as retrieved with retrieval timestamps<br/>
+                    • <b>Digital Signatures:</b> Customer + Technician e-signatures for chain of custody compliance<br/>
+                    • <b>Photo Attachments:</b> Add photos of items, damage, or proof of delivery<br/>
+                    • <b>Audit Trail:</b> Complete immutable log from assignment through completion<br/>
+                    • <b>Equipment Checklist:</b> Pre-plan required tools to avoid return trips<br/>
+                    • <b>Safety Documentation:</b> Log hazards, safety equipment used, incident reports<br/>
+                    • <b>Performance Analytics:</b> Graph/pivot views for team productivity, time estimation accuracy<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Use <b>My Retrievals</b> filter to show only your assigned tasks with today\'s priority items first<br/>
+                    • Set <b>realistic estimated durations</b> - system learns and suggests better estimates over time<br/>
+                    • Always log <b>special instructions</b> - saves time on repeat visits to same customer sites<br/>
+                    • Mark <b>high priority</b> (3 stars) for same-day urgent retrievals - highlights in red<br/>
+                    • Use <b>Activity</b> view to see all retrievals on calendar/schedule for resource planning<br/>
+                    • Review <b>Graph view</b> weekly to identify technicians consistently over/under estimated times<br/>
+                </p>
             </field>
         </record>
         <record id="action_work_order_retrieval_dashboard" model="ir.actions.act_window">
