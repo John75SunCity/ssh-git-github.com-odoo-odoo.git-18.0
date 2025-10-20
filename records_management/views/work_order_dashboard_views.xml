@@ -64,13 +64,67 @@
             <field name="domain">[('project_id.name', 'ilike', 'work order')]</field>
             <field name="context">{'search_default_open': 1}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-            Click to create a new Work Order.
-        </p>
-                <p>
-            This unified view shows all work order types across your Records Management system.
-            Use the filters to focus on specific work order categories or statuses.
-        </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-tasks"/> Create your first work order
+                </p>
+                <p><b>⚠️ Prerequisites:</b></p>
+                <ul>
+                    <li>✓ <b>Customer configured</b> - Go to: <i>Contacts</i></li>
+                    <li>✓ <b>Work order types set up</b> - Retrieval, shredding, access, destruction</li>
+                    <li>✓ <b>FSM integration active</b> - Field service management enabled</li>
+                    <li>✓ <b>Technicians assigned</b> - Users with work order permissions</li>
+                </ul>
+                <p><b>📋 To create a work order:</b></p>
+                <ol>
+                    <li>Click <b>New</b> to open the work order form</li>
+                    <li>Enter <b>Work Order Name</b> (e.g., "Smith Corp - Shredding Service")</li>
+                    <li>Select <b>Type</b> (Project):
+                        <ul>
+                            <li><b>Records Retrieval:</b> Fetching containers/documents</li>
+                            <li><b>Shredding Services:</b> On-site or facility destruction</li>
+                            <li><b>Container Access:</b> Customer viewing/inspection</li>
+                            <li><b>Container Destruction:</b> Permanent disposal</li>
+                        </ul>
+                    </li>
+                    <li>Select the <b>Customer</b> (partner)</li>
+                    <li>Assign <b>Technicians</b> (users) using many2many tags</li>
+                    <li>Set <b>Priority</b>:
+                        <ul>
+                            <li><b>Low:</b> Routine, no urgency</li>
+                            <li><b>Normal:</b> Standard service level</li>
+                            <li><b>High:</b> Expedited service</li>
+                            <li><b>Urgent:</b> Same-day required</li>
+                        </ul>
+                    </li>
+                    <li>Set <b>Due Date</b> (deadline for completion)</li>
+                    <li>Track through <b>Status</b> (stage):
+                        <ul>
+                            <li><b>Draft:</b> Work order being planned</li>
+                            <li><b>In Progress:</b> Technicians actively working</li>
+                            <li><b>Completed:</b> Work finished and verified</li>
+                        </ul>
+                    </li>
+                    <li>Select <b>Company</b> (multi-company setups)</li>
+                    <li>Click <b>Save</b> to create the work order</li>
+                </ol>
+                <p><b>🚀 Key Features:</b><br/>
+                • <b>Unified dashboard:</b> All work order types in one view<br/>
+                • <b>FSM integration:</b> Field service management synchronization<br/>
+                • <b>Multi-assignment:</b> Multiple technicians per order<br/>
+                • <b>Priority system:</b> Low/normal/high/urgent classification<br/>
+                • <b>Due date tracking:</b> Deadline management and alerts<br/>
+                • <b>Status badges:</b> Color-coded stage visualization<br/>
+                • <b>Kanban view:</b> Drag-drop workflow management<br/>
+                • <b>Search filters:</b> Find by type, customer, status, or assignee<br/>
+                </p>
+                <p><b>💡 Pro Tips:</b><br/>
+                • Use Kanban view for visual workflow management<br/>
+                • Set priority to "Urgent" for same-day service<br/>
+                • Filter by "In Progress" to see active work orders<br/>
+                • Assign multiple technicians for complex jobs<br/>
+                • Use color decorations: Blue (Draft), Orange (In Progress), Green (Completed)<br/>
+                • Group by status or customer for better organization<br/>
+                </p>
             </field>
         </record>
         <record id="action_quick_create_records_retrieval" model="ir.actions.act_window">
