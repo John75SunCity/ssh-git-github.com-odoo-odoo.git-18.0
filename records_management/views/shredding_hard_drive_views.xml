@@ -145,17 +145,77 @@
         </record>
         <record id="action_shredding_hard_drive" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model shredding.hard_drive has state field - consider using default search filters -->
-            <field name="name">Hard Drives</field>
+            <field name="name">Hard Drive Destruction</field>
             <field name="res_model">shredding.hard_drive</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-            Create a hard drive record for tracking serial numbers through the destruction process.
-        </p>
+                    <i class="fa fa-hdd-o"/> No hard drives tracked yet!
+                </p>
                 <p>
-            Hard drives are scanned at customer locations, verified at the facility before destruction,
-            and tracked for NAID compliance certificates.
-        </p>
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>FSM Task Created</b> - Go to: <i>Field Service &gt; Tasks</i></li>
+                    <li>✓ <b>Customer Authorization</b> - Hard drive destruction must be customer-approved</li>
+                    <li>✓ <b>NAID Certification</b> - Go to: <i>Compliance &gt; NAID Settings</i></li>
+                    <li>✓ <b>Mobile Scanner</b> - Barcode scanner or mobile device with camera</li>
+                </ul>
+                <p>
+                    <b>📋 Two-Step Verification Workflow:</b>
+                </p>
+                <ol>
+                    <li><b>STEP 1: Scan at Customer Site</b></li>
+                    <li>Field technician clicks <b>Scan Hard Drives at Customer</b> action</li>
+                    <li>Opens <b>Hard Drive Scan Wizard</b> linked to FSM task</li>
+                    <li>Select <b>Customer</b> and <b>Destruction Method</b> (physical/degaussing/shredding)</li>
+                    <li>Scan each hard drive serial number with barcode scanner</li>
+                    <li>Or paste serial numbers into text field (one per line) and click <b>Add Serial Numbers</b></li>
+                    <li>System creates hard drive records in <b>Scanned</b> state</li>
+                    <li>Customer witnesses scanning and signs acknowledgment on mobile device</li>
+                    <li><b>Chain of custody begins</b> - system logs tech name, GPS location, timestamp</li>
+                    <li><b>STEP 2: Verify at Facility Before Destruction</b></li>
+                    <li>Hard drives arrive at secure facility in sealed container</li>
+                    <li>Destruction technician clicks <b>Verify Hard Drives at Facility</b> action</li>
+                    <li>Scan each drive serial number again to confirm receipt</li>
+                    <li>System matches scanned serial to customer pickup list</li>
+                    <li>Flags any <b>missing drives</b> (scanned at customer but not received)</li>
+                    <li>Flags any <b>extra drives</b> (received but not on customer list)</li>
+                    <li>Once verified, drives move to <b>Destroyed</b> status queue</li>
+                    <li>Physical destruction: drill press, hammer, or industrial shredder</li>
+                    <li>Log <b>Destruction Date</b>, <b>Method</b>, and <b>Technician</b></li>
+                    <li>System generates <b>Certificate of Destruction</b> with serial number list</li>
+                    <li>Certificate moves to <b>Certified</b> status, ready for customer delivery</li>
+                    <li>All serial numbers stored as <b>SHA-256 hashes</b> for tamper-proof compliance</li>
+                </ol>
+                <p>
+                    <b>📊 Hard Drive States:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> Record created but not yet scanned at customer site</li>
+                    <li><b>Scanned:</b> Serial captured at customer location, in transit to facility</li>
+                    <li><b>Destroyed:</b> Physical destruction completed, awaiting certificate generation</li>
+                    <li><b>Certified:</b> Certificate issued, customer notified, audit trail sealed</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Two-Step Verification:</b> Scan at pickup + re-scan at facility prevents loss/theft<br/>
+                    • <b>Serial Number Hashing:</b> SHA-256 encryption protects customer data confidentiality<br/>
+                    • <b>Missing Drive Alerts:</b> Auto-flags discrepancies between pickup scan and facility receipt<br/>
+                    • <b>FSM Integration:</b> Links to Field Service tasks for mobile technician workflow<br/>
+                    • <b>Bulk Scanning:</b> Process 100+ drives in minutes with batch text input<br/>
+                    • <b>NAID AAA Compliance:</b> Complete chain of custody, witness signatures, tamper-proof logs<br/>
+                    • <b>Certificate Automation:</b> Auto-generate PDF with drive count, serials (hashed), destruction method<br/>
+                    • <b>Mobile-Friendly:</b> Scan wizard works on tablets/phones for on-site data capture<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Always <b>scan at customer site</b> - provides legal proof of drive collection<br/>
+                    • Use <b>text input</b> for drives without readable barcodes (paste from spreadsheet)<br/>
+                    • <b>Re-scan at facility</b> is mandatory - catches transit losses before destruction<br/>
+                    • Review <b>Scanned</b> filter daily to identify drives overdue for facility verification<br/>
+                    • <b>Hashed serials</b> allow verification without exposing actual serial numbers to staff<br/>
+                </p>
             </field>
         </record>
         <record id="action_hard_drive_scan_customer" model="ir.actions.act_window">

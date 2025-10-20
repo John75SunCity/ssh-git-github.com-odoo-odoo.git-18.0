@@ -68,9 +68,69 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Records Audit Log.
-            </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-history"/> No audit events logged yet!
+                </p>
+                <p>
+                    <b>⚠️ Important:</b> Audit logs are <b>read-only and immutable</b>. They auto-create when events occur - you cannot manually add entries.
+                </p>
+                <p>
+                    <b>📋 Automatic Event Logging:</b>
+                </p>
+                <ul>
+                    <li><b>Container Events:</b> Create, modify, move, destroy, retrieve</li>
+                    <li><b>Document Events:</b> Upload, view, download, delete, share</li>
+                    <li><b>Access Events:</b> User login, permission changes, unauthorized access attempts</li>
+                    <li><b>Destruction Events:</b> Shredding, certificate generation, witness signatures</li>
+                    <li><b>Chain of Custody:</b> Transfers, pickups, deliveries, location changes</li>
+                    <li><b>System Events:</b> Configuration changes, security updates, backup operations</li>
+                </ul>
+                <p>
+                    <b>🔍 How to search audit logs:</b>
+                </p>
+                <ol>
+                    <li>Use <b>Search Bar</b> to find by description keywords</li>
+                    <li>Filter by <b>Event Type</b>: Access, Create, Update, Delete, Destroy, Transfer, etc.</li>
+                    <li>Filter by <b>User</b>: See all actions by specific employee</li>
+                    <li>Filter by <b>Model</b>: Records.Container, Records.Document, Shredding.Hard.Drive, etc.</li>
+                    <li>Group by <b>Event Type</b> to analyze patterns (e.g., unusual deletions)</li>
+                    <li>Group by <b>User</b> to audit individual employee actions</li>
+                    <li>Group by <b>Model</b> to track activity on specific record types</li>
+                    <li>Check <b>Timestamp</b> for exact date/time of event (down to the second)</li>
+                    <li>Review <b>IP Address</b> to verify event origin location</li>
+                    <li>Click <b>Res Model</b> + <b>Res Name</b> to see which specific record was affected</li>
+                </ol>
+                <p>
+                    <b>📊 Audit Log Use Cases:</b>
+                </p>
+                <ul>
+                    <li><b>Compliance Verification:</b> Prove to auditors that NAID procedures were followed</li>
+                    <li><b>Security Investigation:</b> Track unauthorized access attempts or suspicious deletions</li>
+                    <li><b>Dispute Resolution:</b> Show customer when document was destroyed or who retrieved it</li>
+                    <li><b>Employee Accountability:</b> Verify which staff member handled sensitive operations</li>
+                    <li><b>System Forensics:</b> Diagnose data issues by reviewing historical changes</li>
+                    <li><b>Legal Discovery:</b> Export audit trail for litigation or regulatory requests</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Immutable Records:</b> Cannot be edited or deleted (tamper-proof compliance)<br/>
+                    • <b>Automatic Creation:</b> Triggers fire on every significant system event<br/>
+                    • <b>Complete Context:</b> Logs user, timestamp, IP, affected record, before/after values<br/>
+                    • <b>Cross-Model Tracking:</b> Audit trails span containers, documents, users, destruction, etc.<br/>
+                    • <b>IP Address Logging:</b> Geographic verification of event origin<br/>
+                    • <b>Timestamp Precision:</b> Sub-second accuracy for event sequencing<br/>
+                    • <b>Export Capability:</b> Generate audit reports for external auditors or legal counsel<br/>
+                    • <b>Long-Term Retention:</b> Logs never auto-delete (complies with 7-year retention standards)<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Filter by <b>Event Type = Delete</b> to audit all record deletions for compliance review<br/>
+                    • Group by <b>User</b> + filter by <b>yesterday</b> to quickly review daily employee activity<br/>
+                    • Use <b>Model filter</b> to focus on high-risk operations (e.g., Shredding.Hard.Drive events)<br/>
+                    • Check <b>IP Address</b> column for remote access - flags potential security issues<br/>
+                    • Export logs monthly for <b>off-system backup</b> (redundant audit trail protection)<br/>
+                    • Show audit log to customers during disputes - immutable proof of actions taken<br/>
+                </p>
             </field>
         </record>
     </data>

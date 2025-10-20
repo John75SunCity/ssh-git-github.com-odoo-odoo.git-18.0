@@ -51,10 +51,69 @@
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Paper Bale Inspection.
-        </p>
-    </field>
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fa fa-search"/> No inspections recorded yet!
+            </p>
+            <p>
+                <b>⚠️ Prerequisites:</b>
+            </p>
+            <ul>
+                <li>✓ <b>Paper Bale Created</b> - Go to: <i>Operations &gt; Paper Recycling &gt; Paper Bales</i></li>
+                <li>✓ <b>Inspection Standards</b> - Configure grade purity thresholds (WHT: 95%+, MIX: 80%+, OCC: 90%+)</li>
+                <li>✓ <b>Quality Control Training</b> - Staff must be trained on contamination identification</li>
+            </ul>
+            <p>
+                <b>📋 Quality Inspection Workflow:</b>
+            </p>
+            <ol>
+                <li>Open <b>Paper Bale</b> record (status: Weighed or In Stock)</li>
+                <li>Click <b>Quality Inspection</b> action button</li>
+                <li>System auto-creates inspection record with bale details</li>
+                <li>Inspector visually examines bale: <b>cut bands to expose layers</b></li>
+                <li>Check for <b>contamination</b>: plastics, metals, food waste, non-paper items</li>
+                <li>Estimate <b>purity percentage</b>: % of bale that is correct grade</li>
+                <li>WHT (white office): Must be 95%+ white office paper, no colored/glossy</li>
+                <li>MIX (mixed): 80%+ acceptable paper, &lt;20% cardboard/colored allowed</li>
+                <li>OCC (cardboard): 90%+ corrugated cardboard, no wax-coated boxes</li>
+                <li>NEWS (newspaper): 90%+ newsprint, no glossy magazines</li>
+                <li>Record <b>Pass/Fail</b> status based on purity threshold</li>
+                <li>If <b>FAIL</b>: Document contamination type (plastic straps, staples, food residue)</li>
+                <li>Take <b>photos</b> of contamination for customer evidence</li>
+                <li>If FAIL: Bale returns to <b>Cancelled</b> status, re-shredded or downgraded</li>
+                <li>If PASS: Bale confirmed as <b>In Stock</b>, ready for shipment</li>
+                <li>Add <b>Inspector Notes</b>: unusual findings, customer-specific issues</li>
+                <li>Inspection log attached to bale record for audit trail</li>
+            </ol>
+            <p>
+                <b>📊 Common Contamination Types:</b>
+            </p>
+            <ul>
+                <li><b>Plastic Items:</b> Binders, sheet protectors, laminated documents, plastic straps</li>
+                <li><b>Metal Fasteners:</b> Staples, paper clips, binder clips, spiral bindings</li>
+                <li><b>Food Waste:</b> Coffee grounds, food wrappers, grease stains</li>
+                <li><b>Non-Paper Materials:</b> Fabric, rubber bands, foam packaging</li>
+                <li><b>Wrong Grade Paper:</b> Glossy magazines in white grade, newspaper in OCC</li>
+                <li><b>Hazardous Materials:</b> Carbon paper, thermal fax paper (BPA contamination)</li>
+            </ul>
+            <p>
+                <b>🚀 Key Features:</b><br/>
+                • <b>Pass/Fail Determination:</b> Auto-compare purity % to grade standards<br/>
+                • <b>Photo Documentation:</b> Attach contamination images to inspection record<br/>
+                • <b>Contamination Tagging:</b> Categorize by type for trend analysis<br/>
+                • <b>Grade Downgrade Logic:</b> Auto-suggest lower grade if purity borderline<br/>
+                • <b>Customer Notification:</b> Alert customer if their bales frequently fail<br/>
+                • <b>Rejection Tracking:</b> Count fail rate by customer for education/penalties<br/>
+                • <b>Audit Trail:</b> Complete inspection history for mill quality disputes<br/>
+            </p>
+            <p>
+                <b>💡 Pro Tips:</b><br/>
+                • Inspect <b>random layers</b> throughout bale - contamination often hidden in center<br/>
+                • <b>Photograph fails immediately</b> - customer disputes resolved with visual evidence<br/>
+                • Document <b>specific customer patterns</b> (e.g., always includes binders) for education<br/>
+                • <b>Re-inspect after re-shredding</b> to ensure contamination removed<br/>
+                • Failed bales can often be <b>downgraded</b> (WHT → MIX) instead of full rejection<br/>
+            </p>
+        </field>
     </record>
     </data>
 </odoo>
