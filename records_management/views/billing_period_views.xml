@@ -40,6 +40,38 @@
         <field name="name">Billing Periods</field>
         <field name="res_model">billing.period</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fa fa-calendar"/> Create your first billing period
+            </p>
+            <p><b>⚠️ Prerequisites:</b></p>
+            <ul>
+                <li>✓ <b>Billing module active</b> - Go to: <i>Records Management &gt; Billing</i></li>
+                <li>✓ <b>Date ranges defined</b> - Determine monthly, quarterly, or annual periods</li>
+            </ul>
+            <p><b>📋 To create a billing period:</b></p>
+            <ol>
+                <li>Click <b>New</b> to create a period</li>
+                <li>Enter a <b>Period Name</b> (e.g., "January 2024", "Q1 2024")</li>
+                <li>Set <b>Start Date</b> (first day of billing period)</li>
+                <li>Set <b>End Date</b> (last day of billing period)</li>
+                <li>Mark as <b>Active</b> (uncheck to close period)</li>
+                <li>Add <b>Notes</b> (special billing instructions or exceptions)</li>
+                <li>Click <b>Save</b> to create the billing period</li>
+            </ol>
+            <p><b>🚀 Key Features:</b><br/>
+            • <b>Date range tracking:</b> Define billing start and end dates<br/>
+            • <b>Active/inactive status:</b> Close completed periods<br/>
+            • <b>Notes system:</b> Document billing exceptions or adjustments<br/>
+            • <b>Period naming:</b> Consistent identification (month/quarter/year)<br/>
+            </p>
+            <p><b>💡 Pro Tips:</b><br/>
+            • Use consistent naming: "YYYY-MM MonthName" (e.g., "2024-01 January")<br/>
+            • Create periods in advance (quarterly planning)<br/>
+            • Mark as inactive after closing to prevent new charges<br/>
+            • Use notes for holiday schedules or special rates<br/>
+            </p>
+        </field>
     </record>
     <!-- Updated XML ID to follow convention -->
 

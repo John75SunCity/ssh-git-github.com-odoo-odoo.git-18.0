@@ -191,11 +191,64 @@
             <field name="search_view_id" ref="paper_bale_view_search" />
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    Create your first paper bale!
+                    <i class="fa fa-cube"/> No paper bales yet!
                 </p>
                 <p>
-                    Track paper bales from creation through the recycling process.
-                    Monitor weight, quality, and movements throughout the lifecycle.
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Storage Locations</b> - Go to: <i>Records Management &gt; Configuration &gt; Locations</i></li>
+                    <li>✓ <b>Paper Grade Standards</b> - Configure WHT/MIX/OCC/NEWS grades</li>
+                    <li>✓ <b>Weighing Equipment</b> - Calibrated scales with digital integration</li>
+                </ul>
+                <p>
+                    <b>📋 To create and process paper bales:</b>
+                </p>
+                <ol>
+                    <li>Paper bale auto-creates when shredded material accumulates to 1000+ lbs</li>
+                    <li>System assigns unique <b>Bale Number</b> (sequential tracking)</li>
+                    <li>Set <b>Paper Grade</b>: WHT (white office), MIX (mixed), OCC (cardboard), NEWS (newspaper)</li>
+                    <li>Record <b>Source Type</b>: on-site shredding, customer pickup, secure destruction</li>
+                    <li>Add <b>Source Notes</b>: customer names, document types, special handling</li>
+                    <li>Click <b>Weigh Bale</b> to open weighing wizard</li>
+                    <li>Connect to <b>digital scale</b> or manually enter weight in kg/lbs</li>
+                    <li>System auto-calculates <b>recycling revenue</b> based on current market rates</li>
+                    <li>Bale moves to <b>In Stock</b> status, stored in designated staging area</li>
+                    <li>Run <b>Quality Inspection</b> to verify grade purity (contamination check)</li>
+                    <li>System tracks all <b>Movements</b> (location transfers) with timestamps</li>
+                    <li>When shipment ready, click <b>Load Trailer</b> to assign to truck</li>
+                    <li>Bale status changes to <b>Shipped</b>, removes from on-hand inventory</li>
+                    <li>System logs <b>Recycled</b> status when mill confirms delivery</li>
+                </ol>
+                <p>
+                    <b>📊 Bale States:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> Bale created, awaiting initial weighing</li>
+                    <li><b>Weighed:</b> Weight recorded, in staging area awaiting inspection</li>
+                    <li><b>In Stock:</b> Quality approved, ready for shipment, counted in inventory</li>
+                    <li><b>Shipped:</b> Loaded on truck, en route to recycling mill</li>
+                    <li><b>Recycled:</b> Delivered to mill, revenue recognized, removed from inventory</li>
+                    <li><b>Cancelled:</b> Grade rejected, contamination found, returned to shredding</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Weight Tracking:</b> Digital scale integration, running total calculations, auto-revenue estimation<br/>
+                    • <b>Grade Classification:</b> WHT/MIX/OCC/NEWS standards with purity percentages<br/>
+                    • <b>Quality Inspections:</b> Visual checks, contamination detection, grade verification<br/>
+                    • <b>Movement History:</b> Complete location transfer log with responsible user tracking<br/>
+                    • <b>Shipment Integration:</b> Auto-assign to trailer loads, optimize truck capacity<br/>
+                    • <b>Revenue Calculation:</b> Real-time market rates, grade-based pricing, weight × rate<br/>
+                    • <b>Environmental Metrics:</b> Track recycled tonnage for sustainability reporting<br/>
+                    • <b>Barcode Labels:</b> Print bale tags with QR codes for mobile scanning<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Sort by <b>Paper Grade</b> to batch similar bales for efficient mill delivery<br/>
+                    • Run <b>Quality Inspection</b> before loading - contaminated bales reduce entire shipment value<br/>
+                    • Monitor <b>Weight Totals</b> to know when you have a full truckload (40,000 lbs)<br/>
+                    • Use <b>In Stock</b> filter to see all bales ready for shipment planning<br/>
+                    • Review <b>This Month</b> filter to track monthly recycling volume trends<br/>
                 </p>
             </field>
         </record>

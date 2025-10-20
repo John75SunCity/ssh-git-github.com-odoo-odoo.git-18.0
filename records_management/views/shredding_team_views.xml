@@ -45,9 +45,63 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Shredding Team.
-        </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-users"/> No shredding teams yet!
+                </p>
+                <p>
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Team Members</b> - Go to: <i>Settings &gt; Users &amp; Companies &gt; Users</i></li>
+                    <li>✓ <b>Shredding Equipment</b> - Go to: <i>Maintenance &gt; Equipment</i> (shredders, balers, trucks)</li>
+                    <li>✓ <b>Service Routes</b> - Go to: <i>Field Service &gt; Configuration &gt; Routes</i></li>
+                </ul>
+                <p>
+                    <b>📋 To create shredding operations teams:</b>
+                </p>
+                <ol>
+                    <li>Click <b>Create</b> to add new team</li>
+                    <li>Enter <b>Team Name</b>: "On-Site Shredding", "Facility Shredding", "Mobile Unit Alpha"</li>
+                    <li>Select <b>Team Leader</b> (responsible manager/supervisor)</li>
+                    <li>Add <b>Team Members</b>: Technicians, drivers, shredding operators</li>
+                    <li>Assign <b>Shredding Equipment</b>: Specific shredders, balers, trucks</li>
+                    <li>Configure <b>Service Areas</b>: Geographic zones team covers</li>
+                    <li>Set <b>Schedule</b>: Working days/hours (Mon-Fri 8am-5pm)</li>
+                    <li>Enable <b>NAID Compliance</b> if team handles AAA-level destruction</li>
+                    <li>Assign <b>Service Routes</b> for on-site shredding services</li>
+                    <li>Configure <b>Capacity Limits</b>: Max bins/day, weight limits</li>
+                    <li>System auto-assigns work orders to team based on availability</li>
+                    <li>Team dashboard shows: Active jobs, pending pickups, equipment status</li>
+                </ol>
+                <p>
+                    <b>🏗️ Team Types &amp; Specializations:</b>
+                </p>
+                <ul>
+                    <li><b>On-Site Shredding:</b> Mobile trucks with mounted shredders, customer location destruction</li>
+                    <li><b>Facility Shredding:</b> Warehouse-based teams, high-volume industrial shredding</li>
+                    <li><b>Hard Drive Destruction:</b> Specialized team for physical drive destruction (NAID AAA)</li>
+                    <li><b>Paper Baling:</b> Teams managing paper recycling, bale creation, quality control</li>
+                    <li><b>Emergency Response:</b> On-call teams for urgent destruction requests (legal holds)</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Work Order Assignment:</b> Auto-route shredding jobs to available team based on location/capacity<br/>
+                    • <b>Equipment Tracking:</b> Monitor shredder hours, maintenance schedules, breakdowns<br/>
+                    • <b>Route Optimization:</b> Assign on-site teams to geographic clusters for efficiency<br/>
+                    • <b>Capacity Planning:</b> Prevent overload by tracking max bins/weight per team per day<br/>
+                    • <b>Performance Metrics:</b> Tons shredded, certificates generated, avg response time<br/>
+                    • <b>NAID Certification:</b> Track which teams certified for AAA/AA/A level destruction<br/>
+                    • <b>Mobile Access:</b> Team members see assigned jobs on tablets/phones<br/>
+                    • <b>Chatter Integration:</b> Team communication, job notes, issue escalation<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Create <b>separate teams for on-site vs facility</b> - different skill sets/equipment<br/>
+                    • Assign <b>backup team leader</b> for coverage during vacations/illness<br/>
+                    • Set <b>capacity limits</b> realistically - prevents burnout and missed SLAs<br/>
+                    • Use <b>team dashboard</b> daily to monitor workload distribution<br/>
+                    • <b>Cross-train members</b> across equipment types for operational flexibility<br/>
+                </p>
             </field>
         </record>
     </data>

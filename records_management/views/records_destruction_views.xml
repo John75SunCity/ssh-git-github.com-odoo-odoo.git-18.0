@@ -45,9 +45,44 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                Click to add a new records.destruction.
-            </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-trash-o"/> No destruction records yet!
+                </p>
+                <p>
+                    <b>⚠️ Before creating destruction records, ensure you have:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Containers Ready for Destruction</b> - Go to: <i>Operations &gt; Containers</i> (status: "Ready to Destroy")</li>
+                    <li>✓ <b>Retention Policies</b> verified - Go to: <i>Configuration &gt; Master Data &gt; Retention Policies</i></li>
+                    <li>✓ <b>NAID Compliance</b> setup - Go to: <i>Compliance &gt; NAID Compliance</i></li>
+                    <li>✓ <b>Authorized Personnel</b> - Ensure compliance officer and witnesses are assigned</li>
+                </ul>
+                <p>
+                    <b>📋 To create a destruction record:</b>
+                </p>
+                <ol>
+                    <li>Click the <b>New</b> button above</li>
+                    <li>Enter a <b>Destruction Name</b> (e.g., "Q1 2025 Secure Destruction")</li>
+                    <li>Select <b>Customer</b> and verify destruction authorization</li>
+                    <li>Choose <b>Destruction Method</b> (Shredding, Pulping, Burning, etc.)</li>
+                    <li>Add containers to the destruction batch using <b>Add Container</b></li>
+                    <li>Assign <b>Compliance Officer</b> and <b>Witnesses</b> (required for NAID AAA)</li>
+                    <li>Set <b>Scheduled Date</b> and <b>Location</b></li>
+                    <li>Click <b>Confirm</b> to lock the destruction record</li>
+                    <li>After destruction, click <b>Complete</b> and generate certificate</li>
+                </ol>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • NAID AAA compliant destruction tracking<br/>
+                    • Automated certificate generation with digital signatures<br/>
+                    • Complete chain of custody integration<br/>
+                    • Multi-witness verification process<br/>
+                    • Real-time weight and volume tracking<br/>
+                    • Audit trail for regulatory compliance
+                </p>
+                <p>
+                    <b>💡 Best Practice:</b> Always verify retention policy expiration dates before scheduling destruction to ensure compliance.
+                </p>
             </field>
         </record>
     </data>

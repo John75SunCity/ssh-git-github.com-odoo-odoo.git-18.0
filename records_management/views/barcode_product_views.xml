@@ -326,21 +326,70 @@
         }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-box" /> Create your first barcode product configuration!
+                    <i class="fa fa-box" /> No barcode products configured yet!
             </p>
                 <p>
-                Configure barcode patterns and pricing for storage box types and shred bin sizes.
-                Manage product categories, pricing tiers, and automated barcode generation for efficient inventory tracking.
-            </p>
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Product Categories Defined</b> - Storage box, shred bin, document label types</li>
+                    <li>✓ <b>Pricing Strategy</b> - Monthly storage rates, shredding fees, setup costs</li>
+                    <li>✓ <b>Barcode Format Standards</b> - Pattern conventions (e.g., SB-XXXXX for storage boxes)</li>
+                </ul>
                 <p>
-                    <strong>Key Features:</strong>
-                    <br />
-                • Storage box and shred bin barcode configuration<br />
-                • Automated pricing based on box size and capacity<br />
-                • Barcode pattern generation and validation<br />
-                • Volume-based pricing tiers and discounts<br />
-                • NAID compliance tracking for shred services<br />
-                • Revenue analytics and utilization reporting
+                    <b>📋 To configure barcode product templates:</b>
+                </p>
+                <ol>
+                    <li>Click <b>Create</b> to add new product configuration</li>
+                    <li>Enter <b>Product Name</b>: "Standard Storage Box", "23-Gallon Shred Bin"</li>
+                    <li>Select <b>Product Category</b>: Storage Box, Shred Bin, Document Label, Asset Tag</li>
+                    <li>Enter <b>Box Size</b>: "15x12x10", "23-Gallon", "Letter/Legal"</li>
+                    <li>Set <b>Product Code</b>: Internal SKU (SSB-001, SB23G-001)</li>
+                    <li><b>Barcode Configuration:</b></li>
+                    <li>Define <b>Barcode Pattern</b>: PREFIX-NNNNN (e.g., SB-00001, BIN-23G-00001)</li>
+                    <li>Set <b>Barcode Length</b>: Total digits (8-12 recommended for QR codes)</li>
+                    <li>Enter <b>Prefix</b> (SB-, BIN-) and optional <b>Suffix</b></li>
+                    <li>Enable <b>Check Digit Required</b> for validation (Luhn algorithm)</li>
+                    <li>Enable <b>Auto-Generate</b> for sequential numbering on creation</li>
+                    <li><b>Physical Specifications:</b></li>
+                    <li>Enter <b>Capacity</b> (cubic feet): 1.2, 1.5, 2.0</li>
+                    <li>Enter <b>Dimensions</b>: Length × Width × Height</li>
+                    <li>Set <b>Weight Limit</b> (lbs): 50, 70, 100</li>
+                    <li>Select <b>Material</b>: Cardboard, plastic, metal</li>
+                    <li><b>Pricing Setup:</b></li>
+                    <li>Enter <b>Storage Rate</b>: Monthly fee ($8.50/box)</li>
+                    <li>Enter <b>Shred Rate</b>: Per-box destruction fee ($15.00)</li>
+                    <li>Set <b>Setup Fee</b>: One-time customer onboarding charge</li>
+                    <li>Configure <b>Volume Discounts</b>: Threshold + discount % (100+ boxes = 10% off)</li>
+                    <li><b>Storage Box Specific:</b></li>
+                    <li>Enable <b>Climate Controlled</b> for sensitive documents</li>
+                    <li>Set <b>Security Level</b>: Standard, High, Maximum</li>
+                    <li>Mark <b>Stackable</b> + set <b>Max Stack Height</b> for warehouse planning</li>
+                    <li><b>Shred Bin Specific:</b></li>
+                    <li>Set <b>NAID Security Level</b>: A/AA/AAA compliance</li>
+                    <li>Enable <b>Lockable</b> for secure on-site bins</li>
+                    <li>Set <b>Pickup Frequency</b>: Weekly, biweekly, monthly, on-call</li>
+                    <li>Save and system enables this product for customer subscriptions</li>
+                </ol>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Auto-Barcode Generation:</b> Sequential numbering with customizable patterns/prefixes<br/>
+                    • <b>Pricing Templates:</b> Pre-configure storage + shred rates by product type<br/>
+                    • <b>Volume Discounts:</b> Auto-apply tiered pricing when customer exceeds threshold<br/>
+                    • <b>Stat Buttons:</b> Quick access to storage boxes, shred bins, monthly revenue by product<br/>
+                    • <b>Analytics Dashboards:</b> Volume trends, utilization %, profit margins by product<br/>
+                    • <b>NAID Compliance:</b> Track certified destruction features per product type<br/>
+                    • <b>Batch Operations:</b> Activate/deactivate, update pricing, generate barcodes in bulk<br/>
+                    • <b>Kanban Workflow:</b> Visual product pipeline with activity tracking<br/>
+            </p>
+            <p>
+                <b>💡 Pro Tips:</b><br/>
+                • Use <b>distinctive prefixes</b> for each category (SB- for storage, BIN- for shred bins)<br/>
+                • Enable <b>Auto-Generate</b> to eliminate manual barcode entry errors<br/>
+                • Set <b>Volume Discount Threshold</b> slightly below typical enterprise customer volume (incentivizes growth)<br/>
+                • Review <b>Monthly Revenue</b> stat button to identify most profitable product lines<br/>
+                • Use <b>Kanban view</b> grouped by category for product portfolio management<br/>
+                • <b>Deactivate</b> instead of delete - preserves historical data for existing customers<br/>
             </p>
             </field>
         </record>

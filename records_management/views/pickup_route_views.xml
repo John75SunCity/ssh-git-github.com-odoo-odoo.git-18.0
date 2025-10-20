@@ -316,21 +316,60 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-truck" /> Create your first Pickup Route!
+                    <i class="fa fa-route"/> No pickup routes yet!
                 </p>
                 <p>
-                    <b>Advanced Pickup Route Management:</b>
-                    <br />
-                    • <i class="fa fa-map-marker-alt" /> Intelligent route planning and optimization<br />
-                    • <i class="fa fa-user" /> Driver and vehicle assignment with capacity tracking<br />
-                    • <i class="fa fa-clock-o" /> Real-time tracking and ETA calculations<br />
-                    • <i class="fa fa-bar-chart" /> Performance analytics and fuel consumption monitoring<br />
-                    • <i class="fa fa-map" /> GPS integration with live location updates<br />
-                    • <i class="fa fa-clipboard" /> NAID compliance and audit trail management<br />
-                    • <i class="fa fa-mobile" /> Mobile-friendly interface for drivers<br />
-                    • <i class="fa fa-bell" /> Automated notifications and status updates<br />
-                    • <i class="fa fa-line-chart" /> Customer satisfaction tracking and reporting<br />
-                    • <i class="fa fa-truck" /> Multi-stop route coordination with time optimization
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>FSM Project Setup</b> - Go to: <i>Records Management &gt; Configuration &gt; FSM Projects</i></li>
+                    <li>✓ <b>Drivers Assigned</b> - Go to: <i>Employees &gt; Field Service Drivers</i></li>
+                    <li>✓ <b>Vehicles Configured</b> - Go to: <i>Fleet Management &gt; Vehicles</i></li>
+                    <li>✓ <b>Pickup Requests Created</b> - Go to: <i>Records Management &gt; Operations &gt; Pickup Requests</i></li>
+                </ul>
+                <p>
+                    <b>📋 To create a pickup route:</b>
+                </p>
+                <ol>
+                    <li>Click "Create" and set <b>Route Date</b></li>
+                    <li>Assign <b>Driver</b> and <b>Vehicle</b></li>
+                    <li>Add <b>Pickup Requests</b> to the route</li>
+                    <li>Use <b>Route Optimizer</b> to sequence stops efficiently</li>
+                    <li>Review <b>Planned Start/End Times</b> and adjust if needed</li>
+                    <li>Click <b>Confirm Route</b> to lock schedule</li>
+                    <li>FSM tasks will auto-create for driver assignment</li>
+                    <li>Monitor <b>Actual vs Planned Times</b> during execution</li>
+                    <li>Update route status as driver progresses</li>
+                    <li>Complete route when all pickups finished</li>
+                </ol>
+                <p>
+                    <b>📊 Route States:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> New route being planned, stops not sequenced yet</li>
+                    <li><b>Planned:</b> Route confirmed with optimized stop sequence, ready for execution</li>
+                    <li><b>In Progress:</b> Driver actively executing route, real-time GPS tracking enabled</li>
+                    <li><b>Completed:</b> All stops finished, actual times recorded, fuel/mileage logged</li>
+                    <li><b>Cancelled:</b> Route terminated early due to vehicle issue, weather, or emergency</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Route Optimization:</b> AI-powered stop sequencing for minimum travel time and fuel cost<br/>
+                    • <b>GPS Integration:</b> Real-time driver location tracking with live ETA calculations<br/>
+                    • <b>Time Window Management:</b> Respect customer-specified pickup windows with automated alerts<br/>
+                    • <b>FSM Synchronization:</b> Auto-create Field Service tasks with mobile app compatibility<br/>
+                    • <b>Multi-Stop Support:</b> Plan complex routes with 10+ stops per day per driver<br/>
+                    • <b>Performance Analytics:</b> Track actual vs planned times, identify delays, optimize future routes<br/>
+                    • <b>Fuel Monitoring:</b> Record fuel usage, calculate cost per route, environmental metrics<br/>
+                    • <b>Driver Communication:</b> Send route updates, special instructions, customer notes to mobile devices<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Use <b>Route Optimizer</b> before confirming to reduce drive time by up to 30%<br/>
+                    • Group pickups by <b>geographic area</b> and <b>time windows</b> for maximum efficiency<br/>
+                    • Monitor <b>actual vs planned times</b> to improve future route estimates<br/>
+                    • Set <b>supervisor alerts</b> for routes running &gt;15 minutes behind schedule<br/>
+                    • Review <b>fuel consumption trends</b> weekly to identify vehicle maintenance needs<br/>
                 </p>
             </field>
         </record>

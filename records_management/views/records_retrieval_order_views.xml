@@ -192,8 +192,84 @@
             <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="records_retrieval_order_view_search" />
             <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">Create your first Retrieval Order</p>
-                <p>Unified retrieval for files, containers, scans, and more with SLA tracking.</p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-download"/> Create your first Retrieval Order!
+                </p>
+                <p>
+                    <b>⚠️ Prerequisites for retrieval orders:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Customer Setup</b> - Verify customer has active account and permissions</li>
+                    <li>✓ <b>Stored Items</b> - Documents/containers must be in storage (status: "Stored" or "Indexed")</li>
+                    <li>✓ <b>Locations Configured</b> - Storage locations must be properly set up</li>
+                    <li>✓ <b>Assigned Staff</b> - Warehouse team members available to fulfill orders</li>
+                    <li>✓ <b>Delivery Method</b> - Determine pickup, courier, or digital delivery</li>
+                </ul>
+                <p>
+                    <b>📋 Understanding Retrieval Orders:</b>
+                </p>
+                <p>
+                    Retrieval Orders provide a <b>unified workflow</b> for pulling stored items for customer access. 
+                    This includes physical document retrieval, container returns, digital scanning, and temporary loans. 
+                    All retrievals are tracked with SLA monitoring and complete audit trails.
+                </p>
+                <p>
+                    <b>🎯 To create a retrieval order:</b>
+                </p>
+                <ol>
+                    <li>Click the <b>New</b> button above</li>
+                    <li>System auto-generates <b>Order Number</b> (e.g., "RO-2025-001")</li>
+                    <li>Select <b>Customer</b> and <b>Department</b></li>
+                    <li>Set <b>Request Date</b> (when order was requested)</li>
+                    <li>Enter <b>Required Date</b> (customer's deadline/need-by date)</li>
+                    <li>Choose <b>Delivery Method</b>:
+                        <ul>
+                            <li><b>Pickup:</b> Customer collects from facility</li>
+                            <li><b>Courier:</b> Delivery to customer location</li>
+                            <li><b>Digital:</b> Scan and email/portal delivery</li>
+                            <li><b>Temporary Loan:</b> Items returned after use</li>
+                        </ul>
+                    </li>
+                    <li>Add <b>Items to Retrieve</b>:
+                        <ul>
+                            <li>Select specific <b>Documents</b> or <b>Containers</b></li>
+                            <li>Specify quantity if multiple copies</li>
+                            <li>Add special handling notes</li>
+                        </ul>
+                    </li>
+                    <li>Assign <b>Responsible User</b> (warehouse staff to fulfill)</li>
+                    <li>Set <b>Priority</b> (Normal, High, Urgent)</li>
+                    <li>Add <b>Notes</b> (delivery address, special instructions)</li>
+                    <li>Click <b>Confirm</b> to activate the order</li>
+                    <li>Use <b>In Progress</b> when retrieval begins</li>
+                    <li>Click <b>Complete</b> when items are delivered/ready</li>
+                </ol>
+                <p>
+                    <b>📊 Retrieval Order States:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> Order being prepared, not yet confirmed</li>
+                    <li><b>Confirmed:</b> Order sent to warehouse queue</li>
+                    <li><b>In Progress:</b> Staff actively retrieving items</li>
+                    <li><b>Ready:</b> Items pulled and ready for pickup/delivery</li>
+                    <li><b>Completed:</b> Items delivered to customer</li>
+                    <li><b>Cancelled:</b> Order withdrawn or no longer needed</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Unified retrieval for files, containers, scans, and more<br/>
+                    • SLA tracking with deadline monitoring<br/>
+                    • Multi-item order support (batch retrievals)<br/>
+                    • Priority-based queue management<br/>
+                    • Real-time status updates to customers<br/>
+                    • Chain of custody integration<br/>
+                    • Mobile-optimized for warehouse staff<br/>
+                    • Automatic notifications at each stage<br/>
+                    • Integration with FSM for delivery tasks
+                </p>
+                <p>
+                    <b>💡 Best Practice:</b> Group multiple items into one order for efficiency. Use <b>Required Date</b> for proper SLA tracking. Set priority accurately to help warehouse staff prioritize work.
+                </p>
             </field>
         </record>
     

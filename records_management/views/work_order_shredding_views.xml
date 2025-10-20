@@ -303,14 +303,71 @@ lbs
             <field name="domain">[]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-            Click to create a new Shredding Work Order.
-        </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-scissors"/> No shredding work orders yet!
+                </p>
                 <p>
-            Shredding Work Orders manage the secure destruction of documents and materials
-            in compliance with NAID standards. Track containers, equipment, progress,
-            and generate compliance certificates automatically.
-        </p>
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Shredding Equipment</b> - Go to: <i>Records Management &gt; Configuration &gt; Equipment</i></li>
+                    <li>✓ <b>NAID Certification</b> - Go to: <i>Records Management &gt; Compliance &gt; NAID Settings</i></li>
+                    <li>✓ <b>Containers to Shred</b> - Go to: <i>Records Management &gt; Containers</i></li>
+                    <li>✓ <b>Technicians Assigned</b> - Go to: <i>Employees &gt; Shredding Teams</i></li>
+                </ul>
+                <p>
+                    <b>📋 To create a shredding work order:</b>
+                </p>
+                <ol>
+                    <li>Click "Create" and assign <b>Customer/Partner</b></li>
+                    <li>Select <b>Shredding Type</b> (on-site/off-site/mobile)</li>
+                    <li>Choose <b>Service Location</b> (customer site vs facility)</li>
+                    <li>Set <b>Scheduled Date</b> and <b>Deadline</b></li>
+                    <li>Add <b>Containers</b> to shred (auto-calculates weight/volume)</li>
+                    <li>Assign <b>Shredding Equipment</b> and <b>Equipment Operator</b></li>
+                    <li>Select <b>Coordinator</b> for multi-order sessions</li>
+                    <li>Configure <b>NAID Compliance</b> settings (AAA/AA/A level)</li>
+                    <li>Add <b>Assigned Technicians</b> and <b>Vehicle</b> if mobile</li>
+                    <li>Enable <b>Witness Required</b> if customer observation needed</li>
+                    <li>Click <b>Confirm</b> to lock order and schedule resources</li>
+                    <li>Click <b>Start Shredding</b> when equipment ready</li>
+                    <li>Check off containers as shredded (progress bar updates)</li>
+                    <li>Click <b>Complete</b> when all items destroyed</li>
+                    <li>System auto-generates <b>Certificate of Destruction</b> with witness signatures</li>
+                </ol>
+                <p>
+                    <b>📊 Work Order States:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> Planning stage, containers being added, resources not yet committed</li>
+                    <li><b>Confirmed:</b> Schedule locked, equipment/technicians assigned, awaiting execution start</li>
+                    <li><b>In Progress:</b> Active shredding, containers being destroyed, real-time progress tracking</li>
+                    <li><b>Paused:</b> Temporary suspension (equipment maintenance, lunch break, customer request)</li>
+                    <li><b>Completed:</b> All containers shredded, certificate issued, audit logs sealed</li>
+                    <li><b>Cancelled:</b> Order terminated (customer cancellation, equipment failure, safety issue)</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>NAID AAA/AA/A Compliance:</b> Full chain of custody, witness signatures, video recording optional<br/>
+                    • <b>Multi-Container Batching:</b> Process 10-100+ containers per work order with auto weight totals<br/>
+                    • <b>Real-Time Progress:</b> Visual progress bar shows % completion, containers remaining<br/>
+                    • <b>Equipment Management:</b> Track shredder usage, maintenance schedules, operator assignments<br/>
+                    • <b>Witness Integration:</b> Digital signatures from customer witnesses, technicians, operators<br/>
+                    • <b>Compliance Checklist:</b> Step-by-step verification tasks for NAID certification requirements<br/>
+                    • <b>Auto-Certificates:</b> Generate Certificate of Destruction PDF with all required NAID elements<br/>
+                    • <b>Timeline Tracking:</b> Immutable audit trail of every event, pause, duration, user action<br/>
+                    • <b>Bulk Operations:</b> Confirm/start multiple orders simultaneously for efficiency<br/>
+                    • <b>Performance Analytics:</b> Graph/pivot views for duration analysis, weight trends, team performance<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Use <b>Coordinator</b> to batch multiple customers' shredding into one session for cost efficiency<br/>
+                    • Set <b>Priority = Urgent</b> for time-sensitive legal hold destructions (highlights in red)<br/>
+                    • Enable <b>NAID Compliant</b> checkbox to enforce all compliance checklist items before completion<br/>
+                    • Use <b>Pause/Resume</b> for meal breaks - maintains accurate labor time tracking<br/>
+                    • Review <b>Equipment Status</b> before starting - prevents mid-shred breakdowns<br/>
+                    • <b>Video Recording</b> toggle provides extra security documentation for high-value clients<br/>
+                </p>
             </field>
         </record>
         <record id="action_work_order_shredding_my" model="ir.actions.act_window">

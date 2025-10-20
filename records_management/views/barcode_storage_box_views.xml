@@ -39,15 +39,72 @@
         </record>
         <record id="action_barcode_storage_box" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model barcode.storage.box has state field - consider using default search filters -->
-            <field name="name">Barcode Storage Box</field>
+            <field name="name">Barcode Storage Boxes</field>
             <field name="res_model">barcode.storage.box</field>
             <field name="view_mode">list,form</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Barcode Storage Box.
-        </p>
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-qrcode"/> No barcode-tracked boxes yet!
+                </p>
+                <p>
+                    <b>⚠️ Prerequisites:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Barcode System Active</b> - Go to: <i>Records Management &gt; Configuration &gt; Barcode Settings</i></li>
+                    <li>✓ <b>Storage Boxes Available</b> - Go to: <i>Records Management &gt; Inventory &gt; Storage Boxes</i></li>
+                    <li>✓ <b>Label Printer</b> - Thermal or inkjet printer for barcode labels</li>
+                </ul>
+                <p>
+                    <b>📋 To enable barcode tracking on storage boxes:</b>
+                </p>
+                <ol>
+                    <li>Navigate to existing <b>Storage Box</b> record</li>
+                    <li>Click <b>Generate Barcode</b> button (if not already assigned)</li>
+                    <li>System auto-creates unique barcode based on box ID or custom format</li>
+                    <li>Select <b>Barcode Type</b>: QR Code (2D) or Code 128 (1D linear)</li>
+                    <li>QR codes store more data (box ID + customer + location + contents summary)</li>
+                    <li>Code 128 is simpler but only stores box ID (faster scanning)</li>
+                    <li>Click <b>Print Label</b> to generate PDF with barcode + human-readable info</li>
+                    <li>Label includes: Box ID, Customer Name, Date Created, Barcode</li>
+                    <li>Affix label to <b>multiple sides</b> of box for omnidirectional scanning</li>
+                    <li>Box now appears in <b>Barcode Storage Box</b> list for tracking</li>
+                    <li>Use mobile scanner or warehouse app to scan box during:</li>
+                    <li>• <b>Receiving:</b> Log arrival from customer, assign location</li>
+                    <li>• <b>Retrieval:</b> Quickly locate box in warehouse by scanning shelves</li>
+                    <li>• <b>Delivery:</b> Verify correct box before sending to customer</li>
+                    <li>• <b>Inventory:</b> Rapid cycle count via barcode scanning</li>
+                    <li>• <b>Destruction:</b> Confirm identity before shredding (audit trail)</li>
+                </ol>
+                <p>
+                    <b>📊 Barcode Tracking Benefits:</b>
+                </p>
+                <ul>
+                    <li><b>Scan-to-Locate:</b> Find any box in 10,000+ inventory in seconds</li>
+                    <li><b>Error Reduction:</b> Eliminate manual entry mistakes, wrong box retrievals</li>
+                    <li><b>Audit Trail:</b> Every scan logs user, timestamp, GPS location</li>
+                    <li><b>Mobile Workflows:</b> Field techs scan boxes on pickups/deliveries via smartphone</li>
+                    <li><b>Inventory Accuracy:</b> Cycle counting 10× faster with handheld scanners</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Dual Barcode Types:</b> QR Code (rich data) or Code 128 (speed/simplicity)<br/>
+                    • <b>Auto-Generation:</b> Barcodes created on-demand with sequential or custom formats<br/>
+                    • <b>Label Printing:</b> Professional PDF labels with company logo, box details, barcode<br/>
+                    • <b>Mobile Scanning:</b> iOS/Android apps can scan via camera (no dedicated hardware needed)<br/>
+                    • <b>Multi-Scan Support:</b> Scan same box at pickup, receiving, storage, retrieval, delivery<br/>
+                    • <b>History Tracking:</b> View all scan events with timestamps, users, locations<br/>
+                    • <b>Integration Ready:</b> Works with warehouse management, retrieval orders, destruction tracking<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Use <b>QR Codes</b> for boxes with frequent location changes - stores more tracking data<br/>
+                    • Use <b>Code 128</b> for high-volume warehouses - faster scanning throughput<br/>
+                    • Print labels on <b>durable material</b> (laminated or polyester) for long-term storage<br/>
+                    • Affix labels to <b>top and sides</b> so boxes can be scanned from any angle on shelves<br/>
+                    • Enable <b>mobile scanning</b> for field technicians - no extra hardware required<br/>
+                </p>
             </field>
         </record>
     </data>

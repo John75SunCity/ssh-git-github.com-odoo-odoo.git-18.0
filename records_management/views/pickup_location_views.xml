@@ -62,6 +62,46 @@
         <field name="name">Pickup Location</field>
         <field name="res_model">pickup.location</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fa fa-map-marker"/> Create your first pickup location
+            </p>
+            <p><b>⚠️ Prerequisites:</b></p>
+            <ul>
+                <li>✓ <b>Country/state configured</b> - Go to: <i>Contacts &gt; Configuration &gt; Localization</i></li>
+                <li>✓ <b>Company/user assigned</b> - Set location ownership</li>
+            </ul>
+            <p><b>📋 To create a pickup location:</b></p>
+            <ol>
+                <li>Click <b>New</b> to open the location form</li>
+                <li>Enter a <b>Location Name</b> (e.g., "Smith Corp Main Office")</li>
+                <li>Add complete <b>Address</b> (street, building, suite)</li>
+                <li>Enter <b>City</b> name</li>
+                <li>Select <b>State</b> (province/region)</li>
+                <li>Enter <b>ZIP/Postal Code</b></li>
+                <li>Select <b>Country</b></li>
+                <li>Mark as <b>Active</b> (uncheck to disable location)</li>
+                <li>Assign <b>Company</b> (for multi-company setups)</li>
+                <li>Assign <b>User</b> (location manager/contact)</li>
+                <li>Add <b>Notes</b> (access instructions, parking, contact names)</li>
+                <li>Click <b>Save</b> to create the location</li>
+            </ol>
+            <p><b>🚀 Key Features:</b><br/>
+            • <b>Complete addressing:</b> Full street to country details<br/>
+            • <b>Active/inactive status:</b> Disable old locations<br/>
+            • <b>Company assignment:</b> Multi-organization support<br/>
+            • <b>User linking:</b> Contact person for each location<br/>
+            • <b>Notes system:</b> Access codes, parking, special instructions<br/>
+            • <b>Search filters:</b> Find by name, address, or city<br/>
+            </p>
+            <p><b>💡 Pro Tips:</b><br/>
+            • Add gate codes and parking instructions in notes<br/>
+            • Include contact names and phone numbers<br/>
+            • Use consistent naming: "Customer Name - Building/Location"<br/>
+            • Mark as inactive rather than deleting (history preservation)<br/>
+            • Verify addresses with GPS/Google Maps before saving<br/>
+            </p>
+        </field>
     </record>
     </data>
 </odoo>

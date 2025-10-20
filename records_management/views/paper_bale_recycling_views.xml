@@ -143,12 +143,74 @@
             <field name="search_view_id" ref="paper_bale_recycling_view_search" />
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    Create your first recycling record!
+                    <i class="fa fa-recycle"/> No recycling records yet!
                 </p>
                 <p>
-                    Track paper bales through the recycling process.
-                    Monitor environmental impact and financial returns.
+                    <b>⚠️ Prerequisites:</b>
                 </p>
+                <ul>
+                    <li>✓ <b>Paper Bale Shipped</b> - Go to: <i>Operations &gt; Paper Recycling &gt; Paper Bales</i> (status: Shipped)</li>
+                    <li>✓ <b>Recycling Facility Configured</b> - Go to: <i>Contacts</i> (mills with recycling operations)</li>
+                    <li>✓ <b>Market Rates Current</b> - Update pricing per ton by grade (changes monthly)</li>
+                </ul>
+                <p>
+                    <b>📋 Recycling Processing Workflow:</b>
+                </p>
+                <ol>
+                    <li>Paper bale arrives at recycling mill (scanned upon delivery)</li>
+                    <li>System auto-creates <b>Recycling Record</b> in <b>Pending</b> status</li>
+                    <li>Record captures: <b>Bale ID</b>, <b>Weight</b>, <b>Grade</b>, <b>Delivery Date</b></li>
+                    <li>Mill confirms <b>Collection Date</b> (when bale unloaded at facility)</li>
+                    <li>Enter <b>Processing Date</b> (when mill begins recycling)</li>
+                    <li>Select <b>Recycling Facility</b> (specific mill location)</li>
+                    <li>System retrieves current <b>Market Price Per Ton</b> for grade</li>
+                    <li>Enter mill's <b>Processing Cost</b> (handling/sorting fee)</li>
+                    <li>System auto-calculates <b>Total Revenue</b>: Weight × Price Per Ton</li>
+                    <li>System auto-calculates <b>Net Profit</b>: Total Revenue - Processing Cost</li>
+                    <li>Record environmental impact: <b>Carbon Footprint Reduction</b> (CO2 saved vs virgin paper)</li>
+                    <li>Add <b>Water Savings</b> (gallons saved vs virgin pulp production)</li>
+                    <li>Add <b>Energy Savings</b> (kWh saved vs virgin paper manufacturing)</li>
+                    <li>Click <b>Mark Processed</b> to finalize (status: Processed)</li>
+                    <li>Revenue recognized, bale permanently removed from inventory</li>
+                    <li>Environmental metrics aggregate for sustainability reporting</li>
+                </ol>
+                <p>
+                    <b>📊 Recycling Record States:</b>
+                </p>
+                <ul>
+                    <li><b>Pending:</b> Bale delivered to mill, awaiting processing confirmation</li>
+                    <li><b>Processed:</b> Mill completed recycling, revenue recognized, metrics logged</li>
+                    <li><b>Cancelled:</b> Bale rejected by mill (contamination), returned or downgraded</li>
+                </ul>
+                <p>
+                    <b>🌱 Environmental Impact Calculations:</b>
+                </p>
+                <ul>
+                    <li><b>Carbon Footprint Reduction:</b> 2.5 metric tons CO2 saved per ton of recycled paper</li>
+                    <li><b>Water Savings:</b> 7,000 gallons saved per ton (vs virgin pulp production)</li>
+                    <li><b>Energy Savings:</b> 4,100 kWh saved per ton (vs virgin paper manufacturing)</li>
+                    <li><b>Tree Savings:</b> 17 trees saved per ton of recycled paper (not logged in system yet)</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • <b>Auto-Revenue Calculation:</b> Weight × current market rate by grade<br/>
+                    • <b>Net Profit Tracking:</b> Revenue - processing fees = profit per bale<br/>
+                    • <b>Environmental Metrics:</b> CO2, water, energy savings for sustainability reports<br/>
+                    • <b>Mill Integration:</b> Links to recycling facility contact + delivery tracking<br/>
+                    • <b>Grade-Based Pricing:</b> WHT &gt; OCC &gt; MIX &gt; NEWS (market rates vary)<br/>
+                    • <b>Aggregated Reporting:</b> Total tonnage recycled, revenue, environmental impact<br/>
+                    • <b>Kanban Workflow:</b> Visual pipeline from Pending → Processed by facility<br/>
+                    • <b>Historical Tracking:</b> Compare processing times, costs, revenues over time<br/>
+            </p>
+            <p>
+                <b>💡 Pro Tips:</b><br/>
+                • Update <b>Market Price Per Ton</b> monthly - prices fluctuate 20-30% seasonally<br/>
+                • Use <b>Kanban view</b> grouped by facility to see pipeline at each mill<br/>
+                • Filter by <b>This Month</b> to calculate monthly recycling revenue<br/>
+                • Export <b>environmental metrics</b> for annual sustainability reports (ESG compliance)<br/>
+                • Review <b>Net Profit</b> by grade - focus collections on highest-margin grades<br/>
+                • <b>Group by Facility</b> to compare which mills offer best pricing/service<br/>
+            </p>
             </field>
         </record>
     </data>

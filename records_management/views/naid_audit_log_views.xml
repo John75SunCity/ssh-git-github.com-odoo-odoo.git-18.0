@@ -226,17 +226,81 @@
         <field name="context">{'search_default_filter_today': 1, 'search_default_naid_compliant': 1}</field>
         <field name="help" type="html">
         <p class="o_view_nocontent_smiling_face">
-            No audit logs found.
+            <i class="fa fa-clipboard"/> No audit logs found - your audit trail is empty!
         </p>
         <p>
-            <b>NAID AAA Compliance Audit Trail:</b>
-            <br />
-            • Complete timestamped record of all system activities<br />
-            • User accountability for every action performed<br />
-            • Direct links to related documents and records<br />
-            • NAID AAA compliance verification for all entries<br />
-            • Advanced filtering by action type, user, and time period<br />
-            • Immutable audit trail ensuring data integrity
+            <b>🔍 Understanding NAID Audit Logs:</b>
+        </p>
+        <p>
+            This view displays the complete, <b>immutable audit trail</b> of all system activities. 
+            Every action is automatically logged with timestamp, user, IP address, and NAID compliance status.
+        </p>
+        <p>
+            <b>📊 What gets logged automatically:</b>
+        </p>
+        <ul>
+            <li>✓ <b>Create:</b> New records created (containers, documents, destruction records)</li>
+            <li>✓ <b>Update:</b> Modifications to existing records (status changes, field updates)</li>
+            <li>✓ <b>Delete:</b> Record deletions (flagged as high-priority security events)</li>
+            <li>✓ <b>Security:</b> Access control events, permission changes, rule violations</li>
+            <li>✓ <b>Destruction:</b> All destruction workflow events (scheduling, completion, certification)</li>
+            <li>✓ <b>Pickup:</b> Pickup requests, route assignments, completion</li>
+            <li>✓ <b>Access:</b> Record views, downloads, and access attempts</li>
+            <li>✓ <b>Export:</b> Data exports and report generations</li>
+            <li>✓ <b>Login:</b> Successful and failed login attempts</li>
+        </ul>
+        <p>
+            <b>🎯 How to use audit logs effectively:</b>
+        </p>
+        <ol>
+            <li><b>Quick Filters:</b> Use pre-configured filters in the search panel:
+                <ul>
+                    <li><i>Today</i> - All activities from today (default view)</li>
+                    <li><i>Last 7 Days</i> - Recent activity overview</li>
+                    <li><i>Last 30 Days</i> - Monthly compliance reporting</li>
+                    <li><i>NAID Compliant</i> - Show only compliant activities (default)</li>
+                </ul>
+            </li>
+            <li><b>Action Type Filters:</b> Filter by specific event types:
+                <ul>
+                    <li><i>Security Events</i> - Access violations, permission changes</li>
+                    <li><i>Destruction Events</i> - Complete destruction workflow</li>
+                    <li><i>Delete Actions</i> - Track all record deletions</li>
+                    <li><i>Login Failure</i> - Security monitoring</li>
+                </ul>
+            </li>
+            <li><b>User Tracking:</b> Group by User to see individual activity</li>
+            <li><b>Related Records:</b> Click any log entry to see:
+                <ul>
+                    <li>Linked Document, Container, or Custody record</li>
+                    <li>Original record details (if still exists)</li>
+                    <li>User who performed the action</li>
+                    <li>IP address and timestamp</li>
+                </ul>
+            </li>
+        </ol>
+        <p>
+            <b>🔒 NAID AAA Compliance Features:</b><br/>
+            • <b>Immutable Records:</b> Cannot be edited or deleted (read-only)<br/>
+            • <b>Complete Timestamp:</b> Precise date/time for every action<br/>
+            • <b>User Accountability:</b> Every action tracked to specific user<br/>
+            • <b>IP Address Logging:</b> Network source tracking<br/>
+            • <b>Direct Links:</b> One-click access to related documents/records<br/>
+            • <b>Compliance Verification:</b> NAID AAA compliance flag on every entry<br/>
+            • <b>Advanced Search:</b> Filter by action, user, date, compliance status<br/>
+            • <b>Regulatory Reports:</b> Export for audits and compliance reporting
+        </p>
+        <p>
+            <b>⚠️ Important Notes:</b>
+        </p>
+        <ul>
+            <li><b>Read-Only:</b> Audit logs cannot be modified to maintain integrity</li>
+            <li><b>Automatic:</b> No manual action needed - all activities logged automatically</li>
+            <li><b>Permanent:</b> Logs are retained per your data retention policy</li>
+            <li><b>Compliance:</b> Required for NAID AAA certification audits</li>
+        </ul>
+        <p>
+            <b>💡 Best Practice:</b> Review <i>Security Events</i> and <i>Login Failures</i> daily. Use <i>Group By User</i> for activity audits. Export logs monthly for compliance documentation.
         </p>
     </field>
     </record>
