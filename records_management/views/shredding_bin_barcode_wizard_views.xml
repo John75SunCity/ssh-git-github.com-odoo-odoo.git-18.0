@@ -78,10 +78,69 @@ This ensures users only enter a new barcode when not using manual override.
         <field name="res_model">shredding.bin.barcode.wizard</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-There are no examples. Click here to add a new Shredding Bin Barcode Wizard.
-        </p>
-    </field>
+            <p class="o_view_nocontent_smiling_face">
+                <i class="fa fa-wrench"/> No barcode fix sessions active!
+            </p>
+            <p>
+                <b>⚠️ When to use this wizard:</b>
+            </p>
+            <ul>
+                <li><b>Damaged Barcode Label:</b> Physical label torn, faded, or unreadable</li>
+                <li><b>Lost Barcode:</b> Label completely missing from bin</li>
+                <li><b>Scan Issues:</b> Barcode won't scan due to dirt, wear, or printing error</li>
+                <li><b>Wrong Bin Size:</b> Bin physically changed size but barcode hasn't updated</li>
+            </ul>
+            <p>
+                <b>📋 Barcode Fix Workflow:</b>
+            </p>
+            <ol>
+                <li>Open shredding bin record with problematic barcode</li>
+                <li>Click <b>Fix Barcode</b> action button</li>
+                <li>Wizard opens showing <b>Current Barcode</b> and detected <b>Scan Issue</b></li>
+                <li><b>Option 1: Generate New Barcode (Recommended)</b></li>
+                <li>Leave <b>Use Manual Override</b> unchecked</li>
+                <li>Enter <b>New Barcode</b> if you have specific number to assign</li>
+                <li>Or leave blank - system auto-generates next sequential barcode</li>
+                <li>Click <b>Apply Fix</b></li>
+                <li>System updates bin record with new barcode</li>
+                <li>Print new label and affix to physical bin</li>
+                <li><b>Option 2: Manual Size Override (Advanced)</b></li>
+                <li>Check <b>Use Manual Override</b> box</li>
+                <li>Select correct <b>Manual Bin Size</b> (23G, 32G, 64G, 96G)</li>
+                <li>System regenerates barcode with correct size prefix (BIN-23G-XXXXX)</li>
+                <li>Click <b>Apply Fix</b></li>
+                <li>Print label with correct size designation</li>
+                <li><b>Audit Trail:</b> All changes logged with user, timestamp, reason</li>
+            </ol>
+            <p>
+                <b>🔍 Common Scan Issues Detected:</b>
+            </p>
+            <ul>
+                <li><b>Damaged Label:</b> Physical wear preventing scanner from reading</li>
+                <li><b>Duplicate Barcode:</b> Same number assigned to multiple bins (system error)</li>
+                <li><b>Invalid Format:</b> Barcode doesn't match expected pattern (BIN-XXX-XXXXX)</li>
+                <li><b>Size Mismatch:</b> Barcode prefix (23G) doesn't match physical bin size (32G)</li>
+                <li><b>Missing in Database:</b> Barcode scanned but no bin record found</li>
+            </ul>
+            <p>
+                <b>🚀 Key Features:</b><br/>
+                • <b>Auto-Detection:</b> System identifies scan issue type automatically<br/>
+                • <b>Sequential Generation:</b> New barcodes maintain proper numbering sequence<br/>
+                • <b>Size Validation:</b> Prevents assigning 23G barcode to 32G bin<br/>
+                • <b>Audit Logging:</b> Complete history of barcode changes with justification<br/>
+                • <b>Label Printing:</b> Wizard directly triggers label print after fix<br/>
+                • <b>Duplicate Prevention:</b> Checks for existing barcode before assignment<br/>
+                • <b>Manual Override:</b> Allows size correction without creating new bin record<br/>
+            </p>
+            <p>
+                <b>💡 Pro Tips:</b><br/>
+                • <b>Always print new label immediately</b> after fix (prevents confusion)<br/>
+                • Use <b>Manual Override</b> only when bin size physically changed<br/>
+                • For damaged labels, <b>clean bin surface</b> before affixing new label<br/>
+                • If duplicate detected, <b>investigate</b> - may indicate data migration issue<br/>
+                • <b>Document reason</b> in notes field for audit trail clarity<br/>
+            </p>
+        </field>
     </record>
     </data>
 </odoo>
