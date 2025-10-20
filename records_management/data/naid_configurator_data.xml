@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- NAID Compliance Feature Toggle -->
+        <record id="config_enable_naid_compliance" model="rm.module.configurator">
+            <field name="name">Enable NAID Compliance</field>
+            <field name="category">compliance</field>
+            <field name="config_key">naid.compliance.enabled</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="value_boolean">True</field>
+            <field name="description">Master toggle for NAID AAA compliance features. When disabled, NAID-specific validation and tracking is turned off.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- NAID Audit Log Retention Period -->
+        <record id="config_naid_audit_retention_days" model="rm.module.configurator">
+            <field name="name">NAID Audit Retention (Days)</field>
+            <field name="category">compliance</field>
+            <field name="config_key">naid.audit.retention_days</field>
+            <field name="config_type">parameter</field>
+            <field name="value_number">3650</field>
+            <field name="value_text" eval="False"/>
+            <field name="value_boolean" eval="False"/>
+            <field name="value_selection" eval="False"/>
+            <field name="description">Number of days to retain NAID audit logs for compliance. Default: 3650 days (10 years) per NAID AAA standards.</field>
+            <field name="help_text">NAID requires audit logs to be retained for at least 10 years. This value controls automatic cleanup of old audit records.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- Enable Temporary Inventory Audit Trail (NAID) -->
+        <record id="config_enable_temp_inventory_audit" model="rm.module.configurator">
+            <field name="name">Enable Temporary Inventory Audit Trail</field>
+            <field name="category">compliance</field>
+            <field name="config_key">enable_temp_inventory_audit</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="value_boolean">True</field>
+            <field name="description">Enable comprehensive audit trail for temporary inventory changes. Required for compliance with NAID and other regulatory standards.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+    </data>
+</odoo>
