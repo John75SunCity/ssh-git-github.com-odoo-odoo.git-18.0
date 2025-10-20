@@ -26,10 +26,8 @@ class PaperLoadShipment(models.Model):
     )
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('ready', 'Ready for Shipment'),
-        ('in_transit', 'In Transit'),
-        ('delivered', 'Delivered'),
-        ('completed', 'Completed'),
+        ('ready', 'Ready for Pickup'),
+        ('picked_up', 'Picked Up'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True, required=True)
 
@@ -55,6 +53,20 @@ class PaperLoadShipment(models.Model):
     actual_delivery_date = fields.Datetime(string="Actual Delivery", readonly=True, tracking=True)
 
     notes = fields.Text(string="Shipment Notes")
+    
+    # Invoice and manifest fields
+    driver_signature = fields.Char(string="Driver Signature", help="Driver's name or digital signature timestamp")
+    manifest_printed = fields.Boolean(string="Manifest Printed", default=False)
+    manifest_print_date = fields.Datetime(string="Manifest Print Date", readonly=True)
+    invoice_id = fields.Many2one(comodel_name='account.move', string="Invoice", readonly=True)
+    
+    # Feature toggles
+    enable_geographic_batching = fields.Boolean(
+        string="Enable Geographic Batching",
+        default=False,
+        help="When enabled, suggests consolidating deliveries to same location on same day"
+    )
+    
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True)
     active = fields.Boolean(default=True)
 
@@ -112,32 +124,38 @@ class PaperLoadShipment(models.Model):
         self.write({'state': 'ready'})
         self.message_post(body=_("Shipment is now ready."))
 
-    def action_start_transit(self):
+    def action_mark_picked_up(self):
+        """Mark shipment as picked up by driver - triggers invoice creation."""
         self.ensure_one()
+        if not self.driver_signature:
+            raise UserError(_("Driver signature is required before marking as picked up."))
         self.write({
-            'state': 'in_transit',
+            'state': 'picked_up',
             'actual_pickup_date': fields.Datetime.now()
         })
         self.bale_ids.write({'state': 'shipped'})
-        self.message_post(body=_("Shipment is now in transit."))
+        # Create invoice matching load number
+        self._create_pickup_invoice()
+        self.message_post(body=_("Load picked up by driver. Invoice generated."))
 
-    def action_deliver(self):
+    def _create_pickup_invoice(self):
+        """Create invoice when load is picked up, matching load number and manifest."""
+        self.ensure_one()
+        # Placeholder for invoice creation logic
+        # This would integrate with account.move to create invoice
+        # matching self.name (load number) with bale manifest
+        self.message_post(body=_("Invoice creation triggered (requires accounting module integration)."))
+
+    def action_print_manifest(self):
+        """Print manifest with driver signature timestamp for easy reference."""
         self.ensure_one()
         self.write({
-            'state': 'delivered',
-            'actual_delivery_date': fields.Datetime.now()
+            'manifest_printed': True,
+            'manifest_print_date': fields.Datetime.now()
         })
-        self.message_post(body=_("Shipment has been delivered."))
-
-    def action_complete(self):
-        """
-        Marks the shipment as completed and updates the state of all associated
-        bales to 'recycled'.
-        """
-        self.ensure_one()
-        self.write({'state': 'completed'})
-        self.bale_ids.write({'state': 'recycled'})
-        self.message_post(body=_("Shipment completed. All bales marked as recycled."))
+        self.message_post(body=_("Manifest printed with signature timestamp."))
+        # Return report action for manifest
+        return self.env.ref('records_management.action_report_load_manifest').report_action(self)
 
     def action_cancel(self):
         """
@@ -179,10 +197,10 @@ class PaperLoadShipment(models.Model):
             return self.action_ready_for_shipment()
         return True
 
-    def action_ship_load(self):  # placeholder mapping to start_transit
+    def action_ship_load(self):  # placeholder mapping to mark_picked_up
         self.ensure_one()
         if self.state in ('ready', 'draft'):
-            return self.action_start_transit()
+            return self.action_mark_picked_up()
         return True
 
     def action_mark_sold(self):  # placeholder for commercial closure

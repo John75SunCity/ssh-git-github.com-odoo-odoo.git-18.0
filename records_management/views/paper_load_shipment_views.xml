@@ -6,7 +6,7 @@
             <field name="name">paper.load.shipment.view.tree</field>
             <field name="model">paper.load.shipment</field>
             <field name="arch" type="xml">
-                <list string="Load Shipments" decoration-success="state=='completed'" decoration-info="state=='delivered'" decoration-warning="state=='in_transit'" decoration-primary="state=='ready'">
+                <list string="Load Shipments" decoration-success="state=='picked_up'" decoration-primary="state=='ready'">
                     <field name="name" />
                     <field name="scheduled_pickup_date" />
                     <field name="driver_id" />
@@ -16,7 +16,8 @@
                     <field name="white_count" />
                     <field name="mixed_count" />
                     <field name="cardboard_count" />
-                    <field name="state" widget="badge" decoration-success="state=='completed'" decoration-info="state=='delivered'" decoration-warning="state=='in_transit'" />
+                    <field name="driver_signature" />
+                    <field name="state" widget="badge" decoration-success="state=='picked_up'" decoration-primary="state=='ready'" />
                 </list>
             </field>
         </record>
@@ -26,12 +27,11 @@
             <field name="arch" type="xml">
                 <form string="Load Shipment">
                     <header>
-                        <button name="action_ready_for_shipment" string="Ready for Shipment" type="object" class="btn-primary" invisible="state != 'draft'" />
-                        <button name="action_start_transit" string="Start Transit" type="object" class="btn-primary" invisible="state != 'ready'" />
-                        <button name="action_deliver" string="Mark Delivered" type="object" class="btn-success" invisible="state != 'in_transit'" />
-                        <button name="action_complete" string="Complete" type="object" class="btn-info" invisible="state != 'delivered'" />
+                        <button name="action_ready_for_shipment" string="Ready for Pickup" type="object" class="btn-primary" invisible="state != 'draft'" />
+                        <button name="action_mark_picked_up" string="Mark Picked Up" type="object" class="btn-success" invisible="state != 'ready'" />
+                        <button name="action_print_manifest" string="Print Manifest" type="object" class="btn-secondary" invisible="state == 'cancelled'" />
                         <button name="action_view_bales" string="View Bales" type="object" class="btn-secondary" />
-                        <field name="state" widget="statusbar" statusbar_visible="draft,ready,in_transit,delivered,completed" />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,ready,picked_up" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -62,13 +62,14 @@
                                 <field name="carrier_id" />
                                 <field name="driver_id" />
                                 <field name="pickup_location_id" />
-                                <field name="delivery_location_id" />
+                                <field name="driver_signature" placeholder="Driver name or signature timestamp" />
+                                <field name="enable_geographic_batching" widget="boolean_toggle" />
                             </group>
                             <group name="schedule_info" string="Schedule">
                                 <field name="scheduled_pickup_date" />
-                                <field name="actual_pickup_date" />
-                                <field name="scheduled_delivery_date" />
-                                <field name="actual_delivery_date" />
+                                <field name="actual_pickup_date" readonly="1" />
+                                <field name="manifest_printed" widget="boolean_toggle" readonly="1" />
+                                <field name="manifest_print_date" readonly="1" />
                             </group>
                         </group>
                         <group>
@@ -105,9 +106,9 @@
                         </group>
                     </sheet>
                     <div class="oe_chatter">
-                        <field name="message_follower_ids" />
-                        <field name="activity_ids" />
-                        <field name="message_ids" />
+                        <field name="message_follower_ids" help="Internal staff: warehouse technicians weighing/categorizing bales, supervisors, billing team" />
+                        <field name="activity_ids" help="Schedule tasks for warehouse staff (not driver-facing)" />
+                        <field name="message_ids" help="Internal communications about load preparation, bale weighing, manifest issues" />
                     </div>
                 </form>
             </field>
@@ -175,10 +176,8 @@
                     <field name="driver_id" />
                     <field name="carrier_id" />
                     <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
-                    <filter string="Ready" name="ready" domain="[('state', '=', 'ready')]" />
-                    <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]" />
-                    <filter string="Delivered" name="delivered" domain="[('state', '=', 'delivered')]" />
-                    <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]" />
+                    <filter string="Ready for Pickup" name="ready" domain="[('state', '=', 'ready')]" />
+                    <filter string="Picked Up" name="picked_up" domain="[('state', '=', 'picked_up')]" />
                     <separator />
                     <filter string="Today" name="today" domain="[('scheduled_pickup_date', '=', context_today)]" />
                     <filter string="This Week" name="this_week" domain="[('scheduled_pickup_date', '&gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]" />
@@ -206,9 +205,9 @@
                     <b>⚠️ Prerequisites:</b>
                 </p>
                 <ul>
-                    <li>✓ <b>Paper Bales In Stock</b> - Go to: <i>Operations &gt; Paper Recycling &gt; Paper Bales</i> (filter: In Stock)</li>
+                    <li>✓ <b>Paper Bales In Stock</b> - Go to: <i>Operations → Paper Recycling → Paper Bales</i> (filter: In Stock)</li>
                     <li>✓ <b>Carrier/Driver Setup</b> - Go to: <i>Contacts</i> (create trucking companies + driver records)</li>
-                    <li>✓ <b>Storage Locations</b> - Go to: <i>Configuration &gt; Locations</i> (pickup + delivery addresses)</li>
+                    <li>✓ <b>Storage Locations</b> - Go to: <i>Configuration → Locations</i> (warehouse pickup addresses)</li>
                     <li>✓ <b>Truck Capacity Known</b> - Standard semi: 40,000 lbs / 18,144 kg max payload</li>
                 </ul>
                 <p>
@@ -220,31 +219,26 @@
                     <li>Select <b>Carrier</b> (trucking company) from dropdown</li>
                     <li>Select <b>Driver</b> (specific person) assigned to this load</li>
                     <li>Set <b>Pickup Location</b> (your warehouse with bales ready)</li>
-                    <li>Set <b>Delivery Location</b> (recycling mill address)</li>
                     <li>Enter <b>Scheduled Pickup Date</b> (when truck arrives at warehouse)</li>
-                    <li>Enter <b>Scheduled Delivery Date</b> (expected arrival at mill)</li>
                     <li>In <b>Bales in Load</b> tab, click Add and select bales (status: In Stock)</li>
                     <li>System shows <b>Load Summary</b>: Bale Count, Total Weight, Grade Breakdown</li>
                     <li>Verify <b>Total Weight &lt; 40,000 lbs</b> (truck capacity limit)</li>
                     <li>System separates by grade: <b>White Bales</b>, <b>Mixed Bales</b>, <b>Cardboard Bales</b></li>
-                    <li>Click <b>Ready for Shipment</b> (status: Ready)</li>
-                    <li>Driver arrives, warehouse staff loads bales onto truck</li>
-                    <li>Record <b>Actual Pickup Date/Time</b> when truck departs</li>
-                    <li>Click <b>Start Transit</b> (status: In Transit, bales removed from inventory)</li>
-                    <li>Driver calls upon arrival at mill, log <b>Actual Delivery Date/Time</b></li>
-                    <li>Click <b>Mark Delivered</b> (status: Delivered)</li>
-                    <li>Mill confirms processing, click <b>Complete</b> (status: Completed)</li>
-                    <li>System triggers recycling record creation for revenue tracking</li>
+                    <li>Click <b>Ready for Pickup</b> (status: Ready)</li>
+                    <li>Driver arrives, checks in using visitor app (driver does NOT weigh/categorize)</li>
+                    <li><b>Internal technicians</b> weigh, categorize, and sign for each bale on manifest</li>
+                    <li>Click <b>Print Manifest</b> to generate manifest with signature timestamp</li>
+                    <li>Enter <b>Driver Signature</b> (text record or digital signature timestamp)</li>
+                    <li>Click <b>Mark Picked Up</b> - system creates invoice matching load number and manifest</li>
+                    <li>System changes bale status to <b>Picked Up</b></li>
                 </ol>
                 <p>
                     <b>📊 Shipment States:</b>
                 </p>
                 <ul>
                     <li><b>Draft:</b> Shipment created, planning in progress, bales not yet assigned</li>
-                    <li><b>Ready:</b> Bales assigned, driver scheduled, awaiting truck arrival</li>
-                    <li><b>In Transit:</b> Truck loaded and departed, en route to mill</li>
-                    <li><b>Delivered:</b> Arrived at mill, bales unloaded, awaiting processing confirmation</li>
-                    <li><b>Completed:</b> Mill confirmed processing, shipment closed, revenue recognized</li>
+                    <li><b>Ready for Pickup:</b> Bales assigned, driver scheduled, awaiting truck arrival</li>
+                    <li><b>Picked Up:</b> Load picked up by driver, invoice generated, manifest signed</li>
                 </ul>
                 <p>
                     <b>📦 Load Optimization Strategies:</b>
@@ -253,28 +247,33 @@
                     <li><b>Max Capacity:</b> Target 38,000-40,000 lbs per load (leave 2K buffer for safety)</li>
                     <li><b>Grade Mixing:</b> Mills prefer single-grade loads, but mixed is acceptable if marked</li>
                     <li><b>FIFO Loading:</b> Ship oldest bales first to minimize storage dwell time</li>
-                    <li><b>Geographic Batching:</b> Consolidate deliveries to same mill on same day</li>
+                    <li><b>Geographic Batching (Optional):</b> Toggle on to consolidate deliveries - good feature but can be disabled</li>
                 </ul>
                 <p>
                     <b>🚀 Key Features:</b><br/>
                     • <b>Capacity Tracking:</b> Real-time weight total vs 40K lb truck limit<br/>
                     • <b>Grade Breakdown:</b> Auto-count white/mixed/cardboard bales in load<br/>
-                    • <b>Driver Assignment:</b> Links to HR contacts, tracks who handled shipment<br/>
-                    • <b>Pickup/Delivery Times:</b> Scheduled vs actual for on-time performance metrics<br/>
+                    • <b>Driver Assignment:</b> Links to contacts - driver only checks in via visitor app<br/>
+                    • <b>Technician Workflow:</b> Internal warehouse staff weighs/categorizes/signs bales on manifest<br/>
+                    • <b>Pickup Times:</b> Scheduled vs actual for on-time performance tracking<br/>
                     • <b>Bale Selection:</b> Only shows In Stock bales (passed inspection, ready to ship)<br/>
+                    • <b>Invoice Creation:</b> Auto-generates invoice when load is picked up, matching load number and manifest with driver signature<br/>
+                    • <b>Manifest Printing:</b> Easy print with signature timestamp for records<br/>
                     • <b>Stat Buttons:</b> Quick view total bales + weight without opening record<br/>
-                    • <b>Kanban Pipeline:</b> Visual workflow from Draft → Completed by status<br/>
-                    • <b>Chatter Integration:</b> Drivers can post updates via mobile during transit<br/>
-            </p>
-            <p>
-                <b>💡 Pro Tips:</b><br/>
-                • Use <b>View Bales</b> button to quickly see all bales in load without opening record<br/>
-                • Filter by <b>In Transit</b> to see all active shipments (driver follow-up)<br/>
-                • Sort by <b>Scheduled Pickup Date</b> to prioritize upcoming loads<br/>
-                • <b>Group by Driver</b> in Kanban to manage driver-specific workloads<br/>
-                • Review <b>Actual vs Scheduled</b> dates to identify late drivers/mills<br/>
-                • <b>Combine grades</b> only when mill approves - some mills charge for mixed loads<br/>
-            </p>
+                    • <b>Kanban Pipeline:</b> Visual workflow from Draft → Picked Up by status<br/>
+                    • <b>Chatter Integration:</b> Internal staff communications (warehouse technicians weighing bales, supervisors, billing team)<br/>
+                    • <b>Geographic Batching Toggle:</b> Optional feature - enable/disable as needed<br/>
+                </p>
+                <p>
+                    <b>💡 Pro Tips:</b><br/>
+                    • Use <b>View Bales</b> button to quickly see all bales in load without opening record<br/>
+                    • Filter by <b>Ready for Pickup</b> to see loads awaiting driver arrival<br/>
+                    • Sort by <b>Scheduled Pickup Date</b> to prioritize upcoming loads<br/>
+                    • <b>Chatter is for employees</b> weighing bales or internal communications - not driver-facing<br/>
+                    • <b>Driver checks in</b> using visitor app - technicians handle the actual weighing and manifest signing<br/>
+                    • <b>Toggle Geographic Batching</b> on/off based on your operational needs<br/>
+                    • <b>Driver signature</b> can be text record or digital timestamp - keep it simple for easy manifest printing<br/>
+                </p>
             </field>
         </record>
     
@@ -288,7 +287,7 @@
             <field name="res_model">paper.load.shipment</field>
             <field name="view_mode">list,form</field>
             <field name="view_id" ref="paper_load_shipment_view_kanban" />
-            <field name="domain">[('state', 'in', ['draft', 'ready', 'in_transit'])]</field>
+            <field name="domain">[('state', 'in', ['draft', 'ready'])]</field>
             <field name="context">{'search_default_group_status': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
