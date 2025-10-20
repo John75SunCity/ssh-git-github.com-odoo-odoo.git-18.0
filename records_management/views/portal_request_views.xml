@@ -283,7 +283,7 @@
                     <li>Adds items to request (selects containers/documents)</li>
                     <li>Reviews and clicks <b>Submit Request</b></li>
                     <li>Receives email confirmation with request number</li>
-                    <li>Tracks status in portal (Draft &rarr; Submitted &rarr; Approved &rarr; Completed)</li>
+                    <li>Tracks status in portal (Draft → Submitted → Approved → Completed)</li>
                     <li>Signs documents electronically when required</li>
                     <li>Downloads certificates/reports when ready</li>
                 </ol>

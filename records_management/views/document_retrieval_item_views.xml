@@ -148,10 +148,10 @@
                 <ol>
                     <li>Items auto-create when customer requests specific documents from work order</li>
                     <li>Review <b>Item Reference</b> and <b>Item Type</b> (document/box/container)</li>
-                    <li>Click <b>Locate Item</b> to start warehouse search (status: pending &rarr; searching)</li>
-                    <li>Warehouse team scans barcode or manually confirms location (searching &rarr; located)</li>
-                    <li>Click <b>Retrieve Item</b> to pull from storage shelf (located &rarr; retrieved)</li>
-                    <li>Click <b>Package Item</b> to prepare for delivery (retrieved &rarr; packaged)</li>
+                    <li>Click <b>Locate Item</b> to start warehouse search (status: pending → searching)</li>
+                    <li>Warehouse team scans barcode or manually confirms location (searching → located)</li>
+                    <li>Click <b>Retrieve Item</b> to pull from storage shelf (located → retrieved)</li>
+                    <li>Click <b>Package Item</b> to prepare for delivery (retrieved → packaged)</li>
                     <li>Item auto-advances to <b>Delivered</b> when work order ships</li>
                     <li>Use <b>Priority Widget</b> (0-3 stars) to queue urgent retrievals first</li>
                     <li>Monitor <b>Effective Priority</b> (system-calculated ranking considering multiple factors)</li>
