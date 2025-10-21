@@ -11,78 +11,78 @@
 
     <!-- Service Items Dashboard -->
 
-    <menuitem id="menu_service_item_dashboard" name="&lt;i class='fa fa-bar-chart'/&gt; Service Items Dashboard" parent="menu_service_item_main" action="action_service_item_dashboard" sequence="1" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_service_item_dashboard" name="Service Items Dashboard" parent="menu_service_item_main" action="action_service_item_dashboard" sequence="1" groups="records_management.group_records_manager"/>
 
 
     <!-- All Service Items List -->
 
-    <menuitem id="menu_service_item_list" name="&lt;i class='fa fa-clipboard'/&gt; All Service Items" parent="menu_service_item_main" action="action_service_item" sequence="10"/>
+    <menuitem id="menu_service_item_list" name="All Service Items" parent="menu_service_item_main" action="action_service_item" sequence="10"/>
 
 
     <!-- Active Service Items -->
 
-    <menuitem id="menu_service_item_active" name="&lt;i class='fa fa-check-circle text-success'/&gt; Active Service Items" parent="menu_service_item_main" action="action_service_item_active" sequence="15"/>
+    <menuitem id="menu_service_item_active" name="Active Service Items" parent="menu_service_item_main" action="action_service_item_active" sequence="15"/>
 
 
     <!-- Service Item Categories -->
 
-    <menuitem id="menu_service_item_categories" name="&lt;i class='fa fa-folder'/&gt; Service Categories" parent="menu_service_item_main" action="action_service_item_category" sequence="20" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_service_item_categories" name="Service Categories" parent="menu_service_item_main" action="action_service_item_category" sequence="20" groups="records_management.group_records_manager"/>
 
 
     <!-- Service Item Templates -->
 
-    <menuitem id="menu_service_item_templates" name="&lt;i class='fa fa-file-o'/&gt; Service Templates" parent="menu_service_item_main" action="action_service_item_template" sequence="25" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_service_item_templates" name="Service Templates" parent="menu_service_item_main" action="action_service_item_template" sequence="25" groups="records_management.group_records_manager"/>
 
 
     <!-- ============================================================================ -->
     <!-- SERVICE ITEM OPERATIONS (New section) -->
     <!-- ============================================================================ -->
 
-    <menuitem id="menu_service_item_operations" name="&lt;i class='fa fa-wrench'/&gt; Service Operations" parent="menu_service_item_main" sequence="30" groups="records_management.group_records_user"/>
+    <menuitem id="menu_service_item_operations" name="Service Operations" parent="menu_service_item_main" sequence="30" groups="records_management.group_records_user"/>
 
 
     <!-- Service Item Requests -->
 
-    <menuitem id="menu_service_item_requests" name="&lt;i class='fa fa-pencil'/&gt; Service Requests" parent="menu_service_item_operations" action="action_service_item_request" sequence="10"/>
+    <menuitem id="menu_service_item_requests" name="Service Requests" parent="menu_service_item_operations" action="action_service_item_request" sequence="10"/>
 
 
     <!-- Service Item Scheduling -->
 
-    <menuitem id="menu_service_item_scheduling" name="&lt;i class='fa fa-calendar'/&gt; Service Scheduling" parent="menu_service_item_operations" action="action_service_item_schedule" sequence="15" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_service_item_scheduling" name="Service Scheduling" parent="menu_service_item_operations" action="action_service_item_schedule" sequence="15" groups="records_management.group_records_manager"/>
 
 
     <!-- Service Item Billing -->
 
-    <menuitem id="menu_service_item_billing" name="&lt;i class='fa fa-money'/&gt; Service Billing" parent="menu_service_item_operations" action="action_service_item_billing" sequence="20" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_service_item_billing" name="Service Billing" parent="menu_service_item_operations" action="action_service_item_billing" sequence="20" groups="records_management.group_records_manager"/>
 
 
     <!-- ============================================================================ -->
     <!-- SERVICE ITEM REPORTING (New section) -->
     <!-- ============================================================================ -->
 
-    <menuitem id="menu_service_item_reports" name="&lt;i class='fa fa-bar-chart'/&gt; Reports &amp; Analytics" parent="menu_service_item_main" sequence="40" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_service_item_reports" name="Reports &amp; Analytics" parent="menu_service_item_main" sequence="40" groups="records_management.group_records_manager"/>
 
 
     <!-- Service Item Performance Report -->
 
-    <menuitem id="menu_service_item_performance_report" name="&lt;i class='fa fa-line-chart'/&gt; Performance Report" parent="menu_service_item_reports" action="action_service_item_performance_report" sequence="10"/>
+    <menuitem id="menu_service_item_performance_report" name="Performance Report" parent="menu_service_item_reports" action="action_service_item_performance_report" sequence="10"/>
 
 
     <!-- Service Item Usage Analytics -->
 
-    <menuitem id="menu_service_item_analytics" name="&lt;i class='fa fa-bar-chart'/&gt; Usage Analytics" parent="menu_service_item_reports" action="action_service_item_analytics" sequence="15"/>
+    <menuitem id="menu_service_item_analytics" name="Usage Analytics" parent="menu_service_item_reports" action="action_service_item_analytics" sequence="15"/>
 
 
     <!-- Service Item Revenue Report -->
 
-    <menuitem id="menu_service_item_revenue_report" name="&lt;i class='fa fa-chart-line'/&gt; Revenue Report" parent="menu_service_item_reports" action="action_service_item_revenue_report" sequence="20"/>
+    <menuitem id="menu_service_item_revenue_report" name="Revenue Report" parent="menu_service_item_reports" action="action_service_item_revenue_report" sequence="20"/>
 
 
     <!-- ============================================================================ -->
     <!-- SERVICE ITEM SETTINGS (New section with RM Configurator integration) -->
     <!-- ============================================================================ -->
 
-    <menuitem id="menu_service_item_settings" name="&lt;i class='fa fa-cog'/&gt; Service Settings" parent="menu_service_item_main" sequence="50" groups="records_management.group_records_manager,base.group_system"/>
+    <menuitem id="menu_service_item_settings" name="Service Settings" parent="menu_service_item_main" sequence="50" groups="records_management.group_records_manager,base.group_system"/>
 
 
     <!-- Service Item Configuration -->
@@ -92,36 +92,36 @@
 
     <!-- Service Item Pricing Rules -->
 
-    <menuitem id="menu_service_item_pricing" name="&lt;i class='fa fa-dollar-sign'/&gt; Pricing Rules" parent="menu_service_item_settings" action="action_service_item_pricing_rules" sequence="15"/>
+    <menuitem id="menu_service_item_pricing" name="Pricing Rules" parent="menu_service_item_settings" action="action_service_item_pricing_rules" sequence="15"/>
 
 
     <!-- Service Item Quality Controls -->
 
-    <menuitem id="menu_service_item_quality" name="&lt;i class='fa fa-search'/&gt; Quality Controls" parent="menu_service_item_settings" action="action_service_item_quality_control" sequence="20"/>
+    <menuitem id="menu_service_item_quality" name="Quality Controls" parent="menu_service_item_settings" action="action_service_item_quality_control" sequence="20"/>
 
 
     <!-- ============================================================================ -->
     <!-- MOBILE/FSM INTEGRATION (New section) -->
     <!-- ============================================================================ -->
 
-    <menuitem id="menu_service_item_mobile" name="&lt;i class='fa fa-mobile'/&gt; Mobile &amp; FSM" parent="menu_service_item_main" sequence="60" groups="records_management.group_records_technician"/>
+    <menuitem id="menu_service_item_mobile" name="Mobile &amp; FSM" parent="menu_service_item_main" sequence="60" groups="records_management.group_records_technician"/>
 
 
     <!-- Mobile Service Tasks -->
 
-    <menuitem id="menu_service_item_mobile_tasks" name="&lt;i class='fa fa-clipboard'/&gt; Mobile Service Tasks" parent="menu_service_item_mobile" action="action_service_item_mobile_tasks" sequence="10"/>
+    <menuitem id="menu_service_item_mobile_tasks" name="Mobile Service Tasks" parent="menu_service_item_mobile" action="action_service_item_mobile_tasks" sequence="10"/>
 
 
     <!-- FSM Service Integration -->
 
-    <menuitem id="menu_service_item_fsm" name="&lt;i class='fa fa-truck'/&gt; FSM Integration" parent="menu_service_item_mobile" action="action_service_item_fsm_integration" sequence="15"/>
+    <menuitem id="menu_service_item_fsm" name="FSM Integration" parent="menu_service_item_mobile" action="action_service_item_fsm_integration" sequence="15"/>
 
 
     <!-- ============================================================================ -->
     <!-- CUSTOMER PORTAL INTEGRATION (New section) -->
     <!-- ============================================================================ -->
 
-    <menuitem id="menu_service_item_portal" name="&lt;i class='fa fa-globe'/&gt; Portal Integration" parent="menu_service_item_main" sequence="70" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_service_item_portal" name="Portal Integration" parent="menu_service_item_main" sequence="70" groups="records_management.group_records_manager"/>
 
 
     <!-- Portal Service Requests -->
@@ -131,7 +131,7 @@
 
     <!-- Customer Self-Service Setup -->
 
-    <menuitem id="menu_service_item_self_service" name="&lt;i class='fa fa-wrench'/&gt; Self-Service Setup" parent="menu_service_item_portal" action="action_service_item_self_service" sequence="15"/>
+    <menuitem id="menu_service_item_self_service" name="Self-Service Setup" parent="menu_service_item_portal" action="action_service_item_self_service" sequence="15"/>
 
 
     </data>
