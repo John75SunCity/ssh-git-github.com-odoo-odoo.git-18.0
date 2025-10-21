@@ -15,7 +15,7 @@
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_card_header">
                                     <strong>
-                                        <i class="fa fa-bar-chart" />
+                                        <i class="fa fa-bar-chart" title="Customer Inventory" />
                                         <field name="partner_id" />
                                     </strong>
                                     <span class="float-end">
