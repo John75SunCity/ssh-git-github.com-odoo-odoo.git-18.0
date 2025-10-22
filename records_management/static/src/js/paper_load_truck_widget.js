@@ -13,7 +13,7 @@ export class PaperLoadTruckWidget extends Component {
 
                     <!-- Progress Fill based on load capacity -->
                     <rect x="10" y="15"
-                          t-att-width="Math.min(140, (this.baleCount / 50) * 140)"
+                          t-att-width="Math.min(140, (this.baleCount / 28) * 140)"
                           height="30"
                           fill="#4CAF50"
                           rx="5"
@@ -29,7 +29,7 @@ export class PaperLoadTruckWidget extends Component {
 
                     <!-- Load Information Text -->
                     <text x="80" y="32" text-anchor="middle" fill="#000" font-size="12" font-weight="bold">
-                        <t t-esc="this.baleCount"/> / 50 bales
+                        <t t-esc="this.baleCount"/> / 28 bales
                     </text>
 
                     <!-- Weight Information -->
@@ -75,7 +75,7 @@ export class PaperLoadTruckWidget extends Component {
                             <t t-else="">📦 Load</t>
                         </span>
                         <span class="capacity-percentage">
-                            <t t-esc="Math.round((this.baleCount / 50) * 100)"/>% capacity
+                            <t t-esc="Math.round((this.baleCount / 28) * 100)"/>% capacity
                         </span>
                     </div>
                 </div>

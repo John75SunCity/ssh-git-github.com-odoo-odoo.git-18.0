@@ -23,14 +23,14 @@ export class TrailerVisualizationWidget extends Component {
                 
                 <!-- Load fill indicator -->
                 <rect x="35" y="55" 
-                      t-att-width="Math.min(230, (this.baleCount / 50) * 230)" 
+                      t-att-width="Math.min(230, (this.baleCount / 28) * 230)" 
                       height="30" 
                       fill="#4caf50" 
                       opacity="0.7"/>
                 
                 <!-- Bale count text -->
                 <text x="150" y="75" text-anchor="middle" fill="#000" font-size="14" font-weight="bold">
-                    <t t-esc="this.baleCount"/> / 50 bales
+                    <t t-esc="this.baleCount"/> / 28 bales
                 </text>
                 
                 <!-- Wheels -->
@@ -39,8 +39,8 @@ export class TrailerVisualizationWidget extends Component {
             </svg>
             
             <div class="capacity-info mt-2 text-center">
-                <span class="badge" t-att-class="this.baleCount >= 50 ? 'badge-success' : 'badge-info'">
-                    <t t-esc="Math.round((this.baleCount / 50) * 100)"/>% Loaded
+                <span class="badge" t-att-class="this.baleCount >= 28 ? 'badge-success' : 'badge-info'">
+                    <t t-esc="Math.round((this.baleCount / 28) * 100)"/>% Loaded
                 </span>
             </div>
         </div>

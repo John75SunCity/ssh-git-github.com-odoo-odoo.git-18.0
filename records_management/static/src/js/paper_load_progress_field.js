@@ -8,13 +8,13 @@ export class PaperLoadProgressField extends Component {
         <div class="paper-load-progress-field">
             <div class="progress-container">
                 <div class="progress" style="height: 30px;">
-                    <div class="progress-bar bg-success" 
-                         role="progressbar" 
+                    <div class="progress-bar bg-success"
+                         role="progressbar"
                          t-att-style="'width: ' + this.progressPercent + '%'"
                          t-att-aria-valuenow="this.baleCount"
-                         aria-valuemin="0" 
-                         aria-valuemax="50">
-                        <t t-esc="this.baleCount"/> / 50 bales (<t t-esc="this.progressPercent"/>%)
+                         aria-valuemin="0"
+                         aria-valuemax="28">
+                        <t t-esc="this.baleCount"/> / 28 bales (<t t-esc="this.progressPercent"/>%)
                     </div>
                 </div>
                 <div class="mt-2 small text-muted">
@@ -37,7 +37,7 @@ export class PaperLoadProgressField extends Component {
     }
 
     get progressPercent() {
-        return Math.round((this.baleCount / 50) * 100);
+        return Math.round((this.baleCount / 28) * 100);
     }
 }
 
