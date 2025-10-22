@@ -217,6 +217,7 @@ from . import records_document_recent
 from . import naid_custody_recent
 from . import naid_audit_log_recent
 from . import res_partner_key_restriction
+from . import portal_access_log
 from . import retrieval_metric
 from . import revenue_analytic
 from . import revenue_forecast

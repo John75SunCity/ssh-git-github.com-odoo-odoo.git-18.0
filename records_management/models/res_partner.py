@@ -697,3 +697,33 @@ class ResPartner(models.Model):
                 'default_partner_id': self.id,
             }
         }
+
+    def action_go_to_portal_account(self):
+        """
+        Action to access customer's portal account
+        Available to users with 'can_access_portal_accounts' permission
+        """
+        self.ensure_one()
+        
+        # Security check
+        if not self.env.user.can_access_portal_accounts:
+            raise AccessError(_("You are not authorized to access customer portal accounts. Please contact your administrator."))
+        
+        # Find portal user for this partner
+        portal_user = self.env['res.users'].search([
+            ('partner_id', '=', self.id),
+            ('share', '=', True)  # Portal users have share=True
+        ], limit=1)
+        
+        if not portal_user:
+            raise UserError(_(
+                "No portal user found for %s.\n\n"
+                "Please create a portal user first:\n"
+                "1. Go to Settings > Users & Companies > Users\n"
+                "2. Create a new user\n"
+                "3. Select this customer as 'Related Partner'\n"
+                "4. Grant portal access"
+            ) % self.name)
+        
+        # Use the action from res.users
+        return portal_user.action_access_portal_account()

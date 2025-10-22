@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Add "Go to Portal Account" button to partner form -->
+    <record id="view_partner_form_portal_access" model="ir.ui.view">
+        <field name="name">res.partner.form.portal.access</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_go_to_portal_account"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-sign-in"
+                        groups="base.group_system"
+                        invisible="not id"
+                        help="Access this customer's portal account">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Go To</span>
+                        <span class="o_stat_text">Portal Account</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- User form: Add Portal Access permission checkbox -->
+    <record id="view_users_form_portal_access" model="ir.ui.view">
+        <field name="name">res.users.form.portal.access</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='preferences']" position="after">
+                <group string="🔐 Portal Account Access" name="portal_access_permissions" groups="base.group_system">
+                    <field name="can_access_portal_accounts"/>
+                    <div colspan="2" invisible="not can_access_portal_accounts">
+                        <p class="text-muted">
+                            <i class="fa fa-info-circle"/> This user can access customer portal accounts from the backend to assist customers.
+                            All accesses are logged in the audit trail.
+                        </p>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Portal Access Log Tree View -->
+    <record id="view_portal_access_log_tree" model="ir.ui.view">
+        <field name="name">portal.access.log.tree</field>
+        <field name="model">portal.access.log</field>
+        <field name="arch" type="xml">
+            <tree string="Portal Access Audit Log" default_order="access_date desc" create="false" edit="false" delete="false">
+                <field name="access_date"/>
+                <field name="admin_user_id"/>
+                <field name="partner_id"/>
+                <field name="portal_user_id"/>
+                <field name="ip_address"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Portal Access Log Form View -->
+    <record id="view_portal_access_log_form" model="ir.ui.view">
+        <field name="name">portal.access.log.form</field>
+        <field name="model">portal.access.log</field>
+        <field name="arch" type="xml">
+            <form string="Portal Access Log" create="false" edit="false" delete="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="access_date"/>
+                            <field name="admin_user_id"/>
+                        </group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="portal_user_id"/>
+                            <field name="ip_address"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Portal Access Log Search View -->
+    <record id="view_portal_access_log_search" model="ir.ui.view">
+        <field name="name">portal.access.log.search</field>
+        <field name="model">portal.access.log</field>
+        <field name="arch" type="xml">
+            <search string="Search Portal Access Logs">
+                <field name="admin_user_id"/>
+                <field name="partner_id"/>
+                <field name="portal_user_id"/>
+                <field name="ip_address"/>
+                <filter string="Today" name="today" domain="[('access_date', '>=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="this_week" domain="[('access_date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('access_date', '>=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Admin User" name="group_admin" context="{'group_by': 'admin_user_id'}"/>
+                    <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Access Date" name="group_date" context="{'group_by': 'access_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Portal Access Log Action -->
+    <record id="action_portal_access_log" model="ir.actions.act_window">
+        <field name="name">Portal Access Audit Log</field>
+        <field name="res_model">portal.access.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_this_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No portal access logs yet
+            </p>
+            <p>
+                When authorized users access customer portal accounts, all accesses are logged here for audit purposes.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_portal_access_log"
+              name="Portal Access Log"
+              parent="records_management.menu_settings_records"
+              action="action_portal_access_log"
+              sequence="100"
+              groups="base.group_system"/>
+
+</odoo>

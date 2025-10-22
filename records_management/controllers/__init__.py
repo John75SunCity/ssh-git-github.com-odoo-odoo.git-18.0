@@ -18,3 +18,4 @@ from . import work_order_portal  # work order portal controllers
 from . import pos_customer_history  # POS customer history JSON endpoint
 from . import portal_barcode  # portal barcode generation JSON endpoint
 from . import portal_document_bulk_upload  # portal document bulk upload
+from . import portal_access  # portal account access for admin users
