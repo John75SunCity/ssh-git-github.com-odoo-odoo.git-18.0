@@ -65,6 +65,8 @@
         "security/portal_financial_rules.xml",   # New: financial/negotiated rates portal scoping
         "security/portal_certificate_rules.xml", # New: destruction certificate portal scoping
         "security/ir.model.access.csv",
+        # Google Maps API configuration (loads API key for map widgets)
+        "views/google_maps_assets.xml",
         # Root menus must be available before any child menus declared in scattered views
         "views/records_management_root_menus.xml",
         # Core sequence data (previously omitted, required for many next_by_code usages)
