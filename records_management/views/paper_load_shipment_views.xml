@@ -76,18 +76,8 @@
                         <div class="row">
                             <div class="col-12">
                                 <group string="🚛 Visual Load Status">
-                                    <field name="bale_count" invisible="1"/>
-                                    <field name="total_weight" invisible="1"/>
-                                    <field name="white_count" invisible="1"/>
-                                    <field name="mixed_count" invisible="1"/>
-                                    <field name="cardboard_count" invisible="1"/>
-                                    <!-- Truck visualization widget -->
-                                    <widget name="paper_load_truck_widget"
-                                            bale_count="bale_count"
-                                            total_weight="total_weight"
-                                            white_count="white_count"
-                                            mixed_count="mixed_count"
-                                            cardboard_count="cardboard_count"/>
+                                    <!-- Use bale_count field with the truck widget -->
+                                    <field name="bale_count" widget="paper_load_truck_widget" nolabel="1"/>
                                 </group>
                             </div>
                         </div>
