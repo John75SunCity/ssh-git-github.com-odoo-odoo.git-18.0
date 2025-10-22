@@ -8,13 +8,13 @@
         <field name="arch" type="xml">
 <list decoration-info="active == True" decoration-muted="active == False" decoration-success="value_boolean == True" decoration-danger="value_boolean == False">
     <field name="name" string="Configuration Name"/>
-    <field name="config_type" column_invisible="True"/>
+    <field name="config_type" column_invisible="1"/>
     <field name="category" widget="badge"/>
     <field name="config_key" string="Key"/>
     <field name="description" string="Description"/>
-    <field name="value_boolean" widget="boolean_toggle" string="Enabled" column_invisible="config_type != 'feature_toggle'"/>
-    <field name="value_number" string="Value" column_invisible="config_type != 'parameter'"/>
-    <field name="value_text" string="Text Value" optional="hide" column_invisible="config_type not in ['parameter', 'field_visibility']"/>
+    <field name="value_boolean" widget="boolean_toggle" string="Enabled" optional="hide"/>
+    <field name="value_number" string="Value" optional="hide"/>
+    <field name="value_text" string="Text Value" optional="hide"/>
     <field name="sequence"/>
     <field name="active" widget="boolean_toggle"/>
     <field name="company_id" groups="base.group_multi_company" optional="hide"/>
