@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================== -->
+    <!-- PRE-CONFIGURED PORTAL HOME - SHOWS ALL FEATURES                   -->
+    <!-- Even when user has no data yet                                     -->
+    <!-- ================================================================== -->
+    
+    <template id="portal_my_home_preconfigured" name="Records Management Portal Home (Pre-configured)" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[@id='o_portal_sidebar']" position="inside">
+            <!-- Records Management Portal Features Section -->
+            <t t-set="rm_portal_enabled" t-value="True"/>
+            
+            <div class="o_portal_sidebar_section mb-4" t-if="rm_portal_enabled">
+                <h4 class="mb-3">
+                    <i class="fa fa-archive"/> Records Management
+                </h4>
+                
+                <!-- Inventory Card -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fa fa-cubes text-primary"/> My Inventory
+                        </h5>
+                        <p class="card-text text-muted small">
+                            View and manage your stored containers, boxes, and documents
+                        </p>
+                        <t t-set="container_count" t-value="request.env['records.container'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id)])"/>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge badge-info" t-if="container_count &gt; 0">
+                                <t t-esc="container_count"/> Containers
+                            </span>
+                            <span class="badge badge-secondary" t-else="">
+                                No containers yet
+                            </span>
+                            <a href="/my/inventory" class="btn btn-sm btn-primary">
+                                View Inventory →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Orders Card -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fa fa-tasks text-success"/> Work Orders
+                        </h5>
+                        <p class="card-text text-muted small">
+                            Track pickup, delivery, and service activities
+                        </p>
+                        <t t-set="work_order_count" t-value="request.env['records.work.order'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id)])"/>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge badge-info" t-if="work_order_count &gt; 0">
+                                <t t-esc="work_order_count"/> Active
+                            </span>
+                            <span class="badge badge-secondary" t-else="">
+                                No work orders yet
+                            </span>
+                            <a href="/my/work-orders" class="btn btn-sm btn-success">
+                                View Orders →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Requests Card -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fa fa-paper-plane text-warning"/> Service Requests
+                        </h5>
+                        <p class="card-text text-muted small">
+                            Request pickups, destructions, and other services
+                        </p>
+                        <div class="btn-group-vertical w-100 mt-2">
+                            <a href="/portal/request/pickup" class="btn btn-sm btn-outline-primary">
+                                <i class="fa fa-truck"/> Request Pickup
+                            </a>
+                            <a href="/portal/request/destruction" class="btn btn-sm btn-outline-danger">
+                                <i class="fa fa-fire"/> Request Destruction
+                            </a>
+                            <a href="/portal/request/service" class="btn btn-sm btn-outline-info">
+                                <i class="fa fa-wrench"/> Other Services
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificates Card -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fa fa-certificate text-danger"/> Certificates
+                        </h5>
+                        <p class="card-text text-muted small">
+                            Download destruction certificates and compliance documents
+                        </p>
+                        <t t-set="certificate_count" t-value="request.env['destruction.certificate'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id)])"/>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge badge-info" t-if="certificate_count &gt; 0">
+                                <t t-esc="certificate_count"/> Certificates
+                            </span>
+                            <span class="badge badge-secondary" t-else="">
+                                No certificates yet
+                            </span>
+                            <a href="/my/certificates" class="btn btn-sm btn-danger">
+                                View Certificates →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Card -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fa fa-file-text text-info"/> Documents
+                        </h5>
+                        <p class="card-text text-muted small">
+                            Upload, retrieve, and manage your document inventory
+                        </p>
+                        <div class="btn-group-vertical w-100 mt-2">
+                            <a href="/portal/documents/upload" class="btn btn-sm btn-outline-primary">
+                                <i class="fa fa-upload"/> Bulk Upload
+                            </a>
+                            <a href="/portal/documents/retrieval" class="btn btn-sm btn-outline-success">
+                                <i class="fa fa-download"/> Request Retrieval
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoices Card -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fa fa-file-invoice-dollar text-success"/> Invoices
+                        </h5>
+                        <p class="card-text text-muted small">
+                            View and download your billing statements
+                        </p>
+                        <t t-set="invoice_count" t-value="request.env['account.move'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id), ('move_type', '=', 'out_invoice')])"/>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge badge-info" t-if="invoice_count &gt; 0">
+                                <t t-esc="invoice_count"/> Invoices
+                            </span>
+                            <span class="badge badge-secondary" t-else="">
+                                No invoices yet
+                            </span>
+                            <a href="/my/invoices" class="btn btn-sm btn-success">
+                                View Invoices →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Help & Support -->
+                <div class="card mb-3 border-info">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fa fa-question-circle text-info"/> Need Help?
+                        </h5>
+                        <div class="btn-group-vertical w-100 mt-2">
+                            <a href="/portal/tour" class="btn btn-sm btn-outline-info">
+                                <i class="fa fa-graduation-cap"/> Take Portal Tour
+                            </a>
+                            <a href="/portal/feedback" class="btn btn-sm btn-outline-warning">
+                                <i class="fa fa-comment"/> Provide Feedback
+                            </a>
+                            <a href="/portal/help" class="btn btn-sm btn-outline-secondary">
+                                <i class="fa fa-book"/> Help Center
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Empty State Messages for Each Section -->
+    <template id="portal_empty_state_inventory" name="Empty Inventory State">
+        <div class="alert alert-info text-center">
+            <i class="fa fa-inbox fa-3x mb-3"/>
+            <h4>No Inventory Yet</h4>
+            <p>Your containers and documents will appear here once we start storing them for you.</p>
+            <a href="/portal/request/pickup" class="btn btn-primary">
+                <i class="fa fa-truck"/> Schedule a Pickup
+            </a>
+        </div>
+    </template>
+
+    <template id="portal_empty_state_work_orders" name="Empty Work Orders State">
+        <div class="alert alert-info text-center">
+            <i class="fa fa-tasks fa-3x mb-3"/>
+            <h4>No Work Orders</h4>
+            <p>Service activities and work orders will be displayed here.</p>
+            <a href="/my/home" class="btn btn-primary">
+                <i class="fa fa-home"/> Back to Dashboard
+            </a>
+        </div>
+    </template>
+
+    <template id="portal_empty_state_certificates" name="Empty Certificates State">
+        <div class="alert alert-info text-center">
+            <i class="fa fa-certificate fa-3x mb-3"/>
+            <h4>No Certificates Available</h4>
+            <p>Destruction certificates will appear here after completed shredding services.</p>
+            <a href="/portal/request/destruction" class="btn btn-danger">
+                <i class="fa fa-fire"/> Request Destruction Service
+            </a>
+        </div>
+    </template>
+
+</odoo>

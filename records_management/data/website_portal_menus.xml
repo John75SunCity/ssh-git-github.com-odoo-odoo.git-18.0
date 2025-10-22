@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ================================================================== -->
+        <!-- WEBSITE PORTAL MENU PRE-CONFIGURATION                            -->
+        <!-- Show all Records Management portal features even without data    -->
+        <!-- ================================================================== -->
+
+        <!-- Main Portal Menu Items (Always Visible) -->
+        <record id="portal_menu_records_dashboard" model="website.menu">
+            <field name="name">Dashboard</field>
+            <field name="url">/my/home</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="portal_menu_records_inventory" model="website.menu">
+            <field name="name">My Inventory</field>
+            <field name="url">/my/inventory</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="portal_menu_work_orders" model="website.menu">
+            <field name="name">Work Orders</field>
+            <field name="url">/my/work-orders</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="portal_menu_requests" model="website.menu">
+            <field name="name">Service Requests</field>
+            <field name="url">/my/requests</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="portal_menu_certificates" model="website.menu">
+            <field name="name">Certificates</field>
+            <field name="url">/my/certificates</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="portal_menu_documents" model="website.menu">
+            <field name="name">Documents</field>
+            <field name="url">/my/documents</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">60</field>
+        </record>
+
+        <record id="portal_menu_invoices" model="website.menu">
+            <field name="name">Invoices</field>
+            <field name="url">/my/invoices</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">70</field>
+        </record>
+
+        <!-- Submenu: Service Requests -->
+        <record id="portal_submenu_request_pickup" model="website.menu">
+            <field name="name">Request Pickup</field>
+            <field name="url">/portal/request/pickup</field>
+            <field name="parent_id" ref="portal_menu_requests"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="portal_submenu_request_destruction" model="website.menu">
+            <field name="name">Request Destruction</field>
+            <field name="url">/portal/request/destruction</field>
+            <field name="parent_id" ref="portal_menu_requests"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="portal_submenu_request_service" model="website.menu">
+            <field name="name">Other Services</field>
+            <field name="url">/portal/request/service</field>
+            <field name="parent_id" ref="portal_menu_requests"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <!-- Submenu: Documents -->
+        <record id="portal_submenu_bulk_upload" model="website.menu">
+            <field name="name">Bulk Upload</field>
+            <field name="url">/portal/documents/upload</field>
+            <field name="parent_id" ref="portal_menu_documents"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="portal_submenu_document_retrieval" model="website.menu">
+            <field name="name">Document Retrieval</field>
+            <field name="url">/portal/documents/retrieval</field>
+            <field name="parent_id" ref="portal_menu_documents"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Submenu: Help & Support -->
+        <record id="portal_menu_help" model="website.menu">
+            <field name="name">Help</field>
+            <field name="url">/portal/help</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">100</field>
+        </record>
+
+        <record id="portal_submenu_feedback" model="website.menu">
+            <field name="name">Provide Feedback</field>
+            <field name="url">/portal/feedback</field>
+            <field name="parent_id" ref="portal_menu_help"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="portal_submenu_tour" model="website.menu">
+            <field name="name">Portal Tour</field>
+            <field name="url">/portal/tour</field>
+            <field name="parent_id" ref="portal_menu_help"/>
+            <field name="sequence">20</field>
+        </record>
+
+    </data>
+</odoo>
