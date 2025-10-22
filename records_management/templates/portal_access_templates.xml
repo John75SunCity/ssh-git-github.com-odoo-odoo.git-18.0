@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Portal Access Denied Template -->
+    <template id="portal_access_denied" name="Portal Access Denied">
+        <t t-call="web.layout">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="alert alert-danger text-center">
+                            <h1><i class="fa fa-ban"/> Access Denied</h1>
+                            <p class="lead mt-4"><t t-esc="error"/></p>
+                            <hr/>
+                            <p>
+                                <a href="/web" class="btn btn-primary">
+                                    <i class="fa fa-arrow-left"/> Return to Dashboard
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal Header: Add "Switch Back to Admin" button when accessed via token -->
+    <template id="portal_layout_inherit_switch_back" inherit_id="portal.portal_layout" name="Add Switch Back Button">
+        <xpath expr="//div[hasclass('o_portal_navbar')]" position="inside">
+            <t t-if="request.session.get('original_admin_uid')">
+                <div class="alert alert-warning m-2 text-center">
+                    <i class="fa fa-user-secret"/> You are viewing this portal as an administrator
+                    <a href="/portal/switch_back" class="btn btn-sm btn-primary ml-3">
+                        <i class="fa fa-sign-out"/> Switch Back to Admin Account
+                    </a>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

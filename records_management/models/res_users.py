@@ -1,9 +1,20 @@
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, AccessError
+from odoo.http import request
 
 
 class ResUsers(models.Model):
     _inherit = 'res.users'
+
+    # ============================================================================
+    # PORTAL ACCOUNT ACCESS FEATURE
+    # ============================================================================
+    can_access_portal_accounts = fields.Boolean(
+        string="Can Access Customer Portal Accounts",
+        default=False,
+        groups='base.group_system',
+        help="Allow this user to log into customer portal accounts from backend to assist customers"
+    )
 
     records_user_profile = fields.Selection(
         selection=[
@@ -176,16 +187,16 @@ class ResUsers(models.Model):
         """Ensure users don't have conflicting base groups (internal + portal)"""
         base_group_user = self.env.ref('base.group_user', raise_if_not_found=False)
         base_group_portal = self.env.ref('base.group_portal', raise_if_not_found=False)
-        
+
         if not (base_group_user and base_group_portal):
             return
-        
+
         # Find users with both groups (conflicting state)
         conflicted_users = self.search([
             ('groups_id', 'in', [base_group_user.id]),
             ('groups_id', 'in', [base_group_portal.id])
         ])
-        
+
         for user in conflicted_users:
             # If user has our portal profile, prioritize portal
             if user.records_user_profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
@@ -193,3 +204,77 @@ class ResUsers(models.Model):
             # Otherwise, prioritize internal
             else:
                 user.groups_id = [(3, base_group_portal.id)]  # Remove portal group
+
+    # ============================================================================
+    # PORTAL ACCOUNT ACCESS METHODS
+    # ============================================================================
+
+    def action_access_portal_account(self):
+        """
+        Action button from partner form to access portal account
+        Generates a secure login token and redirects to portal
+        """
+        self.ensure_one()
+
+        # Security check
+        if not self.env.user.can_access_portal_accounts:
+            raise AccessError(_("You are not authorized to access customer portal accounts. Please contact your administrator."))
+
+        if not self.share:
+            raise ValidationError(_("This user is not a portal user."))
+
+        # Generate secure access token
+        login_token = self.env['portal.access.token'].sudo().create({
+            'user_id': self.id,
+            'created_by_user_id': self.env.user.id,
+        })
+
+        # Return URL action to open portal in new tab
+        portal_url = '/portal/access/%s' % login_token.token
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': portal_url,
+            'target': 'new',
+        }
+
+
+class PortalAccessToken(models.Model):
+    """Secure tokens for admin→portal account access"""
+    _name = 'portal.access.token'
+    _description = 'Portal Access Token'
+    _rec_name = 'token'
+
+    token = fields.Char(string='Access Token', required=True, default=lambda self: self._generate_token(), index=True)
+    user_id = fields.Many2one('res.users', string='Portal User', required=True, ondelete='cascade')
+    created_by_user_id = fields.Many2one('res.users', string='Created By', required=True, ondelete='cascade')
+    create_date = fields.Datetime(string='Created On', readonly=True)
+    expiry_date = fields.Datetime(string='Expires On', compute='_compute_expiry_date', store=True)
+    used = fields.Boolean(string='Used', default=False)
+    used_date = fields.Datetime(string='Used On', readonly=True)
+
+    @api.model
+    def _generate_token(self):
+        """Generate a secure random token"""
+        import secrets
+        return secrets.token_urlsafe(32)
+
+    @api.depends('create_date')
+    def _compute_expiry_date(self):
+        """Tokens expire after 5 minutes"""
+        from dateutil.relativedelta import relativedelta
+        for token in self:
+            if token.create_date:
+                token.expiry_date = token.create_date + relativedelta(minutes=5)
+            else:
+                token.expiry_date = False
+
+    def is_valid(self):
+        """Check if token is still valid"""
+        self.ensure_one()
+        from odoo.fields import Datetime
+        if self.used:
+            return False
+        if self.expiry_date and self.expiry_date < Datetime.now():
+            return False
+        return True
