@@ -118,9 +118,11 @@ export class PaperLoadTruckWidget extends Component {
     }
 }
 
-// Register the widget in view_widgets registry for use in form views
-registry.category("view_widgets").add("paper_load_truck_widget", {
+// Register as a field widget in the fields registry for Odoo 18/19
+registry.category("fields").add("paper_load_truck_widget", {
     component: PaperLoadTruckWidget,
+    displayName: "Paper Load Truck Visualization",
+    supportedTypes: ["integer", "float"],
 });
 
 // CSS for the widget (would normally be in a separate CSS file)
