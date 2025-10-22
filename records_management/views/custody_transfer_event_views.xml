@@ -49,7 +49,6 @@
                     
                     <group>
                         <group name="location" string="Transfer Location">
-                            <field name="location_name"/>
                             <field name="gps_latitude"/>
                             <field name="gps_longitude"/>
                         </group>
