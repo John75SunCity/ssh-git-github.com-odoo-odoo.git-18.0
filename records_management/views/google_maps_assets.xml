@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Load Google Maps JavaScript API with configured API key -->
-        <template id="assets_backend_google_maps" name="Google Maps API" inherit_id="web.assets_backend">
-            <xpath expr="." position="inside">
-                <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3jkyp3IiN2uxW1wqmxsNbKU1NdQtnq1c&amp;libraries=places,geometry"/>
-            </xpath>
-        </template>
-
-        <!-- Also load for frontend/portal views that might use map widgets -->
-        <template id="assets_frontend_google_maps" name="Google Maps API Frontend" inherit_id="web.assets_frontend">
-            <xpath expr="." position="inside">
-                <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3jkyp3IiN2uxW1wqmxsNbKU1NdQtnq1c&amp;libraries=places,geometry"/>
-            </xpath>
-        </template>
+        <!-- Google Maps API Configuration -->
+        <!-- Note: In Odoo 18+, external scripts are loaded via __manifest__.py assets or injected via controller -->
+        <!-- This file reserves the space for future runtime injection if needed -->
+        <!-- The actual Google Maps script loading is handled via JavaScript lazy loading in map_widget.js -->
+        
+        <!-- System parameter to store Google Maps API key -->
+        <record id="google_maps_api_key_param" model="ir.config_parameter">
+            <field name="key">records_management.google_maps_api_key</field>
+            <field name="value">AIzaSyD3jkyp3IiN2uxW1wqmxsNbKU1NdQtnq1c</field>
+        </record>
     </data>
 </odoo>

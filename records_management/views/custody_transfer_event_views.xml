@@ -27,18 +27,71 @@
     <field name="arch" type="xml">
             <form string="Custody Transfer Event">
                 <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
-                        <field name="company_id"/>
-                        <field name="custody_record_id"/>
-                        <field name="work_order_id"/>
-                        <field name="transfer_date"/>
-                        <field name="from_party_id"/>
-                        <field name="to_party_id"/>
-                        <field name="notes"/>
-                        <field name="active"/>
+                        <group name="transfer_info" string="Transfer Details">
+                            <field name="custody_record_id"/>
+                            <field name="work_order_id"/>
+                            <field name="transfer_date"/>
+                            <field name="transfer_type"/>
+                        </group>
+                        <group name="parties" string="Parties Involved">
+                            <field name="from_party_id"/>
+                            <field name="to_party_id"/>
+                            <field name="witness_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="location" string="Transfer Location">
+                            <field name="location_name"/>
+                            <field name="gps_latitude"/>
+                            <field name="gps_longitude"/>
+                        </group>
+                        <group name="verification" string="Verification">
+                            <field name="signature_from" widget="signature"/>
+                            <field name="signature_to" widget="signature"/>
+                            <field name="verified"/>
+                            <field name="verification_method"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Map Widget for Transfer Location -->
+                    <group string="🗺️ Transfer Location Map" invisible="not gps_latitude or not gps_longitude">
+                        <field name="gps_latitude" invisible="1"/>
+                        <field name="gps_longitude" invisible="1"/>
+                        <div class="row">
+                            <div class="col-12">
+                                <field name="gps_latitude" widget="map_widget" 
+                                       options="{'latitudeField': 'gps_latitude', 'longitudeField': 'gps_longitude'}" 
+                                       nolabel="1"/>
+                            </div>
+                        </div>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Additional transfer notes..."/>
+                        </page>
+                        <page string="Attachments" name="attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                    
+                    <group>
+                        <field name="active" widget="boolean_toggle"/>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>

@@ -9,34 +9,34 @@ export class PaperLoadTruckWidget extends Component {
                 <svg viewBox="0 0 200 60" class="truck-svg">
                     <!-- Truck Trailer Body -->
                     <rect x="10" y="15" width="140" height="30" fill="#e8f4f8" stroke="#2196F3" stroke-width="2" rx="5"/>
-                    
+
                     <!-- Progress Fill based on load capacity -->
-                    <rect x="10" y="15" 
-                          t-att-width="Math.min(140, (props.bale_count / 50) * 140)" 
-                          height="30" 
-                          fill="#4CAF50" 
+                    <rect x="10" y="15"
+                          t-att-width="Math.min(140, (props.bale_count / 50) * 140)"
+                          height="30"
+                          fill="#4CAF50"
                           rx="5"
                           opacity="0.8"/>
-                    
+
                     <!-- Truck Cab -->
                     <rect x="150" y="20" width="30" height="20" fill="#2196F3" rx="3"/>
-                    
+
                     <!-- Wheels -->
                     <circle cx="30" cy="50" r="5" fill="#333"/>
                     <circle cx="130" cy="50" r="5" fill="#333"/>
                     <circle cx="165" cy="50" r="5" fill="#333"/>
-                    
+
                     <!-- Load Information Text -->
                     <text x="80" y="32" text-anchor="middle" fill="#000" font-size="12" font-weight="bold">
                         <t t-esc="props.bale_count"/> / 50 bales
                     </text>
-                    
+
                     <!-- Weight Information -->
                     <text x="80" y="42" text-anchor="middle" fill="#555" font-size="10">
                         <t t-esc="Math.round(props.total_weight || 0)"/> lbs
                     </text>
                 </svg>
-                
+
                 <!-- Load Breakdown by Paper Grade -->
                 <div class="load-breakdown mt-2">
                     <div class="row">
@@ -60,7 +60,7 @@ export class PaperLoadTruckWidget extends Component {
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Load Status Indicator -->
                 <div class="load-status mt-2" t-att-class="'status-' + (props.status || 'draft')">
                     <div class="d-flex justify-content-between align-items-center">

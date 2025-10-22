@@ -22,10 +22,62 @@
                 <div class="oe_title">
                     <label for="name"/>
                     <h1>
-        <field name="name" placeholder="Name..."/>
+                        <field name="name" placeholder="Photo description..."/>
                     </h1>
                 </div>
+                <group>
+                    <group name="photo_info" string="Photo Information">
+                        <field name="image_data" widget="image" options="{'size': [300, 300]}"/>
+                        <field name="capture_date"/>
+                        <field name="file_size" readonly="1"/>
+                        <field name="mime_type" readonly="1"/>
+                    </group>
+                    <group name="location_info" string="Location Information">
+                        <field name="gps_latitude"/>
+                        <field name="gps_longitude"/>
+                        <field name="has_gps" invisible="1"/>
+                        <field name="gps_accuracy"/>
+                        <field name="location_name"/>
+                    </group>
+                </group>
+                
+                <!-- Map Widget for GPS Location -->
+                <group string="📍 Location Map" invisible="not has_gps">
+                    <field name="gps_latitude" invisible="1"/>
+                    <field name="gps_longitude" invisible="1"/>
+                    <div class="row">
+                        <div class="col-12">
+                            <field name="gps_latitude" widget="map_widget" 
+                                   options="{'latitudeField': 'gps_latitude', 'longitudeField': 'gps_longitude'}" 
+                                   nolabel="1"/>
+                        </div>
+                    </div>
+                </group>
+                
+                <group>
+                    <group name="device_info" string="Device Information">
+                        <field name="device_model"/>
+                        <field name="device_os"/>
+                        <field name="app_version"/>
+                    </group>
+                    <group name="metadata" string="Metadata">
+                        <field name="uploaded_by"/>
+                        <field name="upload_date"/>
+                        <field name="related_record_model"/>
+                        <field name="related_record_id"/>
+                    </group>
+                </group>
+                
+                <notebook>
+                    <page string="Notes" name="notes">
+                        <field name="notes" placeholder="Additional notes about this photo..."/>
+                    </page>
+                </notebook>
             </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids"/>
+                <field name="message_ids"/>
+            </div>
         </form>
     </field>
     </record>
