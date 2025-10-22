@@ -53,9 +53,9 @@
                             <field name="gps_longitude"/>
                         </group>
                         <group name="verification" string="Verification">
-                            <field name="signature_from" widget="signature"/>
-                            <field name="signature_to" widget="signature"/>
-                            <field name="verified"/>
+                            <field name="transferred_from_signature" widget="signature"/>
+                            <field name="transferred_to_signature" widget="signature"/>
+                            <field name="witness_signature" widget="signature"/>
                             <field name="verification_method"/>
                         </group>
                     </group>
