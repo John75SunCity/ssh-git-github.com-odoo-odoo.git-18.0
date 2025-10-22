@@ -88,4 +88,104 @@
             </t>
         </t>
     </template>
+
+    <!-- Load Shipment Manifest Template for paper.load.shipment model -->
+    <template id="report_load_shipment_manifest">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <div class="row">
+                            <div class="col-12">
+                                <h2>Load Shipment Manifest: <span t-field="doc.name"/></h2>
+                            </div>
+                        </div>
+
+                        <div class="row mt32">
+                            <div class="col-6">
+                                <strong>Carrier:</strong>
+                                <p t-field="doc.carrier_id"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Driver:</strong>
+                                <p t-field="doc.driver_id"/>
+                            </div>
+                        </div>
+
+                        <div class="row mt16">
+                            <div class="col-6">
+                                <strong>Scheduled Pickup:</strong>
+                                <p t-field="doc.scheduled_pickup_date"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Scheduled Delivery:</strong>
+                                <p t-field="doc.scheduled_delivery_date"/>
+                            </div>
+                        </div>
+
+                        <div class="row mt16">
+                            <div class="col-6">
+                                <strong>Pickup Location:</strong>
+                                <p t-field="doc.pickup_location_id"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Delivery Location:</strong>
+                                <p t-field="doc.delivery_location_id"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm o_main_table mt32">
+                            <thead>
+                                <tr>
+                                    <th name="th_bale_number" class="text-left">Bale Number</th>
+                                    <th name="th_grade" class="text-left">Grade</th>
+                                    <th name="th_weight" class="text-right">Weight (kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.bale_ids" t-as="bale">
+                                    <tr>
+                                        <td><span t-field="bale.name"/></td>
+                                        <td><span t-field="bale.grade"/></td>
+                                        <td class="text-right"><span t-field="bale.weight"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div class="row justify-content-end">
+                            <div class="col-4">
+                                <table class="table table-sm">
+                                    <tr class="border-black">
+                                        <td><strong>Total Bales</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.bale_count"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td><strong>Total Weight</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.total_weight"/> kg
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row mt32">
+                            <div class="col-6">
+                                <strong>Driver's Signature:</strong>
+                                <div style="border-bottom: 1px solid black; height: 50px;"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Pickup Date:</strong>
+                                <div style="border-bottom: 1px solid black; height: 50px;"/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
 </odoo>
