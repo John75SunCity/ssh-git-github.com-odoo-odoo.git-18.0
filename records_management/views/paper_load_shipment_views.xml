@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
+
         <record id="paper_load_shipment_view_tree" model="ir.ui.view">
             <field name="name">paper.load.shipment.view.tree</field>
             <field name="model">paper.load.shipment</field>
@@ -72,6 +72,26 @@
                                 <field name="manifest_print_date" readonly="1" />
                             </group>
                         </group>
+                        <!-- Visual Truck Load Widget -->
+                        <div class="row">
+                            <div class="col-12">
+                                <group string="🚛 Visual Load Status">
+                                    <field name="bale_count" invisible="1"/>
+                                    <field name="total_weight" invisible="1"/>
+                                    <field name="white_count" invisible="1"/>
+                                    <field name="mixed_count" invisible="1"/>
+                                    <field name="cardboard_count" invisible="1"/>
+                                    <!-- Truck visualization widget -->
+                                    <widget name="paper_load_truck_widget"
+                                            bale_count="bale_count"
+                                            total_weight="total_weight"
+                                            white_count="white_count"
+                                            mixed_count="mixed_count"
+                                            cardboard_count="cardboard_count"/>
+                                </group>
+                            </div>
+                        </div>
+
                         <group>
                             <group name="load_summary" string="Load Summary">
                                 <field name="bale_count" readonly="1" />
@@ -276,11 +296,11 @@
                 </p>
             </field>
         </record>
-    
+
         <!-- Paper Recycling moved to Operations menu -->
         <menuitem id="menu_paper_recycling" name="Paper Recycling" parent="menu_records_operations" sequence="80" groups="records_management.group_records_user" />
         <menuitem id="menu_load_shipments" name="Load Shipments" parent="menu_paper_recycling" action="action_paper_load_shipment" sequence="20" groups="records_management.group_records_user" />
-    
+
         <record id="action_paper_recycling_dashboard" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model paper.load.shipment has state field - consider using default search filters -->
             <field name="name">Paper Recycling Dashboard</field>
@@ -299,9 +319,9 @@
                 </p>
             </field>
         </record>
-    
+
         <menuitem id="menu_paper_recycling_dashboard" name="Dashboard" parent="menu_paper_recycling" action="action_paper_recycling_dashboard" sequence="5" groups="records_management.group_records_user" />
-    
-    
+
+
     </data>
 </odoo>
