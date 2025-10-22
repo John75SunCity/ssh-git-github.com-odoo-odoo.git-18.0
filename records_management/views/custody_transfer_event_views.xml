@@ -77,8 +77,12 @@
                         <page string="Notes" name="notes">
                             <field name="notes" placeholder="Additional transfer notes..."/>
                         </page>
-                        <page string="Attachments" name="attachments">
-                            <field name="attachment_ids" widget="many2many_binary"/>
+                        <page string="Transfer Document" name="document">
+                            <group>
+                                <field name="transfer_document" filename="transfer_document_filename"/>
+                                <field name="transfer_document_filename" invisible="1"/>
+                                <field name="photos_taken"/>
+                            </group>
                         </page>
                     </notebook>
                     
