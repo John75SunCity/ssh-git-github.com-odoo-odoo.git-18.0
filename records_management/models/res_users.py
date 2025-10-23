@@ -6,6 +6,35 @@ from odoo.http import request
 class ResUsers(models.Model):
     _inherit = 'res.users'
 
+    @api.model
+    def _assign_admin_groups(self):
+        """Automatically assign admin users to Records Admin and Settings groups
+        This runs during module upgrade to fix access lockouts
+        """
+        # Get the groups
+        records_admin = self.env.ref('records_management.group_records_admin', raise_if_not_found=False)
+        settings_group = self.env.ref('base.group_system', raise_if_not_found=False)
+        
+        if not records_admin or not settings_group:
+            return
+        
+        # Find all admin users (login contains 'admin' or has id=1 or id=2)
+        admin_users = self.sudo().search([
+            '|', '|',
+            ('login', 'ilike', 'admin'),
+            ('id', '=', 1),
+            ('id', '=', 2)
+        ])
+        
+        # Add them to both groups
+        for user in admin_users:
+            if records_admin not in user.groups_id:
+                user.sudo().write({'groups_id': [(4, records_admin.id)]})
+            if settings_group not in user.groups_id:
+                user.sudo().write({'groups_id': [(4, settings_group.id)]})
+        
+        return True
+
     # ============================================================================
     # PORTAL ACCOUNT ACCESS FEATURE
     # ============================================================================
