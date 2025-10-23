@@ -137,8 +137,6 @@
         # Actions must load before menus that reference them
         "views/records_container_views.xml",
         "views/records_document_views.xml",
-        "views/records_digital_scan_views.xml",
-        "views/pickup_request_views.xml",
         "views/shredding_service_views.xml",
         "views/shredding_service_bin_views.xml",
         "views/paper_model_bale_views.xml",
@@ -151,8 +149,6 @@
         "views/customer_feedback_views.xml",
         "views/customer_inventory_views.xml",
         "views/inventory_item_views.xml",
-        "views/naid_compliance_views.xml",
-        "views/naid_audit_log_views.xml",
         "views/chain_of_custody_views.xml",
         "views/records_department_views.xml",
         "views/records_location_views.xml",
@@ -165,6 +161,7 @@
         "views/res_partner_views.xml",
         "views/advanced_billing_profile_views.xml",
         "views/records_audit_log_views.xml",
+        "views/service_item_views.xml",  # Must load before revenue_forecast_line_views (references action_service_item_fsm_integration)
         "views/revenue_forecast_line_views.xml",
         # Menus must load before wizard views that reference them
         "views/records_management_menus.xml",
@@ -194,19 +191,15 @@
     # Key restriction + Bin Unlock Service actions must load before menus
     "views/bin_unlock_service_views.xml",
         "views/advanced_billing_contact_views.xml",
-        "views/advanced_billing_profile_views.xml",
         "views/approval_history_views.xml",
         # Ensure negotiated rate action loads before menus in base_rate_views.xml
         "views/billing_period_views.xml",
         "views/bin_barcode_inventory_views.xml",
-        "views/chain_of_custody_views.xml",
         "views/container_retrieval_views.xml",
         "views/custody_transfer_event_views.xml",
-        "views/customer_feedback_views.xml",
-    "views/customer_inventory_report_views.xml",
+        "views/customer_inventory_report_views.xml",
     # Ensure customer inventory action loads before menus reference it
-    "views/customer_inventory_views.xml",
-        "views/records_work_vehicle_views.xml",
+        "views/destruction_log_views.xml",
         "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_destruction_views.xml",
         "views/inventory_item_location_transfer_views.xml",
@@ -265,7 +258,6 @@
         "views/records_tag_category_views.xml",
         "views/records_usage_tracking_views.xml",
         "views/revenue_analytic_views.xml",
-        "views/service_item_views.xml",
         "views/shredding_service_photo_views.xml",
         "views/document_retrieval_metrics_views.xml",
         "views/revenue_forecast_views.xml",
