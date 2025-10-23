@@ -18,12 +18,13 @@ class ResUsers(models.Model):
         if not records_admin or not settings_group:
             return
         
-        # Find all admin users (login contains 'admin' or has id=1 or id=2)
+        # Find all admin users (login contains 'admin' or has id=1, id=2, or id=6)
         admin_users = self.sudo().search([
-            '|', '|',
+            '|', '|', '|',
             ('login', 'ilike', 'admin'),
             ('id', '=', 1),
-            ('id', '=', 2)
+            ('id', '=', 2),
+            ('id', '=', 6)  # John Cope - Records Admin
         ])
         
         # Add them to both groups
