@@ -134,6 +134,7 @@
         "data/temp_inventory_configurator_data.xml",
         # Actions must load before menus that reference them
         "views/shredding_service_views.xml",
+        "views/shredding_service_bin_views.xml",
         # Menus must load before wizard views that reference them
         "views/records_management_menus.xml",
         "views/report_window_actions_views.xml",
@@ -258,7 +259,6 @@
         "views/shredding_certificate_views.xml",
         "views/shredding_hard_drive_views.xml",
         "views/shredding_inventory_batch_views.xml",
-        "views/shredding_service_bin_views.xml",
         "views/shredding_service_event_views.xml",
         "views/shredding_team_views.xml",
         "views/stock_lot_views.xml",
