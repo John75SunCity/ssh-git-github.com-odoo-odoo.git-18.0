@@ -132,6 +132,8 @@
         "data/scheduled_actions_data.xml",
         "data/field_label_customization_batch_data.xml",
         "data/temp_inventory_configurator_data.xml",
+        # Wizard actions must load before views that reference them
+        "views/records_container_assign_barcode_wizard_views.xml",
         # Actions must load before menus that reference them
         "views/records_container_views.xml",
         "views/records_document_views.xml",
@@ -188,7 +190,6 @@
         "views/temp_inventory_reject_wizard_views.xml",
         "views/visitor_pos_wizard_views.xml",
         "views/work_order_bin_assignment_wizard_views.xml",
-    "views/records_container_assign_barcode_wizard_views.xml",
     # Key restriction + Bin Unlock Service actions must load before menus
     "views/bin_unlock_service_views.xml",
         "views/advanced_billing_contact_views.xml",
