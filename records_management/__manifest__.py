@@ -163,6 +163,8 @@
         "views/records_audit_log_views.xml",
         "views/service_item_views.xml",  # Must load before revenue_forecast_line_views (references action_service_item_fsm_integration)
         "views/document_retrieval_metrics_views.xml",  # Must load before revenue_forecast_line_views (references action_document_retrieval_metrics)
+        "views/payment_split_line_views.xml",  # Must load before revenue_forecast_line_views (references action_payment_split_line)
+        "views/shredding_service_photo_views.xml",  # Must load before revenue_forecast_line_views (references action_shredding_service_photo)
         "views/revenue_forecast_line_views.xml",
         # Menus must load before wizard views that reference them
         "views/records_management_menus.xml",
@@ -217,7 +219,6 @@
         "views/paper_bale_views.xml",
         "views/paper_load_shipment_views.xml",
         "views/payment_split_views.xml",
-        "views/payment_split_line_views.xml",
         "views/pickup_route_views.xml",
         "views/portal_feedback_views.xml",
         "views/portal_request_line_views.xml",
@@ -259,7 +260,6 @@
         "views/records_tag_category_views.xml",
         "views/records_usage_tracking_views.xml",
         "views/revenue_analytic_views.xml",
-        "views/shredding_service_photo_views.xml",
         "views/revenue_forecast_views.xml",
         "views/revenue_forecaster_views.xml",
         "views/rm_module_configurator_views.xml",
