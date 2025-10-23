@@ -149,7 +149,6 @@
         "views/workflow_visualization_manager_views.xml",
         "views/portal_request_views.xml",
         "views/customer_feedback_views.xml",
-        "views/feedback_responses_views.xml",
         "views/customer_inventory_views.xml",
         "views/inventory_item_views.xml",
         "views/naid_compliance_views.xml",
