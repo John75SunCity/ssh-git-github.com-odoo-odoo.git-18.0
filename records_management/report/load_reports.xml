@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<record id="action_report_load_manifest" model="ir.actions.report">
-        <field name="name">Load Manifest</field>
-        <field name="model">paper.bale.load</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">records_management.report_load_manifest</field>
-        <field name="report_file">records_management.report_load_manifest</field>
-        <field name="print_report_name">'Load Manifest - %s' % (object.name)</field>
-        <field name="binding_model_id" ref="records_management.model_paper_bale_load"/>
-        <field name="binding_type">report</field>
-        <field name="paperformat_id" ref="base.paperformat_us"/>
-    </record>
+        <!-- Load Manifest Report for Paper Bale Load -->
+        <record id="action_report_load_manifest" model="ir.actions.report">
+            <field name="name">Load Manifest</field>
+            <field name="model">paper.bale.load</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">records_management.report_load_manifest</field>
+            <field name="report_file">records_management.report_load_manifest</field>
+            <field name="print_report_name">'Load Manifest - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="records_management.model_paper_bale_load"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="base.paperformat_us"/>
+        </record>
+
+        <!-- Load Manifest Report for Paper Load Shipment -->
+        <record id="action_report_load_shipment_manifest" model="ir.actions.report">
+            <field name="name">Load Shipment Manifest</field>
+            <field name="model">paper.load.shipment</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">records_management.report_load_shipment_manifest</field>
+            <field name="report_file">records_management.report_load_shipment_manifest</field>
+            <field name="print_report_name">'Load Shipment Manifest - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="records_management.model_paper_load_shipment"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="base.paperformat_us"/>
+        </record>
     </data>
 </odoo>

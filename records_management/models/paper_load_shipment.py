@@ -155,7 +155,7 @@ class PaperLoadShipment(models.Model):
         })
         self.message_post(body=_("Manifest printed with signature timestamp."))
         # Return report action for manifest
-        return self.env.ref('records_management.action_report_load_manifest').report_action(self)
+        return self.env.ref('records_management.action_report_load_shipment_manifest').report_action(self)
 
     def action_cancel(self):
         """

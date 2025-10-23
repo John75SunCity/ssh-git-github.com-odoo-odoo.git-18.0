@@ -96,6 +96,8 @@
         "report/destruction_certificate_reports.xml",
         "report/additional_reports.xml",
         "report/paper_bale_reports.xml",
+        "report/load_reports.xml",
+        "report/load_report_templates.xml",
         "report/pickup_request_reports.xml",
         "report/barcode_storage_box_reports.xml",
         "report/description_reports.xml",

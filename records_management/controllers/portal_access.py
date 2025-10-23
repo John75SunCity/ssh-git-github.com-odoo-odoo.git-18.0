@@ -85,16 +85,3 @@ class PortalAccessController(http.Controller):
         
         # Redirect to backend
         return werkzeug.utils.redirect('/web')
-
-
-class PortalAccessLog(http.Controller):
-    """Audit log for portal account access"""
-    _name = 'portal.access.log'
-    _description = 'Portal Access Log'
-    _order = 'access_date desc'
-    
-    admin_user_id = http.request.env['res.users']
-    portal_user_id = http.request.env['res.users']
-    partner_id = http.request.env['res.partner']
-    access_date = http.request.env['ir.qweb.field.datetime']
-    ip_address = http.request.env['ir.qweb.field']
