@@ -160,6 +160,7 @@
         "views/records_tag_views.xml",
         "views/base_rate_views.xml",
         "views/customer_negotiated_rate_views.xml",
+        "views/destruction_event_views.xml",
         "views/destruction_certificate_views.xml",
         "views/res_partner_views.xml",
         "views/advanced_billing_profile_views.xml",
@@ -204,9 +205,6 @@
     "views/customer_inventory_report_views.xml",
     # Ensure customer inventory action loads before menus reference it
     "views/customer_inventory_views.xml",
-    # Ensure destruction event action loads before certificate referencing it
-    "views/destruction_event_views.xml",
-        "views/destruction_certificate_views.xml",
         "views/records_work_vehicle_views.xml",
         "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_destruction_views.xml",
