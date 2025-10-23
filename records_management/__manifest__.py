@@ -164,6 +164,7 @@
         "views/destruction_certificate_views.xml",
         "views/res_partner_views.xml",
         "views/advanced_billing_profile_views.xml",
+        "views/records_audit_log_views.xml",
         "views/revenue_forecast_line_views.xml",
         # Menus must load before wizard views that reference them
         "views/records_management_menus.xml",
@@ -227,7 +228,6 @@
         "views/portal_feedback_views.xml",
         "views/portal_request_line_views.xml",
         "views/records_approval_workflow_views.xml",
-        "views/records_audit_log_views.xml",
         "views/records_bulk_user_import_views.xml",
         "views/records_category_views.xml",
         "views/records_center_location_views.xml",
