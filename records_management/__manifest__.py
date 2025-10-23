@@ -132,6 +132,8 @@
         "data/scheduled_actions_data.xml",
         "data/field_label_customization_batch_data.xml",
         "data/temp_inventory_configurator_data.xml",
+        # Actions must load before menus that reference them
+        "views/shredding_service_views.xml",
         # Menus must load before wizard views that reference them
         "views/records_management_menus.xml",
         "views/report_window_actions_views.xml",
@@ -258,7 +260,6 @@
         "views/shredding_inventory_batch_views.xml",
         "views/shredding_service_bin_views.xml",
         "views/shredding_service_event_views.xml",
-        "views/shredding_service_views.xml",
         "views/shredding_team_views.xml",
         "views/stock_lot_views.xml",
         "views/survey_feedback_theme_views.xml",
