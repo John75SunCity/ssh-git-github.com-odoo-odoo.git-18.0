@@ -168,9 +168,9 @@
         "views/revenue_forecast_line_views.xml",
         # Action views must load before menus that reference them
         "views/portal_feedback_analytic_views.xml",  # Must load before records_management_menus.xml (defines action_feedback_analytics)
+        "views/report_window_actions_views.xml",  # Must load before records_management_menus.xml (defines action_storage_reports and other report actions)
         # Menus must load before wizard views that reference them
         "views/records_management_menus.xml",
-        "views/report_window_actions_views.xml",
         "views/bin_issue_report_wizard_views.xml",
         "views/customer_inventory_report_wizard_views.xml",
         "views/hard_drive_scan_wizard_views.xml",
