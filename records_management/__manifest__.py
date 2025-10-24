@@ -166,6 +166,8 @@
         "views/payment_split_line_views.xml",  # Must load before revenue_forecast_line_views (references action_payment_split_line)
         "views/shredding_service_photo_views.xml",  # Must load before revenue_forecast_line_views (references action_shredding_service_photo)
         "views/revenue_forecast_line_views.xml",
+        # Action views must load before menus that reference them
+        "views/portal_feedback_analytic_views.xml",  # Must load before records_management_menus.xml (defines action_feedback_analytics)
         # Menus must load before wizard views that reference them
         "views/records_management_menus.xml",
         "views/report_window_actions_views.xml",
@@ -275,8 +277,6 @@
         "views/records_billing_config_views.xml",
         # Ensure bin key action is defined before menus reference it
         "views/bin_key_views.xml",
-        # Ensure feedback analytics action loads before menus referencing it
-        "views/portal_feedback_analytic_views.xml",
         # Ensure res partner key restriction action is defined before menus reference it
         "views/res_partner_key_restriction_views.xml",
     # User profile selector (Records Management role abstraction)
