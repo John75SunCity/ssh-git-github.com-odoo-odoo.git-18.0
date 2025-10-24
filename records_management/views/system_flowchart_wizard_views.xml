@@ -32,11 +32,11 @@ System Architecture Flowchart</h1>
     <p><strong>Customization Options:</strong> You can customize the visualization style in the next step, but all data is pre-configured and ready to use.</p>
     <p class="mb-0"><strong>No Setup Required:</strong> Click "Next" to proceed with automatic configuration or customize display options.</p>
 </div>
-</div>
-        <div invisible="step != 'configure'">
-<h2>Configuration Options</h2>
-<p class="text-muted">Customize your flowchart visualization (data is automatically pulled from your system)</p>
-<div class="alert alert-secondary mb-3">
+                </div>
+                <div invisible="step != 'configure'">
+                    <h2>Configuration Options</h2>
+                    <p class="text-muted">Customize your flowchart visualization (data is automatically pulled from your system)</p>
+                    <div class="alert alert-secondary mb-3" role="status">
     <p class="mb-2"><strong><i class="fa fa-magic me-1"/>Display Settings:</strong></p>
     <ul class="mb-0">
         <li><strong>Search Scenario:</strong> Choose which part of the system to visualize (Overview, Workflows, Security, Portal Integration, etc.)</li>
