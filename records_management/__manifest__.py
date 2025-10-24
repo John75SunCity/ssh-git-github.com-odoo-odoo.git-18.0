@@ -166,10 +166,18 @@
         "views/payment_split_line_views.xml",  # Must load before revenue_forecast_line_views (references action_payment_split_line)
         "views/shredding_service_photo_views.xml",  # Must load before revenue_forecast_line_views (references action_shredding_service_photo)
         "views/revenue_forecast_line_views.xml",
-        # Action views must load before menus that reference them
-        "views/portal_feedback_analytic_views.xml",  # Must load before records_management_menus.xml (defines action_feedback_analytics)
-        "views/report_window_actions_views.xml",  # Must load before records_management_menus.xml (defines action_storage_reports and other report actions)
-        # Menus must load before wizard views that reference them
+        # ============================================================================
+        # CRITICAL: Action views MUST load before menus that reference them
+        # ============================================================================
+        "views/portal_feedback_analytic_views.xml",  # defines action_feedback_analytics
+        "views/report_window_actions_views.xml",  # defines action_storage_reports, action_compliance_reports
+        "views/customer_inventory_report_views.xml",  # defines customer_inventory_report_action
+        "views/bin_unlock_service_views.xml",  # defines action_bin_key_management
+        "views/bin_key_views.xml",  # defines action_bin_key
+        "views/res_partner_key_restriction_views.xml",  # defines action_res_partner_key_restriction
+        # ============================================================================
+        # Menus can now safely reference all actions defined above
+        # ============================================================================
         "views/records_management_menus.xml",
         "views/bin_issue_report_wizard_views.xml",
         "views/customer_inventory_report_wizard_views.xml",
@@ -193,8 +201,6 @@
         "views/temp_inventory_reject_wizard_views.xml",
         "views/visitor_pos_wizard_views.xml",
         "views/work_order_bin_assignment_wizard_views.xml",
-    # Key restriction + Bin Unlock Service actions must load before menus
-    "views/bin_unlock_service_views.xml",
         "views/advanced_billing_contact_views.xml",
         "views/approval_history_views.xml",
         # Ensure negotiated rate action loads before menus in base_rate_views.xml
@@ -202,8 +208,6 @@
         "views/bin_barcode_inventory_views.xml",
         "views/container_retrieval_views.xml",
         "views/custody_transfer_event_views.xml",
-        "views/customer_inventory_report_views.xml",
-    # Ensure customer inventory action loads before menus reference it
         "views/destruction_log_views.xml",
         "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_destruction_views.xml",
@@ -275,10 +279,6 @@
         "views/temp_inventory_views.xml",
         "views/records_container_field_label_helper_views.xml",
         "views/records_billing_config_views.xml",
-        # Ensure bin key action is defined before menus reference it
-        "views/bin_key_views.xml",
-        # Ensure res partner key restriction action is defined before menus reference it
-        "views/res_partner_key_restriction_views.xml",
     # User profile selector (Records Management role abstraction)
     "views/res_users_records_profile_views.xml",
 
