@@ -208,7 +208,6 @@
         "views/bin_barcode_inventory_views.xml",
         "views/container_retrieval_views.xml",
         "views/custody_transfer_event_views.xml",
-        "views/destruction_log_views.xml",
         "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_destruction_views.xml",
         "views/inventory_item_location_transfer_views.xml",
