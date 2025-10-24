@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Destruction Certificate Module
+Destruction Certificate Management
 
-Manages certificates of destruction for completed shredding/destruction services.
-Provides legal documentation and compliance tracking for destruction activities.
+NAID AAA compliant certificate of destruction tracking with comprehensive
+audit trails, customer portal access, and automated generation from invoices.
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.1
 License: LGPL-3
 """
 
@@ -68,10 +68,29 @@ class DestructionCertificate(models.Model):
     fsm_task_id = fields.Many2one(comodel_name="project.task", string="FSM Task", readonly=True)
     shredding_team_id = fields.Many2one(comodel_name="shredding.team", string="Shredding Team")
     work_order_id = fields.Many2one(comodel_name="work.order.shredding", string="Work Order")
+
+    # Sales Order (Quote) Reference
+    sale_order_id = fields.Many2one(
+        comodel_name="sale.order",
+        string="Sales Order / Quote",
+        help="Original quote or sales order that initiated this destruction service. Click to view the quote details.",
+        tracking=True,
+        compute="_compute_sale_order_id",
+        store=True,
+        readonly=False,
+    )
+    sale_order_name = fields.Char(
+        related="sale_order_id.name",
+        string="Quote Reference",
+        readonly=True,
+        store=True,
+    )
+
+    # Invoice References
     invoice_id = fields.Many2one(
         comodel_name="account.move",
         string="Customer Invoice",
-        help="Invoice linked to this destruction service. When it reaches Paid state the certificate document will be generated automatically (if not already).",
+        help="Invoice linked to this destruction service. Click to view the invoice details.",
         tracking=True,
     )
     invoice_line_id = fields.Many2one(
@@ -80,6 +99,14 @@ class DestructionCertificate(models.Model):
         help="Specific invoice line for the destruction service that generated this certificate.",
         tracking=True,
     )
+    invoice_name = fields.Char(
+        related="invoice_id.name",
+        string="Invoice Reference",
+        readonly=True,
+        store=True,
+    )
+
+    # Destruction Service Reference
     destruction_service_id = fields.Many2one(
         comodel_name="shredding.service",
         string="Destruction Service",
@@ -199,6 +226,19 @@ class DestructionCertificate(models.Model):
         for rec in self:
             rec.container_count = len(rec.container_ids)
 
+    @api.depends("invoice_id", "invoice_id.invoice_origin")
+    def _compute_sale_order_id(self):
+        """Compute the sales order from the invoice origin"""
+        for rec in self:
+            if rec.invoice_id and rec.invoice_id.invoice_origin:
+                # Try to find the sale order by name
+                sale_order = self.env["sale.order"].search(
+                    [("name", "=", rec.invoice_id.invoice_origin)], limit=1
+                )
+                rec.sale_order_id = sale_order.id if sale_order else False
+            else:
+                rec.sale_order_id = False
+
     # ============================================================================
     # CONSTRAINTS & VALIDATIONS
     # ============================================================================
@@ -282,6 +322,51 @@ class DestructionCertificate(models.Model):
         """Archive the certificate"""
         self.ensure_one()
         self.write({"state": "archived"})
+
+    def action_view_sale_order(self):
+        """Open the related sales order (quote) in form view"""
+        self.ensure_one()
+        if not self.sale_order_id:
+            raise ValidationError(_("No sales order/quote is linked to this certificate."))
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Sales Order / Quote"),
+            "res_model": "sale.order",
+            "res_id": self.sale_order_id.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def action_view_invoice(self):
+        """Open the related invoice in form view"""
+        self.ensure_one()
+        if not self.invoice_id:
+            raise ValidationError(_("No invoice is linked to this certificate."))
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Customer Invoice"),
+            "res_model": "account.move",
+            "res_id": self.invoice_id.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def action_view_work_order(self):
+        """Open the related work order in form view"""
+        self.ensure_one()
+        if not self.work_order_id:
+            raise ValidationError(_("No work order is linked to this certificate."))
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Work Order"),
+            "res_model": "work.order.shredding",
+            "res_id": self.work_order_id.id,
+            "view_mode": "form",
+            "target": "current",
+        }
 
     def _is_certificate_feature_enabled(self):
         """Check configurator toggle for destruction certificate generation.

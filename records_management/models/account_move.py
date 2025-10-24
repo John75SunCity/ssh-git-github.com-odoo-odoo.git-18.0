@@ -6,7 +6,7 @@ Extends account.move model to automatically generate certificates of destruction
 for shredding/destruction-related invoice lines when invoices are confirmed.
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.1
 License: LGPL-3
 """
 
