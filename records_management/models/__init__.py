@@ -1,5 +1,7 @@
 from . import retrieval_item_base
 from . import scan_retrieval_item
+# Account integration
+from . import account_move
 from . import account_move_line
 from . import advanced_billing_contact
 from . import advanced_billing_line

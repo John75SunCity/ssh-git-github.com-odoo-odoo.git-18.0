@@ -74,6 +74,61 @@ class DestructionCertificate(models.Model):
         help="Invoice linked to this destruction service. When it reaches Paid state the certificate document will be generated automatically (if not already).",
         tracking=True,
     )
+    invoice_line_id = fields.Many2one(
+        comodel_name="account.move.line",
+        string="Invoice Line",
+        help="Specific invoice line for the destruction service that generated this certificate.",
+        tracking=True,
+    )
+    destruction_service_id = fields.Many2one(
+        comodel_name="shredding.service",
+        string="Destruction Service",
+        help="Destruction/shredding service record linked to this certificate.",
+    )
+    department_id = fields.Many2one(
+        comodel_name="records.department",
+        string="Department",
+        help="Customer department associated with this destruction.",
+    )
+    location_id = fields.Many2one(
+        comodel_name="records.location",
+        string="Location",
+        help="Storage location where items were retrieved from for destruction.",
+    )
+    container_ids = fields.Many2many(
+        comodel_name="records.container",
+        relation="destruction_cert_container_rel",
+        column1="certificate_id",
+        column2="container_id",
+        string="Containers",
+        help="Containers that were destroyed.",
+    )
+    container_count = fields.Integer(
+        string="Container Count",
+        compute="_compute_container_count",
+        store=True,
+        help="Number of containers destroyed.",
+    )
+    total_weight = fields.Float(
+        string="Total Weight (lbs)",
+        help="Total weight of materials destroyed in pounds.",
+    )
+    destruction_date = fields.Date(
+        string="Destruction Date",
+        help="Date when the destruction was performed.",
+        tracking=True,
+    )
+    destruction_method = fields.Selection(
+        [
+            ("cross_cut", "Cross Cut Shredding"),
+            ("strip_cut", "Strip Cut Shredding"),
+            ("micro_cut", "Micro Cut Shredding"),
+            ("pulverization", "Pulverization"),
+            ("incineration", "Incineration"),
+        ],
+        string="Destruction Method",
+        help="Method used for destruction.",
+    )
 
     # ============================================================================
     # DOCUMENTATION
@@ -137,6 +192,12 @@ class DestructionCertificate(models.Model):
     def _compute_event_count(self):
         for rec in self:
             rec.event_count = len(rec.event_ids)
+
+    @api.depends("container_ids")
+    def _compute_container_count(self):
+        """Compute number of containers in this certificate"""
+        for rec in self:
+            rec.container_count = len(rec.container_ids)
 
     # ============================================================================
     # CONSTRAINTS & VALIDATIONS
