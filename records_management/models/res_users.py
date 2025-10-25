@@ -10,31 +10,66 @@ class ResUsers(models.Model):
     def _assign_admin_groups(self):
         """Automatically assign admin users to Records Admin and Settings groups
         This runs during module upgrade to fix access lockouts
+        
+        CRITICAL: Uses sudo() to bypass access checks during upgrade
         """
-        # Get the groups
-        records_admin = self.env.ref('records_management.group_records_admin', raise_if_not_found=False)
-        settings_group = self.env.ref('base.group_system', raise_if_not_found=False)
+        import logging
+        _logger = logging.getLogger(__name__)
         
-        if not records_admin or not settings_group:
-            return
-        
-        # Find all admin users (login contains 'admin' or has id=1, id=2, or id=6)
-        admin_users = self.sudo().search([
-            '|', '|', '|',
-            ('login', 'ilike', 'admin'),
-            ('id', '=', 1),
-            ('id', '=', 2),
-            ('id', '=', 6)  # John Cope - Records Admin
-        ])
-        
-        # Add them to both groups
-        for user in admin_users:
-            if records_admin not in user.groups_id:
-                user.sudo().write({'groups_id': [(4, records_admin.id)]})
-            if settings_group not in user.groups_id:
-                user.sudo().write({'groups_id': [(4, settings_group.id)]})
-        
-        return True
+        try:
+            # Get the groups using sudo to bypass access restrictions
+            records_admin = self.env.ref('records_management.group_records_admin', raise_if_not_found=False)
+            settings_group = self.env.ref('base.group_system', raise_if_not_found=False)
+            
+            if not records_admin:
+                _logger.warning("⚠️  Records Admin group not found - skipping admin assignment")
+                return False
+            if not settings_group:
+                _logger.warning("⚠️  Settings group not found - skipping admin assignment")
+                return False
+            
+            # Find all admin users (login contains 'admin' or has id=1, id=2, or id=6)
+            # Use sudo() to search even if current user has no access
+            admin_users = self.sudo().search([
+                '|', '|', '|',
+                ('login', 'ilike', 'admin'),
+                ('id', '=', 1),
+                ('id', '=', 2),
+                ('id', '=', 6)  # John Cope - Records Admin
+            ])
+            
+            _logger.info(f"🔧 Found {len(admin_users)} admin users to process: {admin_users.mapped('login')}")
+            
+            # Add them to both groups - ONE group at a time to avoid user type conflicts
+            for user in admin_users:
+                try:
+                    groups_to_add = []
+                    
+                    # Only add if not already present
+                    if records_admin.id not in user.groups_id.ids:
+                        groups_to_add.append(records_admin.id)
+                        _logger.info(f"  Adding {user.login} to Records Admin group")
+                    
+                    if settings_group.id not in user.groups_id.ids:
+                        groups_to_add.append(settings_group.id)
+                        _logger.info(f"  Adding {user.login} to Settings group")
+                    
+                    # Add all groups in a single write to avoid multiple user type validations
+                    if groups_to_add:
+                        user.sudo().write({'groups_id': [(4, gid) for gid in groups_to_add]})
+                        _logger.info(f"✅ Successfully assigned groups to {user.login}")
+                    else:
+                        _logger.info(f"✅ User {user.login} already has all required groups")
+                        
+                except Exception as user_error:
+                    _logger.error(f"❌ Error assigning groups to user {user.login}: {user_error}")
+                    continue  # Continue with other users even if one fails
+            
+            return True
+            
+        except Exception as e:
+            _logger.error(f"❌ Critical error in _assign_admin_groups: {e}")
+            return False
 
     # ============================================================================
     # PORTAL ACCOUNT ACCESS FEATURE
