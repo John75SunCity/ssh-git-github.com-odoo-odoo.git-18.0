@@ -79,7 +79,7 @@ Ready to Launch!
                             'default_step': 'welcome',
                             'default_search_scenario': 'overview',
                             'default_layout_style': 'hierarchical',
-                            'default_color_scheme': 'professional',
+                            'default_color_scheme': 'default',
                             'default_export_format': 'png'
                     }</field>
     </record>
