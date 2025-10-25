@@ -33,10 +33,10 @@
         <form string="System Diagram Data">
             <sheet>
                 <div class="oe_button_box" name="button_box">
-                    <button class="oe_stat_button" type="action" icon="fa-sitemap">
+                    <button name="action_view_nodes" class="oe_stat_button" type="object" icon="fa-sitemap">
                         <field name="node_count" string="Nodes" widget="statinfo"/>
                     </button>
-                    <button class="oe_stat_button" type="action" icon="fa-link">
+                    <button name="action_view_edges" class="oe_stat_button" type="object" icon="fa-link">
                         <field name="edge_count" string="Edges" widget="statinfo"/>
                     </button>
                 </div>
