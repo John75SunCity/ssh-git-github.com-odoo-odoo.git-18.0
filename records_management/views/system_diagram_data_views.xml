@@ -19,7 +19,6 @@
             <field name="edge_count" string="Edges"/>
             <field name="create_date" string="Created"/>
             <field name="company_id" groups="base.group_multi_company"/>
-            <button name="action_generate_diagram" type="object" string="Generate" class="btn-primary" icon="fa-refresh"/>
         </list>
     </field>
     </record>
@@ -33,9 +32,6 @@
         <field name="arch" type="xml">
         <form string="System Diagram Data">
             <header>
-                <button name="action_generate_diagram" type="object" string="Generate Diagram" class="btn-primary"/>
-                <button name="action_export_data" type="object" string="Export Data" class="btn-secondary"/>
-                <button name="action_clear_cache" type="object" string="Clear Cache" class="btn-warning"/>
                 <field name="state" widget="statusbar" statusbar_visible="draft,generated,cached"/>
             </header>
             <sheet>
@@ -234,12 +230,6 @@
                                     <small class="text-muted">
                                         <field name="create_date" widget="relative"/>
                                     </small>
-                                </div>
-                                <div class="oe_kanban_bottom_right">
-                                    <button name="action_generate_diagram" type="object" class="btn btn-sm btn-primary">
-                                        <i class="fa fa-refresh"/>
-                                        Generate
-                                    </button>
                                 </div>
                             </div>
                         </div>
