@@ -7,10 +7,10 @@
         <field name="name">system.diagram.data.view.list</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-        <list string="System Diagrams"
-              decoration-info="search_type == 'user'"
-              decoration-success="search_type == 'model'"
-              decoration-warning="search_type == 'company'">
+            <list string="System Diagrams"
+                  decoration-info="search_type == 'access'"
+                  decoration-success="search_type == 'models'"
+                  decoration-warning="search_type == 'company'">
             <field name="name"/>
             <field name="search_type" widget="badge"/>
             <field name="search_query"/>
@@ -19,7 +19,7 @@
             <field name="edge_count" string="Edges"/>
             <field name="create_date" string="Created"/>
             <field name="company_id" groups="base.group_multi_company"/>
-        </list>
+            </list>
     </field>
     </record>
 
@@ -115,8 +115,8 @@
             <field name="search_type" string="Diagram Type"/>
             <separator/>
             <!-- Filters -->
-            <filter name="user_diagrams" string="User Analysis" domain="[('search_type', '=', 'user')]"/>
-            <filter name="model_diagrams" string="Model Structure" domain="[('search_type', '=', 'model')]"/>
+            <filter name="user_diagrams" string="User Analysis" domain="[('search_type', '=', 'access')]"/>
+            <filter name="model_diagrams" string="Model Structure" domain="[('search_type', '=', 'models')]"/>
             <filter name="company_diagrams" string="Company Overview" domain="[('search_type', '=', 'company')]"/>
             <separator/>
             <filter name="access_focus" string="Access Rights Focus" domain="[('show_access_only', '=', True)]"/>
@@ -159,9 +159,9 @@
                                     <strong class="o_kanban_record_title">
                                         <field name="name"/>
                                     </strong>
-                                    <span class="badge badge-pill float-end" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}">
-                                        <t t-if="record.search_type.raw_value == 'user'"><i class="fa fa-user"/> User</t>
-                                        <t t-elif="record.search_type.raw_value == 'model'"><i class="fa fa-building-o"/> Model</t>
+                                    <span class="badge badge-pill float-end" t-attf-class="badge-{{record.search_type.raw_value == 'access' and 'primary' or record.search_type.raw_value == 'models' and 'success' or 'info'}}">
+                                        <t t-if="record.search_type.raw_value == 'access'"><i class="fa fa-user"/> User</t>
+                                        <t t-elif="record.search_type.raw_value == 'models'"><i class="fa fa-building-o"/> Model</t>
                                         <t t-else=""><i class="fa fa-building"/> Company</t>
                                     </span>
                                 </div>
@@ -241,16 +241,16 @@
         <field name="name">User Access Analysis</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
-        <field name="domain">[('search_type', '=', 'user')]</field>
-        <field name="context">{'default_search_type': 'user', 'default_show_access_only': True}</field>
+        <field name="domain">[('search_type', '=', 'access')]</field>
+        <field name="context">{'default_search_type': 'access', 'default_show_access_only': True}</field>
     </record>
 
     <record id="action_system_diagram_model_explorer" model="ir.actions.act_window">
         <field name="name">Model Structure Explorer</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
-        <field name="domain">[('search_type', '=', 'model')]</field>
-        <field name="context">{'default_search_type': 'model'}</field>
+        <field name="domain">[('search_type', '=', 'models')]</field>
+        <field name="context">{'default_search_type': 'models'}</field>
     </record>
 
     <record id="action_system_diagram_company_overview" model="ir.actions.act_window">
@@ -271,7 +271,7 @@
         <field name="target">current</field>
         <field name="context">{
         'search_default_with_nodes': 1,
-        'default_search_type': 'user',
+        'default_search_type': 'access',
         'default_show_access_only': True
     }</field>
         <field name="help" type="html">
@@ -308,7 +308,7 @@
         <field name="target">new</field>
         <field name="context">{
         'default_name': 'User Access Analysis',
-        'default_search_type': 'user',
+        'default_search_type': 'access',
         'default_show_access_only': True,
         'form_view_initial_mode': 'edit'
     }</field>
@@ -321,7 +321,7 @@
         <field name="target">new</field>
         <field name="context">{
         'default_name': 'Model Structure Analysis',
-        'default_search_type': 'model',
+        'default_search_type': 'models',
         'default_show_access_only': False,
         'form_view_initial_mode': 'edit'
     }</field>
