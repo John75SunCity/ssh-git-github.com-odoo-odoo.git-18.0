@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
     
 <!-- ============================================================================ -->
     <!-- SYSTEM DIAGRAM DATA - LIST VIEW -->
@@ -404,6 +403,4 @@
     <menuitem id="menu_system_overview_quick" name="System Overview" parent="menu_records_operations" action="action_system_flowchart_interactive" sequence="5" groups="records_management.group_records_user"/>
     <menuitem id="menu_system_flowchart_config" name="Flowchart Configuration" parent="records_management.menu_records_configuration" action="action_system_flowchart" sequence="45" groups="records_management.group_records_manager"/>
 
-    
-    </data>
 </odoo>
