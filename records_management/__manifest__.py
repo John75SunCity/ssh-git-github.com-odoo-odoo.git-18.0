@@ -65,8 +65,6 @@
         "security/portal_financial_rules.xml",   # New: financial/negotiated rates portal scoping
         "security/portal_certificate_rules.xml", # New: destruction certificate portal scoping
         "security/ir.model.access.csv",
-        # Admin user access fix - automatically grants Settings access to admin users
-        "data/admin_users_fix.xml",
         # Google Maps API configuration (loads API key for map widgets)
         "views/google_maps_assets.xml",
         # Root menus must be available before any child menus declared in scattered views
