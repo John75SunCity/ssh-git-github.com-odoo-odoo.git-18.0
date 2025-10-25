@@ -279,7 +279,7 @@
 
 <!-- Specialized actions for different diagram types -->
     <record id="action_system_diagram_user_analysis" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-user'></i> User Access Analysis</field>
+        <field name="name">User Access Analysis</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('search_type', '=', 'user')]</field>
@@ -287,7 +287,7 @@
     </record>
 
     <record id="action_system_diagram_model_explorer" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-building-o'></i> Model Structure Explorer</field>
+        <field name="name">Model Structure Explorer</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('search_type', '=', 'model')]</field>
@@ -295,7 +295,7 @@
     </record>
 
     <record id="action_system_diagram_company_overview" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-building'></i> Company System Overview</field>
+        <field name="name">Company System Overview</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('search_type', '=', 'company')]</field>
@@ -306,7 +306,7 @@
 <!-- ENHANCED ACTIONS -->
 <!-- ============================================================================ -->
     <record id="action_system_flowchart" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-bar-chart'></i> System Architecture Flowchart</field>
+        <field name="name">System Architecture Flowchart</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
         <field name="target">current</field>
@@ -343,7 +343,7 @@
 
 <!-- Quick Launch Actions for Different Scenarios -->
     <record id="action_system_flowchart_user_analysis" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-user'></i> User Access Analysis</field>
+        <field name="name">User Access Analysis</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -356,7 +356,7 @@
     </record>
 
     <record id="action_system_flowchart_model_explorer" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-building-o'></i> Model Structure Explorer</field>
+        <field name="name">Model Structure Explorer</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -369,7 +369,7 @@
     </record>
 
     <record id="action_system_flowchart_company_overview" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-building'></i> Company System Overview</field>
+        <field name="name">Company System Overview</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -383,7 +383,7 @@
 
 <!-- Modern Client Action for Interactive Flowchart -->
     <record id="action_system_flowchart_interactive" model="ir.actions.client">
-        <field name="name"><i class='fa fa-bullseye'></i> Interactive System Flowchart</field>
+        <field name="name">Interactive System Flowchart</field>
         <field name="tag">records_management.system_flowchart_interactive</field>
         <field name="target">current</field>
     <!-- Removed 'fullscreen': True to avoid referencing website.fullscreen_indication template when website module not installed -->
