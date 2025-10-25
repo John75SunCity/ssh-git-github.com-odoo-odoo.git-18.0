@@ -31,9 +31,6 @@
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
         <form string="System Diagram Data">
-            <header>
-                <field name="state" widget="statusbar" statusbar_visible="draft,generated,cached"/>
-            </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
                     <button class="oe_stat_button" type="action" icon="fa-sitemap">
@@ -158,7 +155,6 @@
             <field name="node_count"/>
             <field name="edge_count"/>
             <field name="create_date"/>
-            <field name="state" optional="hide"/>
             <templates>
                 <t t-name="kanban-box">
                     <div class="oe_kanban_card oe_kanban_global_click">
@@ -201,27 +197,6 @@
                                         <field name="edge_count"/>
                                         Edges
                                     </span>
-                                </div>
-                                <!-- Status indicators -->
-                                <div class="mt-2" t-if="record.state">
-                                    <t t-if="record.state.raw_value == 'cached'">
-                                        <span class="badge badge-success">
-                                            <i class="fa fa-check"/>
-                                            Cached
-                                        </span>
-                                    </t>
-                                    <t t-elif="record.state.raw_value == 'generated'">
-                                        <span class="badge badge-info">
-                                            <i class="fa fa-cog"/>
-                                            Generated
-                                        </span>
-                                    </t>
-                                    <t t-else="">
-                                        <span class="badge badge-warning">
-                                            <i class="fa fa-clock-o"/>
-                                            Draft
-                                        </span>
-                                    </t>
                                 </div>
                             </div>
                             <!-- Footer with actions -->
