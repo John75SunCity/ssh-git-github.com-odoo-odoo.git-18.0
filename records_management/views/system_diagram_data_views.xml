@@ -32,14 +32,6 @@
         <field name="arch" type="xml">
         <form string="System Diagram Data">
             <sheet>
-                <div class="oe_button_box" name="button_box">
-                    <button name="action_view_nodes" class="oe_stat_button" type="object" icon="fa-sitemap">
-                        <field name="node_count" string="Nodes" widget="statinfo"/>
-                    </button>
-                    <button name="action_view_edges" class="oe_stat_button" type="object" icon="fa-link">
-                        <field name="edge_count" string="Edges" widget="statinfo"/>
-                    </button>
-                </div>
                 <div class="oe_title">
                     <label for="name" class="oe_edit_only"/>
                     <h1>
@@ -58,6 +50,8 @@
                         <field name="user_id" string="Created by"/>
                         <field name="create_date" string="Generated Date"/>
                         <field name="cache_timestamp" string="Cache Updated" widget="datetime"/>
+                        <field name="node_count" string="Nodes" readonly="1"/>
+                        <field name="edge_count" string="Edges" readonly="1"/>
                     </group>
                 </group>
                 <notebook>
