@@ -47,7 +47,7 @@
                     </group>
                     <group name="system_info" string="System Information">
                         <field name="company_id" groups="base.group_multi_company"/>
-                        <field name="user_id" string="Created by"/>
+                        <field name="create_uid" string="Created by" readonly="1"/>
                         <field name="create_date" string="Generated Date"/>
                         <field name="cache_timestamp" string="Cache Updated" widget="datetime"/>
                         <field name="node_count" string="Nodes" readonly="1"/>
