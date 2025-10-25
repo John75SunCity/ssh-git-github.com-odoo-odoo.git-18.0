@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!-- ============================================================================ -->
-<!-- SYSTEM DIAGRAM DATA - LIST VIEW -->
-<!-- ============================================================================ -->
-<record id="system_diagram_data_view_list" model="ir.ui.view">
+    <data>
+        <!-- ============================================================================ -->
+        <!-- SYSTEM DIAGRAM DATA - LIST VIEW -->
+        <!-- ============================================================================ -->
+        <record id="system_diagram_data_view_list" model="ir.ui.view">
         <field name="name">system.diagram.data.view.list</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
@@ -27,7 +28,7 @@
 <!-- ============================================================================ -->
 <!-- SYSTEM DIAGRAM DATA - FORM VIEW -->
 <!-- ============================================================================ -->
-<record id="system_diagram_data_view_form" model="ir.ui.view">
+        <record id="system_diagram_data_view_form" model="ir.ui.view">
         <field name="name">system.diagram.data.view.form</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
@@ -118,7 +119,7 @@
 <!-- ============================================================================ -->
 <!-- SYSTEM DIAGRAM DATA - SEARCH VIEW -->
 <!-- ============================================================================ -->
-<record id="system_diagram_data_view_search" model="ir.ui.view">
+        <record id="system_diagram_data_view_search" model="ir.ui.view">
         <field name="name">system.diagram.data.view.search</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
@@ -150,7 +151,7 @@
 <!-- ============================================================================ -->
 <!-- SYSTEM DIAGRAM DATA - KANBAN VIEW -->
 <!-- ============================================================================ -->
-<record id="system_diagram_data_view_kanban" model="ir.ui.view">
+        <record id="system_diagram_data_view_kanban" model="ir.ui.view">
         <field name="name">system.diagram.data.view.kanban</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
@@ -253,7 +254,7 @@
 <!-- ============================================================================ -->
 <!-- WINDOW ACTIONS -->
 <!-- ============================================================================ -->
-<record id="action_system_diagram_data" model="ir.actions.act_window">
+        <record id="action_system_diagram_data" model="ir.actions.act_window">
         <field name="name">System Diagrams</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
@@ -278,7 +279,7 @@
 </record>
 
 <!-- Specialized actions for different diagram types -->
-<record id="action_system_diagram_user_analysis" model="ir.actions.act_window">
+        <record id="action_system_diagram_user_analysis" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-user'></i> User Access Analysis</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
@@ -286,7 +287,7 @@
         <field name="context">{'default_search_type': 'user', 'default_show_access_only': True}</field>
 </record>
 
-<record id="action_system_diagram_model_explorer" model="ir.actions.act_window">
+        <record id="action_system_diagram_model_explorer" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-building-o'></i> Model Structure Explorer</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
@@ -294,7 +295,7 @@
         <field name="context">{'default_search_type': 'model'}</field>
 </record>
 
-<record id="action_system_diagram_company_overview" model="ir.actions.act_window">
+        <record id="action_system_diagram_company_overview" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-building'></i> Company System Overview</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
@@ -305,7 +306,7 @@
 <!-- ============================================================================ -->
 <!-- ENHANCED ACTIONS -->
 <!-- ============================================================================ -->
-<record id="action_system_flowchart" model="ir.actions.act_window">
+        <record id="action_system_flowchart" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-bar-chart'></i> System Architecture Flowchart</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
@@ -342,7 +343,7 @@
 </record>
 
 <!-- Quick Launch Actions for Different Scenarios -->
-<record id="action_system_flowchart_user_analysis" model="ir.actions.act_window">
+        <record id="action_system_flowchart_user_analysis" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-user'></i> User Access Analysis</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">form</field>
@@ -355,7 +356,7 @@
         }</field>
 </record>
 
-<record id="action_system_flowchart_model_explorer" model="ir.actions.act_window">
+        <record id="action_system_flowchart_model_explorer" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-building-o'></i> Model Structure Explorer</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">form</field>
@@ -368,7 +369,7 @@
         }</field>
 </record>
 
-<record id="action_system_flowchart_company_overview" model="ir.actions.act_window">
+        <record id="action_system_flowchart_company_overview" model="ir.actions.act_window">
         <field name="name"><i class='fa fa-building'></i> Company System Overview</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">form</field>
@@ -382,7 +383,7 @@
 </record>
 
 <!-- Modern Client Action for Interactive Flowchart -->
-<record id="action_system_flowchart_interactive" model="ir.actions.client">
+        <record id="action_system_flowchart_interactive" model="ir.actions.client">
         <field name="name"><i class='fa fa-bullseye'></i> Interactive System Flowchart</field>
         <field name="tag">records_management.system_flowchart_interactive</field>
         <field name="target">current</field>
@@ -395,55 +396,56 @@
 <!-- ============================================================================ -->
 
 <!-- System Architecture - ensure parent menu exists or create fallback -->
-<menuitem id="system_diagram_data_menu_architecture"
+        <menuitem id="system_diagram_data_menu_architecture"
           name="System Architecture"
           parent="records_management.menu_records_configuration"
           sequence="70"
           groups="records_management.group_records_manager"/>
 
-<menuitem id="system_diagram_data_menu_analysis"
+        <menuitem id="system_diagram_data_menu_analysis"
           name="System Analysis"
           parent="system_diagram_data_menu_architecture"
           sequence="10"
           groups="base.group_system"/>
 
-<menuitem id="system_diagram_data_menu_flowchart_main"
+        <menuitem id="system_diagram_data_menu_flowchart_main"
           name="Interactive Flowcharts"
           parent="system_diagram_data_menu_analysis"
           action="action_system_flowchart"
           sequence="10"/>
 
-<menuitem id="system_diagram_data_menu_flowchart_user"
+        <menuitem id="system_diagram_data_menu_flowchart_user"
           name="User Access Analysis"
           parent="system_diagram_data_menu_analysis"
           action="action_system_flowchart_user_analysis"
           sequence="20"/>
 
-<menuitem id="system_diagram_data_menu_flowchart_model"
+        <menuitem id="system_diagram_data_menu_flowchart_model"
           name="Model Structure Explorer"
           parent="system_diagram_data_menu_analysis"
           action="action_system_flowchart_model_explorer"
           sequence="30"/>
 
-<menuitem id="system_diagram_data_menu_flowchart_company"
+        <menuitem id="system_diagram_data_menu_flowchart_company"
           name="Company Overview"
           parent="system_diagram_data_menu_analysis"
           action="action_system_flowchart_company_overview"
           sequence="40"/>
 
 <!-- System Overview - ensure parent menu exists -->
-<menuitem id="system_diagram_data_menu_overview_quick"
+        <menuitem id="system_diagram_data_menu_overview_quick"
           name="System Overview"
           parent="records_management.menu_records_operations"
           action="action_system_flowchart_interactive"
           sequence="5"
           groups="records_management.group_records_user"/>
 
-<menuitem id="system_diagram_data_menu_flowchart_config"
+        <menuitem id="system_diagram_data_menu_flowchart_config"
           name="Flowchart Configuration"
           parent="records_management.menu_records_configuration"
           action="action_system_flowchart"
           sequence="45"
           groups="records_management.group_records_manager"/>
 
+    </data>
 </odoo>
