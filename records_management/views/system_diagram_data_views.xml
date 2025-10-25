@@ -3,11 +3,14 @@
 <!-- ============================================================================ -->
 <!-- SYSTEM DIAGRAM DATA - LIST VIEW -->
 <!-- ============================================================================ -->
-<record id="system_diagram_data_view_tree" model="ir.ui.view">
-        <field name="name">system.diagram.data.view.tree</field>
+<record id="system_diagram_data_view_list" model="ir.ui.view">
+        <field name="name">system.diagram.data.view.list</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-            <list string="System Diagrams" decoration-info="search_type=='user'" decoration-success="search_type=='model'" decoration-warning="search_type=='company'">
+            <list string="System Diagrams"
+                  decoration-info="search_type == 'user'"
+                  decoration-success="search_type == 'model'"
+                  decoration-warning="search_type == 'company'">
                 <field name="name"/>
                 <field name="search_type" widget="badge"/>
                 <field name="search_query"/>
@@ -159,9 +162,9 @@
                 <field name="node_count"/>
                 <field name="edge_count"/>
                 <field name="create_date"/>
-                <field name="state"/>
+                <field name="state" optional="hide"/>
                 <templates>
-                    <t t-name="card">
+                    <t t-name="kanban-box">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_kanban_content">
                                 <!-- Header -->
@@ -170,10 +173,10 @@
                                         <strong class="o_kanban_record_title">
                                             <field name="name"/>
                                         </strong>
-                                        <span class="badge badge-pill float-right" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}">
-                                            <t t-if="record.search_type.raw_value == 'user'"><i class='fa fa-user'></i> User</t>
-                                            <t t-elif="record.search_type.raw_value == 'model'"><i class='fa fa-building-o'></i> Model</t>
-                                            <t t-else=""><i class='fa fa-building'></i> Company</t>
+                                        <span class="badge badge-pill float-end" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}">
+                                            <t t-if="record.search_type.raw_value == 'user'"><i class="fa fa-user"/> User</t>
+                                            <t t-elif="record.search_type.raw_value == 'model'"><i class="fa fa-building-o"/> Model</t>
+                                            <t t-else=""><i class="fa fa-building"/> Company</t>
                                         </span>
                                     </div>
                                 </div>
@@ -186,47 +189,47 @@
                                                 <field name="search_query"/>
                                             </strong>
                                         </div>
-                                        <div class="col-4 text-right">
+                                        <div class="col-4 text-end">
                                             <field name="show_access_only" widget="boolean_toggle"/>
                                         </div>
                                     </div>
                                     <!-- Statistics -->
-                                    <div class="mt8">
-                                        <span class="badge badge-light mr8">
-                                            <i class='fa fa-circle-o text-primary'></i>
+                                    <div class="mt-2">
+                                        <span class="badge badge-light me-2">
+                                            <i class="fa fa-circle-o text-primary"/>
                                             <field name="node_count"/>
                                             Nodes
                                         </span>
                                         <span class="badge badge-light">
-                                            <i class='fa fa-link text-success'></i>
+                                            <i class="fa fa-link text-success"/>
                                             <field name="edge_count"/>
                                             Edges
                                         </span>
                                     </div>
                                     <!-- Status indicators -->
-                                    <div class="mt8">
+                                    <div class="mt-2" t-if="record.state">
                                         <t t-if="record.state.raw_value == 'cached'">
                                             <span class="badge badge-success">
-                                                <i class='fa fa-check'></i>
+                                                <i class="fa fa-check"/>
                                                 Cached
                                             </span>
                                         </t>
                                         <t t-elif="record.state.raw_value == 'generated'">
                                             <span class="badge badge-info">
-                                                <i class='fa fa-cog'></i>
+                                                <i class="fa fa-cog"/>
                                                 Generated
                                             </span>
                                         </t>
                                         <t t-else="">
                                             <span class="badge badge-warning">
-                                                <i class='fa fa-clock-o'></i>
+                                                <i class="fa fa-clock-o"/>
                                                 Draft
                                             </span>
                                         </t>
                                     </div>
                                 </div>
                                 <!-- Footer with actions -->
-                                <div class="o_kanban_record_bottom mt16">
+                                <div class="o_kanban_record_bottom mt-3">
                                     <div class="oe_kanban_bottom_left">
                                         <small class="text-muted">
                                             <field name="create_date" widget="relative"/>
@@ -234,7 +237,7 @@
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <button name="action_generate_diagram" type="object" class="btn btn-sm btn-primary">
-                                            <i class='fa fa-refresh'></i>
+                                            <i class="fa fa-refresh"/>
                                             Generate
                                         </button>
                                     </div>
@@ -251,7 +254,7 @@
 <!-- WINDOW ACTIONS -->
 <!-- ============================================================================ -->
 <record id="action_system_diagram_data" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-bar-chart'></i> System Diagrams</field>
+        <field name="name">System Diagrams</field>
         <field name="res_model">system.diagram.data</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
@@ -391,15 +394,56 @@
 <!-- ENHANCED MENU STRUCTURE -->
 <!-- ============================================================================ -->
 
-<!-- System Architecture moved to Configuration menu -->
-<menuitem id="menu_system_architecture" name="System Architecture" parent="menu_records_configuration" sequence="70" groups="records_management.group_records_manager"/>
-<menuitem id="menu_system_analysis" name="System Analysis" parent="menu_system_architecture" sequence="10" groups="base.group_system"/>
-<menuitem id="menu_system_flowchart_main" name="Interactive Flowcharts" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
-<menuitem id="menu_system_flowchart_user" name="User Access Analysis" parent="menu_system_analysis" action="action_system_flowchart_user_analysis" sequence="20"/>
-<menuitem id="menu_system_flowchart_model" name="Model Structure Explorer" parent="menu_system_analysis" action="action_system_flowchart_model_explorer" sequence="30"/>
-<menuitem id="menu_system_flowchart_company" name="Company Overview" parent="menu_system_analysis" action="action_system_flowchart_company_overview" sequence="40"/>
-<!-- System Overview moved to Operations menu -->
-<menuitem id="menu_system_overview_quick" name="System Overview" parent="menu_records_operations" action="action_system_flowchart_interactive" sequence="5" groups="records_management.group_records_user"/>
-<menuitem id="menu_system_flowchart_config" name="Flowchart Configuration" parent="records_management.menu_records_configuration" action="action_system_flowchart" sequence="45" groups="records_management.group_records_manager"/>
+<!-- System Architecture - ensure parent menu exists or create fallback -->
+<menuitem id="system_diagram_data_menu_architecture"
+          name="System Architecture"
+          parent="records_management.menu_records_configuration"
+          sequence="70"
+          groups="records_management.group_records_manager"/>
+
+<menuitem id="system_diagram_data_menu_analysis"
+          name="System Analysis"
+          parent="system_diagram_data_menu_architecture"
+          sequence="10"
+          groups="base.group_system"/>
+
+<menuitem id="system_diagram_data_menu_flowchart_main"
+          name="Interactive Flowcharts"
+          parent="system_diagram_data_menu_analysis"
+          action="action_system_flowchart"
+          sequence="10"/>
+
+<menuitem id="system_diagram_data_menu_flowchart_user"
+          name="User Access Analysis"
+          parent="system_diagram_data_menu_analysis"
+          action="action_system_flowchart_user_analysis"
+          sequence="20"/>
+
+<menuitem id="system_diagram_data_menu_flowchart_model"
+          name="Model Structure Explorer"
+          parent="system_diagram_data_menu_analysis"
+          action="action_system_flowchart_model_explorer"
+          sequence="30"/>
+
+<menuitem id="system_diagram_data_menu_flowchart_company"
+          name="Company Overview"
+          parent="system_diagram_data_menu_analysis"
+          action="action_system_flowchart_company_overview"
+          sequence="40"/>
+
+<!-- System Overview - ensure parent menu exists -->
+<menuitem id="system_diagram_data_menu_overview_quick"
+          name="System Overview"
+          parent="records_management.menu_records_operations"
+          action="action_system_flowchart_interactive"
+          sequence="5"
+          groups="records_management.group_records_user"/>
+
+<menuitem id="system_diagram_data_menu_flowchart_config"
+          name="Flowchart Configuration"
+          parent="records_management.menu_records_configuration"
+          action="action_system_flowchart"
+          sequence="45"
+          groups="records_management.group_records_manager"/>
 
 </odoo>
