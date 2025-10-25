@@ -279,25 +279,99 @@ class SystemDiagramData(models.Model):
             None (sets diagram_html field with generated HTML)
         """
         for record in self:
-            # In a real scenario, you would use a QWeb template for this.
-            # This is a simplified example.
-            record.diagram_html = f"""
-                <div id="diagram-{record.id}" style="height: 800px; border: 1px solid #ccc;"></div>
-                <script type="text/javascript">
-                    (function() {{
-                        if (typeof vis === 'undefined') {{
-                            console.error('vis.js library is not loaded.');
-                            return;
-                        }}
-                        var container = document.getElementById('diagram-{record.id}');
-                        var nodes = new vis.DataSet({record.nodes_data or '[]'});
-                        var edges = new vis.DataSet({record.edges_data or '[]'});
-                        var data = {{ nodes: nodes, edges: edges }};
-                        var options = {record.diagram_config or '{{}}'};
-                        var network = new vis.Network(container, data, options);
-                    }})();
-                </script>
-            """
+            # Prepare safe JSON payloads for inline usage
+            try:
+                nodes_payload = json.loads(record.nodes_data or '[]')
+            except (TypeError, json.JSONDecodeError):
+                nodes_payload = []
+
+            try:
+                edges_payload = json.loads(record.edges_data or '[]')
+            except (TypeError, json.JSONDecodeError):
+                edges_payload = []
+
+            try:
+                config_payload = json.loads(record.diagram_config or '{}')
+            except (TypeError, json.JSONDecodeError):
+                config_payload = {}
+
+            local_js = "/records_management/static/src/lib/vis/vis-network.min.js"
+            local_css = "/records_management/static/src/lib/vis/vis-network.css"
+            cdn_js = "https://unpkg.com/vis-network@9.1.6/dist/vis-network.min.js"
+            cdn_css = "https://unpkg.com/vis-network@9.1.6/dist/vis-network.min.css"
+
+            container_id = f"diagram-{record.id or 'new'}"
+
+            template = """
+<div id="{container_id}" style="height: 800px; border: 1px solid #ccc;"></div>
+<script type="text/javascript">
+    (function () {{
+        var containerId = '{container_id}';
+        function ensureResource(tagName, attrs, marker) {{
+            return new Promise(function (resolve, reject) {{
+                var selector = tagName + '[data-rm-vis="' + marker + '"]';
+                var existing = document.querySelector(selector);
+                if (existing) {{
+                    if (tagName === 'script' && !(existing.readyState === 'loaded' || existing.readyState === 'complete')) {{
+                        existing.addEventListener('load', function () {{ resolve(existing); }});
+                        existing.addEventListener('error', function () {{ reject(new Error('Failed to load ' + (attrs.src || attrs.href))); }});
+                        return;
+                    }}
+                    resolve(existing);
+                    return;
+                }}
+                var el = document.createElement(tagName);
+                Object.keys(attrs).forEach(function (key) {{ el.setAttribute(key, attrs[key]); }});
+                el.setAttribute('data-rm-vis', marker);
+                if (tagName === 'script') {{
+                    el.onload = function () {{ resolve(el); }};
+                    el.onerror = function () {{ reject(new Error('Failed to load ' + (attrs.src || attrs.href))); }};
+                }} else {{
+                    el.onload = function () {{ resolve(el); }};
+                    el.onerror = function () {{ reject(new Error('Failed to load ' + (attrs.src || attrs.href))); }};
+                }}
+                document.head.appendChild(el);
+                if (tagName === 'link') {{ resolve(el); }}
+            }});
+        }}
+        function ensureVis() {{
+            if (window.vis && window.vis.Network) {{ return Promise.resolve(); }}
+            return ensureResource('link', {{ rel: 'stylesheet', href: '{local_css}' }}, 'rm-vis-local-css')
+                .catch(function () {{ return ensureResource('link', {{ rel: 'stylesheet', href: '{cdn_css}' }}, 'rm-vis-cdn-css'); }})
+                .then(function () {{
+                    return ensureResource('script', {{ src: '{local_js}', async: 'true' }}, 'rm-vis-local-js')
+                        .catch(function () {{ return ensureResource('script', {{ src: '{cdn_js}', async: 'true' }}, 'rm-vis-cdn-js'); }});
+                }});
+        }}
+        ensureVis().then(function () {{
+            if (!(window.vis && window.vis.Network)) {{
+                console.error('vis.js library is not loaded after attempting to fetch assets.');
+                return;
+            }}
+            var container = document.getElementById(containerId);
+            if (!container) {{ return; }}
+            var nodes = new vis.DataSet({nodes});
+            var edges = new vis.DataSet({edges});
+            var data = {{ nodes: nodes, edges: edges }};
+            var options = {options} || {{}};
+            new vis.Network(container, data, options);
+        }}).catch(function (error) {{
+            console.error('Failed to initialize vis.js network:', error);
+        }});
+    }})();
+</script>
+"""
+
+            record.diagram_html = template.format(
+                container_id=container_id,
+                local_css=local_css,
+                cdn_css=cdn_css,
+                local_js=local_js,
+                cdn_js=cdn_js,
+                nodes=json.dumps(nodes_payload),
+                edges=json.dumps(edges_payload),
+                options=json.dumps(config_payload),
+            )
 
     # ============================================================================
     # DATA GENERATION METHODS
