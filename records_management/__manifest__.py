@@ -197,7 +197,7 @@
         "views/records_permanent_flag_wizard_views.xml",
         "views/records_user_invitation_wizard_views.xml",
         "views/shredding_bin_barcode_wizard_views.xml",
-        # "views/system_flowchart_wizard_views.xml",  # Removed - model deleted due to invalid field defaults
+        "views/system_flowchart_wizard_views.xml",
         "views/temp_inventory_reject_wizard_views.xml",
         "views/visitor_pos_wizard_views.xml",
         "views/work_order_bin_assignment_wizard_views.xml",
