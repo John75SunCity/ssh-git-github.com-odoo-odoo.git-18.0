@@ -345,18 +345,20 @@ class SystemFlowchartWizard(models.TransientModel):
 
         self.ensure_one()
 
+        # Map search scenarios to valid search_type values
+        search_type_mapping = {
+            'overview': 'all',
+            'user_access': 'access',
+            'company_structure': 'company',
+            'model_relationships': 'relationships',
+            'compliance_audit': 'all',
+            'custom': 'all',
+        }
+
         # Create system diagram data record with configuration
         diagram_data = {
             "name": f"System Flowchart - {self.search_scenario.replace('_', ' ').title()}",
-            "search_type": (
-                "user"
-                if self.search_scenario == "user_access"
-                else (
-                    "company"
-                    if self.search_scenario == "company_structure"
-                    else "model"
-                )
-            ),
+            "search_type": search_type_mapping.get(self.search_scenario, 'all'),
             "show_access_only": self.search_scenario == "user_access",
         }
 
