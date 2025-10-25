@@ -370,8 +370,18 @@ class SystemFlowchartWizard(models.TransientModel):
 
         diagram = self.env["system.diagram.data"].create(diagram_data)
 
-        # Get the form view with diagram preview
-        form_view = self.env.ref('records_management.system_diagram_data_view_form')
+        # Get the form view with diagram preview (fallback to search if XML ID not found)
+        try:
+            form_view = self.env.ref('records_management.system_diagram_data_view_form', raise_if_not_found=False)
+            view_id = form_view.id if form_view else False
+        except (ValueError, KeyError):
+            # If XML ID doesn't exist yet, find the form view by model and name
+            form_view = self.env['ir.ui.view'].search([
+                ('model', '=', 'system.diagram.data'),
+                ('type', '=', 'form'),
+                ('name', '=', 'system.diagram.data.view.form')
+            ], limit=1)
+            view_id = form_view.id if form_view else False
 
         return {
             "type": "ir.actions.act_window",
@@ -379,7 +389,7 @@ class SystemFlowchartWizard(models.TransientModel):
             "res_model": "system.diagram.data",
             "res_id": diagram.id,
             "view_mode": "form",
-            "view_id": form_view.id,
+            "view_id": view_id,
             "target": "current",
             "context": {
                 "wizard_config": self.generated_config,
