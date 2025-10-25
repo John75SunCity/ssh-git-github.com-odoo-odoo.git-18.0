@@ -319,9 +319,11 @@
             "records_management/static/src/js/paper_load_truck_widget.js",
             "records_management/static/src/js/trailer_visualization.js",
             "records_management/static/src/js/truck_widget.js",
+            "records_management/static/src/js/system_flowchart_view.js",
             "records_management/static/src/xml/map_widget.xml",
             "records_management/static/src/xml/trailer_visualization.xml",
             "records_management/static/src/xml/intelligent_search_templates.xml",
+            "records_management/static/src/xml/system_flowchart_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
             # Heavy visualization assets (vis-network + flowchart templates) moved to separate optional bundle
         ],
@@ -332,8 +334,6 @@
             "records_management/static/src/js/visualization_dynamic_loader.js",
             # Local placeholder CSS (unminified real library recommended for production replacement)
             "records_management/static/src/lib/vis/vis-network.css",
-            "records_management/static/src/js/system_flowchart_view.js",
-            "records_management/static/src/xml/system_flowchart_templates.xml",
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
         "web.assets_frontend": [
