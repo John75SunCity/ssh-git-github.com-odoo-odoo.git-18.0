@@ -375,7 +375,7 @@ class SystemFlowchartWizard(models.TransientModel):
             "name": "System Architecture Flowchart",
             "res_model": "system.diagram.data",
             "res_id": diagram.id,
-            "view_mode": "system_flowchart",
+            "view_mode": "form",
             "target": "current",
             "context": {
                 "wizard_config": self.generated_config,
