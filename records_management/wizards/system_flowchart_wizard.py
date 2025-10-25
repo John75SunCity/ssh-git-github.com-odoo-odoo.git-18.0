@@ -370,12 +370,16 @@ class SystemFlowchartWizard(models.TransientModel):
 
         diagram = self.env["system.diagram.data"].create(diagram_data)
 
+        # Get the form view with diagram preview
+        form_view = self.env.ref('records_management.system_diagram_data_view_form')
+
         return {
             "type": "ir.actions.act_window",
             "name": "System Architecture Flowchart",
             "res_model": "system.diagram.data",
             "res_id": diagram.id,
             "view_mode": "form",
+            "view_id": form_view.id,
             "target": "current",
             "context": {
                 "wizard_config": self.generated_config,
