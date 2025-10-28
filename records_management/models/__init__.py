@@ -1,3 +1,4 @@
+from . import ir_rule
 from . import retrieval_item_base
 from . import scan_retrieval_item
 # Account integration
