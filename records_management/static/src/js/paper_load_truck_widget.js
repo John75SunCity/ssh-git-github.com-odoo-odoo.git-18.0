@@ -38,7 +38,7 @@ export class PaperLoadTruckWidget extends Component {
                 </div>
 
                 <div class="truck-visual">
-                    <svg viewBox="0 0 360 200" class="truck-svg" role="img" aria-labelledby="truckLoadTitle truckLoadDesc">
+                    <svg viewBox="0 0 720 220" class="truck-svg" role="img" aria-labelledby="truckLoadTitle truckLoadDesc">
                         <title id="truckLoadTitle">
                             <t t-esc="this.accessibleLabel"/>
                         </title>
@@ -46,39 +46,57 @@ export class PaperLoadTruckWidget extends Component {
                             <t t-esc="this.accessibleDescription"/>
                         </desc>
                         <defs>
-                            <linearGradient id="rmTrailerGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stop-color="#f5fbff"/>
-                                <stop offset="100%" stop-color="#d8e9f6"/>
+                            <linearGradient id="rmTrailerBody" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#ffffff"/>
+                                <stop offset="100%" stop-color="#dbe7f6"/>
                             </linearGradient>
-                            <linearGradient id="rmCabGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#1f77d0"/>
-                                <stop offset="100%" stop-color="#1457a5"/>
-                            </linearGradient>
-                            <linearGradient id="rmFillGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <linearGradient id="rmTrailerFill" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="0%" stop-color="#4caf50"/>
-                                <stop offset="100%" stop-color="#7fd37f"/>
+                                <stop offset="100%" stop-color="#7ad879"/>
                             </linearGradient>
-                            <filter id="rmShadowBlur" x="-15%" y="-15%" width="130%" height="130%">
-                                <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#8fa3b5" flood-opacity="0.25"/>
+                            <linearGradient id="rmCabBody" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ff9029"/>
+                                <stop offset="55%" stop-color="#ff7b1f"/>
+                                <stop offset="100%" stop-color="#ff6018"/>
+                            </linearGradient>
+                            <linearGradient id="rmCabShadow" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#e05c10"/>
+                                <stop offset="100%" stop-color="#b8400a"/>
+                            </linearGradient>
+                            <linearGradient id="rmWindow" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#e9f6ff"/>
+                                <stop offset="100%" stop-color="#cde8fb"/>
+                            </linearGradient>
+                            <radialGradient id="rmWheel" cx="50%" cy="50%" r="50%">
+                                <stop offset="20%" stop-color="#4e5a61"/>
+                                <stop offset="100%" stop-color="#111418"/>
+                            </radialGradient>
+                            <filter id="rmGroundBlur" x="-10%" y="-40%" width="120%" height="180%">
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur"/>
+                                <feOffset dy="6" result="offset"/>
+                                <feBlend in="blur" in2="offset" mode="normal"/>
                             </filter>
                         </defs>
+                        <ellipse class="ground-shadow" cx="340" cy="204" rx="280" ry="26" filter="url(#rmGroundBlur)"/>
 
-                        <g class="trailer-group" filter="url(#rmShadowBlur)">
-                            <rect class="trailer-base" x="36" y="60" width="250" height="96" rx="16" fill="url(#rmTrailerGradient)"/>
-                            <rect class="trailer-fill" x="42" y="66" height="84" rx="12" fill="url(#rmFillGradient)" t-att-width="this.trailerFillWidth"/>
-                            <rect class="trailer-outline" x="36" y="60" width="250" height="96" rx="16" fill="none" stroke="#0d47a1" stroke-width="2"/>
-                            <line x1="36" y1="108" x2="286" y2="108" stroke="#bbd3e6" stroke-width="1.5" stroke-dasharray="6 6"/>
+                        <g class="trailer-group">
+                            <rect class="trailer-body" x="40" y="68" width="520" height="116" rx="18" fill="url(#rmTrailerBody)"/>
+                            <rect class="trailer-fill" x="52" y="80" height="92" rx="14" fill="url(#rmTrailerFill)" t-att-width="this.trailerFillWidth"/>
+                            <rect class="trailer-outline" x="40" y="68" width="520" height="116" rx="18"/>
+                            <line class="trailer-divider" x1="40" y1="126" x2="560" y2="126"/>
+                            <rect class="connector" x="550" y="118" width="36" height="16" rx="6"/>
+                            <rect class="connector-pin" x="566" y="132" width="24" height="12" rx="5"/>
                         </g>
 
                         <g class="bale-grid">
                             <t t-foreach="this.slotLayout" t-as="slot" t-key="slot.id">
-                                <rect width="26" height="18" rx="5"
+                                <rect width="52" height="18" rx="9"
                                       t-att-x="slot.x"
                                       t-att-y="slot.y"
                                       t-att-class="'bale-slot ' + (slot.filled ? 'is-filled' : 'is-empty')"
                                       t-att-style="slot.filled and slot.color ? '--slot-color: ' + slot.color : ''"/>
                                 <t t-if="slot.filled and slot.label">
-                                    <text t-att-x="slot.x + 13"
+                                    <text t-att-x="slot.x + 26"
                                           t-att-y="slot.y + 13"
                                           text-anchor="middle"
                                           class="bale-slot__label">
@@ -88,26 +106,42 @@ export class PaperLoadTruckWidget extends Component {
                             </t>
                         </g>
 
-                        <g class="truck-cab">
-                            <rect class="cab-body" x="288" y="86" width="58" height="66" rx="14" fill="url(#rmCabGradient)"/>
-                            <rect class="cab-window" x="298" y="98" width="26" height="20" rx="4" fill="#e1f2ff"/>
-                            <rect class="cab-door" x="324" y="100" width="12" height="34" rx="3" fill="#0d47a1" opacity="0.25"/>
-                            <rect class="cab-bumper" x="340" y="124" width="20" height="12" rx="3" fill="#455a64"/>
+                        <g class="cab-group">
+                            <path class="cab-body" d="M584,74h78c22,0,40,14,40,32v66c0,18-18,32-40,32h-82c-18,0-32-10-32-26v-68c0-20,16-36,36-36z" fill="url(#rmCabBody)"/>
+                            <path class="cab-shadow" d="M678,74h18c18,0,32,14,32,32v66c0,18-14,32-32,32h-34z" fill="url(#rmCabShadow)"/>
+                            <rect class="cab-window" x="604" y="96" width="56" height="34" rx="10" fill="url(#rmWindow)"/>
+                            <rect class="cab-door" x="664" y="124" width="34" height="48" rx="9"/>
+                            <rect class="cab-step" x="676" y="164" width="42" height="12" rx="6"/>
+                            <circle class="marker-light" cx="604" cy="152" r="9"/>
+                            <circle class="marker-light" cx="704" cy="152" r="9"/>
                         </g>
 
-                        <g class="truck-wheels">
-                            <circle class="wheel" cx="120" cy="170" r="18"/>
-                            <circle class="wheel" cx="230" cy="170" r="18"/>
-                            <circle class="wheel" cx="300" cy="170" r="20"/>
-                            <circle class="wheel-hub" cx="120" cy="170" r="8"/>
-                            <circle class="wheel-hub" cx="230" cy="170" r="8"/>
-                            <circle class="wheel-hub" cx="300" cy="170" r="9"/>
-                        </g>
-
-                        <g class="front-detail">
-                            <rect x="278" y="122" width="16" height="12" rx="2" fill="#90a4ae" opacity="0.45"/>
-                            <circle cx="278" cy="128" r="5" fill="#ffc107" opacity="0.85"/>
-                            <circle cx="348" cy="134" r="5" fill="#ffc107" opacity="0.75"/>
+                        <g class="wheel-group">
+                            <g class="wheel" transform="translate(210 188)">
+                                <circle class="wheel-outer" r="30" fill="url(#rmWheel)"/>
+                                <circle class="wheel-inner" r="16"/>
+                                <circle class="wheel-cap" r="9"/>
+                            </g>
+                            <g class="wheel" transform="translate(270 188)">
+                                <circle class="wheel-outer" r="30" fill="url(#rmWheel)"/>
+                                <circle class="wheel-inner" r="16"/>
+                                <circle class="wheel-cap" r="9"/>
+                            </g>
+                            <g class="wheel" transform="translate(330 188)">
+                                <circle class="wheel-outer" r="30" fill="url(#rmWheel)"/>
+                                <circle class="wheel-inner" r="16"/>
+                                <circle class="wheel-cap" r="9"/>
+                            </g>
+                            <g class="wheel" transform="translate(520 192)">
+                                <circle class="wheel-outer" r="32" fill="url(#rmWheel)"/>
+                                <circle class="wheel-inner" r="18"/>
+                                <circle class="wheel-cap" r="10"/>
+                            </g>
+                            <g class="wheel" transform="translate(628 192)">
+                                <circle class="wheel-outer" r="32" fill="url(#rmWheel)"/>
+                                <circle class="wheel-inner" r="18"/>
+                                <circle class="wheel-cap" r="10"/>
+                            </g>
                         </g>
                     </svg>
                 </div>
@@ -180,7 +214,7 @@ export class PaperLoadTruckWidget extends Component {
     }
 
     get trailerFillWidth() {
-        const maxWidth = 238;
+        const maxWidth = 496;
         if (!this.capacity) {
             return 0;
         }
@@ -230,13 +264,13 @@ export class PaperLoadTruckWidget extends Component {
         const capacity = this.capacity;
         const filledSlots = this.safeBaleCount;
         const gradeData = this.gradeData;
-        const slotWidth = 26;
+        const slotWidth = 52;
         const slotHeight = 18;
-        const gapX = 6;
-        const gapY = 4;
+        const gapX = 14;
+        const gapY = 10;
         const columns = 7;
-        const startX = 52;
-        const startY = 66;
+        const startX = 68;
+        const startY = 82;
 
         const gradeOrder = [];
         for (const grade of gradeData) {
@@ -415,10 +449,10 @@ if (!document.getElementById("rm-paper-load-truck-style")) {
 }
 
 .truck-visual {
-    background: radial-gradient(circle at top, #e6f1ff 0%, #f7fbff 60%, #ffffff 100%);
-    border-radius: 14px;
-    padding: 16px;
-    border: 1px solid #d4e4f6;
+    background: linear-gradient(180deg, rgba(240, 245, 255, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border-radius: 18px;
+    padding: 18px 22px;
+    border: 1px solid rgba(138, 170, 210, 0.45);
 }
 
 .truck-svg {
@@ -428,19 +462,19 @@ if (!document.getElementById("rm-paper-load-truck-style")) {
 }
 
 .bale-slot {
-    fill: rgba(255, 255, 255, 0.5);
-    stroke: rgba(13, 71, 161, 0.15);
-    stroke-width: 1;
+    fill: rgba(255, 255, 255, 0.55);
+    stroke: rgba(15, 67, 140, 0.22);
+    stroke-width: 1.6;
 }
 
 .bale-slot.is-filled {
     fill: var(--slot-color, #4caf50);
-    stroke: rgba(0, 0, 0, 0.08);
+    stroke: rgba(0, 0, 0, 0.12);
 }
 
 .bale-slot.is-empty {
-    fill: rgba(255, 255, 255, 0.35);
-    stroke-dasharray: 4 3;
+    fill: rgba(255, 255, 255, 0.32);
+    stroke-dasharray: 12 8;
 }
 
 .bale-slot__label {
@@ -450,14 +484,48 @@ if (!document.getElementById("rm-paper-load-truck-style")) {
     pointer-events: none;
 }
 
-.truck-wheels .wheel {
-    fill: #1f2933;
-    stroke: #0b141f;
-    stroke-width: 2;
+.ground-shadow {
+    fill: rgba(17, 33, 56, 0.14);
 }
 
-.truck-wheels .wheel-hub {
-    fill: #cfd8dc;
+.trailer-outline {
+    fill: none;
+    stroke: #1b4d89;
+    stroke-width: 4;
+}
+
+.trailer-divider {
+    stroke: rgba(33, 74, 126, 0.22);
+    stroke-width: 2;
+    stroke-dasharray: 20 14;
+}
+
+.connector {
+    fill: rgba(24, 58, 102, 0.35);
+}
+
+.connector-pin {
+    fill: rgba(54, 76, 103, 0.45);
+}
+
+.cab-door {
+    fill: rgba(7, 24, 46, 0.22);
+}
+
+.cab-step {
+    fill: rgba(26, 47, 72, 0.48);
+}
+
+.marker-light {
+    fill: rgba(255, 193, 7, 0.85);
+}
+
+.wheel-group .wheel-inner {
+    fill: #cfd8df;
+}
+
+.wheel-group .wheel-cap {
+    fill: #f7fbff;
 }
 
 .load-breakdown {
