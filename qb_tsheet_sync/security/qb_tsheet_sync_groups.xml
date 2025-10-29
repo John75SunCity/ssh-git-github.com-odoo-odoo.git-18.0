@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="module_category_tsheets_sync" model="ir.module.category">
+        <field name="name">Human Resources / TSheets Sync</field>
+        <field name="sequence">45</field>
+    </record>
+
     <record id="group_tsheets_user" model="res.groups">
         <field name="name">TSheets Sync User</field>
-        <field name="category_id" ref="base.module_category_hr_timesheet"/>
+        <field name="category_id" ref="qb_tsheet_sync.module_category_tsheets_sync"/>
         <field name="implied_ids" eval="[(4, ref('hr.group_hr_user'))]"/>
     </record>
 
     <record id="group_tsheets_manager" model="res.groups">
         <field name="name">TSheets Sync Manager</field>
-        <field name="category_id" ref="base.module_category_hr_timesheet"/>
+        <field name="category_id" ref="qb_tsheet_sync.module_category_tsheets_sync"/>
         <field name="implied_ids" eval="[(4, ref('qb_tsheet_sync.group_tsheets_user')), (4, ref('hr.group_hr_manager'))]"/>
     </record>
 </odoo>
