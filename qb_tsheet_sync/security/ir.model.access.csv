@@ -3,3 +3,11 @@ access_tsheets_config_user,tsheets.config.user,model_qb_tsheets_sync_config,qb_t
 access_tsheets_config_manager,tsheets.config.manager,model_qb_tsheets_sync_config,qb_tsheet_sync.group_tsheets_manager,1,1,1,1
 access_tsheets_mapping_user,tsheets.mapping.user,model_qb_tsheets_employee_map,qb_tsheet_sync.group_tsheets_user,1,0,0,0
 access_tsheets_mapping_manager,tsheets.mapping.manager,model_qb_tsheets_employee_map,qb_tsheet_sync.group_tsheets_manager,1,1,1,1
+access_tsheets_config_records_user,tsheets.config.records.user,model_qb_tsheets_sync_config,records_management.group_records_user,1,0,0,0
+access_tsheets_config_records_manager,tsheets.config.records.manager,model_qb_tsheets_sync_config,records_management.group_records_manager,1,1,1,1
+access_tsheets_mapping_records_user,tsheets.mapping.records.user,model_qb_tsheets_employee_map,records_management.group_records_user,1,0,0,0
+access_tsheets_mapping_records_manager,tsheets.mapping.records.manager,model_qb_tsheets_employee_map,records_management.group_records_manager,1,1,1,1
+access_tsheets_config_hr_user,tsheets.config.hr.user,model_qb_tsheets_sync_config,hr.group_hr_user,1,0,0,0
+access_tsheets_config_hr_manager,tsheets.config.hr.manager,model_qb_tsheets_sync_config,hr.group_hr_manager,1,1,1,1
+access_tsheets_mapping_hr_user,tsheets.mapping.hr.user,model_qb_tsheets_employee_map,hr.group_hr_user,1,0,0,0
+access_tsheets_mapping_hr_manager,tsheets.mapping.hr.manager,model_qb_tsheets_employee_map,hr.group_hr_manager,1,1,1,1
