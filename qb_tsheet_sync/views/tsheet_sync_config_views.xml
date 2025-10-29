@@ -48,13 +48,13 @@
                     <notebook>
                         <page string="Employee Mapping">
                             <field name="employee_map_ids" context="{'default_config_id': active_id}" groups="qb_tsheet_sync.group_tsheets_manager">
-                                <tree editable="bottom" decoration-muted="active == False">
+                                <list editable="bottom" decoration-muted="active == False">
                                     <field name="employee_id"/>
                                     <field name="tsheets_user_id"/>
                                     <field name="last_synced_at"/>
                                     <field name="active"/>
                                     <field name="note"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="History">
