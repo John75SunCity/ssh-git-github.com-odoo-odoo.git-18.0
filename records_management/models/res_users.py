@@ -190,17 +190,16 @@ class ResUsers(models.Model):
             # Only validate if user is explicitly setting a portal profile
             # Skip validation for standard portal user creation (via portal wizard)
             if profile and profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
-                if not vals.get('partner_id'):
+                partner_id = vals.get('partner_id')
+                if not partner_id:
                     raise ValidationError(_(
-                        "Portal users must be assigned to an existing customer company. "
-                        "Please select a Related Partner from the dropdown list before saving."
+                        "Portal profiles require a Related Partner. Please select the customer contact or company before saving."
                     ))
-                # Verify the selected partner is a customer (not auto-created)
-                partner = self.env['res.partner'].browse(vals['partner_id'])
-                if partner and not partner.is_company:
+                partner = self.env['res.partner'].browse(partner_id)
+                if profile in ['portal_company_admin', 'portal_department_admin'] and partner and not partner.is_company:
                     raise ValidationError(_(
-                        "Portal users must be assigned to a company partner, not an individual contact. "
-                        "Please select a company from the Related Partner dropdown."
+                        "Portal company or department administrators must be linked to a company contact. "
+                        "Please choose the customer company record instead of an individual contact."
                     ))
 
         records = super().create(vals_list)
@@ -238,15 +237,13 @@ class ResUsers(models.Model):
                     partner_id = vals.get('partner_id', user.partner_id.id if user.partner_id else False)
                     if not partner_id:
                         raise ValidationError(_(
-                            "Portal users must be assigned to an existing customer company. "
-                            "Please select a Related Partner from the dropdown list before saving."
+                            "Portal profiles require a Related Partner. Please select the customer contact or company before saving."
                         ))
-                    # Verify the selected partner is a customer company
                     partner = self.env['res.partner'].browse(partner_id)
-                    if partner and not partner.is_company:
+                    if profile in ['portal_company_admin', 'portal_department_admin'] and partner and not partner.is_company:
                         raise ValidationError(_(
-                            "Portal users must be assigned to a company partner, not an individual contact. "
-                            "Please select a company from the Related Partner dropdown."
+                            "Portal company or department administrators must be linked to a company contact. "
+                            "Please choose the customer company record instead of an individual contact."
                         ))
 
         res = super().write(vals)
