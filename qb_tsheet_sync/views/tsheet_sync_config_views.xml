@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="tsheets_sync_config_view_tree" model="ir.ui.view">
+        <field name="name">qb.tsheets.sync.config.view.tree</field>
+        <field name="model">qb.tsheets.sync.config</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="active == False">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="auto_sync" widget="boolean_toggle"/>
+                <field name="sync_lookback_days"/>
+                <field name="last_success_at"/>
+                <field name="last_attempt_at"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="tsheets_sync_config_view_form" model="ir.ui.view">
+        <field name="name">qb.tsheets.sync.config.view.form</field>
+        <field name="model">qb.tsheets.sync.config</field>
+        <field name="arch" type="xml">
+            <form string="TSheets Synchronization">
+                <header>
+                    <button name="action_sync_now" type="object" string="Sync Now" class="oe_highlight" groups="qb_tsheet_sync.group_tsheets_manager"/>
+                    <field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Inactive'}}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <label for="company_id" class="oe_edit_only"/>
+                        <field name="company_id"/>
+                    </div>
+                    <group>
+                        <group string="API">
+                            <field name="api_token" password="True"/>
+                            <field name="base_url"/>
+                        </group>
+                        <group string="Defaults">
+                            <field name="default_project_id"/>
+                            <field name="default_task_id"/>
+                            <field name="sync_lookback_days"/>
+                            <field name="auto_sync"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Employee Mapping">
+                            <field name="employee_map_ids" context="{'default_config_id': active_id}" groups="qb_tsheet_sync.group_tsheets_manager">
+                                <tree editable="bottom" decoration-muted="active == False">
+                                    <field name="employee_id"/>
+                                    <field name="tsheets_user_id"/>
+                                    <field name="last_synced_at"/>
+                                    <field name="active"/>
+                                    <field name="note"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="History">
+                            <group>
+                                <field name="last_attempt_at" readonly="1"/>
+                                <field name="last_success_at" readonly="1"/>
+                                <field name="last_message" readonly="1" widget="text"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tsheets_sync_config" model="ir.actions.act_window">
+        <field name="name">TSheets Synchronization</field>
+        <field name="res_model">qb.tsheets.sync.config</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'default_name': 'TSheets Sync'}</field>
+    </record>
+
+    <menuitem id="menu_tsheets_root" name="TSheets Sync" parent="hr_timesheet.menu_hr_timesheet_configuration" sequence="50" groups="qb_tsheet_sync.group_tsheets_user"/>
+    <menuitem id="menu_tsheets_configuration" name="Configurations" parent="menu_tsheets_root" action="action_tsheets_sync_config" sequence="10" groups="qb_tsheet_sync.group_tsheets_manager"/>
+</odoo>

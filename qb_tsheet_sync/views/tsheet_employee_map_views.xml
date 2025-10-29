@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="tsheets_employee_map_view_tree" model="ir.ui.view">
+        <field name="name">qb.tsheets.employee.map.view.tree</field>
+        <field name="model">qb.tsheets.employee.map</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="active == False">
+                <field name="config_id"/>
+                <field name="employee_id"/>
+                <field name="tsheets_user_id"/>
+                <field name="last_synced_at"/>
+                <field name="active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="tsheets_employee_map_view_form" model="ir.ui.view">
+        <field name="name">qb.tsheets.employee.map.view.form</field>
+        <field name="model">qb.tsheets.employee.map</field>
+        <field name="arch" type="xml">
+            <form string="TSheets Employee Mapping">
+                <header>
+                    <field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Inactive'}}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="config_id"/>
+                            <field name="employee_id"/>
+                            <field name="tsheets_user_id"/>
+                        </group>
+                        <group>
+                            <field name="last_synced_at" readonly="1"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tsheets_employee_map" model="ir.actions.act_window">
+        <field name="name">Employee Mappings</field>
+        <field name="res_model">qb.tsheets.employee.map</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_group_by_config_id': 1}</field>
+    </record>
+
+    <menuitem id="menu_tsheets_employee_map" name="Employee Mapping" parent="menu_tsheets_root" action="action_tsheets_employee_map" sequence="20" groups="qb_tsheet_sync.group_tsheets_manager"/>
+</odoo>
