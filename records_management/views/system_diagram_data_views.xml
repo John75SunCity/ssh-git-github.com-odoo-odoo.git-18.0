@@ -132,7 +132,7 @@
                 <field name="edge_count"/>
                 <field name="cache_timestamp"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_kanban_content">
                                 <div class="o_kanban_record_top mb16">
@@ -163,11 +163,11 @@
                                     </div>
                                     <div class="mt-2">
                                         <span class="badge badge-light me-2">
-                                            <i class="fa fa-circle-o text-primary"/>
+                                            <i class="fa fa-circle-o text-primary" title="Node count"/>
                                             <field name="node_count"/> Nodes
                                         </span>
                                         <span class="badge badge-light">
-                                            <i class="fa fa-link text-success"/>
+                                            <i class="fa fa-link text-success" title="Edge count"/>
                                             <field name="edge_count"/> Edges
                                         </span>
                                     </div>
