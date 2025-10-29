@@ -18,7 +18,7 @@
                     <div class="alert alert-info" role="alert" invisible="partner_required == False">
                         <strong>🏢 Portal User Company Assignment Required</strong>
                         <br/>Portal users represent a specific customer company and can only access that company's data.
-                        You must select an existing customer company in the "Related Partner" field below.
+                        You must select an existing customer company or one of its contacts in the "Related Partner" field below. Portal Company/Department Admin profiles should be linked to the company record.
                         <br/><br/>
                         <strong>How it works:</strong>
                         <ul>
@@ -34,13 +34,13 @@
                     <attribute name="invisible">0</attribute>
                     <attribute name="readonly">partner_required == False</attribute>
                     <attribute name="force_save">1</attribute>
-                    <attribute name="domain">[('is_company', '=', True), ('customer_rank', '>', 0)]</attribute>
-                    <attribute name="context">{'search_default_is_company': 1, 'search_default_customer': 1, 'default_is_company': True}</attribute>
-                    <attribute name="help">🏢 Portal User Company Assignment: Select the customer company this user represents. This determines which records they can access through the portal. For internal users, this field is auto-managed.</attribute>
-                    <attribute name="placeholder">🔍 Search and select customer company...</attribute>
+                    <attribute name="domain">[('customer_rank', '>', 0)]</attribute>
+                    <attribute name="context">{'search_default_customer': 1}</attribute>
+                    <attribute name="help">🏢 Portal Access Mapping: choose the customer company or contact this user represents. Company administrators must be linked to the company record; standard portal users can be linked to an individual contact under the customer company.</attribute>
+                    <attribute name="placeholder">🔍 Search customer company or contact...</attribute>
                     <attribute name="options">{'no_create': True, 'no_create_edit': True, 'no_quick_create': True}</attribute>
                     <attribute name="required">partner_required == True</attribute>
-                    <attribute name="string">Customer Company</attribute>
+                    <attribute name="string">Customer Company / Contact</attribute>
                 </xpath>
             </field>
         </record>
