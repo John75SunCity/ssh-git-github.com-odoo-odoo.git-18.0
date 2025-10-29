@@ -1,7 +1,7 @@
 {
     "name": "QuickBooks TSheets Synchronization",
     "summary": "Sync TSheets time entries into Odoo timesheets with configurable mappings.",
-    "version": "19.0.1.0.0",
+    "version": "18.0.1.0.0",
     "license": "LGPL-3",
     "author": "Records Management",
     "category": "Human Resources",
