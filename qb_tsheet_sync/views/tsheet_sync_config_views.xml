@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="tsheets_sync_config_view_tree" model="ir.ui.view">
-        <field name="name">qb.tsheets.sync.config.view.tree</field>
+    <record id="tsheets_sync_config_view_list" model="ir.ui.view">
+        <field name="name">qb.tsheets.sync.config.view.list</field>
         <field name="model">qb.tsheets.sync.config</field>
         <field name="arch" type="xml">
-            <tree decoration-muted="active == False">
+            <list decoration-muted="active == False">
                 <field name="name"/>
                 <field name="company_id"/>
                 <field name="auto_sync" widget="boolean_toggle"/>
                 <field name="sync_lookback_days"/>
                 <field name="last_success_at"/>
                 <field name="last_attempt_at"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -78,7 +78,7 @@
     <record id="action_tsheets_sync_config" model="ir.actions.act_window">
         <field name="name">TSheets Synchronization</field>
         <field name="res_model">qb.tsheets.sync.config</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'default_name': 'TSheets Sync'}</field>
     </record>
 
