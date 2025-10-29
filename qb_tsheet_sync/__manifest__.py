@@ -10,8 +10,7 @@
         "mail",
         "hr",
         "hr_timesheet",
-        "project",
-        "records_management"
+        "project"
     ],
     "data": [
         "security/qb_tsheet_sync_groups.xml",
@@ -20,6 +19,7 @@
         "views/tsheet_employee_map_views.xml",
         "data/ir_cron.xml"
     ],
+    "post_init_hook": "post_init_hook",
     "installable": True,
     "application": False,
     "auto_install": False
