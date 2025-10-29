@@ -27,56 +27,56 @@ PORTAL_MENU_SPECS = [
         "xml_id": "portal_menu_records_dashboard",
         "name": "Dashboard",
         "url": "/my/home",
-        "parent_xml_id": "website.main_menu",
+        "parent_xml_id": None,
         "sequence": 10,
     },
     {
         "xml_id": "portal_menu_records_inventory",
         "name": "My Inventory",
         "url": "/my/inventory",
-        "parent_xml_id": "website.main_menu",
+        "parent_xml_id": None,
         "sequence": 20,
     },
     {
         "xml_id": "portal_menu_work_orders",
         "name": "Work Orders",
         "url": "/my/work-orders",
-        "parent_xml_id": "website.main_menu",
+        "parent_xml_id": None,
         "sequence": 30,
     },
     {
         "xml_id": "portal_menu_requests",
         "name": "Service Requests",
-        "url": "/my/requests",
-        "parent_xml_id": "website.main_menu",
+        "url": "/portal/request/service",
+        "parent_xml_id": None,
         "sequence": 40,
     },
     {
         "xml_id": "portal_menu_certificates",
         "name": "Certificates",
         "url": "/my/certificates",
-        "parent_xml_id": "website.main_menu",
+        "parent_xml_id": None,
         "sequence": 50,
     },
     {
         "xml_id": "portal_menu_documents",
         "name": "Documents",
         "url": "/my/documents",
-        "parent_xml_id": "website.main_menu",
+        "parent_xml_id": None,
         "sequence": 60,
     },
     {
         "xml_id": "portal_menu_invoices",
         "name": "Invoices",
         "url": "/my/invoices",
-        "parent_xml_id": "website.main_menu",
+        "parent_xml_id": None,
         "sequence": 70,
     },
     {
         "xml_id": "portal_menu_help",
         "name": "Help",
         "url": "/portal/help",
-        "parent_xml_id": "website.main_menu",
+        "parent_xml_id": None,
         "sequence": 100,
     },
     {
@@ -616,6 +616,15 @@ class RmModuleConfigurator(models.Model):
             self._sync_portal_feature_pack_menus(enabled)
         except Exception as error:
             _logger.error("Portal feature pack menu sync failed: %s", error)
+        backend_menus = [
+            'records_management.menu_portal_requests',
+            'records_management.menu_portal_feedback',
+            'records_management.menu_feedback_analytics',
+            'records_management.menu_service_item_portal',
+            'records_management.menu_service_item_portal_requests',
+            'records_management.menu_service_item_self_service',
+        ]
+        self._set_backend_menu_active(backend_menus, enabled)
 
     def _sync_portal_feature_pack_menus(self, enabled):
         Website = self.env['website'].sudo()
@@ -645,21 +654,23 @@ class RmModuleConfigurator(models.Model):
                         imd_rec.unlink()
                         menu = False
 
-            parent_xml_id = spec['parent_xml_id']
-            parent_menu = self.env.ref(parent_xml_id, raise_if_not_found=False)
-            if not parent_menu and parent_xml_id.startswith('records_management.'):
-                parent_key = parent_xml_id.split('.', 1)[1]
-                parent_menu = created_cache.get(parent_key)
+            parent_xml_id = spec.get('parent_xml_id')
+            parent_menu = False
+            if parent_xml_id:
+                parent_menu = self.env.ref(parent_xml_id, raise_if_not_found=False)
+                if not parent_menu and parent_xml_id.startswith('records_management.'):
+                    parent_key = parent_xml_id.split('.', 1)[1]
+                    parent_menu = created_cache.get(parent_key)
 
-            if not parent_menu:
-                _logger.warning("Skipping portal menu %s because parent %s is missing", spec['xml_id'], spec['parent_xml_id'])
-                continue
+                if not parent_menu:
+                    _logger.warning("Skipping portal menu %s because parent %s is missing", spec['xml_id'], spec['parent_xml_id'])
+                    continue
 
             if enabled:
                 values = {
                     'name': spec['name'],
                     'url': spec['url'],
-                    'parent_id': parent_menu.id,
+                    'parent_id': parent_menu.id if parent_menu else False,
                     'sequence': spec['sequence'],
                 }
                 if 'website_id' in Menu._fields:
@@ -730,6 +741,15 @@ class RmModuleConfigurator(models.Model):
                 ])
                 if imd_records:
                     imd_records.unlink()
+
+    def _set_backend_menu_active(self, xml_ids, active):
+        for xmlid in xml_ids:
+            menu = self.env.ref(xmlid, raise_if_not_found=False)
+            if menu:
+                try:
+                    menu.active = bool(active)
+                except Exception:
+                    continue
 
     def _default_create_default_configurations(self):  # alias (backwards compatibility)
         self.ensure_one()
