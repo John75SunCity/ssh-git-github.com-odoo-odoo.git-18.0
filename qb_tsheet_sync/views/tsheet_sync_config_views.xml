@@ -47,7 +47,7 @@
                     </group>
                     <notebook>
                         <page string="Employee Mapping">
-                            <field name="employee_map_ids" context="{'default_config_id': active_id}" groups="qb_tsheet_sync.group_tsheets_manager">
+                            <field name="employee_map_ids" groups="qb_tsheet_sync.group_tsheets_manager">
                                 <list editable="bottom" decoration-muted="active == False">
                                     <field name="employee_id"/>
                                     <field name="tsheets_user_id"/>
