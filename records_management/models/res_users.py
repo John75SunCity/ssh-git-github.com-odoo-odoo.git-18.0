@@ -15,19 +15,19 @@ class ResUsers(models.Model):
         """
         import logging
         _logger = logging.getLogger(__name__)
-        
+
         try:
             # Get the groups using sudo to bypass access restrictions
             records_admin = self.env.ref('records_management.group_records_admin', raise_if_not_found=False)
             settings_group = self.env.ref('base.group_system', raise_if_not_found=False)
-            
+
             if not records_admin:
                 _logger.warning("⚠️  Records Admin group not found - skipping admin assignment")
                 return False
             if not settings_group:
                 _logger.warning("⚠️  Settings group not found - skipping admin assignment")
                 return False
-            
+
             # Find all admin users (login contains 'admin' or has id=1, id=2, or id=6)
             # Use sudo() to search even if current user has no access
             admin_users = self.sudo().search([
@@ -37,36 +37,36 @@ class ResUsers(models.Model):
                 ('id', '=', 2),
                 ('id', '=', 6)  # John Cope - Records Admin
             ])
-            
+
             _logger.info(f"🔧 Found {len(admin_users)} admin users to process: {admin_users.mapped('login')}")
-            
+
             # Add them to both groups - ONE group at a time to avoid user type conflicts
             for user in admin_users:
                 try:
                     groups_to_add = []
-                    
+
                     # Only add if not already present
                     if records_admin.id not in user.groups_id.ids:
                         groups_to_add.append(records_admin.id)
                         _logger.info(f"  Adding {user.login} to Records Admin group")
-                    
+
                     if settings_group.id not in user.groups_id.ids:
                         groups_to_add.append(settings_group.id)
                         _logger.info(f"  Adding {user.login} to Settings group")
-                    
+
                     # Add all groups in a single write to avoid multiple user type validations
                     if groups_to_add:
                         user.sudo().write({'groups_id': [(4, gid) for gid in groups_to_add]})
                         _logger.info(f"✅ Successfully assigned groups to {user.login}")
                     else:
                         _logger.info(f"✅ User {user.login} already has all required groups")
-                        
+
                 except Exception as user_error:
                     _logger.error(f"❌ Error assigning groups to user {user.login}: {user_error}")
                     continue  # Continue with other users even if one fails
-            
+
             return True
-            
+
         except Exception as e:
             _logger.error(f"❌ Critical error in _assign_admin_groups: {e}")
             return False
@@ -206,6 +206,23 @@ class ResUsers(models.Model):
         records = super().create(vals_list)
         # Apply profile settings after creation, but only if profile was set
         for record in records:
+            if record.share:
+                # Automatically align portal user profiles to avoid user type conflicts
+                partner = record.partner_id
+                target_profile = record.records_user_profile if record.records_user_profile in self._RM_PORTAL_MAP else False
+
+                if not target_profile:
+                    if partner and partner.company_type == 'company':
+                        target_profile = 'portal_company_admin'
+                    else:
+                        target_profile = 'portal_user'
+
+                if record.records_user_profile != target_profile:
+                    record.sudo().write({'records_user_profile': target_profile})
+                else:
+                    record._apply_records_user_profile()
+                continue
+
             if record.records_user_profile:
                 record._apply_records_user_profile()
         return records
