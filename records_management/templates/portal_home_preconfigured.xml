@@ -8,7 +8,7 @@
     <template id="portal_my_home_preconfigured" name="Records Management Portal Home (Pre-configured)" inherit_id="portal.portal_my_home">
         <xpath expr="//div[@id='o_portal_sidebar']" position="inside">
             <!-- Records Management Portal Features Section -->
-            <t t-set="rm_portal_enabled" t-value="True"/>
+            <t t-set="rm_portal_enabled" t-value="request.env['rm.module.configurator'].sudo().flags().get('portal_feature_pack_enabled', False)"/>
             
             <div class="o_portal_sidebar_section mb-4" t-if="rm_portal_enabled">
                 <h4 class="mb-3">

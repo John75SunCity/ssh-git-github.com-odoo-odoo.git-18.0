@@ -22,6 +22,122 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
+PORTAL_MENU_SPECS = [
+    {
+        "xml_id": "portal_menu_records_dashboard",
+        "name": "Dashboard",
+        "url": "/my/home",
+        "parent_xml_id": "website.main_menu",
+        "sequence": 10,
+    },
+    {
+        "xml_id": "portal_menu_records_inventory",
+        "name": "My Inventory",
+        "url": "/my/inventory",
+        "parent_xml_id": "website.main_menu",
+        "sequence": 20,
+    },
+    {
+        "xml_id": "portal_menu_work_orders",
+        "name": "Work Orders",
+        "url": "/my/work-orders",
+        "parent_xml_id": "website.main_menu",
+        "sequence": 30,
+    },
+    {
+        "xml_id": "portal_menu_requests",
+        "name": "Service Requests",
+        "url": "/my/requests",
+        "parent_xml_id": "website.main_menu",
+        "sequence": 40,
+    },
+    {
+        "xml_id": "portal_menu_certificates",
+        "name": "Certificates",
+        "url": "/my/certificates",
+        "parent_xml_id": "website.main_menu",
+        "sequence": 50,
+    },
+    {
+        "xml_id": "portal_menu_documents",
+        "name": "Documents",
+        "url": "/my/documents",
+        "parent_xml_id": "website.main_menu",
+        "sequence": 60,
+    },
+    {
+        "xml_id": "portal_menu_invoices",
+        "name": "Invoices",
+        "url": "/my/invoices",
+        "parent_xml_id": "website.main_menu",
+        "sequence": 70,
+    },
+    {
+        "xml_id": "portal_menu_help",
+        "name": "Help",
+        "url": "/portal/help",
+        "parent_xml_id": "website.main_menu",
+        "sequence": 100,
+    },
+    {
+        "xml_id": "portal_submenu_request_pickup",
+        "name": "Request Pickup",
+        "url": "/portal/request/pickup",
+        "parent_xml_id": "records_management.portal_menu_requests",
+        "sequence": 10,
+    },
+    {
+        "xml_id": "portal_submenu_request_destruction",
+        "name": "Request Destruction",
+        "url": "/portal/request/destruction",
+        "parent_xml_id": "records_management.portal_menu_requests",
+        "sequence": 20,
+    },
+    {
+        "xml_id": "portal_submenu_request_service",
+        "name": "Other Services",
+        "url": "/portal/request/service",
+        "parent_xml_id": "records_management.portal_menu_requests",
+        "sequence": 30,
+    },
+    {
+        "xml_id": "portal_submenu_bulk_upload",
+        "name": "Bulk Upload",
+        "url": "/portal/documents/upload",
+        "parent_xml_id": "records_management.portal_menu_documents",
+        "sequence": 10,
+    },
+    {
+        "xml_id": "portal_submenu_document_retrieval",
+        "name": "Document Retrieval",
+        "url": "/portal/documents/retrieval",
+        "parent_xml_id": "records_management.portal_menu_documents",
+        "sequence": 20,
+    },
+    {
+        "xml_id": "portal_submenu_feedback",
+        "name": "Provide Feedback",
+        "url": "/portal/feedback",
+        "parent_xml_id": "records_management.portal_menu_help",
+        "sequence": 10,
+    },
+    {
+        "xml_id": "portal_submenu_tour",
+        "name": "Portal Tour",
+        "url": "/portal/tour",
+        "parent_xml_id": "records_management.portal_menu_help",
+        "sequence": 20,
+    },
+    {
+        "xml_id": "portal_my_certifications_menu",
+        "name": "Technician Certifications",
+        "url": "/my/certifications",
+        "parent_xml_id": "portal.portal_my_home",
+        "sequence": 20,
+    },
+]
+
+
 class RmModuleConfigurator(models.Model):
     _name = "rm.module.configurator"
     _description = "Records Management Configuration"
@@ -120,6 +236,10 @@ class RmModuleConfigurator(models.Model):
         default=True,
         help="Master switch controlling whether ANY work orders are displayed in the customer portal.\n"
              "If disabled, the unified work order portal pages will show zero results regardless of per-record 'Portal Visible' flags."
+    )
+    portal_feature_pack_enabled = fields.Boolean(
+        default=False,
+        help="Enable the complete Records Management customer portal experience, including navigation menus and portal admin tooling."
     )
 
     # Additional referenced toggles kept (avoid view breakage)
@@ -288,6 +408,8 @@ class RmModuleConfigurator(models.Model):
             self.action_apply_key_restriction_toggle()
         if 'enable_management_dashboard' in updated_keys:
             self.action_apply_management_dashboard_toggle()
+        if 'portal_feature_pack_enabled' in updated_keys:
+            self[:1].action_apply_portal_feature_pack_toggle()
 
     def _collect_updated_feature_keys(self, vals_list):
         keys = set()
@@ -296,7 +418,17 @@ class RmModuleConfigurator(models.Model):
                 for rec in self.filtered(lambda r: r.config_type == 'feature_toggle'):
                     keys.add(rec.config_key)
             # direct boolean feature toggles tracked explicitly
-            for direct in ['bin_inventory_enabled', 'enable_fsm_features', 'enable_flowchart_visualization', 'enable_portal_diagram', 'enable_intelligent_search', 'key_restriction_enabled', 'enable_management_dashboard', 'work_orders_portal_enabled']:
+            for direct in [
+                'bin_inventory_enabled',
+                'enable_fsm_features',
+                'enable_flowchart_visualization',
+                'enable_portal_diagram',
+                'enable_intelligent_search',
+                'key_restriction_enabled',
+                'enable_management_dashboard',
+                'work_orders_portal_enabled',
+                'portal_feature_pack_enabled',
+            ]:
                 if direct in vals:
                     keys.add(direct)
         return keys
@@ -476,6 +608,129 @@ class RmModuleConfigurator(models.Model):
             except Exception:
                 pass
 
+    def action_apply_portal_feature_pack_toggle(self):
+        enabled = any(self.sudo().search([]).mapped('portal_feature_pack_enabled'))
+        config_param = self.env['ir.config_parameter'].sudo()
+        config_param.set_param('records_management.portal.enabled', 'True' if enabled else 'False')
+        try:
+            self._sync_portal_feature_pack_menus(enabled)
+        except Exception as error:
+            _logger.error("Portal feature pack menu sync failed: %s", error)
+
+    def _sync_portal_feature_pack_menus(self, enabled):
+        Website = self.env['website'].sudo()
+        Menu = self.env['website.menu'].sudo()
+        IrModelData = self.env['ir.model.data'].sudo()
+
+        website = Website.get_current_website()
+        if not website:
+            website = Website.search([], limit=1)
+        if not website:
+            _logger.warning("Portal feature pack toggle skipped: no website available")
+            return
+
+        created_cache = {}
+        for spec in PORTAL_MENU_SPECS:
+            xml_id_full = f"records_management.{spec['xml_id']}"
+            menu = self.env.ref(xml_id_full, raise_if_not_found=False)
+            if not menu:
+                imd_rec = IrModelData.search([
+                    ('module', '=', 'records_management'),
+                    ('name', '=', spec['xml_id']),
+                    ('model', '=', 'website.menu'),
+                ], limit=1)
+                if imd_rec:
+                    menu = Menu.browse(imd_rec.res_id)
+                    if not menu.exists():
+                        imd_rec.unlink()
+                        menu = False
+
+            parent_xml_id = spec['parent_xml_id']
+            parent_menu = self.env.ref(parent_xml_id, raise_if_not_found=False)
+            if not parent_menu and parent_xml_id.startswith('records_management.'):
+                parent_key = parent_xml_id.split('.', 1)[1]
+                parent_menu = created_cache.get(parent_key)
+
+            if not parent_menu:
+                _logger.warning("Skipping portal menu %s because parent %s is missing", spec['xml_id'], spec['parent_xml_id'])
+                continue
+
+            if enabled:
+                values = {
+                    'name': spec['name'],
+                    'url': spec['url'],
+                    'parent_id': parent_menu.id,
+                    'sequence': spec['sequence'],
+                }
+                if 'website_id' in Menu._fields:
+                    values['website_id'] = website.id
+
+                if menu and menu.exists():
+                    updates = {k: v for k, v in values.items() if menu[k] != v}
+                    publish_updates = {}
+                    if 'is_published' in menu._fields:
+                        publish_updates['is_published'] = True
+                    if 'published' in menu._fields:
+                        publish_updates['published'] = True
+                    updates.update(publish_updates)
+                    if updates:
+                        menu.write(updates)
+                else:
+                    menu = Menu.create(values)
+                    IrModelData.create({
+                        'module': 'records_management',
+                        'name': spec['xml_id'],
+                        'model': 'website.menu',
+                        'res_id': menu.id,
+                        'noupdate': True,
+                    })
+                    publish_updates = {}
+                    if 'is_published' in menu._fields:
+                        publish_updates['is_published'] = True
+                    if 'published' in menu._fields:
+                        publish_updates['published'] = True
+                    if publish_updates:
+                        menu.write(publish_updates)
+
+                if menu and menu.exists():
+                    imd_vals = {
+                        'module': 'records_management',
+                        'name': spec['xml_id'],
+                        'model': 'website.menu',
+                        'res_id': menu.id,
+                        'noupdate': True,
+                    }
+                    imd_rec = IrModelData.search([
+                        ('module', '=', 'records_management'),
+                        ('name', '=', spec['xml_id']),
+                        ('model', '=', 'website.menu'),
+                    ], limit=1)
+                    if imd_rec:
+                        if imd_rec.res_id != menu.id:
+                            imd_rec.write({'res_id': menu.id})
+                    else:
+                        IrModelData.create(imd_vals)
+
+                created_cache[spec['xml_id']] = menu
+            else:
+                if menu and menu.exists():
+                    publish_updates = {}
+                    if 'is_published' in menu._fields:
+                        publish_updates['is_published'] = False
+                    if 'published' in menu._fields:
+                        publish_updates['published'] = False
+                    if publish_updates:
+                        menu.write(publish_updates)
+                    else:
+                        menu.unlink()
+                imd_records = IrModelData.search([
+                    ('module', '=', 'records_management'),
+                    ('name', '=', spec['xml_id']),
+                    ('model', '=', 'website.menu'),
+                ])
+                if imd_records:
+                    imd_records.unlink()
+
     def _default_create_default_configurations(self):  # alias (backwards compatibility)
         self.ensure_one()
         return self._default_seed_configs()
@@ -644,6 +899,7 @@ class RmModuleConfigurator(models.Model):
             'enable_portal_diagram',
             'enable_intelligent_search',
             'key_restriction_enabled',
+            'portal_feature_pack_enabled',
         ]
         data = {}
         for name in field_names:
