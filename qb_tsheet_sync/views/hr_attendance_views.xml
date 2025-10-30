@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- TSheets Attendance List View -->
+    <record id="hr_attendance_view_tree_tsheets" model="ir.ui.view">
+        <field name="name">hr.attendance.tree.tsheets</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-info">check_out == False</attribute>
+            </xpath>
+            <field name="employee_id" position="after">
+                <field name="check_in" string="Clock In"/>
+                <field name="check_out" string="Clock Out"/>
+                <field name="worked_hours" string="Hours" widget="float_time"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- TSheets Attendance Action -->
+    <record id="action_hr_attendance_tsheets" model="ir.actions.act_window">
+        <field name="name">TSheets Clock In/Out</field>
+        <field name="res_model">hr.attendance</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{
+            'search_default_group_by_employee': 1,
+            'search_default_this_month': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Clock in/out times synced from TSheets
+            </p>
+            <p>
+                This shows employee attendance (clock in/out) records synchronized from TSheets.
+                These times track when employees started and ended their work shifts.
+            </p>
+        </field>
+    </record>
+
+    <!-- Add menu item under TSheets -->
+    <menuitem
+        id="menu_hr_attendance_tsheets"
+        name="Clock In/Out Times"
+        parent="qb_tsheet_sync.menu_qb_tsheet_sync_root"
+        action="action_hr_attendance_tsheets"
+        sequence="15"/>
+
+</odoo>

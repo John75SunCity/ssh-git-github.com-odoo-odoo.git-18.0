@@ -10,6 +10,7 @@
         "mail",
         "hr",
         "hr_timesheet",
+        "hr_attendance",
         "project"
     ],
     "data": [
@@ -19,6 +20,7 @@
         "views/tsheet_employee_map_views.xml",
         "views/tsheet_sync_log_views.xml",
         "views/timesheet_extension_views.xml",
+        "views/hr_attendance_views.xml",
         "wizards/tsheet_sync_wizard_views.xml",
         "data/ir_cron.xml"
     ],

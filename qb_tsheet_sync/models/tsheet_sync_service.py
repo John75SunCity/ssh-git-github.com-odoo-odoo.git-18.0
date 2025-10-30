@@ -120,7 +120,10 @@ class TsheetsSyncService(models.AbstractModel):
         created = 0
         updated = 0
         skipped = 0
+        attendance_created = 0
+        attendance_updated = 0
         AnalyticLine = self.env["account.analytic.line"].sudo()
+        Attendance = self.env["hr.attendance"].sudo()
         mapping_by_user = {
             str(mapping.tsheets_user_id): mapping for mapping in config.employee_map_ids.filtered(lambda m: m.active)
         }
@@ -166,6 +169,16 @@ class TsheetsSyncService(models.AbstractModel):
             duration_seconds = entry.get("duration") or 0
             start_dt_entry = self._safe_datetime(entry.get("start"))
             end_dt_entry = self._safe_datetime(entry.get("end"))
+
+            # Log missing start/end times for debugging
+            if not start_dt_entry or not end_dt_entry:
+                _logger.warning(
+                    "TSheets entry %s missing start/end times. start=%s, end=%s, duration=%s",
+                    entry.get("id"),
+                    entry.get("start"),
+                    entry.get("end"),
+                    duration_seconds
+                )
 
             # Calculate duration if not provided
             if duration_seconds <= 0 and start_dt_entry and end_dt_entry:
@@ -246,20 +259,54 @@ class TsheetsSyncService(models.AbstractModel):
             else:
                 AnalyticLine.create(values)
                 created += 1
+
+            # Also create/update hr.attendance record for clock in/out tracking
+            # Only create attendance if we have valid clock times
+            if start_dt_entry and end_dt_entry:
+                # Check if attendance record already exists for this TSheets entry
+                existing_attendance = Attendance.search([
+                    ("employee_id", "=", mapping.employee_id.id),
+                    ("check_in", "=", start_dt_entry),
+                ], limit=1)
+
+                attendance_values = {
+                    "employee_id": mapping.employee_id.id,
+                    "check_in": start_dt_entry,
+                    "check_out": end_dt_entry,
+                }
+
+                if existing_attendance:
+                    existing_attendance.write(attendance_values)
+                    attendance_updated += 1
+                else:
+                    Attendance.create(attendance_values)
+                    attendance_created += 1
+
             mapping.mark_synced()
 
-        summary_message = _("TSheets synchronization imported %s entries (created: %s, updated: %s, skipped: %s).") % (
+        summary_message = _(
+            "TSheets synchronization imported %s entries (created: %s, updated: %s, skipped: %s). "
+            "Attendance records (created: %s, updated: %s)."
+        ) % (
             len(all_entries),
             created,
             updated,
             skipped,
+            attendance_created,
+            attendance_updated,
         )
         config.write({
             "last_success_at": fields.Datetime.to_string(now_utc),
             "last_message": summary_message,
         })
         config.message_post(body=summary_message)
-        return {"created": created, "updated": updated, "skipped": skipped}
+        return {
+            "created": created,
+            "updated": updated,
+            "skipped": skipped,
+            "attendance_created": attendance_created,
+            "attendance_updated": attendance_updated,
+        }
 
     @staticmethod
     def _format_datetime(value):
