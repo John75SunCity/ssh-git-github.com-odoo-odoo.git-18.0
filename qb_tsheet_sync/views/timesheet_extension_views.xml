@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='unit_amount']" position="after">
                 <field name="time_formatted_colon" optional="show" string="Time (HH:MM)"/>
-                                <field name="time_formatted_decimal" optional="hide"/>
+                <field name="time_formatted_decimal" optional="hide"/>
                 <field name="tsheets_notes" optional="show" widget="text"/>
                 <field name="tsheets_clock_in" optional="hide"/>
                 <field name="tsheets_clock_out" optional="hide" widget="datetime"/>
@@ -34,23 +34,24 @@
                 <field name="time_formatted_colon" readonly="1"/>
             </xpath>
             <xpath expr="//sheet" position="inside">
-                                        <group string="TSheets Details" invisible="tsheets_id == False">
-                            <field name="tsheets_id"/>
-                            <field name="tsheets_clock_in"/>
-                            <field name="tsheets_clock_out"/>
-                            <field name="tsheets_break_duration"/>
-                            <field name="tsheets_overtime"/>
-                            <field name="tsheets_overtime_hours" invisible="tsheets_overtime == False"/>
-                            <field name="tsheets_jobcode_name"/>
-                            <field name="tsheets_type"/>
-                            <field name="tsheets_on_the_clock"/>
-                            <field name="time_formatted_colon"/>
-                            <field name="time_formatted_decimal"/>
-                        </group>
-                        <group string="Employee Notes" invisible="tsheets_notes == False">
-                            <field name="tsheets_notes" nolabel="1" widget="text" placeholder="No notes added by employee"/>
-                        </group>
+                <group>
+                    <group string="TSheets Details" invisible="tsheets_id == False">
+                        <field name="tsheets_id"/>
+                        <field name="tsheets_clock_in"/>
+                        <field name="tsheets_clock_out"/>
+                        <field name="tsheets_break_duration"/>
+                        <field name="tsheets_overtime"/>
+                        <field name="tsheets_overtime_hours" invisible="tsheets_overtime == False"/>
+                        <field name="tsheets_jobcode_name"/>
+                        <field name="tsheets_type"/>
+                        <field name="tsheets_on_the_clock"/>
+                        <field name="time_formatted_colon"/>
+                        <field name="time_formatted_decimal"/>
                     </group>
+                    <group string="Employee Notes" invisible="tsheets_notes == False">
+                        <field name="tsheets_notes" nolabel="1" widget="text" placeholder="No notes added by employee"/>
+                    </group>
+                </group>
             </xpath>
         </field>
     </record>
