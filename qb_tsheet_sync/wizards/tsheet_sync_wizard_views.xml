@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <form string="Sync TSheets Timesheets">
                 <sheet>
-                    <div class="alert alert-info" role="alert">
+                    <div class="alert alert-info" role="status">
                         <strong>Manual Sync (Optional)</strong><br/>
                         Set your date range and click <strong>Sync Now</strong> to fetch timesheets from TSheets.<br/>
                         Check <strong>Force Re-Sync</strong> to update timesheets that were already imported (useful for fixing errors).
@@ -19,7 +19,7 @@
                             <field name="force_resync"/>
                         </group>
                         <group>
-                            <div class="alert alert-warning" style="margin-top: 10px;">
+                            <div class="alert alert-warning" role="status" style="margin-top: 10px;">
                                 <strong>Date Range Tips:</strong><br/>
                                 • Default: Last 7 days<br/>
                                 • Limit range to avoid timeouts<br/>

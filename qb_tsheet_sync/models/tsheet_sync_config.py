@@ -90,7 +90,7 @@ class TsheetsSyncConfig(models.Model):
         (
             "company_unique_config",
             "unique(company_id)",
-            _("Only one TSheets configuration is allowed per company."),
+            "Only one TSheets configuration is allowed per company.",
         )
     ]
 
