@@ -25,6 +25,13 @@
                     <field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Inactive'}}"/>
                 </header>
                 <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Setup Instructions:</strong><br/>
+                        1. Copy the <strong>Token</strong> (S.8__0a08f38d0bbe8510fdda4b2fdf2f7527d92dabed) from your TSheets Access Tokens table<br/>
+                        2. Paste it into the <strong>API Access Token</strong> field below<br/>
+                        3. (Optional) Store your OAuth Client ID and Secret for reference<br/>
+                        4. Click <strong>Sync Now</strong> to test the connection
+                    </div>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1>
@@ -34,8 +41,10 @@
                         <field name="company_id"/>
                     </div>
                     <group>
-                        <group string="API">
-                            <field name="api_token" password="True"/>
+                        <group string="TSheets API Authentication">
+                            <field name="api_token" password="True" placeholder="Paste your Access Token from TSheets here"/>
+                            <field name="oauth_client_id" password="True" placeholder="cd5e49487a5fd7a5d0c5a0f936f79672 (optional)"/>
+                            <field name="oauth_client_secret" password="True" placeholder="cbad9c1c323e9d649b038e9bf73ec6f4 (optional)"/>
                             <field name="base_url"/>
                         </group>
                         <group string="Defaults">

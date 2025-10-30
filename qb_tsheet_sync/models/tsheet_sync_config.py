@@ -22,11 +22,21 @@ class TsheetsSyncConfig(models.Model):
         index=True,
     )
     api_token = fields.Char(
-        string="API Token",
+        string="API Access Token",
         required=True,
         copy=False,
         tracking=True,
-        help="OAuth token generated in the TSheets dashboard for API access.",
+        help="OAuth Access Token from TSheets. Copy from the 'Token' column in your TSheets App configuration.",
+    )
+    oauth_client_id = fields.Char(
+        string="OAuth Client ID",
+        copy=False,
+        help="OAuth Client ID from TSheets API Application Details (optional, for reference).",
+    )
+    oauth_client_secret = fields.Char(
+        string="OAuth Client Secret",
+        copy=False,
+        help="OAuth Client Secret from TSheets API Application Details (optional, for reference).",
     )
     base_url = fields.Char(
         string="API Base URL",
