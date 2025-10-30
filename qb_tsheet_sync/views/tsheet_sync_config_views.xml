@@ -82,6 +82,8 @@
         <field name="context">{'default_name': 'TSheets Sync'}</field>
     </record>
 
-    <menuitem id="menu_tsheets_root" name="TSheets Sync" sequence="99" groups="qb_tsheet_sync.group_tsheets_user"/>
-    <menuitem id="menu_tsheets_configuration" name="Configurations" parent="menu_tsheets_root" action="action_tsheets_sync_config" sequence="10" groups="qb_tsheet_sync.group_tsheets_manager"/>
+    <menuitem id="menu_tsheets_root" name="TSheets Sync" sequence="25" groups="qb_tsheet_sync.group_tsheets_user" web_icon="qb_tsheet_sync,static/description/icon.png"/>
+    <menuitem id="menu_tsheets_configuration" name="Configurations" parent="menu_tsheets_root" action="action_tsheets_sync_config" sequence="10"/>
+    <menuitem id="menu_tsheets_sync_now" name="Sync Now" parent="menu_tsheets_root" action="action_tsheets_sync_config" sequence="20" groups="qb_tsheet_sync.group_tsheets_user"/>
+
 </odoo>
