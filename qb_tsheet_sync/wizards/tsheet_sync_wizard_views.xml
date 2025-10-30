@@ -44,11 +44,11 @@
         <field name="target">new</field>
     </record>
 
-    <!-- Add menu item for quick access -->
+    <!-- Add sync wizard under TSheets Sync menu -->
     <menuitem id="menu_tsheets_sync_wizard"
-              name="Sync TSheets Now"
-              parent="hr_timesheet.timesheet_menu_configuration"
+              name="Sync Now"
+              parent="qb_tsheet_sync.menu_tsheets_root"
               action="action_tsheets_sync_wizard"
-              sequence="5"
+              sequence="1"
               groups="qb_tsheet_sync.group_tsheets_user,hr.group_hr_user,records_management.group_records_user"/>
 </odoo>

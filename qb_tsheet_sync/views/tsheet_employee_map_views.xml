@@ -46,11 +46,11 @@
         <field name="context">{'search_default_group_by_config_id': 1}</field>
     </record>
 
-    <!-- Place Employee Mapping under Timesheets > Configuration menu -->
+    <!-- Place Employee Mapping under TSheets Sync menu -->
     <menuitem id="menu_tsheets_employee_map" 
-              name="TSheets Employee Mapping" 
-              parent="hr_timesheet.timesheet_menu_configuration" 
+              name="Employee Mapping" 
+              parent="qb_tsheet_sync.menu_tsheets_root" 
               action="action_tsheets_employee_map" 
-              sequence="101" 
+              sequence="20" 
               groups="qb_tsheet_sync.group_tsheets_manager,hr.group_hr_manager,records_management.group_records_manager"/>
 </odoo>

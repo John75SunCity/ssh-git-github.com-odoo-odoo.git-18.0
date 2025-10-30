@@ -93,8 +93,8 @@
 
     <menuitem id="menu_tsheets_sync_log"
               name="Sync Logs"
-              parent="hr_timesheet.timesheet_menu_configuration"
+              parent="qb_tsheet_sync.menu_tsheets_root"
               action="action_tsheets_sync_log"
-              sequence="102"
+              sequence="30"
               groups="qb_tsheet_sync.group_tsheets_user,hr.group_hr_user,records_management.group_records_user"/>
 </odoo>
