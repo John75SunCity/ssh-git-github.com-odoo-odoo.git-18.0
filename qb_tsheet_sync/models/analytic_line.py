@@ -10,35 +10,7 @@ class AccountAnalyticLine(models.Model):
         index=True,
         help="Identifier of the TSheets entry used to prevent duplicate imports.",
     )
-    
-    # Clock in/out times
-    tsheets_clock_in = fields.Datetime(
-        string="Clock In",
-        help="Time the employee clocked in (from TSheets)"
-    )
-    
-    tsheets_clock_out = fields.Datetime(
-        string="Clock Out",
-        help="Time the employee clocked out (from TSheets)"
-    )
-    
-    # Break/lunch time
-    tsheets_break_duration = fields.Float(
-        string="Break Time (Hours)",
-        help="Total break/lunch time deducted (in hours)"
-    )
-    
-    # Overtime tracking
-    tsheets_overtime = fields.Boolean(
-        string="Overtime",
-        help="Indicates if this entry includes overtime hours"
-    )
-    
-    tsheets_overtime_hours = fields.Float(
-        string="Overtime Hours",
-        help="Number of overtime hours in this entry"
-    )
-    
+
     # Additional TSheets data
     tsheets_jobcode_id = fields.Char(
         string="Job Code ID",
@@ -69,6 +41,21 @@ class AccountAnalyticLine(models.Model):
     tsheets_notes = fields.Text(
         string="TSheets Notes",
         help="Notes/comments added by employee in TSheets when clocking in/out"
+    )
+    
+    # Related fields from hr.attendance
+    attendance_check_in = fields.Datetime(
+        string="Clock In",
+        compute="_compute_attendance_times",
+        store=False,
+        help="Check in time from related attendance record"
+    )
+    
+    attendance_check_out = fields.Datetime(
+        string="Clock Out",
+        compute="_compute_attendance_times",
+        store=False,
+        help="Check out time from related attendance record"
     )
     
     # Computed time formats
@@ -113,3 +100,27 @@ class AccountAnalyticLine(models.Model):
             else:
                 record.time_formatted_colon = "0:00"
                 record.time_formatted_decimal = "0.00"
+    
+    def _compute_attendance_times(self):
+        """
+        Fetch check_in and check_out times from related hr.attendance record.
+        Match by employee and date.
+        """
+        for record in self:
+            if record.employee_id and record.date:
+                # Find attendance record for this employee on this date
+                attendance = self.env['hr.attendance'].search([
+                    ('employee_id', '=', record.employee_id.id),
+                    ('check_in', '>=', record.date),
+                    ('check_in', '<', fields.Date.add(record.date, days=1)),
+                ], limit=1, order='check_in desc')
+                
+                if attendance:
+                    record.attendance_check_in = attendance.check_in
+                    record.attendance_check_out = attendance.check_out
+                else:
+                    record.attendance_check_in = False
+                    record.attendance_check_out = False
+            else:
+                record.attendance_check_in = False
+                record.attendance_check_out = False

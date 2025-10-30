@@ -221,29 +221,13 @@ class TsheetsSyncService(models.AbstractModel):
                 "company_id": config.company_id.id,
                 # TSheets notes
                 "tsheets_notes": tsheets_notes,
-                # Clock in/out times - these will show the actual times
-                "tsheets_clock_in": start_dt_entry,
-                "tsheets_clock_out": end_dt_entry,
                 # Job code info (shows "Lunch Break", job names, etc.)
                 "tsheets_jobcode_id": str(entry.get("jobcode_id", "")),
                 "tsheets_jobcode_name": jobcode_name,
                 # Entry type and status
                 "tsheets_type": self._map_tsheets_type(entry.get("type", "regular")),
                 "tsheets_on_the_clock": entry.get("on_the_clock", False),
-                # Store break duration if this is a break entry (for reporting)
-                "tsheets_break_duration": unit_amount if jobcode_name.lower() in ["lunch break", "break", "lunch"] else 0,
             }
-
-            # Handle overtime
-            tz_str = entry.get("tz_str") or entry.get("tz") or "UTC"
-            overtime_hours = 0
-            if entry.get("overtime", 0) > 0:
-                overtime_hours = entry.get("overtime") / 3600.0  # Convert seconds to hours
-                values["tsheets_overtime"] = True
-                values["tsheets_overtime_hours"] = overtime_hours
-            else:
-                values["tsheets_overtime"] = False
-                values["tsheets_overtime_hours"] = 0
 
             if config.default_project_id:
                 values["project_id"] = config.default_project_id.id
@@ -274,6 +258,12 @@ class TsheetsSyncService(models.AbstractModel):
                     "check_in": start_dt_entry,
                     "check_out": end_dt_entry,
                 }
+
+                # Add overtime if TSheets provides it
+                overtime_seconds = entry.get("overtime", 0)
+                if overtime_seconds > 0:
+                    overtime_hours = overtime_seconds / 3600.0
+                    attendance_values["validated_overtime_hours"] = overtime_hours
 
                 if existing_attendance:
                     existing_attendance.write(attendance_values)

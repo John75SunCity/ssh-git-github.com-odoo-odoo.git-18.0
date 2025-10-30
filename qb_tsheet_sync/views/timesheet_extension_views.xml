@@ -9,14 +9,10 @@
             <xpath expr="//field[@name='unit_amount']" position="after">
                 <field name="time_formatted_colon" optional="show" string="Time (HH:MM)"/>
                 <field name="time_formatted_decimal" optional="hide" string="Time (Decimal)"/>
-                <field name="tsheets_clock_in" optional="hide" string="Clock In" widget="datetime"/>
-                <field name="tsheets_clock_out" optional="hide" string="Clock Out" widget="datetime"/>
+                <field name="attendance_check_in" optional="show" string="Clock In" widget="datetime"/>
+                <field name="attendance_check_out" optional="show" string="Clock Out" widget="datetime"/>
                 <field name="tsheets_jobcode_name" optional="show" string="Job Code"/>
-                <field name="tsheets_break_duration" optional="hide" string="Break (Hrs)" 
-                       decoration-danger="tsheets_break_duration > 0"/>
                 <field name="tsheets_notes" optional="hide" widget="text"/>
-                <field name="tsheets_overtime" optional="hide" widget="boolean_toggle"/>
-                <field name="tsheets_overtime_hours" optional="hide" string="OT Hours"/>
             </xpath>
             <xpath expr="//field[@name='name']" position="after">
                 <field name="tsheets_id" optional="hide" string="TSheets ID"/>
@@ -39,11 +35,8 @@
                 <group>
                     <group string="TSheets Details" invisible="tsheets_id == False">
                         <field name="tsheets_id"/>
-                        <field name="tsheets_clock_in"/>
-                        <field name="tsheets_clock_out"/>
-                        <field name="tsheets_break_duration"/>
-                        <field name="tsheets_overtime"/>
-                        <field name="tsheets_overtime_hours" invisible="tsheets_overtime == False"/>
+                        <field name="attendance_check_in" string="Clock In"/>
+                        <field name="attendance_check_out" string="Clock Out"/>
                         <field name="tsheets_jobcode_name"/>
                         <field name="tsheets_type"/>
                         <field name="tsheets_on_the_clock"/>
@@ -68,8 +61,6 @@
                 <separator/>
                 <filter name="tsheets_imported" string="TSheets Imported" domain="[('tsheets_id', '!=', False)]"/>
                 <filter name="no_project" string="No Project" domain="[('project_id', '=', False)]"/>
-                <filter name="has_overtime" string="Overtime" domain="[('tsheets_overtime', '=', True)]"/>
-                <filter name="has_breaks" string="With Breaks" domain="[('tsheets_break_duration', '>', 0)]"/>
                 <filter name="has_notes" string="With Notes" domain="[('tsheets_notes', '!=', False)]"/>
                 <filter name="on_clock" string="Currently Clocked In" domain="[('tsheets_on_the_clock', '=', True)]"/>
             </xpath>
