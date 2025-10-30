@@ -3,7 +3,7 @@
     "summary": "Sync TSheets time entries into Odoo timesheets with configurable mappings.",
     "version": "18.0.1.0.0",
     "license": "LGPL-3",
-    "author": "Records Management",
+    "author": "John Cope",
     "category": "Human Resources",
     "depends": [
         "base",

@@ -14,9 +14,9 @@ class TsheetsSyncService(models.AbstractModel):
     _name = "qb.tsheets.sync.service"
     _description = "TSheets Synchronization Service"
 
-    def manual_sync(self, config):
+    def manual_sync(self, config, date_from=None, date_to=None):
         self._validate_config(config)
-        summary = self._run_sync(config, manual=True)
+        summary = self._run_sync(config, manual=True, date_from=date_from, date_to=date_to)
         message = _("TSheets synchronization complete: %s created, %s updated, %s skipped.") % (
             summary["created"],
             summary["updated"],
@@ -56,16 +56,24 @@ class TsheetsSyncService(models.AbstractModel):
         if not config.employee_map_ids:
             raise UserError(_("Add at least one employee mapping before synchronizing."))
 
-    def _run_sync(self, config, manual=False):
+    def _run_sync(self, config, manual=False, date_from=None, date_to=None):
         now_utc = fields.Datetime.from_string(fields.Datetime.now())
         config.write({
             "last_attempt_at": fields.Datetime.to_string(now_utc),
         })
-        lookback = config.sync_lookback_days or 0
-        if config.last_success_at:
-            start_dt = config.last_success_at - relativedelta(days=lookback)
+        
+        # Use provided date range or fall back to config lookback
+        if date_from and date_to:
+            start_dt = fields.Datetime.from_string(str(date_from))
+            end_dt = fields.Datetime.from_string(str(date_to))
         else:
-            start_dt = now_utc - relativedelta(days=max(lookback, 1))
+            lookback = config.sync_lookback_days or 0
+            if config.last_success_at:
+                start_dt = config.last_success_at - relativedelta(days=lookback)
+            else:
+                start_dt = now_utc - relativedelta(days=max(lookback, 1))
+            end_dt = now_utc
+            
         headers = {
             "Authorization": "Bearer %s" % config.api_token,
             "Content-Type": "application/json",
@@ -87,7 +95,7 @@ class TsheetsSyncService(models.AbstractModel):
         params = {
             "modified_since": self._format_datetime(start_dt),
             "start_date": start_dt.date().isoformat(),
-            "end_date": now_utc.date().isoformat(),
+            "end_date": end_dt.date().isoformat(),
             "per_page": 100,
         }
         all_entries = []
