@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="tsheets_sync_wizard_view_form" model="ir.ui.view">
+        <field name="name">qb.tsheets.sync.wizard.view.form</field>
+        <field name="model">qb.tsheets.sync.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Sync TSheets Timesheets">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Manual Sync</strong><br/>
+                        Click the button below to immediately fetch and sync timesheets from TSheets into Odoo.
+                    </div>
+                    <group>
+                        <field name="config_id" widget="selection"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_sync_now" type="object" string="Sync Now" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tsheets_sync_wizard" model="ir.actions.act_window">
+        <field name="name">Sync TSheets Now</field>
+        <field name="res_model">qb.tsheets.sync.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="hr_timesheet.model_account_analytic_line"/>
+        <field name="binding_view_types">list</field>
+    </record>
+
+    <!-- Add menu item for quick access -->
+    <menuitem id="menu_tsheets_sync_wizard"
+              name="Sync TSheets Now"
+              parent="hr_timesheet.menu_hr_time_tracking"
+              action="action_tsheets_sync_wizard"
+              sequence="5"
+              groups="qb_tsheet_sync.group_tsheets_user"/>
+</odoo>
