@@ -25,7 +25,7 @@
     <menuitem
         id="menu_hr_attendance_tsheets"
         name="Clock In/Out Times"
-        parent="qb_tsheet_sync.menu_qb_tsheet_sync_root"
+        parent="qb_tsheet_sync.menu_tsheets_root"
         action="action_hr_attendance_tsheets"
         sequence="15"/>
 
