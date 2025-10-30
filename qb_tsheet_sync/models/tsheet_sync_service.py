@@ -193,49 +193,32 @@ class TsheetsSyncService(models.AbstractModel):
                 # Fallback to start date if no date field
                 date_value = start_dt_entry.date() if start_dt_entry else now_utc.date()
 
-            # Detect break entries - TSheets uses "Lunch Break" job code for unpaid time
-            entry_type = entry.get("type", "regular")
-            is_break = (
-                entry_type == "unpaid_break" or
-                jobcode_name.lower() in ["lunch break", "break", "lunch"] or
-                "break" in description.lower() or
-                "lunch" in description.lower() or
-                (unit_amount == 0.5 and not entry.get("jobcode_id"))
-            )
+            # Use jobcode_name for description if available (shows "Lunch Break", etc.)
+            entry_description = tsheets_notes or jobcode_name or "TSheets Entry"
 
             # Prepare values with all TSheets data
             existing = AnalyticLine.search([("tsheets_id", "=", tsheets_id)], limit=1)
-
-            # If this is a break entry, make it negative (deduction)
-            if is_break:
-                actual_unit_amount = -unit_amount  # Negative for breaks
-                break_duration = unit_amount  # Store positive break duration
-                entry_description = f"[BREAK] {description}"
-            else:
-                actual_unit_amount = unit_amount
-                break_duration = 0
-                entry_description = description
 
             values = {
                 "name": entry_description,
                 "employee_id": mapping.employee_id.id,
                 "tsheets_id": tsheets_id,
-                "unit_amount": actual_unit_amount,
+                "unit_amount": unit_amount,  # Use the actual duration from TSheets
                 "date": date_value,
                 "company_id": config.company_id.id,
                 # TSheets notes
                 "tsheets_notes": tsheets_notes,
-                # Break duration (positive value even though unit_amount is negative)
-                "tsheets_break_duration": break_duration,
-                # Clock in/out times
+                # Clock in/out times - these will show the actual times
                 "tsheets_clock_in": start_dt_entry,
                 "tsheets_clock_out": end_dt_entry,
-                # Job code info
+                # Job code info (shows "Lunch Break", job names, etc.)
                 "tsheets_jobcode_id": str(entry.get("jobcode_id", "")),
-                "tsheets_jobcode_name": entry.get("jobcode_name", ""),
+                "tsheets_jobcode_name": jobcode_name,
                 # Entry type and status
                 "tsheets_type": self._map_tsheets_type(entry.get("type", "regular")),
                 "tsheets_on_the_clock": entry.get("on_the_clock", False),
+                # Store break duration if this is a break entry (for reporting)
+                "tsheets_break_duration": unit_amount if jobcode_name.lower() in ["lunch break", "break", "lunch"] else 0,
             }
 
             # Handle overtime
