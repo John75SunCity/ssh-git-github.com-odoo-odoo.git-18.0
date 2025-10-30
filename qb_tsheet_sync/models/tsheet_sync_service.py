@@ -26,7 +26,7 @@ class TsheetsSyncService(models.AbstractModel):
                 'binding_model_id': False,
                 'binding_view_types': False,
             })
-        
+
         # Find and remove bindings from any TSheets server actions
         server_actions = self.env['ir.actions.server'].search([
             ('name', 'ilike', 'tsheet')
@@ -37,7 +37,7 @@ class TsheetsSyncService(models.AbstractModel):
                     'binding_model_id': False,
                     'binding_view_types': False,
                 })
-        
+
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -96,7 +96,7 @@ class TsheetsSyncService(models.AbstractModel):
         config.write({
             "last_attempt_at": fields.Datetime.to_string(now_utc),
         })
-        
+
         # Use provided date range or fall back to config lookback
         if date_from and date_to:
             start_dt = fields.Datetime.from_string(str(date_from))
@@ -108,7 +108,7 @@ class TsheetsSyncService(models.AbstractModel):
             else:
                 start_dt = now_utc - relativedelta(days=max(lookback, 1))
             end_dt = now_utc
-            
+
         headers = {
             "Authorization": "Bearer %s" % config.api_token,
             "Content-Type": "application/json",
@@ -161,35 +161,55 @@ class TsheetsSyncService(models.AbstractModel):
             if not mapping:
                 skipped += 1
                 continue
-            
+
             # Get time data
             duration_seconds = entry.get("duration") or 0
             start_dt_entry = self._safe_datetime(entry.get("start"))
             end_dt_entry = self._safe_datetime(entry.get("end"))
-            
+
             # Calculate duration if not provided
             if duration_seconds <= 0 and start_dt_entry and end_dt_entry:
                 duration_seconds = int((end_dt_entry - start_dt_entry).total_seconds())
             if duration_seconds <= 0:
                 skipped += 1
                 continue
-            
+
             unit_amount = duration_seconds / 3600.0
             tsheets_notes = entry.get("notes") or ""
             description = tsheets_notes or entry.get("jobcode_name") or "TSheets Entry"
             date_value = start_dt_entry.date() if start_dt_entry else now_utc.date()
 
+            # Detect break entries (typically 0.5 hours or marked as unpaid_break type)
+            entry_type = entry.get("type", "regular")
+            is_break = (entry_type == "unpaid_break" or
+                       (unit_amount == 0.5 and not entry.get("jobcode_id")) or
+                       "break" in description.lower() or
+                       "lunch" in description.lower())
+
             # Prepare values with all TSheets data
             existing = AnalyticLine.search([("tsheets_id", "=", tsheets_id)], limit=1)
+
+            # If this is a break entry, make it negative (deduction)
+            if is_break:
+                actual_unit_amount = -unit_amount  # Negative for breaks
+                break_duration = unit_amount  # Store positive break duration
+                entry_description = f"[BREAK] {description}"
+            else:
+                actual_unit_amount = unit_amount
+                break_duration = 0
+                entry_description = description
+
             values = {
-                "name": description,
+                "name": entry_description,
                 "employee_id": mapping.employee_id.id,
                 "tsheets_id": tsheets_id,
-                "unit_amount": unit_amount,
+                "unit_amount": actual_unit_amount,
                 "date": date_value,
                 "company_id": config.company_id.id,
                 # TSheets notes
                 "tsheets_notes": tsheets_notes,
+                # Break duration (positive value even though unit_amount is negative)
+                "tsheets_break_duration": break_duration,
                 # Clock in/out times
                 "tsheets_clock_in": start_dt_entry,
                 "tsheets_clock_out": end_dt_entry,
@@ -200,7 +220,7 @@ class TsheetsSyncService(models.AbstractModel):
                 "tsheets_type": self._map_tsheets_type(entry.get("type", "regular")),
                 "tsheets_on_the_clock": entry.get("on_the_clock", False),
             }
-            
+
             # Handle overtime
             tz_str = entry.get("tz_str") or entry.get("tz") or "UTC"
             overtime_hours = 0
@@ -211,24 +231,7 @@ class TsheetsSyncService(models.AbstractModel):
             else:
                 values["tsheets_overtime"] = False
                 values["tsheets_overtime_hours"] = 0
-            
-            # Handle breaks (unpaid time)
-            break_seconds = 0
-            if "customfields" in entry:
-                # TSheets can store break time in custom fields
-                break_seconds = entry["customfields"].get("break_time", 0)
-            # Also check for explicit break duration field
-            if entry.get("break_duration"):
-                break_seconds = entry.get("break_duration")
-            
-            if break_seconds > 0:
-                break_hours = break_seconds / 3600.0
-                values["tsheets_break_duration"] = break_hours
-                # Adjust unit_amount to exclude break time
-                values["unit_amount"] = unit_amount - break_hours
-            else:
-                values["tsheets_break_duration"] = 0
-            
+
             if config.default_project_id:
                 values["project_id"] = config.default_project_id.id
             if config.default_task_id:
@@ -278,7 +281,7 @@ class TsheetsSyncService(models.AbstractModel):
             return fields.Datetime.from_string(value)
         except Exception:
             return None
-    
+
     @staticmethod
     def _map_tsheets_type(tsheets_type):
         """Map TSheets entry type to our selection field"""

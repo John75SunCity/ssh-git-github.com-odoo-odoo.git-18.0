@@ -9,10 +9,11 @@
             <xpath expr="//field[@name='unit_amount']" position="after">
                 <field name="time_formatted_colon" optional="show" string="Time (HH:MM)"/>
                 <field name="time_formatted_decimal" optional="hide"/>
+                <field name="tsheets_break_duration" optional="show" string="Break (Hrs)" 
+                       decoration-danger="tsheets_break_duration > 0"/>
                 <field name="tsheets_notes" optional="show" widget="text"/>
                 <field name="tsheets_clock_in" optional="hide"/>
                 <field name="tsheets_clock_out" optional="hide" widget="datetime"/>
-                <field name="tsheets_break_duration" optional="hide" string="Break (Hrs)"/>
                 <field name="tsheets_overtime" optional="hide" widget="boolean_toggle"/>
                 <field name="tsheets_overtime_hours" optional="hide" string="OT Hours"/>
             </xpath>
