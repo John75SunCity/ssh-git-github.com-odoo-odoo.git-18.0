@@ -2,12 +2,18 @@
 
 def post_init_hook(env):
     """
-    Post-install hook to automatically grant TSheets access to Records Management users
-    and clean up any incorrect action bindings.
+    Post-install hook to:
+    1. Automatically grant TSheets access to Records Management users
+    2. Clean up any action bindings that cause wizard auto-popup
     """
-    # CRITICAL: Remove any action bindings that cause the wizard to auto-popup
+    _grant_tsheets_access(env)
     _cleanup_action_bindings(env)
-    
+
+
+def _grant_tsheets_access(env):
+    """
+    Grant TSheets access to Records Management and HR users.
+    """
     # Get the TSheets User group
     tsheets_user_group = env.ref('qb_tsheet_sync.group_tsheets_user', raise_if_not_found=False)
     if not tsheets_user_group:
@@ -35,40 +41,36 @@ def post_init_hook(env):
 
 def _cleanup_action_bindings(env):
     """
-    Remove any action bindings that cause the TSheets sync wizard or cron
-    to auto-popup when accessing timesheets.
-    
-    This fixes the issue where the wizard appears every time you click Timesheets.
+    Remove any action bindings that cause the wizard to auto-popup.
+    This prevents the sync wizard from appearing when users click on Timesheets.
     """
-    # Find our wizard action
+    # Remove bindings from our wizard action
     wizard_action = env.ref('qb_tsheet_sync.action_tsheets_sync_wizard', raise_if_not_found=False)
     if wizard_action:
-        # Remove any view bindings (these cause auto-popup)
+        # Clear any model bindings
         wizard_action.write({
             'binding_model_id': False,
             'binding_view_types': False,
         })
     
-    # Find the cron's underlying server action (Odoo creates one internally)
-    cron = env.ref('qb_tsheet_sync.ir_cron_tsheets_sync', raise_if_not_found=False)
-    if cron and cron.ir_actions_server_id:
-        # Remove any view bindings from the cron's server action
-        cron.ir_actions_server_id.write({
-            'binding_model_id': False,
-            'binding_view_types': False,
-        })
-    
-    # Also search for any orphaned server actions with similar names
-    orphaned_actions = env['ir.actions.server'].search([
-        '|', '|',
-        ('name', '=', 'TSheets Synchronization'),
-        ('name', 'ilike', 'tsheets%sync%'),
-        ('name', 'ilike', 'sync%tsheets%'),
-    ])
-    for action in orphaned_actions:
-        # Remove bindings from any TSheets-related server actions
-        if action.binding_model_id:
-            action.write({
+    # Find and clean up the auto-created server action from cron
+    cron_action = env.ref('qb_tsheet_sync.ir_cron_tsheets_sync', raise_if_not_found=False)
+    if cron_action and hasattr(cron_action, 'ir_actions_server_id'):
+        server_action = cron_action.ir_actions_server_id
+        if server_action:
+            # Remove any bindings from the server action
+            server_action.write({
                 'binding_model_id': False,
                 'binding_view_types': False,
             })
+    
+    # Search for any orphaned server actions related to TSheets
+    orphaned_actions = env['ir.actions.server'].search([
+        ('name', 'ilike', 'tsheet'),
+        ('binding_model_id', '!=', False)
+    ])
+    for action in orphaned_actions:
+        action.write({
+            'binding_model_id': False,
+            'binding_view_types': False,
+        })
