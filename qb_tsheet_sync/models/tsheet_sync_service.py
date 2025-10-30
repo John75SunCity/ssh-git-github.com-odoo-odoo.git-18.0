@@ -176,15 +176,19 @@ class TsheetsSyncService(models.AbstractModel):
 
             unit_amount = duration_seconds / 3600.0
             tsheets_notes = entry.get("notes") or ""
-            description = tsheets_notes or entry.get("jobcode_name") or "TSheets Entry"
+            jobcode_name = entry.get("jobcode_name") or ""
+            description = tsheets_notes or jobcode_name or "TSheets Entry"
             date_value = start_dt_entry.date() if start_dt_entry else now_utc.date()
 
-            # Detect break entries (typically 0.5 hours or marked as unpaid_break type)
+            # Detect break entries - TSheets uses "Lunch Break" job code for unpaid time
             entry_type = entry.get("type", "regular")
-            is_break = (entry_type == "unpaid_break" or
-                       (unit_amount == 0.5 and not entry.get("jobcode_id")) or
-                       "break" in description.lower() or
-                       "lunch" in description.lower())
+            is_break = (
+                entry_type == "unpaid_break" or
+                jobcode_name.lower() in ["lunch break", "break", "lunch"] or
+                "break" in description.lower() or
+                "lunch" in description.lower() or
+                (unit_amount == 0.5 and not entry.get("jobcode_id"))
+            )
 
             # Prepare values with all TSheets data
             existing = AnalyticLine.search([("tsheets_id", "=", tsheets_id)], limit=1)
