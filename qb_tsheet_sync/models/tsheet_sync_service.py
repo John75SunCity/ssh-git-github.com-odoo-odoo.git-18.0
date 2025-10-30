@@ -247,6 +247,13 @@ class TsheetsSyncService(models.AbstractModel):
             # Also create/update hr.attendance record for clock in/out tracking
             # Only create attendance if we have valid clock times
             if start_dt_entry and end_dt_entry:
+                _logger.info(
+                    "Creating attendance for employee %s: check_in=%s, check_out=%s",
+                    mapping.employee_id.name,
+                    start_dt_entry,
+                    end_dt_entry
+                )
+
                 # Check if attendance record already exists for this TSheets entry
                 existing_attendance = Attendance.search([
                     ("employee_id", "=", mapping.employee_id.id),
@@ -264,13 +271,21 @@ class TsheetsSyncService(models.AbstractModel):
                 if overtime_seconds > 0:
                     overtime_hours = overtime_seconds / 3600.0
                     attendance_values["validated_overtime_hours"] = overtime_hours
+                    _logger.info("Adding overtime: %s hours", overtime_hours)
 
                 if existing_attendance:
                     existing_attendance.write(attendance_values)
                     attendance_updated += 1
+                    _logger.info("Updated existing attendance record ID %s", existing_attendance.id)
                 else:
-                    Attendance.create(attendance_values)
+                    new_attendance = Attendance.create(attendance_values)
                     attendance_created += 1
+                    _logger.info("Created new attendance record ID %s", new_attendance.id)
+            else:
+                _logger.warning(
+                    "Skipping attendance creation for TSheets entry %s - missing start or end time",
+                    tsheets_id
+                )
 
             mapping.mark_synced()
 
