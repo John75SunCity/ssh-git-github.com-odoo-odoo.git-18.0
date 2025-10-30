@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- TSheets Attendance List View -->
-    <record id="hr_attendance_view_tree_tsheets" model="ir.ui.view">
-        <field name="name">hr.attendance.tree.tsheets</field>
-        <field name="model">hr.attendance</field>
-        <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
-        <field name="arch" type="xml">
-            <xpath expr="//tree" position="attributes">
-                <attribute name="decoration-info">check_out == False</attribute>
-            </xpath>
-            <field name="employee_id" position="after">
-                <field name="check_in" string="Clock In"/>
-                <field name="check_out" string="Clock Out"/>
-                <field name="worked_hours" string="Hours" widget="float_time"/>
-            </field>
-        </field>
-    </record>
-
     <!-- TSheets Attendance Action -->
     <record id="action_hr_attendance_tsheets" model="ir.actions.act_window">
         <field name="name">TSheets Clock In/Out</field>
