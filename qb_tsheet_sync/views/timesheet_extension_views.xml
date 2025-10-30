@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend timesheet list view to show TSheets ID -->
+    <record id="hr_timesheet_line_list_tsheets" model="ir.ui.view">
+        <field name="name">account.analytic.line.list.tsheets</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="tsheets_id" optional="show" string="TSheets ID"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add filter to show TSheets entries -->
+    <record id="hr_timesheet_line_search_tsheets" model="ir.ui.view">
+        <field name="name">account.analytic.line.search.tsheets</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='mine']" position="after">
+                <separator/>
+                <filter name="tsheets_imported" string="TSheets Imported" domain="[('tsheets_id', '!=', False)]"/>
+                <filter name="no_project" string="No Project" domain="[('project_id', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Action to view all TSheets timesheets -->
+    <record id="action_view_tsheets_timesheets" model="ir.actions.act_window">
+        <field name="name">TSheets Timesheets</field>
+        <field name="res_model">account.analytic.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('tsheets_id', '!=', False)]</field>
+        <field name="context">{'search_default_tsheets_imported': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No TSheets timesheets found
+            </p>
+            <p>
+                Sync timesheets from TSheets using the "Sync Now" wizard.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu to view TSheets timesheets -->
+    <menuitem id="menu_view_tsheets_timesheets"
+              name="View Synced Timesheets"
+              parent="qb_tsheet_sync.menu_tsheets_root"
+              action="action_view_tsheets_timesheets"
+              sequence="15"
+              groups="qb_tsheet_sync.group_tsheets_user,hr.group_hr_user,records_management.group_records_user"/>
+</odoo>
