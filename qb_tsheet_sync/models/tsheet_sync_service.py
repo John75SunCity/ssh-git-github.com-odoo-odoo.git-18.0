@@ -14,6 +14,41 @@ class TsheetsSyncService(models.AbstractModel):
     _name = "qb.tsheets.sync.service"
     _description = "TSheets Synchronization Service"
 
+    def cleanup_action_bindings(self):
+        """
+        Manual cleanup method to remove action bindings.
+        Call this from Settings → Technical → Server Actions if wizard still auto-pops.
+        """
+        # Remove bindings from wizard action
+        wizard_action = self.env.ref('qb_tsheet_sync.action_tsheets_sync_wizard', raise_if_not_found=False)
+        if wizard_action:
+            wizard_action.write({
+                'binding_model_id': False,
+                'binding_view_types': False,
+            })
+        
+        # Find and remove bindings from any TSheets server actions
+        server_actions = self.env['ir.actions.server'].search([
+            ('name', 'ilike', 'tsheet')
+        ])
+        for action in server_actions:
+            if action.binding_model_id:
+                action.write({
+                    'binding_model_id': False,
+                    'binding_view_types': False,
+                })
+        
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Action Bindings Cleaned"),
+                "message": _("Removed all TSheets action bindings. Please refresh your browser."),
+                "type": "success",
+                "sticky": False,
+            },
+        }
+
     def manual_sync(self, config, date_from=None, date_to=None, force_resync=False):
         self._validate_config(config)
         summary = self._run_sync(config, manual=True, date_from=date_from, date_to=date_to, force_resync=force_resync)

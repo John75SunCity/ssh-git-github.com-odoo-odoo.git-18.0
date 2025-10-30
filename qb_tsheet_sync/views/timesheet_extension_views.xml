@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Extend timesheet list view to show TSheets ID -->
+    <!-- Extend timesheet list view to show TSheets ID and time formats -->
     <record id="hr_timesheet_line_list_tsheets" model="ir.ui.view">
         <field name="name">account.analytic.line.list.tsheets</field>
         <field name="model">account.analytic.line</field>
         <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
         <field name="arch" type="xml">
+            <xpath expr="//field[@name='unit_amount']" position="after">
+                <field name="time_formatted_colon" optional="show" string="Time (HH:MM)"/>
+                <field name="time_formatted_decimal" optional="show" string="Time (Decimal)"/>
+            </xpath>
             <xpath expr="//field[@name='name']" position="after">
-                <field name="tsheets_id" optional="show" string="TSheets ID"/>
+                <field name="tsheets_id" optional="hide" string="TSheets ID"/>
             </xpath>
         </field>
     </record>
