@@ -17,6 +17,7 @@
         "security/ir.model.access.csv",
         "views/tsheet_sync_config_views.xml",
         "views/tsheet_employee_map_views.xml",
+        "views/tsheet_sync_log_views.xml",
         "wizards/tsheet_sync_wizard_views.xml",
         "data/ir_cron.xml"
     ],

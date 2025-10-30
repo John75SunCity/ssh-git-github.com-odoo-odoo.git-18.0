@@ -7,16 +7,29 @@
             <form string="Sync TSheets Timesheets">
                 <sheet>
                     <div class="alert alert-info" role="alert">
-                        <strong>Manual Sync</strong><br/>
-                        Click the button below to immediately fetch and sync timesheets from TSheets into Odoo.
+                        <strong>Manual Sync (Optional)</strong><br/>
+                        Set your date range and click <strong>Sync Now</strong> to fetch timesheets from TSheets.<br/>
+                        Or click <strong>Skip</strong> to continue without syncing.
                     </div>
                     <group>
-                        <field name="config_id" widget="selection"/>
+                        <group>
+                            <field name="config_id" widget="selection"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <div class="alert alert-warning" style="margin-top: 10px;">
+                                <strong>Date Range Tips:</strong><br/>
+                                • Default: Last 7 days<br/>
+                                • Limit range to avoid timeouts<br/>
+                                • Check Sync Logs for results
+                            </div>
+                        </group>
                     </group>
                 </sheet>
                 <footer>
                     <button name="action_sync_now" type="object" string="Sync Now" class="btn-primary"/>
-                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    <button name="action_skip_sync" type="object" string="Skip" class="btn-secondary"/>
                 </footer>
             </form>
         </field>
