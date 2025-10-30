@@ -9,27 +9,29 @@
                     <div class="alert alert-info" role="alert">
                         <strong>Manual Sync (Optional)</strong><br/>
                         Set your date range and click <strong>Sync Now</strong> to fetch timesheets from TSheets.<br/>
-                        Or click <strong>Skip</strong> to continue without syncing.
+                        Check <strong>Force Re-Sync</strong> to update timesheets that were already imported (useful for fixing errors).
                     </div>
                     <group>
                         <group>
                             <field name="config_id" widget="selection"/>
                             <field name="date_from"/>
                             <field name="date_to"/>
+                            <field name="force_resync"/>
                         </group>
                         <group>
                             <div class="alert alert-warning" style="margin-top: 10px;">
                                 <strong>Date Range Tips:</strong><br/>
                                 • Default: Last 7 days<br/>
                                 • Limit range to avoid timeouts<br/>
-                                • Check Sync Logs for results
+                                • Check Sync Logs for results<br/>
+                                • Use Force Re-Sync to fix errors
                             </div>
                         </group>
                     </group>
                 </sheet>
                 <footer>
                     <button name="action_sync_now" type="object" string="Sync Now" class="btn-primary"/>
-                    <button name="action_skip_sync" type="object" string="Skip" class="btn-secondary"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
@@ -40,8 +42,6 @@
         <field name="res_model">qb.tsheets.sync.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
-        <field name="binding_model_id" ref="hr_timesheet.model_account_analytic_line"/>
-        <field name="binding_view_types">list</field>
     </record>
 
     <!-- Add menu item for quick access -->

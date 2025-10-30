@@ -14,9 +14,9 @@ class TsheetsSyncService(models.AbstractModel):
     _name = "qb.tsheets.sync.service"
     _description = "TSheets Synchronization Service"
 
-    def manual_sync(self, config, date_from=None, date_to=None):
+    def manual_sync(self, config, date_from=None, date_to=None, force_resync=False):
         self._validate_config(config)
-        summary = self._run_sync(config, manual=True, date_from=date_from, date_to=date_to)
+        summary = self._run_sync(config, manual=True, date_from=date_from, date_to=date_to, force_resync=force_resync)
         message = _("TSheets synchronization complete: %s created, %s updated, %s skipped.") % (
             summary["created"],
             summary["updated"],
@@ -56,7 +56,7 @@ class TsheetsSyncService(models.AbstractModel):
         if not config.employee_map_ids:
             raise UserError(_("Add at least one employee mapping before synchronizing."))
 
-    def _run_sync(self, config, manual=False, date_from=None, date_to=None):
+    def _run_sync(self, config, manual=False, date_from=None, date_to=None, force_resync=False):
         now_utc = fields.Datetime.from_string(fields.Datetime.now())
         config.write({
             "last_attempt_at": fields.Datetime.to_string(now_utc),
@@ -68,7 +68,7 @@ class TsheetsSyncService(models.AbstractModel):
             end_dt = fields.Datetime.from_string(str(date_to))
         else:
             lookback = config.sync_lookback_days or 0
-            if config.last_success_at:
+            if config.last_success_at and not force_resync:
                 start_dt = config.last_success_at - relativedelta(days=lookback)
             else:
                 start_dt = now_utc - relativedelta(days=max(lookback, 1))

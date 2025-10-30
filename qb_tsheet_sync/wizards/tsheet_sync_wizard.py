@@ -26,6 +26,11 @@ class TsheetsSyncWizard(models.TransientModel):
         default=fields.Date.today,
         help="End date for fetching timesheets from TSheets"
     )
+    force_resync = fields.Boolean(
+        string="Force Re-Sync (Update Existing)",
+        default=False,
+        help="If checked, will update timesheets that were already synced. Use this to fix errors or refresh data."
+    )
     message = fields.Html(string="Status", readonly=True)
 
     def action_sync_now(self):
@@ -45,7 +50,12 @@ class TsheetsSyncWizard(models.TransientModel):
         
         # Call the sync service with date range
         service = self.env["qb.tsheets.sync.service"]
-        result = service.manual_sync(self.config_id, date_from=self.date_from, date_to=self.date_to)
+        result = service.manual_sync(
+            self.config_id, 
+            date_from=self.date_from, 
+            date_to=self.date_to,
+            force_resync=self.force_resync
+        )
         
         # Return notification or action result
         return result or {
