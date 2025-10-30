@@ -178,7 +178,20 @@ class TsheetsSyncService(models.AbstractModel):
             tsheets_notes = entry.get("notes") or ""
             jobcode_name = entry.get("jobcode_name") or ""
             description = tsheets_notes or jobcode_name or "TSheets Entry"
-            date_value = start_dt_entry.date() if start_dt_entry else now_utc.date()
+
+            # Get the actual timesheet date from TSheets (not clock-in time)
+            # TSheets provides a 'date' field which is the work date (YYYY-MM-DD)
+            tsheets_date_str = entry.get("date")
+            if tsheets_date_str:
+                try:
+                    # Parse YYYY-MM-DD format
+                    date_value = fields.Date.from_string(tsheets_date_str)
+                except (ValueError, TypeError):
+                    # Fallback to start date if parsing fails
+                    date_value = start_dt_entry.date() if start_dt_entry else now_utc.date()
+            else:
+                # Fallback to start date if no date field
+                date_value = start_dt_entry.date() if start_dt_entry else now_utc.date()
 
             # Detect break entries - TSheets uses "Lunch Break" job code for unpaid time
             entry_type = entry.get("type", "regular")
