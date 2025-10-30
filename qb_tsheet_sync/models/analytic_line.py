@@ -11,6 +11,67 @@ class AccountAnalyticLine(models.Model):
         help="Identifier of the TSheets entry used to prevent duplicate imports.",
     )
     
+    # Clock in/out times
+    tsheets_clock_in = fields.Datetime(
+        string="Clock In",
+        help="Time the employee clocked in (from TSheets)"
+    )
+    
+    tsheets_clock_out = fields.Datetime(
+        string="Clock Out",
+        help="Time the employee clocked out (from TSheets)"
+    )
+    
+    # Break/lunch time
+    tsheets_break_duration = fields.Float(
+        string="Break Time (Hours)",
+        help="Total break/lunch time deducted (in hours)"
+    )
+    
+    # Overtime tracking
+    tsheets_overtime = fields.Boolean(
+        string="Overtime",
+        help="Indicates if this entry includes overtime hours"
+    )
+    
+    tsheets_overtime_hours = fields.Float(
+        string="Overtime Hours",
+        help="Number of overtime hours in this entry"
+    )
+    
+    # Additional TSheets data
+    tsheets_jobcode_id = fields.Char(
+        string="Job Code ID",
+        help="TSheets job code identifier"
+    )
+    
+    tsheets_jobcode_name = fields.Char(
+        string="Job Code",
+        help="TSheets job code name/description"
+    )
+    
+    tsheets_type = fields.Selection([
+        ('regular', 'Regular'),
+        ('pto', 'PTO'),
+        ('holiday', 'Holiday'),
+        ('sick', 'Sick'),
+        ('vacation', 'Vacation'),
+        ('unpaid_break', 'Unpaid Break'),
+        ('other', 'Other'),
+    ], string="Entry Type", default='regular',
+       help="Type of time entry from TSheets")
+    
+    tsheets_on_the_clock = fields.Boolean(
+        string="On the Clock",
+        help="Employee is currently clocked in (no clock out time yet)"
+    )
+    
+    tsheets_notes = fields.Text(
+        string="TSheets Notes",
+        help="Notes/comments added by employee in TSheets when clocking in/out"
+    )
+    
+    # Computed time formats
     time_formatted_colon = fields.Char(
         string="Time (HH:MM)",
         compute="_compute_time_formatted",

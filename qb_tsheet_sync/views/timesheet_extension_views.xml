@@ -8,10 +8,49 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='unit_amount']" position="after">
                 <field name="time_formatted_colon" optional="show" string="Time (HH:MM)"/>
-                <field name="time_formatted_decimal" optional="show" string="Time (Decimal)"/>
+                                <field name="time_formatted_decimal" optional="hide"/>
+                <field name="tsheets_notes" optional="show" widget="text"/>
+                <field name="tsheets_clock_in" optional="hide"/>
+                <field name="tsheets_clock_out" optional="hide" widget="datetime"/>
+                <field name="tsheets_break_duration" optional="hide" string="Break (Hrs)"/>
+                <field name="tsheets_overtime" optional="hide" widget="boolean_toggle"/>
+                <field name="tsheets_overtime_hours" optional="hide" string="OT Hours"/>
             </xpath>
             <xpath expr="//field[@name='name']" position="after">
                 <field name="tsheets_id" optional="hide" string="TSheets ID"/>
+                <field name="tsheets_jobcode_name" optional="hide" string="Job Code"/>
+                <field name="tsheets_type" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend timesheet form view to show TSheets details -->
+    <record id="hr_timesheet_line_form_tsheets" model="ir.ui.view">
+        <field name="name">account.analytic.line.form.tsheets</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='unit_amount']" position="after">
+                <field name="time_formatted_colon" readonly="1"/>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                                        <group string="TSheets Details" invisible="tsheets_id == False">
+                            <field name="tsheets_id"/>
+                            <field name="tsheets_clock_in"/>
+                            <field name="tsheets_clock_out"/>
+                            <field name="tsheets_break_duration"/>
+                            <field name="tsheets_overtime"/>
+                            <field name="tsheets_overtime_hours" invisible="tsheets_overtime == False"/>
+                            <field name="tsheets_jobcode_name"/>
+                            <field name="tsheets_type"/>
+                            <field name="tsheets_on_the_clock"/>
+                            <field name="time_formatted_colon"/>
+                            <field name="time_formatted_decimal"/>
+                        </group>
+                        <group string="Employee Notes" invisible="tsheets_notes == False">
+                            <field name="tsheets_notes" nolabel="1" widget="text" placeholder="No notes added by employee"/>
+                        </group>
+                    </group>
             </xpath>
         </field>
     </record>
@@ -26,6 +65,14 @@
                 <separator/>
                 <filter name="tsheets_imported" string="TSheets Imported" domain="[('tsheets_id', '!=', False)]"/>
                 <filter name="no_project" string="No Project" domain="[('project_id', '=', False)]"/>
+                <filter name="has_overtime" string="Overtime" domain="[('tsheets_overtime', '=', True)]"/>
+                <filter name="has_breaks" string="With Breaks" domain="[('tsheets_break_duration', '>', 0)]"/>
+                <filter name="has_notes" string="With Notes" domain="[('tsheets_notes', '!=', False)]"/>
+                <filter name="on_clock" string="Currently Clocked In" domain="[('tsheets_on_the_clock', '=', True)]"/>
+            </xpath>
+            <xpath expr="//group" position="inside">
+                <filter string="Entry Type" name="group_by_type" context="{'group_by': 'tsheets_type'}"/>
+                <filter string="Job Code" name="group_by_jobcode" context="{'group_by': 'tsheets_jobcode_name'}"/>
             </xpath>
         </field>
     </record>

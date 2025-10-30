@@ -161,18 +161,25 @@ class TsheetsSyncService(models.AbstractModel):
             if not mapping:
                 skipped += 1
                 continue
+            
+            # Get time data
             duration_seconds = entry.get("duration") or 0
             start_dt_entry = self._safe_datetime(entry.get("start"))
             end_dt_entry = self._safe_datetime(entry.get("end"))
+            
+            # Calculate duration if not provided
             if duration_seconds <= 0 and start_dt_entry and end_dt_entry:
                 duration_seconds = int((end_dt_entry - start_dt_entry).total_seconds())
             if duration_seconds <= 0:
                 skipped += 1
                 continue
+            
             unit_amount = duration_seconds / 3600.0
-            description = entry.get("notes") or entry.get("jobcode_name") or "TSheets Entry"
+            tsheets_notes = entry.get("notes") or ""
+            description = tsheets_notes or entry.get("jobcode_name") or "TSheets Entry"
             date_value = start_dt_entry.date() if start_dt_entry else now_utc.date()
 
+            # Prepare values with all TSheets data
             existing = AnalyticLine.search([("tsheets_id", "=", tsheets_id)], limit=1)
             values = {
                 "name": description,
@@ -181,7 +188,47 @@ class TsheetsSyncService(models.AbstractModel):
                 "unit_amount": unit_amount,
                 "date": date_value,
                 "company_id": config.company_id.id,
+                # TSheets notes
+                "tsheets_notes": tsheets_notes,
+                # Clock in/out times
+                "tsheets_clock_in": start_dt_entry,
+                "tsheets_clock_out": end_dt_entry,
+                # Job code info
+                "tsheets_jobcode_id": str(entry.get("jobcode_id", "")),
+                "tsheets_jobcode_name": entry.get("jobcode_name", ""),
+                # Entry type and status
+                "tsheets_type": self._map_tsheets_type(entry.get("type", "regular")),
+                "tsheets_on_the_clock": entry.get("on_the_clock", False),
             }
+            
+            # Handle overtime
+            tz_str = entry.get("tz_str") or entry.get("tz") or "UTC"
+            overtime_hours = 0
+            if entry.get("overtime", 0) > 0:
+                overtime_hours = entry.get("overtime") / 3600.0  # Convert seconds to hours
+                values["tsheets_overtime"] = True
+                values["tsheets_overtime_hours"] = overtime_hours
+            else:
+                values["tsheets_overtime"] = False
+                values["tsheets_overtime_hours"] = 0
+            
+            # Handle breaks (unpaid time)
+            break_seconds = 0
+            if "customfields" in entry:
+                # TSheets can store break time in custom fields
+                break_seconds = entry["customfields"].get("break_time", 0)
+            # Also check for explicit break duration field
+            if entry.get("break_duration"):
+                break_seconds = entry.get("break_duration")
+            
+            if break_seconds > 0:
+                break_hours = break_seconds / 3600.0
+                values["tsheets_break_duration"] = break_hours
+                # Adjust unit_amount to exclude break time
+                values["unit_amount"] = unit_amount - break_hours
+            else:
+                values["tsheets_break_duration"] = 0
+            
             if config.default_project_id:
                 values["project_id"] = config.default_project_id.id
             if config.default_task_id:
@@ -231,3 +278,18 @@ class TsheetsSyncService(models.AbstractModel):
             return fields.Datetime.from_string(value)
         except Exception:
             return None
+    
+    @staticmethod
+    def _map_tsheets_type(tsheets_type):
+        """Map TSheets entry type to our selection field"""
+        type_mapping = {
+            'regular': 'regular',
+            'pto': 'pto',
+            'paid_time_off': 'pto',
+            'holiday': 'holiday',
+            'sick': 'sick',
+            'vacation': 'vacation',
+            'unpaid_break': 'unpaid_break',
+            'break': 'unpaid_break',
+        }
+        return type_mapping.get(str(tsheets_type).lower(), 'other')
