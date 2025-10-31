@@ -279,11 +279,11 @@
         <menuitem id="menu_retention_policy" name="Retention Policies" parent="menu_records_config" action="records_retention_policy_action" sequence="10" groups="records_management.group_records_manager" />
         
         <!-- Products & Services -->
-        <menuitem id="menu_products_services" name="Products & Services" parent="menu_records_config" sequence="15" groups="records_management.group_records_manager" />
+        <menuitem id="menu_products_services" name="Products &amp; Services" parent="menu_records_config" sequence="15" groups="records_management.group_records_manager" />
         <menuitem id="menu_product_template" name="Service Items" parent="menu_products_services" action="action_product_template_records" sequence="10" groups="records_management.group_records_manager" />
         
-        <!-- Security & Access -->
-        <menuitem id="menu_security_access" name="Security & Access" parent="menu_records_config" sequence="20" groups="records_management.group_records_manager" />
+        <!-- Security &amp; Access -->
+        <menuitem id="menu_security_access" name="Security &amp; Access" parent="menu_records_config" sequence="20" groups="records_management.group_records_manager" />
         
         <!-- Barcode Configuration -->
         <menuitem id="menu_barcode_config" name="Barcode Configuration" parent="menu_records_config" sequence="30" groups="records_management.group_records_manager" />
@@ -294,37 +294,6 @@
         <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="menu_records_config" action="action_field_label_customization" sequence="40" groups="records_management.group_records_manager" />
         
         <!-- Billing Configuration - Moved to Billing & Finance parent menu -->
-    
-</odoo>
-        <!-- Configuration menu is defined in records_management_root_menus.xml -->
-        <menuitem id="menu_records_master_data" name="Master Data" parent="menu_records_configuration" sequence="10" groups="records_management.group_records_manager" />
-        <menuitem id="menu_records_location" name="Storage Locations" parent="menu_records_master_data" action="action_records_location" sequence="10" groups="records_management.group_records_manager" />
-            <!-- Document Types Menu -->
-    <menuitem id="menu_records_document_type"
-              name="Document Types"
-              parent="menu_records_configuration"
-              action="action_records_document_type"
-              sequence="10"/>
-        <menuitem id="menu_records_tags" name="Classification Tags" parent="menu_records_master_data" action="action_records_tag_simple" sequence="30" groups="records_management.group_records_manager" />
-            <!-- Departments Menu -->
-    <menuitem id="menu_records_department"
-              name="Departments"
-              parent="menu_records_configuration"
-              action="action_records_department"
-              sequence="30"/>
-        <menuitem id="menu_records_products" name="Products &amp; Services" parent="menu_records_configuration" sequence="20" groups="records_management.group_records_manager" />
-        <menuitem id="menu_records_products_list" name="Service Products" parent="menu_records_products" action="product.product_template_action" sequence="10" groups="records_management.group_records_manager" />
-        <menuitem id="menu_records_product_variants" name="Product Variants" parent="menu_records_products" action="product.product_normal_action" sequence="20" groups="records_management.group_records_manager" />
-        <menuitem id="menu_records_security" name="Security &amp; Access" parent="menu_records_configuration" sequence="30" groups="records_management.group_records_manager" />
-        <menuitem id="menu_bin_key_management" name="Bin Key Management" parent="menu_records_security" action="action_bin_key_management" sequence="10" groups="records_management.group_records_manager" />
-        <menuitem id="menu_bin_keys" name="Physical Bin Keys" parent="menu_records_security" action="action_bin_key" sequence="20" groups="records_management.group_records_manager" />
-        <menuitem id="menu_key_restriction" name="Key Access Restrictions" parent="menu_records_security" action="action_res_partner_key_restriction" sequence="30" groups="records_management.group_records_manager" />
-        <menuitem id="menu_service_item_main" name="Service Items" parent="menu_records_configuration" sequence="35" groups="records_management.group_records_manager" />
-        <menuitem id="menu_service_item_operations" name="Operations" parent="menu_service_item_main" sequence="30" groups="records_management.group_records_user" />
-        <menuitem id="menu_service_item_reports" name="Reports &amp; Analytics" parent="menu_service_item_main" sequence="40" groups="records_management.group_records_manager" />
-        <menuitem id="menu_service_item_settings" name="Settings" parent="menu_service_item_main" sequence="50" groups="records_management.group_records_manager" />
-        <menuitem id="menu_service_item_mobile" name="Mobile &amp; FSM" parent="menu_service_item_main" sequence="60" groups="records_management.group_records_user,records_management.group_records_technician" />
-        <menuitem id="menu_service_item_portal" name="Portal Integration" parent="menu_service_item_main" sequence="70" groups="records_management.group_records_manager" />
-        <menuitem id="menu_system_config" name="System Configuration" parent="menu_records_configuration" sequence="40" groups="records_management.group_records_manager" />
+        
     </data>
 </odoo>

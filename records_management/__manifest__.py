@@ -133,6 +133,8 @@
         "data/field_label_customization_batch_data.xml",
         "data/temp_inventory_configurator_data.xml",
     "data/portal_configurator_data.xml",
+        # Portal website menus (must load before portal configurator references them)
+        "data/website_portal_menus.xml",
         # Wizard actions must load before views that reference them
         "views/records_container_assign_barcode_wizard_views.xml",
         # Actions must load before menus that reference them
