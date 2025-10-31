@@ -106,6 +106,7 @@
         "report/naid_certificate_reports.xml",
         "report/report_records_management_report_customer_inventory_report.xml",
         # Wizard/action definitions needed by menus must load first
+        "views/container_quick_add_wizard_views.xml",
         "views/field_label_helper_wizard_views.xml",
         # Actions referenced by menus (ensure before menus)
         "views/records_digital_scan_views.xml",

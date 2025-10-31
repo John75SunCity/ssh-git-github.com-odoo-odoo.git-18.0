@@ -75,8 +75,7 @@
     </record>
     <!-- Updated XML ID to follow convention -->
 
-    <menuitem id="billing_period_menu" name="Billing Periods" parent="records_management.menu_records_billing" action="billing_period_action" sequence="10"/>
-
+    <!-- Duplicate menu removed - defined in records_management_menus.xml -->
     
     </data>
 </odoo>

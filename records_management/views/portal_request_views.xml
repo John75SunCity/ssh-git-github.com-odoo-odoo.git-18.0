@@ -337,10 +337,7 @@
             </field>
         </record>
     
-        <!-- Portal Requests menu restored and moved to Operations -->
-        <menuitem id="portal_request_menu" name="Portal Requests" parent="menu_records_operations" action="action_portal_request" sequence="65" groups="records_management.group_records_manager" />
-        <menuitem id="portal_request_draft_menu" name="Draft Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="1" groups="records_management.group_records_user" />
-        <menuitem id="portal_request_submitted_menu" name="Submitted Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="2" groups="records_management.group_records_manager" />
+        <!-- Duplicate menus removed - defined in records_management_menus.xml -->
     
     
     </data>

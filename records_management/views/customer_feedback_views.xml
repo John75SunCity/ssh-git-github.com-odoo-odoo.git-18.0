@@ -178,8 +178,7 @@
             </field>
         </record>
 
-    <!-- Customer Feedback menu restored and moved to Operations -->
-    <menuitem id="customer_feedback_menu" name="Customer Feedback" parent="menu_records_operations" action="customer_feedback_action" sequence="70" />
+    <!-- Duplicate menu removed - defined in records_management_menus.xml -->
 
 
     </data>

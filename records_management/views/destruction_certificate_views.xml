@@ -255,7 +255,7 @@
             </field>
         </record>
     
-        <menuitem id="menu_destruction_certificates" name="Destruction Certificates" parent="records_management.menu_records_compliance" action="action_destruction_certificate" sequence="25" />
+        <!-- Duplicate menu removed - defined in records_management_menus.xml -->
     
     
     </data>

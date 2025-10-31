@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Container Quick Add Wizard Form -->
+    <record id="view_container_quick_add_wizard_form" model="ir.ui.view">
+        <field name="name">container.quick.add.wizard.form</field>
+        <field name="model">container.quick.add.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Quick Add Container">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="container_label" placeholder="Container Label Preview" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Container Identification">
+                            <field name="container_number" placeholder="e.g., 0001, B-1234 (minimum 4 characters)"/>
+                            <field name="partner_id"/>
+                            <field name="department_id"/>
+                        </group>
+                        
+                        <group string="Industry Template">
+                            <field name="industry_template" widget="radio"/>
+                            <field name="location_id"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Container Contents">
+                        <group>
+                            <field name="contents_type"/>
+                            <field name="range_start" invisible="contents_type == 'custom'"/>
+                            <field name="range_end" invisible="contents_type == 'custom'"/>
+                        </group>
+                        <group>
+                            <field name="contents_description" placeholder="Describe what's in this container..." 
+                                   invisible="contents_type != 'custom'"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Retention Policy">
+                        <group>
+                            <field name="retention_period" widget="radio"/>
+                            <field name="custom_retention_years" 
+                                   invisible="retention_period != 'custom'"
+                                   required="retention_period == 'custom'"/>
+                        </group>
+                        <group>
+                            <field name="destruction_date" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <field name="add_files_now"/>
+                    </group>
+                    
+                    <notebook invisible="1">
+                        <page string="Help" name="help">
+                            <group>
+                                <div class="alert alert-info" role="alert">
+                                    <h4>Quick Add Container Help</h4>
+                                    <ul>
+                                        <li><b>Container Number:</b> Enter a unique 4+ character identifier for this box</li>
+                                        <li><b>Industry Template:</b> Choose your industry for pre-configured field layouts</li>
+                                        <li><b>Contents Type:</b> Select how files are organized (alphabetical, by date, case numbers, etc.)</li>
+                                        <li><b>Range:</b> Enter the starting and ending values for file ranges (e.g., A-Z, 001-500, Case 100-200)</li>
+                                        <li><b>Retention:</b> Select how long these records must be kept before destruction</li>
+                                        <li><b>Add Files:</b> Check this box to immediately start adding file inventory after creating the container</li>
+                                    </ul>
+                                </div>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <footer>
+                    <button name="action_create_container" string="Create Container" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Container Quick Add Action -->
+    <record id="action_container_quick_add_wizard" model="ir.actions.act_window">
+        <field name="name">Quick Add Container</field>
+        <field name="res_model">container.quick.add.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_records_container"/>
+        <field name="binding_view_types">form,list</field>
+    </record>
+
+    <!-- Add menu under Operations -->
+    <menuitem id="menu_container_quick_add"
+              name="Quick Add Container"
+              parent="records_management.menu_operations"
+              action="action_container_quick_add_wizard"
+              sequence="5"/>
+
+</odoo>
