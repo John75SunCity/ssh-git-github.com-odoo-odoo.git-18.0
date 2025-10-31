@@ -59,16 +59,13 @@
     </record>
 
     <!-- Menu -->
-    <!--
-
     <menuitem
         id="menu_inventory_item_type"
-        name="Inventory Item Type"
+        name="Item Types"
         action="action_inventory_item_type"
-        parent="REPLACE_WITH_PARENT_MENU_ID"
-        sequence="10"/>
-
-    -->
+        parent="menu_master_data"
+        sequence="55"
+        groups="records_management.group_records_manager"/>
     
     </data>
 </odoo>

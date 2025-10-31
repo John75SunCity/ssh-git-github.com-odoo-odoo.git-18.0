@@ -109,16 +109,13 @@
     </record>
 
     <!-- Menu -->
-    <!--
-
     <menuitem
         id="menu_inventory_item"
-        name="Inventory Item"
+        name="Inventory Items"
         action="action_inventory_item"
-        parent="REPLACE_WITH_PARENT_MENU_ID"
-        sequence="10"/>
-
-    -->
+        parent="menu_records_inventory"
+        sequence="25"
+        groups="records_management.group_records_user"/>
     
     </data>
 </odoo>

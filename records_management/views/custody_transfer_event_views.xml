@@ -118,16 +118,13 @@
     </record>
 
     <!-- Menu -->
-    <!--
-
     <menuitem
         id="menu_custody_transfer_event"
         name="Custody Transfer Event"
         action="action_custody_transfer_event"
-        parent="REPLACE_WITH_PARENT_MENU_ID"
-        sequence="10"/>
-
-    -->
+        parent="menu_chain_custody"
+        sequence="15"
+        groups="records_management.group_records_user"/>
     
     </data>
 </odoo>

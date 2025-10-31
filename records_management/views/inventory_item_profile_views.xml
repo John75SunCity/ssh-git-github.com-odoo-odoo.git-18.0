@@ -60,16 +60,13 @@
     </record>
 
     <!-- Menu -->
-    <!--
-
     <menuitem
         id="menu_inventory_item_profile"
-        name="Inventory Item Profile"
+        name="Item Profiles"
         action="action_inventory_item_profile"
-        parent="REPLACE_WITH_PARENT_MENU_ID"
-        sequence="10"/>
-
-    -->
+        parent="menu_records_inventory"
+        sequence="50"
+        groups="records_management.group_records_manager"/>
     
     </data>
 </odoo>
