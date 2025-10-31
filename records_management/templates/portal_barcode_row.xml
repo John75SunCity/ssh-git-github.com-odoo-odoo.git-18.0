@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- Single table row for a portal.barcode record; inserted dynamically via JS after JSON generation call -->
     <template id="portal_barcode_row" name="Portal Barcode Row">
         <tr t-att-data-barcode-id="barcode.id">
@@ -36,4 +37,5 @@
             </td>
         </tr>
     </template>
+    </data>
 </odoo>

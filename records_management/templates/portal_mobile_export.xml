@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- Mobile Export Template -->
     <template id="portal_mobile_export" name="Mobile Export Center">
         <t t-call="portal.portal_layout">
@@ -262,4 +263,5 @@
             </div>
         </t>
     </template>
+    </data>
 </odoo>
