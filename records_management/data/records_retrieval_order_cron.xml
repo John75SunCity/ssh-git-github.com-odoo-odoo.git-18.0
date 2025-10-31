@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- Cron job moved to records_retrieval_order_cron_data.xml to avoid duplication -->
+    </data>
 </odoo>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="portal_workflow_template" name="Portal Workflow Template">
+    <data>
+        <template id="portal_workflow_template" name="Portal Workflow Template">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
             <t t-set="pageName" t-value="'workflow'"/>
@@ -418,4 +419,5 @@
             </style>
         </t>
     </template>
+    </data>
 </odoo>

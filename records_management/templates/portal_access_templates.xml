@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <data>
     <!-- Portal Access Denied Template -->
     <template id="portal_access_denied" name="Portal Access Denied">
         <t t-call="web.layout">
@@ -35,4 +36,5 @@
             </t>
         </xpath>
     </template>
+    </data>
 </odoo>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- ================================================================== -->
     <!-- PRE-CONFIGURED PORTAL HOME - SHOWS ALL FEATURES                   -->
     <!-- Even when user has no data yet                                     -->
@@ -212,4 +213,5 @@
         </div>
     </template>
 
+    </data>
 </odoo>

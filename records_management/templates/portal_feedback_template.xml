@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <data>
     <template id="portal_feedback_template" name="Portal Feedback">
         <t t-call="portal.portal_layout">
             <t t-set="title">Feedback &amp; Suggestions</t>
@@ -357,4 +358,5 @@
                                                                                                                                                                                                                                     </style>
                                                                                                                                                                                                                                 </t>
                                                                                                                                                                                                                             </template>
+    </data>
                                                                                                                                                                                                                         </odoo>
