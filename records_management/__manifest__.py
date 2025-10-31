@@ -82,6 +82,8 @@
         "data/container_types_base_rates.xml",
         "data/naid_certificate_data.xml",
         "data/paper_products_data.xml",
+        # Portal website menus (must load BEFORE configurator data references them)
+        "data/website_portal_menus.xml",
         "data/core_configurator_data.xml",
         "data/paper_shred_configurator_data.xml",
         "data/document_retrieval_rates_data.xml",
@@ -133,8 +135,6 @@
         "data/field_label_customization_batch_data.xml",
         "data/temp_inventory_configurator_data.xml",
     "data/portal_configurator_data.xml",
-        # Portal website menus (must load before portal configurator references them)
-        "data/website_portal_menus.xml",
         # Wizard actions must load before views that reference them
         "views/records_container_assign_barcode_wizard_views.xml",
         # Actions must load before menus that reference them

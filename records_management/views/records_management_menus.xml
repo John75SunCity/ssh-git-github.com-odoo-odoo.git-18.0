@@ -185,7 +185,7 @@
               sequence="5"/>
               
         <!-- Storage Boxes - MASTER VIEW of ALL containers -->
-        <menuitem id="menu_storage_boxes" name="Storage Boxes" parent="menu_records_inventory" action="records_storage_box_action" sequence="10" groups="records_management.group_records_user" />
+        <menuitem id="menu_storage_boxes" name="Storage Boxes" parent="menu_records_inventory" action="action_records_container" sequence="10" groups="records_management.group_records_user" />
         
         <!-- Documents - MASTER VIEW of ALL file folders -->
         <menuitem id="menu_records_management_documents" name="Documents" parent="menu_records_inventory" sequence="15" groups="records_management.group_records_user" />
