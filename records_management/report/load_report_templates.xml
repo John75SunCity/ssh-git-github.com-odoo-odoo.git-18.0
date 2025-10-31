@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <template id="report_load_manifest">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
@@ -188,4 +189,5 @@
             </t>
         </t>
     </template>
+    </data>
 </odoo>

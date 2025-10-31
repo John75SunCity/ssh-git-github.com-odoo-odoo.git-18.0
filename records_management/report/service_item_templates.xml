@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <template id="report_service_item_utilization_template">
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
@@ -117,4 +118,5 @@
             </t>
         </t>
     </template>
+    </data>
 </odoo>
