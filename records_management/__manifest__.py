@@ -209,6 +209,7 @@
         "views/approval_history_views.xml",
         # Ensure negotiated rate action loads before menus in base_rate_views.xml
         "views/billing_period_views.xml",
+        "views/records_billing_views.xml",
         "views/bin_barcode_inventory_views.xml",
         "views/container_retrieval_views.xml",
         "views/custody_transfer_event_views.xml",

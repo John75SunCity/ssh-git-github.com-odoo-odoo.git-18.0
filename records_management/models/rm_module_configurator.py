@@ -22,119 +22,24 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-PORTAL_MENU_SPECS = [
-    {
-        "xml_id": "portal_menu_records_dashboard",
-        "name": "Dashboard",
-        "url": "/my/home",
-        "parent_xml_id": None,
-        "sequence": 10,
-    },
-    {
-        "xml_id": "portal_menu_records_inventory",
-        "name": "My Inventory",
-        "url": "/my/inventory",
-        "parent_xml_id": None,
-        "sequence": 20,
-    },
-    {
-        "xml_id": "portal_menu_work_orders",
-        "name": "Work Orders",
-        "url": "/my/work-orders",
-        "parent_xml_id": None,
-        "sequence": 30,
-    },
-    {
-        "xml_id": "portal_menu_requests",
-        "name": "Service Requests",
-        "url": "/portal/request/service",
-        "parent_xml_id": None,
-        "sequence": 40,
-    },
-    {
-        "xml_id": "portal_menu_certificates",
-        "name": "Certificates",
-        "url": "/my/certificates",
-        "parent_xml_id": None,
-        "sequence": 50,
-    },
-    {
-        "xml_id": "portal_menu_documents",
-        "name": "Documents",
-        "url": "/my/documents",
-        "parent_xml_id": None,
-        "sequence": 60,
-    },
-    {
-        "xml_id": "portal_menu_invoices",
-        "name": "Invoices",
-        "url": "/my/invoices",
-        "parent_xml_id": None,
-        "sequence": 70,
-    },
-    {
-        "xml_id": "portal_menu_help",
-        "name": "Help",
-        "url": "/portal/help",
-        "parent_xml_id": None,
-        "sequence": 100,
-    },
-    {
-        "xml_id": "portal_submenu_request_pickup",
-        "name": "Request Pickup",
-        "url": "/portal/request/pickup",
-        "parent_xml_id": "records_management.portal_menu_requests",
-        "sequence": 10,
-    },
-    {
-        "xml_id": "portal_submenu_request_destruction",
-        "name": "Request Destruction",
-        "url": "/portal/request/destruction",
-        "parent_xml_id": "records_management.portal_menu_requests",
-        "sequence": 20,
-    },
-    {
-        "xml_id": "portal_submenu_request_service",
-        "name": "Other Services",
-        "url": "/portal/request/service",
-        "parent_xml_id": "records_management.portal_menu_requests",
-        "sequence": 30,
-    },
-    {
-        "xml_id": "portal_submenu_bulk_upload",
-        "name": "Bulk Upload",
-        "url": "/portal/documents/upload",
-        "parent_xml_id": "records_management.portal_menu_documents",
-        "sequence": 10,
-    },
-    {
-        "xml_id": "portal_submenu_document_retrieval",
-        "name": "Document Retrieval",
-        "url": "/portal/documents/retrieval",
-        "parent_xml_id": "records_management.portal_menu_documents",
-        "sequence": 20,
-    },
-    {
-        "xml_id": "portal_submenu_feedback",
-        "name": "Provide Feedback",
-        "url": "/portal/feedback",
-        "parent_xml_id": "records_management.portal_menu_help",
-        "sequence": 10,
-    },
-    {
-        "xml_id": "portal_submenu_tour",
-        "name": "Portal Tour",
-        "url": "/portal/tour",
-        "parent_xml_id": "records_management.portal_menu_help",
-        "sequence": 20,
-    },
-    {
-        "xml_id": "portal_my_certifications_menu",
-        "name": "Technician Certifications",
-        "url": "/my/certifications",
-        "parent_xml_id": "portal.portal_my_home",
-        "sequence": 20,
-    },
+# Portal menu XML IDs - menus are defined in data/website_portal_menus.xml
+# This list is used to toggle visibility of existing menus
+PORTAL_MENU_XML_IDS = [
+    'portal_menu_records_dashboard',
+    'portal_menu_records_inventory',
+    'portal_menu_work_orders',
+    'portal_menu_requests',
+    'portal_menu_certificates',
+    'portal_menu_documents',
+    'portal_menu_invoices',
+    'portal_menu_help',
+    'portal_submenu_request_pickup',
+    'portal_submenu_request_destruction',
+    'portal_submenu_request_service',
+    'portal_submenu_bulk_upload',
+    'portal_submenu_document_retrieval',
+    'portal_submenu_feedback',
+    'portal_submenu_tour',
 ]
 
 
@@ -627,120 +532,34 @@ class RmModuleConfigurator(models.Model):
         self._set_backend_menu_active(backend_menus, enabled)
 
     def _sync_portal_feature_pack_menus(self, enabled):
-        Website = self.env['website'].sudo()
+        """Toggle visibility of portal menus defined in data/website_portal_menus.xml
+        
+        Since menus are already created via XML data files, this method only
+        manages their published/visibility state based on the portal feature toggle.
+        """
         Menu = self.env['website.menu'].sudo()
-        IrModelData = self.env['ir.model.data'].sudo()
-
-        website = Website.get_current_website()
-        if not website:
-            website = Website.search([], limit=1)
-        if not website:
-            _logger.warning("Portal feature pack toggle skipped: no website available")
-            return
-
-        created_cache = {}
-        for spec in PORTAL_MENU_SPECS:
-            xml_id_full = f"records_management.{spec['xml_id']}"
+        
+        # Toggle visibility for all portal menus
+        for xml_id in PORTAL_MENU_XML_IDS:
+            xml_id_full = f"records_management.{xml_id}"
             menu = self.env.ref(xml_id_full, raise_if_not_found=False)
-            if not menu:
-                imd_rec = IrModelData.search([
-                    ('module', '=', 'records_management'),
-                    ('name', '=', spec['xml_id']),
-                    ('model', '=', 'website.menu'),
-                ], limit=1)
-                if imd_rec:
-                    menu = Menu.browse(imd_rec.res_id)
-                    if not menu.exists():
-                        imd_rec.unlink()
-                        menu = False
-
-            parent_xml_id = spec.get('parent_xml_id')
-            parent_menu = False
-            if parent_xml_id:
-                parent_menu = self.env.ref(parent_xml_id, raise_if_not_found=False)
-                if not parent_menu and parent_xml_id.startswith('records_management.'):
-                    parent_key = parent_xml_id.split('.', 1)[1]
-                    parent_menu = created_cache.get(parent_key)
-
-                if not parent_menu:
-                    _logger.warning("Skipping portal menu %s because parent %s is missing", spec['xml_id'], spec['parent_xml_id'])
-                    continue
-
-            if enabled:
-                values = {
-                    'name': spec['name'],
-                    'url': spec['url'],
-                    'parent_id': parent_menu.id if parent_menu else False,
-                    'sequence': spec['sequence'],
-                }
-                if 'website_id' in Menu._fields:
-                    values['website_id'] = website.id
-
-                if menu and menu.exists():
-                    updates = {k: v for k, v in values.items() if menu[k] != v}
-                    publish_updates = {}
-                    if 'is_published' in menu._fields:
-                        publish_updates['is_published'] = True
-                    if 'published' in menu._fields:
-                        publish_updates['published'] = True
-                    updates.update(publish_updates)
-                    if updates:
-                        menu.write(updates)
-                else:
-                    menu = Menu.create(values)
-                    IrModelData.create({
-                        'module': 'records_management',
-                        'name': spec['xml_id'],
-                        'model': 'website.menu',
-                        'res_id': menu.id,
-                        'noupdate': True,
-                    })
-                    publish_updates = {}
-                    if 'is_published' in menu._fields:
-                        publish_updates['is_published'] = True
-                    if 'published' in menu._fields:
-                        publish_updates['published'] = True
-                    if publish_updates:
+            
+            if menu and menu.exists():
+                # Update published state based on toggle
+                publish_updates = {}
+                if 'is_published' in Menu._fields:
+                    publish_updates['is_published'] = enabled
+                if 'published' in Menu._fields:
+                    publish_updates['published'] = enabled
+                    
+                if publish_updates:
+                    try:
                         menu.write(publish_updates)
-
-                if menu and menu.exists():
-                    imd_vals = {
-                        'module': 'records_management',
-                        'name': spec['xml_id'],
-                        'model': 'website.menu',
-                        'res_id': menu.id,
-                        'noupdate': True,
-                    }
-                    imd_rec = IrModelData.search([
-                        ('module', '=', 'records_management'),
-                        ('name', '=', spec['xml_id']),
-                        ('model', '=', 'website.menu'),
-                    ], limit=1)
-                    if imd_rec:
-                        if imd_rec.res_id != menu.id:
-                            imd_rec.write({'res_id': menu.id})
-                    else:
-                        IrModelData.create(imd_vals)
-
-                created_cache[spec['xml_id']] = menu
+                    except Exception as e:
+                        _logger.warning("Failed to update menu %s: %s", xml_id, e)
             else:
-                if menu and menu.exists():
-                    publish_updates = {}
-                    if 'is_published' in menu._fields:
-                        publish_updates['is_published'] = False
-                    if 'published' in menu._fields:
-                        publish_updates['published'] = False
-                    if publish_updates:
-                        menu.write(publish_updates)
-                    else:
-                        menu.unlink()
-                imd_records = IrModelData.search([
-                    ('module', '=', 'records_management'),
-                    ('name', '=', spec['xml_id']),
-                    ('model', '=', 'website.menu'),
-                ])
-                if imd_records:
-                    imd_records.unlink()
+                # Menu not found - this is expected if XML hasn't loaded yet
+                _logger.debug("Portal menu %s not found (may load later from XML)", xml_id)
 
     def _set_backend_menu_active(self, xml_ids, active):
         for xmlid in xml_ids:
