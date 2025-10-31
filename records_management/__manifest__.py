@@ -178,6 +178,7 @@
         "views/bin_unlock_service_views.xml",  # defines action_bin_key_management
         "views/bin_key_views.xml",  # defines action_bin_key
         "views/res_partner_key_restriction_views.xml",  # defines action_res_partner_key_restriction
+        "views/records_billing_views.xml",  # defines records_billing_action
         # ============================================================================
         # Menus can now safely reference all actions defined above
         # ============================================================================
@@ -209,7 +210,6 @@
         "views/approval_history_views.xml",
         # Ensure negotiated rate action loads before menus in base_rate_views.xml
         "views/billing_period_views.xml",
-        "views/records_billing_views.xml",
         "views/bin_barcode_inventory_views.xml",
         "views/container_retrieval_views.xml",
         "views/custody_transfer_event_views.xml",
