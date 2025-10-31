@@ -43,17 +43,27 @@ class AccountAnalyticLine(models.Model):
         help="Notes/comments added by employee in TSheets when clocking in/out"
     )
     
-    # Related fields from hr.attendance
+    # Link to hr.attendance record
+    attendance_id = fields.Many2one(
+        'hr.attendance',
+        string="Related Attendance",
+        ondelete='set null',
+        help="Link to the hr.attendance record for this timesheet entry"
+    )
+    
+    # Related fields from hr.attendance (via attendance_id)
     attendance_check_in = fields.Datetime(
         string="Clock In",
-        compute="_compute_attendance_times",
+        related="attendance_id.check_in",
+        readonly=True,
         store=False,
         help="Check in time from related attendance record"
     )
     
     attendance_check_out = fields.Datetime(
         string="Clock Out",
-        compute="_compute_attendance_times",
+        related="attendance_id.check_out",
+        readonly=True,
         store=False,
         help="Check out time from related attendance record"
     )
@@ -100,27 +110,3 @@ class AccountAnalyticLine(models.Model):
             else:
                 record.time_formatted_colon = "0:00"
                 record.time_formatted_decimal = "0.00"
-    
-    def _compute_attendance_times(self):
-        """
-        Fetch check_in and check_out times from related hr.attendance record.
-        Match by employee and date.
-        """
-        for record in self:
-            if record.employee_id and record.date:
-                # Find attendance record for this employee on this date
-                attendance = self.env['hr.attendance'].search([
-                    ('employee_id', '=', record.employee_id.id),
-                    ('check_in', '>=', record.date),
-                    ('check_in', '<', fields.Date.add(record.date, days=1)),
-                ], limit=1, order='check_in desc')
-                
-                if attendance:
-                    record.attendance_check_in = attendance.check_in
-                    record.attendance_check_out = attendance.check_out
-                else:
-                    record.attendance_check_in = False
-                    record.attendance_check_out = False
-            else:
-                record.attendance_check_in = False
-                record.attendance_check_out = False

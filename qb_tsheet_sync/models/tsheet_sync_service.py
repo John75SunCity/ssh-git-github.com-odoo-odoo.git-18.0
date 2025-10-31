@@ -237,15 +237,8 @@ class TsheetsSyncService(models.AbstractModel):
             if user:
                 values["user_id"] = user.id
 
-            if existing:
-                existing.write(values)
-                updated += 1
-            else:
-                AnalyticLine.create(values)
-                created += 1
-
-            # Also create/update hr.attendance record for clock in/out tracking
-            # Only create attendance if we have valid clock times
+            # STEP 1: Create/update hr.attendance record FIRST from TSheets start/end times
+            attendance_record = None
             if start_dt_entry and end_dt_entry:
                 _logger.info(
                     "Creating attendance for employee %s: check_in=%s, check_out=%s",
@@ -276,16 +269,30 @@ class TsheetsSyncService(models.AbstractModel):
                 if existing_attendance:
                     existing_attendance.write(attendance_values)
                     attendance_updated += 1
+                    attendance_record = existing_attendance
                     _logger.info("Updated existing attendance record ID %s", existing_attendance.id)
                 else:
-                    new_attendance = Attendance.create(attendance_values)
+                    attendance_record = Attendance.create(attendance_values)
                     attendance_created += 1
-                    _logger.info("Created new attendance record ID %s", new_attendance.id)
+                    _logger.info("Created new attendance record ID %s", attendance_record.id)
             else:
                 _logger.warning(
                     "Skipping attendance creation for TSheets entry %s - missing start or end time",
                     tsheets_id
                 )
+
+            # STEP 2: Link the timesheet to the attendance record
+            if attendance_record:
+                values["attendance_id"] = attendance_record.id
+                _logger.info("Linking timesheet to attendance record ID %s", attendance_record.id)
+
+            # STEP 3: Create/update the timesheet entry
+            if existing:
+                existing.write(values)
+                updated += 1
+            else:
+                AnalyticLine.create(values)
+                created += 1
 
             mapping.mark_synced()
 
