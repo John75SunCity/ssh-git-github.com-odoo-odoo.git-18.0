@@ -169,7 +169,7 @@
                                 <group string="Service Settings">
                                     <field name="sale_ok"/>
                                     <field name="purchase_ok"/>
-                                    <field name="can_be_expensed" invisible="type != 'service'"/>
+                                    <!-- Field not implemented: can_be_expensed -->
                                     <field name="is_featured_service"/>
                                 </group>
                             </group>
