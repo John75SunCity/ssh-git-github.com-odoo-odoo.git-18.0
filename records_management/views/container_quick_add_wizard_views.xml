@@ -91,11 +91,6 @@
         <field name="binding_view_types">form,list</field>
     </record>
 
-    <!-- Add menu under Operations -->
-    <menuitem id="menu_container_quick_add"
-              name="Quick Add Container"
-              parent="records_management.menu_operations"
-              action="action_container_quick_add_wizard"
-              sequence="5"/>
+    <!-- Duplicate menu removed - defined in records_management_menus.xml at Operations seq 5 -->
 
 </odoo>

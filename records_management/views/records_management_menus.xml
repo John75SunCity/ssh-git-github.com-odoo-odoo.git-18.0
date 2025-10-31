@@ -99,7 +99,7 @@
     <menuitem id="menu_container_quick_add"
               name="Quick Add Container"
               parent="menu_records_operations"
-              action="container_quick_add_action"
+              action="action_container_quick_add_wizard"
               sequence="5"
               groups="records_management.group_records_user"/>
               
@@ -269,18 +269,18 @@
         
         <!-- Master Data (folder) - MUST BE SEQUENCE 5 -->
         <menuitem id="menu_master_data" name="Master Data" parent="menu_records_config" sequence="5" groups="records_management.group_records_manager" />
-        <menuitem id="menu_storage_location" name="Storage Locations" parent="menu_master_data" action="action_storage_location" sequence="10" groups="records_management.group_records_manager" />
-        <menuitem id="menu_document_type" name="Document Types" parent="menu_master_data" action="action_document_type" sequence="20" groups="records_management.group_records_manager" />
-        <menuitem id="menu_records_tag" name="Tags" parent="menu_master_data" action="action_records_tag" sequence="30" groups="records_management.group_records_manager" />
-        <menuitem id="menu_document_category" name="Document Categories" parent="menu_master_data" action="action_document_category" sequence="40" groups="records_management.group_records_manager" />
+        <menuitem id="menu_storage_location" name="Storage Locations" parent="menu_master_data" action="action_records_location" sequence="10" groups="records_management.group_records_manager" />
+        <menuitem id="menu_document_type" name="Document Types" parent="menu_master_data" action="action_records_document_type" sequence="20" groups="records_management.group_records_manager" />
+        <menuitem id="menu_records_tag" name="Tags" parent="menu_master_data" action="action_records_tag_simple" sequence="30" groups="records_management.group_records_manager" />
+        <menuitem id="menu_document_category" name="Document Categories" parent="menu_master_data" action="action_records_tag_category" sequence="40" groups="records_management.group_records_manager" />
         <menuitem id="menu_records_department" name="Departments" parent="menu_master_data" action="action_records_department" sequence="50" groups="records_management.group_records_manager" />
         
         <!-- Retention Policies -->
-        <menuitem id="menu_retention_policy" name="Retention Policies" parent="menu_records_config" action="action_retention_policy" sequence="10" groups="records_management.group_records_manager" />
+        <menuitem id="menu_retention_policy" name="Retention Policies" parent="menu_records_config" action="records_retention_policy_action" sequence="10" groups="records_management.group_records_manager" />
         
         <!-- Products & Services -->
         <menuitem id="menu_products_services" name="Products & Services" parent="menu_records_config" sequence="15" groups="records_management.group_records_manager" />
-        <menuitem id="menu_product_template" name="Service Items" parent="menu_products_services" action="action_product_template" sequence="10" groups="records_management.group_records_manager" />
+        <menuitem id="menu_product_template" name="Service Items" parent="menu_products_services" action="action_product_template_records" sequence="10" groups="records_management.group_records_manager" />
         
         <!-- Security & Access -->
         <menuitem id="menu_security_access" name="Security & Access" parent="menu_records_config" sequence="20" groups="records_management.group_records_manager" />
