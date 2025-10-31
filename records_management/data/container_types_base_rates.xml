@@ -176,10 +176,7 @@
             
         </record>
 
-    </data>
-    
-    <!-- Alias XMLID to maintain backward-compatible references in demo data -->
-    <data noupdate="1">
+        <!-- Alias XMLID to maintain backward-compatible references in demo data -->
         <record id="alias_demo_container_type_standard_box" model="ir.model.data">
             <field name="name">demo_container_type_standard_box</field>
             <field name="module">records_management</field>
