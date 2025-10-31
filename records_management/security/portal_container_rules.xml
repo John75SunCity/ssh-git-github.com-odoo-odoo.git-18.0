@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Portal Record Rules for Container Visibility
-         Limits portal hierarchy groups to containers belonging to their commercial partner or company.
-         Follows two-prong safety: partner commercial root OR company, avoiding cross-company leakage.
-    -->
     <data>
+        <!-- Portal Record Rules for Container Visibility
+             Limits portal hierarchy groups to containers belonging to their commercial partner or company.
+             Follows two-prong safety: partner commercial root OR company, avoiding cross-company leakage.
+        -->
         <record id="records_container_rule_portal" model="ir.rule">
             <field name="name">Records Container Portal Rule</field>
             <field name="model_id" ref="model_records_container"/>
