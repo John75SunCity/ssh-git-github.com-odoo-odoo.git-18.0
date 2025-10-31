@@ -1,108 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <record id="tsheets_sync_config_view_list" model="ir.ui.view">
-        <field name="name">qb.tsheets.sync.config.view.list</field>
-        <field name="model">qb.tsheets.sync.config</field>
-        <field name="arch" type="xml">
-            <list decoration-muted="active == False">
-                <field name="name"/>
-                <field name="company_id"/>
-                <field name="auto_sync" widget="boolean_toggle"/>
-                <field name="sync_lookback_days"/>
-                <field name="last_success_at"/>
-                <field name="last_attempt_at"/>
-            </list>
-        </field>
+    <field name="name">qb.tsheets.sync.config.view.list</field>
+    <field name="model">qb.tsheets.sync.config</field>
+    <field name="arch" type="xml">
+    <list decoration-muted="active == False">
+    <field name="name"/>
+    <field name="company_id"/>
+    <field name="auto_sync" widget="boolean_toggle"/>
+    <field name="sync_lookback_days"/>
+    <field name="last_success_at"/>
+    <field name="last_attempt_at"/>
+    </list>
+    </field>
     </record>
-
     <record id="tsheets_sync_config_view_form" model="ir.ui.view">
-        <field name="name">qb.tsheets.sync.config.view.form</field>
-        <field name="model">qb.tsheets.sync.config</field>
-        <field name="arch" type="xml">
-            <form string="TSheets Synchronization">
-                <header>
-                    <button name="action_sync_now" type="object" string="Sync Now" class="oe_highlight" groups="qb_tsheet_sync.group_tsheets_manager"/>
-                    <field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Inactive'}}"/>
-                </header>
-                <sheet>
-                    <div class="alert alert-info" role="alert">
-                        <strong>Setup Instructions:</strong><br/>
-                        1. Copy the <strong>Token</strong> (S.8__0a08f38d0bbe8510fdda4b2fdf2f7527d92dabed) from your TSheets Access Tokens table<br/>
-                        2. Paste it into the <strong>API Access Token</strong> field below<br/>
-                        3. (Optional) Store your OAuth Client ID and Secret for reference<br/>
-                        4. Click <strong>Sync Now</strong> to test the connection
-                    </div>
-                    <div class="oe_title">
-                        <label for="name" class="oe_edit_only"/>
-                        <h1>
-                            <field name="name"/>
-                        </h1>
-                        <label for="company_id" class="oe_edit_only"/>
-                        <field name="company_id"/>
-                    </div>
-                    <group>
-                        <group string="TSheets API Authentication">
-                            <field name="api_token" password="True" placeholder="Paste your Access Token from TSheets here"/>
-                            <field name="oauth_client_id" password="True" placeholder="cd5e49487a5fd7a5d0c5a0f936f79672 (optional)"/>
-                            <field name="oauth_client_secret" password="True" placeholder="cbad9c1c323e9d649b038e9bf73ec6f4 (optional)"/>
-                            <field name="base_url"/>
-                        </group>
-                        <group string="Defaults">
-                            <field name="default_project_id"/>
-                            <field name="default_task_id"/>
-                            <field name="sync_lookback_days"/>
-                            <field name="auto_sync"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Employee Mapping">
-                            <field name="employee_map_ids" groups="qb_tsheet_sync.group_tsheets_manager">
-                                <list editable="bottom" decoration-muted="active == False">
-                                    <field name="employee_id"/>
-                                    <field name="tsheets_user_id"/>
-                                    <field name="last_synced_at"/>
-                                    <field name="active"/>
-                                    <field name="note"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="History">
-                            <group>
-                                <field name="last_attempt_at" readonly="1"/>
-                                <field name="last_success_at" readonly="1"/>
-                                <field name="last_message" readonly="1" widget="text"/>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
+    <field name="name">qb.tsheets.sync.config.view.form</field>
+    <field name="model">qb.tsheets.sync.config</field>
+    <field name="arch" type="xml">
+    <form string="TSheets Synchronization">
+    <header>
+    <button name="action_sync_now" type="object" string="Sync Now" class="oe_highlight" groups="qb_tsheet_sync.group_tsheets_manager"/>
+    <field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Inactive'}}"/>
+    </header>
+    <sheet>
+    <div class="alert alert-info" role="alert">
+    <strong>Setup Instructions:</strong><br/>
+    1. Copy the <strong>Token</strong> (S.8__0a08f38d0bbe8510fdda4b2fdf2f7527d92dabed) from your TSheets Access Tokens table<br/>
+    2. Paste it into the <strong>API Access Token</strong> field below<br/>
+    3. (Optional) Store your OAuth Client ID and Secret for reference<br/>
+    4. Click <strong>Sync Now</strong> to test the connection
+    </div>
+    <div class="oe_title">
+    <label for="name" class="oe_edit_only"/>
+    <h1>
+    <field name="name"/>
+    </h1>
+    <label for="company_id" class="oe_edit_only"/>
+    <field name="company_id"/>
+    </div>
+    <group>
+    <group string="TSheets API Authentication">
+    <field name="api_token" password="True" placeholder="Paste your Access Token from TSheets here"/>
+    <field name="oauth_client_id" password="True" placeholder="cd5e49487a5fd7a5d0c5a0f936f79672 (optional)"/>
+    <field name="oauth_client_secret" password="True" placeholder="cbad9c1c323e9d649b038e9bf73ec6f4 (optional)"/>
+    <field name="base_url"/>
+    </group>
+    <group string="Defaults">
+    <field name="default_project_id"/>
+    <field name="default_task_id"/>
+    <field name="sync_lookback_days"/>
+    <field name="auto_sync"/>
+    </group>
+    </group>
+    <notebook>
+    <page string="Employee Mapping">
+    <field name="employee_map_ids" groups="qb_tsheet_sync.group_tsheets_manager">
+    <list editable="bottom" decoration-muted="active == False">
+    <field name="employee_id"/>
+    <field name="tsheets_user_id"/>
+    <field name="last_synced_at"/>
+    <field name="active"/>
+    <field name="note"/>
+    </list>
+    </field>
+    </page>
+    <page string="History">
+    <group>
+    <field name="last_attempt_at" readonly="1"/>
+    <field name="last_success_at" readonly="1"/>
+    <field name="last_message" readonly="1" widget="text"/>
+    </group>
+    </page>
+    </notebook>
+    </sheet>
+    <div class="oe_chatter">
+    <field name="message_follower_ids"/>
+    <field name="activity_ids"/>
+    <field name="message_ids"/>
+    </div>
+    </form>
+    </field>
     </record>
-
     <record id="action_tsheets_sync_config" model="ir.actions.act_window">
-        <field name="name">TSheets Synchronization</field>
-        <field name="res_model">qb.tsheets.sync.config</field>
-        <field name="view_mode">list,form</field>
-        <field name="context">{'default_name': 'TSheets Sync'}</field>
+    <field name="name">TSheets Synchronization</field>
+    <field name="res_model">qb.tsheets.sync.config</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{'default_name': 'TSheets Sync'}</field>
     </record>
-
     <!-- Create TSheets submenu under Timesheets -->
     <menuitem id="menu_tsheets_root"
-              name="TSheets Sync"
-              parent="hr_timesheet.menu_hr_time_tracking"
-              sequence="50"/>
-
+    name="TSheets Sync"
+    parent="hr_timesheet.menu_hr_time_tracking"
+    sequence="50"/>
     <!-- TSheets Configuration under TSheets Sync menu -->
     <menuitem id="menu_tsheets_configuration"
-              name="Configuration"
-              parent="menu_tsheets_root"
-              action="action_tsheets_sync_config"
-              sequence="10"
-              groups="qb_tsheet_sync.group_tsheets_user,hr.group_hr_user,records_management.group_records_user"/>
-
+    name="Configuration"
+    parent="menu_tsheets_root"
+    action="action_tsheets_sync_config"
+    sequence="10"
+    groups="qb_tsheet_sync.group_tsheets_user,hr.group_hr_user,records_management.group_records_user"/>
+    </data>
 </odoo>
