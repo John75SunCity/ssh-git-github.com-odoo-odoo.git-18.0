@@ -179,6 +179,9 @@
         "views/bin_key_views.xml",  # defines action_bin_key
         "views/res_partner_key_restriction_views.xml",  # defines action_res_partner_key_restriction
         "views/records_billing_views.xml",  # defines records_billing_action
+        "views/barcode_seasonal_pricing_views.xml",  # defines barcode_seasonal_pricing_action
+        "views/product_template_views.xml",  # defines action for product templates
+        "views/transitory_field_config_views.xml",  # defines transitory field config action
         # ============================================================================
         # Menus can now safely reference all actions defined above
         # ============================================================================
