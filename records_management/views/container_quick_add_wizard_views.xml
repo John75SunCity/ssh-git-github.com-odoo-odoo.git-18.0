@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- Container Quick Add Wizard Form -->
     <record id="view_container_quick_add_wizard_form" model="ir.ui.view">
         <field name="name">container.quick.add.wizard.form</field>
@@ -93,4 +94,5 @@
 
     <!-- Duplicate menu removed - defined in records_management_menus.xml at Operations seq 5 -->
 
+    </data>
 </odoo>

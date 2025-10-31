@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <data>
     <!-- Add "Go to Portal Account" button to partner form -->
     <record id="view_partner_form_portal_access" model="ir.ui.view">
         <field name="name">res.partner.form.portal.access</field>
@@ -127,4 +128,5 @@
               sequence="100"
               groups="base.group_system"/>
 
+    </data>
 </odoo>

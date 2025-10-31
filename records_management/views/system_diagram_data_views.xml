@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <record id="system_diagram_data_view_list" model="ir.ui.view">
         <field name="name">system.diagram.data.view.list</field>
         <field name="model">system.diagram.data</field>
@@ -385,4 +386,5 @@
               action="action_system_flowchart_company"
               sequence="90"/>
 
+    </data>
 </odoo>

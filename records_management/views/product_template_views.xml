@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- List view for ENTERPRISE -->
-
-    <!-- Kanban view for Product -->
+    <!-- Kanban view for Product Template -->
     <record id="product_template_view_kanban" model="ir.ui.view">
         <field name="name">product.template.view.kanban</field>
         <field name="model">product.template</field>
@@ -93,7 +91,7 @@
         </field>
     </record>
 
-    <!-- List view for Enhanced -->
+    <!-- Tree view for Product Template -->
     <record id="product_template_view_tree" model="ir.ui.view">
         <field name="name">product.template.view.tree</field>
         <field name="model">product.template</field>
@@ -103,11 +101,11 @@
                 <field name="default_code" string="Internal Reference"/>
                 <field name="categ_id" string="Category"/>
                 <field name="type" string="Type" widget="badge"/>
-                <field name="list_price" string="&lt;i class=&quot;fa fa-dollar-sign&quot;&gt;&lt;/i&gt; Sale Price"/>
+                <field name="list_price" string="Sale Price"/>
                 <field name="standard_price" string="Cost"/>
-                <field name="uom_id" string="📏 Unit of Measure"/>
+                <field name="uom_id" string="Unit of Measure"/>
                 <field name="sale_ok" string="Can be Sold" widget="boolean_toggle"/>
-                <field name="purchase_ok" string="&lt;i class=&quot;fa fa-shopping-cart&quot;&gt;&lt;/i&gt; Can be Purchased" widget="boolean_toggle"/>
+                <field name="purchase_ok" string="Can be Purchased" widget="boolean_toggle"/>
                 <field name="active" string="Status" widget="boolean_toggle"/>
                 <button name="action_view_sales" type="object" string="Sales" icon="fa-line-chart" class="btn-link"/>
                 <button name="action_configure_pricing" type="object" string="Pricing" icon="fa-money" class="btn-link"/>
@@ -115,7 +113,7 @@
         </field>
     </record>
 
-    <!-- Form view for Enhanced -->
+    <!-- Form view for Product Template -->
     <record id="product_template_view_form" model="ir.ui.view">
         <field name="name">product.template.view.form</field>
         <field name="model">product.template</field>
@@ -171,15 +169,14 @@
                             </group>
                             <field name="description" placeholder="Detailed description of the records management service..."/>
                         </page>
-                        <page string="Sales &amp;amp; Pricing" name="sales">
+                        <page string="Sales &amp; Pricing" name="sales">
                             <group>
-                                <group string="&lt;i class=&quot;fa fa-dollar-sign&quot;&gt;&lt;/i&gt; Pricing Information">
+                                <group string="Pricing Information">
                                     <field name="list_price" widget="monetary"/>
                                     <field name="standard_price" widget="monetary"/>
-                                    <!-- Removed always-invisible 'currency_id'; product form already manages currency context -->
                                     <field name="price_margin"/>
                                 </group>
-                                <group string="📏 Units &amp;amp; Measurements">
+                                <group string="Units &amp; Measurements">
                                     <field name="uom_id"/>
                                     <field name="uom_po_id"/>
                                     <field name="weight" invisible="type != 'product'"/>
@@ -303,7 +300,7 @@
         </field>
     </record>
 
-    <!-- Search view for Enhanced -->
+    <!-- Search view for Product Template -->
     <record id="product_template_view_search" model="ir.ui.view">
         <field name="name">product.template.view.search</field>
         <field name="model">product.template</field>
@@ -318,8 +315,8 @@
                 <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
 
                 <separator/>
-                <filter string="Can be Sold" name="sale_ok" domain="[('sale_ok', '=', True)]"/>ive" domain="[('active', '=', True)]"/>
-                <filter string="&lt;i class=&quot;fa fa-shopping-cart&quot;&gt;&lt;/i&gt; Can be Purchased" name="purchase_ok" domain="[('purchase_ok', '=', True)]"/>
+                <filter string="Can be Sold" name="sale_ok" domain="[('sale_ok', '=', True)]"/>
+                <filter string="Can be Purchased" name="purchase_ok" domain="[('purchase_ok', '=', True)]"/>
                 <filter string="Services" name="services" domain="[('type', '=', 'service')]"/>
                 <filter string="Products" name="products" domain="[('type', '=', 'product')]"/>
 
@@ -330,8 +327,8 @@
                 <filter string="Destruction Services" name="destruction_services" domain="[('shredding_included', '=', True)]"/>
 
                 <separator/>
-                <filter string="High Value (&amp;gt;$100)" name="high_value" domain="[('list_price', '&amp;gt;', 100)]"/>
-                <filter string="Top Performers" name="top_performers" domain="[('total_sales_ytd', '&amp;gt;', 0)]"/>
+                <filter string="High Value (&gt;$100)" name="high_value" domain="[('list_price', '&gt;', 100)]"/>
+                <filter string="Top Performers" name="top_performers" domain="[('total_sales_ytd', '&gt;', 0)]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Category" name="group_by_category" context="{'group_by': 'categ_id'}"/>
@@ -344,11 +341,11 @@
         </field>
     </record>
 
-    <!-- List view for ENTERPRISE -->
+    <!-- Action for Records Management Products -->
     <record id="action_product_template_records" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-briefcase'/> Records Management Products</field>
+        <field name="name">Records Management Products</field>
         <field name="res_model">product.template</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="search_view_id" ref="product_template_view_search"/>
         <field name="context">{
             'search_default_active': 1,
@@ -356,20 +353,20 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                <i class='fa fa-briefcase'/> Create your first records management service!
+                Create your first records management service!
             </p>
             <p>
                 <b>Enterprise Service Catalog Management:</b>
                 <br/>
-                • <i class='fa fa-clipboard'/> Complete records management service portfolio<br/>
-                • <i class='fa fa-money'/> Advanced pricing rules and cost structures<br/>
-                • <i class='fa fa-trophy'/> NAID compliance service configuration<br/>
-                • <i class='fa fa-bar-chart'/> Service Level Agreement management<br/>
-                • <i class='fa fa-bullseye'/> Multi-variant service offerings<br/>
-                • <i class='fa fa-line-chart'/> Real-time sales analytics and performance<br/>
-                • <i class='fa fa-wrench'/> Flexible service customization options<br/>
-                • <i class='fa fa-box'/> Integrated storage and destruction services<br/>
-                • <i class='fa fa-truck'/> Logistics and emergency retrieval services
+                • Complete records management service portfolio<br/>
+                • Advanced pricing rules and cost structures<br/>
+                • NAID compliance service configuration<br/>
+                • Service Level Agreement management<br/>
+                • Multi-variant service offerings<br/>
+                • Real-time sales analytics and performance<br/>
+                • Flexible service customization options<br/>
+                • Integrated storage and destruction services<br/>
+                • Logistics and emergency retrieval services
             </p>
         </field>
     </record>
