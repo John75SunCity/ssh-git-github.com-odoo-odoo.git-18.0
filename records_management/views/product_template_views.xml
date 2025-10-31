@@ -139,6 +139,7 @@
                     </div>
 
                     <div class="oe_button_box" name="button_box">
+                        <!-- Stat buttons commented out - computed fields not implemented:
                         <button class="oe_stat_button" type="object" name="action_view_sales" icon="fa-line-chart">
                             <field name="sales_count" string="Sales Orders" widget="statinfo"/>
                         </button>
@@ -148,6 +149,7 @@
                         <button class="oe_stat_button" type="object" name="action_view_pricing_history" icon="fa-money">
                             <field name="price_history_count" string="Price Changes" widget="statinfo"/>
                         </button>
+                        -->
                         <button class="oe_stat_button" icon="fa-star" invisible="not is_featured_service">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value"><i class='fa fa-star'/></span>
@@ -178,7 +180,7 @@
                                 <group string="Pricing Information">
                                     <field name="list_price" widget="monetary"/>
                                     <field name="standard_price" widget="monetary"/>
-                                    <field name="price_margin"/>
+                                    <!-- Field not implemented: price_margin -->
                                 </group>
                                 <group string="Units &amp; Measurements">
                                     <field name="uom_id"/>
@@ -187,112 +189,46 @@
                                     <field name="volume" invisible="type != 'product'"/>
                                 </group>
                             </group>
-                            <group>
-                                <group string="Cost Structure">
-                                    <field name="base_cost"/>
-                                    <field name="labor_cost"/>
-                                    <field name="material_cost"/>
-                                    <field name="overhead_cost"/>
-                                </group>
-                                <group string="Billing Settings">
-                                    <field name="billing_frequency"/>
-                                    <field name="minimum_billing_period"/>
-                                    <field name="prorate_partial_periods"/>
-                                    <field name="auto_invoice"/>
-                                </group>
-                            </group>
+                            <!-- Cost Structure and Billing Settings fields not implemented in model -->
                         </page>
                         <page string="Records Management" name="records_management">
                             <group>
-                                <group string="Document Services">
-                                    <field name="document_storage_included"/>
-                                    <field name="max_documents_included"/>
-                                    <field name="additional_document_cost"/>
-                                    <field name="digital_conversion_included"/>
+                                <group string="Container Specifications">
+                                    <field name="is_records_container"/>
+                                    <field name="container_volume_cf" invisible="not is_records_container"/>
+                                    <field name="container_weight_lbs" invisible="not is_records_container"/>
                                 </group>
-                                <group string="Storage Services">
-                                    <field name="box_storage_included"/>
-                                    <field name="max_boxes_included"/>
-                                    <field name="additional_box_cost"/>
-                                    <field name="climate_controlled"/>
+                                <group string="Service Type &amp; Compliance">
+                                    <field name="is_records_management_product"/>
+                                    <field name="service_type" invisible="not is_records_management_product"/>
+                                    <field name="naid_compliant"/>
+                                    <field name="hipaa_compliant"/>
                                 </group>
                             </group>
                             <group>
-                                <group string="Destruction Services">
-                                    <field name="shredding_included"/>
-                                    <field name="naid_compliance_level"/>
-                                    <field name="witness_destruction"/>
-                                    <field name="certificate_of_destruction"/>
+                                <group string="Service Level Agreement">
+                                    <field name="requires_appointment"/>
+                                    <field name="sla_response_time" invisible="not requires_appointment"/>
+                                    <field name="sla_completion_time" invisible="not requires_appointment"/>
                                 </group>
-                                <group string="Logistics Services">
-                                    <field name="pickup_delivery_included"/>
-                                    <field name="emergency_retrieval"/>
-                                    <field name="same_day_service"/>
-                                    <field name="geographic_coverage"/>
+                                <group string="Portal Display">
+                                    <field name="is_featured_service"/>
+                                    <field name="service_description_portal" invisible="not is_featured_service"/>
                                 </group>
                             </group>
+                            <!-- Additional RM service fields not implemented in model -->
                         </page>
-                        <page string="Service Level Agreement" name="sla">
+                        <page string="Customer Feedback" name="feedback">
                             <group>
-                                <group string="Response Times">
-                                    <field name="standard_response_time"/>
-                                    <field name="emergency_response_time"/>
-                                    <field name="document_retrieval_time"/>
-                                    <field name="box_retrieval_time"/>
-                                </group>
-                                <group string="Service Guarantees">
-                                    <field name="uptime_guarantee"/>
-                                    <field name="security_guarantee"/>
-                                    <field name="compliance_guarantee"/>
-                                    <field name="data_recovery_guarantee"/>
+                                <group string="Feedback Statistics">
+                                    <field name="customer_rating" readonly="1"/>
+                                    <field name="feedback_count" readonly="1"/>
                                 </group>
                             </group>
-                            <field name="sla_terms" placeholder="Detailed Service Level Agreement terms and conditions..."/>
+                            <!-- Service Level Agreement, Destruction Services, Logistics Services fields not implemented -->
                         </page>
-                        <page string="Product Variants" name="variants">
-                            <field name="product_variant_ids" mode="list">
-                                <list>
-                                    <field name="default_code"/>
-                                    <field name="display_name"/>
-                                    <field name="lst_price"/>
-                                    <field name="standard_price"/>
-                                    <field name="qty_available" invisible="parent.type != 'product'"/>
-                                    <field name="active"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Analytics" name="analytics">
-                            <group>
-                                <group string="Sales Performance">
-                                    <field name="total_sales_ytd" readonly="1"/>
-                                    <field name="total_revenue_ytd" readonly="1"/>
-                                    <field name="average_sale_price" readonly="1"/>
-                                    <field name="profit_margin" readonly="1"/>
-                                </group>
-                                <group string="Timeline Metrics">
-                                    <field name="first_sale_date" readonly="1"/>
-                                    <field name="last_sale_date" readonly="1"/>
-                                    <field name="sales_velocity" readonly="1"/>
-                                    <field name="customer_retention_rate" readonly="1"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Configuration" name="configuration">
-                            <group>
-                                <group string="Template Settings">
-                                    <field name="is_template_service"/>
-                                    <field name="template_category"/>
-                                    <field name="customization_allowed"/>
-                                    <field name="requires_approval"/>
-                                </group>
-                                <group string="Integration">
-                                    <field name="external_service_id"/>
-                                    <field name="api_integration"/>
-                                    <field name="sync_enabled"/>
-                                    <field name="webhook_notifications"/>
-                                </group>
-                            </group>
-                        </page>
+                        <!-- Product Variants page removed - uses standard product.template fields -->
+                        <!-- Analytics, Configuration pages removed - fields not implemented in model -->
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
@@ -326,20 +262,21 @@
 
                 <separator/>
                 <filter string="Featured Services" name="featured" domain="[('is_featured_service', '=', True)]"/>
-                <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliance_level', 'in', ['A', 'AA', 'AAA'])]"/>
-                <filter string="Document Services" name="document_services" domain="[('document_storage_included', '=', True)]"/>
-                <filter string="Destruction Services" name="destruction_services" domain="[('shredding_included', '=', True)]"/>
+                <filter string="RM Products" name="rm_products" domain="[('is_records_management_product', '=', True)]"/>
+                <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
+                <filter string="HIPAA Compliant" name="hipaa_compliant" domain="[('hipaa_compliant', '=', True)]"/>
+                <!-- Fields not implemented: naid_compliance_level, document_storage_included, shredding_included -->
 
                 <separator/>
                 <filter string="High Value (&gt;$100)" name="high_value" domain="[('list_price', '&gt;', 100)]"/>
-                <filter string="Top Performers" name="top_performers" domain="[('total_sales_ytd', '&gt;', 0)]"/>
+                <!-- Field not implemented: total_sales_ytd -->
 
                 <group expand="0" string="Group By">
                     <filter string="Category" name="group_by_category" context="{'group_by': 'categ_id'}"/>
                     <filter string="Product Type" name="group_by_type" context="{'group_by': 'type'}"/>
-                    <filter string="NAID Level" name="group_by_naid" context="{'group_by': 'naid_compliance_level'}"/>
+                    <filter string="Service Type" name="group_by_service" context="{'group_by': 'service_type'}"/>
                     <filter string="Can be Sold" name="group_by_sale" context="{'group_by': 'sale_ok'}"/>
-                    <filter string="Price Range" name="group_by_price" context="{'group_by': 'price_range'}"/>
+                    <!-- Fields not implemented: naid_compliance_level, price_range -->
                 </group>
             </search>
         </field>
