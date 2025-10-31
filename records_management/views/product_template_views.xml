@@ -79,10 +79,12 @@
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Product</a>
                                 <a role="menuitem" type="object" name="action_view_sales" class="dropdown-item"><i class='fa fa-bar-chart'/> View Sales</a>
+                                <!-- Commented out - methods not implemented:
                                 <a role="menuitem" type="object" name="action_configure_variants" class="dropdown-item"><i class='fa fa-bullseye'/> Configure Variants</a>
                                 <a role="menuitem" type="object" name="action_pricing_rules" class="dropdown-item"><i class='fa fa-money'/> Pricing Rules</a>
                                 <div class="dropdown-divider"/>
                                 <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item"><i class='fa fa-clipboard'/> Duplicate</a>
+                                -->
                             </div>
                         </div>
                     </t>
@@ -121,9 +123,11 @@
             <form>
                 <header>
                     <button name="action_view_sales" type="object" string="View Sales History" class="btn-primary"/>
+                    <!-- Commented out - methods not implemented in product.template model:
                     <button name="action_configure_variants" type="object" string="Configure Variants" class="btn-secondary"/>
                     <button name="action_pricing_rules" type="object" string="Pricing Rules" class="btn-info"/>
                     <button name="action_update_costs" type="object" string="Update Costs" class="btn-success"/>
+                    -->
                     <field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Archived'}}"/>
                 </header>
                 <sheet>
