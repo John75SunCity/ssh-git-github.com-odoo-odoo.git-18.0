@@ -47,7 +47,7 @@ class TsheetsEmployeeMap(models.Model):
         (
             "tsheets_user_company_unique",
             "unique(tsheets_user_id, config_id)",
-            _("A TSheets user can only be mapped to one employee per configuration."),
+            "A TSheets user can only be mapped to one employee per configuration.",
         )
     ]
 
