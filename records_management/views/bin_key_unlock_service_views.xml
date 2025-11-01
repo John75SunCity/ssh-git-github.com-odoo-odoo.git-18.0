@@ -251,7 +251,7 @@
             </field>
         </record>
     
-        <menuitem id="menu_bin_key_unlock_service" name="Unlock Services" parent="records_management.menu_records_security" action="action_bin_key_unlock_service" sequence="30" />
+        <menuitem id="menu_bin_key_unlock_service" name="Unlock Services" parent="records_management.menu_security_access" action="action_bin_key_unlock_service" sequence="30" />
     
     
     </data>

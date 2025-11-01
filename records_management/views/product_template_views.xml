@@ -21,10 +21,10 @@
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <strong><i class='fa fa-briefcase'/> <field name="name"/></strong>
+                                        <strong><i class='fa fa-briefcase' title="Product"/> <field name="name"/></strong>
                                     </div>
                                     <div class="o_secondary">
-                                        <i class="fa fa-tag"/> <field name="default_code"/>
+                                        <i class="fa fa-tag" title="Reference"/> <field name="default_code"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
@@ -152,7 +152,7 @@
                         -->
                         <button class="oe_stat_button" icon="fa-star" invisible="not is_featured_service">
                             <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value"><i class='fa fa-star'/></span>
+                                <span class="o_stat_value"><i class='fa fa-star' title="Featured Service"/></span>
                                 <span class="o_stat_text">Featured</span>
                             </div>
                         </button>

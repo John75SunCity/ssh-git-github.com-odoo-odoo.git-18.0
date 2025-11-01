@@ -84,7 +84,7 @@ Create Service Request
 <!-- Menu Items -->
     <menuitem id="menu_key_restriction_checker" name="Key Restriction Checker" parent="records_management.menu_records_tools" action="action_key_restriction_checker" sequence="50" groups="records_management.group_records_user"/>
     <!-- Key Checker moved to Configuration > Security & Access -->
-    <menuitem id="menu_key_checker_shortcut" name="Key Checker" parent="records_management.menu_records_security" action="action_key_restriction_checker" sequence="40" groups="records_management.group_records_user"/>
+    <menuitem id="menu_key_checker_shortcut" name="Key Checker" parent="records_management.menu_security_access" action="action_key_restriction_checker" sequence="40" groups="records_management.group_records_user"/>
 
     </data>
 </odoo>
