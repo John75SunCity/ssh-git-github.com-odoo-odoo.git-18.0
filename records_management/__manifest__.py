@@ -288,7 +288,6 @@
         "views/records_billing_config_views.xml",
     # User profile selector (Records Management role abstraction)
     "views/res_users_records_profile_views.xml",
-
         # Additional menus split by domain (loaded after main menu structure)
         "views/service_item_menus.xml",
         "views/document_retrieval_menus.xml",
