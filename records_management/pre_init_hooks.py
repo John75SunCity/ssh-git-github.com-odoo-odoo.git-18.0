@@ -5,7 +5,10 @@ synchronize database schema artifacts that might be missing in existing
 deployments prior to the ORM taking control of the upgrade process.
 """
 
+import logging
 from psycopg2 import sql
+
+_logger = logging.getLogger(__name__)
 
 
 _MISSING_COLUMNS = (
@@ -52,9 +55,24 @@ def _set_default(cr, table_name, column_name, value):
 
 def pre_init_hook(cr):
     """Ensure legacy databases have the partner fields required by the module."""
+    _logger.info("="*80)
+    _logger.info("🚀 RUNNING PRE-INIT HOOK FOR RECORDS MANAGEMENT MODULE")
+    _logger.info("="*80)
+    
     table = "res_partner"
     for column_name, column_type, default_value in _MISSING_COLUMNS:
         if not _column_exists(cr, table, column_name):
+            _logger.info(f"➕ Adding missing column: {table}.{column_name} ({column_type})")
             _add_column(cr, table, column_name, column_type)
+            _logger.info(f"✅ Column {table}.{column_name} added successfully")
+        else:
+            _logger.info(f"⏭️  Column {table}.{column_name} already exists, skipping")
+            
         if default_value is not None:
+            _logger.info(f"🔧 Setting default value {default_value} for {table}.{column_name}")
             _set_default(cr, table, column_name, default_value)
+            _logger.info(f"✅ Default value set for {table}.{column_name}")
+    
+    _logger.info("="*80)
+    _logger.info("✅ PRE-INIT HOOK COMPLETED SUCCESSFULLY")
+    _logger.info("="*80)
