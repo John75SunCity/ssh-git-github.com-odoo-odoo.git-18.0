@@ -110,6 +110,20 @@ class ResUsers(models.Model):
 
     partner_required = fields.Boolean(string='Partner Required', compute='_compute_partner_required', store=False)
 
+    @api.onchange('records_user_profile')
+    def _onchange_records_user_profile(self):
+        """Preview group assignment when user changes the profile in UI"""
+        if self.records_user_profile:
+            # Show a warning if portal profile but no partner
+            if self.records_user_profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
+                if not self.partner_id:
+                    return {
+                        'warning': {
+                            'title': _('Partner Required'),
+                            'message': _('Portal profiles require selecting a Related Partner (customer company/contact). Please select one before saving.')
+                        }
+                    }
+
     # Mapping constants (XML IDs) -> kept here for clarity & single-point maintenance
     _RM_INTERNAL_MAP = {
         'records_admin': 'records_management.group_records_admin',
