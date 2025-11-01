@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <!-- Simple, working view: Just add the statusbar field to the form -->
+        <!-- TEMPORARILY DISABLED to identify conflicting view -->
         <record id="view_users_form_inherit_records_profile" model="ir.ui.view">
             <field name="name">res.users.view.form.inherit.records.profile</field>
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="active" eval="False"/>
             <field name="arch" type="xml">
                 <!-- Add statusbar at the very top, before the sheet -->
                 <xpath expr="//form/sheet" position="before">
