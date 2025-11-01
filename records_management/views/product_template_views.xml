@@ -286,7 +286,7 @@
     <record id="action_product_template_records" model="ir.actions.act_window">
         <field name="name">Records Management Products</field>
         <field name="res_model">product.template</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="product_template_view_search"/>
         <field name="context">{
             'search_default_active': 1,
