@@ -58,4 +58,3 @@ def pre_init_hook(cr):
             _add_column(cr, table, column_name, column_type)
         if default_value is not None:
             _set_default(cr, table, column_name, default_value)
-```
