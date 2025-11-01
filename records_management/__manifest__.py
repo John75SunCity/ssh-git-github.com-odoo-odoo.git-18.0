@@ -314,6 +314,7 @@
         "demo/naid_demo_certificates.xml",
         "demo/records_config_mail_templates_data.xml"
     ],
+    "pre_init_hook": "pre_init_hook",
     "post_init_hook": "post_init_hook",
     "assets": {
         "web.assets_backend": [
@@ -385,5 +386,4 @@
     "images": [
         "static/description/icon.png"
     ],
-    "post_init_hook": "post_init_hook"
 }
