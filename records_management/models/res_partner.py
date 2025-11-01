@@ -54,45 +54,6 @@ class ResPartner(models.Model):
     destruction_address_id = fields.Many2one(comodel_name='res.partner', string='Destruction Address')
 
     # =========================================================================
-    # TRANSITORY FIELD CONFIGURATION FIELDS (used by transitory_field_config_views.xml)
-    # =========================================================================
-    transitory_field_config_id = fields.Many2one(
-        comodel_name='transitory.field.config',
-        string='Field Configuration',
-        help="Field visibility and requirement configuration for this customer"
-    )
-    field_label_config_id = fields.Many2one(
-        comodel_name='field.label.customization',
-        string='Field Label Configuration',
-        help="Custom field labels for this customer"
-    )
-    allow_transitory_items = fields.Boolean(
-        string='Allow Transitory Items',
-        default=True,
-        help="Allow this customer to create transitory items in the portal"
-    )
-    max_transitory_items = fields.Integer(
-        string='Max Transitory Items',
-        default=100,
-        help="Maximum number of transitory items this customer can create"
-    )
-    total_transitory_items = fields.Integer(
-        string='Total Transitory Items',
-        compute='_compute_transitory_stats',
-        help="Total number of transitory items (all states)"
-    )
-    active_transitory_items = fields.Integer(
-        string='Active Transitory Items',
-        compute='_compute_transitory_stats',
-        help="Number of transitory items in active state"
-    )
-    total_records_containers = fields.Integer(
-        string='Total Records Containers',
-        compute='_compute_transitory_stats',
-        help="Total number of records containers"
-    )
-
-    # =========================================================================
     # BIN KEY & UNLOCK SERVICE FIELDS (used by mobile_bin_key_wizard_views.xml)
     # =========================================================================
     has_bin_key = fields.Boolean(
@@ -216,35 +177,6 @@ class ResPartner(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('department_ids')
-    def _compute_department_count(self):
-        """Computes the number of departments associated with this partner."""
-        for partner in self:
-            partner.department_count = len(partner.department_ids)
-    
-    def _compute_transitory_stats(self):
-        """Compute transitory item statistics for portal display."""
-        for partner in self:
-            # Note: Assuming 'transitory.item' model exists for tracking transitory items
-            # If it doesn't exist yet, these will return 0
-            try:
-                all_items = self.env['transitory.item'].search_count([
-                    ('partner_id', '=', partner.id)
-                ])
-                active_items = self.env['transitory.item'].search_count([
-                    ('partner_id', '=', partner.id),
-                    ('state', '=', 'active')
-                ])
-            except KeyError:
-                # Model doesn't exist yet
-                all_items = 0
-                active_items = 0
-            
-            partner.total_transitory_items = all_items
-            partner.active_transitory_items = active_items
-            # Use existing container_count field for total_records_containers
-            partner.total_records_containers = partner.container_count
-
     @api.depends('department_ids')
     def _compute_department_count(self):
         """Computes the number of departments associated with this partner."""
@@ -795,49 +727,3 @@ class ResPartner(models.Model):
         
         # Use the action from res.users
         return portal_user.action_access_portal_account()
-    
-    def action_setup_transitory_config(self):
-        """Open wizard to setup transitory field configuration for this customer."""
-        self.ensure_one()
-        # Create or get existing config
-        config = self.transitory_field_config_id
-        if not config:
-            config = self.env['transitory.field.config'].create({
-                'name': f"Configuration for {self.name}",
-                'partner_id': self.id,
-            })
-            self.transitory_field_config_id = config
-        
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Field Configuration'),
-            'res_model': 'transitory.field.config',
-            'res_id': config.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
-    
-    def action_setup_field_labels(self):
-        """Open wizard to setup custom field labels for this customer."""
-        self.ensure_one()
-        # Create or get existing config
-        config = self.field_label_config_id
-        if not config:
-            config = self.env['field.label.customization'].create({
-                'name': f"Labels for {self.name}",
-                'partner_id': self.id,
-                'model_name': 'records.container',  # Default model
-                'field_name': 'name',  # Default field
-                'original_label': 'Name',
-                'custom_label': 'Name',
-            })
-            self.field_label_config_id = config
-        
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Customize Field Labels'),
-            'res_model': 'field.label.customization',
-            'res_id': config.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
