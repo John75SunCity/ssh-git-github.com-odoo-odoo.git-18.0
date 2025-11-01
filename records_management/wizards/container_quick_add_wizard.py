@@ -210,13 +210,13 @@ class ContainerQuickAddWizard(models.TransientModel):
 
         # Add retention info
         if self.retention_period == 'permanent':
-            container_vals['retention_permanent'] = True
+            container_vals['permanent_retention'] = True
         elif self.retention_period == 'custom' and self.custom_retention_years:
-            container_vals['retention_years'] = self.custom_retention_years
-            container_vals['destruction_date'] = self.destruction_date
+            # For custom retention, set the destruction due date directly
+            container_vals['destruction_due_date'] = self.destruction_date
         else:
-            container_vals['retention_years'] = int(self.retention_period)
-            container_vals['destruction_date'] = self.destruction_date
+            # For standard retention periods, set the destruction due date
+            container_vals['destruction_due_date'] = self.destruction_date
 
         container = self.env['records.container'].create(container_vals)
 
