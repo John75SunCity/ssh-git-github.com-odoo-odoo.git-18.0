@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
-
        <!-- Removed duplicate root menu to avoid a second Records Management app icon
            The canonical root menu is defined in records_management/views/records_management_menu_roots.xml
            with id="menu_records_management_root". -->

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
 <!-- List View -->
     <record id="inventory_adjustment_reason_view_tree" model="ir.ui.view">
         <field name="name">inventory.adjustment.reason.view.tree</field>

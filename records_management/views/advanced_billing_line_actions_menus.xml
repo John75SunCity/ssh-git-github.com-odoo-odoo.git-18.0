@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
 <!-- Action for simple views -->
     <record id="advanced_billing_line_action_simple" model="ir.actions.act_window">
         <field name="name">Simple Billing Lines</field>

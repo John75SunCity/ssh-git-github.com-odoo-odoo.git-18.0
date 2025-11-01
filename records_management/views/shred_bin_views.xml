@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
         <record id="shred_bin_view_tree" model="ir.ui.view">
             <field name="model">shred.bin</field>
             <field name="arch" type="xml">

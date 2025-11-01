@@ -1,6 +1,5 @@
 <odoo noupdate="1">
     <data>
-
         <!-- =============================================================== -->
         <!-- INTELLIGENT SEARCH SECURITY RULES -->
         <!-- Ensure users only see their own data in search results -->

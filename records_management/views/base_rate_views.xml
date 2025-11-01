@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
         <record id="base_rate_view_tree" model="ir.ui.view">
             <field name="name">base.rate.view.tree</field>
             <field name="model">base.rate</field>

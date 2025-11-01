@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
         <record id="records_retention_policy_version_view_list" model="ir.ui.view">
             <field name="name">records.retention.policy.version.view.list</field>
             <field name="model">records.retention.policy.version</field>

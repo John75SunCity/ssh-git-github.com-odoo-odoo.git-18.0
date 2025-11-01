@@ -14,7 +14,6 @@
 -->
 <odoo>
     <data>
-    
 <!-- List View -->
     <record id="inventory_item_location_transfer_view_list" model="ir.ui.view">
         <field name="name">inventory.item.location.transfer.view.list</field>

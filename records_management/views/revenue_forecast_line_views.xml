@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
         <record id="revenue_forecast_line_view_tree" model="ir.ui.view">
             <field name="name">revenue.forecast.line.view.tree</field>
             <field name="model">revenue.forecast.line</field>

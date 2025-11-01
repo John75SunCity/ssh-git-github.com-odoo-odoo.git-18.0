@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
     <data>
-
         <!-- ============================================ -->
         <!-- STANDARD CONTAINER TYPES - BASE RATES -->
         <!-- Type 01 - Type 06 Box Classifications -->

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-
 <record id="system_flowchart_wizard_view_form" model="ir.ui.view">
         <field name="name">system.flowchart.wizard.view.form</field>
         <field name="model">system.flowchart.wizard</field>

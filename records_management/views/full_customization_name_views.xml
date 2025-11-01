@@ -14,7 +14,6 @@
 -->
 <odoo>
     <data>
-
 <!-- Full Customization Name List View -->
     <record id="full_customization_name_view_tree" model="ir.ui.view">
         <field name="name">full.customization.name.tree</field>

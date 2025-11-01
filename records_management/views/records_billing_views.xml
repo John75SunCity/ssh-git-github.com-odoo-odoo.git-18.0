@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
         <record id="records_billing_view_tree" model="ir.ui.view">
             <field name="name">records.billing.view.tree</field>
             <field name="model">records.billing</field>

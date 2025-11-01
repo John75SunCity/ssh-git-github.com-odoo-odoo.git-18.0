@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
         <record id="portal_request_view_kanban" model="ir.ui.view">
             <field name="name">portal.request.view.kanban</field>
             <field name="model">portal.request</field>

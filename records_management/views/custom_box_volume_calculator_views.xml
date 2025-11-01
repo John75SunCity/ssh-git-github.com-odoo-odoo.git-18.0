@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
 <!-- Volume Calculator Form View -->
     <record id="custom_box_volume_calculator_view_form" model="ir.ui.view">
         <field name="name">custom.box.volume.calculator.view.form</field>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
         <record id="destruction_certificate_view_list" model="ir.ui.view">
             <field name="name">destruction.certificate.view.list</field>
             <field name="model">destruction.certificate</field>

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
-
         <!-- Retrieval Work Order Menu -->
     <menuitem id="menu_records_retrieval_work_order"
               name="Retrieval Work Orders"

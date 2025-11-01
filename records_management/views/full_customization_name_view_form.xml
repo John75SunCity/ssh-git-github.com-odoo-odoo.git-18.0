@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
 <!-- Full Customization Name Form View -->
     <record id="full_customization_name_view_form" model="ir.ui.view">
         <field name="name">full.customization.name.form</field>

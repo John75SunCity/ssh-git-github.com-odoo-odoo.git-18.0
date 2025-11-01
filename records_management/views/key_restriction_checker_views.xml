@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
 <!-- Form view for Key Restriction Checker -->
     <record id="key_restriction_checker_wizard_view_form" model="ir.ui.view">
         <field name="name">key.restriction.checker.wizard.view.form</field>
