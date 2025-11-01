@@ -258,8 +258,8 @@
                     <field name="partner_id" />
                     <field name="department_id" />
                     <separator />
-                    <filter string="Global Configurations" name="global" domain="[('customer_id', '=', False)]" />
-                    <filter string="Customer Specific" name="customer_specific" domain="[('customer_id', '!=', False), ('department_id', '=', False)]" />
+                    <filter string="Global Configurations" name="global" domain="[('partner_id', '=', False)]" />
+                    <filter string="Customer Specific" name="customer_specific" domain="[('partner_id', '!=', False), ('department_id', '=', False)]" />
                     <filter string="Department Specific" name="department_specific" domain="[('department_id', '!=', False)]" />
                     <separator />
                     <filter string="Active" name="active" domain="[('active', '=', True)]" />
