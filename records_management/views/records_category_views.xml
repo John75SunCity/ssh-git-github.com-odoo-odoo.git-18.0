@@ -101,7 +101,7 @@
     </record>
 
     <!-- Categories moved to Configuration > Master Data -->
-    <menuitem id="menu_records_category_root" name="Categories" parent="records_management.menu_records_master_data" action="action_records_category" sequence="40" />
+    <menuitem id="menu_records_category_root" name="Categories" parent="records_management.menu_master_data" action="action_records_category" sequence="40" />
 
     
     </data>
