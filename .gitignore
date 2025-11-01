@@ -164,3 +164,4 @@ __pycache__/
 # Odoo source code - should not be committed to the custom module repo
 /odoo/
 venv312/
+# Force rebuild - Sat Nov  1 00:52:26 MDT 2025
