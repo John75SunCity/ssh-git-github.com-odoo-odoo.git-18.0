@@ -53,6 +53,47 @@ class ResPartner(models.Model):
 
     destruction_address_id = fields.Many2one(comodel_name='res.partner', string='Destruction Address')
 
+    # ============================================================================
+    # TRANSITORY FIELD CONFIGURATION FIELDS (used by transitory_field_config_views.xml)
+    # ============================================================================
+    transitory_field_config_id = fields.Many2one(
+        comodel_name='transitory.field.config',
+        string='Field Configuration',
+        ondelete='set null',
+        help="Field visibility and requirement configuration for this customer"
+    )
+    field_label_config_id = fields.Many2one(
+        comodel_name='field.label.customization',
+        string='Field Label Configuration',
+        ondelete='set null',
+        help="Custom field labels for this customer"
+    )
+    allow_transitory_items = fields.Boolean(
+        string='Allow Transitory Items',
+        default=True,
+        help="Allow this customer to create transitory items in the portal"
+    )
+    max_transitory_items = fields.Integer(
+        string='Max Transitory Items',
+        default=100,
+        help="Maximum number of transitory items this customer can create"
+    )
+    total_transitory_items = fields.Integer(
+        string='Total Transitory Items',
+        compute='_compute_transitory_stats',
+        help="Total number of transitory items across all states"
+    )
+    active_transitory_items = fields.Integer(
+        string='Active Transitory Items',
+        compute='_compute_transitory_stats',
+        help="Number of transitory items currently active"
+    )
+    total_records_containers = fields.Integer(
+        string='Total Records Containers',
+        compute='_compute_transitory_stats',
+        help="Cached copy of the container counter for portal stats"
+    )
+
     # =========================================================================
     # BIN KEY & UNLOCK SERVICE FIELDS (used by mobile_bin_key_wizard_views.xml)
     # =========================================================================
@@ -182,6 +223,43 @@ class ResPartner(models.Model):
         """Computes the number of departments associated with this partner."""
         for partner in self:
             partner.department_count = len(partner.department_ids)
+
+    def _compute_transitory_stats(self):
+        """Aggregate portal-facing transitory statistics in batch."""
+        if not self:
+            return
+
+        transitory_model = self.env.get('transitory.item')
+        total_map = {}
+        active_map = {}
+        if transitory_model:
+            try:
+                total_rows = transitory_model.read_group(
+                    [('partner_id', 'in', self.ids)],
+                    ['partner_id'],
+                    ['partner_id']
+                )
+                active_rows = transitory_model.read_group(
+                    [('partner_id', 'in', self.ids), ('state', '=', 'active')],
+                    ['partner_id'],
+                    ['partner_id']
+                )
+                total_map = {
+                    row['partner_id'][0] if isinstance(row.get('partner_id'), (list, tuple)) else row.get('partner_id'): row.get('__count', 0)
+                    for row in total_rows if row.get('partner_id')
+                }
+                active_map = {
+                    row['partner_id'][0] if isinstance(row.get('partner_id'), (list, tuple)) else row.get('partner_id'): row.get('__count', 0)
+                    for row in active_rows if row.get('partner_id')
+                }
+            except Exception:
+                total_map = {}
+                active_map = {}
+
+        for partner in self:
+            partner.total_transitory_items = total_map.get(partner.id, 0)
+            partner.active_transitory_items = active_map.get(partner.id, 0)
+            partner.total_records_containers = partner.container_count
 
     def _compute_records_stats(self):
         """Compute container_count & document_count in batch.
@@ -503,6 +581,67 @@ class ResPartner(models.Model):
             }
         }
 
+    def action_setup_transitory_config(self):
+        """Open or create a transitory field configuration for this partner."""
+        self.ensure_one()
+
+        config = self.transitory_field_config_id
+        if not config:
+            display_name = self.display_name or self.name or _('New Partner')
+            model = self.env['ir.model']._get('records.container') or self.env['ir.model']._get('res.partner')
+            if not model:
+                raise UserError(_('No target model available for field configuration.'))
+            config = self.env['transitory.field.config'].create({
+                'name': _('Configuration for %s') % display_name,
+                'partner_id': self.id,
+                'model_id': model.id,
+                'field_name': 'x_transitory_field',
+            })
+            self.transitory_field_config_id = config
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Field Configuration'),
+            'res_model': 'transitory.field.config',
+            'res_id': config.id,
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'default_partner_id': self.id,
+            }
+        }
+
+    def action_setup_field_labels(self):
+        """Open or create the field label customization for this partner."""
+        self.ensure_one()
+
+        config = self.field_label_config_id
+        if not config:
+            display_name = self.display_name or self.name or _('New Partner')
+            config = self.env['field.label.customization'].create({
+                'name': _('Labels for %s') % display_name,
+                'partner_id': self.id,
+                'model_name': 'records.container',
+                'field_name': 'name',
+                'original_label': 'Name',
+                'custom_label': 'Name',
+                'priority': 10,
+            })
+            self.field_label_config_id = config
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Customize Field Labels'),
+            'res_model': 'field.label.customization',
+            'res_id': config.id,
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'default_partner_id': self.id,
+                'default_department_id': False,
+            }
+        }
+
     # =========================================================================
     # COMPUTES: KEY RESTRICTIONS
     # =========================================================================
@@ -704,17 +843,17 @@ class ResPartner(models.Model):
         Available to users with 'can_access_portal_accounts' permission
         """
         self.ensure_one()
-        
+
         # Security check
         if not self.env.user.can_access_portal_accounts:
             raise AccessError(_("You are not authorized to access customer portal accounts. Please contact your administrator."))
-        
+
         # Find portal user for this partner
         portal_user = self.env['res.users'].search([
             ('partner_id', '=', self.id),
             ('share', '=', True)  # Portal users have share=True
         ], limit=1)
-        
+
         if not portal_user:
             raise UserError(_(
                 "No portal user found for %s.\n\n"
@@ -724,6 +863,6 @@ class ResPartner(models.Model):
                 "3. Select this customer as 'Related Partner'\n"
                 "4. Grant portal access"
             ) % self.name)
-        
+
         # Use the action from res.users
         return portal_user.action_access_portal_account()
