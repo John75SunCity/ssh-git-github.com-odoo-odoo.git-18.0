@@ -1,47 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <!-- Inherit base user form to inject Records Profile selector and ensure Related Partner visible -->
+        <!-- Inherit base user form to inject Records Profile selector -->
         <record id="view_users_form_inherit_records_profile" model="ir.ui.view">
             <field name="name">res.users.view.form.inherit.records.profile</field>
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_form"/>
             <field name="arch" type="xml">
-                <!-- Inject Records Management profile selector just before the partner relation -->
-                <xpath expr="//field[@name='partner_id']" position="before">
-                    <field name="records_user_profile" widget="statusbar" options="{'clickable': True}" colspan="2"/>
-                    <field name="partner_required" invisible="1" nolabel="1"/>
+                <!-- Add Records Management Access Level at the top of the form, before any other fields -->
+                <xpath expr="//form/sheet" position="before">
+                    <header>
+                        <field name="records_user_profile" widget="statusbar" options="{'clickable': True}"/>
+                    </header>
                 </xpath>
-                <!-- Portal User Instructions -->
-                <xpath expr="//field[@name='partner_id']" position="after">
+                
+                <!-- Add helper fields invisibly -->
+                <xpath expr="//form/sheet" position="inside">
+                    <field name="partner_required" invisible="1"/>
+                </xpath>
+                
+                <!-- Add Portal User Setup Information -->
+                <xpath expr="//sheet//group[@name='preference']" position="before">
                     <div class="alert alert-info" role="alert" invisible="partner_required == False">
                         <strong>🏢 Portal User Setup (Customer Access)</strong>
                         <br/><strong>User Type:</strong> Portal (Standard Odoo Portal User - proper licensing)
-                        <br/><strong>Access Level:</strong> Selected above (determines what they can view/do in the customer portal)
+                        <br/><strong>Access Level:</strong> Selected in header above
                         <br/><br/>
-                        <strong>✅ This creates a PORTAL user (not an internal user) with the selected access level:</strong>
+                        <strong>✅ Portal Access Levels:</strong>
                         <ul>
                             <li><strong>Company Admin:</strong> Full control over all company data, can delegate other users</li>
                             <li><strong>Department Admin:</strong> Manage department data, can delegate department users</li>
                             <li><strong>Department User:</strong> Perform business functions (requests, view inventory, feedback)</li>
                             <li><strong>Read-Only:</strong> View-only access to assigned records</li>
                         </ul>
-                        <strong>Required:</strong> You must select the customer company or contact below.
-                        <br/><em>💡 Tip: Company/Department Admins should be linked to the company record itself.</em>
+                        <strong>Required:</strong> Select customer company/contact in "Related Partner" field.
+                        <br/><em>💡 Tip: Company/Department Admins should be linked to the company record.</em>
                     </div>
-                </xpath>
-                <!-- Enhance partner_id field for portal users with proper domain and help text -->
-                <xpath expr="//field[@name='partner_id']" position="attributes">
-                    <attribute name="invisible">0</attribute>
-                    <attribute name="readonly">partner_required == False</attribute>
-                    <attribute name="force_save">1</attribute>
-                    <attribute name="domain">[('customer_rank', '>', 0)]</attribute>
-                    <attribute name="context">{'search_default_customer': 1}</attribute>
-                    <attribute name="help">🏢 Portal Access Mapping: choose the customer company or contact this user represents. Company administrators must be linked to the company record; standard portal users can be linked to an individual contact under the customer company.</attribute>
-                    <attribute name="placeholder">🔍 Search customer company or contact...</attribute>
-                    <attribute name="options">{'no_create': True, 'no_create_edit': True, 'no_quick_create': True}</attribute>
-                    <attribute name="required">partner_required == True</attribute>
-                    <attribute name="string">Customer Company / Contact</attribute>
                 </xpath>
             </field>
         </record>
