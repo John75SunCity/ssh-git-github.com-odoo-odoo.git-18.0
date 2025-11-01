@@ -83,15 +83,21 @@ class ResUsers(models.Model):
 
     records_user_profile = fields.Selection(
         selection=[
-            ('records_admin', 'Records Admin'),
-            ('records_user', 'Records User'),
-            ('portal_company_admin', 'Portal Company Admin'),
-            ('portal_department_admin', 'Portal Department Admin'),
-            ('portal_user', 'Portal User'),
-            ('portal_read_only', 'Portal Read Only'),
+            ('records_admin', 'Internal: Records Admin'),
+            ('records_user', 'Internal: Records User'),
+            ('portal_company_admin', 'Portal: Company Admin (Full Control)'),
+            ('portal_department_admin', 'Portal: Department Admin (Can Delegate)'),
+            ('portal_user', 'Portal: Department User (Business Functions)'),
+            ('portal_read_only', 'Portal: Read-Only Employee (View Only)'),
         ],
-        string='Records Profile',
-        help="High-level role abstraction that automatically assigns the correct security groups for the Records Management module (internal + portal tiers).",
+        string='Records Management Access Level',
+        help="Portal users are standard Odoo Portal users with different access levels:\n"
+             "• Company Admin: Full control over all company data and users\n"
+             "• Department Admin: Can delegate users and manage department data\n"
+             "• Department User: Can perform business functions (requests, inventory)\n"
+             "• Read-Only: View-only access to assigned records\n\n"
+             "All portal options require selecting a Customer Company/Contact below.\n"
+             "Internal users have backend access with Records Management permissions.",
         default='records_user',
         # tracking removed: res.users may not inherit mail.thread in all editions / variants; parameter caused warnings
     )

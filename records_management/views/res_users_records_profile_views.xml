@@ -15,17 +15,19 @@
                 <!-- Portal User Instructions -->
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <div class="alert alert-info" role="alert" invisible="partner_required == False">
-                        <strong>🏢 Portal User Company Assignment Required</strong>
-                        <br/>Portal users represent a specific customer company and can only access that company's data.
-                        You must select an existing customer company or one of its contacts in the "Related Partner" field below. Portal Company/Department Admin profiles should be linked to the company record.
+                        <strong>🏢 Portal User Setup (Customer Access)</strong>
+                        <br/><strong>User Type:</strong> Portal (Standard Odoo Portal User - proper licensing)
+                        <br/><strong>Access Level:</strong> Selected above (determines what they can view/do in the customer portal)
                         <br/><br/>
-                        <strong>How it works:</strong>
+                        <strong>✅ This creates a PORTAL user (not an internal user) with the selected access level:</strong>
                         <ul>
-                            <li>Portal user sees only their company's records (invoices, orders, documents, etc.)</li>
-                            <li>Company-based access control ensures data security</li>
-                            <li>User inherits permissions based on their assigned company</li>
+                            <li><strong>Company Admin:</strong> Full control over all company data, can delegate other users</li>
+                            <li><strong>Department Admin:</strong> Manage department data, can delegate department users</li>
+                            <li><strong>Department User:</strong> Perform business functions (requests, view inventory, feedback)</li>
+                            <li><strong>Read-Only:</strong> View-only access to assigned records</li>
                         </ul>
-                        <em>💡 Tip: If the company doesn't exist, create it first in Contacts → Customers, then return here.</em>
+                        <strong>Required:</strong> You must select the customer company or contact below.
+                        <br/><em>💡 Tip: Company/Department Admins should be linked to the company record itself.</em>
                     </div>
                 </xpath>
                 <!-- Enhance partner_id field for portal users with proper domain and help text -->
