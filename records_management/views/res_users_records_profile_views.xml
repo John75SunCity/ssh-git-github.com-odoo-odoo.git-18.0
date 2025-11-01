@@ -1,17 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <!-- Add Records Management Access Level statusbar to user form -->
+        <!-- Add Records Management Access Level statusbar and helpful guidance to user form -->
         <record id="view_users_form_inherit_records_profile" model="ir.ui.view">
             <field name="name">res.users.view.form.inherit.records.profile</field>
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_form"/>
             <field name="arch" type="xml">
-                <!-- Add statusbar at the very top, before the sheet -->
+                <!-- Add statusbar at the very top of the form -->
                 <xpath expr="//form/sheet" position="before">
                     <header>
                         <field name="records_user_profile" widget="statusbar" options="{'clickable': True}"/>
                     </header>
+                </xpath>
+
+                <!-- Add helper field to control info box visibility -->
+                <xpath expr="//form/sheet" position="inside">
+                    <field name="partner_required" invisible="1"/>
+                </xpath>
+
+                <!-- Add helpful Portal User Setup Information box -->
+                <xpath expr="//sheet//group[@name='preference']" position="before">
+                    <div class="alert alert-info" role="alert" invisible="partner_required == False">
+                        <strong>🏢 Portal User Setup (Customer Access)</strong>
+                        <br/><strong>User Type:</strong> Portal (Standard Odoo Portal User - proper licensing)
+                        <br/><strong>Access Level:</strong> Selected in header above
+                        <br/><br/>
+                        <strong>✅ Portal Access Levels:</strong>
+                        <ul>
+                            <li><strong>Company Admin:</strong> Full control over all company data, can delegate other users</li>
+                            <li><strong>Department Admin:</strong> Manage department data, can delegate department users</li>
+                            <li><strong>Department User:</strong> Perform business functions (requests, view inventory, feedback)</li>
+                            <li><strong>Read-Only:</strong> View-only access to assigned records</li>
+                        </ul>
+                        <strong>Required:</strong> Select customer company/contact in "Related Partner" field.
+                        <br/><em>💡 Tip: Company/Department Admins should be linked to the company record.</em>
+                    </div>
                 </xpath>
             </field>
         </record>
