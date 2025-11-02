@@ -299,6 +299,7 @@
         "templates/portal_certificate_templates.xml",
         "templates/portal_inventory_template.xml",
         "templates/portal_requests_template.xml",
+        "templates/portal_missing_templates.xml",
     "templates/portal_barcode_row.xml",
     "templates/portal_document_bulk_upload.xml",
         "templates/portal_mobile_export.xml",

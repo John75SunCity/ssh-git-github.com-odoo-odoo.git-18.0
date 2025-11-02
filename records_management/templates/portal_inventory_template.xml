@@ -329,5 +329,224 @@
             </t>
         </template>
 
+        <!-- Inventory Template (for /my/inventory route) -->
+        <template id="inventory_template" name="My Inventory">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-set="title">My Inventory</t>
+
+                <div class="o_portal_inventory">
+                    <!-- Messages -->
+                    <t t-if="message">
+                        <div t-attf-class="alert alert-#{message_type} alert-dismissible fade show" role="alert">
+                            <i t-if="message_type == 'success'" class="fa fa-check-circle"></i>
+                            <i t-if="message_type == 'danger'" class="fa fa-exclamation-triangle"></i>
+                            <i t-if="message_type == 'info'" class="fa fa-info-circle"></i>
+                            <span t-esc="message"/>
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&amp;times;</span>
+                            </button>
+                        </div>
+                    </t>
+
+                    <!-- Header Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-boxes"></i>
+                                Inventory Management
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Stats -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="card border-info">
+                                        <div class="card-body text-center">
+                                            <h5 class="text-info"><i class="fa fa-boxes"></i></h5>
+                                            <h4 class="mb-0" t-esc="total_count"/>
+                                            <small class="text-muted">Total Items</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card border-success">
+                                        <div class="card-body text-center">
+                                            <h5 class="text-success"><i class="fa fa-warehouse"></i></h5>
+                                            <h4 class="mb-0" t-esc="len(set(quants.mapped('location_id')))"/>
+                                            <small class="text-muted">Locations</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card border-warning">
+                                        <div class="card-body text-center">
+                                            <h5 class="text-warning"><i class="fa fa-file-alt"></i></h5>
+                                            <h4 class="mb-0" t-esc="len(set(quants.mapped('product_id')))"/>
+                                            <small class="text-muted">Product Types</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Search Bar -->
+                            <form method="GET" action="/my/inventory" class="mb-3">
+                                <div class="input-group">
+                                    <input type="text" name="search" class="form-control" 
+                                           placeholder="Search by product name, code, or location..."
+                                           t-att-value="search_term"/>
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa fa-search"></i> Search
+                                        </button>
+                                        <t t-if="search_term">
+                                            <a href="/my/inventory" class="btn btn-outline-secondary">
+                                                <i class="fa fa-times"></i> Clear
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Table -->
+                    <div class="card">
+                        <div class="card-body">
+                            <t t-if="not quants">
+                                <div class="alert alert-info text-center py-5">
+                                    <i class="fa fa-inbox fa-3x mb-3 text-muted"></i>
+                                    <h4>No Inventory Found</h4>
+                                    <p class="mb-0">
+                                        <t t-if="search_term">
+                                            No items match your search "<span t-esc="search_term"/>".
+                                            <a href="/my/inventory">View all inventory</a>
+                                        </t>
+                                        <t t-else="">
+                                            You don't have any inventory items yet.
+                                        </t>
+                                    </p>
+                                </div>
+                            </t>
+
+                            <t t-if="quants">
+                                <!-- Request Pickup Form -->
+                                <form id="pickup_form" action="/my/inventory/request_pickup" method="POST" class="mb-3">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button type="submit" class="btn btn-danger" id="request_pickup_btn" disabled="disabled">
+                                        <i class="fa fa-truck"></i> Request Pickup for Selected Items
+                                    </button>
+                                    <small class="form-text text-muted ml-2" t-esc="tooltips.get('pickup', '')"/>
+                                </form>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th width="50">
+                                                    <input type="checkbox" id="select_all"/>
+                                                </th>
+                                                <th>Product</th>
+                                                <th>Product Code</th>
+                                                <th>Location</th>
+                                                <th>Quantity</th>
+                                                <th>Last Updated</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="quants" t-as="quant">
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="quant_ids" 
+                                                               t-att-value="quant.id" 
+                                                               class="quant_checkbox"
+                                                               form="pickup_form"/>
+                                                    </td>
+                                                    <td>
+                                                        <strong t-esc="quant.product_id.name"/>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-secondary" t-esc="quant.product_id.default_code or 'N/A'"/>
+                                                    </td>
+                                                    <td>
+                                                        <i class="fa fa-map-marker-alt text-info"></i>
+                                                        <span t-esc="quant.location_id.complete_name"/>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-primary" t-esc="'%.2f %s' % (quant.quantity, quant.product_uom_id.name)"/>
+                                                    </td>
+                                                    <td t-esc="quant.write_date.strftime('%Y-%m-%d %H:%M') if quant.write_date else 'N/A'"/>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <t t-if="total_pages &gt; 1">
+                                    <nav aria-label="Inventory pagination">
+                                        <ul class="pagination justify-content-center mt-4">
+                                            <li t-att-class="'page-item' + (' disabled' if not has_prev else '')">
+                                                <a t-if="has_prev" class="page-link" 
+                                                   t-attf-href="/my/inventory?page=#{prev_page}#{('&amp;search=' + search_term) if search_term else ''}">
+                                                    <i class="fa fa-chevron-left"></i> Previous
+                                                </a>
+                                                <span t-if="not has_prev" class="page-link">
+                                                    <i class="fa fa-chevron-left"></i> Previous
+                                                </span>
+                                            </li>
+                                            
+                                            <li class="page-item active">
+                                                <span class="page-link">
+                                                    Page <t t-esc="current_page"/> of <t t-esc="total_pages"/>
+                                                </span>
+                                            </li>
+                                            
+                                            <li t-att-class="'page-item' + (' disabled' if not has_next else '')">
+                                                <a t-if="has_next" class="page-link"
+                                                   t-attf-href="/my/inventory?page=#{next_page}#{('&amp;search=' + search_term) if search_term else ''}">
+                                                    Next <i class="fa fa-chevron-right"></i>
+                                                </a>
+                                                <span t-if="not has_next" class="page-link">
+                                                    Next <i class="fa fa-chevron-right"></i>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JavaScript for checkbox handling -->
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        // Enable/disable Request Pickup button based on checkbox selection
+                        function updatePickupButton() {
+                            var anyChecked = $('.quant_checkbox:checked').length > 0;
+                            $('#request_pickup_btn').prop('disabled', !anyChecked);
+                        }
+
+                        // Select all functionality
+                        $('#select_all').on('change', function() {
+                            $('.quant_checkbox').prop('checked', this.checked);
+                            updatePickupButton();
+                        });
+
+                        // Individual checkbox handling
+                        $('.quant_checkbox').on('change', function() {
+                            var allChecked = $('.quant_checkbox').length === $('.quant_checkbox:checked').length;
+                            $('#select_all').prop('checked', allChecked);
+                            updatePickupButton();
+                        });
+
+                        // Initialize tooltips
+                        $('[data-toggle="tooltip"]').tooltip();
+                    });
+                </script>
+            </t>
+        </template>
+
     </data>
     </odoo>
