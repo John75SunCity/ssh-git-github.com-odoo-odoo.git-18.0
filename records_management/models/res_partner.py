@@ -264,22 +264,35 @@ class ResPartner(models.Model):
     def _compute_records_stats(self):
         """Compute container_count & document_count in batch.
 
-        Previous implementation misused _read_group (passing ['__count'] as the groupby
-        parameter) which resulted in low-level tuple structures and a runtime TypeError
-        when treating each item as a dict. We now use the public read_group API with
-        proper arguments (domain, fields, groupby) and robustly extract the partner id.
+        Uses commercial_partner_id to include containers/documents created by child
+        contacts under the same company. This ensures company admins see the full
+        inventory count even when individual employees created containers.
         """
         if not self:
             return
 
+        # Build list of all partner IDs including children (commercial hierarchy)
+        all_partner_ids = set()
+        for partner in self:
+            # Include self
+            all_partner_ids.add(partner.id)
+            # Include all child contacts under same commercial entity
+            if partner.commercial_partner_id:
+                all_partner_ids.add(partner.commercial_partner_id.id)
+                # Include all children of the commercial partner
+                children = self.env['res.partner'].search([
+                    ('commercial_partner_id', '=', partner.commercial_partner_id.id)
+                ])
+                all_partner_ids.update(children.ids)
+
         # read_group automatically supplies '__count' for each grouped row
         container_rows = self.env['records.container'].read_group(
-            [('partner_id', 'in', self.ids)],
+            [('partner_id', 'in', list(all_partner_ids))],
             ['partner_id'],
             ['partner_id']
         )
         document_rows = self.env['records.document'].read_group(
-            [('partner_id', 'in', self.ids)],
+            [('partner_id', 'in', list(all_partner_ids))],
             ['partner_id'],
             ['partner_id']
         )
@@ -299,8 +312,26 @@ class ResPartner(models.Model):
         document_map = build_map(document_rows)
 
         for partner in self:
-            partner.container_count = container_map.get(partner.id, 0)
-            partner.document_count = document_map.get(partner.id, 0)
+            # Sum counts for this partner and all its commercial children
+            total_containers = 0
+            total_documents = 0
+
+            # Get all related partner IDs (self + commercial hierarchy)
+            related_ids = {partner.id}
+            if partner.commercial_partner_id:
+                related_ids.add(partner.commercial_partner_id.id)
+                children = self.env['res.partner'].search([
+                    ('commercial_partner_id', '=', partner.commercial_partner_id.id)
+                ])
+                related_ids.update(children.ids)
+
+            # Sum counts across all related partners
+            for pid in related_ids:
+                total_containers += container_map.get(pid, 0)
+                total_documents += document_map.get(pid, 0)
+
+            partner.container_count = total_containers
+            partner.document_count = total_documents
 
     # =========================================================================
     # COMPUTE: BIN KEY STATS
