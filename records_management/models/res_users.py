@@ -216,11 +216,14 @@ class ResUsers(models.Model):
                         "Portal profiles require a Related Partner. Please select the customer contact or company before saving."
                     ))
                 partner = self.env['res.partner'].browse(partner_id)
-                if profile in ['portal_company_admin', 'portal_department_admin'] and partner and not partner.is_company:
-                    raise ValidationError(_(
-                        "Portal company or department administrators must be linked to a company contact. "
-                        "Please choose the customer company record instead of an individual contact."
-                    ))
+                # Allow individual contacts as long as their commercial parent is a company
+                if profile in ['portal_company_admin', 'portal_department_admin'] and partner:
+                    commercial_partner = partner.commercial_partner_id or partner
+                    if not commercial_partner.is_company:
+                        raise ValidationError(_(
+                            "Portal company or department administrators must be linked to a company or a contact under a company. "
+                            "The commercial parent partner must be a company record."
+                        ))
 
         records = super().create(vals_list)
         # Apply profile settings after creation, but only if profile was set
@@ -260,11 +263,14 @@ class ResUsers(models.Model):
                             "Portal profiles require a Related Partner. Please select the customer contact or company before saving."
                         ))
                     partner = self.env['res.partner'].browse(partner_id)
-                    if profile in ['portal_company_admin', 'portal_department_admin'] and partner and not partner.is_company:
-                        raise ValidationError(_(
-                            "Portal company or department administrators must be linked to a company contact. "
-                            "Please choose the customer company record instead of an individual contact."
-                        ))
+                    # Allow individual contacts as long as their commercial parent is a company
+                    if profile in ['portal_company_admin', 'portal_department_admin'] and partner:
+                        commercial_partner = partner.commercial_partner_id or partner
+                        if not commercial_partner.is_company:
+                            raise ValidationError(_(
+                                "Portal company or department administrators must be linked to a company or a contact under a company. "
+                                "The commercial parent partner must be a company record."
+                            ))
 
         res = super().write(vals)
         # Only apply if our custom profile was explicitly changed
