@@ -123,7 +123,7 @@ class RecordsDepartment(models.Model):
             'name': _('Containers'),
             'type': 'ir.actions.act_window',
             'res_model': 'records.container',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',
             'domain': [('department_id', '=', self.id)],
             'context': {'default_department_id': self.id, 'default_partner_id': self.partner_id.id}
         }
@@ -134,7 +134,7 @@ class RecordsDepartment(models.Model):
             'name': _('Documents'),
             'type': 'ir.actions.act_window',
             'res_model': 'records.document',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',
             'domain': [('department_id', '=', self.id)],
             'context': {'default_department_id': self.id, 'default_partner_id': self.partner_id.id}
         }
