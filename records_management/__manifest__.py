@@ -1,7 +1,7 @@
 {
     "name": "Records Management - Enterprise Edition",
-    # Version updated for Odoo 19 compatibility and modernization
-    'version': '18.0.1.0.1',  # Updated to trigger migration for transitory field additions
+    # Version for Odoo 18 (19 not publicly available yet)
+    'version': '18.0.0.0.1',
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
