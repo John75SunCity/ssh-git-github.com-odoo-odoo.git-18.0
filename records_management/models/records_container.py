@@ -25,14 +25,34 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Container Name", required=True, copy=False, readonly=True, default=lambda self: "New")
+    name = fields.Char(
+        string="Container Name/Number",
+        required=True,
+        copy=False,
+        readonly=True,
+        default=lambda self: "New",
+        help="Customer's name or number for this container. Examples:\n"
+             "- 'HR Personnel 2024'\n"
+             "- 'Legal Files - Smith Case'\n"
+             "- 'Financial Records Q1 2023'\n"
+             "Customer uses their own naming/numbering system. This is what appears on portal."
+    )
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company, required=True, readonly=True
     )
     currency_id = fields.Many2one(related="company_id.currency_id", readonly=True, comodel_name="res.currency")
     user_id = fields.Many2one("res.users", string="Responsible", default=lambda self: self.env.user, tracking=True)
-    barcode = fields.Char(string="Barcode", copy=False, index=True)
+    barcode = fields.Char(
+        string="Physical Barcode",
+        copy=False,
+        index=True,
+        tracking=True,
+        help="Pre-printed barcode from sheet, assigned by staff during indexing.\n"
+             "Used for scanning to retrieve all container metadata (name, location, customer, files, etc.).\n"
+             "NOT auto-generated - manually assigned from physical barcode sheets.\n"
+             "Scanning this barcode displays customer-defined container name and current status."
+    )
     # Temporary barcode assigned at portal/customer creation time before a physical barcode is applied by technicians.
     # Remains immutable once a physical barcode is assigned. Searchable and billable reference.
     temp_barcode = fields.Char(
@@ -40,12 +60,15 @@ class RecordsContainer(models.Model):
         copy=False,
         index=True,
         tracking=True,
-        help="System-generated temporary tracking barcode assigned when the customer creates the container in the portal.")
+        help="System-generated temporary tracking barcode assigned when the customer creates the container in the portal.\n"
+             "Used before physical barcode from pre-printed sheet is assigned during warehouse indexing."
+    )
     barcode_assigned = fields.Boolean(
         string="Physical Barcode Assigned",
         compute="_compute_barcode_assigned",
         store=True,
-        help="Indicates a physical warehouse barcode has been assigned (barcode field set).")
+        help="Indicates a physical warehouse barcode from pre-printed sheet has been assigned."
+    )
 
     # ============================================================================
     # RELATIONSHIPS

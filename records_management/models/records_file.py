@@ -30,20 +30,27 @@ class RecordsFile(models.Model):
     _order = 'name'
     
     # ============================================================================
-    # CORE IDENTIFICATION
+    # CORE IDENTIFICATION (Customer-Defined)
     # ============================================================================
     name = fields.Char(
-        string="File Name",
+        string="File Name/Number",
         required=True,
         tracking=True,
-        help="Descriptive name of this file folder (e.g., 'HR Personnel 2024', 'Invoices Q1')"
+        help="Customer's name for this file folder. Examples:\n"
+             "- Patient name: 'John Doe'\n"
+             "- Case number: 'CASE-2024-001'\n"
+             "- Department: 'HR Personnel Files'\n"
+             "Customer uses their own naming/numbering system."
     )
     
     barcode = fields.Char(
         string="File Barcode",
         tracking=True,
         copy=False,
-        help="Unique barcode for tracking this file when removed from container"
+        index=True,
+        help="Pre-printed barcode assigned to this file folder.\n"
+             "Assigned when file is removed from container and needs independent tracking.\n"
+             "Scanning this barcode displays: file name, location, customer, parent container, etc."
     )
     
     # ============================================================================
@@ -155,17 +162,23 @@ class RecordsFile(models.Model):
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
-        """Create file and optionally link to stock.quant"""
+        """
+        Create file record.
+        
+        WORKFLOW:
+        1. User removes file from container
+        2. Types file name (customer's naming system)
+        3. Assigns pre-printed barcode from sheet
+        4. System creates stock.quant link (if tracking needed)
+        
+        NOTE: Barcode is MANUALLY assigned, not auto-generated
+        """
         files = super().create(vals_list)
         
         for file in files:
-            # Auto-generate barcode if not provided
-            if not file.barcode:
-                file.barcode = f"FILE-{file.id:06d}"
-            
-            # If container specified, inherit owner from container
-            if file.container_id and file.container_id.quant_id:
-                # Create stock.quant for this file
+            # If container specified and file needs inventory tracking
+            if file.container_id and file.container_id.quant_id and file.barcode:
+                # Create stock.quant for this file (only if barcode assigned)
                 if not file.quant_id:
                     quant = self.env['stock.quant'].create({
                         'product_id': self._get_default_product().id,
@@ -199,12 +212,55 @@ class RecordsFile(models.Model):
         return product
     
     def _create_lot_for_file(self, file):
-        """Create serial number (lot) for this file"""
+        """
+        Create serial number (lot) for this file using assigned barcode.
+        
+        NOTE: Barcode must already be assigned (from pre-printed sheet)
+        """
+        if not file.barcode:
+            raise UserError(_(
+                "Cannot create inventory tracking without barcode. "
+                "Please assign a pre-printed barcode to this file first."
+            ))
+        
         return self.env['stock.lot'].create({
             'name': file.barcode,
             'product_id': self._get_default_product().id,
             'company_id': self.env.company.id,
         })
+    
+    def action_assign_barcode_and_track(self):
+        """
+        User action: Assign barcode from pre-printed sheet and enable tracking.
+        
+        WORKFLOW:
+        1. File removed from container
+        2. User enters file name (customer's naming system)
+        3. User clicks "Assign Barcode" 
+        4. System prompts for barcode from pre-printed sheet
+        5. Creates stock.quant for independent tracking
+        
+        Returns: Form wizard to assign barcode
+        """
+        self.ensure_one()
+        
+        if self.quant_id:
+            raise UserError(_("This file already has inventory tracking enabled."))
+        
+        if not self.container_id:
+            raise UserError(_("File must belong to a container to enable tracking."))
+        
+        return {
+            'name': _('Assign Barcode to File'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.file',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'form_view_ref': 'records_management.view_records_file_assign_barcode_form',
+            },
+        }
     
     # ============================================================================
     # ACTIONS

@@ -57,7 +57,16 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Document Name", required=True, tracking=True)
+    name = fields.Char(
+        string="Document Name/Description",
+        required=True,
+        tracking=True,
+        help="Customer's description of this document. Examples:\n"
+             "- 'Employment Contract - John Doe'\n"
+             "- 'Medical Record - Patient #12345'\n"
+             "- 'Invoice #INV-2024-001'\n"
+             "Customer uses their own naming system."
+    )
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
@@ -65,17 +74,26 @@ class RecordsDocument(models.Model):
     reference = fields.Char(string="Reference / Barcode", copy=False, tracking=True)
     # Temporary file barcode (distinct from physical barcode). Assigned automatically if absent.
     temp_barcode = fields.Char(
-        string="Temporary File Barcode",
+        string="Temporary Document Barcode",
         copy=False,
         index=True,
         tracking=True,
-        help="System-generated temporary barcode (prefix TF) used before any permanent document barcode is applied."
+        help="System-generated temporary barcode used before physical barcode from pre-printed sheet is assigned."
     )
 
     # ============================================================================
-    # ODOO NATIVE BARCODE FIELD
+    # PHYSICAL BARCODE (Manual Assignment from Pre-Printed Sheets)
     # ============================================================================
-    barcode = fields.Char(string="Barcode", help="Document barcode for scanning", tracking=True)
+    barcode = fields.Char(
+        string="Physical Barcode",
+        copy=False,
+        index=True,
+        tracking=True,
+        help="Pre-printed barcode from sheet, assigned when document removed from file for scanning/delivery.\n"
+             "NOT auto-generated - manually assigned from physical barcode sheets.\n"
+             "Scanning displays: document name, file, container, customer, location, scan history.\n"
+             "Only assigned when document needs independent tracking (e.g., sent for scanning)."
+    )
     barcode_image = fields.Binary(
         string="Barcode Image",
         compute="_compute_barcode_image",
