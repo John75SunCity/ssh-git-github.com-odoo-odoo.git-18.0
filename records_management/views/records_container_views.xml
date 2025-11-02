@@ -170,20 +170,23 @@ Destroy Container</a>
 
             </header>
         <field name="name" string="Container ID"/>
+        <field name="partner_id" string="Customer" required="1"/>
+        <field name="department_id" string="Department"/>
         <field name="temp_barcode" string="Temp Barcode"/>
-        <field name="barcode" string="Barcode"/>
+        <field name="barcode" string="Physical Barcode"/>
         <field name="container_type_id" string="Container Type"/>
         <field name="weight" string="Weight"/>
-        <field name="partner_id" string="Customer"/>
-        <field name="department_id" string="Department"/>
         <field name="location_id" string="Location"/>
         <field name="state" string="Status" widget="badge"/>
         <field name="document_count" string="Documents" sum="Total Documents"/>
-        <field name="storage_start_date" string="Storage Start"/>
-        <field name="destruction_due_date" string="Due Date"/>
-        <field name="is_due_for_destruction" string="Due" widget="boolean_toggle"/>
-        <field name="security_level" string="Security"/>
-        <field name="active" string="Active" widget="boolean_toggle"/>
+        <field name="storage_start_date" string="Storage Start" optional="hide"/>
+        <field name="destruction_due_date" string="Due Date" optional="hide"/>
+        <field name="is_due_for_destruction" string="Due" widget="boolean_toggle" optional="hide"/>
+        <field name="security_level" string="Security" optional="hide"/>
+        <field name="active" string="Active" widget="boolean_toggle" optional="hide"/>
+        <!-- Hide company_id - not relevant since all containers belong to service provider "My Company" -->
+        <!-- Users care about CUSTOMER (partner_id), not service provider company -->
+        <field name="company_id" column_invisible="1"/>
             <button name="action_view_documents" type="object" string="View Docs" icon="fas fa-file-text-o" class="btn-link"/>
             <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fas fa-barcode" class="btn-link"/>
             <button name="action_generate_qr_code" type="object" string="QR Code" icon="fas fa-qrcode" class="btn-link"/>
