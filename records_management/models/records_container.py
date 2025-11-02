@@ -29,8 +29,6 @@ class RecordsContainer(models.Model):
         string="Container Name/Number",
         required=True,
         copy=False,
-        readonly=False,
-        states={'destroyed': [('readonly', True)]},
         tracking=True,
         help="Customer's name or number for this container. Examples:\n"
              "- 'HR Personnel 2024'\n"
