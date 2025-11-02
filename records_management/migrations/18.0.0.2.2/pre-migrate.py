@@ -202,17 +202,23 @@ def migrate(cr, version):
     # ============================================================================
     
     # Clear all parent_path values - Odoo will recompute them
-    # IMPORTANT: Set to NULL (not empty string or False)
+    # IMPORTANT: Set to NULL (parent_path is a string field)
     cr.execute("""
         UPDATE stock_location
         SET parent_path = NULL
         WHERE parent_path IS NOT NULL
-        OR parent_path = ''
-        OR parent_path = false
+        AND parent_path != ''
     """)
     
     if cr.rowcount > 0:
         print(f"✅ Cleared parent_path for {cr.rowcount} locations (will be recomputed)")
+    
+    # Also clear empty parent_path values
+    cr.execute("""
+        UPDATE stock_location
+        SET parent_path = NULL
+        WHERE parent_path = ''
+    """)
     
     # Also ensure no records.location has invalid parent_path
     cr.execute("""
@@ -228,8 +234,6 @@ def migrate(cr, version):
             UPDATE records_location
             SET parent_path = NULL
             WHERE parent_path IS NOT NULL
-            OR parent_path = ''
-            OR parent_path = false
         """)
         
         if cr.rowcount > 0:
