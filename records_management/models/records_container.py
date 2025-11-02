@@ -65,6 +65,12 @@ class RecordsContainer(models.Model):
         string="Current Location",
         tracking=True,
         domain="[('active', '=', True), ('state', '=', 'active')]",
+        help="Official warehouse location (internal use only). Portal users use Temporary Inventory instead.",
+    )
+    temp_inventory_id = fields.Many2one(
+        "temp.inventory", 
+        string="Temporary Inventory",
+        help="Temporary location at customer site (portal users only). Used to track containers before pickup using temp barcodes and locations. Linked to official system after pickup for full lifecycle visibility.",
     )
     container_type_id = fields.Many2one("records.container.type", string="Container Type", required=True)
     # Compatibility alias for legacy references and reporting convenience
@@ -78,7 +84,6 @@ class RecordsContainer(models.Model):
         help="Read-only name of the selected Container Type (for reporting/grouping)."
     )
     retention_policy_id = fields.Many2one("records.retention.policy", string="Retention Policy")
-    temp_inventory_id = fields.Many2one("temp.inventory", string="Temporary Inventory")
     document_type_id = fields.Many2one("records.document.type", string="Document Type")
 
     # ============================================================================

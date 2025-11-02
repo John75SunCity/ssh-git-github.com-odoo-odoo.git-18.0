@@ -230,7 +230,10 @@ Destroy Container</a>
                     <group string="Customer &amp; Location">
         <field name="partner_id" required="1" readonly="context.get('uid') and user.has_group('base.group_portal')" options="{'no_create': True, 'no_create_edit': True}"/>
         <field name="department_id"/>
-        <field name="location_id"/>
+        <!-- Internal users: Official warehouse locations -->
+        <field name="location_id" invisible="context.get('uid') and user.has_group('base.group_portal')" options="{'no_create': True, 'no_create_edit': True}"/>
+        <!-- Portal users: Temporary inventory (temp locations at customer site) -->
+        <field name="temp_inventory_id" invisible="not context.get('uid') or not user.has_group('base.group_portal')" options="{'no_create': True, 'no_create_edit': True}"/>
         <field name="user_id"/>
                     </group>
                 </group>
