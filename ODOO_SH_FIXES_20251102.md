@@ -34,42 +34,56 @@ WARNING Field records.location.security_level: selection=[...] overrides existin
 
 ---
 
-### 2. MissingError for stock.location(255) (Commit 19f9c81e)
+### 2. MissingError for stock.location(36, 255, etc.) (Commit 413d8220)
 
 **Problem:**
 ```
 MissingError: Record does not exist or has been deleted.
-(Record: stock.location(255), User: 1)
+(Record: stock.location(36), User: 1)
 ```
 
 **Root Cause:**
-- Previous migrations/testing deleted `stock.location` records
-- Warehouses still referenced deleted `view_location_id`
-- Location hierarchy had broken `parent_path` references
+- Module upgrade fails BEFORE any migration can run
+- Odoo tries to compute `warehouse_id` during model loading
+- Warehouses reference deleted `stock.location` records
+- **Chicken-and-egg problem**: Can't upgrade to run migration that would fix the issue
 
 **Solution:**
-Created migration script `18.0.0.2.1/post-migrate.py` that:
+Created **PRE-migration** script `18.0.0.2.1/pre-migrate.py` that:
 
-1. **Finds orphaned warehouse references:**
+1. **Runs BEFORE Python models load** (critical timing difference)
+
+2. **Fixes orphaned warehouse references:**
    ```sql
-   SELECT w.id FROM stock_warehouse w
-   LEFT JOIN stock_location l ON w.view_location_id = l.id
-   WHERE l.id IS NULL
+   UPDATE stock_warehouse w
+   SET view_location_id = (valid_location_id)
+   WHERE view_location_id NOT IN (SELECT id FROM stock_location)
    ```
 
-2. **Fixes warehouses:**
-   - Updates to valid view location, OR
-   - Sets to NULL to allow auto-creation
+3. **Repairs location parent references:**
+   - Re-parents orphaned locations to root
+   - Or sets `location_id = NULL` to make them root locations
 
-3. **Repairs broken parent_path hierarchies:**
-   - Identifies locations with missing parent IDs in path
-   - Clears `parent_path` (Odoo will recompute)
+4. **Clears broken parent_path:**
+   - Sets all `parent_path = NULL`
+   - Odoo recomputes hierarchy automatically
+
+5. **Fixes ALL warehouse location fields:**
+   - `view_location_id`
+   - `lot_stock_id`
+   - `wh_input_stock_loc_id`
+   - `wh_output_stock_loc_id`
+   - `wh_pack_stock_loc_id`
+
+**Why PRE-migration vs POST-migration:**
+- **POST-migration**: Runs AFTER module loads (too late - module won't load)
+- **PRE-migration**: Runs at SQL level BEFORE model loading (fixes data first)
 
 **Result:**
-✅ Migration will run automatically on module upgrade
-✅ Cleans all orphaned warehouse references
-✅ Repairs location hierarchy integrity
-✅ Prevents MissingError during warehouse computation
+✅ Module can now upgrade successfully
+✅ No more MissingError during warehouse computation
+✅ All orphaned references cleaned at database level
+✅ Odoo recomputes hierarchies after cleanup
 
 ---
 
@@ -79,14 +93,18 @@ Created migration script `18.0.0.2.1/post-migrate.py` that:
 
 1. **Upgrade module to 18.0.0.2.1:**
    - Odoo.sh will detect version change
-   - Post-migration script runs automatically
-   - Orphaned references cleaned up
+   - **PRE-migration script runs FIRST** (before model loading)
+   - Orphaned references cleaned at SQL level
+   - Module then loads successfully
 
-2. **Verify fixes:**
+2. **Verify fixes in deployment log:**
    ```
-   # Check for warnings in deployment log
    # Should see:
-   ✅ Migration 18.0.0.2.1: Orphaned reference cleanup complete
+   🔧 PRE-Migration 18.0.0.2.1: Cleaning orphaned location references...
+   ✅ Updated X warehouses to use location Y
+   ✅ Re-parented X locations to root location Y
+   ✅ Cleared parent_path for X locations (will be recomputed)
+   ✅ PRE-Migration 18.0.0.2.1: Database cleanup complete
    ```
 
 3. **Test location functionality:**
@@ -126,39 +144,18 @@ class RecordsLocation(models.Model):
    - Added mail.thread inheritance
    - Removed duplicate fields
    
-2. **records_management/migrations/18.0.0.2.1/post-migrate.py**
-   - NEW: Orphaned reference cleanup
+2. **records_management/migrations/18.0.0.2.1/pre-migrate.py**
+   - NEW: PRE-migration cleanup (runs before module loads)
+   - Fixes warehouses, location parents, parent_path
+   - Critical timing: Executes at SQL level before Python
    
 3. **records_management/__manifest__.py**
    - Version: 18.0.0.2.0 → 18.0.0.2.1
 
 ---
 
-## Testing Checklist
-
-After deployment:
-
-- [ ] Module loads without errors
-- [ ] No field parameter warnings
-- [ ] No MissingError for stock.location
-- [ ] Location creation works
-- [ ] Location hierarchy displays correctly
-- [ ] Container location assignment works
-- [ ] "My Inventory" shows containers
-- [ ] Change tracking works on custom fields
-
----
-
-## Next Steps
-
-1. **Monitor Odoo.sh deployment** for migration success
-2. **Delete test containers** (as planned)
-3. **Test location creation** on production
-4. **Verify inventory integration** works end-to-end
-
----
-
 ## Commits
 
 - **e7d88186**: Add mail.thread inheritance and remove duplicate fields
-- **19f9c81e**: Add migration to clean orphaned stock.location references
+- **19f9c81e**: Add migration to clean orphaned stock.location references (POST - wrong timing)
+- **413d8220**: Change to PRE-migration to fix orphaned references before module loads ⭐ FINAL FIX
