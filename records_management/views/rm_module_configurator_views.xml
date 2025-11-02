@@ -105,16 +105,16 @@
 </group>
 </page>
 <page string="Reporting &amp; Dashboards" name="reporting_dashboards">
-    <group string="Management Dashboard">
-        <field name="enable_management_dashboard"/>
-    </group>
-</page>
-<page string="Portal Features" name="portal_features">
-    <group string="Portal Experience">
-        <field name="portal_feature_pack_enabled"/>
-        <field name="work_orders_portal_enabled"/>
-    </group>
-</page>
+                        <group string="Management Dashboard">
+                        <field name="enable_management_dashboard"/>
+                    </group>
+                </page>
+                <page string="Portal Features" name="portal_features" invisible="category != 'portal'">
+                    <group string="Portal Experience">
+                        <field name="portal_feature_pack_enabled"/>
+                        <field name="work_orders_portal_enabled"/>
+                    </group>
+                </page>
 </notebook>
 </sheet>
 <div class="oe_chatter">

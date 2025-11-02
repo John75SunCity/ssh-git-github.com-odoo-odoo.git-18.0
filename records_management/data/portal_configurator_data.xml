@@ -8,7 +8,7 @@
             <field name="category">portal</field>
             <field name="sequence">5</field>
             <field name="description">Enable the complete Records Management customer portal experience, including dashboard, inventory, and service request menus.</field>
-            <field name="portal_feature_pack_enabled">False</field>
+            <field name="portal_feature_pack_enabled">True</field>
             <field name="work_orders_portal_enabled">True</field>
         </record>
 

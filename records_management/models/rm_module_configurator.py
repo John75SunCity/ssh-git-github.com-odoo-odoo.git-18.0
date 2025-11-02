@@ -143,7 +143,7 @@ class RmModuleConfigurator(models.Model):
              "If disabled, the unified work order portal pages will show zero results regardless of per-record 'Portal Visible' flags."
     )
     portal_feature_pack_enabled = fields.Boolean(
-        default=False,
+        default=True,
         help="Enable the complete Records Management customer portal experience, including navigation menus and portal admin tooling."
     )
 
