@@ -260,6 +260,7 @@ from . import stock_lot_attribute
 from . import stock_lot_attribute_option
 from . import stock_lot_attribute_value
 from . import stock_quant  # Extend stock.quant for customer ownership tracking
+from . import stock_location  # Extend stock.location for records management features
 from . import stock_move_sms_validation
 from . import stock_picking
 from . import stock_picking_records_extension
