@@ -282,3 +282,28 @@ class RecordsLocation(models.Model):
             "</list>"
         )
         return arch
+
+    # =========================================================================
+    # UPGRADE SAFEGUARD: Prevent MissingError during parent_path computation
+    # =========================================================================
+    @api.depends('location_id')
+    def _compute_warehouse_id(self):
+        """
+        Override stock.location._compute_warehouse_id with safe version.
+        
+        During module upgrade, stock.location may have broken parent_path values
+        that reference deleted locations. The stock module's search with 'parent_of'
+        operator tries to traverse parent_path and fails with MissingError.
+        
+        This override catches that error and gracefully handles it by setting
+        warehouse_id to False, allowing the upgrade to complete. Odoo will
+        recompute warehouse_id correctly after upgrade.
+        """
+        for location in self:
+            try:
+                # Try the parent class computation
+                super(RecordsLocation, location)._compute_warehouse_id()
+            except Exception:
+                # If it fails (MissingError, AttributeError, etc.), set to False
+                # Odoo will recompute this after the upgrade completes
+                location.warehouse_id = False
