@@ -64,6 +64,7 @@
         "security/portal_document_rules.xml",    # New: documents portal scoping
         "security/portal_financial_rules.xml",   # New: financial/negotiated rates portal scoping
         "security/portal_certificate_rules.xml", # New: destruction certificate portal scoping
+        "security/portal_temp_inventory_rules.xml", # New: temp inventory portal scoping (customer isolation)
         "security/ir.model.access.csv",
         # Google Maps API configuration (loads API key for map widgets)
         "views/google_maps_assets.xml",

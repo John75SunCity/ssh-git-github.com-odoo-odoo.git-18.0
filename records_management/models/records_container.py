@@ -70,7 +70,8 @@ class RecordsContainer(models.Model):
     temp_inventory_id = fields.Many2one(
         "temp.inventory", 
         string="Temporary Inventory",
-        help="Temporary location at customer site (portal users only). Used to track containers before pickup using temp barcodes and locations. Linked to official system after pickup for full lifecycle visibility.",
+        domain="[('partner_id', '=', partner_id)]",
+        help="Temporary location at customer site (portal users only). Used to track containers before pickup using temp barcodes and locations. Linked to official system after pickup for full lifecycle visibility. Filtered to show only locations belonging to the selected customer.",
     )
     container_type_id = fields.Many2one("records.container.type", string="Container Type", required=True)
     # Compatibility alias for legacy references and reporting convenience
