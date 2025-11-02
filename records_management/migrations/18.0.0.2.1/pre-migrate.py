@@ -201,15 +201,33 @@ def migrate(cr, version):
     # 4. CLEAR BROKEN PARENT_PATH ENTRIES
     # ============================================================================
     
-    # Clear all parent_path values - Odoo will recompute them
+    # CRITICAL: Clear ALL parent_path values FIRST
+    # This prevents MissingError when Odoo tries to traverse paths
+    # Odoo will recompute all hierarchies after module loads
     cr.execute("""
         UPDATE stock_location
         SET parent_path = NULL
-        WHERE parent_path IS NOT NULL
     """)
     
     if cr.rowcount > 0:
         print(f"✅ Cleared parent_path for {cr.rowcount} locations (will be recomputed)")
+    
+    # Also ensure warehouse_id is cleared (will be recomputed)
+    cr.execute("""
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'stock_location' 
+        AND column_name = 'warehouse_id'
+    """)
+    
+    if cr.fetchone():
+        cr.execute("""
+            UPDATE stock_location
+            SET warehouse_id = NULL
+        """)
+        
+        if cr.rowcount > 0:
+            print(f"✅ Cleared warehouse_id for {cr.rowcount} locations (will be recomputed)")
     
     # ============================================================================
     # 5. SUMMARY
