@@ -188,7 +188,8 @@ from . import records_file  # File folders (hierarchical inventory)
 from . import records_installer
 from . import records_inventory_dashboard
 from . import records_management_dashboard
-from . import records_location
+# TEMPORARY DISABLE: Let stock.location load first to fix parent_path (version 18.0.0.2.5)
+# from . import records_location
 from . import records_location_inspection
 from . import records_policy_version
 from . import records_promotional_discount
