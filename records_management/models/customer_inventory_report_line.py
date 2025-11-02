@@ -184,12 +184,16 @@ class CustomerInventoryReportLine(models.Model):
     def action_view_documents(self):
         """View documents in the container"""
         self.ensure_one()
+        # Prevent NewId warning: only search if container is saved
+        if not self.container_id or not self.container_id.id:
+            return {'type': 'ir.actions.client', 'tag': 'display_notification',
+                    'params': {'message': _('Container must be saved first'), 'type': 'warning'}}
         return {
             'type': 'ir.actions.act_window',
             'name': _('Container Documents'),
             'res_model': 'records.document',
             'view_mode': 'tree,form',
-            'domain': [('container_id', '=', self.container_id.id)],
+            'domain': [('container_id', 'in', self.container_id.ids)],
             'context': {'default_container_id': self.container_id.id},
         }
 

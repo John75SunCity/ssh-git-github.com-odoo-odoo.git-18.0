@@ -473,8 +473,11 @@ class RecordsManagementController(http.Controller):
 
     def _get_container_audit_logs(self, container):
         """Get audit logs for specific container"""
+        # Prevent NewId warning: only search if container is saved
+        if not container or not container.id or isinstance(container.id, models.NewId):
+            return request.env['naid.audit.log']
         return request.env['naid.audit.log'].search([
-            ('container_id', '=', container.id)
+            ('container_id', 'in', container.ids)
         ], order='create_date desc', limit=20)
 
     def _get_container_billing_history(self, container):

@@ -232,7 +232,7 @@ class ContainerQuickAddWizard(models.TransientModel):
                     'default_partner_id': self.partner_id.id,
                     'default_department_id': self.department_id.id,
                 },
-                'domain': [('container_id', '=', container.id)],
+                'domain': [('container_id', 'in', container.ids)],
                 'target': 'current',
             }
         else:

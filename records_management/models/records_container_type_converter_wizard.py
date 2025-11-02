@@ -593,11 +593,13 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
     def _transfer_contents(self):
         """Transfer contents from source to target container"""
         if self.content_handling == 'transfer_all':
-            # Transfer all documents
-            documents = self.env['records.document'].search([
-                ('container_id', '=', self.source_container_id.id)
-            ])
-            documents.write({'container_id': self.new_container_id.id})
+            # Transfer all documents (check for saved container)
+            if self.source_container_id and self.source_container_id.id:
+                documents = self.env['records.document'].search([
+                    ('container_id', 'in', self.source_container_id.ids)
+                ])
+                if self.new_container_id and self.new_container_id.id:
+                    documents.write({'container_id': self.new_container_id.id})
 
         elif self.content_handling == 'transfer_selected':
             # Transfer selected documents
@@ -613,11 +615,12 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
 
         # Method 1: Update records.billing entries
         if hasattr(self.env, 'records.billing'):
-            # Find existing billing record for the source container
-            existing_billing = self.env['records.billing'].search([
-                ('partner_id', '=', customer.id),
-                ('container_id', '=', self.source_container_id.id),
-                ('active', '=', True)
+            # Find existing billing record for the source container (check for saved record)
+            if self.source_container_id and self.source_container_id.id:
+                existing_billing = self.env['records.billing'].search([
+                    ('partner_id', '=', customer.id),
+                    ('container_id', 'in', self.source_container_id.ids),
+                    ('active', '=', True)
             ], limit=1)
 
             if existing_billing:
