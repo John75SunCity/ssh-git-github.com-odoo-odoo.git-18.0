@@ -184,6 +184,7 @@ from . import records_destruction_job
 from . import records_digital_scan
 from . import records_document
 from . import records_document_type
+from . import records_file  # File folders (hierarchical inventory)
 from . import records_installer
 from . import records_inventory_dashboard
 from . import records_management_dashboard

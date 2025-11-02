@@ -35,13 +35,48 @@ class StockQuant(models.Model):
     _inherit = 'stock.quant'
 
     # ============================================================================
-    # RECORDS MANAGEMENT IDENTIFICATION
+    # RECORDS MANAGEMENT IDENTIFICATION (HIERARCHICAL)
     # ============================================================================
     is_records_container = fields.Boolean(
         string="Is Records Container",
         default=False,
         help="Identifies this quant as a records management container (box) "
              "rather than standard inventory. Enables records-specific features."
+    )
+    
+    is_records_file = fields.Boolean(
+        string="Is Records File Folder",
+        default=False,
+        help="Identifies this quant as a file folder that can be removed from "
+             "a container for delivery/retrieval. Tracks individual file movements."
+    )
+    
+    is_records_document = fields.Boolean(
+        string="Is Individual Document",
+        default=False,
+        help="Identifies this quant as an individual document/paper that can be "
+             "removed from a file for scanning or delivery. Tracks document-level movements."
+    )
+    
+    # ============================================================================
+    # HIERARCHICAL TRACKING - "Where did this come from?"
+    # ============================================================================
+    parent_quant_id = fields.Many2one(
+        'stock.quant',
+        string="Parent Item",
+        tracking=True,
+        help="Tracks the hierarchical origin of this item:\n"
+             "- File's parent = Container it came from\n"
+             "- Document's parent = File it came from\n"
+             "Preserves 'put it back where it came from' logic for returns."
+    )
+    
+    child_quant_ids = fields.One2many(
+        'stock.quant',
+        'parent_quant_id',
+        string="Items Removed From This",
+        help="Files removed from this container, or documents removed from this file. "
+             "Shows what's currently out of this parent item."
     )
     
     # ============================================================================
@@ -197,6 +232,119 @@ class StockQuant(models.Model):
             by_customer[customer] |= quant
         
         return by_customer
+    
+    @api.model
+    def get_customer_files(self, partner_id):
+        """
+        Get all file folders belonging to a customer (whether in containers or out).
+        
+        Use case: Customer wants to see all their files, including:
+        - Files inside containers at warehouse
+        - Files out for delivery
+        - Files at customer site
+        """
+        return self.search([
+            ('is_records_file', '=', True),
+            ('owner_id', '=', partner_id),
+        ])
+    
+    @api.model
+    def get_customer_documents(self, partner_id):
+        """
+        Get all individual documents belonging to a customer.
+        
+        Use case: Track documents removed from files for scanning/delivery
+        """
+        return self.search([
+            ('is_records_document', '=', True),
+            ('owner_id', '=', partner_id),
+        ])
+    
+    def get_parent_container(self):
+        """
+        Walk up the hierarchy to find the original container.
+        
+        Returns: stock.quant record where is_records_container=True
+        
+        Example:
+        - Document → parent_quant_id = File
+        - File → parent_quant_id = Container
+        - Container → parent_quant_id = None (top level)
+        """
+        self.ensure_one()
+        current = self
+        while current.parent_quant_id:
+            current = current.parent_quant_id
+            if current.is_records_container:
+                return current
+        return current if current.is_records_container else None
+    
+    def get_full_hierarchy_path(self):
+        """
+        Get human-readable hierarchy path.
+        
+        Returns: "Container BOX-12345 → File HR-2024 → Document Contract-JD"
+        """
+        self.ensure_one()
+        path = []
+        current = self
+        while current:
+            if current.lot_id:
+                label = current.lot_id.name
+            elif current.product_id:
+                label = current.product_id.name
+            else:
+                label = f"Quant #{current.id}"
+            path.insert(0, label)
+            current = current.parent_quant_id
+        return " → ".join(path)
+    
+    def action_return_to_parent(self):
+        """
+        Create stock move to return this item to its parent's location.
+        
+        Use case: File delivered to customer, now returning to container
+        Logic: Move to parent_quant_id.location_id
+        """
+        self.ensure_one()
+        if not self.parent_quant_id:
+            raise UserError(_("This item has no parent to return to."))
+        
+        # Create return picking
+        picking_type = self.env['stock.picking.type'].search([
+            ('code', '=', 'internal'),
+            ('warehouse_id.company_id', '=', self.company_id.id),
+        ], limit=1)
+        
+        if not picking_type:
+            raise UserError(_("No internal transfer picking type found."))
+        
+        picking = self.env['stock.picking'].create({
+            'picking_type_id': picking_type.id,
+            'location_id': self.location_id.id,
+            'location_dest_id': self.parent_quant_id.location_id.id,
+            'partner_id': self.owner_id.id,
+            'origin': f"Return to {self.parent_quant_id.lot_id.name if self.parent_quant_id.lot_id else 'parent'}",
+        })
+        
+        # Create move
+        self.env['stock.move'].create({
+            'name': f"Return {self.lot_id.name if self.lot_id else self.product_id.name}",
+            'product_id': self.product_id.id,
+            'product_uom_qty': 1,
+            'product_uom': self.product_id.uom_id.id,
+            'picking_id': picking.id,
+            'location_id': self.location_id.id,
+            'location_dest_id': self.parent_quant_id.location_id.id,
+        })
+        
+        return {
+            'name': _('Return Transfer'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'stock.picking',
+            'res_id': picking.id,
+            'view_mode': 'form',
+        }
     
     # ============================================================================
     # ACTIONS

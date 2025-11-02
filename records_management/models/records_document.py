@@ -96,6 +96,21 @@ class RecordsDocument(models.Model):
         tracking=True,
     )
     container_id = fields.Many2one(comodel_name="records.container", string="Container", tracking=True)
+    
+    # ============================================================================
+    # HIERARCHICAL FILE FOLDER RELATIONSHIP
+    # ============================================================================
+    file_id = fields.Many2one(
+        comodel_name="records.file",
+        string="File Folder",
+        tracking=True,
+        help="File folder this document belongs to. Files can contain multiple documents "
+             "and can be removed from containers for delivery/retrieval."
+    )
+    
+    # ============================================================================
+    # STOCK INTEGRATION (Hierarchical Inventory)
+    # ============================================================================
     location_id = fields.Many2one(related='container_id.location_id', string="Location", store=True, readonly=True, comodel_name='stock.location')
     document_type_id = fields.Many2one(comodel_name="records.document.type", string="Document Type", tracking=True)
     lot_id = fields.Many2one(
@@ -103,6 +118,29 @@ class RecordsDocument(models.Model):
         string="Stock Lot",
         tracking=True,
         help="Lot/Serial number associated with this document.",
+    )
+    quant_id = fields.Many2one(
+        comodel_name="stock.quant",
+        string="Inventory Quant",
+        tracking=True,
+        ondelete='restrict',
+        help="Stock quantity record for this individual document when removed from file. "
+             "Tracks document-level movements (e.g., removed for scanning, delivery). "
+             "Most documents won't have quant_id - only when tracked independently."
+    )
+    
+    owner_id = fields.Many2one(
+        related='quant_id.owner_id',
+        string="Owner (Customer)",
+        store=True,
+        help="Customer who owns this document (from inventory tracking)"
+    )
+    
+    parent_quant_id = fields.Many2one(
+        related='quant_id.parent_quant_id',
+        string="Parent Item (File/Container)",
+        store=True,
+        help="File or container this document came from (for return tracking)"
     )
     temp_inventory_id = fields.Many2one(comodel_name="temp.inventory", string="Temporary Inventory")
     retention_policy_id = fields.Many2one(
