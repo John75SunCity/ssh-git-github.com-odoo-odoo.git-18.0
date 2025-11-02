@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Portal Requests List Template -->
+        <template id="my_requests_template" name="My Requests">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-set="title">My Requests</t>
+
+                <div class="o_portal_requests">
+                    <!-- Header Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-clipboard-list"></i>
+                                Service Requests
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- Search Bar -->
+                            <t t-if="search_term">
+                                <div class="alert alert-info mb-3">
+                                    <i class="fa fa-search"></i>
+                                    Searching for: <strong t-esc="search_term"/>
+                                    <a href="/my/requests" class="btn btn-sm btn-outline-secondary ml-2">
+                                        <i class="fa fa-times"></i> Clear Search
+                                    </a>
+                                </div>
+                            </t>
+
+                            <!-- Request Statistics -->
+                            <div class="row mb-4">
+                                <div class="col-md-3 col-6 mb-3">
+                                    <div class="card border-info">
+                                        <div class="card-body text-center">
+                                            <h5 class="text-info mb-2">
+                                                <i class="fa fa-file-text"></i>
+                                            </h5>
+                                            <h4 class="mb-0" t-esc="total_count"/>
+                                            <small class="text-muted">Total Requests</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6 mb-3">
+                                    <div class="card border-warning">
+                                        <div class="card-body text-center">
+                                            <h5 class="text-warning mb-2">
+                                                <i class="fa fa-clock-o"></i>
+                                            </h5>
+                                            <h4 class="mb-0" t-esc="len(requests.filtered(lambda r: r.state == 'pending'))"/>
+                                            <small class="text-muted">Pending</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6 mb-3">
+                                    <div class="card border-success">
+                                        <div class="card-body text-center">
+                                            <h5 class="text-success mb-2">
+                                                <i class="fa fa-check-circle"></i>
+                                            </h5>
+                                            <h4 class="mb-0" t-esc="len(requests.filtered(lambda r: r.state == 'approved'))"/>
+                                            <small class="text-muted">Approved</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-6 mb-3">
+                                    <div class="card border-danger">
+                                        <div class="card-body text-center">
+                                            <h5 class="text-danger mb-2">
+                                                <i class="fa fa-times-circle"></i>
+                                            </h5>
+                                            <h4 class="mb-0" t-esc="len(requests.filtered(lambda r: r.state in ['rejected', 'cancelled']))"/>
+                                            <small class="text-muted">Rejected/Cancelled</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="mb-3">
+                                <a href="/my/request/new/destruction" class="btn btn-danger mr-2">
+                                    <i class="fa fa-trash"></i> Request Destruction
+                                </a>
+                                <a href="/my/request/new/service" class="btn btn-primary mr-2">
+                                    <i class="fa fa-wrench"></i> Request Service
+                                </a>
+                                <a href="/my/request/new/inventory" class="btn btn-info">
+                                    <i class="fa fa-boxes"></i> Inventory Request
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Requests Table -->
+                    <div class="card">
+                        <div class="card-body">
+                            <t t-if="not requests">
+                                <div class="alert alert-info text-center py-5">
+                                    <i class="fa fa-inbox fa-3x mb-3 text-muted"></i>
+                                    <h4>No Requests Found</h4>
+                                    <p class="mb-0">
+                                        You haven't submitted any requests yet.
+                                        Click the buttons above to create your first request.
+                                    </p>
+                                </div>
+                            </t>
+
+                            <t t-if="requests">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Request #</th>
+                                                <th>Type</th>
+                                                <th>Description</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="requests" t-as="req">
+                                                <tr>
+                                                    <td>
+                                                        <strong t-esc="req.name"/>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-secondary" t-esc="req.request_type"/>
+                                                    </td>
+                                                    <td t-esc="req.description or 'No description'"/>
+                                                    <td>
+                                                        <t t-if="req.state == 'draft'">
+                                                            <span class="badge badge-secondary">
+                                                                <i class="fa fa-edit"></i> Draft
+                                                            </span>
+                                                        </t>
+                                                        <t t-if="req.state == 'pending'">
+                                                            <span class="badge badge-warning">
+                                                                <i class="fa fa-clock-o"></i> Pending
+                                                            </span>
+                                                        </t>
+                                                        <t t-if="req.state == 'approved'">
+                                                            <span class="badge badge-success">
+                                                                <i class="fa fa-check"></i> Approved
+                                                            </span>
+                                                        </t>
+                                                        <t t-if="req.state == 'rejected'">
+                                                            <span class="badge badge-danger">
+                                                                <i class="fa fa-times"></i> Rejected
+                                                            </span>
+                                                        </t>
+                                                        <t t-if="req.state == 'cancelled'">
+                                                            <span class="badge badge-dark">
+                                                                <i class="fa fa-ban"></i> Cancelled
+                                                            </span>
+                                                        </t>
+                                                        <t t-if="req.state == 'completed'">
+                                                            <span class="badge badge-primary">
+                                                                <i class="fa fa-check-circle"></i> Completed
+                                                            </span>
+                                                        </t>
+                                                    </td>
+                                                    <td t-esc="req.create_date.strftime('%Y-%m-%d') if req.create_date else 'N/A'"/>
+                                                    <td>
+                                                        <a t-attf-href="/my/requests/#{req.id}" class="btn btn-sm btn-primary">
+                                                            <i class="fa fa-eye"></i> View
+                                                        </a>
+                                                        <t t-if="req.state in ['draft', 'pending']">
+                                                            <form t-attf-action="/my/requests/#{req.id}/cancel" method="post" style="display: inline;">
+                                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                                        onclick="return confirm('Are you sure you want to cancel this request?');">
+                                                                    <i class="fa fa-times"></i> Cancel
+                                                                </button>
+                                                            </form>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <t t-if="total_pages &gt; 1">
+                                    <nav aria-label="Request pagination">
+                                        <ul class="pagination justify-content-center mt-4">
+                                            <li t-att-class="'page-item' + (' disabled' if not has_prev else '')">
+                                                <a t-if="has_prev" class="page-link" 
+                                                   t-attf-href="/my/requests?page=#{prev_page}#{('&amp;search=' + search_term) if search_term else ''}">
+                                                    <i class="fa fa-chevron-left"></i> Previous
+                                                </a>
+                                                <span t-if="not has_prev" class="page-link">
+                                                    <i class="fa fa-chevron-left"></i> Previous
+                                                </span>
+                                            </li>
+                                            
+                                            <li class="page-item active">
+                                                <span class="page-link">
+                                                    Page <t t-esc="current_page"/> of <t t-esc="total_pages"/>
+                                                </span>
+                                            </li>
+                                            
+                                            <li t-att-class="'page-item' + (' disabled' if not has_next else '')">
+                                                <a t-if="has_next" class="page-link"
+                                                   t-attf-href="/my/requests?page=#{next_page}#{('&amp;search=' + search_term) if search_term else ''}">
+                                                    Next <i class="fa fa-chevron-right"></i>
+                                                </a>
+                                                <span t-if="not has_next" class="page-link">
+                                                    Next <i class="fa fa-chevron-right"></i>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Request Detail Template -->
+        <template id="my_request_detail_template" name="Request Detail">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Request Details</t>
+
+                <div class="o_portal_request_detail">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-file-text"></i>
+                                Request: <span t-esc="customer_request.name"/>
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <dl class="row">
+                                        <dt class="col-sm-4">Request Type:</dt>
+                                        <dd class="col-sm-8">
+                                            <span class="badge badge-info" t-esc="customer_request.request_type"/>
+                                        </dd>
+
+                                        <dt class="col-sm-4">Status:</dt>
+                                        <dd class="col-sm-8">
+                                            <t t-if="customer_request.state == 'draft'">
+                                                <span class="badge badge-secondary">Draft</span>
+                                            </t>
+                                            <t t-if="customer_request.state == 'pending'">
+                                                <span class="badge badge-warning">Pending</span>
+                                            </t>
+                                            <t t-if="customer_request.state == 'approved'">
+                                                <span class="badge badge-success">Approved</span>
+                                            </t>
+                                            <t t-if="customer_request.state == 'rejected'">
+                                                <span class="badge badge-danger">Rejected</span>
+                                            </t>
+                                            <t t-if="customer_request.state == 'cancelled'">
+                                                <span class="badge badge-dark">Cancelled</span>
+                                            </t>
+                                            <t t-if="customer_request.state == 'completed'">
+                                                <span class="badge badge-primary">Completed</span>
+                                            </t>
+                                        </dd>
+
+                                        <dt class="col-sm-4">Created:</dt>
+                                        <dd class="col-sm-8" t-esc="customer_request.create_date.strftime('%Y-%m-%d %H:%M') if customer_request.create_date else 'N/A'"/>
+
+                                        <dt class="col-sm-4">Priority:</dt>
+                                        <dd class="col-sm-8">
+                                            <t t-if="customer_request.priority == 'low'">
+                                                <span class="badge badge-secondary">Low</span>
+                                            </t>
+                                            <t t-if="customer_request.priority == 'normal'">
+                                                <span class="badge badge-info">Normal</span>
+                                            </t>
+                                            <t t-if="customer_request.priority == 'high'">
+                                                <span class="badge badge-warning">High</span>
+                                            </t>
+                                            <t t-if="customer_request.priority == 'urgent'">
+                                                <span class="badge badge-danger">Urgent</span>
+                                            </t>
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Description</h5>
+                                    <p t-esc="customer_request.description or 'No description provided'"/>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <a href="/my/requests" class="btn btn-secondary">
+                                    <i class="fa fa-arrow-left"></i> Back to Requests
+                                </a>
+                                <t t-if="customer_request.state in ['draft', 'pending']">
+                                    <form t-attf-action="/my/requests/#{customer_request.id}/cancel" method="post" style="display: inline;">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <button type="submit" class="btn btn-danger"
+                                                onclick="return confirm('Are you sure you want to cancel this request?');">
+                                            <i class="fa fa-times"></i> Cancel Request
+                                        </button>
+                                    </form>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
