@@ -404,7 +404,16 @@ class RecordsContainer(models.Model):
         # Prevent changing temp_barcode after physical barcode assigned unless superuser context flag
         if "temp_barcode" in vals and any(rec.barcode for rec in self) and not self.env.context.get("allow_temp_barcode_edit"):
             vals.pop("temp_barcode")
-        return super().write(vals)
+        
+        result = super().write(vals)
+        
+        # ✅ FIX: Create stock.quant when container is activated (state changes from draft)
+        if 'state' in vals:
+            for record in self:
+                if record.state not in ('draft',) and not record.quant_id:
+                    record._create_stock_quant()
+        
+        return result
 
     def unlink(self):
         for record in self:
