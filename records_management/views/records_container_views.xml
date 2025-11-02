@@ -231,11 +231,11 @@ Destroy Container</a>
         <field name="partner_id" required="1" readonly="context.get('uid') and user.has_group('base.group_portal')" options="{'no_create': True, 'no_create_edit': True}"/>
         <field name="department_id"/>
         <!-- Internal users: Official warehouse locations -->
-        <field name="location_id" invisible="context.get('uid') and user.has_group('base.group_portal')" options="{'no_create': True, 'no_create_edit': True}"/>
+        <field name="location_id" groups="base.group_user" options="{'no_create': True, 'no_create_edit': True}"/>
         <!-- Portal users: Temporary inventory (temp locations at customer site) -->
         <!-- Quick-create enabled with context to default to container's partner_id -->
         <field name="temp_inventory_id" 
-               invisible="not context.get('uid') or not user.has_group('base.group_portal')" 
+               groups="base.group_portal"
                context="{'default_partner_id': partner_id}"
                options="{'no_open': False}"/>
         <field name="user_id"/>
