@@ -37,16 +37,18 @@ class ChainOfCustodyEvent(models.Model):
         help="Customer related to this custody event"
     )
 
-    # Location tracking
+    # Location tracking (warehouse/stock locations for container movements)
     from_location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='From Location',
-        help="Location where event originated"
+        domain="[('usage', '=', 'internal')]",
+        help="Warehouse location where event originated"
     )
     to_location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='To Location',
-        help="Destination location for this event"
+        domain="[('usage', '=', 'internal')]",
+        help="Destination warehouse location for this event"
     )
 
     # Enhanced event details

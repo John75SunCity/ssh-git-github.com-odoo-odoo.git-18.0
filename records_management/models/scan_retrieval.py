@@ -58,10 +58,15 @@ class ScanRetrieval(models.Model):
     quality_issues = fields.Text(string='Quality Issues')
     completeness_verified = fields.Boolean(string='Completeness Verified')
 
-    # Return handling
+    # Return handling (warehouse location)
     return_required = fields.Boolean(string='Return Required', default=True)
     return_date = fields.Date(string='Return Date')
-    return_location_id = fields.Many2one(comodel_name='records.location', string='Return Location')
+    return_location_id = fields.Many2one(
+        comodel_name='stock.location',
+        string='Return Location',
+        domain="[('usage', '=', 'internal')]",
+        help="Warehouse location where container should be returned"
+    )
     return_notes = fields.Text(string='Return Notes')
 
     # Timing

@@ -134,7 +134,12 @@ class RecordsRetentionRule(models.Model):
     document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
     audit_log_ids = fields.One2many('records.audit.log', 'rule_id', string='Audit Logs')
     related_regulation = fields.Char(string='Related Regulation')
-    storage_location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
+    storage_location_id = fields.Many2one(
+        comodel_name='stock.location',
+        string='Storage Location',
+        domain="[('usage', '=', 'internal')]",
+        help="Default warehouse storage location for this retention rule"
+    )
 
     # ============================================================================
     # COMPUTE METHODS

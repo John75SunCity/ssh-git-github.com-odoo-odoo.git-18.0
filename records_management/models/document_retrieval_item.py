@@ -127,7 +127,12 @@ class DocumentRetrievalItem(models.Model):
     ], string='Scan Quality')
     return_required = fields.Boolean(string='Return Required')
     return_date = fields.Date(string='Return Date')
-    return_location_id = fields.Many2one(comodel_name='records.location', string='Return Location')
+    return_location_id = fields.Many2one(
+        comodel_name='stock.location',
+        string='Return Location',
+        domain="[('usage', '=', 'internal')]",
+        help="Warehouse location where container should be returned"
+    )
     return_notes = fields.Text(string='Return Notes')
     retrieval_cost = fields.Monetary(
         string="Retrieval Cost", compute="_compute_retrieval_cost", currency_field="currency_id"
