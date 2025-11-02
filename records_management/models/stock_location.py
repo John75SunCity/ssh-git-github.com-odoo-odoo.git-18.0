@@ -37,9 +37,9 @@ class StockLocation(models.Model):
     - usage='internal' for your warehouse shelves/aisles
     - usage='customer' for customer site locations
     """
-    
+
     _inherit = 'stock.location'
-    
+
     # ============================================================================
     # RECORDS MANAGEMENT SPECIFIC FIELDS
     # ============================================================================
@@ -49,7 +49,7 @@ class StockLocation(models.Model):
         help="Identifies this as a records management storage location with "
              "enhanced security, compliance, and capacity tracking features."
     )
-    
+
     # ============================================================================
     # PHYSICAL COORDINATES (for precise shelf/rack positioning)
     # ============================================================================
@@ -60,14 +60,14 @@ class StockLocation(models.Model):
     rack = fields.Char(string="Rack")
     shelf = fields.Char(string="Shelf")
     position = fields.Char(string="Position")
-    
+
     full_coordinates = fields.Char(
         string="Full Coordinates",
         compute='_compute_full_coordinates',
         store=True,
         help="Complete hierarchical address: Building/Floor/Zone/Aisle/Rack/Shelf/Position"
     )
-    
+
     # ============================================================================
     # CAPACITY MANAGEMENT
     # ============================================================================
@@ -76,33 +76,33 @@ class StockLocation(models.Model):
         default=0,
         help="Maximum number of containers this location can hold"
     )
-    
+
     current_usage = fields.Integer(
         string="Current Usage",
         compute='_compute_current_usage',
         store=True,
         help="Number of containers currently stored in this location"
     )
-    
+
     utilization_percentage = fields.Float(
         string="Utilization %",
         compute='_compute_utilization',
         store=True,
         help="Percentage of capacity currently utilized"
     )
-    
+
     available_spaces = fields.Integer(
         string="Available Spaces",
         compute='_compute_available_spaces',
         store=True
     )
-    
+
     is_at_capacity = fields.Boolean(
         string="At Capacity",
         compute='_compute_is_at_capacity',
         store=True
     )
-    
+
     # ============================================================================
     # SECURITY & COMPLIANCE
     # ============================================================================
@@ -113,38 +113,36 @@ class StockLocation(models.Model):
         ('restricted', 'Restricted'),
     ], string='Security Level', default='internal',
        help="Security classification for this location")
-    
+
     access_controlled = fields.Boolean(
         string="Access Controlled",
         default=False,
         help="Requires special access authorization"
     )
-    
+
     temperature_controlled = fields.Boolean(
         string="Temperature Controlled",
         default=False,
         help="Climate-controlled environment"
     )
-    
+
     humidity_controlled = fields.Boolean(
         string="Humidity Controlled",
         default=False
     )
-    
+
     fire_suppression_system = fields.Boolean(
         string="Fire Suppression",
         default=False,
         help="Has automated fire suppression system"
     )
-    
+
     last_inspection_date = fields.Date(
-        string="Last Inspection",
-        tracking=True
+        string="Last Inspection"
     )
     
     next_inspection_date = fields.Date(
-        string="Next Inspection",
-        tracking=True
+        string="Next Inspection"
     )
     
     # ============================================================================
@@ -156,7 +154,7 @@ class StockLocation(models.Model):
         ('maintenance', 'Under Maintenance'),
         ('full', 'Full'),
         ('inactive', 'Inactive'),
-    ], string='Status', default='draft', tracking=True)
+    ], string='Status', default='draft')
     
     # ============================================================================
     # RELATIONSHIPS (leverage stock.location hierarchy)

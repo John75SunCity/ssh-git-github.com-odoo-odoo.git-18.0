@@ -64,7 +64,6 @@ class StockQuant(models.Model):
     parent_quant_id = fields.Many2one(
         'stock.quant',
         string="Parent Item",
-        tracking=True,
         help="Tracks the hierarchical origin of this item:\n"
              "- File's parent = Container it came from\n"
              "- Document's parent = File it came from\n"
