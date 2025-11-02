@@ -42,7 +42,7 @@ class RecordsLocation(models.Model):
     """
 
     _name = 'records.location'
-    _inherit = 'stock.location'  # ← Inherits Odoo native warehouse locations
+    _inherit = ['stock.location', 'mail.thread', 'mail.activity.mixin']  # Multiple inheritance
     _description = 'Records Storage Location'
     _order = 'complete_name'  # Use stock.location's hierarchical name
 
@@ -141,18 +141,12 @@ class RecordsLocation(models.Model):
     help="Records-specific location status (supplements Odoo usage field)")
 
     # ============================================================================
-    # SECURITY & COMPLIANCE
+    # SECURITY & COMPLIANCE (security_level inherited from stock_location.py extension)
     # ============================================================================
-    security_level = fields.Selection([
-        ('level_1', 'Level 1 (Low)'),
-        ('level_2', 'Level 2 (Medium)'),
-        ('level_3', 'Level 3 (High)'),
-        ('level_4', 'Level 4 (Maximum)'),
-    ], string="Security Level", default='level_2', tracking=True)
-    temperature_controlled = fields.Boolean(string="Temperature Controlled")
-    humidity_controlled = fields.Boolean(string="Humidity Controlled")
-    fire_suppression_system = fields.Boolean(string="Fire Suppression System")
-    last_inspection_date = fields.Date(string="Last Inspection Date", readonly=True)
+    # Note: security_level, temperature_controlled, humidity_controlled,
+    # fire_suppression_system, last_inspection_date already added to stock.location
+    # via stock_location.py - no need to redefine here
+
     next_inspection_date = fields.Date(string="Next Inspection Date", tracking=True)
 
     # ============================================================================
