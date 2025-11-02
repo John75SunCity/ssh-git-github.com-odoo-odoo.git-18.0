@@ -83,62 +83,45 @@ class RecordsContainer(models.Model):
         help="The customer company for whom this container is being managed. Internal users can select any customer; portal users are restricted to their own company.",
     )
     department_id = fields.Many2one("records.department", string="Department", tracking=True)
-    
+
     # ============================================================================
-    # STOCK INTEGRATION - Native Odoo Inventory System
+    # LOCATION TRACKING - Native Odoo Stock Integration
     # ============================================================================
-    stock_location_id = fields.Many2one(
+    location_id = fields.Many2one(
         "stock.location",
         string="Stock Location",
         tracking=True,
-        domain="[('usage', '=', 'internal'), ('is_records_location', '=', True)]",
-        help="Native Odoo stock location for this container. "
-             "Replaces deprecated records.location model. "
-             "Links to Inventory → Configuration → Locations. "
-             "Tracks real-time location changes through stock movements."
+        domain="[('usage', '=', 'internal')]",
+        help="Current warehouse location (native Odoo stock.location). "
+             "Integrated with Inventory → Configuration → Locations. "
+             "Tracks physical location and enables stock movements."
     )
     quant_id = fields.Many2one(
         "stock.quant",
         string="Stock Quant",
         readonly=True,
-        help="Stock quant representing this container in Odoo's inventory system. "
-             "Auto-created when container is indexed. "
-             "Tracks: location (where), owner (customer), quantity (1 container), "
-             "and hierarchical relationships (parent/child quants)."
+        help="Inventory record in Odoo's stock system. "
+             "Auto-created when container is activated. "
+             "Links container to native inventory tracking."
     )
-    owner_id = fields.Many2one(
+    stock_owner_id = fields.Many2one(
         "res.partner",
         related="quant_id.owner_id",
         string="Stock Owner",
         store=True,
         readonly=True,
-        help="Customer who owns this container in the stock system. "
-             "Automatically synced from partner_id to quant.owner_id. "
-             "Ensures customer ownership persists through location changes."
+        help="Customer ownership in stock system (synced from partner_id)."
     )
-    current_stock_location_id = fields.Many2one(
+    current_location_id = fields.Many2one(
         "stock.location",
         related="quant_id.location_id",
-        string="Current Stock Location",
+        string="Current Location",
         store=True,
         readonly=True,
-        help="Real-time location from stock.quant. "
-             "Updated automatically by stock movements (pickings). "
-             "Shows where container physically is RIGHT NOW."
-    )
-    
-    # Legacy location field - being phased out
-    location_id = fields.Many2one(
-        "records.location",
-        string="Current Location (Deprecated)",
-        tracking=True,
-        domain="[('active', '=', True), ('state', '=', 'active')]",
-        help="⚠️ DEPRECATED: Use stock_location_id instead. "
-             "This field references the old records.location model. "
-             "Will be removed in future version after migration complete.",
+        help="Real-time location from stock.quant (updated by stock movements)."
     )
     temp_inventory_id = fields.Many2one(
-        "temp.inventory", 
+        "temp.inventory",
         string="Temporary Inventory",
         domain="[('partner_id', '=', partner_id)]",
         help="Temporary location at customer site (portal users only). Used to track containers before pickup using temp barcodes and locations. Linked to official system after pickup for full lifecycle visibility. Filtered to show only locations belonging to the selected customer.",
@@ -369,33 +352,33 @@ class RecordsContainer(models.Model):
                         partner = False
                 if partner:
                     vals["partner_id"] = partner.id
-            
+
             # ⚠️ REMOVED: Automatic name generation
             # Customer must provide their own container name/number
             # No more auto-generated sequential names - customer controls naming
-            
+
             # Ensure a safe default container type to satisfy NOT NULL constraints in tests/runtime
             if not vals.get("container_type_id"):
                 default_type_id = self._get_default_container_type_id()
                 if default_type_id:
                     vals["container_type_id"] = default_type_id
-            
+
             # ⚠️ REMOVED: Automatic temp_barcode generation
             # Barcodes are pre-printed on sheets and manually assigned by staff
             # NO auto-generation - enforces manual workflow from physical barcode sheets
-            
+
             # Billing starts at portal creation → if storage_start_date is empty set today
             if not vals.get("storage_start_date"):
                 vals["storage_start_date"] = fields.Date.today()
-        
+
         # Create records
         records = super().create(vals_list)
-        
+
         # ✅ NEW: Create stock.quant for each container (stock integration)
         for record in records:
             if record.state not in ('draft',) and not record.quant_id:
                 record._create_stock_quant()
-        
+
         return records
 
     def write(self, vals):
@@ -404,15 +387,15 @@ class RecordsContainer(models.Model):
         # Prevent changing temp_barcode after physical barcode assigned unless superuser context flag
         if "temp_barcode" in vals and any(rec.barcode for rec in self) and not self.env.context.get("allow_temp_barcode_edit"):
             vals.pop("temp_barcode")
-        
+
         result = super().write(vals)
-        
+
         # ✅ FIX: Create stock.quant when container is activated (state changes from draft)
         if 'state' in vals:
             for record in self:
                 if record.state not in ('draft',) and not record.quant_id:
                     record._create_stock_quant()
-        
+
         return result
 
     def unlink(self):
@@ -871,13 +854,13 @@ class RecordsContainer(models.Model):
         Opens the stock.quant record showing inventory details.
         """
         self.ensure_one()
-        
+
         if not self.quant_id:
             raise UserError(_(
                 "This container is not yet in the inventory system.\n"
                 "Please index the container first by clicking 'Index Container' button."
             ))
-        
+
         return {
             'type': 'ir.actions.act_window',
             'name': _('Stock Quant: %s') % self.name,
@@ -887,20 +870,20 @@ class RecordsContainer(models.Model):
             'target': 'current',
             'context': {'create': False},
         }
-    
+
     def action_view_stock_location(self):
         """
         Smart button: View container's stock location.
         Opens the stock.location record showing location details.
         """
         self.ensure_one()
-        
+
         if not self.stock_location_id:
             raise UserError(_(
                 "No stock location assigned to this container.\n"
                 "Please assign a stock location or index the container."
             ))
-        
+
         return {
             'type': 'ir.actions.act_window',
             'name': _('Stock Location: %s') % self.stock_location_id.complete_name,
@@ -928,33 +911,32 @@ class RecordsContainer(models.Model):
         Called automatically when container state changes from draft to active.
         """
         self.ensure_one()
-        
+
         # Don't create duplicate quants
         if self.quant_id:
             return self.quant_id
-        
+
         # Get or create default records location
-        stock_location = self.stock_location_id
+        stock_location = self.location_id  # Use location_id (now stock.location)
         if not stock_location:
             # Find or create a default "Records Storage" location
             stock_location = self.env['stock.location'].search([
-                ('is_records_location', '=', True),
                 ('usage', '=', 'internal'),
                 ('company_id', '=', self.company_id.id),
+                ('name', 'ilike', 'Records Storage'),
             ], limit=1)
-            
+
             if not stock_location:
                 # Create default records storage location
                 stock_location = self.env['stock.location'].create({
                     'name': 'Records Storage',
                     'usage': 'internal',
-                    'is_records_location': True,
                     'company_id': self.company_id.id,
                 })
-        
+
         # Get or create product for containers (needed for stock.quant)
         product = self._get_or_create_container_product()
-        
+
         # Create the stock quant
         quant = self.env['stock.quant'].create({
             'product_id': product.id,
@@ -962,22 +944,21 @@ class RecordsContainer(models.Model):
             'owner_id': self.partner_id.id,  # Customer ownership
             'quantity': 1,  # One container
             'company_id': self.company_id.id,
-            'is_records_container': True,  # Flag for identification
         })
-        
+
         # Link quant to container
         self.write({
             'quant_id': quant.id,
-            'stock_location_id': stock_location.id,
+            'location_id': stock_location.id,  # Use location_id (now stock.location)
         })
-        
+
         # Post message to chatter
         self.message_post(
             body=_("Stock quant created: Container integrated with Odoo inventory system at location %s") % stock_location.complete_name
         )
-        
+
         return quant
-    
+
     def _get_or_create_container_product(self):
         """
         Get or create a generic 'Records Container' product for stock tracking.
@@ -990,7 +971,7 @@ class RecordsContainer(models.Model):
             ('default_code', '=', 'RECORDS-CONTAINER'),
             ('company_id', 'in', [False, self.company_id.id]),
         ], limit=1)
-        
+
         if not product:
             # Create generic container product
             product = self.env['product.product'].create({
@@ -1004,9 +985,9 @@ class RecordsContainer(models.Model):
                               'Actual container details are in Records Management module.',
                 'company_id': False,  # Available to all companies
             })
-        
+
         return product
-    
+
     def action_index_container(self):
         """
         Index container: Transition from draft to active and create stock quant.
@@ -1024,21 +1005,21 @@ class RecordsContainer(models.Model):
                         "Cannot index container without physical barcode. "
                         "Please assign a barcode from the pre-printed sheet first."
                     ))
-                
+
                 # Create stock quant if not exists
                 if not record.quant_id:
                     record._create_stock_quant()
-                
+
                 # Update state
                 record.write({
                     'state': 'active',
                 })
-                
+
                 # Post message
                 record.message_post(
                     body=_("Container indexed with barcode %s and added to inventory") % record.barcode
                 )
-    
+
     def action_move_container(self, new_location_id):
         """
         Move container to new location using stock.picking (proper Odoo way).
@@ -1050,16 +1031,16 @@ class RecordsContainer(models.Model):
         which creates audit trail and updates quant.location_id automatically.
         """
         self.ensure_one()
-        
+
         if not self.quant_id:
             raise UserError(_("Container not in inventory system. Please index it first."))
-        
+
         new_location = self.env['stock.location'].browse(new_location_id)
         current_location = self.quant_id.location_id
-        
+
         if current_location == new_location:
             raise UserError(_("Container is already at location %s") % new_location.complete_name)
-        
+
         # Create stock picking (transfer)
         picking = self.env['stock.picking'].create({
             'picking_type_id': self.env.ref('stock.picking_type_internal').id,
@@ -1067,7 +1048,7 @@ class RecordsContainer(models.Model):
             'location_dest_id': new_location.id,
             'origin': _("Container Move: %s") % self.name,
         })
-        
+
         # Create stock move
         product = self.quant_id.product_id
         move = self.env['stock.move'].create({
@@ -1079,24 +1060,24 @@ class RecordsContainer(models.Model):
             'location_id': current_location.id,
             'location_dest_id': new_location.id,
         })
-        
+
         # Confirm and execute transfer
         picking.action_confirm()
         picking.action_assign()
         for move_line in picking.move_line_ids:
             move_line.quantity = 1
         picking.button_validate()
-        
+
         # Update container record
         self.write({
             'stock_location_id': new_location.id,
         })
-        
+
         # Post message
         self.message_post(
             body=_("Container moved from %s to %s") % (current_location.complete_name, new_location.complete_name)
         )
-        
+
         return picking
 
     # ============================================================================

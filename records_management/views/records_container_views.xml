@@ -267,29 +267,26 @@ Destroy Container</a>
         <field name="partner_id" required="1" readonly="1" groups="base.group_portal" options="{'no_create': True, 'no_create_edit': True}"/>
         <field name="department_id"/>
         
-        <!-- ✅ NEW: Stock Integration Fields -->
-        <field name="stock_location_id" 
+        <!-- Stock Integration - Native Odoo Inventory -->
+        <field name="location_id" 
+               string="Stock Location"
                groups="base.group_user" 
                options="{'no_create': True}"
-               help="Native Odoo stock location - replaces deprecated records.location"/>
-        <field name="current_stock_location_id" 
+               help="Current warehouse location (native Odoo stock.location)"/>
+        <field name="current_location_id" 
+               string="Current Location"
                readonly="1" 
                groups="base.group_user"
-               help="Real-time location from stock system"/>
-        <field name="quant_id" 
-               readonly="1" 
-               groups="base.group_user"
-               help="Stock quant ID in inventory system"/>
-        <field name="owner_id" 
+               help="Real-time location from stock system (via quant)"/>
+        <field name="stock_owner_id" 
+               string="Stock Owner"
                readonly="1" 
                groups="base.group_user"
                help="Customer ownership in stock system"/>
-        
-        <!-- ⚠️ DEPRECATED: Legacy location field -->
-        <field name="location_id" 
-               groups="base.group_user" 
-               options="{'no_create': True, 'no_create_edit': True}"
-               help="⚠️ DEPRECATED - Use stock_location_id instead"/>
+        <field name="quant_id" 
+               readonly="1" 
+               groups="base.group_user"
+               help="Stock quant record (inventory tracking)"/>
         
         <!-- Portal users: Temporary inventory (temp locations at customer site) -->
         <!-- Quick-create enabled with context to default to container's partner_id -->
