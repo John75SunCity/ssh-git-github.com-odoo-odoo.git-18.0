@@ -87,6 +87,22 @@ class RecordsLocation(models.Model):
         string='Location Group'
     )
 
+    # Location type (related from stock.location.usage for kanban grouping)
+    location_type = fields.Selection(
+        related='usage',
+        string='Location Type',
+        store=True,
+        readonly=True
+    )
+
+    # Storage capacity (max containers, relates to records-specific capacity tracking)
+    storage_capacity = fields.Integer(
+        string='Storage Capacity',
+        compute='_compute_storage_capacity',
+        store=True,
+        help='Maximum number of containers this location can hold'
+    )
+
     # Detailed warehouse coordinates (supplements stock.location.name)
     building = fields.Char(string="Building")
     floor = fields.Char(string="Floor")
@@ -192,6 +208,12 @@ class RecordsLocation(models.Model):
     def _compute_container_count(self):
         for record in self:
             record.container_count = len(record.container_ids)
+
+    @api.depends('max_capacity')
+    def _compute_storage_capacity(self):
+        """Compute storage capacity from max_capacity field"""
+        for record in self:
+            record.storage_capacity = record.max_capacity or 0
 
     @api.depends('container_count', 'max_capacity')
     def _compute_utilization_percentage(self):
