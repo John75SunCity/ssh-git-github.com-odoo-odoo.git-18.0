@@ -878,7 +878,7 @@ class RecordsContainer(models.Model):
         """
         self.ensure_one()
 
-        if not self.stock_location_id:
+        if not self.location_id:
             raise UserError(_(
                 "No stock location assigned to this container.\n"
                 "Please assign a stock location or index the container."
@@ -886,9 +886,9 @@ class RecordsContainer(models.Model):
 
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Stock Location: %s') % self.stock_location_id.complete_name,
+            'name': _('Stock Location: %s') % self.location_id.complete_name,
             'res_model': 'stock.location',
-            'res_id': self.stock_location_id.id,
+            'res_id': self.location_id.id,
             'view_mode': 'form',
             'target': 'current',
             'context': {'create': False},
@@ -903,9 +903,8 @@ class RecordsContainer(models.Model):
         
         This integrates the container with native Odoo stock tracking:
         - Creates a quant (inventory on-hand record)
-        - Sets location to stock_location_id (or default records location)
+        - Sets location to location_id (native stock.location)
         - Sets owner to partner_id (customer ownership)
-        - Sets is_records_container flag for identification
         - Quantity = 1 (one container)
         
         Called automatically when container state changes from draft to active.
@@ -1070,7 +1069,7 @@ class RecordsContainer(models.Model):
 
         # Update container record
         self.write({
-            'stock_location_id': new_location.id,
+            'location_id': new_location.id,
         })
 
         # Post message

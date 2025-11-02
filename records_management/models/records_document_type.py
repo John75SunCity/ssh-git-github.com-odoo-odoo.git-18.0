@@ -128,7 +128,7 @@ class RecordsDocumentType(models.Model):
     is_default = fields.Boolean(string='Is Default Type')
     audit_log_ids = fields.One2many(comodel_name='records.audit.log', inverse_name='document_type_id', string='Audit Logs')
     related_regulation = fields.Char(string='Related Regulation')
-    storage_location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
+    storage_location_id = fields.Many2one(comodel_name='stock.location', string='Storage Location', domain="[('usage', '=', 'internal')]")
 
     # Template System
     is_template = fields.Boolean(string='Is Template')

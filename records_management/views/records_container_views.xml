@@ -235,11 +235,11 @@ Destroy Container</a>
                         </div>
                     </button>
                     
-                    <!-- ✅ NEW: Stock Location smart button -->
+                    <!-- Stock Location smart button -->
                     <button class="oe_stat_button" type="object" name="action_view_stock_location" 
                             icon="fa-map-marker" 
                             title="View Stock Location"
-                            invisible="not stock_location_id">
+                            invisible="not location_id">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_text">Stock</span>
                             <span class="o_stat_text">Location</span>
