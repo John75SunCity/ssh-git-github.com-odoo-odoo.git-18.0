@@ -228,7 +228,7 @@ Destroy Container</a>
         <field name="is_full"/>
                     </group>
                     <group string="Customer &amp; Location">
-        <field name="partner_id" required="1"/>
+        <field name="partner_id" required="1" readonly="context.get('uid') and user.has_group('base.group_portal')" options="{'no_create': True, 'no_create_edit': True}"/>
         <field name="department_id"/>
         <field name="location_id"/>
         <field name="user_id"/>

@@ -55,8 +55,9 @@ class RecordsContainer(models.Model):
         string="Customer",
         required=True,
         tracking=True,
-        default=lambda self: self.env.user.partner_id.id,
-        help="Defaults to the current user's partner to ensure minimal record creation works in tests and quick operations.",
+        domain="[('is_records_customer', '=', True), ('is_company', '=', True)]",
+        default=lambda self: self._default_partner_id(),
+        help="The customer company for whom this container is being managed. Internal users can select any customer; portal users are restricted to their own company.",
     )
     department_id = fields.Many2one("records.department", string="Department", tracking=True)
     location_id = fields.Many2one(
@@ -325,6 +326,26 @@ class RecordsContainer(models.Model):
             if record.document_ids:
                 raise UserError(_("Cannot delete a container that has documents linked to it."))
         return super().unlink()
+
+    # ============================================================================
+    # DEFAULT METHODS
+    # ============================================================================
+    def _default_partner_id(self):
+        """
+        Smart default for partner_id based on user type:
+        - Portal users: Return their commercial partner (the company they belong to)
+        - Internal users: Return False (no default, forces selection of customer)
+        
+        This ensures service provider workflow where internal employees manage
+        containers for multiple customer companies.
+        """
+        user = self.env.user
+        # Check if user is in portal group (not internal)
+        if user.has_group('base.group_portal'):
+            # Portal user - default to their commercial partner (company)
+            return user.partner_id.commercial_partner_id.id if user.partner_id else False
+        # Internal user - no default (must select customer)
+        return False
 
     # ============================================================================
     # COMPUTE & SEARCH METHODS
