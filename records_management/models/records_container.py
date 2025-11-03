@@ -17,10 +17,10 @@ except Exception:  # pragma: no cover - optional dependency fallback
 
 
 class RecordsContainer(models.Model):
-    _name = "records.container"
-    _description = "Records Container Management"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name desc"
+        _name = "records.container"
+    _description = "Records Container"
+    _inherit = ["mail.thread", "mail.activity.mixin", "barcodes.barcode_events_mixin"]
+    _order = "create_date desc, name"
 
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
@@ -1144,6 +1144,72 @@ class RecordsContainer(models.Model):
         )
 
         return picking
+
+    # ============================================================================
+    # BARCODE SCANNING INTEGRATION (Odoo Barcode Infrastructure)
+    # ============================================================================
+    def on_barcode_scanned(self, barcode):
+        """
+        Handle barcode scanning events from Odoo's barcode scanner.
+        
+        Integrates with Odoo's native barcode infrastructure:
+        - Inherits from barcodes.barcode_events_mixin
+        - Automatically called when barcode is scanned
+        - Supports GS1, UPC, EAN nomenclature via barcode.nomenclature
+        - Works with mobile barcode app and USB/Bluetooth scanners
+        
+        Args:
+            barcode (str): Scanned barcode value (processed through nomenclature rules)
+        
+        Returns:
+            dict: Action to open the scanned container's form view
+        
+        Raises:
+            UserError: If barcode not found or multiple matches exist
+        
+        Workflow:
+            1. Search for container by physical barcode (primary)
+            2. Fallback to temp_barcode if physical barcode not assigned
+            3. Open container form view
+            4. Post chatter message for audit trail
+        
+        Example Usage:
+            - Scan barcode in Inventory app → Container opens
+            - Scan barcode in Barcode app → Container details displayed
+            - Mobile app scanning → Instant container lookup
+        """
+        # Search by physical barcode first (preferred)
+        container = self.env['records.container'].search([
+            ('barcode', '=', barcode),
+            ('company_id', '=', self.env.company.id)
+        ], limit=1)
+        
+        # Fallback to temp barcode if physical barcode not assigned yet
+        if not container:
+            container = self.env['records.container'].search([
+                ('temp_barcode', '=', barcode),
+                ('company_id', '=', self.env.company.id)
+            ], limit=1)
+        
+        if not container:
+            raise UserError(_('No container found with barcode: %s') % barcode)
+        
+        # Post audit message
+        container.message_post(
+            body=_('Container scanned via barcode: %s') % barcode,
+            message_type='notification'
+        )
+        
+        # Return action to open container form
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Container: %s') % container.name,
+            'res_model': 'records.container',
+            'res_id': container.id,
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {'create': False},
+        }
 
     # ============================================================================
     # VALIDATION METHODS
