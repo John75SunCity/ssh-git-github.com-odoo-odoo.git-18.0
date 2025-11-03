@@ -95,7 +95,7 @@
                                 </group>
 
                                 <!-- Show department user assignments -->
-                                <field name="department_user_assignment_ids" nolabel="1" context="{'tree_view_ref': 'records_management.records_storage_department_user_view_tree_embedded'}">
+                                <field name="department_user_assignment_ids" nolabel="1">
                                     <tree editable="bottom" create="true" delete="true">
                                         <field name="user_id" required="1"/>
                                         <field name="role" required="1" widget="badge"/>
