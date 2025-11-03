@@ -36,6 +36,13 @@ class ContainerQuickAddWizard(models.TransientModel):
         help="Department (auto-filled from your login)"
     )
 
+    stock_owner_id = fields.Many2one(
+        'res.partner',
+        string='Stock Owner',
+        default=lambda self: self._default_partner(),
+        help="Stock ownership (defaults to Customer, can override for multi-company)"
+    )
+
     # Industry Template Selection
     industry_template = fields.Selection([
         ('legal', 'Legal - Case Files'),
@@ -204,6 +211,7 @@ class ContainerQuickAddWizard(models.TransientModel):
             'name': self.container_number,
             'partner_id': self.partner_id.id,
             'department_id': self.department_id.id,
+            'stock_owner_id': self.stock_owner_id.id if self.stock_owner_id else self.partner_id.id,
             'description': description,
             'location_id': self.location_id.id if self.location_id else False,
         }

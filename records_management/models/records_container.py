@@ -106,11 +106,11 @@ class RecordsContainer(models.Model):
     )
     stock_owner_id = fields.Many2one(
         "res.partner",
-        related="quant_id.owner_id",
         string="Stock Owner",
-        store=True,
-        readonly=True,
-        help="Customer ownership in stock system (synced from partner_id)."
+        tracking=True,
+        index=True,
+        default=lambda self: self._default_partner_id(),
+        help="Customer ownership in stock system. Defaults to partner_id but can be overridden for multi-company ownership."
     )
     current_location_id = fields.Many2one(
         "stock.location",
@@ -352,6 +352,10 @@ class RecordsContainer(models.Model):
                         partner = False
                 if partner:
                     vals["partner_id"] = partner.id
+
+            # Default stock_owner_id to partner_id if not explicitly set
+            if not vals.get("stock_owner_id") and vals.get("partner_id"):
+                vals["stock_owner_id"] = vals["partner_id"]
 
             # ⚠️ REMOVED: Automatic name generation
             # Customer must provide their own container name/number
@@ -955,7 +959,7 @@ class RecordsContainer(models.Model):
         quant = self.env['stock.quant'].create({
             'product_id': product.id,
             'location_id': stock_location.id,
-            'owner_id': self.partner_id.id,  # Customer ownership
+            'owner_id': self.stock_owner_id.id or self.partner_id.id,  # Use stock_owner_id, fallback to partner_id
             'quantity': 1,  # One container
             'company_id': self.company_id.id,
         })

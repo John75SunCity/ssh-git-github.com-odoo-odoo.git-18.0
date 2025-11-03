@@ -19,6 +19,7 @@
                             <field name="container_number" placeholder="e.g., 0001, B-1234 (minimum 4 characters)"/>
                             <field name="partner_id"/>
                             <field name="department_id"/>
+                            <field name="stock_owner_id" readonly="context.get('default_stock_owner_readonly', False)"/>
                         </group>
                         
                         <group string="Industry Template">
