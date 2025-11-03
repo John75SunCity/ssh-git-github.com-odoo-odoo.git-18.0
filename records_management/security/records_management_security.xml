@@ -222,12 +222,14 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="perm_unlink" eval="True"/>
         </record>
 
-        <!-- Tier 2: Department Admin - Can Delegate (Department-Specific Access) -->
+        <!-- Tier 2: Department Admin - Can Delegate (Partner-Level Access) -->
         <record id="rule_department_admin_delegation" model="ir.rule">
             <field name="name">Department Admin Delegation Rule</field>
             <field name="model_id" ref="records_management.model_portal_request"/>
             <field name="domain_force">[
-                ('department_id', 'in', user.accessible_department_ids.ids)
+                '|',
+                ('partner_id', '=', user.partner_id.id),
+                ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id])
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_department_admin'))]"/>
             <field name="perm_read" eval="True"/>
@@ -236,12 +238,14 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- Tier 3: Department User - Business Functions (Department-Specific Access) -->
+        <!-- Tier 3: Department User - Business Functions (Partner-Level Access) -->
         <record id="rule_department_user_business" model="ir.rule">
             <field name="name">Department User Business Rule</field>
             <field name="model_id" ref="records_management.model_portal_request"/>
             <field name="domain_force">[
-                ('department_id', 'in', user.accessible_department_ids.ids)
+                '|',
+                ('partner_id', '=', user.partner_id.id),
+                ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id])
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_department_user'))]"/>
             <field name="perm_read" eval="True"/>
@@ -250,12 +254,14 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- Tier 4: Read-Only Employee - Limited Access (Department-Specific) -->
+        <!-- Tier 4: Read-Only Employee - Limited Access (Partner-Level) -->
         <record id="rule_readonly_employee_limited" model="ir.rule">
             <field name="name">Read-Only Employee Limited Rule</field>
             <field name="model_id" ref="records_management.model_portal_request"/>
             <field name="domain_force">[
-                ('department_id', 'in', user.accessible_department_ids.ids)
+                '|',
+                ('partner_id', '=', user.partner_id.id),
+                ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id])
             ]</field>
             <field name="groups" eval="[(4, ref('records_management.group_portal_readonly_employee'))]"/>
             <field name="perm_read" eval="True"/>
