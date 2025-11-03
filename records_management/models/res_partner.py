@@ -41,10 +41,10 @@ class ResPartner(models.Model):
         store=True
     )
     
-    # Department user assignments - links partners (as users) to departments they can access
-    records_department_users = fields.One2many(
+    # Department user assignments - computed field showing all dept users for this stock owner
+    records_department_users = fields.Many2many(
         comodel_name='records.storage.department.user',
-        inverse_name='stock_owner_id',
+        compute='_compute_department_users',
         string='Department Access Rights',
         help='Department user assignments where this partner is the stock owner (company/department/child dept)'
     )
@@ -231,6 +231,18 @@ class ResPartner(models.Model):
         """Computes the number of departments associated with this partner."""
         for partner in self:
             partner.department_count = len(partner.department_ids)
+    
+    def _compute_department_users(self):
+        """
+        Get all department user assignments where this partner is the stock owner.
+        This includes users assigned to departments that have this partner as their contact.
+        """
+        for partner in self:
+            # Find all department users where the department's partner is this partner
+            assignments = self.env['records.storage.department.user'].search([
+                ('department_id.partner_id', '=', partner.id)
+            ])
+            partner.records_department_users = assignments
     
     def _compute_department_user_assignments(self):
         """

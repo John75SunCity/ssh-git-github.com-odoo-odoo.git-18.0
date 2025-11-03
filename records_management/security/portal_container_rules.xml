@@ -2,10 +2,11 @@
 <odoo>
     <data>
         <!-- Portal Record Rules for Container Visibility
-             Portal users can see containers based on THREE criteria:
-             1. Commercial partner match (partner_id)
+             Portal users can see containers based on FOUR criteria:
+             1. Commercial partner match (partner_id.commercial_partner_id)
              2. Company match (company_id)
-             3. Department assignment (stock_owner_id via records.storage.department.user)
+             3. Direct stock owner match (stock_owner_id = user's partner)
+             4. Department assignment via user → department → department.partner_id → stock_owner_id
              
              This allows:
              - Portal users to see their company's containers
@@ -20,7 +21,7 @@
                 ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id),
                 ('company_id', '=', user.company_id.id),
                 ('stock_owner_id', '=', user.partner_id.id),
-                ('stock_owner_id', 'in', user.partner_id.records_department_users.stock_owner_id.ids)
+                ('stock_owner_id', 'in', user.department_assignment_ids.mapped('department_id.partner_id').ids)
             ]</field>
         </record>
 
