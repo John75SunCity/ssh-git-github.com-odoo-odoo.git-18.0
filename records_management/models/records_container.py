@@ -624,11 +624,14 @@ class RecordsContainer(models.Model):
         self.ensure_one()
         if not self.partner_id:
             raise UserError(_("Customer must be specified before activation"))
-        
+
         # If location_id is set and no quant exists, create stock quant
         if self.location_id and not self.quant_id:
+            # Get or create the generic container product
+            product = self._get_or_create_container_product()
+
             quant_vals = {
-                'product_id': self.env.ref('records_management.product_records_container').id,  # You'll need to create this product
+                'product_id': product.id,
                 'location_id': self.location_id.id,
                 'quantity': 1.0,
                 'owner_id': self.partner_id.id,  # Set stock owner to customer
@@ -984,15 +987,16 @@ class RecordsContainer(models.Model):
         ], limit=1)
 
         if not product:
-            # Create generic container product
+            # Create generic container product - STORABLE for inventory tracking
+            # Must be 'product' type (storable) to allow stock.quant creation
             product = self.env['product.product'].create({
                 'name': 'Records Container (Generic)',
                 'default_code': 'RECORDS-CONTAINER',
-                'type': 'consu',  # Consumable product (compatible with Odoo 18)
+                'detailed_type': 'product',  # Storable product for Odoo 18+
                 'categ_id': self.env.ref('product.product_category_all').id,
                 'list_price': 0.0,
                 'standard_price': 0.0,
-                'description': 'Generic product for records container inventory tracking. '
+                'description': 'Generic storable product for records container inventory tracking. '
                               'Actual container details are in Records Management module.',
                 'company_id': False,  # Available to all companies
             })
