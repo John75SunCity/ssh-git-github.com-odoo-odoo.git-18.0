@@ -185,19 +185,36 @@
                 <t t-set="title">My Containers</t>
                 
                 <div class="o_portal_my_containers">
+                    <!-- Success Message -->
+                    <t t-if="request.params.get('created')">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fa fa-check-circle"></i>
+                            <strong>Success!</strong> Container created with temporary barcode and added to your inventory.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&amp;times;</span>
+                            </button>
+                        </div>
+                    </t>
+                    
                     <div class="card">
-                        <div class="card-header bg-primary text-white">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                             <h3 class="mb-0">
                                 <i class="fa fa-boxes"></i>
                                 Container Management
                             </h3>
+                            <a href="/my/containers/new" class="btn btn-light btn-sm">
+                                <i class="fa fa-plus-circle"></i> Add New Container
+                            </a>
                         </div>
                         <div class="card-body">
                             <t t-if="not containers">
                                 <div class="alert alert-info text-center py-5">
                                     <i class="fa fa-inbox fa-3x mb-3 text-muted"></i>
                                     <h4>No Containers Found</h4>
-                                    <p class="mb-0">You don't have any containers yet.</p>
+                                    <p class="mb-3">You don't have any containers yet.</p>
+                                    <a href="/my/containers/new" class="btn btn-primary">
+                                        <i class="fa fa-plus-circle"></i> Add Your First Container
+                                    </a>
                                 </div>
                             </t>
                             

@@ -12,9 +12,10 @@ License: LGPL-3
 
 # Standard library imports
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 # Odoo core imports
-from odoo import http, _
+from odoo import http, fields, _
 from odoo.http import request
 from odoo.exceptions import AccessError, UserError
 
@@ -604,3 +605,103 @@ class RecordsManagementPortal(CustomerPortal):
         }
 
         return request.render('records_management.portal_my_containers', values)
+
+    @http.route(['/my/containers/new'], type='http', auth='user', website=True)
+    def portal_container_create_form(self, error=None, **kw):
+        """Portal form to create a new container (Quick Add style)"""
+        partner = request.env.user.partner_id
+        
+        # Get departments for this customer
+        departments = request.env['records.department'].search([
+            ('partner_id', '=', partner.commercial_partner_id.id),
+            ('active', '=', True)
+        ])
+        
+        values = {
+            'page_name': 'container_create',
+            'departments': departments,
+            'partner': partner,
+            'error': error,
+        }
+        return request.render('records_management.portal_container_create_form', values)
+
+    @http.route(['/my/containers/create'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_container_create(self, **post):
+        """Handle portal container creation with Quick Add Wizard logic"""
+        partner = request.env.user.partner_id
+        
+        # Check if user has create permission
+        user_assignment = request.env['records.storage.department.user'].search([
+            ('user_id', '=', request.env.user.id),
+            ('state', '=', 'active'),
+            ('can_create_records', '=', True)
+        ], limit=1)
+        
+        if not user_assignment:
+            return request.redirect('/my/containers/new?error=no_permission')
+        
+        try:
+            # Get default temp location
+            temp_location = request.env['stock.location'].search([
+                ('name', 'ilike', 'temp'),
+                ('usage', '=', 'internal')
+            ], limit=1)
+            
+            if not temp_location:
+                # Create or get temp location
+                temp_location = request.env['stock.location'].sudo().search([
+                    ('complete_name', '=', 'WH/Stock/Temporary Receiving')
+                ], limit=1)
+            
+            # Calculate destruction date based on retention period
+            retention = post.get('retention_period', '7')
+            destruction_date = False
+            if retention and retention != 'permanent':
+                try:
+                    years = int(retention) if retention != 'custom' else int(post.get('custom_retention_years', 7))
+                    from dateutil.relativedelta import relativedelta
+                    destruction_date = fields.Date.today() + relativedelta(years=years)
+                except:
+                    pass
+            
+            # Build contents label (range or description)
+            contents_label = ''
+            contents_type = post.get('contents_type', 'alphabetical')
+            
+            if contents_type == 'custom':
+                contents_label = post.get('contents_description', '')
+            else:
+                range_start = post.get('range_start', '')
+                range_end = post.get('range_end', '')
+                if range_start and range_end:
+                    contents_label = f"{range_start} - {range_end}"
+            
+            # Create container with Quick Add logic
+            container_vals = {
+                'partner_id': partner.commercial_partner_id.id,
+                'stock_owner_id': partner.commercial_partner_id.id,  # Stock owner = customer
+                'department_id': int(post.get('department_id')) if post.get('department_id') else False,
+                'location_id': temp_location.id if temp_location else False,
+                'description': contents_label,
+                'destruction_date': destruction_date,
+            }
+            
+            # Generate temp barcode (same logic as wizard)
+            container_number = post.get('container_number', '').strip()
+            partner_abbr = partner.commercial_partner_id.name[:4].upper() if partner.commercial_partner_id else 'TEMP'
+            date_str = fields.Date.today().strftime('%Y%m%d')
+            temp_barcode = f"TEMP-{partner_abbr}-{date_str}-{container_number}"
+            
+            container_vals['temp_barcode'] = temp_barcode
+            container_vals['name'] = f"{partner_abbr}-{container_number}"
+            
+            # Create container
+            container = request.env['records.container'].create(container_vals)
+            
+            return request.redirect('/my/containers?created=%s' % container.id)
+            
+        except Exception as e:
+            import logging
+            _logger = logging.getLogger(__name__)
+            _logger.error("Portal container creation error: %s", str(e))
+            return request.redirect('/my/containers/new?error=%s' % str(e))
