@@ -988,7 +988,7 @@ class RecordsContainer(models.Model):
             product = self.env['product.product'].create({
                 'name': 'Records Container (Generic)',
                 'default_code': 'RECORDS-CONTAINER',
-                'type': 'product',  # Storable product
+                'type': 'consu',  # Consumable product (compatible with Odoo 18)
                 'categ_id': self.env.ref('product.product_category_all').id,
                 'list_price': 0.0,
                 'standard_price': 0.0,
