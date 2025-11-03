@@ -84,6 +84,96 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+        <!-- Pickup Request Portal Rules (Same Pattern as Containers) -->
+        <record id="pickup_request_rule_portal_readonly" model="ir.rule">
+            <field name="name">Pickup Request: Portal Read-Only Employee</field>
+            <field name="model_id" ref="records_management.model_pickup_request"/>
+            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_readonly_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="pickup_request_rule_portal_dept_user" model="ir.rule">
+            <field name="name">Pickup Request: Portal Department User</field>
+            <field name="model_id" ref="records_management.model_pickup_request"/>
+            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_department_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="pickup_request_rule_portal_dept_admin" model="ir.rule">
+            <field name="name">Pickup Request: Portal Department Admin</field>
+            <field name="model_id" ref="records_management.model_pickup_request"/>
+            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_department_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="pickup_request_rule_portal_company_admin" model="ir.rule">
+            <field name="name">Pickup Request: Portal Company Admin</field>
+            <field name="model_id" ref="records_management.model_pickup_request"/>
+            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Records Destruction Portal Rules (Same Pattern) -->
+        <record id="records_destruction_rule_portal_readonly" model="ir.rule">
+            <field name="name">Records Destruction: Portal Read-Only Employee</field>
+            <field name="model_id" ref="records_management.model_records_destruction"/>
+            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_readonly_employee'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="records_destruction_rule_portal_dept_user" model="ir.rule">
+            <field name="name">Records Destruction: Portal Department User</field>
+            <field name="model_id" ref="records_management.model_records_destruction"/>
+            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_department_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="records_destruction_rule_portal_dept_admin" model="ir.rule">
+            <field name="name">Records Destruction: Portal Department Admin</field>
+            <field name="model_id" ref="records_management.model_records_destruction"/>
+            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_department_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="records_destruction_rule_portal_company_admin" model="ir.rule">
+            <field name="name">Records Destruction: Portal Company Admin</field>
+            <field name="model_id" ref="records_management.model_records_destruction"/>
+            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
         <!-- Installer: only managers -->
         <!-- For inherited models, rules below are for illustration; you may not need them unless you add sensitive custom fields. -->
         <!-- Stock Lot -->

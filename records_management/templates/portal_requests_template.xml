@@ -81,11 +81,11 @@
                                 <a href="/my/request/new/destruction" class="btn btn-danger mr-2">
                                     <i class="fa fa-trash"></i> Request Destruction
                                 </a>
-                                <a href="/my/request/new/service" class="btn btn-primary mr-2">
-                                    <i class="fa fa-wrench"></i> Request Service
+                                <a href="/my/request/new/pickup" class="btn btn-primary mr-2">
+                                    <i class="fa fa-truck"></i> Request Pickup
                                 </a>
-                                <a href="/my/request/new/inventory" class="btn btn-info">
-                                    <i class="fa fa-boxes"></i> Inventory Request
+                                <a href="/my/containers/new" class="btn btn-success">
+                                    <i class="fa fa-plus"></i> Add Container
                                 </a>
                             </div>
                         </div>

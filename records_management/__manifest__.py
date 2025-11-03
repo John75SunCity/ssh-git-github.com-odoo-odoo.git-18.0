@@ -301,6 +301,8 @@
         "templates/portal_certificate_templates.xml",
         "templates/portal_inventory_template.xml",
         "templates/portal_requests_template.xml",
+        "templates/portal_pickup_request_create.xml",
+        "templates/portal_destruction_request_create.xml",
         "templates/portal_missing_templates.xml",
         "templates/portal_container_create.xml",
     "templates/portal_barcode_row.xml",

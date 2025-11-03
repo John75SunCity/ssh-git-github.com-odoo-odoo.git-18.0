@@ -610,13 +610,13 @@ class RecordsManagementPortal(CustomerPortal):
     def portal_container_create_form(self, error=None, **kw):
         """Portal form to create a new container (Quick Add style)"""
         partner = request.env.user.partner_id
-        
+
         # Get departments for this customer
         departments = request.env['records.department'].search([
             ('partner_id', '=', partner.commercial_partner_id.id),
             ('active', '=', True)
         ])
-        
+
         values = {
             'page_name': 'container_create',
             'departments': departments,
@@ -627,32 +627,32 @@ class RecordsManagementPortal(CustomerPortal):
 
     @http.route(['/my/containers/create'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
     def portal_container_create(self, **post):
-        """Handle portal container creation with Quick Add Wizard logic"""
+        """Handle portal container creation with Quick Add Wizard logic
+        
+        Permission is handled by ACL:
+        - Portal Company Admin: Full CRUD
+        - Portal Dept Admin: Read, Write, Create  
+        - Portal Dept User: Read, Write, Create
+        - Portal Read-Only: Read only
+        """
         partner = request.env.user.partner_id
-        
-        # Check if user has create permission
-        user_assignment = request.env['records.storage.department.user'].search([
-            ('user_id', '=', request.env.user.id),
-            ('state', '=', 'active'),
-            ('can_create_records', '=', True)
-        ], limit=1)
-        
-        if not user_assignment:
-            return request.redirect('/my/containers/new?error=no_permission')
-        
+
         try:
+            # Try to create - ACL will enforce permissions automatically
+            # If user doesn't have create rights, Odoo will raise AccessError
+
             # Get default temp location
             temp_location = request.env['stock.location'].search([
                 ('name', 'ilike', 'temp'),
                 ('usage', '=', 'internal')
             ], limit=1)
-            
+
             if not temp_location:
                 # Create or get temp location
                 temp_location = request.env['stock.location'].sudo().search([
                     ('complete_name', '=', 'WH/Stock/Temporary Receiving')
                 ], limit=1)
-            
+
             # Calculate destruction date based on retention period
             retention = post.get('retention_period', '7')
             destruction_date = False
@@ -663,11 +663,11 @@ class RecordsManagementPortal(CustomerPortal):
                     destruction_date = fields.Date.today() + relativedelta(years=years)
                 except:
                     pass
-            
+
             # Build contents label (range or description)
             contents_label = ''
             contents_type = post.get('contents_type', 'alphabetical')
-            
+
             if contents_type == 'custom':
                 contents_label = post.get('contents_description', '')
             else:
@@ -675,7 +675,7 @@ class RecordsManagementPortal(CustomerPortal):
                 range_end = post.get('range_end', '')
                 if range_start and range_end:
                     contents_label = f"{range_start} - {range_end}"
-            
+
             # Create container with Quick Add logic
             container_vals = {
                 'partner_id': partner.commercial_partner_id.id,
@@ -685,23 +685,246 @@ class RecordsManagementPortal(CustomerPortal):
                 'description': contents_label,
                 'destruction_date': destruction_date,
             }
-            
+
             # Generate temp barcode (same logic as wizard)
             container_number = post.get('container_number', '').strip()
             partner_abbr = partner.commercial_partner_id.name[:4].upper() if partner.commercial_partner_id else 'TEMP'
             date_str = fields.Date.today().strftime('%Y%m%d')
             temp_barcode = f"TEMP-{partner_abbr}-{date_str}-{container_number}"
-            
+
             container_vals['temp_barcode'] = temp_barcode
             container_vals['name'] = f"{partner_abbr}-{container_number}"
-            
-            # Create container
+
+            # Create container - Odoo ACL automatically enforces permissions
             container = request.env['records.container'].create(container_vals)
-            
+
             return request.redirect('/my/containers?created=%s' % container.id)
-            
+
+        except AccessError:
+            # User doesn't have create permission (Read-Only Employee group)
+            return request.redirect('/my/containers/new?error=no_permission')
         except Exception as e:
             import logging
             _logger = logging.getLogger(__name__)
             _logger.error("Portal container creation error: %s", str(e))
             return request.redirect('/my/containers/new?error=%s' % str(e))
+
+    # ============================================================================
+    # PORTAL SERVICE REQUESTS
+    # ============================================================================
+    @http.route(['/my/requests', '/my/requests/page/<int:page>'], type='http', auth='user', website=True)
+    def portal_my_requests(self, page=1, search=None, sortby=None, **kw):
+        """Portal service requests list view"""
+        values = self._prepare_portal_layout_values()
+        PortalRequest = request.env['portal.request']
+
+        # Search domain - filter by commercial partner
+        partner = request.env.user.partner_id
+        domain = [
+            ('partner_id', 'in', partner.commercial_partner_id.child_ids.ids + [partner.commercial_partner_id.id])
+        ]
+
+        # Add search filter
+        if search:
+            domain += [
+                '|', '|',
+                ('name', 'ilike', search),
+                ('description', 'ilike', search),
+                ('request_type', 'ilike', search)
+            ]
+
+        # Sorting
+        sort_order = {
+            'date': 'create_date desc',
+            'name': 'name',
+            'type': 'request_type',
+            'status': 'state',
+        }
+        order = sort_order.get(sortby, 'create_date desc')
+
+        # Count total requests
+        total_count = PortalRequest.search_count(domain)
+
+        # Pagination
+        items_per_page = 20
+        total_pages = (total_count + items_per_page - 1) // items_per_page
+        offset = (page - 1) * items_per_page
+
+        # Get requests
+        requests = PortalRequest.search(domain, order=order, limit=items_per_page, offset=offset)
+
+        # Pagination info
+        has_prev = page > 1
+        has_next = page < total_pages
+
+        values.update({
+            'requests': requests,
+            'total_count': total_count,
+            'page_name': 'my_requests',
+            'default_url': '/my/requests',
+            'search_term': search,
+            'sortby': sortby,
+            'current_page': page,
+            'total_pages': total_pages,
+            'has_prev': has_prev,
+            'has_next': has_next,
+            'prev_page': page - 1,
+            'next_page': page + 1,
+        })
+
+        return request.render('records_management.my_requests_template', values)
+
+    @http.route(['/my/requests/<int:request_id>'], type='http', auth='user', website=True)
+    def portal_request_detail(self, request_id, **kw):
+        """Portal service request detail view"""
+        try:
+            customer_request = request.env['portal.request'].browse(request_id)
+
+            # Security check - ensure user can access this request
+            partner = request.env.user.partner_id
+            allowed_partners = partner.commercial_partner_id.child_ids.ids + [partner.commercial_partner_id.id]
+
+            if customer_request.partner_id.id not in allowed_partners:
+                return request.redirect('/my/requests')
+
+            values = {
+                'customer_request': customer_request,
+                'page_name': 'request_detail',
+            }
+
+            return request.render('records_management.my_request_detail_template', values)
+
+        except Exception:
+            return request.redirect('/my/requests')
+
+    @http.route(['/my/requests/<int:request_id>/cancel'], type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def portal_request_cancel(self, request_id, **kw):
+        """Cancel a service request"""
+        try:
+            customer_request = request.env['portal.request'].browse(request_id)
+
+            # Security check
+            partner = request.env.user.partner_id
+            allowed_partners = partner.commercial_partner_id.child_ids.ids + [partner.commercial_partner_id.id]
+
+            if customer_request.partner_id.id not in allowed_partners:
+                return request.redirect('/my/requests')
+
+            # Cancel the request
+            if customer_request.state in ['draft', 'submitted']:
+                customer_request.action_cancel()
+
+            return request.redirect('/my/requests/%s' % request_id)
+
+        except Exception:
+            return request.redirect('/my/requests')
+
+    @http.route(['/my/request/new/pickup'], type='http', auth='user', website=True)
+    def portal_pickup_request_form(self, **kw):
+        """Display pickup request creation form"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+
+        values.update({
+            'partner': partner,
+            'page_name': 'new_pickup_request',
+            'error': kw.get('error'),
+        })
+
+        return request.render('records_management.portal_pickup_request_create', values)
+
+    @http.route(['/my/request/new/pickup/submit'], type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def portal_pickup_request_create(self, **kw):
+        """Create a new pickup request from portal"""
+        try:
+            partner = request.env.user.partner_id
+
+            # Prepare pickup request values
+            vals = {
+                'partner_id': partner.commercial_partner_id.id,
+                'contact_name': kw.get('contact_name', partner.name),
+                'contact_phone': kw.get('contact_phone', partner.phone),
+                'contact_email': kw.get('contact_email', partner.email),
+                'pickup_address': kw.get('pickup_address'),
+                'preferred_pickup_date': kw.get('preferred_pickup_date'),
+                'service_type': kw.get('service_type', 'standard'),
+                'estimated_volume': float(kw.get('estimated_volume', 0)) if kw.get('estimated_volume') else 0,
+                'estimated_weight': float(kw.get('estimated_weight', 0)) if kw.get('estimated_weight') else 0,
+                'special_instructions': kw.get('special_instructions'),
+                'description': kw.get('description'),
+            }
+
+            # Create pickup request (ACL will enforce permissions)
+            pickup_request = request.env['pickup.request'].create(vals)
+
+            # Submit the request
+            pickup_request.action_submit()
+
+            return request.redirect('/my/requests?pickup_created=%s' % pickup_request.id)
+
+        except AccessError:
+            return request.redirect('/my/request/new/pickup?error=no_permission')
+        except Exception as e:
+            import logging
+            _logger = logging.getLogger(__name__)
+            _logger.error("Portal pickup request creation error: %s", str(e))
+            return request.redirect('/my/request/new/pickup?error=%s' % str(e))
+
+    @http.route(['/my/request/new/destruction'], type='http', auth='user', website=True)
+    def portal_destruction_request_form(self, **kw):
+        """Display destruction request creation form"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+
+        # Get user's containers for selection
+        containers = request.env['records.container'].search([
+            ('partner_id', '=', partner.commercial_partner_id.id)
+        ])
+
+        values.update({
+            'partner': partner,
+            'containers': containers,
+            'page_name': 'new_destruction_request',
+            'error': kw.get('error'),
+        })
+
+        return request.render('records_management.portal_destruction_request_create', values)
+
+    @http.route(['/my/request/new/destruction/submit'], type='http', auth='user', methods=['POST'], website=True, csrf=True)
+    def portal_destruction_request_create(self, **kw):
+        """Create a new destruction request from portal"""
+        try:
+            partner = request.env.user.partner_id
+
+            # Prepare destruction request values
+            vals = {
+                'partner_id': partner.commercial_partner_id.id,
+                'destruction_method': kw.get('destruction_method', 'shredding'),
+                'notes': kw.get('notes'),
+                'naid_compliant': True,  # Always NAID compliant for portal requests
+            }
+
+            # Create destruction request (ACL will enforce permissions)
+            destruction_request = request.env['records.destruction'].create(vals)
+
+            # If container IDs provided, create destruction items
+            container_ids = request.httprequest.form.getlist('container_ids')
+            if container_ids:
+                for container_id in container_ids:
+                    request.env['destruction.item'].create({
+                        'destruction_id': destruction_request.id,
+                        'container_id': int(container_id),
+                    })
+
+            # Schedule the destruction
+            destruction_request.action_schedule()
+
+            return request.redirect('/my/requests?destruction_created=%s' % destruction_request.id)
+
+        except AccessError:
+            return request.redirect('/my/request/new/destruction?error=no_permission')
+        except Exception as e:
+            import logging
+            _logger = logging.getLogger(__name__)
+            _logger.error("Portal destruction request creation error: %s", str(e))
+            return request.redirect('/my/request/new/destruction?error=%s' % str(e))
