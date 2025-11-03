@@ -93,7 +93,7 @@
                                         Users will have access to this department and all child departments.
                                     </p>
                                 </group>
-                                
+
                                 <!-- Show department user assignments -->
                                 <field name="department_user_assignment_ids" nolabel="1">
                                     <tree editable="bottom" create="true" delete="true">
@@ -102,12 +102,12 @@
                                         <field name="state"/>
                                         <field name="can_view_records"/>
                                         <field name="can_edit_records"/>
-                                        <field name="can_create_records"/>
                                         <field name="can_delete_records"/>
+                                        <field name="can_export_records"/>
                                         <field name="active"/>
                                     </tree>
                                 </field>
-                                
+
                                 <separator string="Legacy User Assignment (Deprecated)"/>
                                 <group>
                                     <p class="text-warning">
