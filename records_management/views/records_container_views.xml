@@ -169,6 +169,9 @@ Destroy Container</a>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
             </header>
+        <!-- Backwards compatibility for Studio customizations -->
+        <field name="stock_location_id" column_invisible="1"/>
+
         <field name="name" string="Container ID"/>
         <field name="partner_id" string="Customer" required="1"/>
         <field name="stock_owner_id" string="Stock Owner" optional="show"/>
@@ -203,11 +206,11 @@ Destroy Container</a>
         <form>
             <header>
                 <!-- ✅ NEW: Index Container button (creates stock quant) -->
-                <button name="action_index_container" type="object" string="Index Container" 
-                        class="btn-primary" 
+                <button name="action_index_container" type="object" string="Index Container"
+                        class="btn-primary"
                         invisible="state != 'draft' or not barcode"
                         help="Index container: Assign to inventory system and create stock quant"/>
-                
+
                 <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/>
                 <button name="action_store_container" type="object" string="Store Container" class="btn-primary" invisible="state != 'active'"/>
                 <button name="action_retrieve_container" type="object" string="Retrieve Container" class="btn-secondary" invisible="state != 'stored'"/>
@@ -224,10 +227,10 @@ Destroy Container</a>
 <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o" title="View Documents">
         <field name="document_count" string="Documents" widget="statinfo"/>
                     </button>
-                    
+
                     <!-- ✅ NEW: Stock Quant smart button -->
-                    <button class="oe_stat_button" type="object" name="action_view_stock_quant" 
-                            icon="fa-cubes" 
+                    <button class="oe_stat_button" type="object" name="action_view_stock_quant"
+                            icon="fa-cubes"
                             title="View in Inventory System"
                             invisible="not quant_id">
                         <div class="o_field_widget o_stat_info">
@@ -235,10 +238,10 @@ Destroy Container</a>
                             <span class="o_stat_text">Quant</span>
                         </div>
                     </button>
-                    
+
                     <!-- Stock Location smart button -->
-                    <button class="oe_stat_button" type="object" name="action_view_stock_location" 
-                            icon="fa-map-marker" 
+                    <button class="oe_stat_button" type="object" name="action_view_stock_location"
+                            icon="fa-map-marker"
                             title="View Stock Location"
                             invisible="not location_id">
                         <div class="o_field_widget o_stat_info">
@@ -250,8 +253,8 @@ Destroy Container</a>
 
                 <group>
                     <group string="Container Information">
-    <field name="name" 
-           placeholder="e.g., HR Personnel 2024" 
+    <field name="name"
+           placeholder="e.g., HR Personnel 2024"
            help="Customer's name for this container - fully editable"
            readonly="state == 'destroyed'"/>
     <!-- Include computed flag field (hidden) so invisible expression works reliably -->
@@ -267,37 +270,40 @@ Destroy Container</a>
         <field name="partner_id" required="1" groups="base.group_user" options="{'no_create': True, 'no_create_edit': True}"/>
         <field name="partner_id" required="1" readonly="1" groups="base.group_portal" options="{'no_create': True, 'no_create_edit': True}"/>
         <field name="department_id"/>
-        
+
         <!-- Stock Owner - Editable for internal users, readonly for portal -->
-        <field name="stock_owner_id" 
+        <field name="stock_owner_id"
                string="Stock Owner"
-               groups="base.group_user" 
+               groups="base.group_user"
                options="{'no_create': True}"
                help="Customer ownership in stock system (defaults to Customer, can override for multi-company)"/>
-        <field name="stock_owner_id" 
+        <field name="stock_owner_id"
                string="Stock Owner"
                readonly="1"
-               groups="base.group_portal" 
+               groups="base.group_portal"
                help="Your company (auto-filled)"/>
-        
+
         <!-- Stock Integration - Native Odoo Inventory -->
-        <field name="location_id" 
+        <!-- Backwards compatibility: stock_location_id for Studio customizations -->
+        <field name="stock_location_id" invisible="1"/>
+
+        <field name="location_id"
                string="Warehouse Location"
-               groups="base.group_user" 
+               groups="base.group_user"
                options="{'no_create': True}"
                help="Physical warehouse location where this container is stored (e.g., Aisle 10/Row 0)"/>
-        <field name="current_location_id" 
+        <field name="current_location_id"
                string="Inventory System Location"
-               readonly="1" 
+               readonly="1"
                groups="base.group_user"
                invisible="not quant_id"
                help="Auto-synced from stock quant (read-only). Updates automatically when container is moved via stock transfers."/>
-        <field name="quant_id" 
-               readonly="1" 
+        <field name="quant_id"
+               readonly="1"
                groups="base.group_user"
                invisible="not quant_id"
                help="Stock quant record (inventory tracking)"/>
-        
+
         <!-- Portal users: Temporary inventory (temp locations at customer site) -->
         <!-- Only show if NO physical location assigned (mutually exclusive) -->
         <field name="temp_inventory_id"
