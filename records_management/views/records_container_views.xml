@@ -277,23 +277,28 @@ Destroy Container</a>
                string="Current Location"
                readonly="1" 
                groups="base.group_user"
+               invisible="not location_id"
                help="Real-time location from stock system (via quant)"/>
         <field name="stock_owner_id" 
                string="Stock Owner"
                readonly="1" 
                groups="base.group_user"
+               invisible="not quant_id"
                help="Customer ownership in stock system"/>
         <field name="quant_id" 
                readonly="1" 
                groups="base.group_user"
+               invisible="not quant_id"
                help="Stock quant record (inventory tracking)"/>
         
         <!-- Portal users: Temporary inventory (temp locations at customer site) -->
-        <!-- Quick-create enabled with context to default to container's partner_id -->
+        <!-- Only show if NO physical location assigned (mutually exclusive) -->
         <field name="temp_inventory_id"
                groups="base.group_portal"
                context="{'default_partner_id': partner_id}"
-               options="{'no_open': False}"/>
+               invisible="location_id"
+               options="{'no_open': False}"
+               help="Temporary location at customer site (hidden when assigned to warehouse location)"/>
         <field name="user_id"/>
                     </group>
                 </group>

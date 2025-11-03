@@ -620,10 +620,22 @@ class RecordsContainer(models.Model):
     # BUTTON ACTIONS
     # ============================================================================
     def action_activate(self):
-        """Activate container for storage"""
+        """Activate container for storage and create stock quant"""
         self.ensure_one()
         if not self.partner_id:
             raise UserError(_("Customer must be specified before activation"))
+        
+        # If location_id is set and no quant exists, create stock quant
+        if self.location_id and not self.quant_id:
+            quant_vals = {
+                'product_id': self.env.ref('records_management.product_records_container').id,  # You'll need to create this product
+                'location_id': self.location_id.id,
+                'quantity': 1.0,
+                'owner_id': self.partner_id.id,  # Set stock owner to customer
+                'company_id': self.company_id.id,
+            }
+            quant = self.env['stock.quant'].sudo().create(quant_vals)
+            self.quant_id = quant.id
 
         self.write(
             {
