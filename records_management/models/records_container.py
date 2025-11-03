@@ -700,7 +700,7 @@ class RecordsContainer(models.Model):
                 'product_id': product.id,
                 'location_id': self.location_id.id,
                 'quantity': 1.0,
-                'owner_id': self.partner_id.id,  # Set stock owner to customer
+                'owner_id': self.stock_owner_id.id or self.partner_id.id,  # Use stock owner hierarchy
                 'company_id': self.company_id.id,
             }
             quant = self.env['stock.quant'].sudo().create(quant_vals)
