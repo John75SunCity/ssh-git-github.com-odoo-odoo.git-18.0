@@ -621,12 +621,16 @@ class RecordsContainer(models.Model):
         - Stock Owner options: [City of Las Cruces, City of Las Cruces / Fleet, City of Las Cruces / Parks, ...]
         - Auto-selected: City of Las Cruces / Fleet
         """
-        if self.department_id:
+        # Set stock_owner_id based on selections
+        if self.department_id and self.department_id.partner_id:
             # Department selected - use department's partner as stock owner
-            self.stock_owner_id = self.department_id.partner_id
+            self.stock_owner_id = self.department_id.partner_id.id
         elif self.partner_id:
             # Only customer selected - use customer as stock owner
-            self.stock_owner_id = self.partner_id
+            self.stock_owner_id = self.partner_id.id
+        else:
+            # No customer selected - clear stock owner
+            self.stock_owner_id = False
 
         # Build domain to filter stock_owner_id options
         if self.partner_id:
@@ -640,7 +644,9 @@ class RecordsContainer(models.Model):
                     ]
                 }
             }
-        return {'domain': {'stock_owner_id': []}}
+        else:
+            # No customer - clear domain
+            return {'domain': {'stock_owner_id': []}}
 
     @api.depends("customer_rate_id.state", "customer_rate_id.is_current", "customer_rate_id.monthly_rate", "customer_rate_id.discount_percentage", "container_type_id.standard_rate")
     def _compute_effective_rate(self):
