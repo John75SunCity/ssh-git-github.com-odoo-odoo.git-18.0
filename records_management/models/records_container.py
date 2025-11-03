@@ -96,6 +96,15 @@ class RecordsContainer(models.Model):
              "Integrated with Inventory → Configuration → Locations. "
              "Tracks physical location and enables stock movements."
     )
+    # Backwards compatibility alias for Studio customizations
+    stock_location_id = fields.Many2one(
+        "stock.location",
+        related="location_id",
+        string="Stock Location (Legacy)",
+        store=False,
+        readonly=True,
+        help="Alias for location_id - for backwards compatibility with Studio customizations."
+    )
     quant_id = fields.Many2one(
         "stock.quant",
         string="Stock Quant",
