@@ -269,16 +269,16 @@ Destroy Container</a>
         
         <!-- Stock Integration - Native Odoo Inventory -->
         <field name="location_id" 
-               string="Stock Location"
+               string="Warehouse Location"
                groups="base.group_user" 
                options="{'no_create': True}"
-               help="Current warehouse location (native Odoo stock.location)"/>
+               help="Physical warehouse location where this container is stored (e.g., Aisle 10/Row 0)"/>
         <field name="current_location_id" 
-               string="Current Location"
+               string="Inventory System Location"
                readonly="1" 
                groups="base.group_user"
-               invisible="not location_id"
-               help="Real-time location from stock system (via quant)"/>
+               invisible="not quant_id"
+               help="Auto-synced from stock quant (read-only). Updates automatically when container is moved via stock transfers."/>
         <field name="stock_owner_id" 
                string="Stock Owner"
                readonly="1" 
