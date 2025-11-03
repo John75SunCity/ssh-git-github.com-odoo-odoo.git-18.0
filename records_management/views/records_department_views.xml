@@ -101,6 +101,7 @@
                                         <field name="role" required="1"/>
                                         <field name="state"/>
                                         <field name="can_view_records"/>
+                                        <field name="can_create_records"/>
                                         <field name="can_edit_records"/>
                                         <field name="can_delete_records"/>
                                         <field name="can_export_records"/>
