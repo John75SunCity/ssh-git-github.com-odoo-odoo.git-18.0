@@ -58,11 +58,12 @@ def migrate(cr, version):
             print(f"   ✅ Cleaned {cr.rowcount} storage_capacity values")
             
             # Show some examples of what was converted
+            # Cast to integer for comparison since we just converted the data
             cr.execute("""
-                SELECT id, name, storage_capacity 
+                SELECT id, name, storage_capacity::integer 
                 FROM records_location 
-                WHERE storage_capacity > 0
-                ORDER BY storage_capacity DESC
+                WHERE storage_capacity::integer > 0
+                ORDER BY storage_capacity::integer DESC
                 LIMIT 5
             """)
             
@@ -70,6 +71,7 @@ def migrate(cr, version):
             if examples:
                 print("   Examples of converted values:")
                 for loc_id, loc_name, capacity in examples:
+                    # capacity is already an integer from the query
                     print(f"      - {loc_name}: {capacity:,} containers")
     else:
         print("   ℹ️  storage_capacity column doesn't exist yet (will be created)")
