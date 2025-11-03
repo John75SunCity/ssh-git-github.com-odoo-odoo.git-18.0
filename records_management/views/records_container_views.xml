@@ -169,8 +169,8 @@ Destroy Container</a>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
             </header>
-        <!-- Backwards compatibility for Studio customizations -->
-        <field name="stock_location_id" column_invisible="1"/>
+        <!-- Stock location field - Configurable visibility via RM Module Configurator -->
+        <field name="stock_location_id" optional="hide"/>
 
         <field name="name" string="Container ID"/>
         <field name="partner_id" string="Customer" required="1"/>
@@ -284,8 +284,12 @@ Destroy Container</a>
                help="Your company (auto-filled)"/>
 
         <!-- Stock Integration - Native Odoo Inventory -->
-        <!-- Backwards compatibility: stock_location_id for Studio customizations -->
-        <field name="stock_location_id" invisible="1"/>
+        <!-- Stock location field - Can be shown via tree view column toggle (optional="hide") -->
+        <field name="stock_location_id"
+               string="Stock Location (Technical)"
+               groups="stock.group_stock_user"
+               options="{'no_create': True}"
+               help="Raw stock.location record - For advanced inventory users only. Most users should use 'Warehouse Location' field instead."/>
 
         <field name="location_id"
                string="Warehouse Location"
