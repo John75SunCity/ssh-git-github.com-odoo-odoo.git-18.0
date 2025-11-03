@@ -270,43 +270,42 @@ Destroy Container</a>
         <field name="partner_id" required="1" groups="base.group_user" options="{'no_create': True, 'no_create_edit': True}"/>
         <field name="partner_id" required="1" readonly="1" groups="base.group_portal" options="{'no_create': True, 'no_create_edit': True}"/>
         <field name="department_id"/>
-
-        <!-- Stock Owner - Editable for internal users, readonly for portal -->
-        <field name="stock_owner_id"
-               string="Stock Owner"
-               groups="base.group_user"
-               options="{'no_create': True}"
-               help="Customer ownership in stock system (defaults to Customer, can override for multi-company)"/>
+        
+        <!-- Stock Owner - Auto-filled from Customer/Department selection -->
         <field name="stock_owner_id"
                string="Stock Owner"
                readonly="1"
-               groups="base.group_portal"
-               help="Your company (auto-filled)"/>
-
-        <!-- Stock Integration - Native Odoo Inventory -->
-        <!-- Stock location field - Can be shown via tree view column toggle (optional="hide") -->
-        <field name="stock_location_id"
-               string="Stock Location (Technical)"
-               groups="stock.group_stock_user"
                options="{'no_create': True}"
-               help="Raw stock.location record - For advanced inventory users only. Most users should use 'Warehouse Location' field instead."/>
+               help="Customer ownership in stock system (auto-filled from Customer or Department selection)"/>
 
+        <!-- PRIMARY LOCATION: What user sets manually -->
         <field name="location_id"
                string="Warehouse Location"
                groups="base.group_user"
                options="{'no_create': True}"
-               help="Physical warehouse location where this container is stored (e.g., Aisle 10/Row 0)"/>
+               help="Where you want to store this container (e.g., Aisle 10/Row 0). Set this manually."/>
+        
+        <!-- HIDDEN TECHNICAL FIELDS - Only for advanced inventory users -->
+        <field name="stock_location_id"
+               string="Stock Location (Technical)"
+               invisible="1"
+               groups="stock.group_stock_manager"
+               options="{'no_create': True}"
+               help="Legacy alias - same as Warehouse Location"/>
+               
         <field name="current_location_id"
-               string="Inventory System Location"
+               string="Inventory Sync Location"
                readonly="1"
-               groups="base.group_user"
-               invisible="not quant_id"
-               help="Auto-synced from stock quant (read-only). Updates automatically when container is moved via stock transfers."/>
+               invisible="1"
+               groups="stock.group_stock_manager"
+               help="Auto-synced from stock quant after activation. Shows actual inventory system location."/>
+               
         <field name="quant_id"
+               string="Stock Quant"
                readonly="1"
-               groups="base.group_user"
-               invisible="not quant_id"
-               help="Stock quant record (inventory tracking)"/>
+               invisible="1"
+               groups="stock.group_stock_manager"
+               help="Inventory tracking record (created when container is activated)"/>
 
         <!-- Portal users: Temporary inventory (temp locations at customer site) -->
         <!-- Only show if NO physical location assigned (mutually exclusive) -->

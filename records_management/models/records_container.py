@@ -89,12 +89,12 @@ class RecordsContainer(models.Model):
     # ============================================================================
     location_id = fields.Many2one(
         "stock.location",
-        string="Stock Location",
+        string="Warehouse Location",
         tracking=True,
         domain="[('usage', '=', 'internal')]",
-        help="Current warehouse location (native Odoo stock.location). "
-             "Integrated with Inventory → Configuration → Locations. "
-             "Tracks physical location and enables stock movements."
+        help="PRIMARY LOCATION: Where you manually place this container. "
+             "This is what users set (e.g., Aisle 10/Row 0). "
+             "When you activate a container, the stock.quant is created at THIS location."
     )
     # Backwards compatibility alias for Studio customizations
     stock_location_id = fields.Many2one(
@@ -119,15 +119,19 @@ class RecordsContainer(models.Model):
         tracking=True,
         index=True,
         default=lambda self: self._default_partner_id(),
-        help="Customer ownership in stock system. Defaults to partner_id but can be overridden for multi-company ownership."
+        help="Customer who owns this container in the stock system. "
+             "Auto-filled from Customer or Department selection. "
+             "Used for inventory ownership tracking and filtering."
     )
     current_location_id = fields.Many2one(
         "stock.location",
         related="quant_id.location_id",
-        string="Current Location",
+        string="Current Location (Inventory Sync)",
         store=True,
         readonly=True,
-        help="Real-time location from stock.quant (updated by stock movements)."
+        help="ADVANCED FIELD: Real-time location from stock.quant. "
+             "Only differs from 'Warehouse Location' if container was moved using stock transfers. "
+             "Normally hidden - most users only need 'Warehouse Location'."
     )
     temp_inventory_id = fields.Many2one(
         "temp.inventory",
