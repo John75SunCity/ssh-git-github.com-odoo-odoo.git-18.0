@@ -69,6 +69,14 @@ class RecordsLocation(models.Model):
         tracking=True
     )
 
+    # Records Management description (separate from stock.location.comment)
+    description = fields.Text(
+        string="Description",
+        tracking=True,
+        help="Location description and special instructions for records management. "
+             "Use this for access notes, handling instructions, or compliance details."
+    )
+
     # Container relationship (records-specific)
     container_ids = fields.One2many(
         'records.container',
