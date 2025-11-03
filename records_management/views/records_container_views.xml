@@ -267,8 +267,8 @@ Destroy Container</a>
         <field name="is_full"/>
                     </group>
                     <group string="Customer &amp; Location">
-        <field name="partner_id" required="1" groups="base.group_user" options="{'no_create': True, 'no_create_edit': True}"/>
-        <field name="partner_id" required="1" readonly="1" groups="base.group_portal" options="{'no_create': True, 'no_create_edit': True}"/>
+        <field name="partner_id" required="1" groups="base.group_user" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+        <field name="partner_id" required="1" readonly="1" groups="base.group_portal" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
         <field name="department_id"/>
         
         <!-- Stock Owner - Auto-filled from Customer/Department selection -->
