@@ -17,7 +17,7 @@ except Exception:  # pragma: no cover - optional dependency fallback
 
 
 class RecordsContainer(models.Model):
-        _name = "records.container"
+    _name = "records.container"
     _description = "Records Container"
     _inherit = ["mail.thread", "mail.activity.mixin", "barcodes.barcode_events_mixin"]
     _order = "create_date desc, name"
