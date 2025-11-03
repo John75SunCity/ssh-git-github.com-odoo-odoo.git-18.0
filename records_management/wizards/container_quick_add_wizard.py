@@ -199,6 +199,37 @@ class ContainerQuickAddWizard(models.TransientModel):
             if wizard.container_number and len(wizard.container_number) < 4:
                 raise ValidationError(_("Container number must be at least 4 characters long"))
 
+    @api.onchange('partner_id', 'department_id')
+    def _onchange_partner_department(self):
+        """
+        Auto-set stock_owner_id based on customer and department selection.
+        
+        Logic:
+        - If department selected: stock_owner = department's partner
+        - If only customer selected: stock_owner = customer
+        - Filter available options to customer and its child departments
+        """
+        if self.department_id:
+            # Department selected - use department's partner as stock owner
+            self.stock_owner_id = self.department_id.partner_id
+        elif self.partner_id:
+            # Only customer selected - use customer as stock owner
+            self.stock_owner_id = self.partner_id
+
+        # Build domain to filter stock_owner_id options
+        if self.partner_id:
+            # Show customer + all its child contacts (departments)
+            return {
+                'domain': {
+                    'stock_owner_id': [
+                        '|',
+                        ('id', '=', self.partner_id.id),
+                        ('parent_id', '=', self.partner_id.id)
+                    ]
+                }
+            }
+        return {'domain': {'stock_owner_id': []}}
+
     def action_create_container(self):
         """Create the container with all entered data"""
         self.ensure_one()

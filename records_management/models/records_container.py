@@ -596,6 +596,43 @@ class RecordsContainer(models.Model):
         if rates:
             self.customer_rate_id = rates.id
 
+    @api.onchange('partner_id', 'department_id')
+    def _onchange_partner_department_stock_owner(self):
+        """
+        Auto-set stock_owner_id and filter available options based on customer and department.
+        
+        Business Logic:
+        - If department selected: stock_owner = department's partner (child contact)
+        - If only customer selected: stock_owner = customer (parent company)
+        - Filter options: Show customer + all its child departments
+        
+        Example:
+        - Customer: City of Las Cruces
+        - Department: Fleet
+        - Stock Owner options: [City of Las Cruces, City of Las Cruces / Fleet, City of Las Cruces / Parks, ...]
+        - Auto-selected: City of Las Cruces / Fleet
+        """
+        if self.department_id:
+            # Department selected - use department's partner as stock owner
+            self.stock_owner_id = self.department_id.partner_id
+        elif self.partner_id:
+            # Only customer selected - use customer as stock owner
+            self.stock_owner_id = self.partner_id
+
+        # Build domain to filter stock_owner_id options
+        if self.partner_id:
+            # Show customer + all its child contacts (departments)
+            return {
+                'domain': {
+                    'stock_owner_id': [
+                        '|',
+                        ('id', '=', self.partner_id.id),
+                        ('parent_id', '=', self.partner_id.id)
+                    ]
+                }
+            }
+        return {'domain': {'stock_owner_id': []}}
+
     @api.depends("customer_rate_id.state", "customer_rate_id.is_current", "customer_rate_id.monthly_rate", "customer_rate_id.discount_percentage", "container_type_id.standard_rate")
     def _compute_effective_rate(self):
         """Compute the effective monthly storage rate.
