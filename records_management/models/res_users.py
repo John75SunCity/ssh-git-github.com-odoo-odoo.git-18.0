@@ -110,6 +110,49 @@ class ResUsers(models.Model):
 
     partner_required = fields.Boolean(string='Partner Required', compute='_compute_partner_required', store=False)
 
+    # ============================================================================
+    # DEPARTMENT ACCESS CONTROL (Portal Users)
+    # ============================================================================
+    department_assignment_ids = fields.One2many(
+        'records.storage.department.user',
+        'user_id',
+        string='Department Assignments',
+        help='Departments this user has been assigned to with specific roles and permissions'
+    )
+    
+    accessible_department_ids = fields.Many2many(
+        'records.department',
+        compute='_compute_accessible_department_ids',
+        string='Accessible Departments',
+        help='All departments this user can access (includes assigned departments and their children)'
+    )
+    
+    @api.depends('department_assignment_ids', 'department_assignment_ids.department_id', 
+                 'department_assignment_ids.department_id.child_department_ids',
+                 'department_assignment_ids.state')
+    def _compute_accessible_department_ids(self):
+        """
+        Compute all departments user can access based on assignments.
+        Includes assigned departments AND all their child departments (hierarchical access).
+        """
+        for user in self:
+            accessible_depts = self.env['records.department']
+            
+            # Get active department assignments
+            active_assignments = user.department_assignment_ids.filtered(
+                lambda a: a.state == 'active' and a.active
+            )
+            
+            # For each assigned department, include it and all children
+            for assignment in active_assignments:
+                dept = assignment.department_id
+                accessible_depts |= dept
+                
+                # Add all child departments recursively
+                accessible_depts |= dept._get_all_children()
+            
+            user.accessible_department_ids = accessible_depts
+
     @api.onchange('records_user_profile')
     def _onchange_records_user_profile(self):
         """Preview group assignment when user changes the profile in UI"""

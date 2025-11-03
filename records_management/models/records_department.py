@@ -51,6 +51,12 @@ class RecordsDepartment(models.Model):
         inverse_name='parent_department_id',
         string='Child Departments'
     )
+    department_user_assignment_ids = fields.One2many(
+        'records.storage.department.user',
+        'department_id',
+        string='Department User Assignments',
+        help='Users assigned to this department with specific roles and permissions'
+    )
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -141,6 +147,23 @@ class RecordsDepartment(models.Model):
 
     def get_department_users(self):
         return self.user_ids.filtered(lambda u: u.active)
+    
+    def _get_all_children(self):
+        """
+        Recursively get all child departments (including children of children).
+        Used for hierarchical access control.
+        
+        Returns:
+            recordset: All descendant departments
+        """
+        all_children = self.env['records.department']
+        for dept in self:
+            children = dept.child_department_ids
+            all_children |= children
+            # Recursive call for nested children
+            for child in children:
+                all_children |= child._get_all_children()
+        return all_children
 
     def action_view_child_departments(self):
         self.ensure_one()

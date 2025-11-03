@@ -40,6 +40,13 @@ class ResPartner(models.Model):
         compute='_compute_department_count',
         store=True
     )
+    
+    department_user_assignment_ids = fields.One2many(
+        'records.storage.department.user',
+        compute='_compute_department_user_assignments',
+        string='Department User Assignments',
+        help='All department user assignments for users under this partner'
+    )
 
     container_count = fields.Integer(
         string="Container Count",
@@ -223,6 +230,18 @@ class ResPartner(models.Model):
         """Computes the number of departments associated with this partner."""
         for partner in self:
             partner.department_count = len(partner.department_ids)
+    
+    def _compute_department_user_assignments(self):
+        """
+        Get all department user assignments for departments under this partner.
+        Used in partner form to show/edit department access control.
+        """
+        for partner in self:
+            # Get all assignments for departments belonging to this partner
+            assignments = self.env['records.storage.department.user'].search([
+                ('department_id.partner_id', '=', partner.id)
+            ])
+            partner.department_user_assignment_ids = assignments
 
     def _compute_transitory_stats(self):
         """Aggregate portal-facing transitory statistics in batch."""
