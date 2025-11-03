@@ -208,6 +208,12 @@ class ContainerQuickAddWizard(models.TransientModel):
             'location_id': self.location_id.id if self.location_id else False,
         }
 
+        # Add alpha range if provided
+        if self.range_start:
+            container_vals['alpha_range_start'] = self.range_start
+        if self.range_end:
+            container_vals['alpha_range_end'] = self.range_end
+
         # Add retention info
         if self.retention_period == 'permanent':
             container_vals['permanent_retention'] = True
@@ -217,6 +223,12 @@ class ContainerQuickAddWizard(models.TransientModel):
         else:
             # For standard retention periods, set the destruction due date
             container_vals['destruction_due_date'] = self.destruction_date
+
+        # Generate temp barcode for tracking (customer-created containers)
+        # Format: TEMP-{PARTNER_ABBR}-{YYYYMMDD}-{SEQUENCE}
+        temp_barcode = self._generate_temp_barcode()
+        if temp_barcode:
+            container_vals['temp_barcode'] = temp_barcode
 
         container = self.env['records.container'].create(container_vals)
 
@@ -284,3 +296,29 @@ class ContainerQuickAddWizard(models.TransientModel):
             description_parts.append(self.contents_description)
 
         return " ".join(description_parts)
+
+    def _generate_temp_barcode(self):
+        """
+        Generate temporary barcode for customer-created containers
+        Format: TEMP-{PARTNER_ABBR}-{YYYYMMDD}-{SEQUENCE}
+        Example: TEMP-CITY-20251103-0001
+        """
+        partner = self.partner_id
+        if not partner:
+            return False
+
+        # Get partner abbreviation (first 4 chars of name, uppercase)
+        partner_abbr = (partner.name or "CUST")[:4].upper().replace(" ", "")
+        
+        # Get today's date in YYYYMMDD format
+        date_str = fields.Date.today().strftime("%Y%m%d")
+        
+        # Get sequence number for today (count existing temp barcodes for this partner today)
+        existing_count = self.env['records.container'].search_count([
+            ('partner_id', '=', partner.id),
+            ('temp_barcode', 'like', f'TEMP-{partner_abbr}-{date_str}-%')
+        ])
+        
+        sequence = str(existing_count + 1).zfill(4)
+        
+        return f"TEMP-{partner_abbr}-{date_str}-{sequence}"
