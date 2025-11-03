@@ -1007,3 +1007,202 @@ class RecordsManagementController(http.Controller):
         except Exception as e:
             _logger.error("Quick feedback submission error: %s", e)
             return request.redirect('/my?error=feedback_failed')
+
+    # ============================================================================
+    # CERTIFICATES PORTAL ROUTES
+    # ============================================================================
+
+    @http.route(['/my/certificates', '/my/certificates/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_my_certificates(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
+        """Display customer destruction certificates in portal"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        Certificate = request.env['destruction.certificate']
+        
+        domain = [
+            ('partner_id', 'child_of', partner.commercial_partner_id.id),
+        ]
+        
+        # Date filtering
+        if date_begin and date_end:
+            domain += [('date', '>=', date_begin), ('date', '<=', date_end)]
+        
+        # Sorting options
+        searchbar_sortings = {
+            'date': {'label': 'Date', 'order': 'date desc'},
+            'name': {'label': 'Certificate Number', 'order': 'name'},
+            'state': {'label': 'Status', 'order': 'state'},
+        }
+        
+        if not sortby:
+            sortby = 'date'
+        order = searchbar_sortings[sortby]['order']
+        
+        # Count total certificates
+        certificate_count = Certificate.search_count(domain)
+        
+        # Pager setup
+        pager = request.website.pager(
+            url="/my/certificates",
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby},
+            total=certificate_count,
+            page=page,
+            step=self._items_per_page,
+        )
+        
+        # Get certificates for current page
+        certificates = Certificate.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        
+        values.update({
+            'certificates': certificates,
+            'page_name': 'certificates',
+            'pager': pager,
+            'default_url': '/my/certificates',
+            'searchbar_sortings': searchbar_sortings,
+            'sortby': sortby,
+        })
+        
+        return request.render("records_management.portal_my_certificates", values)
+
+    @http.route(['/my/certificate/<int:certificate_id>'], type='http', auth="user", website=True)
+    def portal_my_certificate(self, certificate_id=None, **kw):
+        """Display individual certificate details"""
+        certificate = request.env['destruction.certificate'].browse(certificate_id)
+        
+        # Security check
+        if not certificate.exists() or certificate.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
+            return request.redirect('/my/certificates')
+        
+        values = {
+            'certificate': certificate,
+            'page_name': 'certificate_detail',
+        }
+        
+        return request.render("records_management.portal_certificate_detail", values)
+
+    @http.route(['/my/certificate/<int:certificate_id>/download'], type='http', auth="user")
+    def portal_certificate_download(self, certificate_id=None, **kw):
+        """Download certificate PDF"""
+        certificate = request.env['destruction.certificate'].browse(certificate_id)
+        
+        # Security check
+        if not certificate.exists() or certificate.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
+            return request.redirect('/my/certificates')
+        
+        # Generate PDF report
+        pdf = request.env.ref('records_management.action_report_destruction_certificate').sudo()._render_qweb_pdf([certificate.id])[0]
+        
+        pdfhttpheaders = [
+            ('Content-Type', 'application/pdf'),
+            ('Content-Length', len(pdf)),
+            ('Content-Disposition', f'attachment; filename="Certificate-{certificate.name}.pdf"'),
+        ]
+        
+        return request.make_response(pdf, headers=pdfhttpheaders)
+
+    # ============================================================================
+    # DOCUMENTS PORTAL ROUTES
+    # ============================================================================
+
+    @http.route(['/my/documents', '/my/documents/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_my_documents(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, **kw):
+        """Display customer digital documents in portal"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        Document = request.env['records.document']
+        
+        domain = [
+            ('partner_id', 'child_of', partner.commercial_partner_id.id),
+        ]
+        
+        # Search filter
+        if search:
+            domain += ['|', ('name', 'ilike', search), ('description', 'ilike', search)]
+        
+        # Date filtering
+        if date_begin and date_end:
+            domain += [('create_date', '>=', date_begin), ('create_date', '<=', date_end)]
+        
+        # Status filter
+        searchbar_filters = {
+            'all': {'label': 'All', 'domain': []},
+            'active': {'label': 'Active', 'domain': [('active', '=', True)]},
+            'flagged': {'label': 'Flagged', 'domain': [('permanently_flagged', '=', True)]},
+        }
+        
+        if not filterby:
+            filterby = 'all'
+        domain += searchbar_filters[filterby]['domain']
+        
+        # Sorting options
+        searchbar_sortings = {
+            'date': {'label': 'Date', 'order': 'create_date desc'},
+            'name': {'label': 'Name', 'order': 'name'},
+            'type': {'label': 'Type', 'order': 'document_type_id'},
+        }
+        
+        if not sortby:
+            sortby = 'date'
+        order = searchbar_sortings[sortby]['order']
+        
+        # Count total documents
+        document_count = Document.search_count(domain)
+        
+        # Pager setup
+        pager = request.website.pager(
+            url="/my/documents",
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby, 'filterby': filterby, 'search': search},
+            total=document_count,
+            page=page,
+            step=self._items_per_page,
+        )
+        
+        # Get documents for current page
+        documents = Document.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        
+        values.update({
+            'documents': documents,
+            'page_name': 'documents',
+            'pager': pager,
+            'default_url': '/my/documents',
+            'searchbar_sortings': searchbar_sortings,
+            'searchbar_filters': searchbar_filters,
+            'sortby': sortby,
+            'filterby': filterby,
+            'search': search or '',
+        })
+        
+        return request.render("records_management.portal_my_documents", values)
+
+    @http.route(['/my/document/<int:document_id>'], type='http', auth="user", website=True)
+    def portal_my_document(self, document_id=None, **kw):
+        """Display individual document details"""
+        document = request.env['records.document'].browse(document_id)
+        
+        # Security check
+        if not document.exists() or document.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
+            return request.redirect('/my/documents')
+        
+        values = {
+            'document': document,
+            'page_name': 'document_detail',
+        }
+        
+        return request.render("records_management.portal_document_detail", values)
+
+    @http.route(['/my/document/<int:document_id>/download'], type='http', auth="user")
+    def portal_document_download(self, document_id=None, **kw):
+        """Download document attachment"""
+        document = request.env['records.document'].browse(document_id)
+        
+        # Security check
+        if not document.exists() or document.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
+            return request.redirect('/my/documents')
+        
+        # Get attachment if exists
+        if document.attachment_id:
+            return request.redirect(f'/web/content/{document.attachment_id.id}?download=true')
+        else:
+            return request.redirect('/my/documents?error=no_attachment')
