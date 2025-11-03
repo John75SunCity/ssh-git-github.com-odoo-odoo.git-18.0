@@ -174,6 +174,8 @@ from . import records_container_transfer_line
 from . import records_container_type
 from . import records_container_type_converter
 from . import records_deletion_request
+from . import records_storage_department_user  # Must load BEFORE records_department
+from . import records_storage_department_user_actions
 from . import records_department
 from . import records_department_billing_approval
 from . import records_department_billing_contact
@@ -206,8 +208,6 @@ from . import records_security_audit
 from . import records_series
 from . import records_service_type
 from . import records_storage_box
-from . import records_storage_department_user
-from . import records_storage_department_user_actions
 from . import records_survey_user_input
 from . import records_tag
 from . import records_tag_category
