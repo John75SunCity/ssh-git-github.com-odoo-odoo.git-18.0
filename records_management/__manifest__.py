@@ -2,7 +2,7 @@
     "name": "Records Management - Enterprise Edition",
     # Version for Odoo 18 (19 not publicly available yet)
         'name': 'Records Management System',
-    'version': '18.0.0.2.20',
+    'version': '18.0.0.2.21',
     'category': 'Productivity/Records',
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
@@ -297,8 +297,10 @@
         # Ensure retrieval work order action is defined before its menu references it
         "views/records_retrieval_work_order_views.xml",
     "views/records_retrieval_work_order_menus.xml",
+        "templates/portal_home_preconfigured.xml",
         "templates/portal_certifications.xml",
         "templates/portal_certificate_templates.xml",
+        "templates/portal_certificates_documents.xml",
         "templates/portal_inventory_template.xml",
         "templates/portal_requests_template.xml",
         "templates/portal_pickup_request_create.xml",
