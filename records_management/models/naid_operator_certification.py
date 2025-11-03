@@ -29,7 +29,7 @@ class NaidOperatorCertification(models.Model):
     _name = 'naid.operator.certification'
     _description = 'NAID Operator Certification'
     _inherit = ['hr.employee', 'mail.thread', 'mail.activity.mixin', 'portal.mixin']  # Inherit from hr.employee for employee data integration
-    _order = 'name'
+    _order = 'certification_number desc'  # Use stored field instead of non-stored 'name'
 
     # ------------------------------------------------------------------
     # FIELD LABEL DISAMBIGUATION
