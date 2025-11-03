@@ -95,15 +95,11 @@ class RecordsLocation(models.Model):
         string='Location Group'
     )
 
-    # Location type (related from stock.location.usage for kanban grouping)
-    location_type = fields.Selection(
-        related='usage',
-        string='Location Type',
-        store=True,
-        readonly=True
-    )
+    # Note: We use stock.location's native 'usage' field instead of creating our own
+    # 'location_type' to avoid duplication and leverage Odoo's standard location types
+    # (internal, view, customer, vendor, inventory, production, transit)
 
-    # Storage capacity (max containers, relates to records-specific capacity tracking)
+    # Storage capacity tracking (Records Management specific)
     storage_capacity = fields.Integer(
         string='Storage Capacity',
         compute='_compute_storage_capacity',
