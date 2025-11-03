@@ -118,10 +118,9 @@ class RecordsContainer(models.Model):
         string="Stock Owner",
         tracking=True,
         index=True,
-        default=lambda self: self._default_partner_id(),
-        help="Customer who owns this container in the stock system. "
+        help="Inventory ownership hierarchy: Company → Department → Child Department. "
              "Auto-filled from Customer or Department selection. "
-             "Used for inventory ownership tracking and filtering."
+             "Organizational unit ownership (not individual users)."
     )
     current_location_id = fields.Many2one(
         "stock.location",
@@ -367,6 +366,7 @@ class RecordsContainer(models.Model):
                     vals["partner_id"] = partner.id
 
             # Default stock_owner_id to partner_id if not explicitly set
+            # Organizational hierarchy: Company → Department → Child Department
             if not vals.get("stock_owner_id") and vals.get("partner_id"):
                 vals["stock_owner_id"] = vals["partner_id"]
 
@@ -612,25 +612,30 @@ class RecordsContainer(models.Model):
     @api.onchange('partner_id', 'department_id')
     def _onchange_partner_department_stock_owner(self):
         """
-        Auto-set stock_owner_id and filter available options based on customer and department.
+        Auto-set stock_owner_id based on organizational hierarchy.
+        
+        Ownership Hierarchy (all res.partner records):
+        1. Company (top level): Main customer company
+        2. Department (mid level): Organizational unit (child of company)
+        3. Child Department (sub level): Subdivision (child of department, grandchild of company)
         
         Business Logic:
-        - If department selected: stock_owner = department's partner (child contact)
-        - If only customer selected: stock_owner = customer (parent company)
-        - Filter options: Show customer + all its child departments
+        - If department selected: stock_owner = department's partner contact
+        - If only customer selected: stock_owner = customer company
+        - Filter shows: Company + Departments (children) + Child Departments (grandchildren)
         
         Example:
-        - Customer: City of Las Cruces
-        - Department: Fleet
-        - Stock Owner options: [City of Las Cruces, City of Las Cruces / Fleet, City of Las Cruces / Parks, ...]
-        - Auto-selected: City of Las Cruces / Fleet
+        - Customer: City of Las Cruces (company)
+        - Department: Fleet (child contact of City)
+        - Child Dept: Vehicle Maintenance (child of Fleet, grandchild of City)
+        - Stock Owner options: [City of Las Cruces, Fleet, Vehicle Maintenance, Parks, ...]
         """
         # Set stock_owner_id based on selections
         if self.department_id and self.department_id.partner_id:
-            # Department selected - use department's partner as stock owner
+            # Department selected - use department's partner contact as stock owner
             self.stock_owner_id = self.department_id.partner_id.id
         elif self.partner_id:
-            # Only customer selected - use customer as stock owner
+            # Only customer selected - use customer company as stock owner
             self.stock_owner_id = self.partner_id.id
         else:
             # No customer selected - clear stock owner
@@ -638,13 +643,14 @@ class RecordsContainer(models.Model):
 
         # Build domain to filter stock_owner_id options
         if self.partner_id:
-            # Show customer + all its child contacts (departments)
+            # Show company + departments (children) + child departments (grandchildren)
             return {
                 'domain': {
                     'stock_owner_id': [
-                        '|',
-                        ('id', '=', self.partner_id.id),
-                        ('parent_id', '=', self.partner_id.id)
+                        '|', '|',
+                        ('id', '=', self.partner_id.id),  # Company itself
+                        ('parent_id', '=', self.partner_id.id),  # Departments (children)
+                        ('parent_id.parent_id', '=', self.partner_id.id)  # Child departments (grandchildren)
                     ]
                 }
             }
@@ -1011,11 +1017,11 @@ class RecordsContainer(models.Model):
         # Get or create product for containers (needed for stock.quant)
         product = self._get_or_create_container_product()
 
-        # Create the stock quant
+        # Create the stock quant with organizational ownership
         quant = self.env['stock.quant'].create({
             'product_id': product.id,
             'location_id': stock_location.id,
-            'owner_id': self.stock_owner_id.id or self.partner_id.id,  # Use stock_owner_id, fallback to partner_id
+            'owner_id': self.stock_owner_id.id or self.partner_id.id,  # Department/child dept or company
             'quantity': 1,  # One container
             'company_id': self.company_id.id,
         })

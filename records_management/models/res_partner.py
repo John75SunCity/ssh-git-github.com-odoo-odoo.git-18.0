@@ -41,11 +41,12 @@ class ResPartner(models.Model):
         store=True
     )
     
-    department_user_assignment_ids = fields.One2many(
-        'records.storage.department.user',
-        compute='_compute_department_user_assignments',
-        string='Department User Assignments',
-        help='All department user assignments for users under this partner'
+    # Department user assignments - links partners (as users) to departments they can access
+    records_department_users = fields.One2many(
+        comodel_name='records.storage.department.user',
+        inverse_name='stock_owner_id',
+        string='Department Access Rights',
+        help='Department user assignments where this partner is the stock owner (company/department/child dept)'
     )
 
     container_count = fields.Integer(
@@ -283,9 +284,14 @@ class ResPartner(models.Model):
     def _compute_records_stats(self):
         """Compute container_count & document_count in batch.
 
-        Uses commercial_partner_id to include containers/documents created by child
-        contacts under the same company. This ensures company admins see the full
-        inventory count even when individual employees created containers.
+        Counts containers based on TWO ownership criteria:
+        1. partner_id (primary customer relationship)
+        2. stock_owner_id (inventory ownership - Company/Department/Child Dept hierarchy)
+        
+        This ensures:
+        - Company contacts see all containers owned at company level + all department containers
+        - Department contacts see containers owned by their specific department
+        - Portal users assigned to departments see their department's inventory
         """
         if not self:
             return
@@ -304,11 +310,13 @@ class ResPartner(models.Model):
                 ])
                 all_partner_ids.update(children.ids)
 
-        # read_group automatically supplies '__count' for each grouped row
+        # Count containers by BOTH partner_id (customer) AND stock_owner_id (inventory owner)
         container_rows = self.env['records.container'].read_group(
-            [('partner_id', 'in', list(all_partner_ids))],
-            ['partner_id'],
-            ['partner_id']
+            ['|', 
+             ('partner_id', 'in', list(all_partner_ids)),
+             ('stock_owner_id', 'in', list(all_partner_ids))],
+            ['partner_id', 'stock_owner_id'],
+            ['partner_id', 'stock_owner_id']
         )
         document_rows = self.env['records.document'].read_group(
             [('partner_id', 'in', list(all_partner_ids))],
@@ -316,19 +324,31 @@ class ResPartner(models.Model):
             ['partner_id']
         )
 
-        def build_map(rows):
-            result = {}
-            for row in rows or []:
-                # row['partner_id'] is usually (id, display_name) for m2o group
-                raw = row.get('partner_id')
-                if not raw:
-                    continue
-                pid = raw[0] if isinstance(raw, (list, tuple)) else raw
-                result[pid] = row.get('__count', 0)
-            return result
+        # Build container count map from partner_id and stock_owner_id
+        container_map = {}
+        for row in container_rows or []:
+            count = row.get('__count', 0)
+            # Check partner_id field
+            partner_raw = row.get('partner_id')
+            if partner_raw:
+                pid = partner_raw[0] if isinstance(partner_raw, (list, tuple)) else partner_raw
+                container_map[pid] = container_map.get(pid, 0) + count
+            # Check stock_owner_id field  
+            stock_owner_raw = row.get('stock_owner_id')
+            if stock_owner_raw:
+                sid = stock_owner_raw[0] if isinstance(stock_owner_raw, (list, tuple)) else stock_owner_raw
+                # Avoid double-counting if both fields point to same partner
+                if not partner_raw or sid != pid:
+                    container_map[sid] = container_map.get(sid, 0) + count
 
-        container_map = build_map(container_rows)
-        document_map = build_map(document_rows)
+        # Build document count map
+        document_map = {}
+        for row in document_rows or []:
+            partner_raw = row.get('partner_id')
+            if not partner_raw:
+                continue
+            pid = partner_raw[0] if isinstance(partner_raw, (list, tuple)) else partner_raw
+            document_map[pid] = row.get('__count', 0)
 
         for partner in self:
             # Sum counts for this partner and all its commercial children

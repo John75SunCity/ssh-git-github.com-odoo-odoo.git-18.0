@@ -174,7 +174,7 @@ Destroy Container</a>
 
         <field name="name" string="Container ID"/>
         <field name="partner_id" string="Customer" required="1"/>
-        <field name="stock_owner_id" string="Stock Owner" optional="show"/>
+        <field name="stock_owner_id" string="Inventory Owner" optional="show"/>
         <field name="department_id" string="Department"/>
         <field name="temp_barcode" string="Temp Barcode"/>
         <field name="barcode" string="Physical Barcode"/>
@@ -271,12 +271,12 @@ Destroy Container</a>
         <field name="partner_id" required="1" readonly="1" groups="base.group_portal" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
         <field name="department_id"/>
         
-        <!-- Stock Owner - Auto-filled from Customer/Department selection -->
+        <!-- Stock Owner - Organizational hierarchy: Company → Department → Child Department -->
         <field name="stock_owner_id"
-               string="Stock Owner"
+               string="Inventory Owner"
                readonly="1"
                options="{'no_create': True}"
-               help="Customer ownership in stock system (auto-filled from Customer or Department selection)"/>
+               help="Organizational unit that owns this inventory (Company → Department → Child Department). Auto-filled when you select customer or department."/>
 
         <!-- PRIMARY LOCATION: What user sets manually -->
         <field name="location_id"

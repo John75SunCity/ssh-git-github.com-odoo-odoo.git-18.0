@@ -2,14 +2,26 @@
 <odoo>
     <data>
         <!-- Portal Record Rules for Container Visibility
-             Limits portal hierarchy groups to containers belonging to their commercial partner or company.
-             Follows two-prong safety: partner commercial root OR company, avoiding cross-company leakage.
+             Portal users can see containers based on THREE criteria:
+             1. Commercial partner match (partner_id)
+             2. Company match (company_id)
+             3. Department assignment (stock_owner_id via records.storage.department.user)
+             
+             This allows:
+             - Portal users to see their company's containers
+             - Department users to see their specific department's inventory
+             - Hierarchical visibility: Company → Department → Child Department
         -->
         <record id="records_container_rule_portal" model="ir.rule">
             <field name="name">Records Container Portal Rule</field>
             <field name="model_id" ref="model_records_container"/>
             <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin')), (4, ref('records_management.group_portal_department_admin')), (4, ref('records_management.group_portal_department_user')), (4, ref('records_management.group_portal_readonly_employee'))]"/>
-            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+            <field name="domain_force">['|', '|', '|',
+                ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id),
+                ('company_id', '=', user.company_id.id),
+                ('stock_owner_id', '=', user.partner_id.id),
+                ('stock_owner_id', 'in', user.partner_id.records_department_users.stock_owner_id.ids)
+            ]</field>
         </record>
 
         <!-- Container Movement inherits customer via related partner_id (stored) -->
