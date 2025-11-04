@@ -1017,31 +1017,31 @@ class RecordsManagementController(http.Controller):
         """Display customer destruction certificates in portal"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         Certificate = request.env['destruction.certificate']
-        
+
         domain = [
             ('partner_id', 'child_of', partner.commercial_partner_id.id),
         ]
-        
+
         # Date filtering
         if date_begin and date_end:
             domain += [('date', '>=', date_begin), ('date', '<=', date_end)]
-        
+
         # Sorting options
         searchbar_sortings = {
             'date': {'label': 'Date', 'order': 'date desc'},
             'name': {'label': 'Certificate Number', 'order': 'name'},
             'state': {'label': 'Status', 'order': 'state'},
         }
-        
+
         if not sortby:
             sortby = 'date'
         order = searchbar_sortings[sortby]['order']
-        
+
         # Count total certificates
         certificate_count = Certificate.search_count(domain)
-        
+
         # Pager setup
         pager = request.website.pager(
             url="/my/certificates",
@@ -1050,10 +1050,10 @@ class RecordsManagementController(http.Controller):
             page=page,
             step=self._items_per_page,
         )
-        
+
         # Get certificates for current page
         certificates = Certificate.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
-        
+
         values.update({
             'certificates': certificates,
             'page_name': 'certificates',
@@ -1062,43 +1062,43 @@ class RecordsManagementController(http.Controller):
             'searchbar_sortings': searchbar_sortings,
             'sortby': sortby,
         })
-        
+
         return request.render("records_management.portal_my_certificates", values)
 
     @http.route(['/my/certificate/<int:certificate_id>'], type='http', auth="user", website=True)
     def portal_my_certificate(self, certificate_id=None, **kw):
         """Display individual certificate details"""
         certificate = request.env['destruction.certificate'].browse(certificate_id)
-        
+
         # Security check
         if not certificate.exists() or certificate.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
             return request.redirect('/my/certificates')
-        
+
         values = {
             'certificate': certificate,
             'page_name': 'certificate_detail',
         }
-        
+
         return request.render("records_management.portal_certificate_detail", values)
 
     @http.route(['/my/certificate/<int:certificate_id>/download'], type='http', auth="user")
     def portal_certificate_download(self, certificate_id=None, **kw):
         """Download certificate PDF"""
         certificate = request.env['destruction.certificate'].browse(certificate_id)
-        
+
         # Security check
         if not certificate.exists() or certificate.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
             return request.redirect('/my/certificates')
-        
+
         # Generate PDF report
         pdf = request.env.ref('records_management.action_report_destruction_certificate').sudo()._render_qweb_pdf([certificate.id])[0]
-        
+
         pdfhttpheaders = [
             ('Content-Type', 'application/pdf'),
             ('Content-Length', len(pdf)),
             ('Content-Disposition', f'attachment; filename="Certificate-{certificate.name}.pdf"'),
         ]
-        
+
         return request.make_response(pdf, headers=pdfhttpheaders)
 
     # ============================================================================
@@ -1110,46 +1110,46 @@ class RecordsManagementController(http.Controller):
         """Display customer digital documents in portal"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         Document = request.env['records.document']
-        
+
         domain = [
             ('partner_id', 'child_of', partner.commercial_partner_id.id),
         ]
-        
+
         # Search filter
         if search:
             domain += ['|', ('name', 'ilike', search), ('description', 'ilike', search)]
-        
+
         # Date filtering
         if date_begin and date_end:
             domain += [('create_date', '>=', date_begin), ('create_date', '<=', date_end)]
-        
+
         # Status filter
         searchbar_filters = {
             'all': {'label': 'All', 'domain': []},
             'active': {'label': 'Active', 'domain': [('active', '=', True)]},
             'flagged': {'label': 'Flagged', 'domain': [('permanently_flagged', '=', True)]},
         }
-        
+
         if not filterby:
             filterby = 'all'
         domain += searchbar_filters[filterby]['domain']
-        
+
         # Sorting options
         searchbar_sortings = {
             'date': {'label': 'Date', 'order': 'create_date desc'},
             'name': {'label': 'Name', 'order': 'name'},
             'type': {'label': 'Type', 'order': 'document_type_id'},
         }
-        
+
         if not sortby:
             sortby = 'date'
         order = searchbar_sortings[sortby]['order']
-        
+
         # Count total documents
         document_count = Document.search_count(domain)
-        
+
         # Pager setup
         pager = request.website.pager(
             url="/my/documents",
@@ -1158,10 +1158,10 @@ class RecordsManagementController(http.Controller):
             page=page,
             step=self._items_per_page,
         )
-        
+
         # Get documents for current page
         documents = Document.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
-        
+
         values.update({
             'documents': documents,
             'page_name': 'documents',
@@ -1173,36 +1173,159 @@ class RecordsManagementController(http.Controller):
             'filterby': filterby,
             'search': search or '',
         })
-        
+
         return request.render("records_management.portal_my_documents", values)
 
     @http.route(['/my/document/<int:document_id>'], type='http', auth="user", website=True)
     def portal_my_document(self, document_id=None, **kw):
         """Display individual document details"""
         document = request.env['records.document'].browse(document_id)
-        
+
         # Security check
         if not document.exists() or document.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
             return request.redirect('/my/documents')
-        
+
         values = {
             'document': document,
             'page_name': 'document_detail',
         }
-        
+
         return request.render("records_management.portal_document_detail", values)
 
     @http.route(['/my/document/<int:document_id>/download'], type='http', auth="user")
     def portal_document_download(self, document_id=None, **kw):
         """Download document attachment"""
         document = request.env['records.document'].browse(document_id)
-        
+
         # Security check
         if not document.exists() or document.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
             return request.redirect('/my/documents')
-        
+
         # Get attachment if exists
         if document.attachment_id:
             return request.redirect(f'/web/content/{document.attachment_id.id}?download=true')
         else:
             return request.redirect('/my/documents?error=no_attachment')
+
+    # ============================================================================
+    # CONTAINER INVENTORY PORTAL ROUTES (FIXED - USES CORRECT MODEL & FIELDS)
+    # ============================================================================
+
+    @http.route(['/my/containers', '/my/containers/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_my_containers(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, **kw):
+        """
+        Display container inventory for portal users
+        FIXED: Uses records.container model with correct ownership fields
+        Previously broken: used stock.quant with wrong owner_id field
+        """
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+
+        Container = request.env['records.container']
+
+        # Build domain - check BOTH partner_id AND stock_owner_id
+        # This covers both direct ownership and hierarchical department ownership
+        domain = [
+            '|',
+            ('partner_id', '=', partner.id),
+            ('stock_owner_id', '=', partner.id),
+        ]
+
+        # Search filter
+        if search:
+            domain += [
+                '|', '|', '|', '|',
+                ('name', 'ilike', search),
+                ('barcode', 'ilike', search),
+                ('temp_barcode', 'ilike', search),
+                ('department_id.name', 'ilike', search),
+                ('location_id.name', 'ilike', search),
+            ]
+
+        # Date filtering
+        if date_begin and date_end:
+            domain += [('create_date', '>=', date_begin), ('create_date', '<=', date_end)]
+
+        # Status filter
+        searchbar_filters = {
+            'all': {'label': 'All Containers', 'domain': []},
+            'active': {'label': 'Active', 'domain': [('state', '=', 'active')]},
+            'in_storage': {'label': 'In Storage', 'domain': [('state', '=', 'in_storage')]},
+            'in_transit': {'label': 'In Transit', 'domain': [('state', '=', 'in_transit')]},
+            'pending': {'label': 'Pending Pickup', 'domain': [('state', '=', 'pending_pickup')]},
+            'destroyed': {'label': 'Destroyed', 'domain': [('state', '=', 'destroyed')]},
+        }
+
+        if not filterby:
+            filterby = 'all'
+        domain += searchbar_filters[filterby]['domain']
+
+        # Sorting options
+        searchbar_sortings = {
+            'date': {'label': 'Recent First', 'order': 'write_date desc'},
+            'name': {'label': 'Container Name', 'order': 'name'},
+            'barcode': {'label': 'Barcode', 'order': 'barcode'},
+            'location': {'label': 'Location', 'order': 'location_id'},
+            'state': {'label': 'Status', 'order': 'state'},
+        }
+
+        if not sortby:
+            sortby = 'date'
+        order = searchbar_sortings[sortby]['order']
+
+        # Count total containers
+        container_count = Container.search_count(domain)
+
+        # Pager setup
+        pager = request.website.pager(
+            url="/my/containers",
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby, 'filterby': filterby, 'search': search},
+            total=container_count,
+            page=page,
+            step=self._items_per_page,
+        )
+
+        # Get containers for current page
+        containers = Container.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+
+        values.update({
+            'containers': containers,
+            'page_name': 'containers',
+            'pager': pager,
+            'default_url': '/my/containers',
+            'searchbar_sortings': searchbar_sortings,
+            'searchbar_filters': searchbar_filters,
+            'sortby': sortby,
+            'filterby': filterby,
+            'search': search or '',
+            'container_count': container_count,
+        })
+
+        return request.render("records_management.portal_my_containers", values)
+
+    @http.route(['/my/container/<int:container_id>'], type='http', auth="user", website=True)
+    def portal_my_container(self, container_id=None, **kw):
+        """Display individual container details"""
+        container = request.env['records.container'].browse(container_id)
+        partner = request.env.user.partner_id
+
+        # Security check - verify ownership via partner_id OR stock_owner_id
+        has_access = (
+            container.exists() and
+            (container.partner_id == partner or container.stock_owner_id == partner)
+        )
+
+        if not has_access:
+            return request.redirect('/my/containers')
+
+        values = {
+            'container': container,
+            'page_name': 'container_detail',
+        }
+
+        return request.render("records_management.portal_container_detail", values)
+
+    @http.route(['/my/inventory'], type='http', auth="user", website=True)
+    def portal_my_inventory_redirect(self, **kw):
+        """Redirect old /my/inventory route to new /my/containers route"""
+        return request.redirect('/my/containers')

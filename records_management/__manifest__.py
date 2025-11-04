@@ -298,6 +298,7 @@
         "views/records_retrieval_work_order_views.xml",
     "views/records_retrieval_work_order_menus.xml",
         "templates/portal_home_preconfigured.xml",
+        "templates/portal_containers_list.xml",
         "templates/portal_certifications.xml",
         "templates/portal_certificate_templates.xml",
         "templates/portal_certificates_documents.xml",

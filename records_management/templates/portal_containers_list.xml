@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Container List View for Portal Users -->
+    <template id="portal_my_containers" name="My Containers">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Containers</t>
+            </t>
+
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h3 class="mb-0">
+                                    <i class="fa fa-archive"></i> My Container Inventory
+                                    <span class="badge badge-light ml-2" t-esc="container_count"/>
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <!-- Search and Filter Bar -->
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <!-- Advanced Search Form -->
+                                        <form method="get" class="card p-3 bg-light">
+                                            <div class="row">
+                                                <!-- Search Input -->
+                                                <div class="col-md-4 mb-2">
+                                                    <label class="small text-muted">Search Containers</label>
+                                                    <div class="input-group">
+                                                        <input type="text" 
+                                                               name="search" 
+                                                               class="form-control" 
+                                                               placeholder="Name, barcode, department..." 
+                                                               t-att-value="search"/>
+                                                        <div class="input-group-append">
+                                                            <button type="submit" class="btn btn-primary">
+                                                                <i class="fa fa-search"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Status Filter -->
+                                                <div class="col-md-3 mb-2">
+                                                    <label class="small text-muted">Status</label>
+                                                    <select name="filterby" class="form-control" onchange="this.form.submit()">
+                                                        <t t-foreach="searchbar_filters.items()" t-as="filter_item">
+                                                            <t t-set="filter_key" t-value="filter_item[0]"/>
+                                                            <t t-set="filter_data" t-value="filter_item[1]"/>
+                                                            <option t-att-value="filter_key" 
+                                                                    t-att-selected="'selected' if filterby == filter_key else None">
+                                                                <t t-esc="filter_data['label']"/>
+                                                            </option>
+                                                        </t>
+                                                    </select>
+                                                </div>
+                                                
+                                                <!-- Sort By -->
+                                                <div class="col-md-3 mb-2">
+                                                    <label class="small text-muted">Sort By</label>
+                                                    <select name="sortby" class="form-control" onchange="this.form.submit()">
+                                                        <t t-foreach="searchbar_sortings.items()" t-as="sort_item">
+                                                            <t t-set="sort_key" t-value="sort_item[0]"/>
+                                                            <t t-set="sort_data" t-value="sort_item[1]"/>
+                                                            <option t-att-value="sort_key" 
+                                                                    t-att-selected="'selected' if sortby == sort_key else None">
+                                                                <t t-esc="sort_data['label']"/>
+                                                            </option>
+                                                        </t>
+                                                    </select>
+                                                </div>
+                                                
+                                                <!-- Clear Filters -->
+                                                <div class="col-md-2 mb-2">
+                                                    <label class="small text-muted d-block">&nbsp;</label>
+                                                    <a href="/my/containers" class="btn btn-secondary btn-block">
+                                                        <i class="fa fa-times"></i> Clear
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Active Filters Display -->
+                                            <t t-if="search or filterby != 'all' or sortby != 'date'">
+                                                <div class="row mt-2">
+                                                    <div class="col-12">
+                                                        <div class="small">
+                                                            <strong>Active Filters:</strong>
+                                                            <t t-if="search">
+                                                                <span class="badge badge-info ml-1">
+                                                                    Search: <t t-esc="search"/>
+                                                                </span>
+                                                            </t>
+                                                            <t t-if="filterby != 'all'">
+                                                                <span class="badge badge-info ml-1">
+                                                                    Status: <t t-esc="searchbar_filters[filterby]['label']"/>
+                                                                </span>
+                                                            </t>
+                                                            <t t-if="sortby != 'date'">
+                                                                <span class="badge badge-info ml-1">
+                                                                    Sort: <t t-esc="searchbar_sortings[sortby]['label']"/>
+                                                                </span>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Container Table -->
+                                <t t-if="containers">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Container Name</th>
+                                                    <th>Barcode</th>
+                                                    <th>Department</th>
+                                                    <th>Location</th>
+                                                    <th>Status</th>
+                                                    <th>Last Updated</th>
+                                                    <th class="text-center">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="containers" t-as="container">
+                                                    <tr>
+                                                        <td>
+                                                            <strong t-esc="container.name"/>
+                                                        </td>
+                                                        <td>
+                                                            <code t-esc="container.barcode or container.temp_barcode"/>
+                                                        </td>
+                                                        <td>
+                                                            <t t-if="container.department_id">
+                                                                <i class="fa fa-building-o"></i>
+                                                                <t t-esc="container.department_id.name"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span class="text-muted">-</span>
+                                                            </t>
+                                                        </td>
+                                                        <td>
+                                                            <t t-if="container.location_id">
+                                                                <i class="fa fa-map-marker"></i>
+                                                                <t t-esc="container.location_id.complete_name"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span class="text-muted">Not assigned</span>
+                                                            </t>
+                                                        </td>
+                                                        <td>
+                                                            <t t-if="container.state == 'active'">
+                                                                <span class="badge badge-success">Active</span>
+                                                            </t>
+                                                            <t t-elif="container.state == 'in_storage'">
+                                                                <span class="badge badge-info">In Storage</span>
+                                                            </t>
+                                                            <t t-elif="container.state == 'in_transit'">
+                                                                <span class="badge badge-warning">In Transit</span>
+                                                            </t>
+                                                            <t t-elif="container.state == 'pending_pickup'">
+                                                                <span class="badge badge-secondary">Pending Pickup</span>
+                                                            </t>
+                                                            <t t-elif="container.state == 'destroyed'">
+                                                                <span class="badge badge-dark">Destroyed</span>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span class="badge badge-light" t-esc="container.state"/>
+                                                            </t>
+                                                        </td>
+                                                        <td>
+                                                            <small class="text-muted">
+                                                                <t t-esc="container.write_date" t-options="{'widget': 'date'}"/>
+                                                            </small>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <a t-attf-href="/my/container/#{container.id}" 
+                                                               class="btn btn-sm btn-primary">
+                                                                <i class="fa fa-eye"></i> View
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Pagination -->
+                                    <div t-if="pager" class="o_portal_pager text-center">
+                                        <t t-call="portal.pager"/>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="alert alert-info text-center" role="alert">
+                                        <i class="fa fa-info-circle fa-3x mb-3"></i>
+                                        <h4>No Containers Found</h4>
+                                        <p class="mb-0">
+                                            <t t-if="search">
+                                                No containers match your search criteria. Try adjusting your search or filters.
+                                            </t>
+                                            <t t-else="">
+                                                You don't have any containers yet. Contact us to get started with records storage.
+                                            </t>
+                                        </p>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Container Detail View for Portal Users -->
+    <template id="portal_container_detail" name="Container Details">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/my/home">My Account</a></li>
+                                <li class="breadcrumb-item"><a href="/my/containers">My Containers</a></li>
+                                <li class="breadcrumb-item active" aria-current="page" t-esc="container.name"/>
+                            </ol>
+                        </nav>
+
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h3 class="mb-0">
+                                    <i class="fa fa-archive"></i> 
+                                    <t t-esc="container.name"/>
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Left Column - Container Info -->
+                                    <div class="col-md-6">
+                                        <h5 class="mb-3">Container Information</h5>
+                                        <table class="table table-sm">
+                                            <tbody>
+                                                <tr>
+                                                    <th width="40%">Container Name:</th>
+                                                    <td><strong t-esc="container.name"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Barcode:</th>
+                                                    <td><code t-esc="container.barcode or container.temp_barcode"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Department:</th>
+                                                    <td>
+                                                        <t t-if="container.department_id">
+                                                            <t t-esc="container.department_id.name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not assigned</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Status:</th>
+                                                    <td>
+                                                        <t t-if="container.state == 'active'">
+                                                            <span class="badge badge-success">Active</span>
+                                                        </t>
+                                                        <t t-elif="container.state == 'in_storage'">
+                                                            <span class="badge badge-info">In Storage</span>
+                                                        </t>
+                                                        <t t-elif="container.state == 'in_transit'">
+                                                            <span class="badge badge-warning">In Transit</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="badge badge-light" t-esc="container.state"/>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Location:</th>
+                                                    <td>
+                                                        <t t-if="container.location_id">
+                                                            <i class="fa fa-map-marker"></i>
+                                                            <t t-esc="container.location_id.complete_name"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not assigned</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Right Column - Additional Info -->
+                                    <div class="col-md-6">
+                                        <h5 class="mb-3">Dates &amp; History</h5>
+                                        <table class="table table-sm">
+                                            <tbody>
+                                                <tr>
+                                                    <th width="40%">Created:</th>
+                                                    <td>
+                                                        <t t-esc="container.create_date" t-options="{'widget': 'datetime'}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last Updated:</th>
+                                                    <td>
+                                                        <t t-esc="container.write_date" t-options="{'widget': 'datetime'}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr t-if="container.pickup_date">
+                                                    <th>Pickup Date:</th>
+                                                    <td>
+                                                        <t t-esc="container.pickup_date" t-options="{'widget': 'date'}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr t-if="container.destruction_date">
+                                                    <th>Destruction Date:</th>
+                                                    <td>
+                                                        <t t-esc="container.destruction_date" t-options="{'widget': 'date'}"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <t t-if="container.notes">
+                                            <h5 class="mb-3 mt-4">Notes</h5>
+                                            <div class="alert alert-secondary">
+                                                <t t-esc="container.notes"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="row mt-4">
+                                    <div class="col-12 text-center">
+                                        <a href="/my/containers" class="btn btn-secondary">
+                                            <i class="fa fa-arrow-left"></i> Back to List
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -7,11 +7,10 @@
     <!-- ================================================================== -->
 
     <template id="portal_my_home_preconfigured" name="Records Management Portal Home (Pre-configured)" inherit_id="portal.portal_my_home">
-        <xpath expr="//div[@id='o_portal_sidebar']" position="inside">
-            <!-- Records Management Portal Features Section -->
-            <t t-set="rm_portal_enabled" t-value="request.env['rm.module.configurator'].sudo().flags().get('portal_feature_pack_enabled', False)"/>
-
-            <div class="o_portal_sidebar_section mb-4" t-if="rm_portal_enabled">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <!-- Records Management Portal Features Always Enabled -->
+            
+            <div class="o_portal_sidebar_section mb-4">
                 <h4 class="mb-3">
                     <i class="fa fa-archive"/> Records Management
                 </h4>
@@ -25,7 +24,9 @@
                         <p class="card-text text-muted small">
                             View and manage your stored containers, boxes, and documents
                         </p>
-                        <t t-set="container_count" t-value="request.env['records.container'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id)])"/>
+                        <!-- FIXED: Check both partner_id AND stock_owner_id for container ownership -->
+                        <t t-set="partner" t-value="request.env.user.partner_id"/>
+                        <t t-set="container_count" t-value="request.env['records.container'].sudo().search_count(['|', ('partner_id', '=', partner.id), ('stock_owner_id', '=', partner.id)])"/>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="badge badge-info" t-if="container_count &gt; 0">
                                 <t t-esc="container_count"/> Containers
@@ -33,7 +34,7 @@
                             <span class="badge badge-secondary" t-else="">
                                 No containers yet
                             </span>
-                            <a href="/my/inventory" class="btn btn-sm btn-primary">
+                            <a href="/my/containers" class="btn btn-sm btn-primary">
                                 View Inventory →
                             </a>
                         </div>
