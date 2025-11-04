@@ -70,7 +70,7 @@ lbs
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <span class="badge" t-att-class="record.state.raw_value === 'stored' ? 'badge-success' : record.state.raw_value === 'indexed' ? 'badge-info' : record.state.raw_value === 'retrieved' ? 'badge-warning' : record.state.raw_value === 'destroyed' ? 'badge-danger' : 'badge-secondary'">
+                                    <span class="badge" t-att-class="record.state.raw_value === 'in_storage' ? 'badge-success' : record.state.raw_value === 'indexed' ? 'badge-info' : record.state.raw_value === 'retrieved' ? 'badge-warning' : record.state.raw_value === 'destroyed' ? 'badge-danger' : 'badge-secondary'">
         <field name="state"/>
                                     </span>
                                 </div>
@@ -132,7 +132,7 @@ Destroy Container</a>
         <field name="name">records.container.view.tree</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-        <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
+        <list decoration-success="state == 'in_storage'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
             <header>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
@@ -164,7 +164,7 @@ Destroy Container</a>
         <field name="name">records.container.view.list</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-        <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
+        <list decoration-success="state == 'in_storage'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
             <header>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
@@ -213,14 +213,14 @@ Destroy Container</a>
 
                 <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/>
                 <button name="action_store_container" type="object" string="Store Container" class="btn-primary" invisible="state != 'active'"/>
-                <button name="action_retrieve_container" type="object" string="Retrieve Container" class="btn-secondary" invisible="state != 'stored'"/>
+                <button name="action_retrieve_container" type="object" string="Retrieve Container" class="btn-secondary" invisible="state != 'in_storage'"/>
                 <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-warning" invisible="not is_due_for_destruction"/>
                 <button name="action_destroy" type="object" string="Destroy Container" class="btn-danger" invisible="state != 'pending_destruction'"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
                 <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
                 <!-- Modernized visibility: use barcode_assigned compute field instead of deprecated attrs expression -->
                 <button name="%(action_records_container_assign_barcode_wizard)d" type="action" string="Assign Physical Barcode" class="btn-secondary" invisible="barcode_assigned"/>
-        <field name="state" widget="statusbar" statusbar_visible="draft,active,stored,retrieved,pending_destruction,destroyed"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,active,pending_pickup,in_storage,in_transit,retrieved,pending_destruction,destroyed"/>
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
@@ -431,7 +431,8 @@ Destroy Container</a>
 
             <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
             <filter string="Active" name="active_state" domain="[('state', '=', 'active')]"/>
-            <filter string="In Storage" name="stored" domain="[('state', '=', 'stored')]"/>
+            <filter string="Pending Pickup" name="pending_pickup" domain="[('state', '=', 'pending_pickup')]"/>
+            <filter string="In Storage" name="in_storage" domain="[('state', '=', 'in_storage')]"/>
             <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
             <filter string="Retrieved" name="retrieved" domain="[('state', '=', 'retrieved')]"/>
             <filter string="Pending Destruction" name="pending_destruction" domain="[('state', '=', 'pending_destruction')]"/>

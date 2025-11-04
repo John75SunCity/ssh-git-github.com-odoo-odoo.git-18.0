@@ -81,7 +81,7 @@ class StockPickingRecordsExtension(models.Model):
         ('pending', 'Pending'),
         ('in_transit', 'In Transit'),
         ('received', 'Received'),
-        ('stored', 'Stored'),
+        ('in_storage', 'In Storage'),
         ('destroyed', 'Destroyed')
     ], string='Records State', default='pending', tracking=True)
     
@@ -108,7 +108,7 @@ class StockPickingRecordsExtension(models.Model):
     
     def action_store_records(self):
         self.ensure_one()
-        self.records_state = 'stored'
+        self.records_state = 'in_storage'
     
     def action_destroy_records(self):
         self.ensure_one()

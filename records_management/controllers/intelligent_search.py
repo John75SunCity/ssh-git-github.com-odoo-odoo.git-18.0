@@ -95,7 +95,7 @@ class IntelligentSearchController(http.Controller):
             domain = [
                 ("name", "ilike", "%s%%" % query),  # Starts with query
                 ("active", "=", True),
-                ("state", "in", ["active", "stored"]),
+                ("state", "in", ["active", "in_storage"]),
             ]
 
             # Filter by customer if specified
@@ -179,7 +179,7 @@ class IntelligentSearchController(http.Controller):
                 }
 
             # Build base domain with better error handling
-            domain = [("active", "=", True), ("state", "in", ["active", "stored"])]
+            domain = [("active", "=", True), ("state", "in", ["active", "in_storage"])]
 
             if customer_id:
                 try:
@@ -376,7 +376,7 @@ class IntelligentSearchController(http.Controller):
 
         domain = [
             ("active", "=", True),
-            ("state", "in", ["active", "stored"]),
+            ("state", "in", ["active", "in_storage"]),
             "|",
             "|",
             "|",

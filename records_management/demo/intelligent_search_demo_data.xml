@@ -10,7 +10,7 @@
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">G</field>
             <field name="content_date_from">2024-01-01</field>
@@ -25,7 +25,7 @@
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">H</field>
             <field name="alpha_range_end">N</field>
             <field name="content_date_from">2024-01-01</field>
@@ -40,7 +40,7 @@
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">O</field>
             <field name="alpha_range_end">Z</field>
             <field name="content_date_from">2024-01-01</field>
@@ -56,7 +56,7 @@
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">Z</field>
             <field name="content_date_from">2024-04-01</field>
@@ -72,7 +72,7 @@
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">Z</field>
             <field name="content_date_from">2024-07-01</field>
@@ -89,7 +89,7 @@
             <field name="partner_id" ref="base.res_partner_3"/>
             <field name="location_id" ref="demo_location_warehouse_c"/>
             <field name="container_type_id" ref="demo_container_type_legal_box"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">Z</field>
             <field name="content_date_from">2024-01-01</field>
@@ -105,7 +105,7 @@
             <field name="partner_id" ref="base.res_partner_4"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_secure_box"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">M</field>
             <field name="content_date_from">2020-01-01</field>
@@ -121,7 +121,7 @@
             <field name="partner_id" ref="base.res_partner_4"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_secure_box"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">N</field>
             <field name="alpha_range_end">Z</field>
             <field name="content_date_from">2018-01-01</field>
@@ -138,7 +138,7 @@
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_c"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">Z</field>
             <field name="content_date_from">2024-01-01</field>
@@ -154,7 +154,7 @@
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_archive"/>
             <field name="container_type_id" ref="demo_container_type_archive_box"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">Z</field>
             <field name="content_date_from">2020-01-01</field>
@@ -172,7 +172,7 @@
             <field name="partner_id" ref="base.res_partner_3"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="content_date_from">2024-01-15</field>
             <field name="content_date_to">2024-06-30</field>
             <field name="primary_content_type">project</field>
@@ -186,7 +186,7 @@
             <field name="partner_id" ref="base.res_partner_3"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="content_date_from">2024-03-01</field>
             <field name="content_date_to">2024-09-30</field>
             <field name="primary_content_type">project</field>
@@ -201,7 +201,7 @@
             <field name="partner_id" ref="base.res_partner_4"/>
             <field name="location_id" ref="demo_location_vault"/>
             <field name="container_type_id" ref="demo_container_type_secure_box"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">compliance</field>
@@ -216,7 +216,7 @@
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_vault"/>
             <field name="container_type_id" ref="demo_container_type_secure_box"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">medical</field>
@@ -232,7 +232,7 @@
             <field name="partner_id" ref="base.res_partner_3"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
             <field name="container_type_id" ref="demo_container_type_legal_box"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">Z</field>
             <field name="content_date_from">2023-01-01</field>
@@ -248,7 +248,7 @@
             <field name="partner_id" ref="base.res_partner_4"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">A</field>
             <field name="alpha_range_end">M</field>
             <field name="content_date_from">2024-01-01</field>
@@ -265,7 +265,7 @@
             <field name="partner_id" ref="base.res_partner_3"/>
             <field name="location_id" ref="demo_location_vault"/>
             <field name="container_type_id" ref="demo_container_type_secure_box"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">litigation</field>
@@ -280,7 +280,7 @@
             <field name="partner_id" ref="base.res_partner_4"/>
             <field name="location_id" ref="demo_location_warehouse_c"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
             <field name="primary_content_type">tax</field>
@@ -295,7 +295,7 @@
             <field name="partner_id" ref="base.res_partner_3"/>
             <field name="location_id" ref="demo_location_warehouse_c"/>
             <field name="container_type_id" ref="demo_container_type_legal_box"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">international</field>
@@ -310,7 +310,7 @@
             <field name="partner_id" ref="base.res_partner_4"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_media_box"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">digital</field>
@@ -325,7 +325,7 @@
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="content_date_from">2024-02-14</field>
             <field name="content_date_to">2024-02-29</field>
             <field name="primary_content_type">test</field>
@@ -339,7 +339,7 @@
             <field name="partner_id" ref="base.res_partner_12"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="alpha_range_start">J</field>
             <field name="alpha_range_end">J</field>
             <field name="content_date_from">2024-01-01</field>
@@ -355,7 +355,7 @@
             <field name="partner_id" ref="base.res_partner_4"/>
             <field name="location_id" ref="demo_location_emergency_access"/>
             <field name="container_type_id" ref="demo_container_type_emergency_box"/>
-            <field name="state">stored</field>
+            <field name="state">in_storage</field>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">emergency</field>

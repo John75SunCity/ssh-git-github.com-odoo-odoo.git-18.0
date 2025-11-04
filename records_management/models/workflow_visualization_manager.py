@@ -122,20 +122,22 @@ class WorkflowVisualizationManager(models.Model):
         if model_name == 'records.container':
             states = [
                 {'id': 'draft', 'name': 'Draft', 'color': '#ffcccc'},
-                {'id': 'confirmed', 'name': 'Confirmed', 'color': '#cce5ff'},
+                {'id': 'active', 'name': 'Active/Indexed', 'color': '#cce5ff'},
+                {'id': 'pending_pickup', 'name': 'Pending Pickup', 'color': '#fff3cd'},
+                {'id': 'in_storage', 'name': 'In Storage', 'color': '#ccffcc'},
                 {'id': 'in_transit', 'name': 'In Transit', 'color': '#ffffcc'},
-                {'id': 'received', 'name': 'Received', 'color': '#ccffcc'},
-                {'id': 'stored', 'name': 'Stored', 'color': '#e6ccff'},
                 {'id': 'retrieved', 'name': 'Retrieved', 'color': '#ffcc99'},
+                {'id': 'pending_destruction', 'name': 'Pending Destruction', 'color': '#f8d7da'},
                 {'id': 'destroyed', 'name': 'Destroyed', 'color': '#ff9999'},
             ]
             transitions = [
-                {'from': 'draft', 'to': 'confirmed', 'label': 'Confirm'},
-                {'from': 'confirmed', 'to': 'in_transit', 'label': 'Pickup'},
-                {'from': 'in_transit', 'to': 'received', 'label': 'Receive'},
-                {'from': 'received', 'to': 'stored', 'label': 'Store'},
-                {'from': 'stored', 'to': 'retrieved', 'label': 'Retrieve'},
-                {'from': 'retrieved', 'to': 'destroyed', 'label': 'Destroy'},
+                {'from': 'draft', 'to': 'active', 'label': 'Activate/Index'},
+                {'from': 'active', 'to': 'pending_pickup', 'label': 'Request Pickup'},
+                {'from': 'pending_pickup', 'to': 'in_storage', 'label': 'Complete Pickup'},
+                {'from': 'in_storage', 'to': 'in_transit', 'label': 'Retrieve'},
+                {'from': 'in_transit', 'to': 'retrieved', 'label': 'Deliver'},
+                {'from': 'retrieved', 'to': 'pending_destruction', 'label': 'Schedule Destruction'},
+                {'from': 'pending_destruction', 'to': 'destroyed', 'label': 'Destroy'},
             ]
 
         diagram_data = {

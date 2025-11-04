@@ -89,12 +89,11 @@ class RecordsContainer(models.Model):
     # ============================================================================
     location_id = fields.Many2one(
         "stock.location",
-        string="Warehouse Location",
+        string="Stock Location",
         tracking=True,
         domain="[('usage', '=', 'internal')]",
-        help="PRIMARY LOCATION: Where you manually place this container. "
-             "This is what users set (e.g., Aisle 10/Row 0). "
-             "When you activate a container, the stock.quant is created at THIS location."
+        help="WHERE YOU PUT THE CONTAINER: Set this to the aisle/row where you physically placed the box "
+             "(e.g., Aisle 10/Row 0/000). This is the location you assign when storing the container."
     )
     # Backwards compatibility alias for Studio customizations
     stock_location_id = fields.Many2one(
@@ -125,12 +124,12 @@ class RecordsContainer(models.Model):
     current_location_id = fields.Many2one(
         "stock.location",
         related="quant_id.location_id",
-        string="Current Location (Inventory Sync)",
+        string="Current Location",
         store=True,
         readonly=True,
-        help="ADVANCED FIELD: Real-time location from stock.quant. "
-             "Only differs from 'Warehouse Location' if container was moved using stock transfers. "
-             "Normally hidden - most users only need 'Warehouse Location'."
+        help="REAL-TIME INVENTORY SYNC: Shows where the inventory system says the container is. "
+             "Usually same as Stock Location unless moved via inventory transfers. "
+             "Grayed out because it auto-updates from inventory movements - you don't set this manually."
     )
     temp_inventory_id = fields.Many2one(
         "temp.inventory",
@@ -159,7 +158,8 @@ class RecordsContainer(models.Model):
         [
             ("draft", "Draft"),
             ("active", "Active/Indexed"),
-            ("stored", "In Storage"),
+            ("pending_pickup", "Pending Pickup"),
+            ("in_storage", "In Storage"),
             ("in_transit", "In Transit"),
             ("retrieved", "Retrieved"),
             ("pending_destruction", "Pending Destruction"),
@@ -169,6 +169,7 @@ class RecordsContainer(models.Model):
         default="draft",
         required=True,
         tracking=True,
+        help="Container lifecycle: Draft → Active/Indexed → Pending Pickup → In Storage → In Transit → Retrieved"
     )
 
     # ============================================================================
@@ -867,22 +868,77 @@ class RecordsContainer(models.Model):
         return super().name_search(name=name, args=args, operator=operator, limit=limit)
 
     def action_store_container(self):
-        """Store container - change state from indexed to stored"""
+        """
+        Store Container Workflow:
+        1. Generate field service ticket for pickup
+        2. Change status to 'pending_pickup' 
+        3. After pickup/location assignment → changes to 'in_storage'
+        
+        This creates the complete workflow from customer request to warehouse storage.
+        """
         self.ensure_one()
-        if self.state != "active":
-            raise UserError(_("Only active containers can be stored"))
-        if not self.location_id:
-            raise UserError(_("Storage location must be assigned before storing"))
-        vals = {"state": "stored"}
+        
+        # Only draft or active containers can be stored
+        if self.state not in ('draft', 'active'):
+            raise UserError(_("Only draft or active containers can be processed for storage"))
+        
+        # Create field service ticket for pickup
+        fsm_project = self.env['project.project'].search([
+            ('is_fsm', '=', True)
+        ], limit=1)
+        
+        if not fsm_project:
+            raise UserError(_("No Field Service Management project found. Please configure FSM first."))
+        
+        # Create the pickup task
+        task_vals = {
+            'name': _('Pickup Container: %s', self.name),
+            'project_id': fsm_project.id,
+            'partner_id': self.partner_id.id,
+            'description': _(
+                'Container Pickup Request\n'
+                'Container: %s\n'
+                'Customer: %s\n'
+                'Department: %s\n'
+                'Please pick up this container and assign it to a warehouse location.',
+                self.name,
+                self.partner_id.name,
+                self.department_id.name if self.department_id else 'N/A'
+            ),
+            'container_id': self.id,
+        }
+        
+        pickup_task = self.env['project.task'].create(task_vals)
+        
+        # Change container state to pending pickup
+        vals = {
+            'state': 'pending_pickup',
+        }
         if not self.storage_start_date:
-            vals["storage_start_date"] = fields.Date.today()
+            vals['storage_start_date'] = fields.Date.today()
+            
         self.write(vals)
-        self.message_post(body=_("Container has been stored."))
+        
+        # Post message with link to service ticket
+        self.message_post(
+            body=_('Field service ticket created for container pickup. <a href="/web#id=%s&model=project.task&view_type=form">View Ticket #%s</a>',
+                   pickup_task.id, pickup_task.id)
+        )
+        
+        # Return action to view the created task
+        return {
+            'name': _('Pickup Service Ticket'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'project.task',
+            'res_id': pickup_task.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
 
     def action_retrieve_container(self):
         """Retrieve container from storage"""
         self.ensure_one()
-        if self.state not in ["stored", "active"]:
+        if self.state not in ["in_storage", "active"]:
             raise UserError(_("Only stored or active containers can be retrieved"))
         self.write({"state": "in_transit", "last_access_date": fields.Date.today()})
         self.message_post(body=_("Container retrieved from storage"))

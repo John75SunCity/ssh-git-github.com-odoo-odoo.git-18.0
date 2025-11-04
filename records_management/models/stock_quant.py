@@ -99,7 +99,9 @@ class StockQuant(models.Model):
     container_state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active/Indexed'),
-        ('stored', 'In Storage'),
+        ('pending_pickup', 'Pending Pickup'),
+        ('in_storage', 'In Storage'),
+        ('in_transit', 'In Transit'),
         ('retrieved', 'Retrieved'),
         ('pending_destruction', 'Pending Destruction'),
         ('destroyed', 'Destroyed'),

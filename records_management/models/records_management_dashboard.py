@@ -54,7 +54,7 @@ class RecordsManagementDashboard(models.Model):
             c_domain = [("company_id", "=", company.id)]
             containers = Container.search(c_domain)
             rec.kpi_total_containers = len(containers)
-            rec.kpi_active_containers = len(containers.filtered(lambda c: c.state in ("active", "stored")))
+            rec.kpi_active_containers = len(containers.filtered(lambda c: c.state in ("active", "in_storage")))
             shredding_jobs = Shredding.search_count([
                 ("company_id", "=", company.id),
                 ("service_date", ">=", month_start),
