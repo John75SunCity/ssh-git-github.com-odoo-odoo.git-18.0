@@ -87,7 +87,6 @@
         "data/paper_products_data.xml",
         # Portal website menus (must load BEFORE configurator data references them)
         "data/website_portal_menus.xml",
-        "data/website_pages.xml",  # Website pages for portal routes (containers, work orders, etc.)
         "data/core_configurator_data.xml",
         "data/paper_shred_configurator_data.xml",
         "data/document_retrieval_rates_data.xml",
