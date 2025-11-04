@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Consolidated definitions for previously missing ir.sequence codes referenced by next_by_code() calls.
-         Added by automated audit to prevent early registry load failures when create() overrides fire. -->
     <data noupdate="0">
+        <!-- Consolidated definitions for previously missing ir.sequence codes referenced by next_by_code() calls.
+             Added by automated audit to prevent early registry load failures when create() overrides fire. -->
         <!-- NOTE: Only sequences not already defined in existing sequence XML files are added here.
              Prefixes kept short; adjust as needed. All company-agnostic (company_id False). -->
         <record id="seq_portal_feedback" model="ir.sequence">

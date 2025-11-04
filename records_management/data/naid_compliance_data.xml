@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
     <data>
-
         <!-- NAID Chain of Custody Sequence -->
         <record id="seq_naid_chain_custody" model="ir.sequence">
             <field name="name">NAID Chain of Custody</field>

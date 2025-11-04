@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
 <record id="shredding_inventory_item_view_tree" model="ir.ui.view">
         <field name="name">shredding.inventory.item.view.tree</field>
         <field name="model">shredding.inventory.item</field>
@@ -164,8 +163,8 @@
             • Sequence items for efficient pickup routing<br/>
             </p>
         </field>
+    </record>
 
-    
     <record id="shredding_picklist_item_view_tree" model="ir.ui.view">
         <field name="name">shredding.picklist.item.view.tree</field>
         <field name="model">shredding.picklist.item</field>
@@ -228,7 +227,7 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    
+
 
     <!-- Shredding Inventory moved to Inventory menu -->
     <menuitem id="menu_shredding_inventory_root" name="Shredding Inventory" parent="menu_records_inventory" sequence="30" />
@@ -237,6 +236,6 @@
 
     <menuitem id="menu_shredding_picklist_items" name="Picklist Items" parent="menu_shredding_inventory_root" action="action_shredding_picklist_item" sequence="20" />
 
-    
+
     </data>
 </odoo>

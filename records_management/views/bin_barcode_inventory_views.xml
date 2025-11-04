@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
         <record id="bin_barcode_inventory_view_form" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.view.form</field>
             <field name="model">bin.barcode.inventory</field>

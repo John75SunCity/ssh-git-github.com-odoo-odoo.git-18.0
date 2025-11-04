@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
-
     <!-- Photos Menu (Under Operations) -->
     <menuitem id="menu_photos_root"
               name="Photos"

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Portal Record Rules for Temp Inventory Visibility
+             Ensures portal users only see temporary inventory locations belonging to their company.
+             This enables data isolation so customers can only see/manage their own temp locations,
+             not other customers' temp locations.
+        -->
+        <record id="temp_inventory_rule_portal" model="ir.rule">
+            <field name="name">Temp Inventory Portal Rule</field>
+            <field name="model_id" ref="model_temp_inventory"/>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin')), (4, ref('records_management.group_portal_department_admin')), (4, ref('records_management.group_portal_department_user')), (4, ref('records_management.group_portal_readonly_employee'))]"/>
+            <field name="domain_force">[('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id)]</field>
+        </record>
+
+        <!-- Internal users see ALL temp inventory locations (no restriction) -->
+        <!-- This allows internal staff to create and manage temp locations for any customer -->
+        <record id="temp_inventory_rule_internal" model="ir.rule">
+            <field name="name">Temp Inventory Internal Rule</field>
+            <field name="model_id" ref="model_temp_inventory"/>
+            <field name="groups" eval="[(4, ref('records_management.group_records_user')), (4, ref('records_management.group_records_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+    </data>
+</odoo>

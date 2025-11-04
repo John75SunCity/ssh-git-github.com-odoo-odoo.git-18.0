@@ -345,18 +345,20 @@ class SystemFlowchartWizard(models.TransientModel):
 
         self.ensure_one()
 
+        # Map search scenarios to valid search_type values
+        search_type_mapping = {
+            'overview': 'all',
+            'user_access': 'access',
+            'company_structure': 'company',
+            'model_relationships': 'relationships',
+            'compliance_audit': 'all',
+            'custom': 'all',
+        }
+
         # Create system diagram data record with configuration
         diagram_data = {
             "name": f"System Flowchart - {self.search_scenario.replace('_', ' ').title()}",
-            "search_type": (
-                "user"
-                if self.search_scenario == "user_access"
-                else (
-                    "company"
-                    if self.search_scenario == "company_structure"
-                    else "model"
-                )
-            ),
+            "search_type": search_type_mapping.get(self.search_scenario, 'all'),
             "show_access_only": self.search_scenario == "user_access",
         }
 
@@ -368,12 +370,26 @@ class SystemFlowchartWizard(models.TransientModel):
 
         diagram = self.env["system.diagram.data"].create(diagram_data)
 
+        # Get the form view with diagram preview (fallback to search if XML ID not found)
+        try:
+            form_view = self.env.ref('records_management.system_diagram_data_view_form', raise_if_not_found=False)
+            view_id = form_view.id if form_view else False
+        except (ValueError, KeyError):
+            # If XML ID doesn't exist yet, find the form view by model and name
+            form_view = self.env['ir.ui.view'].search([
+                ('model', '=', 'system.diagram.data'),
+                ('type', '=', 'form'),
+                ('name', '=', 'system.diagram.data.view.form')
+            ], limit=1)
+            view_id = form_view.id if form_view else False
+
         return {
             "type": "ir.actions.act_window",
             "name": "System Architecture Flowchart",
             "res_model": "system.diagram.data",
             "res_id": diagram.id,
-            "view_mode": "system_flowchart",
+            "view_mode": "form",
+            "view_id": view_id,
             "target": "current",
             "context": {
                 "wizard_config": self.generated_config,

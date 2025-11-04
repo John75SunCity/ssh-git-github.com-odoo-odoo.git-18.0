@@ -90,30 +90,6 @@
         <field name="notes" widget="text" string="Internal Notes"/>
     </group>
 </page>
-<page string="Destruction Certificates" name="destruction_certificates">
-    <group string="Feature Toggle">
-        <field name="destruction_certificate_enabled"/>
-        <field name="enable_chain_of_custody"/>
-
-</group>
-</page>
-<page string="Field Service" name="fsm_features">
-<group string="FSM Feature Toggles">
-<field name="enable_fsm_features"/>
-<field name="bin_inventory_enabled"/>
-
-</group>
-</page>
-<page string="Reporting &amp; Dashboards" name="reporting_dashboards">
-    <group string="Management Dashboard">
-        <field name="enable_management_dashboard"/>
-    </group>
-</page>
-<page string="Portal Features" name="portal_features">
-    <group string="Work Order Portal">
-        <field name="work_orders_portal_enabled"/>
-    </group>
-</page>
 </notebook>
 </sheet>
 <div class="oe_chatter">

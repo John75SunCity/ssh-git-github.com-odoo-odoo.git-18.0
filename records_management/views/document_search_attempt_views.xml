@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
         <record id="document_search_attempt_view_search" model="ir.ui.view">
             <field name="name">document.search.attempt.view.search</field>
             <field name="model">document.search.attempt</field>

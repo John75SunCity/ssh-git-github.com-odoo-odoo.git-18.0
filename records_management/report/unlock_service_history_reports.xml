@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
 <!-- Legacy unlock.service.history report removed after merge -->
+    </data>
 </odoo>

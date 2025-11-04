@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <!-- Extend timesheet list view to show TSheets ID and time formats -->
+    <record id="hr_timesheet_line_list_tsheets" model="ir.ui.view">
+    <field name="name">account.analytic.line.list.tsheets</field>
+    <field name="model">account.analytic.line</field>
+    <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
+    <field name="arch" type="xml">
+    <xpath expr="//field[@name='unit_amount']" position="after">
+    <field name="time_formatted_colon" optional="show" string="Time (HH:MM)"/>
+    <field name="time_formatted_decimal" optional="hide" string="Time (Decimal)"/>
+    <field name="attendance_check_in" optional="show" string="Clock In" widget="datetime"/>
+    <field name="attendance_check_out" optional="show" string="Clock Out" widget="datetime"/>
+    <field name="tsheets_jobcode_name" optional="show" string="Job Code"/>
+    <field name="tsheets_notes" optional="hide" widget="text"/>
+    </xpath>
+    <xpath expr="//field[@name='name']" position="after">
+    <field name="tsheets_id" optional="hide" string="TSheets ID"/>
+    <field name="tsheets_jobcode_name" optional="hide" string="Job Code"/>
+    <field name="tsheets_type" optional="hide"/>
+    </xpath>
+    </field>
+    </record>
+    <!-- Extend timesheet form view to show TSheets details -->
+    <record id="hr_timesheet_line_form_tsheets" model="ir.ui.view">
+    <field name="name">account.analytic.line.form.tsheets</field>
+    <field name="model">account.analytic.line</field>
+    <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_form"/>
+    <field name="arch" type="xml">
+    <xpath expr="//field[@name='unit_amount']" position="after">
+    <field name="time_formatted_colon" readonly="1"/>
+    </xpath>
+    <xpath expr="//sheet" position="inside">
+    <group>
+    <group string="TSheets Details" invisible="tsheets_id == False">
+    <field name="tsheets_id"/>
+    <field name="attendance_check_in" string="Clock In"/>
+    <field name="attendance_check_out" string="Clock Out"/>
+    <field name="tsheets_jobcode_name"/>
+    <field name="tsheets_type"/>
+    <field name="tsheets_on_the_clock"/>
+    <field name="time_formatted_colon"/>
+    <field name="time_formatted_decimal"/>
+    </group>
+    <group string="Employee Notes" invisible="tsheets_notes == False">
+    <field name="tsheets_notes" nolabel="1" widget="text" placeholder="No notes added by employee"/>
+    </group>
+    </group>
+    </xpath>
+    </field>
+    </record>
+    <!-- Add filter to show TSheets entries -->
+    <record id="hr_timesheet_line_search_tsheets" model="ir.ui.view">
+    <field name="name">account.analytic.line.search.tsheets</field>
+    <field name="model">account.analytic.line</field>
+    <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_search"/>
+    <field name="arch" type="xml">
+    <xpath expr="//filter[@name='mine']" position="after">
+    <separator/>
+    <filter name="tsheets_imported" string="TSheets Imported" domain="[('tsheets_id', '!=', False)]"/>
+    <filter name="no_project" string="No Project" domain="[('project_id', '=', False)]"/>
+    <filter name="has_notes" string="With Notes" domain="[('tsheets_notes', '!=', False)]"/>
+    <filter name="on_clock" string="Currently Clocked In" domain="[('tsheets_on_the_clock', '=', True)]"/>
+    </xpath>
+    <xpath expr="//group" position="inside">
+    <filter string="Entry Type" name="group_by_type" context="{'group_by': 'tsheets_type'}"/>
+    <filter string="Job Code" name="group_by_jobcode" context="{'group_by': 'tsheets_jobcode_name'}"/>
+    </xpath>
+    </field>
+    </record>
+    <!-- Action to view all TSheets timesheets -->
+    <record id="action_view_tsheets_timesheets" model="ir.actions.act_window">
+    <field name="name">TSheets Timesheets</field>
+    <field name="res_model">account.analytic.line</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('tsheets_id', '!=', False)]</field>
+    <field name="context">{'search_default_tsheets_imported': 1}</field>
+    <field name="help" type="html">
+    <p class="o_view_nocontent_smiling_face">
+    No TSheets timesheets found
+    </p>
+    <p>
+    Sync timesheets from TSheets using the "Sync Now" wizard.
+    </p>
+    </field>
+    </record>
+    <!-- Menu to view TSheets timesheets -->
+    <menuitem id="menu_view_tsheets_timesheets"
+    name="View Synced Timesheets"
+    parent="qb_tsheet_sync.menu_tsheets_root"
+    action="action_view_tsheets_timesheets"
+    sequence="15"
+    groups="qb_tsheet_sync.group_tsheets_user,hr.group_hr_user,records_management.group_records_user"/>
+    </data>
+</odoo>

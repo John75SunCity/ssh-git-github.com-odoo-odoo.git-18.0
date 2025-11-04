@@ -22,6 +22,27 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
+# Portal menu XML IDs - menus are defined in data/website_portal_menus.xml
+# This list is used to toggle visibility of existing menus
+PORTAL_MENU_XML_IDS = [
+    'portal_menu_records_dashboard',
+    'portal_menu_records_inventory',
+    'portal_menu_work_orders',
+    'portal_menu_requests',
+    'portal_menu_certificates',
+    'portal_menu_documents',
+    'portal_menu_invoices',
+    'portal_menu_help',
+    'portal_submenu_request_pickup',
+    'portal_submenu_request_destruction',
+    'portal_submenu_request_service',
+    'portal_submenu_bulk_upload',
+    'portal_submenu_document_retrieval',
+    'portal_submenu_feedback',
+    'portal_submenu_tour',
+]
+
+
 class RmModuleConfigurator(models.Model):
     _name = "rm.module.configurator"
     _description = "Records Management Configuration"
@@ -120,6 +141,10 @@ class RmModuleConfigurator(models.Model):
         default=True,
         help="Master switch controlling whether ANY work orders are displayed in the customer portal.\n"
              "If disabled, the unified work order portal pages will show zero results regardless of per-record 'Portal Visible' flags."
+    )
+    portal_feature_pack_enabled = fields.Boolean(
+        default=True,
+        help="Enable the complete Records Management customer portal experience, including navigation menus and portal admin tooling."
     )
 
     # Additional referenced toggles kept (avoid view breakage)
@@ -288,6 +313,8 @@ class RmModuleConfigurator(models.Model):
             self.action_apply_key_restriction_toggle()
         if 'enable_management_dashboard' in updated_keys:
             self.action_apply_management_dashboard_toggle()
+        if 'portal_feature_pack_enabled' in updated_keys:
+            self[:1].action_apply_portal_feature_pack_toggle()
 
     def _collect_updated_feature_keys(self, vals_list):
         keys = set()
@@ -296,7 +323,17 @@ class RmModuleConfigurator(models.Model):
                 for rec in self.filtered(lambda r: r.config_type == 'feature_toggle'):
                     keys.add(rec.config_key)
             # direct boolean feature toggles tracked explicitly
-            for direct in ['bin_inventory_enabled', 'enable_fsm_features', 'enable_flowchart_visualization', 'enable_portal_diagram', 'enable_intelligent_search', 'key_restriction_enabled', 'enable_management_dashboard', 'work_orders_portal_enabled']:
+            for direct in [
+                'bin_inventory_enabled',
+                'enable_fsm_features',
+                'enable_flowchart_visualization',
+                'enable_portal_diagram',
+                'enable_intelligent_search',
+                'key_restriction_enabled',
+                'enable_management_dashboard',
+                'work_orders_portal_enabled',
+                'portal_feature_pack_enabled',
+            ]:
                 if direct in vals:
                     keys.add(direct)
         return keys
@@ -476,6 +513,63 @@ class RmModuleConfigurator(models.Model):
             except Exception:
                 pass
 
+    def action_apply_portal_feature_pack_toggle(self):
+        enabled = any(self.sudo().search([]).mapped('portal_feature_pack_enabled'))
+        config_param = self.env['ir.config_parameter'].sudo()
+        config_param.set_param('records_management.portal.enabled', 'True' if enabled else 'False')
+        try:
+            self._sync_portal_feature_pack_menus(enabled)
+        except Exception as error:
+            _logger.error("Portal feature pack menu sync failed: %s", error)
+        backend_menus = [
+            'records_management.menu_portal_requests',
+            'records_management.menu_portal_feedback',
+            'records_management.menu_feedback_analytics',
+            'records_management.menu_service_item_portal',
+            'records_management.menu_service_item_portal_requests',
+            'records_management.menu_service_item_self_service',
+        ]
+        self._set_backend_menu_active(backend_menus, enabled)
+
+    def _sync_portal_feature_pack_menus(self, enabled):
+        """Toggle visibility of portal menus defined in data/website_portal_menus.xml
+        
+        Since menus are already created via XML data files, this method only
+        manages their published/visibility state based on the portal feature toggle.
+        """
+        Menu = self.env['website.menu'].sudo()
+        
+        # Toggle visibility for all portal menus
+        for xml_id in PORTAL_MENU_XML_IDS:
+            xml_id_full = f"records_management.{xml_id}"
+            menu = self.env.ref(xml_id_full, raise_if_not_found=False)
+            
+            if menu and menu.exists():
+                # Update published state based on toggle
+                publish_updates = {}
+                if 'is_published' in Menu._fields:
+                    publish_updates['is_published'] = enabled
+                if 'published' in Menu._fields:
+                    publish_updates['published'] = enabled
+                    
+                if publish_updates:
+                    try:
+                        menu.write(publish_updates)
+                    except Exception as e:
+                        _logger.warning("Failed to update menu %s: %s", xml_id, e)
+            else:
+                # Menu not found - this is expected if XML hasn't loaded yet
+                _logger.debug("Portal menu %s not found (may load later from XML)", xml_id)
+
+    def _set_backend_menu_active(self, xml_ids, active):
+        for xmlid in xml_ids:
+            menu = self.env.ref(xmlid, raise_if_not_found=False)
+            if menu:
+                try:
+                    menu.active = bool(active)
+                except Exception:
+                    continue
+
     def _default_create_default_configurations(self):  # alias (backwards compatibility)
         self.ensure_one()
         return self._default_seed_configs()
@@ -644,6 +738,7 @@ class RmModuleConfigurator(models.Model):
             'enable_portal_diagram',
             'enable_intelligent_search',
             'key_restriction_enabled',
+            'portal_feature_pack_enabled',
         ]
         data = {}
         for name in field_names:

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
 <!-- List View -->
     <record id="inventory_adjustment_reason_view_tree" model="ir.ui.view">
         <field name="name">inventory.adjustment.reason.view.tree</field>
@@ -55,16 +54,13 @@
     </record>
 
     <!-- Menu -->
-    <!--
-
     <menuitem
         id="menu_inventory_adjustment_reason"
-        name="Inventory Adjustment Reason"
+        name="Adjustment Reasons"
         action="action_inventory_adjustment_reason"
-        parent="REPLACE_WITH_PARENT_MENU_ID"
-        sequence="10"/>
-
-    -->
+        parent="menu_records_inventory"
+        sequence="45"
+        groups="records_management.group_records_manager"/>
     
     </data>
 </odoo>

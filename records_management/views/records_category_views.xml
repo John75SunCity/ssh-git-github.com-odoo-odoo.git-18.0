@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
         <record id="records_category_view_list" model="ir.ui.view">
         <field name="name">records.category.view.list</field>
         <field name="model">records.category</field>
@@ -102,7 +101,7 @@
     </record>
 
     <!-- Categories moved to Configuration > Master Data -->
-    <menuitem id="menu_records_category_root" name="Categories" parent="records_management.menu_records_master_data" action="action_records_category" sequence="40" />
+    <menuitem id="menu_records_category_root" name="Categories" parent="records_management.menu_master_data" action="action_records_category" sequence="40" />
 
     
     </data>

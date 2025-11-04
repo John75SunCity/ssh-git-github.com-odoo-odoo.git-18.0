@@ -310,6 +310,10 @@ class MobilePhoto(models.Model):
         domain = [('is_compliance_photo', '=', True)]
 
         if entity_type and entity_id:
+            # Safety check: ensure entity_id is a valid int, not NewId
+            if isinstance(entity_id, models.NewId):
+                return self.browse()  # Return empty recordset for unsaved records
+            
             if entity_type == 'fsm_task':
                 domain.append(('fsm_task_id', '=', entity_id))
             elif entity_type == 'work_order':

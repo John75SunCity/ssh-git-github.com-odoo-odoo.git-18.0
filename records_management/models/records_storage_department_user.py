@@ -20,6 +20,17 @@ class RecordsStorageDepartmentUser(models.Model):
     # ============================================================================
     department_id = fields.Many2one(comodel_name='records.department', string="Department", required=True, ondelete='cascade', index=True, tracking=True)
     user_id = fields.Many2one(comodel_name='res.users', string="User", required=True, ondelete='cascade', index=True, tracking=True)
+    
+    # Stock owner relationship - links user to their department's inventory owner
+    stock_owner_id = fields.Many2one(
+        comodel_name='res.partner',
+        related='department_id.partner_id',
+        string="Stock Owner (Partner)",
+        store=True,
+        readonly=True,
+        help="The partner contact (company/department/child dept) that owns inventory for this department. "
+             "Portal users can view/manage containers owned by this partner."
+    )
 
     # ============================================================================
     # PERMISSIONS & LIFECYCLE
@@ -80,6 +91,8 @@ class RecordsStorageDepartmentUser(models.Model):
     # GRANULAR PERMISSIONS
     # ============================================================================
     can_view_records = fields.Boolean(string="Can View Records", default=True, tracking=True)
+    can_create_records = fields.Boolean(string="Can Create Records", default=False, tracking=True, 
+                                        help="Allows user to create new containers/documents from portal")
     can_edit_records = fields.Boolean(string="Can Edit Records", default=False, tracking=True)
     can_delete_records = fields.Boolean(string="Can Delete Records", default=False, tracking=True)
     can_export_records = fields.Boolean(string="Can Export Records", default=False, tracking=True)

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
 <!-- List View -->
     <record id="inventory_item_type_view_tree" model="ir.ui.view">
         <field name="name">inventory.item.type.view.tree</field>
@@ -59,16 +58,13 @@
     </record>
 
     <!-- Menu -->
-    <!--
-
     <menuitem
         id="menu_inventory_item_type"
-        name="Inventory Item Type"
+        name="Item Types"
         action="action_inventory_item_type"
-        parent="REPLACE_WITH_PARENT_MENU_ID"
-        sequence="10"/>
-
-    -->
+        parent="menu_master_data"
+        sequence="55"
+        groups="records_management.group_records_manager"/>
     
     </data>
 </odoo>

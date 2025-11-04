@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Wrapped in <data> to satisfy project schema validation (was previously direct children) -->
     <data>
+        <!-- Wrapped in <data> to satisfy project schema validation (was previously direct children) -->
         <!-- Tree view for parsed lines -->
         <record id="records_document_bulk_upload_line_view_tree" model="ir.ui.view">
             <field name="name">records.document.bulk.upload.line.view.tree</field>

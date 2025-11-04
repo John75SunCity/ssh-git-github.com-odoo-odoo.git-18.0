@@ -16,7 +16,14 @@ class TempInventory(models.Model):
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
-    partner_id = fields.Many2one(comodel_name='res.partner', string="Customer/Owner", help="Optional: Link this inventory to a specific customer.")
+    partner_id = fields.Many2one(
+        comodel_name='res.partner', 
+        string="Customer/Owner", 
+        required=True,
+        default=lambda self: self._default_partner_id(),
+        domain="[('is_records_customer', '=', True), ('is_company', '=', True)]",
+        help="The customer company that owns this temporary inventory location. Required for proper data isolation and visibility.",
+    )
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -59,6 +66,21 @@ class TempInventory(models.Model):
     date_archived = fields.Datetime(string="Archived On", readonly=True)
     retention_period = fields.Integer(string="Retention Period (Days)", help="How long items can stay here.")
     expiry_date = fields.Date(string="Expiry Date", compute='_compute_expiry_date', store=True)
+
+    # ============================================================================
+    # DEFAULT METHODS
+    # ============================================================================
+    @api.model
+    def _default_partner_id(self):
+        """
+        Smart default for partner_id based on user type:
+        - Portal users: Return their commercial partner (the company they belong to)
+        - Internal users: Return False (no default, must select customer)
+        """
+        user = self.env.user
+        if user.has_group('base.group_portal'):
+            return user.partner_id.commercial_partner_id.id if user.partner_id else False
+        return False
 
     # ============================================================================
     # COMPUTE METHODS

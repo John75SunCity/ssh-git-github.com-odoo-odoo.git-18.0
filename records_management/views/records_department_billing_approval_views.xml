@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
         <!-- Technical fallback view with priority 0 for One2many mode="tree" -->
         <record id="records_department_billing_approval_view_tree_technical" model="ir.ui.view">
             <field name="name">records.department.billing.approval.view.tree.technical</field>

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Portal Pickup Request Creation Template -->
+        <template id="portal_pickup_request_create" name="Request Pickup">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Request Pickup Service</t>
+
+                <div class="o_portal_pickup_request_create">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <!-- Header -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="mb-0">
+                                        <i class="fa fa-truck"></i>
+                                        Request Pickup Service
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <p class="lead">
+                                        Schedule a pickup for your records or containers.
+                                        Our team will contact you to confirm the details.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Error Message -->
+                            <t t-if="error">
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="fa fa-exclamation-triangle"></i>
+                                    <strong>Error:</strong>
+                                    <t t-if="error == 'no_permission'">
+                                        You do not have permission to create pickup requests.
+                                    </t>
+                                    <t t-else="">
+                                        <span t-esc="error"/>
+                                    </t>
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        <span>&amp;times;</span>
+                                    </button>
+                                </div>
+                            </t>
+
+                            <!-- Pickup Request Form -->
+                            <form action="/my/request/new/pickup/submit" method="post" class="card">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                
+                                <div class="card-body">
+                                    <!-- Service Type -->
+                                    <div class="form-group">
+                                        <label for="service_type" class="font-weight-bold">
+                                            <i class="fa fa-tag"></i> Service Type
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <select name="service_type" id="service_type" class="form-control" required="required">
+                                            <option value="standard">Standard Pickup</option>
+                                            <option value="emergency">Emergency Pickup</option>
+                                            <option value="scheduled">Scheduled Recurring Pickup</option>
+                                            <option value="bulk">Bulk Pickup</option>
+                                        </select>
+                                        <small class="form-text text-muted">
+                                            Select the type of pickup service you need
+                                        </small>
+                                    </div>
+
+                                    <!-- Contact Information -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="contact_name" class="font-weight-bold">
+                                                    <i class="fa fa-user"></i> Contact Name
+                                                </label>
+                                                <input type="text" name="contact_name" id="contact_name" 
+                                                       class="form-control" t-att-value="partner.name"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="contact_phone" class="font-weight-bold">
+                                                    <i class="fa fa-phone"></i> Contact Phone
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="tel" name="contact_phone" id="contact_phone" 
+                                                       class="form-control" t-att-value="partner.phone" required="required"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="contact_email" class="font-weight-bold">
+                                            <i class="fa fa-envelope"></i> Contact Email
+                                        </label>
+                                        <input type="email" name="contact_email" id="contact_email" 
+                                               class="form-control" t-att-value="partner.email"/>
+                                    </div>
+
+                                    <!-- Pickup Details -->
+                                    <div class="form-group">
+                                        <label for="pickup_address" class="font-weight-bold">
+                                            <i class="fa fa-map-marker"></i> Pickup Address
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea name="pickup_address" id="pickup_address" 
+                                                  class="form-control" rows="3" required="required"></textarea>
+                                        <small class="form-text text-muted">
+                                            Enter the complete address where items should be picked up
+                                        </small>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="preferred_pickup_date" class="font-weight-bold">
+                                                    <i class="fa fa-calendar"></i> Preferred Pickup Date
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="date" name="preferred_pickup_date" id="preferred_pickup_date" 
+                                                       class="form-control" required="required"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="estimated_volume" class="font-weight-bold">
+                                                    <i class="fa fa-cube"></i> Estimated Volume (cubic feet)
+                                                </label>
+                                                <input type="number" name="estimated_volume" id="estimated_volume" 
+                                                       class="form-control" step="0.01" min="0"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="estimated_weight" class="font-weight-bold">
+                                            <i class="fa fa-weight"></i> Estimated Weight (lbs)
+                                        </label>
+                                        <input type="number" name="estimated_weight" id="estimated_weight" 
+                                               class="form-control" step="0.01" min="0"/>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="description" class="font-weight-bold">
+                                            <i class="fa fa-file-text"></i> Description
+                                        </label>
+                                        <textarea name="description" id="description" 
+                                                  class="form-control" rows="3"></textarea>
+                                        <small class="form-text text-muted">
+                                            Describe what needs to be picked up (number of boxes, containers, etc.)
+                                        </small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="special_instructions" class="font-weight-bold">
+                                            <i class="fa fa-info-circle"></i> Special Instructions
+                                        </label>
+                                        <textarea name="special_instructions" id="special_instructions" 
+                                                  class="form-control" rows="2"></textarea>
+                                        <small class="form-text text-muted">
+                                            Any special requirements (loading dock, elevator access, time restrictions, etc.)
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <a href="/my/requests" class="btn btn-secondary btn-block">
+                                                <i class="fa fa-times"></i> Cancel
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="submit" class="btn btn-primary btn-block">
+                                                <i class="fa fa-paper-plane"></i> Submit Pickup Request
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- Help Section -->
+                            <div class="card mt-4">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-question-circle"></i> Need Help?
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="mb-0">
+                                        <li><strong>Standard Pickup:</strong> Regular scheduled pickup during business hours</li>
+                                        <li><strong>Emergency Pickup:</strong> Urgent pickup required within 24-48 hours</li>
+                                        <li><strong>Scheduled Recurring:</strong> Set up a regular pickup schedule</li>
+                                        <li><strong>Bulk Pickup:</strong> Large volume pickup requiring special equipment</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

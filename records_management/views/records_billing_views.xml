@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
         <record id="records_billing_view_tree" model="ir.ui.view">
             <field name="name">records.billing.view.tree</field>
             <field name="model">records.billing</field>
@@ -53,8 +52,12 @@
                                 <field name="billing_line_ids">
                                     <list>
                                         <field name="name" />
-                                        <field name="amount_total" />
-                                        <field name="currency_id" />
+                                        <field name="quantity" />
+                                        <field name="unit_price" />
+                                        <field name="amount" />
+                                        <field name="discount" />
+                                        <field name="subtotal" />
+                                        <field name="currency_id" invisible="1" />
                                         <field name="billing_profile_id" />
                                     </list>
                                 </field>

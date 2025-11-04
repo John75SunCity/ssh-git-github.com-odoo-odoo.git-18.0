@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Portal Destruction Request Creation Template -->
+        <template id="portal_destruction_request_create" name="Request Destruction">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Request Destruction Service</t>
+
+                <div class="o_portal_destruction_request_create">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <!-- Header -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-danger text-white">
+                                    <h3 class="mb-0">
+                                        <i class="fa fa-trash"></i>
+                                        Request Secure Destruction
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <p class="lead">
+                                        Request NAID AAA-certified destruction service for your records.
+                                        All destruction is performed according to industry standards with certificate of destruction provided.
+                                    </p>
+                                    <div class="alert alert-warning">
+                                        <i class="fa fa-exclamation-triangle"></i>
+                                        <strong>Important:</strong> Destruction is permanent and cannot be undone.
+                                        Please ensure you have selected the correct items.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Error Message -->
+                            <t t-if="error">
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="fa fa-exclamation-triangle"></i>
+                                    <strong>Error:</strong>
+                                    <t t-if="error == 'no_permission'">
+                                        You do not have permission to create destruction requests.
+                                    </t>
+                                    <t t-else="">
+                                        <span t-esc="error"/>
+                                    </t>
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        <span>&amp;times;</span>
+                                    </button>
+                                </div>
+                            </t>
+
+                            <!-- Destruction Request Form -->
+                            <form action="/my/request/new/destruction/submit" method="post" class="card">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                
+                                <div class="card-body">
+                                    <!-- Destruction Method -->
+                                    <div class="form-group">
+                                        <label for="destruction_method" class="font-weight-bold">
+                                            <i class="fa fa-cog"></i> Destruction Method
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <select name="destruction_method" id="destruction_method" class="form-control" required="required">
+                                            <option value="shredding">Cross-Cut Shredding (Most Common)</option>
+                                            <option value="pulverization">Pulverization (Complete Destruction)</option>
+                                            <option value="incineration">Incineration (Complete Disposal)</option>
+                                            <option value="degaussing">Degaussing (Electronic Media Only)</option>
+                                        </select>
+                                        <small class="form-text text-muted">
+                                            Select the appropriate destruction method for your materials
+                                        </small>
+                                    </div>
+
+                                    <!-- Container Selection -->
+                                    <div class="form-group">
+                                        <label class="font-weight-bold">
+                                            <i class="fa fa-box"></i> Select Containers for Destruction
+                                        </label>
+                                        
+                                        <t t-if="not containers">
+                                            <div class="alert alert-info">
+                                                <i class="fa fa-info-circle"></i>
+                                                You don't have any containers in storage yet.
+                                                <a href="/my/containers/new" class="alert-link">Create containers first</a>
+                                                before requesting destruction.
+                                            </div>
+                                        </t>
+                                        
+                                        <t t-if="containers">
+                                            <div class="card">
+                                                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                                    <t t-foreach="containers" t-as="container">
+                                                        <div class="custom-control custom-checkbox mb-2">
+                                                            <input type="checkbox" 
+                                                                   class="custom-control-input" 
+                                                                   name="container_ids" 
+                                                                   t-att-id="'container_%s' % container.id"
+                                                                   t-att-value="container.id"/>
+                                                            <label class="custom-control-label" t-att-for="'container_%s' % container.id">
+                                                                <strong t-esc="container.barcode"/>
+                                                                <span class="text-muted"> - </span>
+                                                                <span t-esc="container.description or 'No description'"/>
+                                                                <t t-if="container.location_id">
+                                                                    <br/>
+                                                                    <small class="text-muted">
+                                                                        <i class="fa fa-map-marker"></i>
+                                                                        Location: <span t-esc="container.location_id.name"/>
+                                                                    </small>
+                                                                </t>
+                                                            </label>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                            <small class="form-text text-muted">
+                                                Select one or more containers to be destroyed. You can select all if needed.
+                                            </small>
+                                        </t>
+                                    </div>
+
+                                    <!-- Notes -->
+                                    <div class="form-group">
+                                        <label for="notes" class="font-weight-bold">
+                                            <i class="fa fa-sticky-note"></i> Additional Notes
+                                        </label>
+                                        <textarea name="notes" id="notes" 
+                                                  class="form-control" rows="4"></textarea>
+                                        <small class="form-text text-muted">
+                                            Provide any additional information about this destruction request
+                                            (special handling requirements, witness requirements, etc.)
+                                        </small>
+                                    </div>
+
+                                    <!-- NAID Compliance Notice -->
+                                    <div class="alert alert-success">
+                                        <h5>
+                                            <i class="fa fa-shield"></i>
+                                            NAID AAA Certified Destruction
+                                        </h5>
+                                        <ul class="mb-0">
+                                            <li>All destruction performed to NAID AAA standards</li>
+                                            <li>Certificate of Destruction provided upon completion</li>
+                                            <li>Chain of custody maintained throughout process</li>
+                                            <li>Compliance with HIPAA, FACTA, GLBA, and other regulations</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <a href="/my/requests" class="btn btn-secondary btn-block">
+                                                <i class="fa fa-times"></i> Cancel
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="submit" class="btn btn-danger btn-block"
+                                                    onclick="return confirm('Are you sure you want to request destruction? This action cannot be undone.');">
+                                                <i class="fa fa-trash"></i> Submit Destruction Request
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <!-- Destruction Method Info -->
+                            <div class="card mt-4">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-question-circle"></i> Destruction Methods Explained
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <dl class="row mb-0">
+                                        <dt class="col-sm-3">Cross-Cut Shredding</dt>
+                                        <dd class="col-sm-9">
+                                            Paper documents are shredded into small cross-cut pieces. 
+                                            Most common method for paper records. NAID AAA certified.
+                                        </dd>
+
+                                        <dt class="col-sm-3">Pulverization</dt>
+                                        <dd class="col-sm-9">
+                                            Complete destruction reducing materials to unrecognizable particles.
+                                            Used for highly sensitive documents or hard drives.
+                                        </dd>
+
+                                        <dt class="col-sm-3">Incineration</dt>
+                                        <dd class="col-sm-9">
+                                            Thermal destruction completely incinerating materials.
+                                            Used for materials requiring complete disposal.
+                                        </dd>
+
+                                        <dt class="col-sm-3">Degaussing</dt>
+                                        <dd class="col-sm-9">
+                                            Magnetic erasure for electronic media (hard drives, tapes).
+                                            Renders data completely unrecoverable.
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

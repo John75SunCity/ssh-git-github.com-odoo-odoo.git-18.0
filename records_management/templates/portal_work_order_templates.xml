@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- Work Orders Portal Templates -->
 
     <!-- Main work orders list template -->
@@ -567,4 +568,5 @@
         </t>
     </template>
 
+    </data>
 </odoo>

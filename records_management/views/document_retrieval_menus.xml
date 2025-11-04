@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
 <!-- List view for Document -->
 
     <!-- List view for Work -->
@@ -17,7 +16,7 @@
 
     <menuitem id="menu_document_retrieval_rates" name="Document Retrieval Rates" parent="menu_records_configuration" sequence="60" groups="records_management.group_records_manager"/>
 
-    <menuitem id="menu_document_retrieval_base_rates" name="Base Rates" parent="menu_document_retrieval_rates" action="records_management.action_base_rates" sequence="10" groups="records_management.group_records_manager"/>
+    <!-- Duplicate base rates menu removed - defined in records_management_menus.xml under Billing & Finance -->
 
     
     </data>

@@ -70,7 +70,7 @@ lbs
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <span class="badge" t-att-class="record.state.raw_value === 'stored' ? 'badge-success' : record.state.raw_value === 'indexed' ? 'badge-info' : record.state.raw_value === 'retrieved' ? 'badge-warning' : record.state.raw_value === 'destroyed' ? 'badge-danger' : 'badge-secondary'">
+                                    <span class="badge" t-att-class="record.state.raw_value === 'in_storage' ? 'badge-success' : record.state.raw_value === 'indexed' ? 'badge-info' : record.state.raw_value === 'retrieved' ? 'badge-warning' : record.state.raw_value === 'destroyed' ? 'badge-danger' : 'badge-secondary'">
         <field name="state"/>
                                     </span>
                                 </div>
@@ -132,7 +132,7 @@ Destroy Container</a>
         <field name="name">records.container.view.tree</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-        <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
+        <list decoration-success="state == 'in_storage'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
             <header>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
@@ -164,26 +164,33 @@ Destroy Container</a>
         <field name="name">records.container.view.list</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-        <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
+        <list decoration-success="state == 'in_storage'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
             <header>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
             </header>
+        <!-- Stock location field - Configurable visibility via RM Module Configurator -->
+        <field name="stock_location_id" optional="hide"/>
+
         <field name="name" string="Container ID"/>
+        <field name="partner_id" string="Customer" required="1"/>
+        <field name="stock_owner_id" string="Inventory Owner" optional="show"/>
+        <field name="department_id" string="Department"/>
         <field name="temp_barcode" string="Temp Barcode"/>
-        <field name="barcode" string="Barcode"/>
+        <field name="barcode" string="Physical Barcode"/>
         <field name="container_type_id" string="Container Type"/>
         <field name="weight" string="Weight"/>
-        <field name="partner_id" string="Customer"/>
-        <field name="department_id" string="Department"/>
         <field name="location_id" string="Location"/>
         <field name="state" string="Status" widget="badge"/>
         <field name="document_count" string="Documents" sum="Total Documents"/>
-        <field name="storage_start_date" string="Storage Start"/>
-        <field name="destruction_due_date" string="Due Date"/>
-        <field name="is_due_for_destruction" string="Due" widget="boolean_toggle"/>
-        <field name="security_level" string="Security"/>
-        <field name="active" string="Active" widget="boolean_toggle"/>
+        <field name="storage_start_date" string="Storage Start" optional="hide"/>
+        <field name="destruction_due_date" string="Due Date" optional="hide"/>
+        <field name="is_due_for_destruction" string="Due" widget="boolean_toggle" optional="hide"/>
+        <field name="security_level" string="Security" optional="hide"/>
+        <field name="active" string="Active" widget="boolean_toggle" optional="hide"/>
+        <!-- Hide company_id - not relevant since all containers belong to service provider "My Company" -->
+        <!-- Users care about CUSTOMER (partner_id), not service provider company -->
+        <field name="company_id" column_invisible="1"/>
             <button name="action_view_documents" type="object" string="View Docs" icon="fas fa-file-text-o" class="btn-link"/>
             <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fas fa-barcode" class="btn-link"/>
             <button name="action_generate_qr_code" type="object" string="QR Code" icon="fas fa-qrcode" class="btn-link"/>
@@ -198,39 +205,116 @@ Destroy Container</a>
         <field name="arch" type="xml">
         <form>
             <header>
+                <!-- ✅ NEW: Index Container button (creates stock quant) -->
+                <button name="action_index_container" type="object" string="Index Container"
+                        class="btn-primary"
+                        invisible="state != 'draft' or not barcode"
+                        help="Index container: Assign to inventory system and create stock quant"/>
+
                 <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/>
                 <button name="action_store_container" type="object" string="Store Container" class="btn-primary" invisible="state != 'active'"/>
-                <button name="action_retrieve_container" type="object" string="Retrieve Container" class="btn-secondary" invisible="state != 'stored'"/>
+                <button name="action_retrieve_container" type="object" string="Retrieve Container" class="btn-secondary" invisible="state != 'in_storage'"/>
                 <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-warning" invisible="not is_due_for_destruction"/>
                 <button name="action_destroy" type="object" string="Destroy Container" class="btn-danger" invisible="state != 'pending_destruction'"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
                 <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
                 <!-- Modernized visibility: use barcode_assigned compute field instead of deprecated attrs expression -->
                 <button name="%(action_records_container_assign_barcode_wizard)d" type="action" string="Assign Physical Barcode" class="btn-secondary" invisible="barcode_assigned"/>
-        <field name="state" widget="statusbar" statusbar_visible="draft,active,stored,retrieved,pending_destruction,destroyed"/>
+        <field name="state" widget="statusbar" statusbar_visible="draft,active,pending_pickup,in_storage,in_transit,retrieved,pending_destruction,destroyed"/>
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
 <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o" title="View Documents">
         <field name="document_count" string="Documents" widget="statinfo"/>
                     </button>
+
+                    <!-- ✅ NEW: Stock Quant smart button -->
+                    <button class="oe_stat_button" type="object" name="action_view_stock_quant"
+                            icon="fa-cubes"
+                            title="View in Inventory System"
+                            invisible="not quant_id">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Stock</span>
+                            <span class="o_stat_text">Quant</span>
+                        </div>
+                    </button>
+
+                    <!-- Stock Location smart button -->
+                    <button class="oe_stat_button" type="object" name="action_view_stock_location"
+                            icon="fa-map-marker"
+                            title="View Stock Location"
+                            invisible="not location_id">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Stock</span>
+                            <span class="o_stat_text">Location</span>
+                        </div>
+                    </button>
                 </div>
 
                 <group>
                     <group string="Container Information">
-    <field name="name" placeholder="e.g., CONT-2024-001"/>
+    <field name="name"
+           placeholder="e.g., HR Personnel 2024"
+           help="Customer's name for this container - fully editable"
+           readonly="state == 'destroyed'"/>
     <!-- Include computed flag field (hidden) so invisible expression works reliably -->
+    <field name="barcode_assigned" invisible="1"/>
     <field name="temp_barcode" readonly="1" invisible="barcode_assigned" context="{'allow_temp_barcode_edit': False}"/>
-    <field name="barcode" placeholder="Auto-generated on save" readonly="barcode_assigned"/>
+    <field name="barcode" placeholder="Assign from pre-printed barcode sheet" help="Physical barcode - manually assigned by staff"/>
         <field name="container_type_id" required="1"/>
         <field name="weight"/>
         <field name="cubic_feet" readonly="1"/>
         <field name="is_full"/>
                     </group>
                     <group string="Customer &amp; Location">
-        <field name="partner_id" required="1"/>
+        <field name="partner_id" required="1" groups="base.group_user" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
+        <field name="partner_id" required="1" readonly="1" groups="base.group_portal" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>
         <field name="department_id"/>
-        <field name="location_id"/>
+        
+        <!-- Stock Owner - Organizational hierarchy: Company → Department → Child Department -->
+        <field name="stock_owner_id"
+               string="Inventory Owner"
+               readonly="1"
+               options="{'no_create': True}"
+               help="Organizational unit that owns this inventory (Company → Department → Child Department). Auto-filled when you select customer or department."/>
+
+        <!-- PRIMARY LOCATION: What user sets manually -->
+        <field name="location_id"
+               string="Warehouse Location"
+               groups="base.group_user"
+               options="{'no_create': True}"
+               help="Where you want to store this container (e.g., Aisle 10/Row 0). Set this manually."/>
+        
+        <!-- HIDDEN TECHNICAL FIELDS - Only for advanced inventory users -->
+        <field name="stock_location_id"
+               string="Stock Location (Technical)"
+               invisible="1"
+               groups="stock.group_stock_manager"
+               options="{'no_create': True}"
+               help="Legacy alias - same as Warehouse Location"/>
+               
+        <field name="current_location_id"
+               string="Inventory Sync Location"
+               readonly="1"
+               invisible="1"
+               groups="stock.group_stock_manager"
+               help="Auto-synced from stock quant after activation. Shows actual inventory system location."/>
+               
+        <field name="quant_id"
+               string="Stock Quant"
+               readonly="1"
+               invisible="1"
+               groups="stock.group_stock_manager"
+               help="Inventory tracking record (created when container is activated)"/>
+
+        <!-- Portal users: Temporary inventory (temp locations at customer site) -->
+        <!-- Only show if NO physical location assigned (mutually exclusive) -->
+        <field name="temp_inventory_id"
+               groups="base.group_portal"
+               context="{'default_partner_id': partner_id}"
+               invisible="location_id"
+               options="{'no_open': False}"
+               help="Temporary location at customer site (hidden when assigned to warehouse location)"/>
         <field name="user_id"/>
                     </group>
                 </group>
@@ -347,7 +431,8 @@ Destroy Container</a>
 
             <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
             <filter string="Active" name="active_state" domain="[('state', '=', 'active')]"/>
-            <filter string="In Storage" name="stored" domain="[('state', '=', 'stored')]"/>
+            <filter string="Pending Pickup" name="pending_pickup" domain="[('state', '=', 'pending_pickup')]"/>
+            <filter string="In Storage" name="in_storage" domain="[('state', '=', 'in_storage')]"/>
             <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
             <filter string="Retrieved" name="retrieved" domain="[('state', '=', 'retrieved')]"/>
             <filter string="Pending Destruction" name="pending_destruction" domain="[('state', '=', 'pending_destruction')]"/>

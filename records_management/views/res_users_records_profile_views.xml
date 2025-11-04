@@ -1,46 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <!-- Inherit base user form to inject Records Profile selector and ensure Related Partner visible -->
+        <!-- Add Records Management Access Level statusbar and helpful guidance to user form -->
         <record id="view_users_form_inherit_records_profile" model="ir.ui.view">
             <field name="name">res.users.view.form.inherit.records.profile</field>
             <field name="model">res.users</field>
             <field name="inherit_id" ref="base.view_users_form"/>
             <field name="arch" type="xml">
-                <!-- Robust insertion: some variants of the user form may not expose groups_id directly at this hierarchy level.
-                     We fall back to appending our group near the end of the main sheet to avoid xpath failures. -->
-                <xpath expr="//sheet" position="inside">
-                    <group string="Records Management Access" colspan="2">
+                <!-- Add statusbar at the very top of the form -->
+                <xpath expr="//form/sheet" position="before">
+                    <header>
                         <field name="records_user_profile" widget="statusbar" options="{'clickable': True}"/>
-                        <field name="partner_required" invisible="1"/>
-                    </group>
-                    <!-- Portal User Instructions -->
-                    <div class="alert alert-info" role="alert" invisible="partner_required == False">
-                        <strong>🏢 Portal User Company Assignment Required</strong>
-                        <br/>Portal users represent a specific customer company and can only access that company's data.
-                        You must select an existing customer company in the "Related Partner" field below.
-                        <br/><br/>
-                        <strong>How it works:</strong>
-                        <ul>
-                            <li>Portal user sees only their company's records (invoices, orders, documents, etc.)</li>
-                            <li>Company-based access control ensures data security</li>
-                            <li>User inherits permissions based on their assigned company</li>
-                        </ul>
-                        <em>💡 Tip: If the company doesn't exist, create it first in Contacts → Customers, then return here.</em>
-                    </div>
+                    </header>
                 </xpath>
-                <!-- Enhance partner_id field for portal users with proper domain and help text -->
-                <xpath expr="//field[@name='partner_id']" position="attributes">
-                    <attribute name="invisible">0</attribute>
-                    <attribute name="readonly">partner_required == False</attribute>
-                    <attribute name="force_save">1</attribute>
-                    <attribute name="domain">[('is_company', '=', True), ('customer_rank', '>', 0)]</attribute>
-                    <attribute name="context">{'search_default_is_company': 1, 'search_default_customer': 1, 'default_is_company': True}</attribute>
-                    <attribute name="help">🏢 Portal User Company Assignment: Select the customer company this user represents. This determines which records they can access through the portal. For internal users, this field is auto-managed.</attribute>
-                    <attribute name="placeholder">🔍 Search and select customer company...</attribute>
-                    <attribute name="options">{'no_create': True, 'no_create_edit': True, 'no_quick_create': True}</attribute>
-                    <attribute name="required">partner_required == True</attribute>
-                    <attribute name="string">Customer Company</attribute>
+
+                <!-- Add helper field to control info box visibility -->
+                <xpath expr="//form/sheet" position="inside">
+                    <field name="partner_required" invisible="1"/>
+                </xpath>
+
+                <!-- Add helpful Portal User Setup Information box -->
+                <xpath expr="//sheet//group[@name='preference']" position="before">
+                    <div class="alert alert-info" role="alert" invisible="partner_required == False">
+                        <strong>🏢 Portal User Setup (Customer Access)</strong>
+                        <br/><strong>User Type:</strong> Portal (Standard Odoo Portal User - proper licensing)
+                        <br/><strong>Access Level:</strong> Selected in header above
+                        <br/><br/>
+                        <strong>✅ Portal Access Levels:</strong>
+                        <ul>
+                            <li><strong>Company Admin:</strong> Full control over all company data, can delegate other users</li>
+                            <li><strong>Department Admin:</strong> Manage department data, can delegate department users</li>
+                            <li><strong>Department User:</strong> Perform business functions (requests, view inventory, feedback)</li>
+                            <li><strong>Read-Only:</strong> View-only access to assigned records</li>
+                        </ul>
+                        <strong>Required:</strong> Select customer company/contact in "Related Partner" field.
+                        <br/><em>💡 Tip: Company/Department Admins should be linked to the company record.</em>
+                    </div>
                 </xpath>
             </field>
         </record>

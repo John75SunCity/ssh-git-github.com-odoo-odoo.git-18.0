@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Portal Record Rules for Document Visibility -->
     <data>
+        <!-- Portal Record Rules for Document Visibility -->
         <record id="records_document_rule_portal" model="ir.rule">
             <field name="name">Records Document Portal Rule</field>
             <field name="model_id" ref="model_records_document"/>

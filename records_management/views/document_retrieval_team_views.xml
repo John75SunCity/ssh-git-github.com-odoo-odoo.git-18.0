@@ -45,7 +45,7 @@
                                 <list editable="bottom">
                                     <field name="name"/>
                                     <field name="address"/>
-                                    <field name="location_type"/>
+                                    <field name="usage"/>
                                     <field name="active"/>
                                 </list>
                             </field>

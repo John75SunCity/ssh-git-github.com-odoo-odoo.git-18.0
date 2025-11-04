@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Deprecated: legacy plural negotiated rates views removed in favor of unified 'customer.negotiated.rate' model/views.
-    File retained intentionally empty to avoid missing asset references during upgrades. -->
-<odoo/>
+<odoo>
+    <data>
+        <!-- Deprecated: legacy plural negotiated rates views removed in favor of unified 'customer.negotiated.rate' model/views.
+             File retained intentionally empty to avoid missing asset references during upgrades. -->
+    </data>
+</odoo>

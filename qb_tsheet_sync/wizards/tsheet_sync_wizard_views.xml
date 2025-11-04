@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <record id="tsheets_sync_wizard_view_form" model="ir.ui.view">
+    <field name="name">qb.tsheets.sync.wizard.view.form</field>
+    <field name="model">qb.tsheets.sync.wizard</field>
+    <field name="arch" type="xml">
+    <form string="Sync TSheets Timesheets">
+    <sheet>
+    <div class="alert alert-info" role="status">
+    <strong>Manual Sync (Optional)</strong><br/>
+    Set your date range and click <strong>Sync Now</strong> to fetch timesheets from TSheets.<br/>
+    Check <strong>Force Re-Sync</strong> to update timesheets that were already imported (useful for fixing errors).
+    </div>
+    <group>
+    <group>
+    <field name="config_id" widget="selection"/>
+    <field name="date_from"/>
+    <field name="date_to"/>
+    <field name="force_resync"/>
+    </group>
+    <group>
+    <div class="alert alert-warning" role="status" style="margin-top: 10px;">
+    <strong>Date Range Tips:</strong><br/>
+    • Default: Last 7 days<br/>
+    • Limit range to avoid timeouts<br/>
+    • Check Sync Logs for results<br/>
+    • Use Force Re-Sync to fix errors
+    </div>
+    </group>
+    </group>
+    </sheet>
+    <footer>
+    <button name="action_sync_now" type="object" string="Sync Now" class="btn-primary"/>
+    <button string="Close" class="btn-secondary" special="cancel"/>
+    </footer>
+    </form>
+    </field>
+    </record>
+    <record id="action_tsheets_sync_wizard" model="ir.actions.act_window">
+    <field name="name">Sync TSheets Now</field>
+    <field name="res_model">qb.tsheets.sync.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+    </record>
+    <!-- Add sync wizard under TSheets Sync menu -->
+    <menuitem id="menu_tsheets_sync_wizard"
+    name="Sync Now"
+    parent="qb_tsheet_sync.menu_tsheets_root"
+    action="action_tsheets_sync_wizard"
+    sequence="1"
+    groups="qb_tsheet_sync.group_tsheets_user,hr.group_hr_user,records_management.group_records_user"/>
+    </data>
+</odoo>

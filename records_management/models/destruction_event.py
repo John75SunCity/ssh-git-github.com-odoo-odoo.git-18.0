@@ -14,7 +14,7 @@ class DestructionEvent(models.Model):
     location_type = fields.Selection([
         ('onsite', 'On-Site'),
         ('offsite', 'Off-Site')
-    ], string='Location Type', required=True, tracking=True)
+    ], string='Destruction Location', required=True, tracking=True)
     shredded_items = fields.Text(string='Items Shredded', required=True, tracking=True)  # Description of what was shredded
     quantity = fields.Float(string='Quantity Destroyed', required=True, tracking=True)  # e.g., weight or count
     unit_of_measure = fields.Selection([

@@ -6,6 +6,71 @@ from odoo.http import request
 class ResUsers(models.Model):
     _inherit = 'res.users'
 
+    @api.model
+    def _assign_admin_groups(self):
+        """Automatically assign admin users to Records Admin and Settings groups
+        This runs during module upgrade to fix access lockouts
+        
+        CRITICAL: Uses sudo() to bypass access checks during upgrade
+        """
+        import logging
+        _logger = logging.getLogger(__name__)
+
+        try:
+            # Get the groups using sudo to bypass access restrictions
+            records_admin = self.env.ref('records_management.group_records_admin', raise_if_not_found=False)
+            settings_group = self.env.ref('base.group_system', raise_if_not_found=False)
+
+            if not records_admin:
+                _logger.warning("⚠️  Records Admin group not found - skipping admin assignment")
+                return False
+            if not settings_group:
+                _logger.warning("⚠️  Settings group not found - skipping admin assignment")
+                return False
+
+            # Find all admin users (login contains 'admin' or has id=1, id=2, or id=6)
+            # Use sudo() to search even if current user has no access
+            admin_users = self.sudo().search([
+                '|', '|', '|',
+                ('login', 'ilike', 'admin'),
+                ('id', '=', 1),
+                ('id', '=', 2),
+                ('id', '=', 6)  # John Cope - Records Admin
+            ])
+
+            _logger.info(f"🔧 Found {len(admin_users)} admin users to process: {admin_users.mapped('login')}")
+
+            # Add them to both groups - ONE group at a time to avoid user type conflicts
+            for user in admin_users:
+                try:
+                    groups_to_add = []
+
+                    # Only add if not already present
+                    if records_admin.id not in user.groups_id.ids:
+                        groups_to_add.append(records_admin.id)
+                        _logger.info(f"  Adding {user.login} to Records Admin group")
+
+                    if settings_group.id not in user.groups_id.ids:
+                        groups_to_add.append(settings_group.id)
+                        _logger.info(f"  Adding {user.login} to Settings group")
+
+                    # Add all groups in a single write to avoid multiple user type validations
+                    if groups_to_add:
+                        user.sudo().write({'groups_id': [(4, gid) for gid in groups_to_add]})
+                        _logger.info(f"✅ Successfully assigned groups to {user.login}")
+                    else:
+                        _logger.info(f"✅ User {user.login} already has all required groups")
+
+                except Exception as user_error:
+                    _logger.error(f"❌ Error assigning groups to user {user.login}: {user_error}")
+                    continue  # Continue with other users even if one fails
+
+            return True
+
+        except Exception as e:
+            _logger.error(f"❌ Critical error in _assign_admin_groups: {e}")
+            return False
+
     # ============================================================================
     # PORTAL ACCOUNT ACCESS FEATURE
     # ============================================================================
@@ -18,15 +83,21 @@ class ResUsers(models.Model):
 
     records_user_profile = fields.Selection(
         selection=[
-            ('records_admin', 'Records Admin'),
-            ('records_user', 'Records User'),
-            ('portal_company_admin', 'Portal Company Admin'),
-            ('portal_department_admin', 'Portal Department Admin'),
-            ('portal_user', 'Portal User'),
-            ('portal_read_only', 'Portal Read Only'),
+            ('records_admin', 'Internal: Records Admin'),
+            ('records_user', 'Internal: Records User'),
+            ('portal_company_admin', 'Portal: Company Admin (Full Control)'),
+            ('portal_department_admin', 'Portal: Department Admin (Can Delegate)'),
+            ('portal_user', 'Portal: Department User (Business Functions)'),
+            ('portal_read_only', 'Portal: Read-Only Employee (View Only)'),
         ],
-        string='Records Profile',
-        help="High-level role abstraction that automatically assigns the correct security groups for the Records Management module (internal + portal tiers).",
+        string='Records Management Access Level',
+        help="Portal users are standard Odoo Portal users with different access levels:\n"
+             "• Company Admin: Full control over all company data and users\n"
+             "• Department Admin: Can delegate users and manage department data\n"
+             "• Department User: Can perform business functions (requests, inventory)\n"
+             "• Read-Only: View-only access to assigned records\n\n"
+             "All portal options require selecting a Customer Company/Contact below.\n"
+             "Internal users have backend access with Records Management permissions.",
         default='records_user',
         # tracking removed: res.users may not inherit mail.thread in all editions / variants; parameter caused warnings
     )
@@ -38,6 +109,63 @@ class ResUsers(models.Model):
             user.partner_required = user.records_user_profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']
 
     partner_required = fields.Boolean(string='Partner Required', compute='_compute_partner_required', store=False)
+
+    # ============================================================================
+    # DEPARTMENT ACCESS CONTROL (Portal Users)
+    # ============================================================================
+    department_assignment_ids = fields.One2many(
+        'records.storage.department.user',
+        'user_id',
+        string='Department Assignments',
+        help='Departments this user has been assigned to with specific roles and permissions'
+    )
+    
+    accessible_department_ids = fields.Many2many(
+        'records.department',
+        compute='_compute_accessible_department_ids',
+        string='Accessible Departments',
+        help='All departments this user can access (includes assigned departments and their children)'
+    )
+    
+    @api.depends('department_assignment_ids', 'department_assignment_ids.department_id', 
+                 'department_assignment_ids.department_id.child_department_ids',
+                 'department_assignment_ids.state')
+    def _compute_accessible_department_ids(self):
+        """
+        Compute all departments user can access based on assignments.
+        Includes assigned departments AND all their child departments (hierarchical access).
+        """
+        for user in self:
+            accessible_depts = self.env['records.department']
+            
+            # Get active department assignments
+            active_assignments = user.department_assignment_ids.filtered(
+                lambda a: a.state == 'active' and a.active
+            )
+            
+            # For each assigned department, include it and all children
+            for assignment in active_assignments:
+                dept = assignment.department_id
+                accessible_depts |= dept
+                
+                # Add all child departments recursively
+                accessible_depts |= dept._get_all_children()
+            
+            user.accessible_department_ids = accessible_depts
+
+    @api.onchange('records_user_profile')
+    def _onchange_records_user_profile(self):
+        """Preview group assignment when user changes the profile in UI"""
+        if self.records_user_profile:
+            # Show a warning if portal profile but no partner
+            if self.records_user_profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
+                if not self.partner_id:
+                    return {
+                        'warning': {
+                            'title': _('Partner Required'),
+                            'message': _('Portal profiles require selecting a Related Partner (customer company/contact). Please select one before saving.')
+                        }
+                    }
 
     # Mapping constants (XML IDs) -> kept here for clarity & single-point maintenance
     _RM_INTERNAL_MAP = {
@@ -125,22 +253,41 @@ class ResUsers(models.Model):
             # Only validate if user is explicitly setting a portal profile
             # Skip validation for standard portal user creation (via portal wizard)
             if profile and profile in ['portal_company_admin', 'portal_department_admin', 'portal_user', 'portal_read_only']:
-                if not vals.get('partner_id'):
+                partner_id = vals.get('partner_id')
+                if not partner_id:
                     raise ValidationError(_(
-                        "Portal users must be assigned to an existing customer company. "
-                        "Please select a Related Partner from the dropdown list before saving."
+                        "Portal profiles require a Related Partner. Please select the customer contact or company before saving."
                     ))
-                # Verify the selected partner is a customer (not auto-created)
-                partner = self.env['res.partner'].browse(vals['partner_id'])
-                if partner and not partner.is_company:
-                    raise ValidationError(_(
-                        "Portal users must be assigned to a company partner, not an individual contact. "
-                        "Please select a company from the Related Partner dropdown."
-                    ))
+                partner = self.env['res.partner'].browse(partner_id)
+                # Allow individual contacts as long as their commercial parent is a company
+                if profile in ['portal_company_admin', 'portal_department_admin'] and partner:
+                    commercial_partner = partner.commercial_partner_id or partner
+                    if not commercial_partner.is_company:
+                        raise ValidationError(_(
+                            "Portal company or department administrators must be linked to a company or a contact under a company. "
+                            "The commercial parent partner must be a company record."
+                        ))
 
         records = super().create(vals_list)
         # Apply profile settings after creation, but only if profile was set
         for record in records:
+            if record.share:
+                # Automatically align portal user profiles to avoid user type conflicts
+                partner = record.partner_id
+                target_profile = record.records_user_profile if record.records_user_profile in self._RM_PORTAL_MAP else False
+
+                if not target_profile:
+                    if partner and partner.company_type == 'company':
+                        target_profile = 'portal_company_admin'
+                    else:
+                        target_profile = 'portal_user'
+
+                if record.records_user_profile != target_profile:
+                    record.sudo().write({'records_user_profile': target_profile})
+                else:
+                    record._apply_records_user_profile()
+                continue
+
             if record.records_user_profile:
                 record._apply_records_user_profile()
         return records
@@ -156,16 +303,17 @@ class ResUsers(models.Model):
                     partner_id = vals.get('partner_id', user.partner_id.id if user.partner_id else False)
                     if not partner_id:
                         raise ValidationError(_(
-                            "Portal users must be assigned to an existing customer company. "
-                            "Please select a Related Partner from the dropdown list before saving."
+                            "Portal profiles require a Related Partner. Please select the customer contact or company before saving."
                         ))
-                    # Verify the selected partner is a customer company
                     partner = self.env['res.partner'].browse(partner_id)
-                    if partner and not partner.is_company:
-                        raise ValidationError(_(
-                            "Portal users must be assigned to a company partner, not an individual contact. "
-                            "Please select a company from the Related Partner dropdown."
-                        ))
+                    # Allow individual contacts as long as their commercial parent is a company
+                    if profile in ['portal_company_admin', 'portal_department_admin'] and partner:
+                        commercial_partner = partner.commercial_partner_id or partner
+                        if not commercial_partner.is_company:
+                            raise ValidationError(_(
+                                "Portal company or department administrators must be linked to a company or a contact under a company. "
+                                "The commercial parent partner must be a company record."
+                            ))
 
         res = super().write(vals)
         # Only apply if our custom profile was explicitly changed

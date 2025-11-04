@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
 <!-- List view for advanced.billing.contact -->
     <record id="advanced_billing_contact_view_tree" model="ir.ui.view">
         <field name="name">advanced.billing.contact.view.tree</field>

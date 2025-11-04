@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <data>
     <template id="portal_centralized_docs" name="Document Center">
         <t t-call="portal.portal_layout">
             <t t-set="title">Document Center</t>
@@ -906,4 +907,5 @@
             </div> <!-- End legacy-document-interface -->
         </t>
     </template>
+    </data>
 </odoo>

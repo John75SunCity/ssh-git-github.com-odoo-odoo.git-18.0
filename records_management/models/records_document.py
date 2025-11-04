@@ -57,7 +57,16 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Document Name", required=True, tracking=True)
+    name = fields.Char(
+        string="Document Name/Description",
+        required=True,
+        tracking=True,
+        help="Customer's description of this document. Examples:\n"
+             "- 'Employment Contract - John Doe'\n"
+             "- 'Medical Record - Patient #12345'\n"
+             "- 'Invoice #INV-2024-001'\n"
+             "Customer uses their own naming system."
+    )
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
@@ -65,17 +74,26 @@ class RecordsDocument(models.Model):
     reference = fields.Char(string="Reference / Barcode", copy=False, tracking=True)
     # Temporary file barcode (distinct from physical barcode). Assigned automatically if absent.
     temp_barcode = fields.Char(
-        string="Temporary File Barcode",
+        string="Temporary Document Barcode",
         copy=False,
         index=True,
         tracking=True,
-        help="System-generated temporary barcode (prefix TF) used before any permanent document barcode is applied."
+        help="System-generated temporary barcode used before physical barcode from pre-printed sheet is assigned."
     )
 
     # ============================================================================
-    # ODOO NATIVE BARCODE FIELD
+    # PHYSICAL BARCODE (Manual Assignment from Pre-Printed Sheets)
     # ============================================================================
-    barcode = fields.Char(string="Barcode", help="Document barcode for scanning", tracking=True)
+    barcode = fields.Char(
+        string="Physical Barcode",
+        copy=False,
+        index=True,
+        tracking=True,
+        help="Pre-printed barcode from sheet, assigned when document removed from file for scanning/delivery.\n"
+             "NOT auto-generated - manually assigned from physical barcode sheets.\n"
+             "Scanning displays: document name, file, container, customer, location, scan history.\n"
+             "Only assigned when document needs independent tracking (e.g., sent for scanning)."
+    )
     barcode_image = fields.Binary(
         string="Barcode Image",
         compute="_compute_barcode_image",
@@ -96,6 +114,21 @@ class RecordsDocument(models.Model):
         tracking=True,
     )
     container_id = fields.Many2one(comodel_name="records.container", string="Container", tracking=True)
+    
+    # ============================================================================
+    # HIERARCHICAL FILE FOLDER RELATIONSHIP
+    # ============================================================================
+    file_id = fields.Many2one(
+        comodel_name="records.file",
+        string="File Folder",
+        tracking=True,
+        help="File folder this document belongs to. Files can contain multiple documents "
+             "and can be removed from containers for delivery/retrieval."
+    )
+    
+    # ============================================================================
+    # STOCK INTEGRATION (Hierarchical Inventory)
+    # ============================================================================
     location_id = fields.Many2one(related='container_id.location_id', string="Location", store=True, readonly=True, comodel_name='stock.location')
     document_type_id = fields.Many2one(comodel_name="records.document.type", string="Document Type", tracking=True)
     lot_id = fields.Many2one(
@@ -103,6 +136,29 @@ class RecordsDocument(models.Model):
         string="Stock Lot",
         tracking=True,
         help="Lot/Serial number associated with this document.",
+    )
+    quant_id = fields.Many2one(
+        comodel_name="stock.quant",
+        string="Inventory Quant",
+        tracking=True,
+        ondelete='restrict',
+        help="Stock quantity record for this individual document when removed from file. "
+             "Tracks document-level movements (e.g., removed for scanning, delivery). "
+             "Most documents won't have quant_id - only when tracked independently."
+    )
+    
+    owner_id = fields.Many2one(
+        related='quant_id.owner_id',
+        string="Owner (Customer)",
+        store=True,
+        help="Customer who owns this document (from inventory tracking)"
+    )
+    
+    parent_quant_id = fields.Many2one(
+        related='quant_id.parent_quant_id',
+        string="Parent Item (File/Container)",
+        store=True,
+        help="File or container this document came from (for return tracking)"
     )
     temp_inventory_id = fields.Many2one(comodel_name="temp.inventory", string="Temporary Inventory")
     retention_policy_id = fields.Many2one(

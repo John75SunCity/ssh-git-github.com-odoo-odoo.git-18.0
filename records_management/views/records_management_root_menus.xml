@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
 <!-- Root + primary level menus loaded early to satisfy parent references in subsequent view files -->
 
         <!-- Default dashboard action for Records Management root menu -->

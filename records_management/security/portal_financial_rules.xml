@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Portal Record Rules for Financial/Rate Models -->
     <data>
+        <!-- Portal Record Rules for Financial/Rate Models -->
         <record id="customer_negotiated_rate_rule_portal" model="ir.rule">
             <field name="name">Customer Negotiated Rate Portal Rule</field>
             <field name="model_id" ref="model_customer_negotiated_rate"/>

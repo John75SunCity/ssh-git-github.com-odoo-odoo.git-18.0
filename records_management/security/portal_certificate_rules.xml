@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Portal Record Rules for Destruction Certificates
-         Restricts visibility to customer commercial partner/company and only portal_visible certificates.
-    -->
     <data>
+        <!-- Portal Record Rules for Destruction Certificates
+             Restricts visibility to customer commercial partner/company and only portal_visible certificates.
+        -->
         <record id="destruction_certificate_rule_portal" model="ir.rule">
             <field name="name">Destruction Certificate Portal Rule</field>
             <field name="model_id" ref="model_destruction_certificate"/>

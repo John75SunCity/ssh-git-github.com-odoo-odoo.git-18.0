@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Feedback Form Template -->
+        <template id="feedback_form_template" name="Feedback Form">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Submit Feedback</t>
+                
+                <div class="o_portal_feedback_form">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-comments"></i>
+                                Share Your Feedback
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="/my/feedback">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" name="name" id="name" class="form-control" required="required"/>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="rating">Rating</label>
+                                    <select name="rating" id="rating" class="form-control" required="required">
+                                        <option value="">Select Rating...</option>
+                                        <option value="5">5 - Excellent</option>
+                                        <option value="4">4 - Very Good</option>
+                                        <option value="3">3 - Good</option>
+                                        <option value="2">2 - Fair</option>
+                                        <option value="1">1 - Poor</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="comments">Comments</label>
+                                    <textarea name="comments" id="comments" class="form-control" rows="5" required="required"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-paper-plane"></i> Submit Feedback
+                                    </button>
+                                    <a href="/my" class="btn btn-secondary">
+                                        <i class="fa fa-times"></i> Cancel
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Container Detail Template -->
+        <template id="container_detail" name="Container Detail">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Container Details</t>
+                
+                <div class="o_portal_container_detail">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-box"></i>
+                                Container: <span t-esc="container.name"/>
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <dl class="row">
+                                        <dt class="col-sm-4">Barcode:</dt>
+                                        <dd class="col-sm-8" t-esc="container.barcode or 'N/A'"/>
+                                        
+                                        <dt class="col-sm-4">Type:</dt>
+                                        <dd class="col-sm-8" t-esc="container.container_type_id.name if container.container_type_id else 'N/A'"/>
+                                        
+                                        <dt class="col-sm-4">Location:</dt>
+                                        <dd class="col-sm-8" t-esc="container.location_id.name if container.location_id else 'N/A'"/>
+                                        
+                                        <dt class="col-sm-4">Status:</dt>
+                                        <dd class="col-sm-8">
+                                            <span t-if="container.state == 'active'" class="badge badge-success">Active</span>
+                                            <span t-if="container.state == 'archived'" class="badge badge-warning">Archived</span>
+                                            <span t-if="container.state == 'destroyed'" class="badge badge-danger">Destroyed</span>
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Description</h5>
+                                    <p t-esc="container.description or 'No description available'"/>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <a href="/my/containers" class="btn btn-secondary">
+                                    <i class="fa fa-arrow-left"></i> Back to Containers
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Location Detail Template -->
+        <template id="location_detail" name="Location Detail">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Location Details</t>
+                
+                <div class="o_portal_location_detail">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-map-marker-alt"></i>
+                                Location: <span t-esc="location.name"/>
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <dl class="row">
+                                        <dt class="col-sm-4">Complete Name:</dt>
+                                        <dd class="col-sm-8" t-esc="location.complete_name"/>
+                                        
+                                        <dt class="col-sm-4">Usage:</dt>
+                                        <dd class="col-sm-8" t-esc="location.usage"/>
+                                        
+                                        <dt class="col-sm-4">Capacity:</dt>
+                                        <dd class="col-sm-8" t-esc="location.max_capacity or 'Unlimited'"/>
+                                    </dl>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <a href="/records/dashboard" class="btn btn-secondary">
+                                    <i class="fa fa-arrow-left"></i> Back to Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Error Page Template -->
+        <template id="error_page" name="Error Page">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Error</t>
+                
+                <div class="o_portal_error_page">
+                    <div class="card border-danger">
+                        <div class="card-header bg-danger text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-exclamation-triangle"></i>
+                                Error Occurred
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="alert alert-danger">
+                                <strong>Error:</strong> <span t-esc="error_message"/>
+                            </p>
+                            
+                            <div class="mt-3">
+                                <a href="/my" class="btn btn-primary">
+                                    <i class="fa fa-home"></i> Return to Portal Home
+                                </a>
+                                <a href="javascript:history.back()" class="btn btn-secondary">
+                                    <i class="fa fa-arrow-left"></i> Go Back
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Portal My Containers Template -->
+        <template id="portal_my_containers" name="My Containers">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-set="title">My Containers</t>
+                
+                <div class="o_portal_my_containers">
+                    <!-- Success Message -->
+                    <t t-if="request.params.get('created')">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fa fa-check-circle"></i>
+                            <strong>Success!</strong> Container created with temporary barcode and added to your inventory.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&amp;times;</span>
+                            </button>
+                        </div>
+                    </t>
+                    
+                    <div class="card">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">
+                                <i class="fa fa-boxes"></i>
+                                Container Management
+                            </h3>
+                            <a href="/my/containers/new" class="btn btn-light btn-sm">
+                                <i class="fa fa-plus-circle"></i> Add New Container
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <t t-if="not containers">
+                                <div class="alert alert-info text-center py-5">
+                                    <i class="fa fa-inbox fa-3x mb-3 text-muted"></i>
+                                    <h4>No Containers Found</h4>
+                                    <p class="mb-3">You don't have any containers yet.</p>
+                                    <a href="/my/containers/new" class="btn btn-primary">
+                                        <i class="fa fa-plus-circle"></i> Add Your First Container
+                                    </a>
+                                </div>
+                            </t>
+                            
+                            <t t-if="containers">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Container #</th>
+                                                <th>Type</th>
+                                                <th>Location</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="containers" t-as="container">
+                                                <tr>
+                                                    <td><strong t-esc="container.name"/></td>
+                                                    <td t-esc="container.container_type_id.name if container.container_type_id else 'N/A'"/>
+                                                    <td t-esc="container.location_id.name if container.location_id else 'N/A'"/>
+                                                    <td>
+                                                        <span t-if="container.state == 'active'" class="badge badge-success">Active</span>
+                                                        <span t-if="container.state == 'archived'" class="badge badge-warning">Archived</span>
+                                                        <span t-if="container.state == 'destroyed'" class="badge badge-danger">Destroyed</span>
+                                                    </td>
+                                                    <td>
+                                                        <a t-attf-href="/records/container/#{container.id}" class="btn btn-sm btn-primary">
+                                                            <i class="fa fa-eye"></i> View
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Pagination -->
+                                <t t-if="pager">
+                                    <t t-call="portal.pager"/>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Enhanced Dashboard Template -->
+        <template id="enhanced_dashboard" name="Enhanced Dashboard">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Dashboard</t>
+                
+                <div class="o_portal_dashboard">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card border-primary">
+                                <div class="card-body text-center">
+                                    <h5 class="text-primary"><i class="fa fa-boxes"></i></h5>
+                                    <h4 t-esc="total_containers or 0"/>
+                                    <small class="text-muted">Total Containers</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-success">
+                                <div class="card-body text-center">
+                                    <h5 class="text-success"><i class="fa fa-file-alt"></i></h5>
+                                    <h4 t-esc="total_documents or 0"/>
+                                    <small class="text-muted">Total Documents</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-warning">
+                                <div class="card-body text-center">
+                                    <h5 class="text-warning"><i class="fa fa-clipboard-list"></i></h5>
+                                    <h4 t-esc="pending_requests or 0"/>
+                                    <small class="text-muted">Pending Requests</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-info">
+                                <div class="card-body text-center">
+                                    <h5 class="text-info"><i class="fa fa-map-marker-alt"></i></h5>
+                                    <h4 t-esc="total_locations or 0"/>
+                                    <small class="text-muted">Locations</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Analytics Dashboard Template -->
+        <template id="analytics_dashboard" name="Analytics Dashboard">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Analytics</t>
+                
+                <div class="o_portal_analytics">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-chart-bar"></i>
+                                Analytics Dashboard
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Analytics data will be displayed here.</p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Container Summary Report Template -->
+        <template id="container_summary_report" name="Container Summary Report">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Container Summary Report</t>
+                
+                <div class="o_portal_container_summary">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-file-pdf"></i>
+                                Container Summary Report
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Container summary report data will be displayed here.</p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

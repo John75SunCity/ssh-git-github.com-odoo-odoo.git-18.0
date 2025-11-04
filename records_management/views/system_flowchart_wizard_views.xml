@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-    
 <record id="system_flowchart_wizard_view_form" model="ir.ui.view">
         <field name="name">system.flowchart.wizard.view.form</field>
         <field name="model">system.flowchart.wizard</field>
@@ -20,10 +19,30 @@
     <i class='fa fa-sitemap text-primary me-2'/>
 System Architecture Flowchart</h1>
 <p class="lead text-muted">Interactive visualization of your Records Management System</p>
+<div class="alert alert-info text-start mt-4" role="status">
+    <h4><i class="fa fa-info-circle me-2"/>How It Works</h4>
+    <p><strong>Automatic Configuration:</strong> The flowchart automatically pulls data from your system including:</p>
+    <ul>
+        <li><i class="fa fa-check text-success"/> Active models and workflows</li>
+        <li><i class="fa fa-check text-success"/> User roles and access permissions</li>
+        <li><i class="fa fa-check text-success"/> Portal integrations</li>
+        <li><i class="fa fa-check text-success"/> System relationships and data flows</li>
+    </ul>
+    <p><strong>Customization Options:</strong> You can customize the visualization style in the next step, but all data is pre-configured and ready to use.</p>
+    <p class="mb-0"><strong>No Setup Required:</strong> Click "Next" to proceed with automatic configuration or customize display options.</p>
 </div>
-        <div invisible="step != 'configure'">
-<h2>Configuration Options</h2>
-<p class="text-muted">Customize your flowchart visualization</p>
+                </div>
+                <div invisible="step != 'configure'">
+                    <h2>Configuration Options</h2>
+                    <p class="text-muted">Customize your flowchart visualization (data is automatically pulled from your system)</p>
+                    <div class="alert alert-secondary mb-3" role="status">
+    <p class="mb-2"><strong><i class="fa fa-magic me-1"/>Display Settings:</strong></p>
+    <ul class="mb-0">
+        <li><strong>Search Scenario:</strong> Choose which part of the system to visualize (Overview, Workflows, Security, Portal Integration, etc.)</li>
+        <li><strong>Layout Style:</strong> How the diagram is arranged (Hierarchical, Flow-based, Network, Circular)</li>
+        <li><strong>Color Scheme:</strong> Visual theme (Professional, Vibrant, Monochrome, High Contrast)</li>
+    </ul>
+</div>
         <group>
         <field name="search_scenario"/>
         <field name="layout_style"/>
@@ -57,9 +76,9 @@ Ready to Launch!
         <field name="view_id" ref="system_flowchart_wizard_view_form"/>
         <field name="context">{
                             'default_step': 'welcome',
-                            'default_search_scenario': 'system_overview',
+                            'default_search_scenario': 'overview',
                             'default_layout_style': 'hierarchical',
-                            'default_color_scheme': 'professional',
+                            'default_color_scheme': 'default',
                             'default_export_format': 'png'
                     }</field>
     </record>
@@ -67,6 +86,6 @@ Ready to Launch!
     <!-- System Flowchart moved to Configuration menu -->
     <menuitem id="system_flowchart_wizard_menu" name="System Flowchart" parent="menu_records_configuration" action="system_flowchart_wizard_action" sequence="60" groups="records_management.group_records_manager"/>
 
-    
+
     </data>
 </odoo>

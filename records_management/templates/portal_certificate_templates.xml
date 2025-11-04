@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <data>
     <template id="portal_certificate_detail" name="Certificate of Destruction">
         <t t-call="portal.portal_layout">
             <t t-set="title">Certificate of Destruction</t>
@@ -93,4 +94,5 @@
             </div>
         </t>
     </template>
+    </data>
 </odoo>

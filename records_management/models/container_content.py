@@ -52,7 +52,7 @@ class ContainerContent(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
-        ('stored', 'In Storage'),
+        ('in_storage', 'In Storage'),
         ('retrieved', 'Retrieved'),
         ('destroyed', 'Destroyed')
     ], string='Status', default='draft', required=True, tracking=True)
@@ -161,7 +161,7 @@ class ContainerContent(models.Model):
         if self.state not in ['confirmed', 'draft']:
             raise UserError(_("Cannot store content in its current state."))
         self.write({
-            'state': 'stored',
+            'state': 'in_storage',
             'date_stored': fields.Datetime.now()
         })
         self.message_post(body=_("Content stored in container %s.", self.container_id.name))
@@ -169,7 +169,7 @@ class ContainerContent(models.Model):
     def action_retrieve(self):
         """Mark content as retrieved."""
         self.ensure_one()
-        if self.state != 'stored':
+        if self.state != 'in_storage':
             raise UserError(_("Only stored content can be retrieved."))
         self.write({
             'state': 'retrieved',
@@ -203,5 +203,5 @@ class ContainerContent(models.Model):
         """Find all content items that are past their retention date."""
         return self.search([
             ('is_overdue', '=', True),
-            ('state', '=', 'stored')
+            ('state', '=', 'in_storage')
         ])

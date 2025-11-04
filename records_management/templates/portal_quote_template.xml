@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Portal Quote PDF Template -->
-    <template id="portal_quote_pdf">
+    <data>
+        <!-- Portal Quote PDF Template -->
+        <template id="portal_quote_pdf">
         <t t-call="web.external_layout">
             <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
             <div class="page">
@@ -415,4 +416,5 @@
         paperformat="base.paperformat_us"
     />
 
+    </data>
 </odoo>

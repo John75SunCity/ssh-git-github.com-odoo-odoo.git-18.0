@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
         <!-- Portal Certifications Page -->
         <template id="portal_certifications" name="Portal Certifications">
             <t t-call="portal.portal_layout">
@@ -246,4 +247,5 @@
                 </div>
             </t>
         </template>
+    </data>
     </odoo>

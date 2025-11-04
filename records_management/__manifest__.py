@@ -1,7 +1,9 @@
 {
     "name": "Records Management - Enterprise Edition",
-    # Version updated for Odoo 19 compatibility and modernization
-    'version': '18.0.1.0.0',  # Updated for Odoo 18.0 compatibility - enterprise records management with full compatibility
+    # Version for Odoo 18 (19 not publicly available yet)
+        'name': 'Records Management System',
+    'version': '18.0.0.2.29',
+    'category': 'Productivity/Records',
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
@@ -64,6 +66,7 @@
         "security/portal_document_rules.xml",    # New: documents portal scoping
         "security/portal_financial_rules.xml",   # New: financial/negotiated rates portal scoping
         "security/portal_certificate_rules.xml", # New: destruction certificate portal scoping
+        "security/portal_temp_inventory_rules.xml", # New: temp inventory portal scoping (customer isolation)
         "security/ir.model.access.csv",
         # Google Maps API configuration (loads API key for map widgets)
         "views/google_maps_assets.xml",
@@ -82,6 +85,9 @@
         "data/container_types_base_rates.xml",
         "data/naid_certificate_data.xml",
         "data/paper_products_data.xml",
+        # Portal website menus (must load BEFORE configurator data references them)
+        "data/website_portal_menus.xml",
+        "data/core_configurator_data.xml",
         "data/paper_shred_configurator_data.xml",
         "data/document_retrieval_rates_data.xml",
         "data/products_data.xml",
@@ -105,6 +111,7 @@
         "report/naid_certificate_reports.xml",
         "report/report_records_management_report_customer_inventory_report.xml",
         # Wizard/action definitions needed by menus must load first
+        "views/container_quick_add_wizard_views.xml",
         "views/field_label_helper_wizard_views.xml",
         # Actions referenced by menus (ensure before menus)
         "views/records_digital_scan_views.xml",
@@ -130,9 +137,58 @@
         "data/scheduled_actions_data.xml",
         "data/field_label_customization_batch_data.xml",
         "data/temp_inventory_configurator_data.xml",
-        # Menus must load before wizard views that reference them
+    "data/portal_configurator_data.xml",
+        # Wizard actions must load before views that reference them
+        "views/records_container_assign_barcode_wizard_views.xml",
+        # Actions must load before menus that reference them
+        "views/records_container_views.xml",
+        "views/records_document_views.xml",
+        "views/shredding_service_views.xml",
+        "views/shredding_service_bin_views.xml",
+        "views/paper_model_bale_views.xml",
+        "views/shred_model_bin_views.xml",
+        "views/records_destruction_views.xml",
+        "views/stock_lot_views.xml",
+        "views/work_order_coordinator_views.xml",
+        "views/workflow_visualization_manager_views.xml",
+        "views/portal_request_views.xml",
+        "views/customer_feedback_views.xml",
+        "views/customer_inventory_views.xml",
+        "views/inventory_item_views.xml",
+        "views/chain_of_custody_views.xml",
+        "views/records_department_views.xml",
+        "views/records_location_views.xml",
+        "views/records_document_type_views.xml",
+        "views/records_tag_views.xml",
+        "views/base_rate_views.xml",
+        "views/customer_negotiated_rate_views.xml",
+        "views/destruction_event_views.xml",
+        "views/destruction_certificate_views.xml",
+        "views/res_partner_views.xml",
+        "views/advanced_billing_profile_views.xml",
+        "views/records_audit_log_views.xml",
+        "views/service_item_views.xml",  # Must load before revenue_forecast_line_views (references action_service_item_fsm_integration)
+        "views/document_retrieval_metrics_views.xml",  # Must load before revenue_forecast_line_views (references action_document_retrieval_metrics)
+        "views/payment_split_line_views.xml",  # Must load before revenue_forecast_line_views (references action_payment_split_line)
+        "views/shredding_service_photo_views.xml",  # Must load before revenue_forecast_line_views (references action_shredding_service_photo)
+        "views/revenue_forecast_line_views.xml",
+        # ============================================================================
+        # CRITICAL: Action views MUST load before menus that reference them
+        # ============================================================================
+        "views/portal_feedback_analytic_views.xml",  # defines action_feedback_analytics
+        "views/report_window_actions_views.xml",  # defines action_storage_reports, action_compliance_reports
+        "views/customer_inventory_report_views.xml",  # defines customer_inventory_report_action
+        "views/bin_unlock_service_views.xml",  # defines action_bin_key_management
+        "views/bin_key_views.xml",  # defines action_bin_key
+        "views/res_partner_key_restriction_views.xml",  # defines action_res_partner_key_restriction
+        "views/records_billing_views.xml",  # defines records_billing_action
+        "views/barcode_seasonal_pricing_views.xml",  # defines barcode_seasonal_pricing_action
+        "views/product_template_views.xml",  # defines action for product templates
+        "views/transitory_field_config_views.xml",  # defines transitory field config action
+        # ============================================================================
+        # Menus can now safely reference all actions defined above
+        # ============================================================================
         "views/records_management_menus.xml",
-        "views/report_window_actions_views.xml",
         "views/bin_issue_report_wizard_views.xml",
         "views/customer_inventory_report_wizard_views.xml",
         "views/hard_drive_scan_wizard_views.xml",
@@ -152,31 +208,17 @@
         "views/records_user_invitation_wizard_views.xml",
         "views/shredding_bin_barcode_wizard_views.xml",
         "views/system_flowchart_wizard_views.xml",
+        "views/system_diagram_data_views.xml",
         "views/temp_inventory_reject_wizard_views.xml",
         "views/visitor_pos_wizard_views.xml",
         "views/work_order_bin_assignment_wizard_views.xml",
-    "views/records_container_assign_barcode_wizard_views.xml",
-    # Key restriction + Bin Unlock Service actions must load before menus
-    "views/bin_unlock_service_views.xml",
         "views/advanced_billing_contact_views.xml",
-        "views/advanced_billing_profile_views.xml",
         "views/approval_history_views.xml",
         # Ensure negotiated rate action loads before menus in base_rate_views.xml
-        "views/customer_negotiated_rate_views.xml",
-        "views/base_rate_views.xml",
         "views/billing_period_views.xml",
         "views/bin_barcode_inventory_views.xml",
-        "views/chain_of_custody_views.xml",
         "views/container_retrieval_views.xml",
         "views/custody_transfer_event_views.xml",
-        "views/customer_feedback_views.xml",
-    "views/customer_inventory_report_views.xml",
-    # Ensure customer inventory action loads before menus reference it
-    "views/customer_inventory_views.xml",
-    # Ensure destruction event action loads before certificate referencing it
-    "views/destruction_event_views.xml",
-        "views/destruction_certificate_views.xml",
-        "views/records_work_vehicle_views.xml",
         "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_destruction_views.xml",
         "views/inventory_item_location_transfer_views.xml",
@@ -192,14 +234,11 @@
         "views/paper_bale_recycling_views.xml",
         "views/paper_bale_views.xml",
         "views/paper_load_shipment_views.xml",
-        "views/paper_model_bale_views.xml",
         "views/payment_split_views.xml",
-        "views/payment_split_line_views.xml",
         "views/pickup_route_views.xml",
         "views/portal_feedback_views.xml",
         "views/portal_request_line_views.xml",
         "views/records_approval_workflow_views.xml",
-        "views/records_audit_log_views.xml",
         "views/records_bulk_user_import_views.xml",
         "views/records_category_views.xml",
         "views/records_center_location_views.xml",
@@ -212,19 +251,14 @@
         "views/records_deletion_request_enhanced_views.xml",
         "views/records_department_billing_approval_views.xml",
         "views/records_department_billing_contact_views.xml",
-        "views/records_department_views.xml",
         "views/records_destruction_job_views.xml",
         "views/records_destruction_line_views.xml",
-        "views/records_destruction_views.xml",
-        "views/records_document_type_views.xml",
-        "views/records_document_views.xml",
     "views/records_document_bulk_upload_views.xml",
         "views/records_document_field_label_helper_views.xml",
         "views/records_installer_views.xml",
         "views/records_inventory_dashboard_views.xml",
         "views/records_location_inspection_line_views.xml",
         "views/records_location_inspection_views.xml",
-        "views/records_location_views.xml",
         "views/records_management_bale_views.xml",
         "views/records_policy_version_views.xml",
         "views/records_promotional_discount_views.xml",
@@ -240,54 +274,39 @@
         "views/records_storage_department_user_views.xml",
         "views/records_survey_user_input_views.xml",
         "views/records_tag_category_views.xml",
-        "views/records_tag_views.xml",
         "views/records_usage_tracking_views.xml",
         "views/revenue_analytic_views.xml",
-        "views/service_item_views.xml",
-        "views/shredding_service_photo_views.xml",
-        "views/document_retrieval_metrics_views.xml",
-        "views/revenue_forecast_line_views.xml",
         "views/revenue_forecast_views.xml",
         "views/revenue_forecaster_views.xml",
         "views/rm_module_configurator_views.xml",
-        "views/shred_model_bin_views.xml",
         "views/shredding_certificate_views.xml",
         "views/shredding_hard_drive_views.xml",
         "views/shredding_inventory_batch_views.xml",
-        "views/shredding_service_bin_views.xml",
         "views/shredding_service_event_views.xml",
-        "views/shredding_service_views.xml",
         "views/shredding_team_views.xml",
-        "views/stock_lot_views.xml",
         "views/survey_feedback_theme_views.xml",
         "views/survey_improvement_action_views.xml",
         "views/temp_inventory_views.xml",
-        "views/work_order_coordinator_views.xml",
-        "views/workflow_visualization_manager_views.xml",
-        "views/records_container_views.xml",
         "views/records_container_field_label_helper_views.xml",
         "views/records_billing_config_views.xml",
-        "views/portal_request_views.xml",
-        # Ensure bin key action is defined before menus reference it
-        "views/bin_key_views.xml",
-        # Ensure feedback analytics action loads before menus referencing it
-        "views/portal_feedback_analytic_views.xml",
-        # Ensure inventory item action is defined before menus referencing it
-        "views/inventory_item_views.xml",
-        # Ensure res partner key restriction action is defined before menus reference it
-        "views/res_partner_key_restriction_views.xml",
     # User profile selector (Records Management role abstraction)
     "views/res_users_records_profile_views.xml",
-
         # Additional menus split by domain (loaded after main menu structure)
         "views/service_item_menus.xml",
         "views/document_retrieval_menus.xml",
         # Ensure retrieval work order action is defined before its menu references it
         "views/records_retrieval_work_order_views.xml",
     "views/records_retrieval_work_order_menus.xml",
+        "templates/portal_home_preconfigured.xml",
         "templates/portal_certifications.xml",
         "templates/portal_certificate_templates.xml",
+        "templates/portal_certificates_documents.xml",
         "templates/portal_inventory_template.xml",
+        "templates/portal_requests_template.xml",
+        "templates/portal_pickup_request_create.xml",
+        "templates/portal_destruction_request_create.xml",
+        "templates/portal_missing_templates.xml",
+        "templates/portal_container_create.xml",
     "templates/portal_barcode_row.xml",
     "templates/portal_document_bulk_upload.xml",
         "templates/portal_mobile_export.xml",
@@ -305,6 +324,7 @@
         "demo/naid_demo_certificates.xml",
         "demo/records_config_mail_templates_data.xml"
     ],
+    "pre_init_hook": "pre_init_hook",
     "post_init_hook": "post_init_hook",
     "assets": {
         "web.assets_backend": [
@@ -318,9 +338,11 @@
             "records_management/static/src/js/paper_load_truck_widget.js",
             "records_management/static/src/js/trailer_visualization.js",
             "records_management/static/src/js/truck_widget.js",
+            "records_management/static/src/js/system_flowchart_view.js",
             "records_management/static/src/xml/map_widget.xml",
             "records_management/static/src/xml/trailer_visualization.xml",
             "records_management/static/src/xml/intelligent_search_templates.xml",
+            "records_management/static/src/xml/system_flowchart_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
             # Heavy visualization assets (vis-network + flowchart templates) moved to separate optional bundle
         ],
@@ -331,8 +353,6 @@
             "records_management/static/src/js/visualization_dynamic_loader.js",
             # Local placeholder CSS (unminified real library recommended for production replacement)
             "records_management/static/src/lib/vis/vis-network.css",
-            "records_management/static/src/js/system_flowchart_view.js",
-            "records_management/static/src/xml/system_flowchart_templates.xml",
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
         "web.assets_frontend": [
@@ -376,5 +396,4 @@
     "images": [
         "static/description/icon.png"
     ],
-    "post_init_hook": "post_init_hook"
 }

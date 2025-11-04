@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Portal Record Rules for Container Visibility
-         Limits portal hierarchy groups to containers belonging to their commercial partner or company.
-         Follows two-prong safety: partner commercial root OR company, avoiding cross-company leakage.
-    -->
     <data>
+        <!-- Portal Record Rules for Container Visibility
+             Portal users can see containers based on FOUR criteria:
+             1. Commercial partner match (partner_id.commercial_partner_id)
+             2. Company match (company_id)
+             3. Direct stock owner match (stock_owner_id = user's partner)
+             4. Department assignment via user → department → department.partner_id → stock_owner_id
+             
+             This allows:
+             - Portal users to see their company's containers
+             - Department users to see their specific department's inventory
+             - Hierarchical visibility: Company → Department → Child Department
+        -->
         <record id="records_container_rule_portal" model="ir.rule">
             <field name="name">Records Container Portal Rule</field>
             <field name="model_id" ref="model_records_container"/>
             <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin')), (4, ref('records_management.group_portal_department_admin')), (4, ref('records_management.group_portal_department_user')), (4, ref('records_management.group_portal_readonly_employee'))]"/>
-            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+            <field name="domain_force">['|', '|', '|',
+                ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id),
+                ('company_id', '=', user.company_id.id),
+                ('stock_owner_id', '=', user.partner_id.id),
+                ('stock_owner_id', 'in', user.department_assignment_ids.mapped('department_id.partner_id').ids)
+            ]</field>
         </record>
 
         <!-- Container Movement inherits customer via related partner_id (stored) -->

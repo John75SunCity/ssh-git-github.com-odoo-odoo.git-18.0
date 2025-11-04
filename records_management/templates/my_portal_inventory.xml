@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
         <!-- Enhanced Portal Navigation with Feedback and Centralized Documents -->
         <template id="portal_my_home_inventory" name="Portal My Home : Inventory" inherit_id="portal.portal_my_home" priority="40">
             <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
@@ -632,4 +633,5 @@
                 </div>
             </t>
         </template>
+    </data>
     </odoo>

@@ -5,9 +5,9 @@
             <field name="name">records.location.view.kanban</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
-                <kanban default_group_by="location_type" class="o_kanban_location_dashboard">
+                <kanban default_group_by="usage" class="o_kanban_location_dashboard">
                     <field name="name" />
-                    <field name="location_type" />
+                    <field name="usage" />
                     <field name="storage_capacity" />
                     <field name="active" />
                     <templates>
@@ -22,7 +22,7 @@
                                         </div>
                                         <div class="o_secondary">
                                             <i class="fa fa-building-o" title="Location Type" />
-                                            <field name="location_type" />
+                                            <field name="usage" />
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
@@ -83,8 +83,8 @@
             <field name="arch" type="xml">
                 <list>
                     <field name="name" string="Location Name" />
-                    <field name="parent_location_id" optional="show"/>
-                    <field name="location_type" string="Type" />
+                    <field name="location_id" string="Parent Location" optional="show"/>
+                    <field name="usage" string="Type" />
                     <field name="storage_capacity" string="Capacity" />
                     <field name="active" string="Active" />
                     <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link" />
@@ -96,10 +96,11 @@
             <field name="name">records.location.view.hierarchy</field>
             <field name="model">records.location</field>
             <field name="arch" type="xml">
-                <!-- Removed unsupported attribute default_expand (hierarchy validator in Odoo 19 rejects it) -->
-                <hierarchy string="Location Hierarchy" parent_field="parent_location_id" child_field="child_location_ids">
+                <!-- parent_field: location_id (inherited from stock.location) -->
+                <!-- child_field: child_ids (inherited from stock.location) -->
+                <hierarchy string="Location Hierarchy" parent_field="location_id" child_field="child_ids">
                     <field name="name"/>
-                    <field name="location_type"/>
+                    <field name="usage"/>
                     <field name="storage_capacity"/>
                     <field name="active"/>
                 </hierarchy>
@@ -126,8 +127,8 @@
                         <group>
                             <group string="Location Information">
                                 <field name="name" placeholder="e.g., Building A - Section 1" />
-                                <field name="location_type" />
-                                <field name="parent_location_id" string="Parent Location" />
+                                <field name="usage" />
+                                <field name="location_id" string="Parent Location" />
                             </group>
                             <group string="Capacity">
                                 <field name="storage_capacity" />
@@ -166,13 +167,13 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', '%s'), ('description', 'ilike', '%s')]" />
-                    <field name="location_type" />
+                    <field name="usage" />
                     <separator />
                     <filter name="active" string="Active Locations" domain="[('active', '=', True)]" />
                     <filter name="inactive" string="Archived Locations" domain="[('active', '=', False)]" />
                     <group string="Group By" expand="0">
-                        <filter name="group_by_type" string="Type" context="{'group_by': 'location_type'}" />
-                        <filter name="group_by_parent" string="Parent Location" context="{'group_by': 'parent_location_id'}" />
+                        <filter name="group_by_type" string="Type" context="{'group_by': 'usage'}" />
+                        <filter name="group_by_parent" string="Parent Location" context="{'group_by': 'location_id'}" />
                     </group>
                 </search>
             </field>
@@ -247,8 +248,8 @@
             <field name="arch" type="xml">
                 <list string="Locations (Technical)">
                     <field name="name"/>
-                    <!-- Use correct hierarchy parent field -->
-                    <field name="parent_location_id"/>
+                    <!-- Use correct hierarchy parent field (inherited from stock.location) -->
+                    <field name="location_id" string="Parent Location"/>
                     <!-- Show utilization percentage (existing compute field) instead of non-existent capacity_utilization -->
                     <field name="utilization_percentage"/>
                 </list>

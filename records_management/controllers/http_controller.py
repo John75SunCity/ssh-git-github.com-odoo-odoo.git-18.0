@@ -189,7 +189,7 @@ class RecordsManagementController(http.Controller):
             # Validate items belong to customer
             quants = request.env['stock.quant'].search([
                 ('id', 'in', item_ids),
-                ('lot_id.customer_id', '=', partner.id)
+                ('owner_id', '=', partner.id)
             ])
 
             if len(quants) != len(item_ids):
@@ -270,14 +270,14 @@ class RecordsManagementController(http.Controller):
 
         # Get inventory with pagination and search
         domain = [
-            ('lot_id.customer_id', '=', partner.id),
+            ('owner_id', '=', partner.id),
             ('location_id.usage', '=', INTERNAL_USAGE)
         ]
 
         if search_term:
             domain.extend(['|', '|',
-                ('lot_id.name', 'ilike', search_term),
                 ('product_id.name', 'ilike', search_term),
+                ('product_id.default_code', 'ilike', search_term),
                 ('location_id.name', 'ilike', search_term)
             ])
 
@@ -339,15 +339,15 @@ class RecordsManagementController(http.Controller):
             search_term = post.get('search', '').strip()
 
             domain = [
-                ('lot_id.customer_id', '=', partner.id),
+                ('owner_id', '=', partner.id),
                 ('location_id.usage', '=', INTERNAL_USAGE)
             ]
 
             # Add search filter if provided
             if search_term:
                 domain.extend(['|', '|',
-                    ('lot_id.name', 'ilike', search_term),
                     ('product_id.name', 'ilike', search_term),
+                    ('product_id.default_code', 'ilike', search_term),
                     ('location_id.name', 'ilike', search_term)
                 ])
 

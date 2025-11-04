@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- ================================================================== -->
     <!-- PRE-CONFIGURED PORTAL HOME - SHOWS ALL FEATURES                   -->
     <!-- Even when user has no data yet                                     -->
     <!-- ================================================================== -->
-    
+
     <template id="portal_my_home_preconfigured" name="Records Management Portal Home (Pre-configured)" inherit_id="portal.portal_my_home">
         <xpath expr="//div[@id='o_portal_sidebar']" position="inside">
             <!-- Records Management Portal Features Section -->
-            <t t-set="rm_portal_enabled" t-value="True"/>
-            
+            <t t-set="rm_portal_enabled" t-value="request.env['rm.module.configurator'].sudo().flags().get('portal_feature_pack_enabled', False)"/>
+
             <div class="o_portal_sidebar_section mb-4" t-if="rm_portal_enabled">
                 <h4 class="mb-3">
                     <i class="fa fa-archive"/> Records Management
                 </h4>
-                
+
                 <!-- Inventory Card -->
                 <div class="card mb-3">
                     <div class="card-body">
@@ -56,7 +57,7 @@
                             <span class="badge badge-secondary" t-else="">
                                 No work orders yet
                             </span>
-                            <a href="/my/work-orders" class="btn btn-sm btn-success">
+                            <a href="/my/work_orders" class="btn btn-sm btn-success">
                                 View Orders →
                             </a>
                         </div>
@@ -212,4 +213,5 @@
         </div>
     </template>
 
+    </data>
 </odoo>

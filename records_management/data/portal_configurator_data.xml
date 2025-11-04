@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="config_portal_feature_pack" model="rm.module.configurator">
+            <field name="name">Portal Feature Pack</field>
+            <field name="config_key">portal.feature.pack</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="category">portal</field>
+            <field name="sequence">5</field>
+            <field name="description">Enable the complete Records Management customer portal experience, including dashboard, inventory, and service request menus.</field>
+            <field name="portal_feature_pack_enabled">True</field>
+            <field name="work_orders_portal_enabled">True</field>
+        </record>
+
+        <record id="config_portal_work_orders_visibility" model="rm.module.configurator">
+            <field name="name">Portal Work Orders Visibility</field>
+            <field name="config_key">portal.work.orders.visibility</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="category">portal</field>
+            <field name="sequence">10</field>
+            <field name="description">Master switch that controls whether work orders appear in the customer portal.</field>
+            <field name="work_orders_portal_enabled">True</field>
+        </record>
+    </data>
+</odoo>

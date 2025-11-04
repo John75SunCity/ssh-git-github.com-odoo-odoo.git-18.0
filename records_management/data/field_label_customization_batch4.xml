@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- Placeholder batch 4 file: original records consolidated into field_label_customization_batch_data.xml
          Kept to satisfy validator reference and maintain backward compatibility. -->
+    </data>
 </odoo>

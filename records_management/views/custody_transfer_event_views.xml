@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
 <!-- List View -->
     <record id="custody_transfer_event_view_list" model="ir.ui.view">
         <field name="name">custody.transfer.event.view.list</field>
@@ -118,16 +117,13 @@
     </record>
 
     <!-- Menu -->
-    <!--
-
     <menuitem
         id="menu_custody_transfer_event"
         name="Custody Transfer Event"
         action="action_custody_transfer_event"
-        parent="REPLACE_WITH_PARENT_MENU_ID"
-        sequence="10"/>
-
-    -->
+        parent="menu_chain_custody"
+        sequence="15"
+        groups="records_management.group_records_user"/>
     
     </data>
 </odoo>

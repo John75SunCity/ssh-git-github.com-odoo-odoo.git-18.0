@@ -87,7 +87,35 @@
                                 </field>
                             </page>
                             <page string="Users &amp; Access" name="users">
-                                <field name="user_ids" widget="many2many_tags" nolabel="1" />
+                                <group string="Department User Access Control">
+                                    <p class="text-muted">
+                                        Assign users to this department with specific roles and permissions.
+                                        Users will have access to this department and all child departments.
+                                    </p>
+                                </group>
+
+                                <!-- Show department user assignments -->
+                                <field name="department_user_assignment_ids" nolabel="1">
+                                    <tree editable="bottom" create="true" delete="true">
+                                        <field name="user_id" required="1"/>
+                                        <field name="role" required="1" widget="badge"/>
+                                        <field name="state" widget="badge"/>
+                                        <field name="can_view_records" widget="boolean_toggle"/>
+                                        <field name="can_create_records" widget="boolean_toggle"/>
+                                        <field name="can_edit_records" widget="boolean_toggle"/>
+                                        <field name="can_delete_records" widget="boolean_toggle"/>
+                                        <field name="can_export_records" widget="boolean_toggle"/>
+                                        <field name="active" widget="boolean_toggle"/>
+                                    </tree>
+                                </field>
+
+                                <separator string="Legacy User Assignment (Deprecated)"/>
+                                <group>
+                                    <p class="text-warning">
+                                        The field below is deprecated. Please use the Department User Access Control above for granular permissions.
+                                    </p>
+                                </group>
+                                <field name="user_ids" widget="many2many_tags" nolabel="1" readonly="1"/>
                             </page>
                             <page string="Billing Contacts" name="billing">
                                 <field name="billing_contact_ids">

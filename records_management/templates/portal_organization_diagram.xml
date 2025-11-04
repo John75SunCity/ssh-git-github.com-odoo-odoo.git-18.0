@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- Portal Organization Diagram Template -->
     <template id="portal_organization_diagram" name="Organization Diagram">
         <t t-call="portal.portal_layout">
@@ -306,4 +307,5 @@
         </xpath>
     </template>
 
+    </data>
 </odoo>

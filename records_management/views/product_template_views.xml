@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- List view for ENTERPRISE -->
-
-    <!-- Kanban view for Product -->
+    <!-- Kanban view for Product Template -->
     <record id="product_template_view_kanban" model="ir.ui.view">
         <field name="name">product.template.view.kanban</field>
         <field name="model">product.template</field>
@@ -23,10 +21,10 @@
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <strong><i class='fa fa-briefcase'/> <field name="name"/></strong>
+                                        <strong><i class='fa fa-briefcase' title="Product"/> <field name="name"/></strong>
                                     </div>
                                     <div class="o_secondary">
-                                        <i class="fa fa-tag"/> <field name="default_code"/>
+                                        <i class="fa fa-tag" title="Reference"/> <field name="default_code"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
@@ -81,10 +79,12 @@
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Product</a>
                                 <a role="menuitem" type="object" name="action_view_sales" class="dropdown-item"><i class='fa fa-bar-chart'/> View Sales</a>
+                                <!-- Commented out - methods not implemented:
                                 <a role="menuitem" type="object" name="action_configure_variants" class="dropdown-item"><i class='fa fa-bullseye'/> Configure Variants</a>
                                 <a role="menuitem" type="object" name="action_pricing_rules" class="dropdown-item"><i class='fa fa-money'/> Pricing Rules</a>
                                 <div class="dropdown-divider"/>
                                 <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item"><i class='fa fa-clipboard'/> Duplicate</a>
+                                -->
                             </div>
                         </div>
                     </t>
@@ -93,7 +93,7 @@
         </field>
     </record>
 
-    <!-- List view for Enhanced -->
+    <!-- Tree view for Product Template -->
     <record id="product_template_view_tree" model="ir.ui.view">
         <field name="name">product.template.view.tree</field>
         <field name="model">product.template</field>
@@ -103,11 +103,11 @@
                 <field name="default_code" string="Internal Reference"/>
                 <field name="categ_id" string="Category"/>
                 <field name="type" string="Type" widget="badge"/>
-                <field name="list_price" string="&lt;i class=&quot;fa fa-dollar-sign&quot;&gt;&lt;/i&gt; Sale Price"/>
+                <field name="list_price" string="Sale Price"/>
                 <field name="standard_price" string="Cost"/>
-                <field name="uom_id" string="📏 Unit of Measure"/>
+                <field name="uom_id" string="Unit of Measure"/>
                 <field name="sale_ok" string="Can be Sold" widget="boolean_toggle"/>
-                <field name="purchase_ok" string="&lt;i class=&quot;fa fa-shopping-cart&quot;&gt;&lt;/i&gt; Can be Purchased" widget="boolean_toggle"/>
+                <field name="purchase_ok" string="Can be Purchased" widget="boolean_toggle"/>
                 <field name="active" string="Status" widget="boolean_toggle"/>
                 <button name="action_view_sales" type="object" string="Sales" icon="fa-line-chart" class="btn-link"/>
                 <button name="action_configure_pricing" type="object" string="Pricing" icon="fa-money" class="btn-link"/>
@@ -115,7 +115,7 @@
         </field>
     </record>
 
-    <!-- Form view for Enhanced -->
+    <!-- Form view for Product Template -->
     <record id="product_template_view_form" model="ir.ui.view">
         <field name="name">product.template.view.form</field>
         <field name="model">product.template</field>
@@ -123,9 +123,11 @@
             <form>
                 <header>
                     <button name="action_view_sales" type="object" string="View Sales History" class="btn-primary"/>
+                    <!-- Commented out - methods not implemented in product.template model:
                     <button name="action_configure_variants" type="object" string="Configure Variants" class="btn-secondary"/>
                     <button name="action_pricing_rules" type="object" string="Pricing Rules" class="btn-info"/>
                     <button name="action_update_costs" type="object" string="Update Costs" class="btn-success"/>
+                    -->
                     <field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Archived'}}"/>
                 </header>
                 <sheet>
@@ -137,6 +139,7 @@
                     </div>
 
                     <div class="oe_button_box" name="button_box">
+                        <!-- Stat buttons commented out - computed fields not implemented:
                         <button class="oe_stat_button" type="object" name="action_view_sales" icon="fa-line-chart">
                             <field name="sales_count" string="Sales Orders" widget="statinfo"/>
                         </button>
@@ -146,9 +149,10 @@
                         <button class="oe_stat_button" type="object" name="action_view_pricing_history" icon="fa-money">
                             <field name="price_history_count" string="Price Changes" widget="statinfo"/>
                         </button>
+                        -->
                         <button class="oe_stat_button" icon="fa-star" invisible="not is_featured_service">
                             <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value"><i class='fa fa-star'/></span>
+                                <span class="o_stat_value"><i class='fa fa-star' title="Featured Service"/></span>
                                 <span class="o_stat_text">Featured</span>
                             </div>
                         </button>
@@ -165,133 +169,66 @@
                                 <group string="Service Settings">
                                     <field name="sale_ok"/>
                                     <field name="purchase_ok"/>
-                                    <field name="can_be_expensed" invisible="type != 'service'"/>
+                                    <!-- Field not implemented: can_be_expensed -->
                                     <field name="is_featured_service"/>
                                 </group>
                             </group>
                             <field name="description" placeholder="Detailed description of the records management service..."/>
                         </page>
-                        <page string="Sales &amp;amp; Pricing" name="sales">
+                        <page string="Sales &amp; Pricing" name="sales">
                             <group>
-                                <group string="&lt;i class=&quot;fa fa-dollar-sign&quot;&gt;&lt;/i&gt; Pricing Information">
+                                <group string="Pricing Information">
                                     <field name="list_price" widget="monetary"/>
                                     <field name="standard_price" widget="monetary"/>
-                                    <!-- Removed always-invisible 'currency_id'; product form already manages currency context -->
-                                    <field name="price_margin"/>
+                                    <!-- Field not implemented: price_margin -->
                                 </group>
-                                <group string="📏 Units &amp;amp; Measurements">
+                                <group string="Units &amp; Measurements">
                                     <field name="uom_id"/>
                                     <field name="uom_po_id"/>
                                     <field name="weight" invisible="type != 'product'"/>
                                     <field name="volume" invisible="type != 'product'"/>
                                 </group>
                             </group>
-                            <group>
-                                <group string="Cost Structure">
-                                    <field name="base_cost"/>
-                                    <field name="labor_cost"/>
-                                    <field name="material_cost"/>
-                                    <field name="overhead_cost"/>
-                                </group>
-                                <group string="Billing Settings">
-                                    <field name="billing_frequency"/>
-                                    <field name="minimum_billing_period"/>
-                                    <field name="prorate_partial_periods"/>
-                                    <field name="auto_invoice"/>
-                                </group>
-                            </group>
+                            <!-- Cost Structure and Billing Settings fields not implemented in model -->
                         </page>
                         <page string="Records Management" name="records_management">
                             <group>
-                                <group string="Document Services">
-                                    <field name="document_storage_included"/>
-                                    <field name="max_documents_included"/>
-                                    <field name="additional_document_cost"/>
-                                    <field name="digital_conversion_included"/>
+                                <group string="Container Specifications">
+                                    <field name="is_records_container"/>
+                                    <field name="container_volume_cf" invisible="not is_records_container"/>
+                                    <field name="container_weight_lbs" invisible="not is_records_container"/>
                                 </group>
-                                <group string="Storage Services">
-                                    <field name="box_storage_included"/>
-                                    <field name="max_boxes_included"/>
-                                    <field name="additional_box_cost"/>
-                                    <field name="climate_controlled"/>
+                                <group string="Service Type &amp; Compliance">
+                                    <field name="is_records_management_product"/>
+                                    <field name="service_type" invisible="not is_records_management_product"/>
+                                    <field name="naid_compliant"/>
+                                    <field name="hipaa_compliant"/>
                                 </group>
                             </group>
                             <group>
-                                <group string="Destruction Services">
-                                    <field name="shredding_included"/>
-                                    <field name="naid_compliance_level"/>
-                                    <field name="witness_destruction"/>
-                                    <field name="certificate_of_destruction"/>
+                                <group string="Service Level Agreement">
+                                    <field name="requires_appointment"/>
+                                    <field name="sla_response_time" invisible="not requires_appointment"/>
+                                    <field name="sla_completion_time" invisible="not requires_appointment"/>
                                 </group>
-                                <group string="Logistics Services">
-                                    <field name="pickup_delivery_included"/>
-                                    <field name="emergency_retrieval"/>
-                                    <field name="same_day_service"/>
-                                    <field name="geographic_coverage"/>
+                                <group string="Portal Display">
+                                    <field name="is_featured_service"/>
+                                    <field name="service_description_portal" invisible="not is_featured_service"/>
                                 </group>
                             </group>
+                            <!-- Additional RM service fields not implemented in model -->
                         </page>
-                        <page string="Service Level Agreement" name="sla">
+                        <page string="Customer Feedback" name="feedback">
                             <group>
-                                <group string="Response Times">
-                                    <field name="standard_response_time"/>
-                                    <field name="emergency_response_time"/>
-                                    <field name="document_retrieval_time"/>
-                                    <field name="box_retrieval_time"/>
-                                </group>
-                                <group string="Service Guarantees">
-                                    <field name="uptime_guarantee"/>
-                                    <field name="security_guarantee"/>
-                                    <field name="compliance_guarantee"/>
-                                    <field name="data_recovery_guarantee"/>
+                                <group string="Feedback Statistics">
+                                    <field name="customer_rating" readonly="1"/>
+                                    <field name="feedback_count" readonly="1"/>
                                 </group>
                             </group>
-                            <field name="sla_terms" placeholder="Detailed Service Level Agreement terms and conditions..."/>
+                            <!-- Service Level Agreement, Destruction Services, Logistics Services fields not implemented -->
                         </page>
-                        <page string="Product Variants" name="variants">
-                            <field name="product_variant_ids" mode="list">
-                                <list>
-                                    <field name="default_code"/>
-                                    <field name="display_name"/>
-                                    <field name="lst_price"/>
-                                    <field name="standard_price"/>
-                                    <field name="qty_available" invisible="parent.type != 'product'"/>
-                                    <field name="active"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Analytics" name="analytics">
-                            <group>
-                                <group string="Sales Performance">
-                                    <field name="total_sales_ytd" readonly="1"/>
-                                    <field name="total_revenue_ytd" readonly="1"/>
-                                    <field name="average_sale_price" readonly="1"/>
-                                    <field name="profit_margin" readonly="1"/>
-                                </group>
-                                <group string="Timeline Metrics">
-                                    <field name="first_sale_date" readonly="1"/>
-                                    <field name="last_sale_date" readonly="1"/>
-                                    <field name="sales_velocity" readonly="1"/>
-                                    <field name="customer_retention_rate" readonly="1"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Configuration" name="configuration">
-                            <group>
-                                <group string="Template Settings">
-                                    <field name="is_template_service"/>
-                                    <field name="template_category"/>
-                                    <field name="customization_allowed"/>
-                                    <field name="requires_approval"/>
-                                </group>
-                                <group string="Integration">
-                                    <field name="external_service_id"/>
-                                    <field name="api_integration"/>
-                                    <field name="sync_enabled"/>
-                                    <field name="webhook_notifications"/>
-                                </group>
-                            </group>
-                        </page>
+                        <!-- Product Variants page removed - uses standard product.template fields -->
+                        <!-- Analytics, Configuration pages removed - fields not implemented in model -->
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
@@ -303,7 +240,7 @@
         </field>
     </record>
 
-    <!-- Search view for Enhanced -->
+    <!-- Search view for Product Template -->
     <record id="product_template_view_search" model="ir.ui.view">
         <field name="name">product.template.view.search</field>
         <field name="model">product.template</field>
@@ -318,37 +255,38 @@
                 <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
 
                 <separator/>
-                <filter string="Can be Sold" name="sale_ok" domain="[('sale_ok', '=', True)]"/>ive" domain="[('active', '=', True)]"/>
-                <filter string="&lt;i class=&quot;fa fa-shopping-cart&quot;&gt;&lt;/i&gt; Can be Purchased" name="purchase_ok" domain="[('purchase_ok', '=', True)]"/>
+                <filter string="Can be Sold" name="sale_ok" domain="[('sale_ok', '=', True)]"/>
+                <filter string="Can be Purchased" name="purchase_ok" domain="[('purchase_ok', '=', True)]"/>
                 <filter string="Services" name="services" domain="[('type', '=', 'service')]"/>
                 <filter string="Products" name="products" domain="[('type', '=', 'product')]"/>
 
                 <separator/>
                 <filter string="Featured Services" name="featured" domain="[('is_featured_service', '=', True)]"/>
-                <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliance_level', 'in', ['A', 'AA', 'AAA'])]"/>
-                <filter string="Document Services" name="document_services" domain="[('document_storage_included', '=', True)]"/>
-                <filter string="Destruction Services" name="destruction_services" domain="[('shredding_included', '=', True)]"/>
+                <filter string="RM Products" name="rm_products" domain="[('is_records_management_product', '=', True)]"/>
+                <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
+                <filter string="HIPAA Compliant" name="hipaa_compliant" domain="[('hipaa_compliant', '=', True)]"/>
+                <!-- Fields not implemented: naid_compliance_level, document_storage_included, shredding_included -->
 
                 <separator/>
-                <filter string="High Value (&amp;gt;$100)" name="high_value" domain="[('list_price', '&amp;gt;', 100)]"/>
-                <filter string="Top Performers" name="top_performers" domain="[('total_sales_ytd', '&amp;gt;', 0)]"/>
+                <filter string="High Value (&gt;$100)" name="high_value" domain="[('list_price', '&gt;', 100)]"/>
+                <!-- Field not implemented: total_sales_ytd -->
 
                 <group expand="0" string="Group By">
                     <filter string="Category" name="group_by_category" context="{'group_by': 'categ_id'}"/>
                     <filter string="Product Type" name="group_by_type" context="{'group_by': 'type'}"/>
-                    <filter string="NAID Level" name="group_by_naid" context="{'group_by': 'naid_compliance_level'}"/>
+                    <filter string="Service Type" name="group_by_service" context="{'group_by': 'service_type'}"/>
                     <filter string="Can be Sold" name="group_by_sale" context="{'group_by': 'sale_ok'}"/>
-                    <filter string="Price Range" name="group_by_price" context="{'group_by': 'price_range'}"/>
+                    <!-- Fields not implemented: naid_compliance_level, price_range -->
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- List view for ENTERPRISE -->
+    <!-- Action for Records Management Products -->
     <record id="action_product_template_records" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-briefcase'/> Records Management Products</field>
+        <field name="name">Records Management Products</field>
         <field name="res_model">product.template</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="product_template_view_search"/>
         <field name="context">{
             'search_default_active': 1,
@@ -356,22 +294,45 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                <i class='fa fa-briefcase'/> Create your first records management service!
+                Create your first records management service!
             </p>
             <p>
                 <b>Enterprise Service Catalog Management:</b>
                 <br/>
-                • <i class='fa fa-clipboard'/> Complete records management service portfolio<br/>
-                • <i class='fa fa-money'/> Advanced pricing rules and cost structures<br/>
-                • <i class='fa fa-trophy'/> NAID compliance service configuration<br/>
-                • <i class='fa fa-bar-chart'/> Service Level Agreement management<br/>
-                • <i class='fa fa-bullseye'/> Multi-variant service offerings<br/>
-                • <i class='fa fa-line-chart'/> Real-time sales analytics and performance<br/>
-                • <i class='fa fa-wrench'/> Flexible service customization options<br/>
-                • <i class='fa fa-box'/> Integrated storage and destruction services<br/>
-                • <i class='fa fa-truck'/> Logistics and emergency retrieval services
+                • Complete records management service portfolio<br/>
+                • Advanced pricing rules and cost structures<br/>
+                • NAID compliance service configuration<br/>
+                • Service Level Agreement management<br/>
+                • Multi-variant service offerings<br/>
+                • Real-time sales analytics and performance<br/>
+                • Flexible service customization options<br/>
+                • Integrated storage and destruction services<br/>
+                • Logistics and emergency retrieval services
             </p>
         </field>
     </record>
+
+    <!-- Explicit view associations for the action -->
+    <record id="action_product_template_records_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence">1</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="product_template_view_kanban"/>
+        <field name="act_window_id" ref="action_product_template_records"/>
+    </record>
+
+    <record id="action_product_template_records_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="product_template_view_tree"/>
+        <field name="act_window_id" ref="action_product_template_records"/>
+    </record>
+
+    <record id="action_product_template_records_view_form" model="ir.actions.act_window.view">
+        <field name="sequence">3</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="product_template_view_form"/>
+        <field name="act_window_id" ref="action_product_template_records"/>
+    </record>
+
     </data>
 </odoo>

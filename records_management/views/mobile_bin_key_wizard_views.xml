@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
         <record id="mobile_bin_key_wizard_view_form" model="ir.ui.view">
             <field name="name">mobile.bin.key.wizard.view.form</field>
             <field name="model">mobile.bin.key.wizard</field>
@@ -81,7 +80,7 @@
         </record>
 
         <!-- Mobile Key Manager moved to Configuration > Security & Access -->
-        <menuitem id="menu_mobile_bin_key_wizard" name="Mobile Key Manager" parent="records_management.menu_records_security" action="action_mobile_bin_key_wizard" sequence="5" groups="records_management.group_records_user" />
+        <menuitem id="menu_mobile_bin_key_wizard" name="Mobile Key Manager" parent="records_management.menu_security_access" action="action_mobile_bin_key_wizard" sequence="5" groups="records_management.group_records_user" />
 
         <record id="action_mobile_key_shortcut" model="ir.actions.server">
             <field name="name">Quick Key Access</field>

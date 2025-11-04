@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    
         <record id="transitory_field_config_view_tree" model="ir.ui.view">
             <field name="name">transitory.field.config.view.tree</field>
             <field name="model">transitory.field.config</field>
@@ -11,22 +10,99 @@
                 </list>
             </field>
         </record>
+
         <record id="transitory_field_config_view_form" model="ir.ui.view">
             <field name="name">transitory.field.config.view.form</field>
             <field name="model">transitory.field.config</field>
             <field name="arch" type="xml">
-                <form string="Transitory Field Config">
+                <form string="Transitory Field Configuration">
+                    <header>
+                        <button name="action_setup_field_labels" string="Customize Field Labels" type="object" class="btn-primary" help="Setup custom field labels for this configuration" />
+                    </header>
                     <sheet>
                         <div class="oe_title">
-                            <label for="name" />
                             <h1>
-                                <field name="name" placeholder="Name..." />
+                                <field name="name" />
                             </h1>
                         </div>
+                        <group>
+                            <group>
+                                <field name="partner_id" options="{'no_create': True}" />
+                                <field name="department_id" options="{'no_create': True}" />
+                                <field name="field_label_config_id" options="{'no_create': True}" />
+                            </group>
+                            <group>
+                                <field name="visible_field_count" />
+                                <field name="required_field_count" />
+                                <field name="config_preset" />
+                                <field name="active" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Field Visibility" name="visibility">
+                                <group>
+                                    <group string="Core Fields">
+                                        <field name="show_container_number" />
+                                        <field name="show_description" />
+                                        <field name="show_content_description" />
+                                    </group>
+                                    <group string="Date &amp; Sequence">
+                                        <field name="show_date_ranges" />
+                                        <field name="show_sequence_ranges" />
+                                        <field name="show_destruction_date" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Business Fields">
+                                        <field name="show_record_type" />
+                                        <field name="show_confidentiality" />
+                                        <field name="show_project_code" />
+                                        <field name="show_client_reference" />
+                                        <field name="show_file_count" />
+                                        <field name="show_filing_system" />
+                                    </group>
+                                    <group string="Administrative">
+                                        <field name="show_created_by_dept" />
+                                        <field name="show_authorized_by" />
+                                        <field name="show_special_handling" />
+                                        <field name="show_compliance_notes" />
+                                        <field name="show_weight_estimate" />
+                                        <field name="show_size_estimate" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Required Fields" name="requirements">
+                                <group>
+                                    <group string="Core Requirements">
+                                        <field name="require_container_number" />
+                                        <field name="require_description" />
+                                        <field name="require_content_description" />
+                                    </group>
+                                    <group string="Date Requirements">
+                                        <field name="require_date_from" />
+                                        <field name="require_date_to" />
+                                        <field name="require_destruction_date" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Business Requirements">
+                                        <field name="require_record_type" />
+                                        <field name="require_confidentiality" />
+                                        <field name="require_project_code" />
+                                        <field name="require_client_reference" />
+                                    </group>
+                                    <group string="Sequence Requirements">
+                                        <field name="require_sequence_from" />
+                                        <field name="require_sequence_to" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
         </record>
+
         <record id="transitory_field_config_view_search" model="ir.ui.view">
             <field name="name">transitory.field.config.view.search</field>
             <field name="model">transitory.field.config</field>
@@ -38,6 +114,7 @@
                 </search>
             </field>
         </record>
+
         <record id="action_transitory_field_config" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model transitory.field.config has state field - consider using default search filters -->
             <field name="name">Transitory Field Config</field>
@@ -47,10 +124,11 @@
             <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Transitory Field Config.
-            </p>
+                    There is no examples click here to add new Transitory Field Config.
+                </p>
             </field>
         </record>
+
         <record id="field_label_customization_view_form" model="ir.ui.view">
             <field name="name">field.label.customization.view.form</field>
             <field name="model">field.label.customization</field>
@@ -154,6 +232,7 @@
                 </form>
             </field>
         </record>
+
         <record id="field_label_customization_view_tree" model="ir.ui.view">
             <field name="name">field.label.customization.view.tree</field>
             <field name="model">field.label.customization</field>
@@ -169,6 +248,7 @@
                 </list>
             </field>
         </record>
+
         <record id="field_label_customization_view_search" model="ir.ui.view">
             <field name="name">field.label.customization.view.search</field>
             <field name="model">field.label.customization</field>
@@ -178,8 +258,8 @@
                     <field name="partner_id" />
                     <field name="department_id" />
                     <separator />
-                    <filter string="Global Configurations" name="global" domain="[('customer_id', '=', False)]" />
-                    <filter string="Customer Specific" name="customer_specific" domain="[('customer_id', '!=', False), ('department_id', '=', False)]" />
+                    <filter string="Global Configurations" name="global" domain="[('partner_id', '=', False)]" />
+                    <filter string="Customer Specific" name="customer_specific" domain="[('partner_id', '!=', False), ('department_id', '=', False)]" />
                     <filter string="Department Specific" name="department_specific" domain="[('department_id', '!=', False)]" />
                     <separator />
                     <filter string="Active" name="active" domain="[('active', '=', True)]" />
@@ -192,119 +272,33 @@
                 </search>
             </field>
         </record>
+
         <record id="action_field_label_customization" model="ir.actions.act_window">
             <field name="name">Field Label Customizations</field>
             <field name="res_model">field.label.customization</field>
             <field name="view_mode">list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                Create custom field labels for your organization
-            </p>
+                    Create custom field labels for your organization
+                </p>
                 <p>
-                Customize field names to match your organization's terminology.
-                You can create configurations at different levels:
-                <ul>
+                    Customize field names to match your organization's terminology.
+                    You can create configurations at different levels:
+                    <ul>
                         <li>
-                            <strong>Global:</strong> Applies to all customers</li>
+                            <strong>Global:</strong> Applies to all customers
+                        </li>
                         <li>
-                            <strong>Customer:</strong> Applies to specific customer</li>
+                            <strong>Customer:</strong> Applies to specific customer
+                        </li>
                         <li>
-                            <strong>Department:</strong> Applies to specific department</li>
+                            <strong>Department:</strong> Applies to specific department
+                        </li>
                     </ul>
                 </p>
             </field>
         </record>
-        <record id="transitory_field_config_view_form" model="ir.ui.view">
-            <field name="name">transitory.field.config.view.form</field>
-            <field name="model">transitory.field.config</field>
-            <field name="arch" type="xml">
-                <form string="Transitory Field Configuration">
-                    <header>
-                        <button name="action_setup_field_labels" string="Customize Field Labels" type="object" class="btn-primary" help="Setup custom field labels for this configuration" />
-                    </header>
-                    <sheet>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="name" />
-                            </h1>
-                        </div>
-                        <group>
-                            <group>
-                                <field name="partner_id" options="{'no_create': True}" />
-                                <field name="department_id" options="{'no_create': True}" />
-                                <field name="field_label_config_id" options="{'no_create': True}" />
-                            </group>
-                            <group>
-                                <field name="visible_field_count" />
-                                <field name="required_field_count" />
-                                <field name="config_preset" />
-                                <field name="active" />
-                            </group>
-                        </group>
-                        <notebook>
-                            <page string="Field Visibility" name="visibility">
-                                <group>
-                                    <group string="Core Fields">
-                                        <field name="show_container_number" />
-                                        <field name="show_description" />
-                                        <field name="show_content_description" />
-                                    </group>
-                                    <group string="Date &amp; Sequence">
-                                        <field name="show_date_ranges" />
-                                        <field name="show_sequence_ranges" />
-                                        <field name="show_destruction_date" />
-                                    </group>
-                                </group>
-                                <group>
-                                    <group string="Business Fields">
-                                        <field name="show_record_type" />
-                                        <field name="show_confidentiality" />
-                                        <field name="show_project_code" />
-                                        <field name="show_client_reference" />
-                                        <field name="show_file_count" />
-                                        <field name="show_filing_system" />
-                                    </group>
-                                    <group string="Administrative">
-                                        <field name="show_created_by_dept" />
-                                        <field name="show_authorized_by" />
-                                        <field name="show_special_handling" />
-                                        <field name="show_compliance_notes" />
-                                        <field name="show_weight_estimate" />
-                                        <field name="show_size_estimate" />
-                                    </group>
-                                </group>
-                            </page>
-                            <page string="Required Fields" name="requirements">
-                                <group>
-                                    <group string="Core Requirements">
-                                        <field name="require_container_number" />
-                                        <field name="require_description" />
-                                        <field name="require_content_description" />
-                                    </group>
-                                    <group string="Date Requirements">
-                                        <field name="require_date_from" />
-                                        <field name="require_date_to" />
-                                        <field name="require_destruction_date" />
-                                    </group>
-                                </group>
-                                <group>
-                                    <group string="Business Requirements">
-                                        <field name="require_record_type" />
-                                        <field name="require_confidentiality" />
-                                        <field name="require_project_code" />
-                                        <field name="require_client_reference" />
-                                    </group>
-                                    <group string="Sequence Requirements">
-                                        <field name="require_sequence_from" />
-                                        <field name="require_sequence_to" />
-                                    </group>
-                                </group>
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+
         <record id="res_partner_view_form" model="ir.ui.view">
             <field name="name">base.view_partner_form.inherit.records_management</field>
             <field name="model">res.partner</field>
@@ -335,11 +329,11 @@
                 </notebook>
             </field>
         </record>
-    
+
         <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="records_management.menu_records_configuration" action="action_field_label_customization" sequence="15" />
-        <menuitem id="menu_intelligent_search_config" name="Search Configuration" parent="base.menu_administration" sequence="50" groups_id="[(4, ref('group_search_admin'))]" />
-        <menuitem id="menu_field_label_customization_sub" name="Field Label Customization" parent="menu_intelligent_search_config" action="action_field_label_customization" sequence="10" groups_id="[(4, ref('group_search_admin'))]" />
-    
+        <menuitem id="menu_intelligent_search_config" name="Search Configuration" parent="records_management.menu_records_configuration" sequence="50" groups="records_management.group_records_admin" />
+        <menuitem id="menu_field_label_customization_sub" name="Field Label Customization" parent="menu_intelligent_search_config" action="action_field_label_customization" sequence="10" groups="records_management.group_records_admin" />
+
         <record id="action_search_performance_monitor" model="ir.actions.server">
             <field name="name">Search Performance Monitor</field>
             <field name="model_id" ref="base.model_ir_config_parameter" />
@@ -356,8 +350,7 @@ action = {
         'sticky': True,
     }
 }
-        </field>
+            </field>
         </record>
-    
     </data>
 </odoo>

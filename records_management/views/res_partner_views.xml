@@ -1,9 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Minimal res.partner extension for Records Management -->
-    <!-- This view can be extended later if records-specific partner fields are needed -->
+        <!-- Minimal res.partner extension for Records Management -->
+        <!-- Extended with Department User Management -->
 
-    
+        <record id="view_partner_form_department_users" model="ir.ui.view">
+            <field name="name">res.partner.form.department.users</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <!-- Add Department Users tab -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="Department Users" name="department_users" 
+                          invisible="not is_company and not parent_id">
+                        <group>
+                            <group>
+                                <field name="department_ids" invisible="1"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Department Access Assignments">
+                            <p class="text-muted">
+                                Assign users to departments for granular portal access control. 
+                                Users will only see inventory for their assigned departments.
+                            </p>
+                        </group>
+
+                        <!-- Show all department assignments for this partner's users -->
+                        <field name="department_user_assignment_ids" nolabel="1">
+                            <tree editable="bottom" create="true" delete="true">
+                                <field name="department_id" 
+                                       domain="[('partner_id', '=', parent.id)]"
+                                       required="1"/>
+                                <field name="user_id" required="1"/>
+                                <field name="role" required="1"/>
+                                <field name="state"/>
+                                <field name="can_view_records"/>
+                                <field name="can_edit_records"/>
+                                <field name="can_create_records"/>
+                                <field name="can_delete_records"/>
+                                <field name="active"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>

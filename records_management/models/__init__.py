@@ -1,5 +1,8 @@
+from . import ir_rule
 from . import retrieval_item_base
 from . import scan_retrieval_item
+# Account integration
+from . import account_move
 from . import account_move_line
 from . import advanced_billing_contact
 from . import advanced_billing_line
@@ -171,6 +174,8 @@ from . import records_container_transfer_line
 from . import records_container_type
 from . import records_container_type_converter
 from . import records_deletion_request
+from . import records_storage_department_user  # Must load BEFORE records_department
+from . import records_storage_department_user_actions
 from . import records_department
 from . import records_department_billing_approval
 from . import records_department_billing_contact
@@ -181,10 +186,11 @@ from . import records_destruction_job
 from . import records_digital_scan
 from . import records_document
 from . import records_document_type
+from . import records_file  # File folders (hierarchical inventory)
 from . import records_installer
 from . import records_inventory_dashboard
 from . import records_management_dashboard
-from . import records_location
+from . import records_location  # Re-enabled in 18.0.0.2.7
 from . import records_location_inspection
 from . import records_policy_version
 from . import records_promotional_discount
@@ -202,8 +208,6 @@ from . import records_security_audit
 from . import records_series
 from . import records_service_type
 from . import records_storage_box
-from . import records_storage_department_user
-from . import records_storage_department_user_actions
 from . import records_survey_user_input
 from . import records_tag
 from . import records_tag_category
@@ -256,6 +260,8 @@ from . import stock_lot_actions
 from . import stock_lot_attribute
 from . import stock_lot_attribute_option
 from . import stock_lot_attribute_value
+from . import stock_quant  # Extend stock.quant for customer ownership tracking
+from . import stock_location  # Extend stock.location for records management features
 from . import stock_move_sms_validation
 from . import stock_picking
 from . import stock_picking_records_extension

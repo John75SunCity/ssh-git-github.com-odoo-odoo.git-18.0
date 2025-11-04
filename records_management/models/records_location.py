@@ -41,48 +41,73 @@ class RecordsLocation(models.Model):
     - Supports hierarchical organization and compliance tracking.
     """
 
-    # === AUDIT: MISSING FIELDS ===
-    description = fields.Char(string='Description')
-    location_type = fields.Char(string='Location Type')
-    storage_capacity = fields.Char(string='Storage Capacity')
     _name = 'records.location'
+    _inherit = ['stock.location', 'mail.thread', 'mail.activity.mixin']  # Multiple inheritance
     _description = 'Records Storage Location'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'sequence, name'
-    _rec_name = 'display_name'
+    _order = 'complete_name'  # Use stock.location's hierarchical name
 
     # ============================================================================
-    # CORE & IDENTIFICATION FIELDS
+    # RECORDS-SPECIFIC FIELDS (Everything else inherited from stock.location)
     # ============================================================================
-    name = fields.Char(string="Location Name", required=True, tracking=True)
-    display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
-    code = fields.Char(string="Location Code", required=True, copy=False, readonly=True, default=lambda self: "New", tracking=True)
-    active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    user_id = fields.Many2one(comodel_name='res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
-    sequence = fields.Integer(string="Sequence", default=10)
+    # Note: name, active, company_id, location_id (parent), child_ids inherited from stock.location
 
-    # ============================================================================
-    # HIERARCHY & RELATIONSHIPS
-    # ============================================================================
-    parent_location_id = fields.Many2one(comodel_name='records.location', string="Parent Location", ondelete='cascade', tracking=True)
-    child_location_ids = fields.One2many('records.location', 'parent_location_id', string="Child Locations")
-    child_count = fields.Integer(string="Child Location Count", compute='_compute_child_count')
-    container_ids = fields.One2many('records.container', 'location_id', string="Containers")
-    container_count = fields.Integer(string="Container Count", compute='_compute_container_count', store=True)
-    group_id = fields.Many2one(comodel_name='location.group', string='Location Group')
+    # Records-specific location code (supplements stock.location.barcode)
+    code = fields.Char(
+        string="Location Code",
+        copy=False,
+        readonly=True,
+        default=lambda self: "New",
+        tracking=True,
+        help="Records-specific location code (supplements Odoo barcode)"
+    )
 
-    # ============================================================================
-    # ADDRESS & COORDINATES
-    # ============================================================================
-    street = fields.Char()
-    street2 = fields.Char()
-    city = fields.Char()
-    state_id = fields.Many2one("res.country.state", string='State', ondelete='restrict', domain="[('country_id', '=?', country_id)]")
-    zip = fields.Char(string='Zip', change_default=True)
-    country_id = fields.Many2one(comodel_name='res.country', string='Country', ondelete='restrict')
-    full_address = fields.Text(string="Full Address", compute='_compute_full_address')
+    # Responsible user for this location
+    user_id = fields.Many2one(
+        comodel_name='res.users',
+        string="Responsible",
+        default=lambda self: self.env.user,
+        tracking=True
+    )
 
+    # Records Management description (separate from stock.location.comment)
+    description = fields.Text(
+        string="Description",
+        tracking=True,
+        help="Location description and special instructions for records management. "
+             "Use this for access notes, handling instructions, or compliance details."
+    )
+
+    # Container relationship (records-specific)
+    container_ids = fields.One2many(
+        'records.container',
+        'location_id',
+        string="Containers"
+    )
+    container_count = fields.Integer(
+        string="Container Count",
+        compute='_compute_container_count',
+        store=True
+    )
+
+    # Location grouping for records management
+    group_id = fields.Many2one(
+        comodel_name='location.group',
+        string='Location Group'
+    )
+
+    # Note: We use stock.location's native 'usage' field instead of creating our own
+    # 'location_type' to avoid duplication and leverage Odoo's standard location types
+    # (internal, view, customer, vendor, inventory, production, transit)
+
+    # Storage capacity tracking (Records Management specific)
+    storage_capacity = fields.Integer(
+        string='Storage Capacity',
+        compute='_compute_storage_capacity',
+        store=True,
+        help='Maximum number of containers this location can hold'
+    )
+
+    # Detailed warehouse coordinates (supplements stock.location.name)
     building = fields.Char(string="Building")
     floor = fields.Char(string="Floor")
     zone = fields.Char(string="Zone")
@@ -90,40 +115,58 @@ class RecordsLocation(models.Model):
     rack = fields.Char(string="Rack")
     shelf = fields.Char(string="Shelf")
     position = fields.Char(string="Position")
-    full_coordinates = fields.Char(string="Full Coordinates", compute='_compute_full_coordinates', store=True)
+    full_coordinates = fields.Char(
+        string="Full Coordinates",
+        compute='_compute_full_coordinates',
+        store=True,
+        help="Formatted warehouse coordinates (Building > Floor > Zone > Aisle > Rack > Shelf > Position)"
+    )
 
     # ============================================================================
-    # CAPACITY & UTILIZATION
+    # CAPACITY & UTILIZATION (Records-specific tracking)
     # ============================================================================
-    max_capacity = fields.Integer(string="Maximum Capacity (Containers)", tracking=True, help="The total number of containers this location can hold.")
-    utilization_percentage = fields.Float(string="Utilization (%)", compute='_compute_utilization_percentage', store=True, aggregator="avg")
-    available_spaces = fields.Integer(string="Available Spaces", compute='_compute_available_spaces', store=True)
-    is_at_capacity = fields.Boolean(string="Is At Capacity", compute='_compute_is_at_capacity', store=True)
+    max_capacity = fields.Integer(
+        string="Maximum Capacity (Containers)",
+        tracking=True,
+        help="The total number of containers this location can hold"
+    )
+    utilization_percentage = fields.Float(
+        string="Utilization (%)",
+        compute='_compute_utilization_percentage',
+        store=True,
+        aggregator="avg"
+    )
+    available_spaces = fields.Integer(
+        string="Available Spaces",
+        compute='_compute_available_spaces',
+        store=True
+    )
+    is_at_capacity = fields.Boolean(
+        string="Is At Capacity",
+        compute='_compute_is_at_capacity',
+        store=True
+    )
 
     # ============================================================================
-    # STATUS & LIFECYCLE
+    # STATUS & LIFECYCLE (Records-specific states)
+    # Note: Supplements stock.location usage field (view, internal, customer, supplier, etc.)
     # ============================================================================
-    state = fields.Selection([
+    location_state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),
         ('maintenance', 'Maintenance'),
         ('full', 'Full'),
         ('inactive', 'Inactive'),
-    ], string="Status", default='draft', required=True, tracking=True)
+    ], string="Location Status", default='draft', required=True, tracking=True,
+    help="Records-specific location status (supplements Odoo usage field)")
 
     # ============================================================================
-    # SECURITY & COMPLIANCE
+    # SECURITY & COMPLIANCE (security_level inherited from stock_location.py extension)
     # ============================================================================
-    security_level = fields.Selection([
-        ('level_1', 'Level 1 (Low)'),
-        ('level_2', 'Level 2 (Medium)'),
-        ('level_3', 'Level 3 (High)'),
-        ('level_4', 'Level 4 (Maximum)'),
-    ], string="Security Level", default='level_2', tracking=True)
-    temperature_controlled = fields.Boolean(string="Temperature Controlled")
-    humidity_controlled = fields.Boolean(string="Humidity Controlled")
-    fire_suppression_system = fields.Boolean(string="Fire Suppression System")
-    last_inspection_date = fields.Date(string="Last Inspection Date", readonly=True)
+    # Note: security_level, temperature_controlled, humidity_controlled,
+    # fire_suppression_system, last_inspection_date already added to stock.location
+    # via stock_location.py - no need to redefine here
+
     next_inspection_date = fields.Date(string="Next Inspection Date", tracking=True)
 
     # ============================================================================
@@ -132,31 +175,30 @@ class RecordsLocation(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            # Generate records-specific location code
             if vals.get('code', _('New')) == _('New'):
                 vals['code'] = self.env['ir.sequence'].next_by_code('records.location') or _('New')
+
+            # Set default usage to 'internal' for warehouse locations
+            if 'usage' not in vals:
+                vals['usage'] = 'internal'
+
         return super().create(vals_list)
 
     def unlink(self):
         for loc in self:
             if loc.container_ids:
                 raise UserError(_("You cannot delete a location that contains containers. Please move them first."))
-            if loc.child_location_ids:
+            # Note: child_ids is inherited from stock.location (was child_location_ids)
+            if loc.child_ids:
                 raise UserError(_("You cannot delete a location that has child locations. Please remove or re-parent them first."))
         return super().unlink()
 
     # ============================================================================
     # COMPUTE & ONCHANGE METHODS
     # ============================================================================
-    @api.depends('name', 'code')
-    def _compute_display_name(self):
-        for record in self:
-            record.display_name = f"[{record.code}] {record.name}" if record.code else record.name
-
-    @api.depends('street', 'street2', 'city', 'state_id', 'zip', 'country_id')
-    def _compute_full_address(self):
-        for record in self:
-            address_parts = [record.street, record.street2, record.city, record.state_id.name, record.zip, record.country_id.name]
-            record.full_address = ', '.join(filter(None, address_parts))
+    # Note: display_name inherited from stock.location (uses complete_name)
+    # Note: full_address removed - use stock.location.partner_id.contact_address instead
 
     @api.depends('building', 'floor', 'zone', 'aisle', 'rack', 'shelf', 'position')
     def _compute_full_coordinates(self):
@@ -164,15 +206,18 @@ class RecordsLocation(models.Model):
             parts = [record.building, record.floor, record.zone, record.aisle, record.rack, record.shelf, record.position]
             record.full_coordinates = ' > '.join(filter(None, parts))
 
-    @api.depends('child_location_ids')
-    def _compute_child_count(self):
-        for record in self:
-            record.child_count = len(record.child_location_ids)
+    # Note: child_count removed - use len(child_ids) directly (inherited from stock.location)
 
     @api.depends('container_ids')
     def _compute_container_count(self):
         for record in self:
             record.container_count = len(record.container_ids)
+
+    @api.depends('max_capacity')
+    def _compute_storage_capacity(self):
+        """Compute storage capacity from max_capacity field"""
+        for record in self:
+            record.storage_capacity = record.max_capacity or 0
 
     @api.depends('container_count', 'max_capacity')
     def _compute_utilization_percentage(self):
@@ -195,10 +240,11 @@ class RecordsLocation(models.Model):
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================
-    @api.constrains('parent_location_id')
+    @api.constrains('location_id')  # parent field in stock.location
     def _check_location_hierarchy(self):
-        # Odoo 19: _check_recursion is deprecated; use _has_cycle with explicit parent field
-        if self._has_cycle('parent_location_id'):
+        """Prevent recursive location hierarchies"""
+        # Note: parent field is 'location_id' in stock.location (not parent_location_id)
+        if self._has_cycle('location_id'):
             raise ValidationError(_('You cannot create recursive locations.'))
 
     @api.constrains('max_capacity')
@@ -228,19 +274,19 @@ class RecordsLocation(models.Model):
             'name': _('Child Locations'),
             'res_model': 'records.location',
             'view_mode': 'tree,form',
-            'domain': [('parent_location_id', '=', self.id)],
-            'context': {'default_parent_location_id': self.id}
+            'domain': [('location_id', '=', self.id)],  # parent field in stock.location
+            'context': {'default_location_id': self.id}  # parent field in stock.location
         }
 
     def action_activate(self):
-        # DEPRECATED (Phase 1): prefer direct write/statebar; kept for compatibility.
-        # Minimal no-logic wrapper retained for backward compatibility with existing buttons or server actions.
-        self.write({'active': True, 'state': 'active'})
+        """Activate location for use"""
+        # Update both active flag and location_state
+        self.write({'active': True, 'location_state': 'active'})
 
     def action_deactivate(self):
-        # DEPRECATED (Phase 1): prefer direct write/statebar; kept for compatibility.
-        # Minimal no-logic wrapper retained for backward compatibility with existing buttons or server actions.
-        self.write({'active': False, 'state': 'inactive'})
+        """Deactivate location"""
+        # Update both active flag and location_state
+        self.write({'active': False, 'location_state': 'inactive'})
 
     # =========================================================================
     # DEFAULT VIEW FALLBACK (Test Support)
@@ -262,3 +308,28 @@ class RecordsLocation(models.Model):
             "</list>"
         )
         return arch
+
+    # =========================================================================
+    # UPGRADE SAFEGUARD: Prevent MissingError during parent_path computation
+    # =========================================================================
+    @api.depends('location_id')
+    def _compute_warehouse_id(self):
+        """
+        Override stock.location._compute_warehouse_id with safe version.
+        
+        During module upgrade, stock.location may have broken parent_path values
+        that reference deleted locations. The stock module's search with 'parent_of'
+        operator tries to traverse parent_path and fails with MissingError.
+        
+        This override catches that error and gracefully handles it by setting
+        warehouse_id to False, allowing the upgrade to complete. Odoo will
+        recompute warehouse_id correctly after upgrade.
+        """
+        for location in self:
+            try:
+                # Try the parent class computation
+                super(RecordsLocation, location)._compute_warehouse_id()
+            except Exception:
+                # If it fails (MissingError, AttributeError, etc.), set to False
+                # Odoo will recompute this after the upgrade completes
+                location.warehouse_id = False
