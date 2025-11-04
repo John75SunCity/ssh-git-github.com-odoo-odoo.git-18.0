@@ -156,6 +156,7 @@
         "views/customer_inventory_views.xml",
         "views/inventory_item_views.xml",
         "views/chain_of_custody_views.xml",
+        "views/records_storage_department_user_views.xml",  # MUST load before records_department_views.xml
         "views/records_department_views.xml",
         "views/records_location_views.xml",
         "views/records_document_type_views.xml",
@@ -271,7 +272,7 @@
         "views/records_security_audit_views.xml",
         "views/records_series_views.xml",
         "views/records_service_type_views.xml",
-        "views/records_storage_department_user_views.xml",
+        # records_storage_department_user_views.xml moved earlier (line ~160) to load before records_department_views.xml
         "views/records_survey_user_input_views.xml",
         "views/records_tag_category_views.xml",
         "views/records_usage_tracking_views.xml",
