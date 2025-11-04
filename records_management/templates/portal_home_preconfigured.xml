@@ -25,7 +25,9 @@
                         <p class="card-text text-muted small">
                             View and manage your stored containers, boxes, and documents
                         </p>
-                        <t t-set="container_count" t-value="request.env['records.container'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id)])"/>
+                        <!-- FIXED: Check both partner_id AND stock_owner_id for container ownership -->
+                        <t t-set="partner" t-value="request.env.user.partner_id"/>
+                        <t t-set="container_count" t-value="request.env['records.container'].sudo().search_count(['|', ('partner_id', '=', partner.id), ('stock_owner_id', '=', partner.id)])"/>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="badge badge-info" t-if="container_count &gt; 0">
                                 <t t-esc="container_count"/> Containers
@@ -33,7 +35,7 @@
                             <span class="badge badge-secondary" t-else="">
                                 No containers yet
                             </span>
-                            <a href="/my/inventory" class="btn btn-sm btn-primary">
+                            <a href="/my/containers" class="btn btn-sm btn-primary">
                                 View Inventory →
                             </a>
                         </div>
