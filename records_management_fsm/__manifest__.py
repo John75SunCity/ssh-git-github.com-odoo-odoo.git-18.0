@@ -13,6 +13,7 @@
     "data": [
         "security/ir.model.access.csv",
         "data/fsm_model_external_ids_data.xml",
+        "data/fleet_fsm_action_bridge.xml",
         "views/enhanced_fsm_integration_views.xml",
         "views/fsm_notification_manager_views.xml",
         "views/fsm_notification_views.xml",

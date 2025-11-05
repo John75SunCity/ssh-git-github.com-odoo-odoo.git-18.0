@@ -717,20 +717,19 @@ class RecordsManagementPortal(CustomerPortal):
     Extends customer portal with Records Management specific functionality
     """
 
-    def _prepare_home_portal_values(self, counters):
-        """Add Records Management counters to portal home"""
-        values = super()._prepare_home_portal_values(counters)
+    def _collect_records_management_portal_metrics(self, base_values=None):
+        """Collect counters and dashboard metadata used on portal landing."""
         partner = request.env.user.partner_id
-
         commercial_partner = partner.commercial_partner_id
 
-        container_domain = ['|', ('partner_id', '=', partner.id), ('stock_owner_id', '=', partner.id)]
-        container_count = request.env['records.container'].sudo().search_count(container_domain)
-        values['container_count'] = container_count
+        metrics = dict(base_values or {})
 
-        if 'pickup_request_count' in counters:
+        container_domain = ['|', ('partner_id', '=', partner.id), ('stock_owner_id', '=', partner.id)]
+        metrics['container_count'] = request.env['records.container'].sudo().search_count(container_domain)
+
+        if metrics.get('pickup_request_count') is None:
             domain = [('partner_id', '=', partner.id)]
-            values['pickup_request_count'] = request.env['pickup.request'].search_count(domain)
+            metrics['pickup_request_count'] = request.env['pickup.request'].search_count(domain)
 
         work_order_domain = [('partner_id', '=', partner.id), ('portal_visible', '=', True)]
         work_order_count = 0
@@ -738,40 +737,46 @@ class RecordsManagementPortal(CustomerPortal):
             try:
                 work_order_count += request.env[model].search_count(work_order_domain)
             except Exception:
-                pass
-        values['work_order_count'] = work_order_count
+                continue
+        metrics['work_order_count'] = work_order_count
 
         coordinator_domain = [('partner_id', '=', partner.id), ('customer_visible', '=', True)]
         try:
-            values['coordinator_count'] = request.env['work.order.coordinator'].search_count(coordinator_domain)
+            metrics['coordinator_count'] = request.env['work.order.coordinator'].search_count(coordinator_domain)
         except Exception:
-            values['coordinator_count'] = 0
+            metrics['coordinator_count'] = 0
 
         # Certificates and invoices are surfaced on the portal dashboard cards
         try:
             certificate_domain = [('partner_id', '=', partner.id)]
-            values['certificate_count'] = request.env['destruction.certificate'].sudo().search_count(certificate_domain)
+            metrics['certificate_count'] = request.env['destruction.certificate'].sudo().search_count(certificate_domain)
         except Exception:
-            values['certificate_count'] = 0
+            metrics['certificate_count'] = 0
 
         try:
             invoice_domain = [
                 ('partner_id', '=', partner.id),
                 ('move_type', '=', 'out_invoice'),
             ]
-            values['invoice_count'] = request.env['account.move'].sudo().search_count(invoice_domain)
+            metrics['invoice_count'] = request.env['account.move'].sudo().search_count(invoice_domain)
         except Exception:
-            values['invoice_count'] = 0
+            metrics['invoice_count'] = 0
 
         try:
             allowed_partners = commercial_partner.child_ids.ids + [commercial_partner.id]
             request_domain = [('partner_id', 'in', allowed_partners)]
-            values['service_request_count'] = request.env['portal.request'].sudo().search_count(request_domain)
+            metrics['service_request_count'] = request.env['portal.request'].sudo().search_count(request_domain)
         except Exception:
-            values['service_request_count'] = 0
+            metrics['service_request_count'] = 0
 
-        values['portal_dashboard_cards'] = self._build_portal_dashboard_cards(values)
+        metrics['portal_dashboard_cards'] = self._build_portal_dashboard_cards(metrics)
+        return metrics
 
+    def _prepare_home_portal_values(self, counters):
+        """Add Records Management counters to portal home"""
+        values = super()._prepare_home_portal_values(counters)
+        metrics = self._collect_records_management_portal_metrics(values)
+        values.update(metrics)
         return values
 
     def _resolve_menu_info(self, xml_id, fallback_name, fallback_url):
@@ -842,6 +847,29 @@ class RecordsManagementPortal(CustomerPortal):
 
             cards.append(card)
         return cards
+
+    @http.route('/records_management/portal/dashboard_cards', type='json', auth='user', website=True)
+    def portal_dashboard_cards_endpoint(self):
+        """Return assembled dashboard cards for portals that need runtime bootstrap."""
+        metrics = self._collect_records_management_portal_metrics()
+        cards = metrics.get('portal_dashboard_cards', [])
+        response_payload = {
+            'cards': cards,
+            'counts': {
+                key: metrics[key]
+                for key in [
+                    'container_count',
+                    'pickup_request_count',
+                    'work_order_count',
+                    'coordinator_count',
+                    'certificate_count',
+                    'invoice_count',
+                    'service_request_count',
+                ]
+                if key in metrics
+            },
+        }
+        return response_payload
 
     @http.route(['/my/containers', '/my/containers/page/<int:page>'],
                 type='http', auth='user', website=True)

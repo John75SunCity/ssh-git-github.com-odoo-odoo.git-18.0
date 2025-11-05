@@ -155,6 +155,7 @@
         "views/customer_feedback_views.xml",
         "views/customer_inventory_views.xml",
         "views/inventory_item_views.xml",
+    "views/records_work_vehicle_views.xml",
         "views/chain_of_custody_views.xml",
         "views/records_storage_department_user_views.xml",  # MUST load before records_department_views.xml
         "views/records_department_views.xml",
@@ -362,6 +363,7 @@
             "records_management/static/src/portal_components/**/*",
 
             # Legacy Portal Assets (To be gradually migrated)
+            "records_management/static/src/js/portal_dashboard_bootstrap.js",
             "records_management/static/src/js/portal_accessibility.js",
             "records_management/static/src/css/portal_tour.css",
             "records_management/static/src/css/intelligent_search.css",
