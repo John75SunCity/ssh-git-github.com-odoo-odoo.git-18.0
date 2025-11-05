@@ -1,7 +1,23 @@
-"""Migration script to add missing res_partner fields before ORM loads.
+"""Pre-migration script for Records Management 18.0.1.0.1
 
-This migration adds the transitory field configuration columns to res_partner
-that were added in version 18.0.1.0.1 of the records_management module.
+This migration ensures critical database fields exist BEFORE the ORM attempts
+to load models and validate views. This prevents "Field does not exist" errors
+during module installation/upgrade.
+
+Migrations Included:
+1. res_partner transitory field configuration (allow_transitory_items, etc.)
+2. records.storage.department.user assignment fields (role, state, permissions)
+
+Context:
+- Runs automatically when upgrading to version 18.0.1.0.1
+- Safe to run multiple times (checks for existing columns)
+- Applies sensible defaults for existing records
+- Works across all environments (dev, staging, production)
+
+Migration Strategy:
+- Uses IF NOT EXISTS checks to avoid duplicate column errors
+- Sets appropriate default values for backward compatibility
+- Logs all operations for audit trail
 """
 
 import logging
@@ -50,9 +66,16 @@ def _add_column_if_missing(cr, table_name, column_name, column_type, default_val
 
 
 def migrate(cr, version):
-    """Add missing transitory configuration fields to res_partner."""
+    """Add missing fields to res_partner and records.storage.department.user."""
+    _logger.info("=" * 80)
     _logger.info("Running pre-migration for records_management 18.0.1.0.1")
+    _logger.info("=" * 80)
 
+    # ============================================================================
+    # PART 1: res_partner transitory configuration fields
+    # ============================================================================
+    _logger.info("Adding res_partner transitory configuration fields...")
+    
     # Add the new Many2one fields (nullable foreign keys)
     _add_column_if_missing(
         cr, "res_partner", "transitory_field_config_id", "INTEGER"
@@ -71,4 +94,69 @@ def migrate(cr, version):
         cr, "res_partner", "max_transitory_items", "INTEGER", default_value=100
     )
 
-    _logger.info("Pre-migration completed successfully")
+    # ============================================================================
+    # PART 2: records.storage.department.user assignment fields
+    # ============================================================================
+    _logger.info("Adding records.storage.department.user assignment fields...")
+    
+    # Check if the department user table exists yet
+    cr.execute("""
+        SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_name = 'records_storage_department_user'
+        );
+    """)
+    table_exists = cr.fetchone()[0]
+    
+    if table_exists:
+        # Add role field (Selection stored as VARCHAR)
+        _add_column_if_missing(
+            cr, "records_storage_department_user", "role", "VARCHAR", default_value='viewer'
+        )
+        
+        # Add state field (Selection stored as VARCHAR)
+        _add_column_if_missing(
+            cr, "records_storage_department_user", "state", "VARCHAR", default_value='active'
+        )
+        
+        # Add permission boolean fields
+        permission_fields = [
+            'can_view_records',
+            'can_create_records',
+            'can_edit_records',
+            'can_delete_records',
+            'can_export_records'
+        ]
+        
+        for field_name in permission_fields:
+            _add_column_if_missing(
+                cr, "records_storage_department_user", field_name, "BOOLEAN", default_value=False
+            )
+        
+        # Add date and metadata fields
+        _add_column_if_missing(
+            cr, "records_storage_department_user", "start_date", "DATE"
+        )
+        _add_column_if_missing(
+            cr, "records_storage_department_user", "end_date", "DATE"
+        )
+        _add_column_if_missing(
+            cr, "records_storage_department_user", "priority", "VARCHAR", default_value='normal'
+        )
+        _add_column_if_missing(
+            cr, "records_storage_department_user", "access_level", "VARCHAR", default_value='internal'
+        )
+        _add_column_if_missing(
+            cr, "records_storage_department_user", "description", "VARCHAR"
+        )
+        _add_column_if_missing(
+            cr, "records_storage_department_user", "notes", "TEXT"
+        )
+        
+        _logger.info("✅ Department user assignment fields added successfully")
+    else:
+        _logger.info("Table records_storage_department_user does not exist yet - will be created by ORM")
+
+    _logger.info("=" * 80)
+    _logger.info("Pre-migration completed successfully!")
+    _logger.info("=" * 80)
