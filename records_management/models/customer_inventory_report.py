@@ -6,7 +6,7 @@ This model is used to generate, configure, and store customer inventory reports.
 It defines the parameters for the report and tracks its generation status.
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.2.29
 License: LGPL-3
 """
 

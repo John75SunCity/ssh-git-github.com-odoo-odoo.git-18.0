@@ -551,6 +551,8 @@ class RmModuleConfigurator(models.Model):
                     publish_updates['is_published'] = enabled
                 if 'published' in Menu._fields:
                     publish_updates['published'] = enabled
+                if 'active' in Menu._fields:
+                    publish_updates['active'] = enabled
                     
                 if publish_updates:
                     try:

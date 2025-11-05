@@ -335,40 +335,42 @@
     <!-- Portal sidebar menu -->
     <template id="portal_my_home_menu_work_orders" inherit_id="portal.portal_my_home" customize_show="True">
         <xpath expr="//div[hasclass('o_portal_my_home')]" position="inside">
-            <div class="col-lg-6">
-                <a href="/my/work_orders" class="list-group-item list-group-item-action d-flex align-items-center p-3">
-                    <div class="mr-3">
-                        <i class="fa fa-tasks fa-2x text-primary"/>
-                    </div>
-                    <div class="flex-grow-1">
-                        <strong>Work Orders</strong>
-                        <br/>
-                        <span class="text-muted">View and track your service requests</span>
-                    </div>
-                    <div>
-                        <span class="badge badge-pill badge-primary">
-                            <t t-esc="work_order_count or 0"/>
-                        </span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-6">
-                <a href="/my/coordinators" class="list-group-item list-group-item-action d-flex align-items-center p-3">
-                    <div class="mr-3">
-                        <i class="fa fa-sitemap fa-2x text-info"/>
-                    </div>
-                    <div class="flex-grow-1">
-                        <strong>Coordinators</strong>
-                        <br/>
-                        <span class="text-muted">Multi-service coordination status</span>
-                    </div>
-                    <div>
-                        <span class="badge badge-pill badge-info">
-                            <t t-esc="coordinator_count or 0"/>
-                        </span>
-                    </div>
-                </a>
-            </div>
+            <t t-if="not (portal_dashboard_cards or [])">
+                <div class="col-lg-6">
+                    <a href="/my/work_orders" class="list-group-item list-group-item-action d-flex align-items-center p-3">
+                        <div class="mr-3">
+                            <i class="fa fa-tasks fa-2x text-primary"/>
+                        </div>
+                        <div class="flex-grow-1">
+                            <strong>Work Orders</strong>
+                            <br/>
+                            <span class="text-muted">View and track your service requests</span>
+                        </div>
+                        <div>
+                            <span class="badge badge-pill badge-primary">
+                                <t t-esc="work_order_count or 0"/>
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6">
+                    <a href="/my/coordinators" class="list-group-item list-group-item-action d-flex align-items-center p-3">
+                        <div class="mr-3">
+                            <i class="fa fa-sitemap fa-2x text-info"/>
+                        </div>
+                        <div class="flex-grow-1">
+                            <strong>Coordinators</strong>
+                            <br/>
+                            <span class="text-muted">Multi-service coordination status</span>
+                        </div>
+                        <div>
+                            <span class="badge badge-pill badge-info">
+                                <t t-esc="coordinator_count or 0"/>
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            </t>
         </xpath>
     </template>
 

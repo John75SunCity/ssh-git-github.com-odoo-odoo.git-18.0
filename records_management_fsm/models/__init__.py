@@ -9,3 +9,4 @@ from . import fsm_task
 from . import fsm_task_service_line
 from . import mobile_fsm_integration
 from . import shredding_service
+from . import setup

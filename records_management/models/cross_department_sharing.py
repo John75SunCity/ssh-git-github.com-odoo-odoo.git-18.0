@@ -7,7 +7,7 @@ It provides an invitation and approval workflow for sharing access between
 departments while maintaining security and audit trails.
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.2.29
 License: LGPL-3
 """
 

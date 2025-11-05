@@ -6,7 +6,7 @@ Manages individual content items within a records container, such as files,
 folders, or other physical media. Tracks metadata, lifecycle, and retention.
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.2.29
 License: LGPL-3
 """
 

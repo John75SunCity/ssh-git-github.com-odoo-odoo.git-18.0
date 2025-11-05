@@ -6,7 +6,7 @@ Represents a single line item within a customer inventory report, detailing
 a specific container and its contents.
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.2.29
 License: LGPL-3
 """
 

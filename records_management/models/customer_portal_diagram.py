@@ -15,7 +15,7 @@ Known limitations:
 - Search query filtering is implemented for basic substring matching on node labels/titles
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.2.29
 License: LGPL-3
 """
 

@@ -3,7 +3,7 @@
     "version": "18.0.1.0.0",
     "category": "Records Management",
     "summary": "FSM integration for Records Management",
-    "author": "Your Name",
+    "author": "John Cope",
     "license": "LGPL-3",
     # Ensure all referenced actions exist (fleet vehicles menu uses fleet action)
     "depends": ["records_management", "project", "fleet"],
@@ -13,6 +13,7 @@
     "data": [
         "security/ir.model.access.csv",
         "data/fsm_model_external_ids_data.xml",
+        "data/fleet_fsm_action_bridge.xml",
         "views/enhanced_fsm_integration_views.xml",
         "views/fsm_notification_manager_views.xml",
         "views/fsm_notification_views.xml",

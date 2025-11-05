@@ -5,6 +5,12 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
 
     var core = require('web.core');
     var rpc = require('web.rpc');
+    var $ = window.jQuery || window.$;
+
+    if (!$) {
+        console.warn('[records_management.portal_inventory_highlights] jQuery not found – skipping interactive inventory helpers.');
+        return;
+    }
 
     $(document).ready(function () {
         // Multi-select

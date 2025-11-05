@@ -7,7 +7,7 @@ This model allows for creating different pricing levels based on volume,
 customer type, and included features like NAID compliance and support.
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.2.29
 License: LGPL-3
 """
 
