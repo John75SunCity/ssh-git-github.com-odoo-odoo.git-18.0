@@ -7,7 +7,7 @@
     <!-- ================================================================== -->
 
     <template id="portal_my_home_preconfigured" name="Records Management Portal Home (Pre-configured)" inherit_id="portal.portal_my_home">
-        <xpath expr="//div[hasclass('o_portal_my_home')]" position="before">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
             <t t-set="dashboard_cards" t-value="portal_dashboard_cards or []"/>
             <div class="row o_rm_portal_cards g-3 mb-4" t-if="dashboard_cards">
                 <t t-foreach="dashboard_cards" t-as="card">
