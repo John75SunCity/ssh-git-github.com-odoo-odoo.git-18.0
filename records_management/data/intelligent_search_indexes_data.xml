@@ -29,7 +29,7 @@
         <!-- Note: These are declared but may need manual creation in PostgreSQL -->
         <!-- Guidance: Composite indexes cannot be created via XML data files in Odoo.
              You should create them using a migration script or PostgreSQL directly.
-             See: https://www.odoo.com/documentation/19.0/developer/reference/backend/database.html#adding-indexes
+             See: https://www.odoo.com/documentation/18.0/developer/reference/backend/database.html#adding-indexes
              Example migration script:
              from odoo import api, SUPERUSER_ID
 
