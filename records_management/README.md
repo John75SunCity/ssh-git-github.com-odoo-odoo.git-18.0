@@ -72,7 +72,7 @@ Common replacements:
 
 If no results are reported, the codebase is free of legacy retention policy boolean dependencies.
 
-# Records Management System - Enterprise Edition for Odoo 19.0
+# Records Management System - Enterprise Edition for Odoo 18.0
 
 ## 🏆 **ENTERPRISE-GRADE DOCUMENT MANAGEMENT SYSTEM** 🏆
 
@@ -92,10 +92,10 @@ A comprehensive, enterprise-grade physical document management system with advan
 
 ## 🎯 **VERSION INFORMATION**
 
-**Current Version:** 18.0.0.2.29
+**Current Version:** 18.0.1.0.0
 **Major Update:** Enterprise Features & AI Analytics
-**Compatibility:** Odoo 19.0
-**Last Updated:** July 2025
+**Compatibility:** Odoo 18.0
+**Last Updated:** January 2025
 
 ## 🚀 **ENTERPRISE FEATURES**
 
@@ -393,9 +393,9 @@ Future Enhancements (Roadmap Candidates):
 
 ---
 
-## 🔍 Key Improvements in v6.0.0
+## 🔍 Key Improvements in v18.0.1.0.0
 
-### Odoo 19.0 Compatibility
+### Odoo 18.0 Compatibility
 
 - ✅ Removed deprecated `frontdesk` dependency
 - ✅ Updated visitor model to standalone implementation
@@ -437,7 +437,7 @@ Future Enhancements (Roadmap Candidates):
 
 ### Getting Help
 
-- Check the [Odoo Documentation](https://www.odoo.com/documentation/19.0/)
+- Check the [Odoo Documentation](https://www.odoo.com/documentation/18.0/)
 - Visit the module's GitHub repository
 - Contact: `John75SunCity`
 
@@ -454,9 +454,10 @@ This module is licensed under LGPL-3.
 
 ## 🔄 Change Log
 
-### v6.0.0 (January 2025)
+### v18.0.1.0.0 (January 2025)
 
-- Fixed Odoo 19.0 compatibility issues
+- Version standardization to Odoo 18.0 format
+- Fixed Odoo 18.0 compatibility issues
 - Removed deprecated dependencies
 - Enhanced visitor management system
 - Improved syntax validation and error handling

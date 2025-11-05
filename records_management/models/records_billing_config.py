@@ -529,7 +529,7 @@ class RecordsBillingConfig(models.Model):
         })
 
         # ============================================================================
-        # BILLING WORKFLOW LOGIC - Odoo 19.0 Implementation
+        # BILLING WORKFLOW LOGIC - Odoo 18.0 Implementation
         # ============================================================================
 
         # 1. Check for overdue payments and send reminders
@@ -555,7 +555,7 @@ class RecordsBillingConfig(models.Model):
         })
 
     # ============================================================================
-    # BILLING WORKFLOW IMPLEMENTATION METHODS - Odoo 19.0 Best Practices
+    # BILLING WORKFLOW IMPLEMENTATION METHODS - Odoo 18.0 Best Practices
     # ============================================================================
 
     def action_process_overdue_payments(self):

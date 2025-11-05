@@ -21,7 +21,7 @@ _logger = logging.getLogger(__name__)
 # ============================================================================
 # BARCODE FIELD TYPE (Using Odoo's Native Barcode Support)
 # ============================================================================
-# Note: Odoo 19.0 has native barcode support through the 'barcodes' module
+# Note: Odoo 18.0 has native barcode support through the 'barcodes' module
 # No external Python packages needed for basic barcode functionality
 
 
