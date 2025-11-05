@@ -4,42 +4,42 @@
         <!-- Enhanced Portal Navigation with Feedback and Centralized Documents -->
         <template id="portal_my_home_inventory" name="Portal My Home : Inventory" inherit_id="portal.portal_my_home" priority="40">
             <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-                <t t-call="portal.portal_docs_entry">
+                <t t-if="not (portal_dashboard_cards or [])" t-call="portal.portal_docs_entry">
                     <t t-set="title">My Inventory</t>
                     <t t-set="url" t-value="'/my/inventory'"/>
                     <t t-set="placeholder_count" t-value="'inventory_count'"/>
                 </t>
-                <t t-call="portal.portal_docs_entry">
+                <t t-if="not (portal_dashboard_cards or [])" t-call="portal.portal_docs_entry">
                     <t t-set="title">Billing</t>
                     <t t-set="url" t-value="'/my/billing'"/>
                     <t t-set="placeholder_count" t-value="'billing_count'"/>
                 </t>
-                <t t-call="portal.portal_docs_entry">
+                <t t-if="not (portal_dashboard_cards or [])" t-call="portal.portal_docs_entry">
                     <t t-set="title">Quotes</t>
                     <t t-set="url" t-value="'/my/quotes'"/>
                     <t t-set="placeholder_count" t-value="'quotes_count'"/>
                 </t>
-                <t t-call="portal.portal_docs_entry">
+                <t t-if="not (portal_dashboard_cards or [])" t-call="portal.portal_docs_entry">
                     <t t-set="title">Requests</t>
                     <t t-set="url" t-value="'/my/requests'"/>
                     <t t-set="placeholder_count" t-value="'requests_count'"/>
                 </t>
-                <t t-call="portal.portal_docs_entry">
+                <t t-if="not (portal_dashboard_cards or [])" t-call="portal.portal_docs_entry">
                     <t t-set="title">User Management</t>
                     <t t-set="url" t-value="'/my/users'"/>
                     <t t-set="placeholder_count" t-value="'users_count'"/>
                 </t>
-                <t t-call="portal.portal_docs_entry">
+                <t t-if="not (portal_dashboard_cards or [])" t-call="portal.portal_docs_entry">
                     <t t-set="title">Portal Overview</t>
                     <t t-set="url" t-value="'/my/overview'"/>
                     <t t-set="placeholder_count" t-value="'overview_count'"/>
                 </t>
-                <t t-call="portal.portal_docs_entry">
+                <t t-if="not (portal_dashboard_cards or [])" t-call="portal.portal_docs_entry">
                     <t t-set="title">Feedback &amp; Suggestions</t>
                     <t t-set="url" t-value="'/my/feedback'"/>
                     <t t-set="placeholder_count" t-value="'feedback_count'"/>
                 </t>
-                <t t-call="portal.portal_docs_entry">
+                <t t-if="not (portal_dashboard_cards or [])" t-call="portal.portal_docs_entry">
                     <t t-set="title">Document Center</t>
                     <t t-set="url" t-value="'/my/docs'"/>
                     <t t-set="placeholder_count" t-value="'docs_count'"/>

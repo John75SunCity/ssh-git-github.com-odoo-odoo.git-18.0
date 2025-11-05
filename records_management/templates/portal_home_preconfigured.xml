@@ -7,60 +7,58 @@
     <!-- ================================================================== -->
 
     <template id="portal_my_home_preconfigured" name="Records Management Portal Home (Pre-configured)" inherit_id="portal.portal_my_home">
-        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
-            <!-- Records Management Portal Features Always Enabled -->
-
-            <div class="o_portal_sidebar_section mb-4">
-                <h4 class="mb-3">
-                    <i class="fa fa-archive"/> Records Management
-                </h4>
-                <t t-set="dashboard_cards" t-value="portal_dashboard_cards or []"/>
+        <xpath expr="//div[hasclass('o_portal_my_home')]" position="before">
+            <t t-set="dashboard_cards" t-value="portal_dashboard_cards or []"/>
+            <div class="row o_rm_portal_cards g-3 mb-4" t-if="dashboard_cards">
                 <t t-foreach="dashboard_cards" t-as="card">
-                    <div class="card mb-3" t-attf-class="card mb-3 #{'border-info' if card.get('key') == 'help' else ''}">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <t t-if="card.get('icon_class')">
-                                    <i t-att-class="card['icon_class']"/>
-                                </t>
-                                <t t-esc="card['title']"/>
-                            </h5>
-                            <p class="card-text text-muted small">
-                                <t t-esc="card['description']"/>
-                            </p>
-                            <t t-if="card['type'] == 'summary'">
-                                <t t-set="badge" t-value="card.get('badge')"/>
-                                <t t-set="primary_button" t-value="(card.get('buttons') or []) and card.get('buttons')[0]"/>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge badge-info" t-if="badge and badge.get('value')">
-                                        <t t-esc="badge['value']"/> <t t-esc="badge['label']"/>
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="card h-100 shadow-sm border-0" t-attf-class="card h-100 shadow-sm border-0 #{'border-info border-2' if card.get('key') == 'help' else ''}">
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-start mb-2">
+                                    <span class="me-2" t-if="card.get('icon_class')">
+                                        <i t-att-class="card['icon_class']"/>
                                     </span>
-                                    <span class="badge badge-secondary" t-elif="badge">
-                                        <t t-esc="badge['empty_label']"/>
-                                    </span>
-                                    <a t-if="primary_button" t-att-href="primary_button['url']" t-att-class="primary_button['classes']">
-                                        <t t-if="primary_button.get('icon_class')">
-                                            <i t-att-class="primary_button['icon_class']"/>
-                                        </t>
-                                        <t t-esc="primary_button['label']"/>
-                                    </a>
+                                    <h5 class="card-title mb-0">
+                                        <t t-esc="card['title']"/>
+                                    </h5>
                                 </div>
-                            </t>
-                            <t t-if="card['type'] == 'button_group'">
-                                <div class="btn-group-vertical w-100 mt-2">
-                                    <t t-foreach="card.get('buttons', [])" t-as="button">
-                                        <a t-att-href="button['url']" t-att-class="button['classes']">
-                                            <t t-if="button.get('icon_class')">
-                                                <i t-att-class="button['icon_class']"/>
+                                <p class="card-text text-muted small flex-grow-1">
+                                    <t t-esc="card['description']"/>
+                                </p>
+                                <t t-if="card['type'] == 'summary'">
+                                    <t t-set="badge" t-value="card.get('badge')"/>
+                                    <t t-set="primary_button" t-value="(card.get('buttons') or []) and card.get('buttons')[0]"/>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <span class="badge bg-info text-white" t-if="badge and badge.get('value')">
+                                            <t t-esc="badge['value']"/> <t t-esc="badge['label']"/>
+                                        </span>
+                                        <span class="badge bg-secondary" t-elif="badge">
+                                            <t t-esc="badge['empty_label']"/>
+                                        </span>
+                                        <a t-if="primary_button" t-att-href="primary_button['url']" t-att-class="primary_button['classes']">
+                                            <t t-if="primary_button.get('icon_class')">
+                                                <i t-att-class="primary_button['icon_class']"/>
                                             </t>
-                                            <t t-esc="button['label']"/>
+                                            <t t-esc="primary_button['label']"/>
                                         </a>
-                                    </t>
-                                </div>
-                            </t>
+                                    </div>
+                                </t>
+                                <t t-if="card['type'] == 'button_group'">
+                                    <div class="btn-group-vertical w-100 mt-3 gap-2">
+                                        <t t-foreach="card.get('buttons', [])" t-as="button">
+                                            <a t-att-href="button['url']" t-att-class="button['classes']">
+                                                <t t-if="button.get('icon_class')">
+                                                    <i t-att-class="button['icon_class']"/>
+                                                </t>
+                                                <t t-esc="button['label']"/>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
                         </div>
                     </div>
                 </t>
-
             </div>
         </xpath>
     </template>

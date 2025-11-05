@@ -776,14 +776,26 @@ class RecordsManagementPortal(CustomerPortal):
 
     def _resolve_menu_info(self, xml_id, fallback_name, fallback_url):
         menu = request.env.ref(xml_id, raise_if_not_found=False)
+        base_url = request.httprequest.host_url.rstrip('/') if request.httprequest else ''
+
+        def _ensure_absolute(url):
+            if not url:
+                return ''
+            if url.startswith('http://') or url.startswith('https://'):
+                return url
+            if base_url:
+                normalized = url if url.startswith('/') else f'/{url}'
+                return f"{base_url}{normalized}"
+            return url
+
         if menu:
             return {
                 'name': menu.name,
-                'url': menu.url or fallback_url,
+                'url': _ensure_absolute(menu.url or fallback_url),
             }
         return {
             'name': fallback_name,
-            'url': fallback_url,
+            'url': _ensure_absolute(fallback_url),
         }
 
     def _build_portal_dashboard_cards(self, values):
