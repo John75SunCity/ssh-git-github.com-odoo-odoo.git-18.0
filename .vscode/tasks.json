@@ -2,6 +2,23 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "🚀 Deploy to Staging (Sync Enterprise → main)",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"scripts/sync-to-staging.sh",
+				"${input:commitMessage}"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"problemMatcher": []
+		},
+		{
 			"label": "Validate Records Management Module",
 			"type": "shell",
 			"command": "python3",
