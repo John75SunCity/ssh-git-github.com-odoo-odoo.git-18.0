@@ -22,7 +22,7 @@ echo -e "${BLUE}═════════════════════�
 COMMIT_MSG="${1:-sync: Deploy tested changes from Enterprise to staging (main)}"
 
 # Check if we're on the Enterprise branch
-CURRENT_BRANCH=$(git branch --show-current)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$CURRENT_BRANCH" != "$ENTERPRISE_BRANCH" ]; then
     echo -e "${YELLOW}⚠️  Currently on: $CURRENT_BRANCH${NC}"
     echo -e "${BLUE}Switching to: $ENTERPRISE_BRANCH${NC}"
@@ -80,7 +80,7 @@ git checkout "$ENTERPRISE_BRANCH"
 echo -e "\n${GREEN}═══════════════════════════════════════════════════════════${NC}"
 echo -e "${GREEN}✅ SUCCESS! Staging deployment triggered on Odoo.sh${NC}"
 echo -e "${GREEN}═══════════════════════════════════════════════════════════${NC}"
-echo -e "${BLUE}📍 Current branch:${NC} $(git branch --show-current)"
+echo -e "${BLUE}📍 Current branch:${NC} $(git rev-parse --abbrev-ref HEAD)"
 echo -e "${BLUE}🚀 Odoo.sh staging is deploying from:${NC} $STAGING_BRANCH"
 echo -e "${BLUE}💡 Monitor deployment at:${NC} https://odoo.sh"
 echo ""
