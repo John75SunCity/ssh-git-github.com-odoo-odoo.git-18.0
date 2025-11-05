@@ -362,6 +362,7 @@
             "records_management/static/src/portal_components/**/*",
 
             # Legacy Portal Assets (To be gradually migrated)
+            "records_management/static/src/js/portal_accessibility.js",
             "records_management/static/src/css/portal_tour.css",
             "records_management/static/src/css/intelligent_search.css",
             "records_management/static/src/css/customer_portal_diagram.css",

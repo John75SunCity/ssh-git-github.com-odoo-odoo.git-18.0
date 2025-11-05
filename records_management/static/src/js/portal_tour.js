@@ -16,6 +16,14 @@
 import { registry } from "@web/core/registry";
 import { tourManager } from "@web_tour/tour_manager";
 
+const $ = window.jQuery;
+const hasJQuery = Boolean($);
+const withJQuery = (callback) => {
+    if (hasJQuery) {
+        callback($);
+    }
+};
+
 // Attempt to access legacy tour API if present (older compatibility layers)
 let legacyTourApi;
 try {
@@ -42,7 +50,9 @@ const legacyPortalAppTour = {
                 position: 'bottom',
                 run: function () {
                     // Add entrance animation
-                    $('.hero-section').addClass('animate__animated animate__fadeIn');
+                    withJQuery(() => {
+                        $('.hero-section').addClass('animate__animated animate__fadeIn');
+                    });
                 },
             },
             {
@@ -59,7 +69,9 @@ const legacyPortalAppTour = {
                 content: '<div class="tour-step-enhanced"><h4><i class="fa fa-search text-primary"></i> Advanced Inventory Management</h4><p>Search through thousands of documents with Google-like precision. Use bulk operations, advanced filters, and export capabilities.</p><ul class="mt-2"><li>Smart search with autocomplete</li><li>Bulk selection and actions</li><li>Advanced filtering system</li><li>Export in multiple formats</li></ul></div>',
                 position: 'right',
                 run: function () {
-                    $(this.trigger).addClass('tour-highlight-card');
+                    withJQuery(() => {
+                        $(this.trigger).addClass('tour-highlight-card');
+                    });
                 },
             },
             {
@@ -67,7 +79,9 @@ const legacyPortalAppTour = {
                 content: '<div class="tour-step-enhanced"><h4><i class="fa fa-calculator text-success"></i> Self-Service Quotes & Billing</h4><p>Generate instant PDF quotes and manage your billing transparently. No more waiting for quotes!</p><ul class="mt-2"><li>Instant PDF generation</li><li>PO number management</li><li>Billing change requests</li><li>Complete transparency</li></ul></div>',
                 position: 'left',
                 run: function () {
-                    $(this.trigger).addClass('tour-highlight-card');
+                    withJQuery(() => {
+                        $(this.trigger).addClass('tour-highlight-card');
+                    });
                 },
             },
             {
@@ -75,7 +89,9 @@ const legacyPortalAppTour = {
                 content: '<div class="tour-step-enhanced"><h4><i class="fa fa-cogs text-warning"></i> Service Requests & Tracking</h4><p>Submit destruction and service requests with electronic signatures. Track everything in real-time with FSM integration.</p><ul class="mt-2"><li>Electronic signature integration</li><li>Real-time FSM tracking</li><li>Automated certificates</li><li>SMS notifications</li></ul></div>',
                 position: 'right',
                 run: function () {
-                    $(this.trigger).addClass('tour-highlight-card');
+                    withJQuery(() => {
+                        $(this.trigger).addClass('tour-highlight-card');
+                    });
                 },
             },
             {
@@ -83,7 +99,9 @@ const legacyPortalAppTour = {
                 content: '<div class="tour-step-enhanced"><h4><i class="fa fa-users text-info"></i> Enterprise User Management</h4><p>Import users in bulk via CSV, assign granular access levels, and track all activity with comprehensive audit trails.</p><ul class="mt-2"><li>CSV bulk import</li><li>Role-based access control</li><li>Department management</li><li>Activity tracking</li></ul></div>',
                 position: 'left',
                 run: function () {
-                    $(this.trigger).addClass('tour-highlight-card');
+                    withJQuery(() => {
+                        $(this.trigger).addClass('tour-highlight-card');
+                    });
                 },
             },
             {
@@ -91,9 +109,11 @@ const legacyPortalAppTour = {
                 content: '<div class="tour-step-compliance"><h4><i class="fa fa-shield text-danger"></i> NAID AAA Compliance & Security</h4><p class="text-emphasis"><strong>This is our compliance cornerstone!</strong></p><div class="compliance-highlights mt-3"><div class="row"><div class="col-6"><h6><i class="fa fa-certificate text-warning"></i> NAID AAA Certified</h6><p class="small">Industry-leading data destruction standards</p></div><div class="col-6"><h6><i class="fa fa-file-text text-info"></i> Complete Audit Trails</h6><p class="small">Every action logged and timestamped</p></div><div class="col-6"><h6><i class="fa fa-link text-success"></i> Chain of Custody</h6><p class="small">Unbroken documentation trail</p></div><div class="col-6"><h6><i class="fa fa-chart-line text-primary"></i> Compliance Reports</h6><p class="small">Regulatory reporting made easy</p></div></div></div></div>',
                 position: 'right',
                 run: function () {
-                    $(this.trigger).addClass('tour-highlight-compliance');
-                    // Show compliance badges animation
-                    $('.compliance-badges .badge').addClass('animate__animated animate__pulse');
+                    withJQuery(() => {
+                        $(this.trigger).addClass('tour-highlight-compliance');
+                        // Show compliance badges animation
+                        $('.compliance-badges .badge').addClass('animate__animated animate__pulse');
+                    });
                 },
             },
             {
@@ -101,7 +121,9 @@ const legacyPortalAppTour = {
                 content: '<div class="tour-step-enhanced"><h4><i class="fa fa-brain text-dark"></i> AI-Powered Insights (Coming Soon)</h4><p>Future AI features will provide smart recommendations and predictive analytics based on your usage patterns.</p><ul class="mt-2"><li>Smart recommendations</li><li>Predictive analytics</li><li>Usage pattern analysis</li><li>Intelligent alerts</li></ul><div class="alert alert-info mt-2"><i class="fa fa-lightbulb"></i> <strong>Innovation Preview:</strong> This feature represents our commitment to cutting-edge technology!</div></div>',
                 position: 'left',
                 run: function () {
-                    $(this.trigger).addClass('tour-highlight-future');
+                    withJQuery(() => {
+                        $(this.trigger).addClass('tour-highlight-future');
+                    });
                 },
             },
             {
@@ -109,7 +131,9 @@ const legacyPortalAppTour = {
                 content: '<div class="tour-step-enhanced"><h4><i class="fa fa-clock-o text-primary"></i> Activity & Smart Suggestions</h4><p>Stay informed with recent activity feeds and receive intelligent suggestions to optimize your workflow.</p></div>',
                 position: 'top',
                 run: function () {
-                    $(this.trigger).addClass('tour-highlight-section');
+                    withJQuery(() => {
+                        $(this.trigger).addClass('tour-highlight-section');
+                    });
                 },
             },
             {
@@ -117,7 +141,9 @@ const legacyPortalAppTour = {
                 content: '<div class="tour-step-compliance"><h4><i class="fa fa-award text-warning"></i> Trust & Compliance Badges</h4><p><strong>Your data security is guaranteed by industry certifications:</strong></p><div class="mt-3"><div class="badge badge-success badge-lg mr-2 mb-2"><i class="fa fa-certificate"></i> NAID AAA Certified</div><div class="badge badge-info badge-lg mr-2 mb-2"><i class="fa fa-lock"></i> SOC 2 Compliant</div><div class="badge badge-warning badge-lg mb-2"><i class="fa fa-shield"></i> HIPAA Secure</div></div><p class="mt-2 text-muted">These certifications ensure the highest standards of data protection and destruction.</p></div>',
                 position: 'bottom',
                 run: function () {
-                    $('.compliance-badges .badge').addClass('animate__animated animate__bounceIn');
+                    withJQuery(() => {
+                        $('.compliance-badges .badge').addClass('animate__animated animate__bounceIn');
+                    });
                 },
             },
             {
@@ -125,7 +151,9 @@ const legacyPortalAppTour = {
                 content: '<div class="tour-step-enhanced"><h4><i class="fa fa-play-circle text-success"></i> Interactive Tour Available</h4><p>You can restart this tour anytime by clicking this button. There are also feature-specific tours available throughout the portal.</p></div>',
                 position: 'top',
                 run: function () {
-                    $(this.trigger).addClass('animate__animated animate__pulse animate__infinite');
+                    withJQuery(() => {
+                        $(this.trigger).addClass('animate__animated animate__pulse animate__infinite');
+                    });
                 },
             },
             {
@@ -139,7 +167,9 @@ const legacyPortalAppTour = {
                 position: 'screen',
                 run: function () {
                     // Cleanup tour highlights
-                    $('.tour-highlight-card, .tour-highlight-compliance, .tour-highlight-future, .tour-highlight-section').removeClass('tour-highlight-card tour-highlight-compliance tour-highlight-future tour-highlight-section');
+                    withJQuery(() => {
+                        $('.tour-highlight-card, .tour-highlight-compliance, .tour-highlight-future, .tour-highlight-section').removeClass('tour-highlight-card tour-highlight-compliance tour-highlight-future tour-highlight-section');
+                    });
                     
                     // Show completion celebration
                     setTimeout(() => {
@@ -166,7 +196,9 @@ const legacyInventoryFeatureTour = {
                 content: '<div class="tour-step-enhanced"><h4><i class="fa fa-search text-primary"></i> Google-Like Search</h4><p>Type anything to search across all your inventory. Try commands like "active boxes" or "destroy document".</p></div>',
                 position: 'bottom',
                 run: function () {
-                    $(this.trigger).focus().attr('placeholder', 'Try typing "active boxes"...');
+                    withJQuery(() => {
+                        $(this.trigger).focus().attr('placeholder', 'Try typing "active boxes"...');
+                    });
                 },
             },
             {
@@ -211,6 +243,12 @@ window.startInventoryTour = function() {
 
     // Enhanced tour with skip option
     window.startEnhancedTour = function() {
+        if (!hasJQuery) {
+            console.warn('[portal_tour] jQuery not available; falling back to direct tour start.');
+            window.portalFunctions.startPortalTour();
+            return;
+        }
+
         const tourModal = $(`
             <div class="modal fade" id="tourModal" tabindex="-1">
                 <div class="modal-dialog">
@@ -405,6 +443,10 @@ window.portalFunctions = {
 
     // Show video tutorial modal
     showVideoTour: function() {
+        if (!hasJQuery) {
+            console.warn('[portal_tour] jQuery not available; cannot display video tour modal.');
+            return;
+        }
         $('#videoTourModal').modal('show');
     },
 
