@@ -6,7 +6,7 @@ Manages discount rules that can be applied to services or products based on
 various criteria like quantity, volume, or specific timeframes.
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.2.29
 License: LGPL-3
 """
 

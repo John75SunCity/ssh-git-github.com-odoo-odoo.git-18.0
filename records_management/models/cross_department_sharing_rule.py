@@ -6,7 +6,7 @@ This module manages access rules created for cross-department sharing.
 It tracks temporary access permissions and handles their automatic expiration.
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.2.29
 License: LGPL-3
 """
 

@@ -6,21 +6,27 @@ Provides web interface for Records Management dashboard with comprehensive
 analytics, real-time data, and mobile-responsive interface.
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.2.29
 License: LGPL-3
 """
 
 # Standard library imports
+import json
+import logging
+from types import SimpleNamespace
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 # Odoo core imports
-from odoo import http, fields, _
+from odoo import Command, http, fields, _
 from odoo.http import request
-from odoo.exceptions import AccessError, UserError
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 # Odoo addons imports
 from odoo.addons.portal.controllers.portal import CustomerPortal
+
+
+_logger = logging.getLogger(__name__)
 
 
 class RecordsManagementController(http.Controller):
@@ -708,6 +714,284 @@ class RecordsManagementPortal(CustomerPortal):
             _logger = logging.getLogger(__name__)
             _logger.error("Portal container creation error: %s", str(e))
             return request.redirect('/my/containers/new?error=%s' % str(e))
+
+    # ============================================================================
+    # PORTAL DOCUMENT RETRIEVAL
+    # ============================================================================
+    @http.route(['/my/document-retrieval', '/my/document-retrieval/page/<int:page>'], type='http', auth='user', website=True)
+    def portal_document_retrieval(self, page=1, **kw):  # pylint: disable=unused-argument
+        """Render the unified document retrieval portal page."""
+        values = self._prepare_portal_layout_values()
+        partner = self._get_portal_partner()
+
+        base_rates, customer_rates, has_custom_rates = self._get_retrieval_rates(partner)
+
+        container_domain = [('partner_id', '=', partner.id), ('active', '=', True)]
+        document_domain = [('partner_id', '=', partner.id), ('active', '=', True)]
+
+        containers = request.env['records.container'].search(container_domain, order='create_date desc', limit=100)
+        documents = request.env['records.document'].search(document_domain, order='create_date desc', limit=100)
+
+        work_orders = request.env['records.retrieval.order'].search([
+            ('partner_id', '=', partner.id),
+            ('portal_visible', '=', True)
+        ], order='request_date desc', limit=10)
+
+        values.update({
+            'page_name': 'document_retrieval',
+            'default_url': '/my/document-retrieval',
+            'containers': containers,
+            'documents': documents,
+            'work_orders': work_orders,
+            'base_rates': base_rates,
+            'customer_rates': customer_rates,
+            'has_custom_rates': has_custom_rates,
+            'json': json,
+            'error_message': kw.get('error') or kw.get('error_message'),
+        })
+
+        return request.render('records_management.portal_document_retrieval', values)
+
+    @http.route(['/my/document-retrieval/create'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_document_retrieval_create(self, **post):
+        """Handle creation of a document retrieval work order from the portal."""
+        partner = self._get_portal_partner()
+
+        try:
+            items_payload = self._parse_retrieval_items(post.get('items'))
+            if not items_payload:
+                raise UserError(_('Please add at least one item to retrieve.'))
+
+            delivery_instructions = self._build_delivery_instructions(post)
+            scheduled_date = self._parse_delivery_date(post.get('delivery_date'))
+
+            line_commands = []
+            for index, item in enumerate(items_payload, start=1):
+                description = item['description']
+                file_name = description or _('Portal Retrieval Item %s') % index
+                line_vals = {
+                    'file_name': file_name,
+                    'file_description': description,
+                    'barcode': item['barcode'],
+                    'item_type': self._map_portal_item_type(item['type']),
+                    'partner_id': partner.id,
+                    'notes': description,
+                }
+                if item['container_id']:
+                    line_vals['container_id'] = item['container_id']
+                if item['document_id']:
+                    line_vals['file_reference'] = _('Document ID %s') % item['document_id']
+                line_commands.append(Command.create(line_vals))
+
+            order_vals = {
+                'partner_id': partner.id,
+                'priority': self._map_portal_priority(post.get('priority')),
+                'request_description': (post.get('retrieval_notes') or '').strip(),
+                'delivery_instructions': delivery_instructions,
+                'scheduled_date': scheduled_date,
+                'delivery_method': 'physical',
+                'line_ids': line_commands,
+            }
+
+            order = request.env['records.retrieval.order'].create(order_vals)
+
+            return request.redirect('/my/document-retrieval/%s' % order.id)
+
+        except (UserError, ValidationError) as e:
+            return self.portal_document_retrieval(error=str(e))
+        except Exception as e:  # pragma: no cover - defensive portal handling
+            _logger.exception('Portal retrieval order creation failed')
+            fallback = _('We could not submit your retrieval request. Please contact support if the issue persists.')
+            return self.portal_document_retrieval(error=fallback)
+
+    @http.route(['/my/document-retrieval/<int:order_id>'], type='http', auth='user', website=True)
+    def portal_document_retrieval_detail(self, order_id, **kw):  # pylint: disable=unused-argument
+        """Display portal detail view for a retrieval order."""
+        partner = self._get_portal_partner()
+        order = request.env['records.retrieval.order'].sudo().browse(order_id)
+
+        if not order or not order.exists() or order.partner_id.commercial_partner_id.id != partner.id or not order.portal_visible:
+            return request.redirect('/my/document-retrieval')
+
+        values = self._prepare_portal_layout_values()
+        values.update({
+            'page_name': 'document_retrieval',
+            'work_order': order,
+        })
+
+        return request.render('records_management.portal_document_retrieval_detail', values)
+
+    @http.route(['/my/document-retrieval/calculate-price'], type='json', auth='user', website=True, csrf=False)
+    def portal_document_retrieval_calculate_price(self, **kwargs):  # pylint: disable=unused-argument
+        """Return pricing preview for portal calculator."""
+        partner = self._get_portal_partner()
+        params = request.jsonrequest.get('params', {}) if request.jsonrequest else {}
+        priority_key = params.get('priority', 'standard')
+        try:
+            item_count = int(params.get('item_count', 1) or 1)
+        except (TypeError, ValueError):
+            item_count = 1
+        item_count = max(item_count, 1)
+
+        base_rates, customer_rates, has_custom_rates = self._get_retrieval_rates(partner)
+        pricing = self._compute_retrieval_pricing(priority_key, item_count, base_rates, customer_rates, has_custom_rates)
+
+        return pricing
+
+    # ------------------------------------------------------------------
+    # Helper methods (portal document retrieval)
+    # ------------------------------------------------------------------
+    def _get_portal_partner(self):
+        partner = request.env.user.partner_id
+        return partner.commercial_partner_id or partner
+
+    def _get_retrieval_rates(self, partner):
+        base_rate = request.env['base.rate'].search([
+            ('company_id', '=', request.env.company.id),
+            ('active', '=', True)
+        ], order='effective_date desc', limit=1)
+
+        base_rates = SimpleNamespace(
+            base_retrieval_rate=float(base_rate.document_retrieval_rate or 0.0) if base_rate else 0.0,
+            base_delivery_rate=float(base_rate.delivery_rate or 0.0) if base_rate else 0.0,
+            rush_end_of_day_item=0.0,
+            rush_4_hours_item=0.0,
+            emergency_1_hour_item=0.0,
+            weekend_item=0.0,
+            holiday_item=0.0,
+        )
+
+        customer_rates = SimpleNamespace(
+            custom_retrieval_rate=0.0,
+            custom_delivery_rate=0.0,
+        )
+
+        negotiated_rate = request.env['customer.negotiated.rate'].search([
+            ('partner_id', '=', partner.id),
+            ('active', '=', True),
+            ('state', 'in', ['approved', 'active'])
+        ], order='priority asc, effective_date desc', limit=1)
+
+        if negotiated_rate:
+            if negotiated_rate.per_document_rate:
+                customer_rates.custom_retrieval_rate = float(negotiated_rate.per_document_rate)
+            if negotiated_rate.per_service_rate:
+                customer_rates.custom_delivery_rate = float(negotiated_rate.per_service_rate)
+
+        has_custom_rates = bool(customer_rates.custom_retrieval_rate or customer_rates.custom_delivery_rate)
+        return base_rates, customer_rates, has_custom_rates
+
+    def _compute_retrieval_pricing(self, priority_key, item_count, base_rates, customer_rates, has_custom_rates):
+        retrieval_rate = customer_rates.custom_retrieval_rate if has_custom_rates and customer_rates.custom_retrieval_rate else base_rates.base_retrieval_rate
+        delivery_rate = customer_rates.custom_delivery_rate if has_custom_rates and customer_rates.custom_delivery_rate else base_rates.base_delivery_rate
+
+        retrieval_rate = retrieval_rate or 0.0
+        delivery_rate = delivery_rate or 0.0
+
+        base_retrieval_cost = float(retrieval_rate) * item_count
+        base_delivery_cost = float(delivery_rate)
+
+        priority_map = {
+            'rush_eod': base_rates.rush_end_of_day_item,
+            'rush_4h': base_rates.rush_4_hours_item,
+            'emergency_1h': base_rates.emergency_1_hour_item,
+            'weekend': base_rates.weekend_item,
+            'holiday': base_rates.holiday_item,
+        }
+
+        priority_surcharge = float(priority_map.get(priority_key, 0.0))
+        priority_item_cost = priority_surcharge * item_count
+        priority_order_cost = priority_surcharge
+
+        total_cost = base_retrieval_cost + base_delivery_cost + priority_item_cost + priority_order_cost
+
+        return {
+            'base_retrieval_cost': base_retrieval_cost,
+            'base_delivery_cost': base_delivery_cost,
+            'priority_item_cost': priority_item_cost,
+            'priority_order_cost': priority_order_cost,
+            'total_cost': total_cost,
+            'has_custom_rates': has_custom_rates,
+        }
+
+    def _map_portal_priority(self, priority_key):
+        mapping = {
+            'rush_eod': '2',
+            'rush_4h': '2',
+            'emergency_1h': '3',
+            'weekend': '2',
+            'holiday': '3',
+            'standard': '1',
+        }
+        return mapping.get(priority_key, '1')
+
+    def _map_portal_item_type(self, item_type):
+        mapping = {
+            'container': 'container',
+            'document': 'file',
+            'file': 'file',
+        }
+        return mapping.get(item_type, 'other')
+
+    def _parse_retrieval_items(self, items_json):
+        if not items_json:
+            return []
+        try:
+            payload = json.loads(items_json)
+        except (TypeError, ValueError):
+            return []
+        if not isinstance(payload, list):
+            return []
+
+        def _safe_int(value):
+            try:
+                return int(value)
+            except (TypeError, ValueError):
+                return False
+
+        sanitized = []
+        for item in payload:
+            if not isinstance(item, dict):
+                continue
+            sanitized.append({
+                'type': (item.get('type') or 'file').strip(),
+                'container_id': _safe_int(item.get('container_id')),
+                'document_id': _safe_int(item.get('document_id')),
+                'barcode': (item.get('barcode') or '').strip(),
+                'description': (item.get('description') or '').strip(),
+            })
+        return sanitized
+
+    def _parse_delivery_date(self, delivery_date_str):
+        if not delivery_date_str:
+            return False
+        try:
+            delivery_date = fields.Date.to_date(delivery_date_str)
+        except AttributeError:  # pragma: no cover - fallback for older APIs
+            try:
+                delivery_date = fields.Date.from_string(delivery_date_str)
+            except Exception:
+                return False
+        except Exception:  # pragma: no cover - best effort parsing
+            return False
+        dt_value = datetime.combine(delivery_date, datetime.min.time())
+        return fields.Datetime.to_string(dt_value)
+
+    def _build_delivery_instructions(self, post):
+        parts = []
+        contact = (post.get('delivery_contact') or '').strip()
+        phone = (post.get('delivery_phone') or '').strip()
+        address = (post.get('delivery_address') or '').strip()
+        if contact:
+            parts.append(_('Contact: %s') % contact)
+        if phone:
+            parts.append(_('Phone: %s') % phone)
+        if address:
+            parts.append(_('Address: %s') % address)
+        notes = (post.get('retrieval_notes') or '').strip()
+        if notes:
+            parts.append(_('Notes: %s') % notes)
+        return '\n'.join(parts)
 
     # ============================================================================
     # PORTAL SERVICE REQUESTS

@@ -6,7 +6,7 @@ Core billing model for Records Management system that handles
 billing records, configurations, and financial tracking.
 
 Author: Records Management System
-Version: 19.0.0.1
+Version: 18.0.0.2.29
 License: LGPL-3
 """
 

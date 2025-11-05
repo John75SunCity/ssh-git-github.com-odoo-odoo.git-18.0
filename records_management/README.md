@@ -92,7 +92,7 @@ A comprehensive, enterprise-grade physical document management system with advan
 
 ## 🎯 **VERSION INFORMATION**
 
-**Current Version:** 19.0.0.1
+**Current Version:** 18.0.0.2.29
 **Major Update:** Enterprise Features & AI Analytics
 **Compatibility:** Odoo 19.0
 **Last Updated:** July 2025
