@@ -14,167 +14,52 @@
                 <h4 class="mb-3">
                     <i class="fa fa-archive"/> Records Management
                 </h4>
-
-                <!-- Inventory Card -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fa fa-cubes text-primary"/> My Inventory
-                        </h5>
-                        <p class="card-text text-muted small">
-                            View and manage your stored containers, boxes, and documents
-                        </p>
-                        <!-- FIXED: Check both partner_id AND stock_owner_id for container ownership -->
-                        <t t-set="partner" t-value="request.env.user.partner_id"/>
-                        <t t-set="container_count" t-value="request.env['records.container'].sudo().search_count(['|', ('partner_id', '=', partner.id), ('stock_owner_id', '=', partner.id)])"/>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge badge-info" t-if="container_count &gt; 0">
-                                <t t-esc="container_count"/> Containers
-                            </span>
-                            <span class="badge badge-secondary" t-else="">
-                                No containers yet
-                            </span>
-                            <a href="/my/containers" class="btn btn-sm btn-primary">
-                                View Inventory →
-                            </a>
+                <t t-set="dashboard_cards" t-value="portal_dashboard_cards or []"/>
+                <t t-foreach="dashboard_cards" t-as="card">
+                    <div class="card mb-3" t-attf-class="card mb-3 #{'border-info' if card.get('key') == 'help' else ''}">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <t t-if="card.get('icon_class')">
+                                    <i t-att-class="card['icon_class']"/>
+                                </t>
+                                <t t-esc="card['title']"/>
+                            </h5>
+                            <p class="card-text text-muted small">
+                                <t t-esc="card['description']"/>
+                            </p>
+                            <t t-if="card['type'] == 'summary'">
+                                <t t-set="badge" t-value="card.get('badge')"/>
+                                <t t-set="primary_button" t-value="(card.get('buttons') or []) and card.get('buttons')[0]"/>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge badge-info" t-if="badge and badge.get('value')">
+                                        <t t-esc="badge['value']"/> <t t-esc="badge['label']"/>
+                                    </span>
+                                    <span class="badge badge-secondary" t-elif="badge">
+                                        <t t-esc="badge['empty_label']"/>
+                                    </span>
+                                    <a t-if="primary_button" t-att-href="primary_button['url']" t-att-class="primary_button['classes']">
+                                        <t t-if="primary_button.get('icon_class')">
+                                            <i t-att-class="primary_button['icon_class']"/>
+                                        </t>
+                                        <t t-esc="primary_button['label']"/>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-if="card['type'] == 'button_group'">
+                                <div class="btn-group-vertical w-100 mt-2">
+                                    <t t-foreach="card.get('buttons', [])" t-as="button">
+                                        <a t-att-href="button['url']" t-att-class="button['classes']">
+                                            <t t-if="button.get('icon_class')">
+                                                <i t-att-class="button['icon_class']"/>
+                                            </t>
+                                            <t t-esc="button['label']"/>
+                                        </a>
+                                    </t>
+                                </div>
+                            </t>
                         </div>
                     </div>
-                </div>
-
-                <!-- Work Orders Card -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fa fa-tasks text-success"/> Work Orders
-                        </h5>
-                        <p class="card-text text-muted small">
-                            Track pickup, delivery, and service activities
-                        </p>
-                        <t t-set="work_order_count" t-value="request.env['records.work.order'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id)])"/>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge badge-info" t-if="work_order_count &gt; 0">
-                                <t t-esc="work_order_count"/> Active
-                            </span>
-                            <span class="badge badge-secondary" t-else="">
-                                No work orders yet
-                            </span>
-                            <a href="/my/work_orders" class="btn btn-sm btn-success">
-                                View Orders →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Service Requests Card -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fa fa-paper-plane text-warning"/> Service Requests
-                        </h5>
-                        <p class="card-text text-muted small">
-                            Request pickups, destructions, and other services
-                        </p>
-                        <div class="btn-group-vertical w-100 mt-2">
-                            <a href="/my/request/new/pickup" class="btn btn-sm btn-outline-primary">
-                                <i class="fa fa-truck"/> Request Pickup
-                            </a>
-                            <a href="/my/request/new/destruction" class="btn btn-sm btn-outline-danger">
-                                <i class="fa fa-fire"/> Request Destruction
-                            </a>
-                            <a href="/my/requests" class="btn btn-sm btn-outline-info">
-                                <i class="fa fa-wrench"/> Other Services
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Certificates Card -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fa fa-certificate text-danger"/> Certificates
-                        </h5>
-                        <p class="card-text text-muted small">
-                            Download destruction certificates and compliance documents
-                        </p>
-                        <t t-set="certificate_count" t-value="request.env['destruction.certificate'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id)])"/>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge badge-info" t-if="certificate_count &gt; 0">
-                                <t t-esc="certificate_count"/> Certificates
-                            </span>
-                            <span class="badge badge-secondary" t-else="">
-                                No certificates yet
-                            </span>
-                            <a href="/my/certificates" class="btn btn-sm btn-danger">
-                                View Certificates →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Documents Card -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fa fa-file-text text-info"/> Documents
-                        </h5>
-                        <p class="card-text text-muted small">
-                            Upload, retrieve, and manage your document inventory
-                        </p>
-                        <div class="btn-group-vertical w-100 mt-2">
-                            <a href="/my/documents/bulk_upload" class="btn btn-sm btn-outline-primary">
-                                <i class="fa fa-upload"/> Bulk Upload
-                            </a>
-                            <a href="/my/document-retrieval" class="btn btn-sm btn-outline-success">
-                                <i class="fa fa-download"/> Request Retrieval
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Invoices Card -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fa fa-file-invoice-dollar text-success"/> Invoices
-                        </h5>
-                        <p class="card-text text-muted small">
-                            View and download your billing statements
-                        </p>
-                        <t t-set="invoice_count" t-value="request.env['account.move'].sudo().search_count([('partner_id', '=', request.env.user.partner_id.id), ('move_type', '=', 'out_invoice')])"/>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge badge-info" t-if="invoice_count &gt; 0">
-                                <t t-esc="invoice_count"/> Invoices
-                            </span>
-                            <span class="badge badge-secondary" t-else="">
-                                No invoices yet
-                            </span>
-                            <a href="/my/invoices" class="btn btn-sm btn-success">
-                                View Invoices →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Help & Support -->
-                <div class="card mb-3 border-info">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fa fa-question-circle text-info"/> Need Help?
-                        </h5>
-                        <div class="btn-group-vertical w-100 mt-2">
-                            <a href="/portal/tour" class="btn btn-sm btn-outline-info">
-                                <i class="fa fa-graduation-cap"/> Take Portal Tour
-                            </a>
-                            <a href="/portal/feedback" class="btn btn-sm btn-outline-warning">
-                                <i class="fa fa-comment"/> Provide Feedback
-                            </a>
-                            <a href="/portal/help" class="btn btn-sm btn-outline-secondary">
-                                <i class="fa fa-book"/> Help Center
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                </t>
 
             </div>
         </xpath>

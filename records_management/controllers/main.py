@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 # Odoo core imports
-from odoo import Command, http, fields, _
+from odoo import Command, http, fields, _, models
 from odoo.http import request
 from odoo.exceptions import AccessError, UserError, ValidationError
 
@@ -27,6 +27,179 @@ from odoo.addons.portal.controllers.portal import CustomerPortal
 
 
 _logger = logging.getLogger(__name__)
+
+
+PORTAL_CARD_METADATA = [
+    {
+        'key': 'inventory',
+        'menu_xml_id': 'records_management.portal_menu_records_inventory',
+        'icon_class': 'fa fa-cubes text-primary',
+        'description': 'View and manage your stored containers, boxes, and documents',
+        'fallback_name': 'My Inventory',
+        'default_url': '/my/containers',
+        'type': 'summary',
+        'badge_value_key': 'container_count',
+        'badge_label': 'Containers',
+        'badge_empty': 'No containers yet',
+        'buttons': [
+            {
+                'menu_xml_id': 'records_management.portal_menu_records_inventory',
+                'label': 'View Inventory →',
+                'classes': 'btn btn-sm btn-primary',
+                'fallback_url': '/my/containers',
+            },
+        ],
+    },
+    {
+        'key': 'work_orders',
+        'menu_xml_id': 'records_management.portal_menu_work_orders',
+        'icon_class': 'fa fa-tasks text-success',
+        'description': 'Track pickup, delivery, and service activities',
+        'fallback_name': 'Work Orders',
+        'default_url': '/my/work_orders',
+        'type': 'summary',
+        'badge_value_key': 'work_order_count',
+        'badge_label': 'Active',
+        'badge_empty': 'No work orders yet',
+        'buttons': [
+            {
+                'menu_xml_id': 'records_management.portal_menu_work_orders',
+                'label': 'View Orders →',
+                'classes': 'btn btn-sm btn-success',
+                'fallback_url': '/my/work_orders',
+            },
+        ],
+    },
+    {
+        'key': 'service_requests',
+        'menu_xml_id': 'records_management.portal_menu_requests',
+        'icon_class': 'fa fa-paper-plane text-warning',
+        'description': 'Request pickups, destructions, and other services',
+        'fallback_name': 'Service Requests',
+        'default_url': '/my/requests',
+        'type': 'button_group',
+        'buttons': [
+            {
+                'menu_xml_id': 'records_management.portal_submenu_request_pickup',
+                'classes': 'btn btn-sm btn-outline-primary',
+                'label': 'Request Pickup',
+                'icon_class': 'fa fa-truck',
+                'fallback_url': '/my/request/new/pickup',
+            },
+            {
+                'menu_xml_id': 'records_management.portal_submenu_request_destruction',
+                'classes': 'btn btn-sm btn-outline-danger',
+                'label': 'Request Destruction',
+                'icon_class': 'fa fa-fire',
+                'fallback_url': '/my/request/new/destruction',
+            },
+            {
+                'menu_xml_id': 'records_management.portal_submenu_request_service',
+                'classes': 'btn btn-sm btn-outline-info',
+                'label': 'Other Services',
+                'icon_class': 'fa fa-wrench',
+                'fallback_url': '/my/requests',
+            },
+        ],
+    },
+    {
+        'key': 'certificates',
+        'menu_xml_id': 'records_management.portal_menu_certificates',
+        'icon_class': 'fa fa-certificate text-danger',
+        'description': 'Download destruction certificates and compliance documents',
+        'fallback_name': 'Certificates',
+        'default_url': '/my/certificates',
+        'type': 'summary',
+        'badge_value_key': 'certificate_count',
+        'badge_label': 'Certificates',
+        'badge_empty': 'No certificates yet',
+        'buttons': [
+            {
+                'menu_xml_id': 'records_management.portal_menu_certificates',
+                'label': 'View Certificates →',
+                'classes': 'btn btn-sm btn-danger',
+                'fallback_url': '/my/certificates',
+            },
+        ],
+    },
+    {
+        'key': 'documents',
+        'menu_xml_id': 'records_management.portal_menu_documents',
+        'icon_class': 'fa fa-file-text text-info',
+        'description': 'Upload, retrieve, and manage your document inventory',
+        'fallback_name': 'Documents',
+        'default_url': '/my/documents',
+        'type': 'button_group',
+        'buttons': [
+            {
+                'menu_xml_id': 'records_management.portal_submenu_bulk_upload',
+                'classes': 'btn btn-sm btn-outline-primary',
+                'label': 'Bulk Upload',
+                'icon_class': 'fa fa-upload',
+                'fallback_url': '/my/documents/bulk_upload',
+            },
+            {
+                'menu_xml_id': 'records_management.portal_submenu_document_retrieval',
+                'classes': 'btn btn-sm btn-outline-success',
+                'label': 'Request Retrieval',
+                'icon_class': 'fa fa-download',
+                'fallback_url': '/my/document-retrieval',
+            },
+        ],
+    },
+    {
+        'key': 'invoices',
+        'menu_xml_id': 'records_management.portal_menu_invoices',
+        'icon_class': 'fa fa-file-invoice-dollar text-success',
+        'description': 'View and download your billing statements',
+        'fallback_name': 'Invoices',
+        'default_url': '/my/invoices',
+        'type': 'summary',
+        'badge_value_key': 'invoice_count',
+        'badge_label': 'Invoices',
+        'badge_empty': 'No invoices yet',
+        'buttons': [
+            {
+                'menu_xml_id': 'records_management.portal_menu_invoices',
+                'label': 'View Invoices →',
+                'classes': 'btn btn-sm btn-success',
+                'fallback_url': '/my/invoices',
+            },
+        ],
+    },
+    {
+        'key': 'help',
+        'menu_xml_id': 'records_management.portal_menu_help',
+        'icon_class': 'fa fa-question-circle text-info',
+        'description': 'Access guided tours, feedback, and help center resources',
+        'fallback_name': 'Help & Support',
+        'default_url': '/portal/help',
+        'type': 'button_group',
+        'buttons': [
+            {
+                'menu_xml_id': 'records_management.portal_submenu_tour',
+                'classes': 'btn btn-sm btn-outline-info',
+                'label': 'Take Portal Tour',
+                'icon_class': 'fa fa-graduation-cap',
+                'fallback_url': '/portal/tour',
+            },
+            {
+                'menu_xml_id': 'records_management.portal_submenu_feedback',
+                'classes': 'btn btn-sm btn-outline-warning',
+                'label': 'Provide Feedback',
+                'icon_class': 'fa fa-comment',
+                'fallback_url': '/portal/feedback',
+            },
+            {
+                'menu_xml_id': 'records_management.portal_menu_help',
+                'classes': 'btn btn-sm btn-outline-secondary',
+                'label': 'Help Center',
+                'icon_class': 'fa fa-book',
+                'fallback_url': '/portal/help',
+            },
+        ],
+    },
+]
 
 
 class RecordsManagementController(http.Controller):
@@ -549,33 +722,114 @@ class RecordsManagementPortal(CustomerPortal):
         values = super()._prepare_home_portal_values(counters)
         partner = request.env.user.partner_id
 
-        if 'container_count' in counters:
-            domain = [('partner_id', '=', partner.id)]
-            values['container_count'] = request.env['records.container'].search_count(domain)
+        commercial_partner = partner.commercial_partner_id
+
+        container_domain = ['|', ('partner_id', '=', partner.id), ('stock_owner_id', '=', partner.id)]
+        container_count = request.env['records.container'].sudo().search_count(container_domain)
+        values['container_count'] = container_count
 
         if 'pickup_request_count' in counters:
             domain = [('partner_id', '=', partner.id)]
             values['pickup_request_count'] = request.env['pickup.request'].search_count(domain)
 
-        # Add work order counts from WorkOrderPortal functionality
-        if 'work_order_count' in counters:
-            domain = [('partner_id', '=', partner.id), ('portal_visible', '=', True)]
-            work_order_count = 0
-            for model in ['records.retrieval.order', 'container.destruction.work.order', 'container.access.work.order']:
-                try:
-                    work_order_count += request.env[model].search_count(domain)
-                except Exception:
-                    pass
-            values['work_order_count'] = work_order_count
-
-        if 'coordinator_count' in counters:
-            domain = [('partner_id', '=', partner.id), ('customer_visible', '=', True)]
+        work_order_domain = [('partner_id', '=', partner.id), ('portal_visible', '=', True)]
+        work_order_count = 0
+        for model in ['records.retrieval.order', 'container.destruction.work.order', 'container.access.work.order']:
             try:
-                values['coordinator_count'] = request.env['work.order.coordinator'].search_count(domain)
+                work_order_count += request.env[model].search_count(work_order_domain)
             except Exception:
-                values['coordinator_count'] = 0
+                pass
+        values['work_order_count'] = work_order_count
+
+        coordinator_domain = [('partner_id', '=', partner.id), ('customer_visible', '=', True)]
+        try:
+            values['coordinator_count'] = request.env['work.order.coordinator'].search_count(coordinator_domain)
+        except Exception:
+            values['coordinator_count'] = 0
+
+        # Certificates and invoices are surfaced on the portal dashboard cards
+        try:
+            certificate_domain = [('partner_id', '=', partner.id)]
+            values['certificate_count'] = request.env['destruction.certificate'].sudo().search_count(certificate_domain)
+        except Exception:
+            values['certificate_count'] = 0
+
+        try:
+            invoice_domain = [
+                ('partner_id', '=', partner.id),
+                ('move_type', '=', 'out_invoice'),
+            ]
+            values['invoice_count'] = request.env['account.move'].sudo().search_count(invoice_domain)
+        except Exception:
+            values['invoice_count'] = 0
+
+        try:
+            allowed_partners = commercial_partner.child_ids.ids + [commercial_partner.id]
+            request_domain = [('partner_id', 'in', allowed_partners)]
+            values['service_request_count'] = request.env['portal.request'].sudo().search_count(request_domain)
+        except Exception:
+            values['service_request_count'] = 0
+
+        values['portal_dashboard_cards'] = self._build_portal_dashboard_cards(values)
 
         return values
+
+    def _resolve_menu_info(self, xml_id, fallback_name, fallback_url):
+        menu = request.env.ref(xml_id, raise_if_not_found=False)
+        if menu:
+            return {
+                'name': menu.name,
+                'url': menu.url or fallback_url,
+            }
+        return {
+            'name': fallback_name,
+            'url': fallback_url,
+        }
+
+    def _build_portal_dashboard_cards(self, values):
+        cards = []
+        for config in PORTAL_CARD_METADATA:
+            fallback_name = _(config.get('fallback_name', 'Portal Link'))
+            menu_info = self._resolve_menu_info(
+                config['menu_xml_id'],
+                fallback_name,
+                config.get('default_url', '/my/home'),
+            )
+
+            card = {
+                'key': config['key'],
+                'title': menu_info['name'],
+                'icon_class': config.get('icon_class'),
+                'description': _(config['description']),
+                'type': config.get('type', 'summary'),
+            }
+
+            badge_value_key = config.get('badge_value_key')
+            if badge_value_key:
+                badge_value = values.get(badge_value_key, 0)
+                card['badge'] = {
+                    'value': badge_value,
+                    'label': _(config.get('badge_label', 'Items')),
+                    'empty_label': _(config.get('badge_empty', 'No records yet')),
+                }
+
+            buttons = []
+            for button in config.get('buttons', []):
+                button_menu = self._resolve_menu_info(
+                    button['menu_xml_id'],
+                    _(button.get('label', 'Portal Link')),
+                    button.get('fallback_url', '/my/home'),
+                )
+                buttons.append({
+                    'url': button_menu['url'],
+                    'label': _(button.get('label', button_menu['name'])),
+                    'classes': button.get('classes', 'btn btn-sm btn-primary'),
+                    'icon_class': button.get('icon_class'),
+                })
+            card['buttons'] = buttons
+
+            cards.append(card)
+        return cards
 
     @http.route(['/my/containers', '/my/containers/page/<int:page>'],
                 type='http', auth='user', website=True)
