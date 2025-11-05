@@ -9,7 +9,7 @@
     <template id="portal_my_home_preconfigured" name="Records Management Portal Home (Pre-configured)" inherit_id="portal.portal_my_home">
         <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
             <!-- Records Management Portal Features Always Enabled -->
-            
+
             <div class="o_portal_sidebar_section mb-4">
                 <h4 class="mb-3">
                     <i class="fa fa-archive"/> Records Management
@@ -75,13 +75,13 @@
                             Request pickups, destructions, and other services
                         </p>
                         <div class="btn-group-vertical w-100 mt-2">
-                            <a href="/portal/request/pickup" class="btn btn-sm btn-outline-primary">
+                            <a href="/my/request/new/pickup" class="btn btn-sm btn-outline-primary">
                                 <i class="fa fa-truck"/> Request Pickup
                             </a>
-                            <a href="/portal/request/destruction" class="btn btn-sm btn-outline-danger">
+                            <a href="/my/request/new/destruction" class="btn btn-sm btn-outline-danger">
                                 <i class="fa fa-fire"/> Request Destruction
                             </a>
-                            <a href="/portal/request/service" class="btn btn-sm btn-outline-info">
+                            <a href="/my/requests" class="btn btn-sm btn-outline-info">
                                 <i class="fa fa-wrench"/> Other Services
                             </a>
                         </div>
@@ -122,10 +122,10 @@
                             Upload, retrieve, and manage your document inventory
                         </p>
                         <div class="btn-group-vertical w-100 mt-2">
-                            <a href="/portal/documents/upload" class="btn btn-sm btn-outline-primary">
+                            <a href="/my/documents/bulk_upload" class="btn btn-sm btn-outline-primary">
                                 <i class="fa fa-upload"/> Bulk Upload
                             </a>
-                            <a href="/portal/documents/retrieval" class="btn btn-sm btn-outline-success">
+                            <a href="/my/document-retrieval" class="btn btn-sm btn-outline-success">
                                 <i class="fa fa-download"/> Request Retrieval
                             </a>
                         </div>
@@ -186,7 +186,7 @@
             <i class="fa fa-inbox fa-3x mb-3"/>
             <h4>No Inventory Yet</h4>
             <p>Your containers and documents will appear here once we start storing them for you.</p>
-            <a href="/portal/request/pickup" class="btn btn-primary">
+            <a href="/my/request/new/pickup" class="btn btn-primary">
                 <i class="fa fa-truck"/> Schedule a Pickup
             </a>
         </div>
@@ -208,7 +208,7 @@
             <i class="fa fa-certificate fa-3x mb-3"/>
             <h4>No Certificates Available</h4>
             <p>Destruction certificates will appear here after completed shredding services.</p>
-            <a href="/portal/request/destruction" class="btn btn-danger">
+            <a href="/my/request/new/destruction" class="btn btn-danger">
                 <i class="fa fa-fire"/> Request Destruction Service
             </a>
         </div>
