@@ -1,0 +1,48 @@
+name: Auto-Sync Enterprise to Main
+
+# Automatically sync Enterprise-Grade-DMS-Module-Records-Management → main
+# whenever changes are pushed to Enterprise branch
+
+on:
+  push:
+    branches:
+      - Enterprise-Grade-DMS-Module-Records-Management
+
+jobs:
+  sync-to-main:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+      
+      - name: Sync Enterprise to Main
+        run: |
+          echo "🔄 Syncing Enterprise → main for Odoo.sh deployment"
+          
+          # Checkout main branch
+          git checkout main
+          git pull origin main
+          
+          # Merge Enterprise into main
+          git merge origin/Enterprise-Grade-DMS-Module-Records-Management --no-ff -m "auto-sync: Deploy Enterprise changes to staging (main)"
+          
+          # Push to main (triggers Odoo.sh deployment)
+          git push origin main
+          
+          echo "✅ Successfully synced to main - Odoo.sh deployment triggered"
+      
+      - name: Summary
+        run: |
+          echo "📊 Sync Summary:"
+          echo "- Source: Enterprise-Grade-DMS-Module-Records-Management"
+          echo "- Target: main (Odoo.sh staging)"
+          echo "- Status: ✅ Deployed"
