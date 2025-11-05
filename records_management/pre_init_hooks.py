@@ -53,11 +53,14 @@ def _set_default(cr, table_name, column_name, value):
     cr.execute(query, (value,))
 
 
-def pre_init_hook(cr):
+def pre_init_hook(env):
     """Ensure legacy databases have the partner fields required by the module."""
     _logger.info("="*80)
     _logger.info("🚀 RUNNING PRE-INIT HOOK FOR RECORDS MANAGEMENT MODULE")
     _logger.info("="*80)
+    
+    # Extract cursor from environment
+    cr = env.cr
     
     table = "res_partner"
     for column_name, column_type, default_value in _MISSING_COLUMNS:
