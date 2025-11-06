@@ -30,7 +30,6 @@
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="allow_comment">true</field>
-            <field name="completion_time">2.0</field>
             <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_role_training')])]"/>
         </record>
 
@@ -44,7 +43,6 @@
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="allow_comment">true</field>
-            <field name="completion_time">1.5</field>
             <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_other')])]"/>
         </record>
 
@@ -58,7 +56,6 @@
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="allow_comment">true</field>
-            <field name="completion_time">2.5</field>
             <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_role_training')])]"/>
         </record>
     </data>
