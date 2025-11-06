@@ -182,6 +182,178 @@
                 </p>
             </field>
         </record>
+        <record id="action_paper_model_bale" model="ir.actions.act_window">
+            <field name="name">Paper Model Bales</field>
+            <field name="res_model">paper.model_bale</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="context">{
+            'search_default_active': 1
+        }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-cube"/> No paper model bales yet!
+                </p>
+                <p>
+                    <b>📦 Paper Bale Model Management:</b>
+                </p>
+                <ul>
+                    <li>Define standard bale specifications and weights</li>
+                    <li>Track different paper grades (White, Mixed, Cardboard, Trash)</li>
+                    <li>Manage bale numbering and identification</li>
+                    <li>Monitor bale locations and inventory</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Standardized bale specifications<br/>
+                    • Grade-based classification<br/>
+                    • Sequential bale numbering<br/>
+                    • Location tracking and volume calculations
+                </p>
+            </field>
+        </record>
+        <record id="action_work_order_coordinator" model="ir.actions.act_window">
+            <field name="name">Work Order Coordinators</field>
+            <field name="res_model">work.order.coordinator</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="context">{
+            'search_default_draft': 1,
+            'search_default_in_progress': 1,
+            'search_default_active': 1
+        }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-users"/> No work order coordinators yet!
+                </p>
+                <p>
+                    <b>👥 Work Order Coordination:</b>
+                </p>
+                <ul>
+                    <li>Manage complex multi-step work orders</li>
+                    <li>Coordinate retrieval and destruction operations</li>
+                    <li>Assign employees and track progress</li>
+                    <li>Monitor completion rates and scheduling</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Unified coordination of multiple work types<br/>
+                    • Resource allocation and scheduling<br/>
+                    • Progress tracking and metrics<br/>
+                    • Priority-based task management
+                </p>
+            </field>
+        </record>
+        <record id="action_workflow_visualization_manager" model="ir.actions.act_window">
+            <field name="name">Workflow Visualizations</field>
+            <field name="res_model">workflow.visualization.manager</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="context">{
+            'search_default_active': 1
+        }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-sitemap"/> No workflow visualizations yet!
+                </p>
+                <p>
+                    <b>🔄 Workflow Visualization Management:</b>
+                </p>
+                <ul>
+                    <li>Create process flow diagrams and state machines</li>
+                    <li>Visualize data flows and user journeys</li>
+                    <li>Document system architecture and interactions</li>
+                    <li>Track workflow states and transitions</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Multiple visualization types (flow, state, data, journey)<br/>
+                    • Model-specific workflow documentation<br/>
+                    • Interactive diagrams and analytics<br/>
+                    • Process optimization insights
+                </p>
+            </field>
+        </record>
+        <record id="action_field_label_helper_wizard" model="ir.actions.act_window">
+            <field name="name">Field Label Helper</field>
+            <field name="res_model">field.label.helper.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-tags"/> Field Label Helper Wizard
+                </p>
+                <p>
+                    <b>🏷️ Field Label Customization Assistant:</b>
+                </p>
+                <ul>
+                    <li>Select a Records Management model</li>
+                    <li>Choose a specific field to customize</li>
+                    <li>Get field details for label customization</li>
+                    <li>Integrate with the Field Label Customization system</li>
+                </ul>
+                <p>
+                    <b>💡 This wizard helps you:</b><br/>
+                    • Browse available models and fields<br/>
+                    • Get field metadata for customization<br/>
+                    • Prepare data for label changes<br/>
+                    • Streamline the customization workflow
+                </p>
+            </field>
+        </record>
+        <record id="action_container_quick_add_wizard" model="ir.actions.act_window">
+            <field name="name">Quick Add Container</field>
+            <field name="res_model">container.quick.add.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-plus-circle"/> Quick Add Container Wizard
+                </p>
+                <p>
+                    <b>📦 Streamlined Container Creation:</b>
+                </p>
+                <ul>
+                    <li>Pre-filled customer and department information</li>
+                    <li>Industry-specific templates (Legal, Medical, Financial, HR)</li>
+                    <li>Automated barcode generation</li>
+                    <li>Quick setup for common container types</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Industry templates with pre-configured settings<br/>
+                    • Auto-populated customer and department data<br/>
+                    • Barcode and QR code generation<br/>
+                    • Mobile-optimized wizard interface
+                </p>
+            </field>
+        </record>
+        <record id="action_customer_inventory" model="ir.actions.act_window">
+            <field name="name">Customer Inventory</field>
+            <field name="res_model">customer.inventory</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="context">{
+            'search_default_active': 1
+        }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-cubes"/> No customer inventory yet!
+                </p>
+                <p>
+                    <b>📊 Customer Inventory Management:</b>
+                </p>
+                <ul>
+                    <li>Track all containers and documents by customer</li>
+                    <li>Monitor inventory levels and locations</li>
+                    <li>Generate detailed inventory reports</li>
+                    <li>Manage customer-specific retention policies</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Customer-specific inventory views<br/>
+                    • Real-time location tracking<br/>
+                    • Automated inventory audits<br/>
+                    • Compliance reporting and analytics
+                </p>
+            </field>
+        </record>
         <!-- Menus -->
             <!-- ========================================== -->
             <!-- OPERATIONS MENU - Daily Workflow          -->
