@@ -18,6 +18,7 @@ Key Features:
 # Python stdlib imports
 import csv
 import io
+import json
 import logging
 from datetime import datetime, timedelta
 
@@ -1329,3 +1330,171 @@ class RecordsManagementController(http.Controller):
     def portal_my_inventory_redirect(self, **kw):
         """Redirect old /my/inventory route to new /my/containers route"""
         return request.redirect('/my/containers')
+
+    # ============================================================================
+    # BARCODE GENERATION ROUTES
+    # ============================================================================
+
+    @http.route(['/records_management/portal/generate_container_barcode'], type='json', auth='user', website=True)
+    def generate_container_barcode(self, **kw):
+        """Generate barcode for records.container using ir.sequence"""
+        try:
+            Container = request.env['records.container']
+            # Use your container sequence
+            barcode_value = request.env['ir.sequence'].next_by_code('records.container.barcode')
+
+            container = Container.create({
+                'name': _('Container %s') % barcode_value,
+                'barcode': barcode_value,
+                'partner_id': request.env.user.partner_id.id,
+            })
+
+            return {
+                'success': True,
+                'barcode': {
+                    'id': container.id,
+                    'name': container.barcode,
+                    'barcode_type': 'container',
+                    'barcode_format': 'code128',
+                    'sequence_code': 'records.container.barcode',
+                    'state': container.state,
+                    'barcode_image': container.barcode_image,
+                }
+            }
+        except Exception as e:
+            _logger.exception("Container barcode generation failed")
+            return {'success': False, 'error': str(e)}
+
+    @http.route(['/records_management/portal/generate_file_barcode'], type='json', auth='user', website=True)
+    def generate_file_barcode(self, **kw):
+        """Generate barcode for records.file using ir.sequence"""
+        try:
+            File = request.env['records.file']
+            barcode_value = request.env['ir.sequence'].next_by_code('records.file.barcode')
+
+            file_record = File.create({
+                'name': _('File %s') % barcode_value,
+                'barcode': barcode_value,
+                'partner_id': request.env.user.partner_id.id,
+            })
+
+            return {
+                'success': True,
+                'barcode': {
+                    'id': file_record.id,
+                    'name': file_record.barcode,
+                    'barcode_type': 'file',
+                    'barcode_format': 'code128',
+                    'sequence_code': 'records.file.barcode',
+                    'state': file_record.state,
+                    'barcode_image': file_record.barcode_image,
+                }
+            }
+        except Exception as e:
+            _logger.exception("File barcode generation failed")
+            return {'success': False, 'error': str(e)}
+
+    @http.route(['/records_management/portal/generate_temp_barcode'], type='json', auth='user', website=True)
+    def generate_temp_barcode(self, **kw):
+        """Generate temporary barcode using ir.sequence"""
+        try:
+            TempBarcode = request.env['records.temp.barcode']
+            barcode_value = request.env['ir.sequence'].next_by_code('records.temp.barcode')
+
+            temp_barcode = TempBarcode.create({
+                'name': barcode_value,
+                'barcode': barcode_value,
+                'partner_id': request.env.user.partner_id.id,
+                'expiry_date': fields.Date.today() + relativedelta(days=30),
+            })
+
+            return {
+                'success': True,
+                'barcode': {
+                    'id': temp_barcode.id,
+                    'name': temp_barcode.barcode,
+                    'barcode_type': 'temp',
+                    'barcode_format': 'code128',
+                    'sequence_code': 'records.temp.barcode',
+                    'state': 'active',
+                    'barcode_image': temp_barcode.barcode_image,
+                }
+            }
+        except Exception as e:
+            _logger.exception("Temp barcode generation failed")
+            return {'success': False, 'error': str(e)}
+
+    # ============================================================================
+    # DOCUMENT RETRIEVAL PORTAL ROUTES
+    # ============================================================================
+
+    @http.route(['/my/document-retrieval'], type='http', auth='user', website=True)
+    def portal_document_retrieval(self, **kw):
+        """Document retrieval request form for portal users"""
+        partner = request.env.user.partner_id
+
+        # Get containers owned by the user's company (stock_owner filter)
+        containers = request.env['records.container'].sudo().search([
+            ('stock_owner', '=', partner.id)
+        ])
+
+        # Get documents from those containers
+        documents = request.env['records.document'].sudo().search([
+            ('container_id', 'in', containers.ids)
+        ])
+
+        # Prepare options for frontend
+        container_options = [(c.id, c.name) for c in containers]
+        document_options = [(d.id, d.name) for d in documents]
+
+        values = {
+            'page_name': 'document_retrieval',
+            'containers': containers,
+            'documents': documents,
+            'container_options': json.dumps(container_options),
+            'document_options': json.dumps(document_options),
+        }
+        return request.render('records_management.portal_document_retrieval_template', values)
+
+    @http.route(['/my/document-retrieval/calculate-price'], type='json', auth='user')
+    def calculate_retrieval_price(self, priority='standard', item_count=1, **kw):
+        """Calculate pricing for document retrieval request"""
+        # Get pricing configuration
+        config = request.env['rm.module.configurator'].sudo().search([], limit=1)
+
+        base_retrieval = config.retrieval_base_cost or 25.0
+        base_delivery = config.delivery_base_cost or 15.0
+        priority_multiplier = 1.5 if priority == 'urgent' else 1.0
+
+        pricing = {
+            'base_retrieval_cost': base_retrieval,
+            'priority_item_cost': (base_retrieval * priority_multiplier - base_retrieval) * item_count,
+            'base_delivery_cost': base_delivery,
+            'priority_order_cost': (base_delivery * priority_multiplier - base_delivery),
+            'total_cost': (base_retrieval + base_delivery) * priority_multiplier * item_count,
+            'has_custom_rates': False
+        }
+
+        return pricing
+
+    @http.route(['/my/document-retrieval/submit'], type='http', auth='user', methods=['POST'], csrf=True, website=True)
+    def submit_retrieval_request(self, **post):
+        """Submit a document retrieval request"""
+        partner = request.env.user.partner_id
+
+        # Parse items data
+        items_data = json.loads(post.get('items_data', '[]'))
+
+        # Create portal request
+        request_vals = {
+            'partner_id': partner.id,
+            'request_type': 'retrieval',
+            'priority': post.get('priority', 'standard'),
+            'description': post.get('notes', ''),
+            'retrieval_items': json.dumps(items_data),
+        }
+
+        new_request = request.env['portal.request'].sudo().create(request_vals)
+
+        # Redirect to request confirmation page
+        return request.redirect('/my/requests/%s' % new_request.id)

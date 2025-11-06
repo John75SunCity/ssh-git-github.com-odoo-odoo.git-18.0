@@ -354,5 +354,90 @@
         </div>
     </t>
 </template>
+
+    <!-- Document Retrieval Request Template -->
+    <template id="portal_document_retrieval_template" name="Document Retrieval Request">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <div class="o_portal_document_retrieval container mt-4">
+                <h2>Document Retrieval Request</h2>
+                <p class="text-muted">Request retrieval of documents or files from your containers stored at our warehouse.</p>
+                
+                <form id="retrieval-form" 
+                      action="/my/document-retrieval/submit" 
+                      method="POST"
+                      t-att-data-container-options="container_options"
+                      t-att-data-document-options="document_options">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    
+                    <!-- Priority Selection -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="priority">Delivery Priority:</label>
+                            <select id="priority" name="priority" class="form-control">
+                                <option value="standard">Standard (3-5 business days)</option>
+                                <option value="urgent">Urgent (24-48 hours)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="calc_items">Number of Items:</label>
+                            <input type="number" id="calc_items" class="form-control" min="1" value="1"/>
+                            <input type="hidden" id="calc_priority" value="standard"/>
+                        </div>
+                    </div>
+                    
+                    <!-- Items Container -->
+                    <div id="items-container" class="mb-3">
+                        <!-- Items will be added dynamically by JavaScript -->
+                    </div>
+                    
+                    <!-- Add Item Button -->
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary" data-action="add-item">
+                            <i class="fa fa-plus"></i> Add Another Item
+                        </button>
+                    </div>
+                    
+                    <!-- Pricing Breakdown -->
+                    <div class="card mb-3">
+                        <div class="card-header bg-info text-white">
+                            <h5>Pricing Estimate</h5>
+                        </div>
+                        <div class="card-body" id="pricing-breakdown">
+                            <p class="text-center text-muted">Calculating...</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Notes -->
+                    <div class="mb-3">
+                        <label for="notes">Additional Notes:</label>
+                        <textarea id="notes" name="notes" class="form-control" rows="3" placeholder="Any special instructions or details..."></textarea>
+                    </div>
+                    
+                    <!-- Hidden field for items data -->
+                    <input type="hidden" id="items-data" name="items_data" value="[]"/>
+                    
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fa fa-check"></i> Submit Retrieval Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+    
+    <!-- Add to portal dashboard menu -->
+    <template id="portal_my_home_menu_retrieval" name="Portal My Home Menu - Retrieval" inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Document Retrieval</t>
+                <t t-set="url" t-value="'/my/document-retrieval'"/>
+                <t t-set="icon" t-value="'fa-archive'"/>
+            </t>
+        </xpath>
+    </template>
     </data>
 </odoo>
