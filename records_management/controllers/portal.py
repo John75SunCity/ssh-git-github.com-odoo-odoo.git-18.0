@@ -1329,3 +1329,96 @@ class RecordsManagementController(http.Controller):
     def portal_my_inventory_redirect(self, **kw):
         """Redirect old /my/inventory route to new /my/containers route"""
         return request.redirect('/my/containers')
+
+    # ============================================================================
+    # BARCODE GENERATION ROUTES
+    # ============================================================================
+
+    @http.route(['/records_management/portal/generate_container_barcode'], type='json', auth='user', website=True)
+    def generate_container_barcode(self, **kw):
+        """Generate barcode for records.container using ir.sequence"""
+        try:
+            Container = request.env['records.container']
+            # Use your container sequence
+            barcode_value = request.env['ir.sequence'].next_by_code('records.container.barcode')
+            
+            container = Container.create({
+                'name': _('Container %s') % barcode_value,
+                'barcode': barcode_value,
+                'partner_id': request.env.user.partner_id.id,
+            })
+            
+            return {
+                'success': True,
+                'barcode': {
+                    'id': container.id,
+                    'name': container.barcode,
+                    'barcode_type': 'container',
+                    'barcode_format': 'code128',
+                    'sequence_code': 'records.container.barcode',
+                    'state': container.state,
+                    'barcode_image': container.barcode_image,
+                }
+            }
+        except Exception as e:
+            _logger.exception("Container barcode generation failed")
+            return {'success': False, 'error': str(e)}
+
+    @http.route(['/records_management/portal/generate_file_barcode'], type='json', auth='user', website=True)
+    def generate_file_barcode(self, **kw):
+        """Generate barcode for records.file using ir.sequence"""
+        try:
+            File = request.env['records.file']
+            barcode_value = request.env['ir.sequence'].next_by_code('records.file.barcode')
+            
+            file_record = File.create({
+                'name': _('File %s') % barcode_value,
+                'barcode': barcode_value,
+                'partner_id': request.env.user.partner_id.id,
+            })
+            
+            return {
+                'success': True,
+                'barcode': {
+                    'id': file_record.id,
+                    'name': file_record.barcode,
+                    'barcode_type': 'file',
+                    'barcode_format': 'code128',
+                    'sequence_code': 'records.file.barcode',
+                    'state': file_record.state,
+                    'barcode_image': file_record.barcode_image,
+                }
+            }
+        except Exception as e:
+            _logger.exception("File barcode generation failed")
+            return {'success': False, 'error': str(e)}
+
+    @http.route(['/records_management/portal/generate_temp_barcode'], type='json', auth='user', website=True)
+    def generate_temp_barcode(self, **kw):
+        """Generate temporary barcode using ir.sequence"""
+        try:
+            TempBarcode = request.env['records.temp.barcode']
+            barcode_value = request.env['ir.sequence'].next_by_code('records.temp.barcode')
+            
+            temp_barcode = TempBarcode.create({
+                'name': barcode_value,
+                'barcode': barcode_value,
+                'partner_id': request.env.user.partner_id.id,
+                'expiry_date': fields.Date.today() + relativedelta(days=30),
+            })
+            
+            return {
+                'success': True,
+                'barcode': {
+                    'id': temp_barcode.id,
+                    'name': temp_barcode.barcode,
+                    'barcode_type': 'temp',
+                    'barcode_format': 'code128',
+                    'sequence_code': 'records.temp.barcode',
+                    'state': 'active',
+                    'barcode_image': temp_barcode.barcode_image,
+                }
+            }
+        except Exception as e:
+            _logger.exception("Temp barcode generation failed")
+            return {'success': False, 'error': str(e)}
