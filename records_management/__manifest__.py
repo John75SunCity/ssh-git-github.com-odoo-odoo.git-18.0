@@ -360,27 +360,27 @@
             "records_management/static/src/portal_components/**/*",
 
             # Legacy Portal Assets (To be gradually migrated)
-            "records_management/static/src/js/portal_dashboard_bootstrap.js",
-            "records_management/static/src/js/portal_accessibility.js",
+            "records_management/static/src/js/portal/portal_dashboard_bootstrap.js",
+            "records_management/static/src/js/portal/portal_accessibility.js",
             "records_management/static/src/css/portal_tour.css",
             "records_management/static/src/css/intelligent_search.css",
             "records_management/static/src/css/customer_portal_diagram.css",
-            "records_management/static/src/js/portal_tour.js",
-            "records_management/static/src/js/portal_inventory_highlights.js",
-            "records_management/static/src/js/portal_inventory_search.js",
-            "records_management/static/src/js/portal_quote_generator.js",
-            "records_management/static/src/js/portal_signature.js",
-            "records_management/static/src/js/portal_user_import.js",
+            "records_management/static/src/js/portal/portal_tour.js",
+            "records_management/static/src/js/portal/portal_inventory_highlights.js",
+            "records_management/static/src/js/portal/portal_inventory_search.js",
+            "records_management/static/src/js/portal/portal_quote_generator.js",
+            "records_management/static/src/js/portal/portal_signature.js",
+            "records_management/static/src/js/portal/portal_user_import.js",
             "records_management/static/src/js/field_label_customizer.js",
             # Newly externalized portal barcode management logic (extracted from inline script)
             "records_management/static/src/js/portal/portal_barcode_management.js",
             # Newly externalized portal document retrieval logic
             "records_management/static/src/js/portal/portal_document_retrieval.js",
             # Organization diagram interactive logic (migrated from inline script)
-            "records_management/static/src/js/portal_organization_diagram.js",
+            "records_management/static/src/js/portal/portal_organization_diagram.js",
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
-            "records_management/static/src/js/customer_portal_diagram.js",
+            "records_management/static/src/js/portal/customer_portal_diagram.js",
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
         "point_of_sale.assets": [
