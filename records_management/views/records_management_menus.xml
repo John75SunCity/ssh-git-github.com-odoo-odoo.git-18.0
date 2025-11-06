@@ -354,6 +354,66 @@
                 </p>
             </field>
         </record>
+        <record id="action_storage_reports" model="ir.actions.act_window">
+            <field name="name">Storage Reports</field>
+            <field name="res_model">records.container</field>
+            <field name="view_mode">list,form,kanban,graph</field>
+            <field name="context">{
+            'search_default_stored': 1,
+            'search_default_active': 1
+        }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-bar-chart"/> Storage Reports
+                </p>
+                <p>
+                    <b>📊 Storage Analytics and Reporting:</b>
+                </p>
+                <ul>
+                    <li>Comprehensive storage utilization reports</li>
+                    <li>Location capacity and occupancy analysis</li>
+                    <li>Container status and lifecycle tracking</li>
+                    <li>Storage cost analysis and forecasting</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Real-time storage capacity monitoring<br/>
+                    • Automated utilization reports<br/>
+                    • Cost analysis by location and container type<br/>
+                    • Trend analysis and forecasting
+                </p>
+            </field>
+        </record>
+        <record id="action_compliance_reports" model="ir.actions.act_window">
+            <field name="name">Compliance Reports</field>
+            <field name="res_model">naid.compliance</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="context">{
+            'search_default_certified': 1,
+            'search_default_active': 1
+        }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-shield"/> Compliance Reports
+                </p>
+                <p>
+                    <b>🛡️ NAID Compliance Reporting:</b>
+                </p>
+                <ul>
+                    <li>NAID certification status and tracking</li>
+                    <li>Audit schedule and compliance monitoring</li>
+                    <li>Certificate expiry and renewal alerts</li>
+                    <li>Compliance history and documentation</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Automated compliance monitoring<br/>
+                    • Certificate lifecycle management<br/>
+                    • Audit trail and documentation<br/>
+                    • Regulatory reporting capabilities
+                </p>
+            </field>
+        </record>
         <!-- Menus -->
             <!-- ========================================== -->
             <!-- OPERATIONS MENU - Daily Workflow          -->
