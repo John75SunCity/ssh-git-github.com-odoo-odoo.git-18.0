@@ -129,6 +129,11 @@
         "data/tag_data.xml",
         "data/fsm_mail_templates_data.xml",
         "data/mail_activity_data_todo.xml",
+        # Training courses for NAID AAA compliance and customer education
+        "data/training_courses_data.xml",
+        "data/training_courses_naid_content.xml",
+        "data/training_courses_customer_setup.xml",
+        "data/training_courses_hipaa_privacy.xml",
     # Updated: replaced removed duplicate cron file with consolidated cron data definition
     "data/records_retrieval_order_cron_data.xml",
         "data/scheduled_actions_data.xml",

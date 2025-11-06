@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- NAID AAA Compliance Training Course -->
+        <record id="slide_channel_naid_aaa_training" model="slide.channel">
+            <field name="name">NAID AAA Compliance Training</field>
+            <field name="description">Comprehensive training on NAID AAA standards for records management professionals</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="allow_comment">true</field>
+            <field name="completion_time">2.0</field>
+            <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_role_training')])]"/>
+        </record>
+
+        <!-- Customer Records System Setup Course -->
+        <record id="slide_channel_customer_records_setup" model="slide.channel">
+            <field name="name">Setting Up Your Records Management System</field>
+            <field name="description">Essential guide for customers implementing effective records management practices</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="allow_comment">true</field>
+            <field name="completion_time">1.5</field>
+            <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_other')])]"/>
+        </record>
+
+        <!-- HIPAA & Data Privacy Course -->
+        <record id="slide_channel_hipaa_privacy_training" model="slide.channel">
+            <field name="name">HIPAA Compliance & Data Privacy for Physical Records</field>
+            <field name="description">Protecting sensitive information in physical document storage and handling</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="allow_comment">true</field>
+            <field name="completion_time">2.5</field>
+            <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_role_training')])]"/>
+        </record>
+    </data>
+</odoo></content>
+<parameter name="filePath">/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/data/training_courses_data.xml

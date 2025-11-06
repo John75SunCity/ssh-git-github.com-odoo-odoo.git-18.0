@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- NAID AAA Compliance Training Course Slides -->
+
+        <!-- Introduction to NAID AAA -->
+        <record id="slide_naid_aaa_intro" model="slide.slide">
+            <field name="name">Introduction to NAID AAA Certification</field>
+            <field name="channel_id" ref="slide_channel_naid_aaa_training"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.1</field>
+            <field name="sequence">1</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>NAID AAA Certification Training</h1>
+            <h2>Introduction to Information Destruction Standards</h2>
+
+            <div class="alert alert-info">
+                <strong>Learning Objective:</strong> Understand the importance of NAID AAA certification
+                and its role in secure information destruction.
+            </div>
+
+            <h3>What is NAID?</h3>
+            <p>The National Association for Information Destruction (NAID) is the international trade association
+            for companies providing information destruction services.</p>
+
+            <h3>AAA Certification Levels</h3>
+            <ul>
+                <li><strong>AAA:</strong> Highest level of certification - rigorous standards</li>
+                <li><strong>AA:</strong> Good standards with some flexibility</li>
+                <li><strong>A:</strong> Basic certification level</li>
+            </ul>
+
+            <h3>Why AAA Matters</h3>
+            <p>AAA certification ensures that your information destruction processes meet the highest
+            standards of security, accountability, and environmental responsibility.</p>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Chain of Custody -->
+        <record id="slide_naid_chain_custody" model="slide.slide">
+            <field name="name">Chain of Custody Documentation</field>
+            <field name="channel_id" ref="slide_channel_naid_aaa_training"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.2</field>
+            <field name="sequence">2</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Chain of Custody Documentation</h2>
+
+            <div class="alert alert-warning">
+                <strong>Critical Requirement:</strong> Every document must be traceable from creation
+                to final destruction.
+            </div>
+
+            <h3>Key Elements of Chain of Custody</h3>
+            <ol>
+                <li><strong>Document Identification:</strong> Unique tracking numbers for each container</li>
+                <li><strong>Timestamp Recording:</strong> Every movement and action logged with date/time</li>
+                <li><strong>Personnel Tracking:</strong> Who handled the documents and when</li>
+                <li><strong>Security Seals:</strong> Tamper-evident seals on all containers</li>
+                <li><strong>Digital Audit Trail:</strong> Electronic records of all activities</li>
+            </ol>
+
+            <h3>Common Chain of Custody Failures</h3>
+            <ul class="text-danger">
+                <li>Missing timestamps on container movements</li>
+                <li>Unsigned or undated custody transfer forms</li>
+                <li>Broken or missing security seals</li>
+                <li>Inadequate personnel identification</li>
+            </ul>
+
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5>Best Practice:</h5>
+                    <p>Implement automated tracking systems that prevent manual errors and ensure
+                    complete audit trails for every document container.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Destruction Methods -->
+        <record id="slide_naid_destruction_methods" model="slide.slide">
+            <field name="name">Approved Destruction Methods</field>
+            <field name="channel_id" ref="slide_channel_naid_aaa_training"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.15</field>
+            <field name="sequence">3</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Approved Information Destruction Methods</h2>
+
+            <h3>Paper Documents</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Cross-Cut Shredding</h4>
+                    <ul>
+                        <li>Particles ≤ 1" x 5"</li>
+                        <li>Most common method</li>
+                        <li>Suitable for most documents</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h4>Micro-Cut Shredding</h4>
+                    <ul>
+                        <li>Particles ≤ 1/8" x 1/2"</li>
+                        <li>Highest security level</li>
+                        <li>Required for classified documents</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Electronic Media</h3>
+            <ul>
+                <li><strong>Hard Drive Crushing:</strong> Physical destruction of platters</li>
+                <li><strong>Degaussing:</strong> Magnetic field erasure (for magnetic media)</li>
+                <li><strong>Software Wiping:</strong> Multiple pass data erasure</li>
+                <li><strong>Incineration:</strong> Complete burning of media</li>
+            </ul>
+
+            <h3>Destruction Verification</h3>
+            <p>All destruction activities must be:</p>
+            <ul>
+                <li>Witnessed by authorized personnel</li>
+                <li>Documented with photographs</li>
+                <li>Recorded in destruction certificates</li>
+                <li>Verified through random sampling</li>
+            </ul>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Audit Preparation -->
+        <record id="slide_naid_audit_prep" model="slide.slide">
+            <field name="name">NAID AAA Audit Preparation</field>
+            <field name="channel_id" ref="slide_channel_naid_aaa_training"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.25</field>
+            <field name="sequence">4</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Preparing for NAID AAA Certification Audit</h2>
+
+            <h3>Audit Focus Areas</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">Facility Security</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li>✓ Access controls</li>
+                                <li>✓ Surveillance systems</li>
+                                <li>✓ Personnel screening</li>
+                                <li>✓ Secure storage</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">Operational Procedures</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li>✓ Chain of custody</li>
+                                <li>✓ Destruction methods</li>
+                                <li>✓ Equipment maintenance</li>
+                                <li>✓ Quality control</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">Documentation</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li>✓ Audit trails</li>
+                                <li>✓ Certificates</li>
+                                <li>✓ Training records</li>
+                                <li>✓ Compliance reports</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Common Audit Findings</h3>
+            <div class="alert alert-danger">
+                <strong>Most Frequent Issues:</strong>
+                <ul>
+                    <li>Incomplete chain of custody documentation</li>
+                    <li>Missing equipment calibration records</li>
+                    <li>Inadequate personnel training documentation</li>
+                    <li>Insufficient surveillance coverage</li>
+                </ul>
+            </div>
+
+            <h3>Audit Success Tips</h3>
+            <ul>
+                <li>Conduct regular internal audits</li>
+                <li>Maintain complete documentation</li>
+                <li>Train all staff on procedures</li>
+                <li>Keep equipment well-maintained</li>
+                <li>Address findings promptly</li>
+            </ul>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+    </data>
+</odoo></content>
+<parameter name="filePath">/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/data/training_courses_naid_content.xml

@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- HIPAA & Data Privacy Course Slides -->
+
+        <!-- HIPAA Overview -->
+        <record id="slide_hipaa_overview" model="slide.slide">
+            <field name="name">HIPAA Compliance Overview</field>
+            <field name="channel_id" ref="slide_channel_hipaa_privacy_training"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.15</field>
+            <field name="sequence">1</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>HIPAA Compliance & Data Privacy</h1>
+            <h2>Protecting Sensitive Health Information in Physical Records</h2>
+
+            <div class="alert alert-danger">
+                <strong>Critical:</strong> HIPAA violations can result in fines up to $50,000 per violation,
+                with annual maximum penalties of $1.5 million for identical violations.
+            </div>
+
+            <h3>What is HIPAA?</h3>
+            <p>The Health Insurance Portability and Accountability Act (HIPAA) establishes national standards
+            for protecting sensitive patient health information from being disclosed without consent or knowledge.</p>
+
+            <h3>Protected Health Information (PHI)</h3>
+            <p>Any information about health status, provision of health care, or payment for health care that
+            can be linked to an individual.</p>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Examples of PHI:</h4>
+                    <ul>
+                        <li>Medical records and histories</li>
+                        <li>Lab test results</li>
+                        <li>Insurance information</li>
+                        <li>Patient names and addresses</li>
+                        <li>Medical device identifiers</li>
+                        <li>Any health-related communications</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h4>HIPAA Requirements:</h4>
+                    <ul>
+                        <li>Privacy Rule - Controls disclosure of PHI</li>
+                        <li>Security Rule - Protects electronic PHI</li>
+                        <li>Breach Notification Rule - Report breaches</li>
+                        <li>Enforcement Rule - Civil and criminal penalties</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Physical Records Challenges</h3>
+            <p>While HIPAA focuses heavily on electronic records, physical documents containing PHI
+            require the same level of protection and proper destruction methods.</p>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Physical Security Measures -->
+        <record id="slide_physical_security" model="slide.slide">
+            <field name="name">Physical Security for PHI Documents</field>
+            <field name="channel_id" ref="slide_channel_hipaa_privacy_training"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.2</field>
+            <field name="sequence">2</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Physical Security Measures for PHI Documents</h2>
+
+            <h3>Facility Security Requirements</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">Access Control</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li>✓ Keycard or biometric entry</li>
+                                <li>✓ Visitor logging system</li>
+                                <li>✓ Limited access zones</li>
+                                <li>✓ 24/7 surveillance</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">Storage Security</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li>✓ Locked cabinets/file rooms</li>
+                                <li>✓ Fire-resistant containers</li>
+                                <li>✓ Climate-controlled environment</li>
+                                <li>✓ Inventory tracking system</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bg-warning text-white">Transport Security</div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li>✓ Sealed transport containers</li>
+                                <li>✓ Chain of custody documentation</li>
+                                <li>✓ GPS tracking for vehicles</li>
+                                <li>✓ Secure loading/unloading</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Access Control Best Practices</h3>
+
+            <h4>Role-Based Access</h4>
+            <ul>
+                <li><strong>Need-to-Know Basis:</strong> Only authorized personnel access PHI</li>
+                <li><strong>Minimum Necessary:</strong> Access limited to job requirements</li>
+                <li><strong>Regular Audits:</strong> Monitor and log all access attempts</li>
+                <li><strong>Background Checks:</strong> Screen personnel handling PHI</li>
+            </ul>
+
+            <h4>Physical Barriers</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Internal Controls</h5>
+                    <ul>
+                        <li>Locked filing cabinets</li>
+                        <li>Secure storage rooms</li>
+                        <li>Window coverings for privacy</li>
+                        <li>Clean desk policies</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>External Controls</h5>
+                    <ul>
+                        <li>Perimeter fencing</li>
+                        <li>Security lighting</li>
+                        <li>Alarm systems</li>
+                        <li>Professional security personnel</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Emergency Preparedness</h3>
+            <div class="alert alert-warning">
+                <strong>Critical:</strong> Have procedures for protecting PHI during emergencies
+                (fires, floods, natural disasters).
+            </div>
+
+            <ul>
+                <li><strong>Evacuation Plans:</strong> Include PHI protection in emergency procedures</li>
+                <li><strong>Backup Storage:</strong> Off-site secure storage for critical records</li>
+                <li><strong>Recovery Procedures:</strong> Steps to restore access after incidents</li>
+                <li><strong>Incident Response:</strong> Breach notification procedures (within 60 days)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Document Handling Procedures -->
+        <record id="slide_document_handling" model="slide.slide">
+            <field name="name">PHI Document Handling Procedures</field>
+            <field name="channel_id" ref="slide_channel_hipaa_privacy_training"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.18</field>
+            <field name="sequence">3</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>PHI Document Handling Procedures</h2>
+
+            <h3>Document Lifecycle Management</h3>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-primary"></div>
+                    <div class="timeline-content">
+                        <h4>1. Creation/Receipt</h4>
+                        <ul>
+                            <li>Immediate logging of receipt</li>
+                            <li>Verification of sender authorization</li>
+                            <li>Assignment of unique identifiers</li>
+                            <li>Initial security classification</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-info"></div>
+                    <div class="timeline-content">
+                        <h4>2. Storage</h4>
+                        <ul>
+                            <li>Secure locked storage</li>
+                            <li>Access logging for all retrievals</li>
+                            <li>Regular inventory audits</li>
+                            <li>Climate-controlled environment</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-warning"></div>
+                    <div class="timeline-content">
+                        <h4>3. Use/Access</h4>
+                        <ul>
+                            <li>Need-to-know access only</li>
+                            <li>Supervision of external access</li>
+                            <li>Copying restrictions</li>
+                            <li>Usage logging and monitoring</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker bg-danger"></div>
+                    <div class="timeline-content">
+                        <h4>4. Destruction</h4>
+                        <ul>
+                            <li>Authorized destruction only</li>
+                            <li>NAID AAA certified methods</li>
+                            <li>Destruction certificates</li>
+                            <li>Chain of custody maintained</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Handling Sensitive Documents</h3>
+
+            <h4>Viewing PHI Documents</h4>
+            <ul>
+                <li>Work in private, secure areas</li>
+                <li>Never leave documents unattended</li>
+                <li>Position screens to prevent shoulder surfing</li>
+                <li>Log all access with date, time, and purpose</li>
+            </ul>
+
+            <h4>Copying and Faxing</h4>
+            <div class="alert alert-danger">
+                <strong>High Risk Activity:</strong> Faxing PHI is particularly risky due to
+                potential misdirection and lack of encryption.
+            </div>
+
+            <ul>
+                <li>Use cover sheets with confidentiality notices</li>
+                <li>Verify recipient fax numbers before sending</li>
+                <li>Use secure fax machines with confirmation features</li>
+                <li>Never fax to non-secure locations</li>
+            </ul>
+
+            <h4>Mail and Courier Services</h4>
+            <ul>
+                <li>Use registered or certified mail for sensitive documents</li>
+                <li>Employ bonded courier services</li>
+                <li>Require signature upon delivery</li>
+                <li>Track packages with delivery confirmation</li>
+            </ul>
+
+            <h3>Staff Training Requirements</h3>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5>Mandatory Training Topics:</h5>
+                    <ul>
+                        <li>HIPAA Privacy and Security Rules</li>
+                        <li>PHI identification and handling</li>
+                        <li>Breach recognition and reporting</li>
+                        <li>Physical security procedures</li>
+                        <li>Emergency response protocols</li>
+                        <li>Annual refresher training</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -40px;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 3px #dee2e6;
+}
+
+.timeline-content {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    border-left: 4px solid #007bff;
+}
+</style>
+            ]]></field>
+        </record>
+
+        <!-- Breach Prevention and Response -->
+        <record id="slide_breach_prevention" model="slide.slide">
+            <field name="name">Breach Prevention and Incident Response</field>
+            <field name="channel_id" ref="slide_channel_hipaa_privacy_training"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.22</field>
+            <field name="sequence">4</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Breach Prevention and Incident Response</h2>
+
+            <h3>Common Breach Scenarios</h3>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Physical Security Breaches</h4>
+                    <ul class="text-danger">
+                        <li>Stolen or lost documents</li>
+                        <li>Unauthorized access to storage areas</li>
+                        <li>Improper disposal of PHI documents</li>
+                        <li>Failure to secure workstations</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h4>Procedural Breaches</h4>
+                    <ul class="text-danger">
+                        <li>Misdirected fax transmissions</li>
+                        <li>Unauthorized copying of records</li>
+                        <li>Failure to log access activities</li>
+                        <li>Inadequate staff training</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Breach Prevention Strategies</h3>
+
+            <h4>Risk Assessment</h4>
+            <ul>
+                <li><strong>Regular Audits:</strong> Conduct quarterly security assessments</li>
+                <li><strong>Vulnerability Testing:</strong> Identify and address security gaps</li>
+                <li><strong>Staff Awareness:</strong> Ongoing training and reminders</li>
+                <li><strong>Technology Updates:</strong> Keep security systems current</li>
+            </ul>
+
+            <h4>Access Controls</h4>
+            <div class="card">
+                <div class="card-body">
+                    <h5>Implement Defense in Depth:</h5>
+                    <ol>
+                        <li><strong>Perimeter Security:</strong> Control building access</li>
+                        <li><strong>Facility Security:</strong> Secure internal areas</li>
+                        <li><strong>Document Security:</strong> Lock cabinets and rooms</li>
+                        <li><strong>User Authentication:</strong> Verify personnel identity</li>
+                        <li><strong>Activity Logging:</strong> Monitor all access attempts</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h3>Incident Response Plan</h3>
+
+            <h4>Immediate Response (Within 1 Hour)</h4>
+            <ol>
+                <li>Contain the breach - secure affected documents</li>
+                <li>Assess the scope - determine what PHI was exposed</li>
+                <li>Notify security/privacy officer</li>
+                <li>Document initial findings</li>
+            </ol>
+
+            <h4>Risk Assessment (Within 24 Hours)</h4>
+            <ul>
+                <li>Evaluate the risk of harm to individuals</li>
+                <li>Determine if notification is required</li>
+                <li>Consult with legal counsel</li>
+                <li>Prepare breach notification content</li>
+            </ul>
+
+            <h4>Notification Requirements</h4>
+            <div class="alert alert-warning">
+                <strong>Timeline:</strong> Notify affected individuals within 60 days of discovery
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Individual Notice</h5>
+                    <ul>
+                        <li>Written notification</li>
+                        <li>Toll-free number</li>
+                        <li>Clear description of breach</li>
+                        <li>Contact information</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Media Notice</h5>
+                    <ul>
+                        <li>If 500+ affected</li>
+                        <li>Major media outlets</li>
+                        <li>Prominent posting</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>HHS Notification</h5>
+                    <ul>
+                        <li>Within 60 days</li>
+                        <li>Electronic submission</li>
+                        <li>Detailed breach information</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Post-Breach Actions</h3>
+            <ul>
+                <li><strong>Root Cause Analysis:</strong> Identify what went wrong</li>
+                <li><strong>Corrective Actions:</strong> Implement fixes to prevent recurrence</li>
+                <li><strong>Staff Training:</strong> Address knowledge gaps</li>
+                <li><strong>Documentation:</strong> Maintain complete incident records</li>
+            </ul>
+
+            <div class="alert alert-success">
+                <strong>Prevention is Key:</strong> Most breaches can be prevented through proper
+                procedures, training, and security controls. Regular audits and staff awareness
+                programs significantly reduce risk.
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Record Retention and Destruction -->
+        <record id="slide_retention_destruction" model="slide.slide">
+            <field name="name">PHI Record Retention and Secure Destruction</field>
+            <field name="channel_id" ref="slide_channel_hipaa_privacy_training"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.2</field>
+            <field name="sequence">5</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>PHI Record Retention and Secure Destruction</h2>
+
+            <h3>Legal Retention Requirements</h3>
+
+            <div class="alert alert-info">
+                <strong>HIPAA Note:</strong> HIPAA does not specify retention periods for medical records,
+                but other laws and regulations may apply (e.g., state laws, Medicare requirements).
+            </div>
+
+            <h4>Common Retention Periods</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Record Type</th>
+                        <th>Retention Period</th>
+                        <th>Authority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Medical Records</td>
+                        <td>7-10 years after last treatment</td>
+                        <td>State laws vary</td>
+                    </tr>
+                    <tr>
+                        <td>X-rays & Imaging</td>
+                        <td>5-7 years</td>
+                        <td>State medical boards</td>
+                    </tr>
+                    <tr>
+                        <td>Insurance Records</td>
+                        <td>10 years</td>
+                        <td>IRS requirements</td>
+                    </tr>
+                    <tr>
+                        <td>Workers' Comp Records</td>
+                        <td>30 years</td>
+                        <td>Federal/state laws</td>
+                    </tr>
+                    <tr>
+                        <td>Clinical Trial Data</td>
+                        <td>15 years</td>
+                        <td>FDA requirements</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Destruction Methods for PHI</h3>
+
+            <h4>HIPAA-Approved Methods</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Paper Documents</h5>
+                    <ul>
+                        <li>Cross-cut shredding (1/8" x 1-1/2")</li>
+                        <li>Pulping or incineration</li>
+                        <li>NAID AAA certified destruction</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Electronic Media</h5>
+                    <ul>
+                        <li>Hard drive degaussing</li>
+                        <li>Physical destruction</li>
+                        <li>Secure data wiping</li>
+                        <li>Certified recycling</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Destruction Documentation</h3>
+
+            <h4>Required Documentation</h4>
+            <ul>
+                <li><strong>Destruction Certificates:</strong> From NAID AAA certified vendor</li>
+                <li><strong>Chain of Custody:</strong> Complete audit trail</li>
+                <li><strong>Witness Signatures:</strong> Authorized personnel verification</li>
+                <li><strong>Inventory Lists:</strong> Detailed records of destroyed materials</li>
+                <li><strong>Retention Records:</strong> Maintain destruction certificates indefinitely</li>
+            </ul>
+
+            <h4>Certificate Content</h4>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <p>Destruction certificates must include:</p>
+                    <ul>
+                        <li>Date and time of destruction</li>
+                        <li>Description of materials destroyed</li>
+                        <li>Method of destruction used</li>
+                        <li>NAID AAA certification number</li>
+                        <li>Signatures of witnesses</li>
+                        <li>Chain of custody verification</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Destruction Timing</h3>
+
+            <h4>When to Destroy Records</h4>
+            <ul>
+                <li><strong>Retention Period Expired:</strong> After minimum retention requirements met</li>
+                <li><strong>Patient Request:</strong> Upon written authorization</li>
+                <li><strong>No Longer Needed:</strong> When records are obsolete</li>
+                <li><strong>Business Closure:</strong> Proper disposal before facility closure</li>
+            </ul>
+
+            <h4>Exceptions to Destruction</h4>
+            <div class="alert alert-warning">
+                <strong>Legal Holds:</strong> Records subject to litigation, audit, or investigation
+                cannot be destroyed until hold is released.
+            </div>
+
+            <ul>
+                <li>Litigation holds</li>
+                <li>Regulatory investigations</li>
+                <li>Insurance claims</li>
+                <li>Quality assurance reviews</li>
+            </ul>
+
+            <h3>Destruction Best Practices</h3>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Planning</h5>
+                    <ul>
+                        <li>Regular inventory reviews</li>
+                        <li>Destruction schedules</li>
+                        <li>Vendor selection criteria</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Execution</h5>
+                    <ul>
+                        <li>Secure transport</li>
+                        <li>Witnessed destruction</li>
+                        <li>Certificate verification</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Documentation</h5>
+                    <ul>
+                        <li>Complete audit trails</li>
+                        <li>Secure certificate storage</li>
+                        <li>Regular compliance audits</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>Remember:</strong> Proper destruction of PHI is as important as its protection.
+                Inadequate destruction can result in breaches just as serious as unauthorized access.
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+    </data>
+</odoo></content>
+<parameter name="filePath">/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/data/training_courses_hipaa_privacy.xml

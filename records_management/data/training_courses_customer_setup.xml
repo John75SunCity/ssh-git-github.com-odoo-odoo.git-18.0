@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Customer Records System Setup Course Slides -->
+
+        <!-- Introduction -->
+        <record id="slide_customer_setup_intro" model="slide.slide">
+            <field name="name">Setting Up Your Records Management System</field>
+            <field name="channel_id" ref="slide_channel_customer_records_setup"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.1</field>
+            <field name="sequence">1</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Setting Up Your Records Management System</h1>
+            <h2>Essential Best Practices for Document Organization</h2>
+
+            <div class="alert alert-success">
+                <strong>Goal:</strong> Create a consistent, searchable, and compliant records system
+                that protects your organization's information assets.
+            </div>
+
+            <h3>Why Proper Setup Matters</h3>
+            <ul>
+                <li><strong>Compliance:</strong> Meet legal and regulatory requirements</li>
+                <li><strong>Efficiency:</strong> Quick document retrieval and reduced duplication</li>
+                <li><strong>Security:</strong> Protect sensitive information from unauthorized access</li>
+                <li><strong>Auditability:</strong> Maintain complete chain of custody</li>
+            </ul>
+
+            <h3>Key Principles</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h4>📝 Consistency</h4>
+                        <p>Use standardized formats across all departments</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h4>🔍 Clarity</h4>
+                        <p>Labels should be immediately understandable</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <h4>🛡️ Security</h4>
+                        <p>Prevent accidental exposure of sensitive information</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Container Labeling Standards -->
+        <record id="slide_container_labeling" model="slide.slide">
+            <field name="name">Container Labeling Standards</field>
+            <field name="channel_id" ref="slide_channel_customer_records_setup"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.15</field>
+            <field name="sequence">2</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Container Labeling Standards</h2>
+
+            <div class="alert alert-warning">
+                <strong>Critical Rule:</strong> Label only ONE panel per container to prevent
+                confusion and duplicate labeling errors.
+            </div>
+
+            <h3>Minimum Character Requirements</h3>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5>4-Digit Minimum Rule</h5>
+                    <p>All container labels must contain at least 4 digits to ensure uniqueness
+                    and prevent numbering conflicts.</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>✅ Correct Examples:</h6>
+                            <ul>
+                                <li>HR-2024-0001</li>
+                                <li>FIN-1000</li>
+                                <li>LEGAL-2023-0456</li>
+                                <li>HR-1000 (minimum 4 digits)</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>❌ Incorrect Examples:</h6>
+                            <ul class="text-danger">
+                                <li>HR-123 (only 3 digits)</li>
+                                <li>FIN-99 (only 2 digits)</li>
+                                <li>ABC (no digits)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Abbreviation Numbering Systems</h3>
+            <p>Use consistent department abbreviations followed by sequential numbers:</p>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Abbreviation</th>
+                        <th>Example</th>
+                        <th>Range</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Human Resources</td>
+                        <td>HR</td>
+                        <td>HR-1000</td>
+                        <td>1000-1999</td>
+                    </tr>
+                    <tr>
+                        <td>Finance</td>
+                        <td>FIN</td>
+                        <td>FIN-2000</td>
+                        <td>2000-2999</td>
+                    </tr>
+                    <tr>
+                        <td>Legal</td>
+                        <td>LEG</td>
+                        <td>LEG-3000</td>
+                        <td>3000-3999</td>
+                    </tr>
+                    <tr>
+                        <td>Operations</td>
+                        <td>OPS</td>
+                        <td>OPS-4000</td>
+                        <td>4000-4999</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Single Panel Labeling</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>✅ Correct: One Panel Only</h5>
+                    <ul>
+                        <li>Choose the front panel for primary labeling</li>
+                        <li>Use consistent placement (top-left corner)</li>
+                        <li>Apply barcode or QR code on the same panel</li>
+                        <li>Leave other panels clear for stacking</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>❌ Avoid: Multiple Panels</h5>
+                    <ul class="text-danger">
+                        <li>Labels on multiple sides cause confusion</li>
+                        <li>Barcode scanning becomes inconsistent</li>
+                        <li>Creates visual clutter in storage</li>
+                        <li>Makes inventory audits more difficult</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Department Organization -->
+        <record id="slide_department_organization" model="slide.slide">
+            <field name="name">Department-Based Organization</field>
+            <field name="channel_id" ref="slide_channel_customer_records_setup"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.12</field>
+            <field name="sequence">3</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Department-Based Records Organization</h2>
+
+            <h3>Benefits of Departmental Grouping</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5>🎯 Access Control</h5>
+                            <p>Restrict sensitive documents to authorized personnel only</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5>📊 Audit Efficiency</h5>
+                            <p>Easier compliance audits and document retrieval</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5>🔄 Workflow Optimization</h5>
+                            <p>Streamlined processes within department boundaries</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Department Range Allocation</h3>
+            <p>Pre-allocate number ranges to prevent conflicts:</p>
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Department</th>
+                            <th>Code</th>
+                            <th>Number Range</th>
+                            <th>Document Types</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Human Resources</td>
+                            <td>HR</td>
+                            <td>1000-1999</td>
+                            <td>Employee files, policies, training records</td>
+                        </tr>
+                        <tr>
+                            <td>Finance</td>
+                            <td>FIN</td>
+                            <td>2000-2999</td>
+                            <td>Financial statements, tax records, budgets</td>
+                        </tr>
+                        <tr>
+                            <td>Legal</td>
+                            <td>LEG</td>
+                            <td>3000-3999</td>
+                            <td>Contracts, litigation, compliance documents</td>
+                        </tr>
+                        <tr>
+                            <td>Operations</td>
+                            <td>OPS</td>
+                            <td>4000-4999</td>
+                            <td>Operational procedures, maintenance records</td>
+                        </tr>
+                        <tr>
+                            <td>IT</td>
+                            <td>IT</td>
+                            <td>5000-5999</td>
+                            <td>System documentation, security policies</td>
+                        </tr>
+                        <tr>
+                            <td>Marketing</td>
+                            <td>MKT</td>
+                            <td>6000-6999</td>
+                            <td>Campaign materials, market research</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Implementation Steps</h3>
+            <ol>
+                <li><strong>Assess Current Inventory:</strong> Catalog existing documents by department</li>
+                <li><strong>Define Ranges:</strong> Allocate number ranges to each department</li>
+                <li><strong>Create Labels:</strong> Generate consistent labeling templates</li>
+                <li><strong>Train Staff:</strong> Ensure everyone understands the system</li>
+                <li><strong>Monitor Usage:</strong> Track range utilization and adjust as needed</li>
+            </ol>
+
+            <div class="alert alert-info">
+                <strong>Pro Tip:</strong> Start with conservative range allocations. You can always expand
+                ranges later, but it's difficult to reclaim numbers once assigned.
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Quality Control -->
+        <record id="slide_quality_control" model="slide.slide">
+            <field name="name">Quality Control & Error Prevention</field>
+            <field name="channel_id" ref="slide_channel_customer_records_setup"/>
+            <field name="slide_type">document</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">0.13</field>
+            <field name="sequence">4</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Quality Control & Error Prevention</h2>
+
+            <h3>Common Labeling Mistakes to Avoid</h3>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>❌ Double Labeling</h4>
+                    <ul class="text-danger">
+                        <li>Applying labels to multiple panels</li>
+                        <li>Using different labels for same container</li>
+                        <li>Over-labeling existing labels</li>
+                    </ul>
+                    <p><strong>Solution:</strong> Designate one panel only and use label templates</p>
+                </div>
+                <div class="col-md-6">
+                    <h4>❌ Incorrect Information</h4>
+                    <ul class="text-danger">
+                        <li>Typos in department codes</li>
+                        <li>Wrong number sequences</li>
+                        <li>Missing required digits</li>
+                    </ul>
+                    <p><strong>Solution:</strong> Use pre-printed labels and validation checklists</p>
+                </div>
+            </div>
+
+            <h3>Quality Control Checklist</h3>
+            <div class="card">
+                <div class="card-header">
+                    <h5>Before Applying Any Label:</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" disabled>
+                        <label class="form-check-label">Department code is correct and standardized</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" disabled>
+                        <label class="form-check-label">Number contains at least 4 digits</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" disabled>
+                        <label class="form-check-label">Number falls within assigned department range</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" disabled>
+                        <label class="form-check-label">Container has no existing labels on other panels</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" disabled>
+                        <label class="form-check-label">Label placement is consistent (top-left corner)</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" disabled>
+                        <label class="form-check-label">Barcode/QR code is included and scannable</label>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Staff Training Requirements</h3>
+            <ul>
+                <li><strong>Initial Training:</strong> Complete system overview and hands-on practice</li>
+                <li><strong>Annual Refresher:</strong> Review procedures and common errors</li>
+                <li><strong>Quality Audits:</strong> Regular spot checks of labeling accuracy</li>
+                <li><strong>Feedback Loop:</strong> Encourage reporting of system improvement opportunities</li>
+            </ul>
+
+            <h3>Monitoring & Continuous Improvement</h3>
+            <div class="alert alert-success">
+                <strong>Track These Metrics:</strong>
+                <ul>
+                    <li>Labeling error rate (target: <1%)</li>
+                    <li>Document retrieval time</li>
+                    <li>Staff compliance with procedures</li>
+                    <li>System usability feedback</li>
+                </ul>
+            </div>
+
+            <p>Regular quality reviews ensure your records system remains accurate, efficient, and compliant over time.</p>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+    </data>
+</odoo></content>
+<parameter name="filePath">/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/data/training_courses_customer_setup.xml
