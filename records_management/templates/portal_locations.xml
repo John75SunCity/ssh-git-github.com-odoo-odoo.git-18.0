@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Location Detail Template -->
+        <template id="location_detail" name="Location Detail">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Location Details</t>
+
+                <div class="o_portal_location_detail">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-map-marker-alt"></i>
+                                Location: <span t-esc="location.name"/>
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <dl class="row">
+                                        <dt class="col-sm-4">Complete Name:</dt>
+                                        <dd class="col-sm-8" t-esc="location.complete_name"/>
+
+                                        <dt class="col-sm-4">Usage:</dt>
+                                        <dd class="col-sm-8" t-esc="location.usage"/>
+
+                                        <dt class="col-sm-4">Capacity:</dt>
+                                        <dd class="col-sm-8" t-esc="location.max_capacity or 'Unlimited'"/>
+                                    </dl>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <a href="/records/dashboard" class="btn btn-secondary">
+                                    <i class="fa fa-arrow-left"></i> Back to Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

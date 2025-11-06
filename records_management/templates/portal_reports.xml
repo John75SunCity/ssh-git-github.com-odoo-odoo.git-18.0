@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Portal Reports Template -->
+        <template id="portal_reports" name="Portal Reports">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Reports &amp; Analytics</t>
+
+                <div class="o_portal_reports">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-chart-bar"></i>
+                                Reports &amp; Analytics
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Available Reports -->
+                                <div class="col-md-8">
+                                    <h4>Available Reports</h4>
+                                    <div class="list-group">
+                                        <a href="/records/report/documents" class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h5 class="mb-1">
+                                                    <i class="fa fa-file-alt text-primary"></i>
+                                                    Document Inventory Report
+                                                </h5>
+                                                <small>PDF</small>
+                                            </div>
+                                            <p class="mb-1">Complete inventory of all your documents with status and retention information.</p>
+                                        </a>
+
+                                        <a href="/records/report/certificates" class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h5 class="mb-1">
+                                                    <i class="fa fa-certificate text-success"></i>
+                                                    Certificate Report
+                                                </h5>
+                                                <small>PDF</small>
+                                            </div>
+                                            <p class="mb-1">Summary of all destruction certificates and compliance documentation.</p>
+                                        </a>
+
+                                        <a href="/records/report/containers" class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h5 class="mb-1">
+                                                    <i class="fa fa-box text-info"></i>
+                                                    Container Status Report
+                                                </h5>
+                                                <small>PDF</small>
+                                            </div>
+                                            <p class="mb-1">Current status and capacity utilization of all containers.</p>
+                                        </a>
+
+                                        <a href="/records/report/activity" class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h5 class="mb-1">
+                                                    <i class="fa fa-history text-warning"></i>
+                                                    Activity Report
+                                                </h5>
+                                                <small>PDF</small>
+                                            </div>
+                                            <p class="mb-1">Historical activity log of all record management operations.</p>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Report Filters -->
+                                <div class="col-md-4">
+                                    <h4>Report Filters</h4>
+                                    <form method="GET" action="/records/report/generate">
+                                        <div class="form-group">
+                                            <label for="report_type">Report Type</label>
+                                            <select class="form-control" id="report_type" name="type" required="required">
+                                                <option value="">Select Report Type</option>
+                                                <option value="documents">Document Inventory</option>
+                                                <option value="certificates">Certificates</option>
+                                                <option value="containers">Container Status</option>
+                                                <option value="activity">Activity Log</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="date_from">From Date</label>
+                                            <input type="date" class="form-control" id="date_from" name="date_from"/>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="date_to">To Date</label>
+                                            <input type="date" class="form-control" id="date_to" name="date_to"/>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="format">Format</label>
+                                            <select class="form-control" id="format" name="format">
+                                                <option value="pdf">PDF</option>
+                                                <option value="excel">Excel</option>
+                                                <option value="csv">CSV</option>
+                                            </select>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary btn-block">
+                                            <i class="fa fa-download"></i>
+                                            Generate Report
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

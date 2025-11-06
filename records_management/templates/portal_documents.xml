@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Portal My Documents Template -->
+        <template id="portal_my_documents" name="My Documents">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-set="title">My Documents</t>
+
+                <div class="o_portal_my_documents">
+                    <div class="card">
+                        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">
+                                <i class="fa fa-file-alt"></i>
+                                Digital Documents
+                            </h3>
+                            <div class="btn-group" role="group">
+                                <a href="/my/documents/upload" class="btn btn-light btn-sm">
+                                    <i class="fa fa-upload"></i> Upload Document
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <t t-if="not documents">
+                                <div class="alert alert-info text-center py-5">
+                                    <i class="fa fa-file-alt fa-3x mb-3 text-muted"></i>
+                                    <h4>No Documents Found</h4>
+                                    <p class="mb-3">You don't have any digital documents yet.</p>
+                                    <a href="/my/documents/upload" class="btn btn-primary">
+                                        <i class="fa fa-upload"></i> Upload Your First Document
+                                    </a>
+                                </div>
+                            </t>
+
+                            <t t-if="documents">
+                                <!-- Search and Filter Bar -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <form action="/my/documents" method="GET" class="form-inline">
+                                            <div class="input-group">
+                                                <input type="text" name="search" class="form-control" placeholder="Search documents..." t-att-value="search"/>
+                                                <div class="input-group-append">
+                                                    <button type="submit" class="btn btn-outline-secondary">
+                                                        <i class="fa fa-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                                                <i class="fa fa-filter"></i> Filter: <t t-esc="searchbar_filters[filterby]['label']"/>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <t t-foreach="searchbar_filters" t-as="filter_key">
+                                                    <t t-set="filter_item" t-value="searchbar_filters[filter_key]"/>
+                                                    <a class="dropdown-item" t-attf-href="/my/documents?filterby=#{filter_key}&amp;sortby=#{sortby}&amp;search=#{search}">
+                                                        <t t-esc="filter_item['label']"/>
+                                                    </a>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 text-right">
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                                                <i class="fa fa-sort"></i> Sort by: <t t-esc="searchbar_sortings[sortby]['label']"/>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <t t-foreach="searchbar_sortings" t-as="sort_key">
+                                                    <t t-set="sort_item" t-value="searchbar_sortings[sort_key]"/>
+                                                    <a class="dropdown-item" t-attf-href="/my/documents?sortby=#{sort_key}&amp;filterby=#{filterby}&amp;search=#{search}">
+                                                        <t t-esc="sort_item['label']"/>
+                                                    </a>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Document Name</th>
+                                                <th>Type</th>
+                                                <th>Size</th>
+                                                <th>Upload Date</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="documents" t-as="document">
+                                                <tr>
+                                                    <td>
+                                                        <strong t-esc="document.name"/>
+                                                        <t t-if="document.description">
+                                                            <br/><small class="text-muted" t-esc="document.description"/>
+                                                        </t>
+                                                    </td>
+                                                    <td t-esc="document.document_type_id.name if document.document_type_id else &apos;N/A&apos;"/></td>
+                                                    <td>
+                                                        <t t-if="document.attachment_id and document.attachment_id.file_size">
+                                                            <t t-set="file_size" t-value="document.attachment_id.file_size"/>
+                                                            <t t-set="size_mb" t-value="file_size / (1024*1024)"/>
+                                                            <t t-set="size_kb" t-value="file_size / 1024"/>
+                                                            <t t-esc="(&apos;{:.1f} MB&apos;.format(size_mb) if file_size > 1024*1024 else &apos;{:.1f} KB&apos;.format(size_kb))"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            N/A
+                                                        </t>
+                                                    </td>
+                                                    <td t-esc="document.create_date.strftime(&apos;%Y-%m-%d&apos;) if document.create_date else &apos;N/A&apos;"/></td>
+                                                    <td>
+                                                        <span t-if="document.active and not document.permanently_flagged" class="badge badge-success">Active</span>
+                                                        <span t-if="not document.active" class="badge badge-secondary">Inactive</span>
+                                                        <span t-if="document.permanently_flagged" class="badge badge-warning">Flagged</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <a t-attf-href="/my/document/#{document.id}" class="btn btn-sm btn-primary" title="View Details">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                            <t t-if="document.attachment_id">
+                                                                <a t-attf-href="/my/document/#{document.id}/download" class="btn btn-sm btn-success" title="Download">
+                                                                    <i class="fa fa-download"></i>
+                                                                </a>
+                                                            </t>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <t t-if="pager">
+                                    <t t-call="portal.pager"/>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Portal Document Detail Template -->
+        <template id="portal_document_detail" name="Document Detail">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Document Details</t>
+
+                <div class="o_portal_document_detail">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-file-alt"></i>
+                                Document: <span t-esc="document.name"/>
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <dl class="row">
+                                        <dt class="col-sm-4">Name:</dt>
+                                        <dd class="col-sm-8" t-esc="document.name"/>
+
+                                        <dt class="col-sm-4">Type:</dt>
+                                        <dd class="col-sm-8" t-esc="document.document_type_id.name if document.document_type_id else &apos;N/A&apos;"/>
+
+                                        <dt class="col-sm-4">Upload Date:</dt>
+                                        <dd class="col-sm-8" t-esc="document.create_date.strftime(&apos;%B %d, %Y&apos;) if document.create_date else &apos;N/A&apos;"/>
+
+                                        <dt class="col-sm-4">Size:</dt>
+                                        <dd class="col-sm-8">
+                                            <t t-if="document.attachment_id and document.attachment_id.file_size">
+                                                <t t-set="file_size" t-value="document.attachment_id.file_size"/>
+                                                <t t-set="size_mb" t-value="file_size / (1024*1024)"/>
+                                                <t t-set="size_kb" t-value="file_size / 1024"/>
+                                                <t t-esc="(&apos;{:.1f} MB&apos;.format(size_mb) if file_size > 1024*1024 else &apos;{:.1f} KB&apos;.format(size_kb))"/>
+                                            </t>
+                                            <t t-else="">
+                                                N/A
+                                            </t>
+                                        </dd>
+
+                                        <dt class="col-sm-4">Status:</dt>
+                                        <dd class="col-sm-8">
+                                            <span t-if="document.active and not document.permanently_flagged" class="badge badge-success">Active</span>
+                                            <span t-if="not document.active" class="badge badge-secondary">Inactive</span>
+                                            <span t-if="document.permanently_flagged" class="badge badge-warning">Flagged</span>
+                                        </dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Description</h5>
+                                    <p t-esc="document.description or &apos;No description available.&apos;"/>
+
+                                    <t t-if="document.container_id">
+                                        <h5>Container</h5>
+                                        <p>
+                                            <a t-attf-href="/my/container/#{document.container_id.id}" class="text-primary">
+                                                <t t-esc="document.container_id.name"/>
+                                            </a>
+                                        </p>
+                                    </t>
+
+                                    <t t-if="document.attachment_id">
+                                        <div class="mt-3">
+                                            <a t-attf-href="/my/document/#{document.id}/download" class="btn btn-success btn-lg">
+                                                <i class="fa fa-download"></i> Download Document
+                                            </a>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <a href="/my/documents" class="btn btn-secondary">
+                                    <i class="fa fa-arrow-left"></i> Back to Documents
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
