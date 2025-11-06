@@ -7,7 +7,7 @@
         <record id="slide_customer_setup_intro" model="slide.slide">
             <field name="name">Setting Up Your Records Management System</field>
             <field name="channel_id" ref="slide_channel_customer_records_setup"/>
-            <field name="slide_type">presentation</field>
+            <field name="slide_type">webpage</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="completion_time">6</field>
@@ -63,7 +63,7 @@
         <record id="slide_container_labeling" model="slide.slide">
             <field name="name">Container Labeling Standards</field>
             <field name="channel_id" ref="slide_channel_customer_records_setup"/>
-            <field name="slide_type">presentation</field>
+            <field name="slide_type">webpage</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="completion_time">7</field>
@@ -178,7 +178,7 @@
         <record id="slide_department_organization" model="slide.slide">
             <field name="name">Department-Based Organization</field>
             <field name="channel_id" ref="slide_channel_customer_records_setup"/>
-            <field name="slide_type">presentation</field>
+            <field name="slide_type">webpage</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="completion_time">7</field>
@@ -294,7 +294,7 @@
         <record id="slide_quality_control" model="slide.slide">
             <field name="name">Quality Control &amp; Error Prevention</field>
             <field name="channel_id" ref="slide_channel_customer_records_setup"/>
-            <field name="slide_type">presentation</field>
+            <field name="slide_type">webpage</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="completion_time">8</field>
