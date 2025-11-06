@@ -4,35 +4,34 @@
         <!-- Sample Customer Billing Profiles -->
 
         <!-- Monthly Storage + Monthly Service Customer -->
-        <record id="billing_profile_monthly_both" model="advanced.billing.profile">
+        <record id="billing_profile_monthly_both" model="records.billing">
             <field name="name">Monthly Storage + Service</field>
             <field name="partner_id" ref="base.res_partner_1"/>
-            <field name="billing_frequency">monthly</field>
-            <field name="billing_cycle_day">1</field>
-            <field name="auto_billing">True</field>
+            <field name="billing_config_id" ref="records_management.billing_config_monthly"/>
+            <field name="date">2025-01-01</field>
+            <field name="state">draft</field>
         </record>
 
         <!-- Quarterly Storage + Monthly Service Customer -->
-        <record id="billing_profile_quarterly_storage" model="advanced.billing.profile">
+        <record id="billing_profile_quarterly_storage" model="records.billing">
             <field name="name">Quarterly Storage + Monthly Service</field>
             <field name="partner_id" ref="base.res_partner_2"/>
-            <field name="billing_frequency">quarterly</field>
-            <field name="billing_cycle_day">1</field>
-            <field name="auto_billing">True</field>
+            <field name="billing_config_id" ref="records_management.billing_config_quarterly"/>
+            <field name="date">2025-01-01</field>
+            <field name="state">draft</field>
         </record>
 
         <!-- Prepaid Storage Customer -->
-        <record id="billing_profile_prepaid" model="advanced.billing.profile">
+        <record id="billing_profile_prepaid" model="records.billing">
             <field name="name">Prepaid Storage</field>
             <field name="partner_id" ref="base.res_partner_3"/>
-            <field name="billing_frequency">annually</field>
-            <field name="discount_percentage">5.0</field>
-            <field name="billing_cycle_day">1</field>
-            <field name="auto_billing">False</field>
+            <field name="billing_config_id" ref="records_management.billing_config_annual"/>
+            <field name="date">2025-01-01</field>
+            <field name="state">draft</field>
         </record>
 
         <!-- Billing Contacts for Monthly Customer -->
-        <record id="billing_contact_primary" model="advanced.billing.contact">
+        <record id="billing_contact_primary" model="records.billing.contact">
             <field name="name">John Doe - Primary</field>
             <field name="email">john.doe@example.com</field>
             <field name="phone">555-1234</field>
@@ -44,7 +43,7 @@
             <field name="sequence">10</field>
         </record>
 
-        <record id="billing_contact_accounting" model="advanced.billing.contact">
+        <record id="billing_contact_accounting" model="records.billing.contact">
             <field name="name">Jane Smith - Accounting</field>
             <field name="email">accounting@example.com</field>
             <field name="phone">555-5678</field>

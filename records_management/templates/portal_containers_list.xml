@@ -75,7 +75,7 @@
                                                 
                                                 <!-- Clear Filters -->
                                                 <div class="col-md-2 mb-2">
-                                                    <label class="small text-muted d-block">&nbsp;</label>
+                                                    <label class="small text-muted d-block">&#160;</label>
                                                     <a href="/my/containers" class="btn btn-secondary btn-block">
                                                         <i class="fa fa-times"></i> Clear
                                                     </a>

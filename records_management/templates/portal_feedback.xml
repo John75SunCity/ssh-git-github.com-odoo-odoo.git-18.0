@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Feedback Form Template -->
+        <template id="feedback_form_template" name="Feedback Form">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Submit Feedback</t>
+
+                <div class="o_portal_feedback_form">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-comments"></i>
+                                Share Your Feedback
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="/my/feedback">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" name="name" id="name" class="form-control" required="required"/>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="rating">Rating</label>
+                                    <select name="rating" id="rating" class="form-control" required="required">
+                                        <option value="">Select Rating...</option>
+                                        <option value="5">5 - Excellent</option>
+                                        <option value="4">4 - Very Good</option>
+                                        <option value="3">3 - Good</option>
+                                        <option value="2">2 - Fair</option>
+                                        <option value="1">1 - Poor</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="comments">Comments</label>
+                                    <textarea name="comments" id="comments" class="form-control" rows="5" required="required"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-paper-plane"></i> Submit Feedback
+                                    </button>
+                                    <a href="/my" class="btn btn-secondary">
+                                        <i class="fa fa-times"></i> Cancel
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

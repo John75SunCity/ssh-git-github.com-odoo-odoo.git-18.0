@@ -1,0 +1,48 @@
+name: Auto-Sync Main to Enterprise
+
+# Automatically sync main → Enterprise-Grade-DMS-Module-Records-Management
+# whenever changes are pushed to main branch
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync-to-enterprise:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Sync Main to Enterprise
+        run: |
+          echo "🔄 Syncing main → Enterprise-Grade-DMS-Module-Records-Management"
+
+          # Checkout Enterprise branch
+          git checkout Enterprise-Grade-DMS-Module-Records-Management
+          git pull origin Enterprise-Grade-DMS-Module-Records-Management
+
+          # Merge main into Enterprise
+          git merge origin/main --no-ff -m "auto-sync: Sync main changes to Enterprise branch"
+
+          # Push to Enterprise branch
+          git push origin Enterprise-Grade-DMS-Module-Records-Management
+
+          echo "✅ Successfully synced main → Enterprise"
+
+      - name: Summary
+        run: |
+          echo "📊 Sync Summary:"
+          echo "- Source: main"
+          echo "- Target: Enterprise-Grade-DMS-Module-Records-Management"
+          echo "- Status: ✅ Synchronized"

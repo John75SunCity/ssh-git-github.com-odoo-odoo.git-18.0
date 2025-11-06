@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Demo NAID Certificates for Testing -->
-        <record id="demo_naid_certificate_001" model="naid.certificate">
+        <!-- Demo Destruction Certificates for Testing -->
+        <record id="demo_naid_certificate_001" model="destruction.certificate">
             <!-- certificate_number omitted intentionally so sequence auto-generates on create -->
             <field name="partner_id" ref="base.res_partner_1"/>
-            <field name="destruction_date" eval="(datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')"/>
+            <field name="certificate_date">2025-10-15</field>
             <field name="witness_name">John Smith</field>
             <!-- Leave in draft initially; we will issue after adding items -->
             <field name="state">draft</field>
         </record>
 
         <!-- Ensure issued certificate has at least one destroyed item -->
-        <record id="demo_naid_certificate_item_001" model="naid.certificate.item">
+        <record id="demo_naid_certificate_item_001" model="destruction.certificate.item">
             <field name="certificate_id" ref="records_management.demo_naid_certificate_001"/>
             <field name="name">Confidential Paper Boxes</field>
             <field name="weight">25.0</field>
@@ -22,13 +22,13 @@
 
     <!-- Issue the certificate after items exist to satisfy constraints -->
     <!-- Pre-sanitize NAID reports to avoid legacy list-type corruption errors -->
-    <function model="naid.certificate" name="xml_sanitize_naid_reports"/>
-    <function model="naid.certificate" name="xml_issue_certificate" eval="(ref('records_management.demo_naid_certificate_001'),)"/>
+    <function model="destruction.certificate" name="xml_sanitize_naid_reports"/>
+    <function model="destruction.certificate" name="xml_issue_certificate" eval="(ref('records_management.demo_naid_certificate_001'),)"/>
 
-        <record id="demo_naid_certificate_002" model="naid.certificate">
+        <record id="demo_naid_certificate_002" model="destruction.certificate">
             <!-- certificate_number omitted intentionally so sequence auto-generates on create -->
             <field name="partner_id" ref="base.res_partner_2"/>
-            <field name="destruction_date" eval="(datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="certificate_date">2025-11-01</field>
             <field name="state">draft</field>
         </record>
     </data>

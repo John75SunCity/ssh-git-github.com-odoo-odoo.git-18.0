@@ -1224,12 +1224,14 @@ class RecordsManagementController(http.Controller):
 
         Container = request.env['records.container']
 
-        # Build domain - check BOTH partner_id AND stock_owner_id
-        # This covers both direct ownership and hierarchical department ownership
+        # Build domain - use hierarchical access for stock_owner_id
+        # Users can see containers where:
+        # - partner_id matches their company (direct ownership)
+        # - OR stock_owner_id is themselves or any child department (hierarchical ownership)
         domain = [
             '|',
             ('partner_id', '=', partner.id),
-            ('stock_owner_id', '=', partner.id),
+            ('stock_owner_id', 'child_of', partner.id),
         ]
 
         # Search filter
@@ -1310,11 +1312,15 @@ class RecordsManagementController(http.Controller):
         container = request.env['records.container'].browse(container_id)
         partner = request.env.user.partner_id
 
-        # Security check - verify ownership via partner_id OR stock_owner_id
-        has_access = (
-            container.exists() and
-            (container.partner_id == partner or container.stock_owner_id == partner)
-        )
+        # Security check - verify ownership via partner_id OR hierarchical stock_owner_id
+        # Check if container would be visible under the same domain as portal_my_containers
+        visible_containers = request.env['records.container'].search([
+            ('id', '=', container_id),
+            '|',
+            ('partner_id', '=', partner.id),
+            ('stock_owner_id', 'child_of', partner.id),
+        ])
+        has_access = container.exists() and bool(visible_containers)
 
         if not has_access:
             return request.redirect('/my/containers')

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Demo Portal Feedback Records -->
+
+        <!-- Positive Feedback - Excellent Service -->
+        <record id="demo_portal_feedback_positive" model="portal.feedback">
+            <field name="name">Excellent Service - Fast Response</field>
+            <field name="partner_id" ref="base.res_partner_1"/>
+            <field name="rating">5</field>
+            <field name="comments">The records retrieval service was exceptional. Our request was processed within 24 hours and the documentation was perfect. Highly recommend!</field>
+            <field name="feedback_type">service</field>
+            <field name="sentiment_category">positive</field>
+            <field name="sentiment_score">0.95</field>
+            <field name="priority">low</field>
+            <field name="status">resolved</field>
+            <field name="submitted_date">2025-10-01</field>
+            <field name="resolution_date">2025-10-02</field>
+        </record>
+
+        <!-- Neutral Feedback - Average Experience -->
+        <record id="demo_portal_feedback_neutral" model="portal.feedback">
+            <field name="name">Average Experience - Room for Improvement</field>
+            <field name="partner_id" ref="base.res_partner_2"/>
+            <field name="rating">3</field>
+            <field name="comments">The service was adequate but took longer than expected. The portal interface is good but could be more intuitive.</field>
+            <field name="feedback_type">portal</field>
+            <field name="sentiment_category">neutral</field>
+            <field name="sentiment_score">0.15</field>
+            <field name="priority">medium</field>
+            <field name="status">in_progress</field>
+            <field name="submitted_date">2025-10-15</field>
+        </record>
+
+        <!-- Negative Feedback - Poor Communication -->
+        <record id="demo_portal_feedback_negative" model="portal.feedback">
+            <field name="name">Poor Communication - Urgent Issue</field>
+            <field name="partner_id" ref="base.res_partner_3"/>
+            <field name="rating">1</field>
+            <field name="comments">We needed urgent access to critical documents but received no response for 3 days. This is unacceptable for legal documents.</field>
+            <field name="feedback_type">service</field>
+            <field name="sentiment_category">negative</field>
+            <field name="sentiment_score">-0.85</field>
+            <field name="priority">high</field>
+            <field name="status">escalated</field>
+            <field name="submitted_date">2025-11-01</field>
+        </record>
+
+        <!-- Portal Feedback Actions -->
+        <record id="demo_feedback_action_positive" model="portal.feedback.action">
+            <field name="feedback_id" ref="demo_portal_feedback_positive"/>
+            <field name="action_type">response</field>
+            <field name="description">Thank you for your positive feedback! We're glad we could meet your expectations.</field>
+            <field name="assigned_to" ref="base.user_admin"/>
+            <field name="action_date">2025-10-02</field>
+            <field name="status">completed</field>
+        </record>
+
+        <record id="demo_feedback_action_neutral" model="portal.feedback.action">
+            <field name="feedback_id" ref="demo_portal_feedback_neutral"/>
+            <field name="action_type">improvement</field>
+            <field name="description">Portal UX improvements planned for next release based on this feedback.</field>
+            <field name="assigned_to" ref="base.user_admin"/>
+            <field name="action_date">2025-10-16</field>
+            <field name="status">in_progress</field>
+        </record>
+
+        <!-- Portal Feedback Themes -->
+        <record id="demo_feedback_theme_service" model="customer.feedback.theme">
+            <field name="name">Service Quality</field>
+            <field name="description">Feedback related to service speed and quality</field>
+            <field name="theme_type">service</field>
+            <field name="is_active">True</field>
+        </record>
+
+        <record id="demo_feedback_theme_portal" model="customer.feedback.theme">
+            <field name="name">Portal Usability</field>
+            <field name="description">Feedback about portal interface and user experience</field>
+            <field name="theme_type">portal</field>
+            <field name="is_active">True</field>
+        </record>
+
+    </data>
+</odoo>

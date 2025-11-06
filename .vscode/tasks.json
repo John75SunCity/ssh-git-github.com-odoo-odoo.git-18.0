@@ -87,6 +87,23 @@
 			"dependsOn": "Validate Records Management Module"
 		},
 		{
+			"label": "🔄 Sync Main → Enterprise Branch",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"scripts/sync-main-to-enterprise.sh",
+				"${input:commitMessage}"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"problemMatcher": []
+		},
+		{
 			"label": "Deploy to GitHub (Git Push)",
 			"type": "shell",
 			"command": "git",

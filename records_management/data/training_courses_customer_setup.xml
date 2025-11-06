@@ -292,7 +292,7 @@
 
         <!-- Quality Control -->
         <record id="slide_quality_control" model="slide.slide">
-            <field name="name">Quality Control & Error Prevention</field>
+            <field name="name">Quality Control &amp; Error Prevention</field>
             <field name="channel_id" ref="slide_channel_customer_records_setup"/>
             <field name="slide_type">document</field>
             <field name="is_published">true</field>
@@ -303,7 +303,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h2>Quality Control & Error Prevention</h2>
+            <h2>Quality Control &amp; Error Prevention</h2>
 
             <h3>Common Labeling Mistakes to Avoid</h3>
 
@@ -369,7 +369,7 @@
                 <li><strong>Feedback Loop:</strong> Encourage reporting of system improvement opportunities</li>
             </ul>
 
-            <h3>Monitoring & Continuous Improvement</h3>
+            <h3>Monitoring &amp; Continuous Improvement</h3>
             <div class="alert alert-success">
                 <strong>Track These Metrics:</strong>
                 <ul>
@@ -387,5 +387,4 @@
             ]]></field>
         </record>
     </data>
-</odoo></content>
-<parameter name="filePath">/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/data/training_courses_customer_setup.xml
+</odoo>

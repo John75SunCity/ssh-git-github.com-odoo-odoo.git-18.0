@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Portal Dashboard Template -->
+        <template id="portal_dashboard" name="Portal Dashboard">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Records Management Dashboard</t>
+
+                <div class="o_portal_dashboard">
+                    <div class="row">
+                        <!-- Welcome Section -->
+                        <div class="col-12 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h2 class="card-title">
+                                        <i class="fa fa-tachometer-alt"></i>
+                                        Welcome to Records Management Portal
+                                    </h2>
+                                    <p class="card-text">
+                                        Manage your documents, certificates, and records securely through our portal.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Quick Actions -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-bolt"></i>
+                                        Quick Actions
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group">
+                                        <a href="/records/documents" class="list-group-item list-group-item-action">
+                                            <i class="fa fa-file-alt mr-2"></i>
+                                            View My Documents
+                                        </a>
+                                        <a href="/records/certificates" class="list-group-item list-group-item-action">
+                                            <i class="fa fa-certificate mr-2"></i>
+                                            View Certificates
+                                        </a>
+                                        <a href="/records/containers" class="list-group-item list-group-item-action">
+                                            <i class="fa fa-box mr-2"></i>
+                                            Manage Containers
+                                        </a>
+                                        <a href="/records/feedback" class="list-group-item list-group-item-action">
+                                            <i class="fa fa-comments mr-2"></i>
+                                            Submit Feedback
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-clock"></i>
+                                        Recent Activity
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <t t-if="recent_documents">
+                                        <div class="list-group">
+                                            <t t-foreach="recent_documents" t-as="doc">
+                                                <a t-attf-href="/records/document/{{doc.id}}" class="list-group-item list-group-item-action">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <h6 class="mb-1" t-esc="doc.name"/>
+                                                        <small t-esc="doc.create_date"/>
+                                                    </div>
+                                                    <p class="mb-1" t-esc="doc.description"/>
+                                                </a>
+                                            </t>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <p class="text-muted">No recent activity to display.</p>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Row -->
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3 class="text-primary" t-esc="document_count or 0"/>
+                                    <p class="card-text">Documents</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3 class="text-success" t-esc="certificate_count or 0"/>
+                                    <p class="card-text">Certificates</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3 class="text-info" t-esc="container_count or 0"/>
+                                    <p class="card-text">Containers</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3 class="text-warning" t-esc="feedback_count or 0"/>
+                                    <p class="card-text">Feedback Items</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
