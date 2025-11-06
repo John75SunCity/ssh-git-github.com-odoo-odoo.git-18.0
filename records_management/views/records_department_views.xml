@@ -96,7 +96,8 @@
 
                                 <!-- Show department user assignments -->
                                 <field name="department_user_assignment_ids" nolabel="1">
-                                    <tree editable="bottom" create="true" delete="true">
+                                    <!-- Temporarily commented out due to view validation issue -->
+                                    <!-- <tree editable="bottom" create="true" delete="true">
                                         <field name="user_id" required="1"/>
                                         <field name="role" required="1" widget="badge"/>
                                         <field name="state" widget="badge"/>
@@ -106,7 +107,7 @@
                                         <field name="can_delete_records" widget="boolean_toggle"/>
                                         <field name="can_export_records" widget="boolean_toggle"/>
                                         <field name="active" widget="boolean_toggle"/>
-                                    </tree>
+                                    </tree> -->
                                 </field>
 
                                 <separator string="Legacy User Assignment (Deprecated)"/>
