@@ -7,10 +7,10 @@
         <record id="slide_naid_aaa_intro" model="slide.slide">
             <field name="name">Introduction to NAID AAA Certification</field>
             <field name="channel_id" ref="slide_channel_naid_aaa_training"/>
-            <field name="slide_type">infographic</field>
+            <field name="slide_type">presentation</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
-            <field name="completion_time">0.1</field>
+            <field name="completion_time">6</field>
             <field name="sequence">1</field>
             <field name="html_content"><![CDATA[
 <div class="container">
@@ -48,10 +48,10 @@
         <record id="slide_naid_chain_custody" model="slide.slide">
             <field name="name">Chain of Custody Documentation</field>
             <field name="channel_id" ref="slide_channel_naid_aaa_training"/>
-            <field name="slide_type">infographic</field>
+            <field name="slide_type">presentation</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
-            <field name="completion_time">0.2</field>
+            <field name="completion_time">12</field>
             <field name="sequence">2</field>
             <field name="html_content"><![CDATA[
 <div class="container">
@@ -98,10 +98,10 @@
         <record id="slide_naid_destruction_methods" model="slide.slide">
             <field name="name">Approved Destruction Methods</field>
             <field name="channel_id" ref="slide_channel_naid_aaa_training"/>
-            <field name="slide_type">infographic</field>
+            <field name="slide_type">presentation</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
-            <field name="completion_time">0.15</field>
+            <field name="completion_time">9</field>
             <field name="sequence">3</field>
             <field name="html_content"><![CDATA[
 <div class="container">
@@ -155,10 +155,10 @@
         <record id="slide_naid_audit_prep" model="slide.slide">
             <field name="name">NAID AAA Audit Preparation</field>
             <field name="channel_id" ref="slide_channel_naid_aaa_training"/>
-            <field name="slide_type">infographic</field>
+            <field name="slide_type">presentation</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
-            <field name="completion_time">0.25</field>
+            <field name="completion_time">15</field>
             <field name="sequence">4</field>
             <field name="html_content"><![CDATA[
 <div class="container">
