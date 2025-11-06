@@ -3,7 +3,7 @@ from odoo.exceptions import UserError, ValidationError
 
 class PortalRequest(models.Model):
     _name = 'portal.request'
-    _inherit = ['portal.request', 'mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Portal Customer Request'
     _order = 'priority desc, create_date desc'
     _rec_name = 'name'
