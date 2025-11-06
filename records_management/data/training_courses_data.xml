@@ -31,7 +31,7 @@
 
         <!-- HIPAA & Data Privacy Course -->
         <record id="slide_channel_hipaa_privacy_training" model="slide.channel">
-            <field name="name">HIPAA Compliance & Data Privacy for Physical Records</field>
+            <field name="name">HIPAA Compliance &amp; Data Privacy for Physical Records</field>
             <field name="description">Protecting sensitive information in physical document storage and handling</field>
             <field name="channel_type">training</field>
             <field name="enroll">public</field>
