@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Minimal res.partner extension for Records Management -->
-        <!-- Extended with Department User Management -->
-
-        <!-- Temporarily commented out due to field validation error -->
-        <!-- <record id="view_partner_form_department_users" model="ir.ui.view">
+        <!-- Minimal res.partner extension for Records Management
+             Extended with Department User Management
+             
+             Temporarily disabled due to field validation error:
+             Field "department_user_assignment_ids" does not exist on res.partner model
+        
+        <record id="view_partner_form_department_users" model="ir.ui.view">
             <field name="name">res.partner.form.department.users</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <!-- Add Department Users tab -->
                 <xpath expr="//notebook" position="inside">
                     <page string="Department Users" name="department_users" 
                           invisible="not is_company and not parent_id">
@@ -27,7 +28,6 @@
                             </p>
                         </group>
 
-                        <!-- Show all department assignments for this partner's users -->
                         <field name="department_user_assignment_ids" nolabel="1">
                             <tree editable="bottom" create="true" delete="true">
                                 <field name="department_id" 
@@ -46,6 +46,7 @@
                     </page>
                 </xpath>
             </field>
-        </record> -->
+        </record>
+        -->
     </data>
 </odoo>
