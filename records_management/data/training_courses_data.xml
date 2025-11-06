@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
+        <!-- Slide Channel Tags -->
+        <record id="slide_channel_tag_role_training" model="slide.channel.tag">
+            <field name="name">Training</field>
+            <field name="category_id" ref="website_slides.slide_channel_tag_category_role"/>
+        </record>
+
+        <record id="slide_channel_tag_other" model="slide.channel.tag">
+            <field name="name">Other</field>
+            <field name="category_id" ref="website_slides.slide_channel_tag_category_role"/>
+        </record>
+
         <!-- NAID AAA Compliance Training Course -->
         <record id="slide_channel_naid_aaa_training" model="slide.channel">
             <field name="name">NAID AAA Compliance Training</field>

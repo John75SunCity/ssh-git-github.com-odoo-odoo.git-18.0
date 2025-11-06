@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Demo Work Order Records -->
+
+        <!-- Records Retrieval Work Order -->
+        <record id="demo_retrieval_work_order_001" model="records.retrieval.work.order">
+            <field name="name">RWO-2025-001</field>
+            <field name="partner_id" ref="base.res_partner_1"/>
+            <field name="department_id" ref="records_management.demo_department_legal"/>
+            <field name="request_type">urgent</field>
+            <field name="priority">high</field>
+            <field name="state">assigned</field>
+            <field name="requested_date">2025-11-01</field>
+            <field name="scheduled_date">2025-11-02</field>
+            <field name="description">Urgent retrieval of 2023 legal case files for ongoing litigation</field>
+            <field name="coordinator_id" ref="demo_work_order_coordinator_001"/>
+        </record>
+
+        <!-- Container Destruction Work Order -->
+        <record id="demo_destruction_work_order_001" model="container.destruction.work.order">
+            <field name="name">DWO-2025-001</field>
+            <field name="partner_id" ref="base.res_partner_2"/>
+            <field name="department_id" ref="records_management.demo_department_hr"/>
+            <field name="priority">medium</field>
+            <field name="state">scheduled</field>
+            <field name="scheduled_date">2025-11-15</field>
+            <field name="description">Scheduled destruction of expired employee records per retention policy</field>
+            <field name="coordinator_id" ref="demo_work_order_coordinator_002"/>
+            <field name="destruction_method">shredding</field>
+            <field name="witness_required">True</field>
+        </record>
+
+        <!-- Container Access Work Order -->
+        <record id="demo_access_work_order_001" model="container.access.work.order">
+            <field name="name">AWO-2025-001</field>
+            <field name="partner_id" ref="base.res_partner_3"/>
+            <field name="department_id" ref="records_management.demo_department_finance"/>
+            <field name="priority">low</field>
+            <field name="state">completed</field>
+            <field name="requested_date">2025-10-20</field>
+            <field name="scheduled_date">2025-10-21</field>
+            <field name="completed_date">2025-10-21</field>
+            <field name="description">Access request for Q3 financial audit documents</field>
+            <field name="coordinator_id" ref="demo_work_order_coordinator_001"/>
+            <field name="access_type">review</field>
+            <field name="supervision_required">True</field>
+        </record>
+
+        <!-- File Retrieval Work Order -->
+        <record id="demo_file_retrieval_work_order_001" model="file.retrieval.work.order">
+            <field name="name">FWO-2025-001</field>
+            <field name="partner_id" ref="base.res_partner_1"/>
+            <field name="priority">medium</field>
+            <field name="state">in_progress</field>
+            <field name="requested_date">2025-11-05</field>
+            <field name="scheduled_date">2025-11-06</field>
+            <field name="description">Digital file retrieval for scanned documents from 2024</field>
+            <field name="coordinator_id" ref="demo_work_order_coordinator_002"/>
+            <field name="file_format">pdf</field>
+            <field name="delivery_method">portal</field>
+        </record>
+
+        <!-- Scan Retrieval Work Order -->
+        <record id="demo_scan_retrieval_work_order_001" model="scan.retrieval.work.order">
+            <field name="name">SWO-2025-001</field>
+            <field name="partner_id" ref="base.res_partner_2"/>
+            <field name="priority">high</field>
+            <field name="state">assigned</field>
+            <field name="requested_date">2025-11-03</field>
+            <field name="scheduled_date">2025-11-04</field>
+            <field name="description">High-priority scanning of physical documents for immediate digital access</field>
+            <field name="coordinator_id" ref="demo_work_order_coordinator_001"/>
+            <field name="scan_quality">high</field>
+            <field name="ocr_required">True</field>
+        </record>
+
+        <!-- Work Order Coordinators -->
+        <record id="demo_work_order_coordinator_001" model="work.order.coordinator">
+            <field name="name">Sarah Johnson</field>
+            <field name="email">sarah.johnson@recordsmanagement.com</field>
+            <field name="phone">555-0101</field>
+            <field name="is_active">True</field>
+            <field name="specialties">retrieval,access,scanning</field>
+            <field name="workload_capacity">10</field>
+            <field name="current_workload">3</field>
+        </record>
+
+        <record id="demo_work_order_coordinator_002" model="work.order.coordinator">
+            <field name="name">Mike Chen</field>
+            <field name="email">mike.chen@recordsmanagement.com</field>
+            <field name="phone">555-0102</field>
+            <field name="is_active">True</field>
+            <field name="specialties">destruction,destruction,digital</field>
+            <field name="workload_capacity">8</field>
+            <field name="current_workload">2</field>
+        </record>
+
+        <!-- Work Order Coordinator Actions -->
+        <record id="demo_coordinator_action_001" model="work.order.coordinator.action">
+            <field name="coordinator_id" ref="demo_work_order_coordinator_001"/>
+            <field name="action_type">assignment</field>
+            <field name="description">Assigned urgent retrieval work order RWO-2025-001</field>
+            <field name="work_order_type">retrieval</field>
+            <field name="action_date">2025-11-01</field>
+            <field name="status">completed</field>
+        </record>
+
+        <!-- Demo Departments for Work Orders -->
+        <record id="demo_department_legal" model="records.department">
+            <field name="name">Legal Department</field>
+            <field name="partner_id" ref="base.res_partner_1"/>
+            <field name="code">LEGAL</field>
+            <field name="is_active">True</field>
+        </record>
+
+        <record id="demo_department_hr" model="records.department">
+            <field name="name">Human Resources</field>
+            <field name="partner_id" ref="base.res_partner_2"/>
+            <field name="code">HR</field>
+            <field name="is_active">True</field>
+        </record>
+
+        <record id="demo_department_finance" model="records.department">
+            <field name="name">Finance Department</field>
+            <field name="partner_id" ref="base.res_partner_3"/>
+            <field name="code">FIN</field>
+            <field name="is_active">True</field>
+        </record>
+
+    </data>
+</odoo>

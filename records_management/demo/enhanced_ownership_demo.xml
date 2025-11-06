@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Enhanced Demo Data - Stock Ownership & Portal Scenarios -->
+
+        <!-- Demo Companies with Department Structure -->
+        <record id="demo_company_city_gov" model="res.partner">
+            <field name="name">City of Springfield</field>
+            <field name="is_company">True</field>
+            <field name="customer_rank">1</field>
+            <field name="email">records@springfield.gov</field>
+            <field name="phone">555-1000</field>
+        </record>
+
+        <!-- Departments under City Government -->
+        <record id="demo_dept_city_clerk" model="res.partner">
+            <field name="name">City Clerk's Office</field>
+            <field name="parent_id" ref="demo_company_city_gov"/>
+            <field name="is_company">False</field>
+            <field name="email">clerk@springfield.gov</field>
+            <field name="phone">555-1001</field>
+        </record>
+
+        <record id="demo_dept_city_finance" model="res.partner">
+            <field name="name">Finance Department</field>
+            <field name="parent_id" ref="demo_company_city_gov"/>
+            <field name="is_company">False</field>
+            <field name="email">finance@springfield.gov</field>
+            <field name="phone">555-1002</field>
+        </record>
+
+        <record id="demo_dept_city_legal" model="res.partner">
+            <field name="name">Legal Department</field>
+            <field name="parent_id" ref="demo_company_city_gov"/>
+            <field name="is_company">False</field>
+            <field name="email">legal@springfield.gov</field>
+            <field name="phone">555-1003</field>
+        </record>
+
+        <!-- Sub-departments under Finance -->
+        <record id="demo_subdept_auditing" model="res.partner">
+            <field name="name">Internal Auditing</field>
+            <field name="parent_id" ref="demo_dept_city_finance"/>
+            <field name="is_company">False</field>
+            <field name="email">auditing@springfield.gov</field>
+            <field name="phone">555-1004</field>
+        </record>
+
+        <!-- Portal Users assigned to departments -->
+        <record id="demo_portal_user_clerk" model="res.users">
+            <field name="name">Jane Clerk</field>
+            <field name="login">jane.clerk@springfield.gov</field>
+            <field name="partner_id" ref="demo_dept_city_clerk"/>
+            <field name="groups_id" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+
+        <record id="demo_portal_user_finance" model="res.users">
+            <field name="name">Bob Finance</field>
+            <field name="login">bob.finance@springfield.gov</field>
+            <field name="partner_id" ref="demo_dept_city_finance"/>
+            <field name="groups_id" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+
+        <record id="demo_portal_user_auditing" model="res.users">
+            <field name="name">Alice Auditor</field>
+            <field name="login">alice.auditor@springfield.gov</field>
+            <field name="partner_id" ref="demo_subdept_auditing"/>
+            <field name="groups_id" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+
+        <!-- Containers with different stock ownership levels -->
+        <!-- Company-owned container (visible to all portal users in company) -->
+        <record id="demo_container_company_owned" model="records.container">
+            <field name="name">CITY-2025-001</field>
+            <field name="description">City Council Meeting Minutes 2025</field>
+            <field name="partner_id" ref="demo_company_city_gov"/>
+            <field name="stock_owner_id" ref="demo_company_city_gov"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
+            <field name="state">in_storage</field>
+            <field name="content_date_from">2025-01-01</field>
+            <field name="content_date_to">2025-12-31</field>
+            <field name="primary_content_type">legal</field>
+            <field name="storage_start_date">2025-01-15</field>
+        </record>
+
+        <!-- Department-owned container (visible only to Clerk's Office users) -->
+        <record id="demo_container_dept_owned" model="records.container">
+            <field name="name">CLERK-2025-001</field>
+            <field name="description">Election Records and Voter Registrations</field>
+            <field name="partner_id" ref="demo_company_city_gov"/>
+            <field name="stock_owner_id" ref="demo_dept_city_clerk"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
+            <field name="state">in_storage</field>
+            <field name="content_date_from">2025-01-01</field>
+            <field name="content_date_to">2025-12-31</field>
+            <field name="primary_content_type">legal</field>
+            <field name="storage_start_date">2025-02-01</field>
+        </record>
+
+        <!-- Sub-department owned container (visible only to Auditing users) -->
+        <record id="demo_container_subdept_owned" model="records.container">
+            <field name="name">AUDIT-2025-001</field>
+            <field name="description">Internal Audit Reports and Financial Reviews</field>
+            <field name="partner_id" ref="demo_company_city_gov"/>
+            <field name="stock_owner_id" ref="demo_subdept_auditing"/>
+            <field name="container_type_id" ref="container_type_01_standard"/>
+            <field name="state">in_storage</field>
+            <field name="content_date_from">2025-01-01</field>
+            <field name="content_date_to">2025-12-31</field>
+            <field name="primary_content_type">financial</field>
+            <field name="storage_start_date">2025-03-01</field>
+        </record>
+
+        <!-- Portal Requests demonstrating ownership filtering -->
+        <record id="demo_portal_request_company" model="portal.request">
+            <field name="name">PR-2025-001</field>
+            <field name="partner_id" ref="demo_company_city_gov"/>
+            <field name="request_type">retrieval</field>
+            <field name="priority">medium</field>
+            <field name="state">approved</field>
+            <field name="description">Request to retrieve city council minutes for review</field>
+            <field name="requested_date">2025-11-01</field>
+            <field name="approved_date">2025-11-02</field>
+        </record>
+
+        <record id="demo_portal_request_dept" model="portal.request">
+            <field name="name">PR-2025-002</field>
+            <field name="partner_id" ref="demo_dept_city_clerk"/>
+            <field name="request_type">access</field>
+            <field name="priority">high</field>
+            <field name="state">in_progress</field>
+            <field name="description">Urgent access needed for election verification</field>
+            <field name="requested_date">2025-11-03</field>
+        </record>
+
+        <!-- Documents linked to containers -->
+        <record id="demo_document_company" model="records.document">
+            <field name="name">Council Minutes - January 2025</field>
+            <field name="container_id" ref="demo_container_company_owned"/>
+            <field name="document_type_id" ref="records_document_type_minutes"/>
+            <field name="description">Official minutes from January city council meeting</field>
+            <field name="file_size">2457600</field> <!-- 2.4MB -->
+            <field name="page_count">45</field>
+            <field name="confidentiality_level">public</field>
+        </record>
+
+        <record id="demo_document_dept" model="records.document">
+            <field name="name">Election Results 2024</field>
+            <field name="container_id" ref="demo_container_dept_owned"/>
+            <field name="document_type_id" ref="records_document_type_election"/>
+            <field name="description">Certified election results and voter turnout statistics</field>
+            <field name="file_size">1843200</field> <!-- 1.8MB -->
+            <field name="page_count">120</field>
+            <field name="confidentiality_level">restricted</field>
+        </record>
+
+        <!-- Billing configurations for different ownership levels -->
+        <record id="demo_billing_config_company" model="records.billing.config">
+            <field name="name">City Government - Standard Rates</field>
+            <field name="partner_id" ref="demo_company_city_gov"/>
+            <field name="billing_frequency">monthly</field>
+            <field name="billing_cycle_day">1</field>
+            <field name="auto_billing">True</field>
+            <field name="is_active">True</field>
+        </record>
+
+        <record id="demo_billing_config_dept" model="records.billing.config">
+            <field name="name">City Clerk - Department Rates</field>
+            <field name="partner_id" ref="demo_dept_city_clerk"/>
+            <field name="billing_frequency">quarterly</field>
+            <field name="billing_cycle_day">15</field>
+            <field name="auto_billing">True</field>
+            <field name="is_active">True</field>
+        </record>
+
+        <!-- Current billing records -->
+        <record id="demo_billing_company" model="records.billing">
+            <field name="name">BILL-2025-001</field>
+            <field name="partner_id" ref="demo_company_city_gov"/>
+            <field name="billing_config_id" ref="demo_billing_config_company"/>
+            <field name="date">2025-11-01</field>
+            <field name="state">draft</field>
+        </record>
+
+        <!-- Portal access logs demonstrating ownership filtering -->
+        <record id="demo_portal_access_log_1" model="portal.access.log">
+            <field name="user_id" ref="demo_portal_user_clerk"/>
+            <field name="partner_id" ref="demo_dept_city_clerk"/>
+            <field name="action">view_container</field>
+            <field name="resource_type">container</field>
+            <field name="resource_id">demo_container_dept_owned</field>
+            <field name="access_time">2025-11-01 09:00:00</field>
+            <field name="ip_address">192.168.1.100</field>
+            <field name="user_agent">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)</field>
+            <field name="success">True</field>
+        </record>
+
+        <record id="demo_portal_access_log_2" model="portal.access.log">
+            <field name="user_id" ref="demo_portal_user_finance"/>
+            <field name="partner_id" ref="demo_dept_city_finance"/>
+            <field name="action">view_container</field>
+            <field name="resource_type">container</field>
+            <field name="resource_id">demo_container_company_owned</field>
+            <field name="access_time">2025-11-01 10:30:00</field>
+            <field name="ip_address">192.168.1.101</field>
+            <field name="user_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64)</field>
+            <field name="success">True</field>
+        </record>
+
+        <!-- Access denied log (Finance user trying to access Clerk-only container) -->
+        <record id="demo_portal_access_log_denied" model="portal.access.log">
+            <field name="user_id" ref="demo_portal_user_finance"/>
+            <field name="partner_id" ref="demo_dept_city_finance"/>
+            <field name="action">view_container</field>
+            <field name="resource_type">container</field>
+            <field name="resource_id">demo_container_dept_owned</field>
+            <field name="access_time">2025-11-01 11:00:00</field>
+            <field name="ip_address">192.168.1.101</field>
+            <field name="user_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64)</field>
+            <field name="success">False</field>
+            <field name="error_message">Access denied: Container owned by different department</field>
+        </record>
+
+    </data>
+</odoo>
