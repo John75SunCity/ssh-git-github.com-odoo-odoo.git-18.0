@@ -120,6 +120,37 @@
                 </p>
             </field>
         </record>
+        <record id="action_records_retrieval_order" model="ir.actions.act_window">
+            <field name="name">File Retrieval Requests</field>
+            <field name="res_model">records.retrieval.order</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="context">{
+            'search_default_draft': 1,
+            'search_default_confirmed': 1,
+            'search_default_active': 1
+        }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-file-text-o"/> No file retrieval requests yet!
+                </p>
+                <p>
+                    <b>📄 File Retrieval Process:</b>
+                </p>
+                <ul>
+                    <li>Customer requests specific file retrieval through portal</li>
+                    <li>Staff locates and retrieves requested documents</li>
+                    <li>Quality check ensures all requested items are included</li>
+                    <li>Files are packaged and delivered via chosen method</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • SLA tracking with automatic escalation<br/>
+                    • Priority-based processing (Low, Normal, High, Urgent)<br/>
+                    • Multiple delivery methods (scan, digital, physical, pickup)<br/>
+                    • Complete audit trail and progress tracking
+                </p>
+            </field>
+        </record>
         <!-- Menus -->
             <!-- ========================================== -->
             <!-- OPERATIONS MENU - Daily Workflow          -->
