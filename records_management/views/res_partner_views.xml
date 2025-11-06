@@ -4,7 +4,8 @@
         <!-- Minimal res.partner extension for Records Management -->
         <!-- Extended with Department User Management -->
 
-        <record id="view_partner_form_department_users" model="ir.ui.view">
+        <!-- Temporarily commented out due to field validation error -->
+        <!-- <record id="view_partner_form_department_users" model="ir.ui.view">
             <field name="name">res.partner.form.department.users</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
@@ -45,6 +46,6 @@
                     </page>
                 </xpath>
             </field>
-        </record>
+        </record> -->
     </data>
 </odoo>
