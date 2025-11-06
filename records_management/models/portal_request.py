@@ -3,8 +3,8 @@ from odoo.exceptions import UserError, ValidationError
 
 class PortalRequest(models.Model):
     _name = 'portal.request'
+    _inherit = ['portal.request', 'mail.thread', 'mail.activity.mixin']
     _description = 'Portal Customer Request'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'priority desc, create_date desc'
     _rec_name = 'name'
 
@@ -108,6 +108,10 @@ class PortalRequest(models.Model):
         'naid.operator.certification',
         string='Assigned Operator',
         help='NAID certified operator assigned to this service request'
+    )
+    retrieval_items = fields.Text(
+        string='Retrieval Items JSON',
+        help='JSON data containing retrieval item details (containers, documents, files)'
     )
 
     # ============================================================================
