@@ -151,6 +151,37 @@
                 </p>
             </field>
         </record>
+        <record id="action_paper_load_shipment" model="ir.actions.act_window">
+            <field name="name">Load Shipments</field>
+            <field name="res_model">paper.load.shipment</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="context">{
+            'search_default_draft': 1,
+            'search_default_ready': 1,
+            'search_default_active': 1
+        }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-truck"/> No load shipments yet!
+                </p>
+                <p>
+                    <b>🚛 Paper Load Shipment Management:</b>
+                </p>
+                <ul>
+                    <li>Track shipments of paper bales to recycling facilities</li>
+                    <li>Monitor carrier and driver assignments</li>
+                    <li>Manage pickup and delivery schedules</li>
+                    <li>Generate manifests and invoices automatically</li>
+                </ul>
+                <p>
+                    <b>🚀 Key Features:</b><br/>
+                    • Real-time bale count and weight tracking<br/>
+                    • Grade-specific bale organization (White, Mixed, Cardboard)<br/>
+                    • Driver signature and manifest printing<br/>
+                    • Automated invoice generation on pickup
+                </p>
+            </field>
+        </record>
         <!-- Menus -->
             <!-- ========================================== -->
             <!-- OPERATIONS MENU - Daily Workflow          -->
