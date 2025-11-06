@@ -1,4 +1,7 @@
+import logging
 from odoo import models, fields, api, _
+
+_logger = logging.getLogger(__name__)
 
 
 class RecordsStorageDepartmentUser(models.Model):
@@ -7,6 +10,43 @@ class RecordsStorageDepartmentUser(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'department_id, user_id'
     _rec_name = 'display_name'
+    
+    def init(self):
+        """
+        Ensure critical fields exist before view validation.
+        
+        This runs after table creation but before view loading, providing a
+        safety net for cases where pre_init_hook didn't catch the table.
+        """
+        # Get the table name from the model
+        table_name = self._table
+        cr = self.env.cr
+        
+        # Critical fields that MUST exist for views to load
+        critical_fields = [
+            ('role', "VARCHAR", "'viewer'"),
+            ('state', "VARCHAR", "'active'"),
+            ('can_view_records', "BOOLEAN", "TRUE"),
+            ('can_create_records', "BOOLEAN", "FALSE"),
+            ('can_edit_records', "BOOLEAN", "FALSE"),
+            ('can_delete_records', "BOOLEAN", "FALSE"),
+            ('can_export_records', "BOOLEAN", "FALSE"),
+        ]
+        
+        for field_name, field_type, default_value in critical_fields:
+            cr.execute("""
+                SELECT column_name 
+                FROM information_schema.columns 
+                WHERE table_name=%s AND column_name=%s
+            """, (table_name, field_name))
+            
+            if not cr.fetchone():
+                # Field doesn't exist - add it with default
+                cr.execute(f"""
+                    ALTER TABLE {table_name} 
+                    ADD COLUMN {field_name} {field_type} DEFAULT {default_value}
+                """)
+                _logger.info(f"🔧 [SAFETY NET] Added missing field {table_name}.{field_name}")
 
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
