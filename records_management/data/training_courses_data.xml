@@ -43,5 +43,4 @@
             <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_role_training')])]"/>
         </record>
     </data>
-</odoo></content>
-<parameter name="filePath">/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/data/training_courses_data.xml
+</odoo>
