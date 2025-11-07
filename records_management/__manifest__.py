@@ -214,11 +214,7 @@
         "views/records_management_bale_views.xml",
         "views/records_policy_version_views.xml",
         "views/records_promotional_discount_views.xml",
-        "views/records_retention_policy_views.xml",
         "views/records_retention_rule_views.xml",
-        "views/records_retrieval_order_views.xml",
-        "views/records_security_audit_views.xml",
-        "views/records_series_views.xml",
         "views/records_service_type_views.xml",
         "views/shredding_service_photo_views.xml",
         "views/document_retrieval_metrics_views.xml",
@@ -244,7 +240,6 @@
         "views/portal_request_views.xml",
         "views/bin_key_views.xml",
         "views/portal_feedback_analytic_views.xml",
-        "views/inventory_item_views.xml",
         "views/res_partner_key_restriction_views.xml",
         "views/res_users_records_profile_views.xml",
         "views/records_retrieval_work_order_views.xml",
@@ -262,6 +257,9 @@
         "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_type_views.xml",
         "views/inventory_item_views.xml",
+        "views/records_retention_policy_views.xml",
+        "views/records_retrieval_order_views.xml",
+        "views/records_series_views.xml",
         # ============================================================================
         # CHILD MENUS: Must load AFTER root_menus, BEFORE views reference them
         # These define all child menus that view files will reference
