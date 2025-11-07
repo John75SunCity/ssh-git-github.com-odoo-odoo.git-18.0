@@ -68,6 +68,10 @@
         "security/portal_temp_inventory_rules.xml",
         "security/ir.model.access.csv",
         # ============================================================================
+        # CRITICAL EARLY ACTIONS: Actions referenced by root menus must load FIRST
+        # ============================================================================
+        "views/chain_of_custody_actions.xml",
+        # ============================================================================
         # ROOT MENUS: Parent-only menus must load EARLY before any child references
         # These were extracted from records_management_menus.xml in commit daa1ae0e
         # ============================================================================

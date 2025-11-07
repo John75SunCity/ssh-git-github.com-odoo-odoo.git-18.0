@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- CRITICAL: This action MUST load BEFORE records_management_root_menus.xml
+             because the root menus menuitem references this action -->
+        <record id="action_chain_of_custody" model="ir.actions.act_window">
+            <!-- OPTIMIZATION: Model chain.of.custody has state field - consider using default search filters -->
+            <field name="name">Chain of Custody</field>
+            <field name="res_model">chain.of.custody</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="chain_of_custody_view_search" />
+            <field name="context">{'search_default_draft': 1, 'search_default_in_progress': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-exchange"/> No chain of custody transfers yet!
+                </p>
+            </field>
+        </record>
+        <record id="action_chain_of_custody_customer" model="ir.actions.act_window">
+            <field name="name">Chain of Custody</field>
+            <field name="res_model">chain.of.custody</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="chain_of_custody_view_search" />
+            <field name="context">{'search_default_draft': 1, 'search_default_in_progress': 1, 'default_partner_id': partner_id}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-exchange"/> No chain of custody transfers yet!
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>
