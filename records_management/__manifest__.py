@@ -260,13 +260,22 @@
         "views/inventory_item_views.xml",
         "views/res_partner_key_restriction_views.xml",
         "views/res_users_records_profile_views.xml",
+        "views/records_retrieval_work_order_views.xml",
         # ============================================================================
         # ROOT MENUS: Parent-only menus must load AFTER all views with actions defined
         # These define the base menu structure that child menus reference
         # ============================================================================
         "views/records_management_root_menus.xml",
         # ============================================================================
-        # VIEWS WITH MENUITEMS: Must load AFTER root_menus defines parent menus
+        # CHILD MENUS: Must load AFTER root_menus, BEFORE views reference them
+        # These define all child menus that view files will reference
+        # ============================================================================
+        "views/records_management_menus.xml",
+        "views/service_item_menus.xml",
+        "views/document_retrieval_menus.xml",
+        "views/records_retrieval_work_order_menus.xml",
+        # ============================================================================
+        # VIEWS WITH MENUITEMS: Must load AFTER ALL menus are defined
         # ============================================================================
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_profile_views.xml",
@@ -296,16 +305,6 @@
         "views/hard_drive_scan_wizard_line_views.xml",
         "views/mobile_bin_key_wizard_views.xml",
         "views/system_flowchart_wizard_views.xml",
-        # ============================================================================
-        # MENU STRUCTURE: ALL CHILD MENUS LOAD after root menus and every action/view
-        # Child menuitems reference parents from records_management_root_menus.xml
-        # and actions from views above. Parent menus loaded early, children loaded last.
-        # ============================================================================
-        "views/records_management_menus.xml",
-        "views/service_item_menus.xml",
-        "views/document_retrieval_menus.xml",
-        "views/records_retrieval_work_order_views.xml",
-        "views/records_retrieval_work_order_menus.xml",
         # ============================================================================
         # TEMPLATES: Load after everything else
         # ============================================================================
