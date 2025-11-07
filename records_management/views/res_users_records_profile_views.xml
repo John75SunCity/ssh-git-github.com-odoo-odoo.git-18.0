@@ -20,7 +20,7 @@
                 </xpath>
 
                 <!-- Add helpful Portal User Setup Information box -->
-                <xpath expr="//sheet//group[@name='preference']" position="before">
+                <xpath expr="//sheet//group[1]" position="before">
                     <div class="alert alert-info" role="alert" invisible="partner_required == False">
                         <strong>🏢 Portal User Setup (Customer Access)</strong>
                         <br/><strong>User Type:</strong> Portal (Standard Odoo Portal User - proper licensing)
