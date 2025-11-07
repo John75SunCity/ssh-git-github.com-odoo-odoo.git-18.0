@@ -190,6 +190,10 @@
         "views/product_template_views.xml",  # defines action for product templates
         "views/transitory_field_config_views.xml",  # defines transitory field config action
         "views/billing_period_views.xml",  # defines billing_period_action - MOVED UP to load before menus
+        "views/records_tag_category_views.xml",  # defines action_records_tag_category - MOVED UP to load before menus
+        "views/container_retrieval_views.xml",  # defines action_container_retrieval - MOVED UP to load before menus
+        "views/paper_load_shipment_views.xml",  # defines action_paper_load_shipment - MOVED UP to load before menus
+        "views/records_retrieval_order_views.xml",  # defines action_records_retrieval_order - MOVED UP to load before menus
         # ============================================================================
         # Menus can now safely reference all actions defined above
         # ============================================================================
@@ -219,10 +223,7 @@
         "views/advanced_billing_contact_views.xml",
         "views/approval_history_views.xml",
         # Ensure negotiated rate action loads before menus in base_rate_views.xml
-        "views/billing_period_views.xml",
         "views/bin_barcode_inventory_views.xml",
-        "views/container_retrieval_views.xml",
-        "views/custody_transfer_event_views.xml",
         "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_destruction_views.xml",
         "views/inventory_item_location_transfer_views.xml",
@@ -237,7 +238,6 @@
         "views/paper_bale_movement_views.xml",
         "views/paper_bale_recycling_views.xml",
         "views/paper_bale_views.xml",
-        "views/paper_load_shipment_views.xml",
         "views/payment_split_views.xml",
         "views/pickup_route_views.xml",
         "views/portal_feedback_views.xml",
@@ -271,13 +271,11 @@
         "views/records_request_views.xml",
         "views/records_retention_policy_views.xml",
         "views/records_retention_rule_views.xml",
-        "views/records_retrieval_order_views.xml",
         "views/records_security_audit_views.xml",
         "views/records_series_views.xml",
         "views/records_service_type_views.xml",
         # records_storage_department_user_views.xml moved earlier (line ~160) to load before records_department_views.xml
         "views/records_survey_user_input_views.xml",
-        "views/records_tag_category_views.xml",
         "views/records_usage_tracking_views.xml",
         "views/revenue_analytic_views.xml",
         "views/revenue_forecast_views.xml",
