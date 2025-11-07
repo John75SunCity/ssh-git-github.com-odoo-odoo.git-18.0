@@ -123,7 +123,8 @@
         "data/temp_inventory_configurator_data.xml",
         "data/portal_configurator_data.xml",
         # ============================================================================
-        # WIZARD VIEWS: These define wizard actions used by menus
+        # WIZARD VIEWS: Pure action/form definitions (no menuitems)
+        # Menuitems will be moved after root_menus.xml
         # ============================================================================
         "views/field_label_helper_wizard_views.xml",
         "views/container_quick_add_wizard_views.xml",
@@ -132,7 +133,6 @@
         "views/customer_inventory_report_wizard_views.xml",
         "views/hard_drive_scan_wizard_views.xml",
         "views/location_report_wizard_views.xml",
-        "views/mobile_bin_key_wizard_views.xml",
         "views/paper_bale_inspection_wizard_views.xml",
         "views/paper_bale_weigh_wizard_views.xml",
         "views/permanent_flag_wizard_views.xml",
@@ -146,7 +146,6 @@
         "views/records_permanent_flag_wizard_views.xml",
         "views/records_user_invitation_wizard_views.xml",
         "views/shredding_bin_barcode_wizard_views.xml",
-        "views/system_flowchart_wizard_views.xml",
         "views/system_diagram_data_views.xml",
         "views/temp_inventory_reject_wizard_views.xml",
         "views/visitor_pos_wizard_views.xml",
@@ -281,6 +280,12 @@
         # These define the base menu structure that child menus reference
         # ============================================================================
         "views/records_management_root_menus.xml",
+        # ============================================================================
+        # WIZARD VIEWS WITH MENUITEMS: Must load AFTER root_menus defines parent menus
+        # ============================================================================
+        "views/hard_drive_scan_wizard_line_views.xml",
+        "views/mobile_bin_key_wizard_views.xml",
+        "views/system_flowchart_wizard_views.xml",
         # ============================================================================
         # MENU STRUCTURE: ALL CHILD MENUS LOAD after root menus and every action/view
         # Child menuitems reference parents from records_management_root_menus.xml
