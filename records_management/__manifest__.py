@@ -69,8 +69,6 @@
         "views/google_maps_assets.xml",
         # Root menus must be available before any child menus declared in scattered views
         "views/records_management_root_menus.xml",
-        # Main menu structure MUST load immediately after root menus but BEFORE any views that reference menu_master_data
-        "views/records_management_menus.xml",
         # Core sequence data (previously omitted, required for many next_by_code usages)
         "data/ir_sequence_data.xml",
         "data/sequence_data.xml",
@@ -339,6 +337,8 @@
         "views/shred_bin_views.xml",
         "views/shredding_inventory_views.xml",
         "views/stock_move_sms_validation_views.xml",
+        # Main menu structure with all action references - MUST load LAST after all 45+ actions are defined
+        "views/records_management_menus.xml",
         "templates/portal_home_preconfigured.xml",
         "templates/portal_containers_list.xml",
         "templates/portal_certifications.xml",
