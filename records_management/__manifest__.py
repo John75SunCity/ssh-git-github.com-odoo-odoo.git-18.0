@@ -225,6 +225,7 @@
         "views/records_promotional_discount_views.xml",
         "views/records_retention_rule_views.xml",
         "views/records_service_type_views.xml",
+        "views/records_tag_views.xml",
         "views/shredding_service_photo_views.xml",
         "views/document_retrieval_metrics_views.xml",
         "views/revenue_forecast_line_views.xml",
