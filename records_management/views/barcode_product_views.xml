@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="barcode_product_view_kanban" model="ir.ui.view">
+    <record id="barcode_product_view_kanban" model="ir.ui.view">
             <field name="name">barcode.product.view.kanban</field>
             <field name="model">barcode.product</field>
             <field name="arch" type="xml">
@@ -124,7 +123,7 @@
                             <button name="action_view_storage_boxes" type="object" class="oe_stat_button" icon="fa-archive">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
-                                    
+
                                 </span>
                                     <span class="o_stat_text">Storage Boxes</span>
                                 </div>
@@ -132,7 +131,7 @@
                             <button name="action_view_shred_bins" type="object" class="oe_stat_button" icon="fa-trash">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
-                                    
+
                                 </span>
                                     <span class="o_stat_text">Shred Bins</span>
                                 </div>
@@ -140,7 +139,7 @@
                             <button name="action_view_revenue" type="object" class="oe_stat_button" icon="fa-dollar">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
-                                    
+
                                 </span>
                                     <span class="o_stat_text">Monthly Revenue</span>
                                 </div>
@@ -393,5 +392,4 @@
             </p>
             </field>
         </record>
-    </data>
 </odoo>
