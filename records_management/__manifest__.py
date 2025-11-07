@@ -163,6 +163,9 @@
         "views/naid_compliance_views.xml",
         "views/bin_unlock_service_views.xml",
         "views/approval_history_views.xml",
+        "views/advanced_billing_line_form_views.xml",
+        "views/advanced_billing_line_search_views.xml",
+        "views/advanced_billing_line_tree_views.xml",
         "views/customer_negotiated_rate_views.xml",
         "views/base_rate_views.xml",
         "views/billing_period_views.xml",
@@ -260,6 +263,9 @@
         "views/records_retention_policy_views.xml",
         "views/records_retrieval_order_views.xml",
         "views/records_series_views.xml",
+        "views/advanced_billing_contact_views.xml",
+        "views/advanced_billing_line_actions_menus.xml",
+        "views/advanced_billing_profile_views.xml",
         # ============================================================================
         # CHILD MENUS: Must load AFTER root_menus, BEFORE views reference them
         # These define all child menus that view files will reference
