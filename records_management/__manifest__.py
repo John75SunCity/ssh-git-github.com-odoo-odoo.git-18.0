@@ -195,9 +195,9 @@
         "views/paper_load_shipment_views.xml",  # defines action_paper_load_shipment - MOVED UP to load before menus
         "views/records_retrieval_order_views.xml",  # defines action_records_retrieval_order - MOVED UP to load before menus
         # ============================================================================
-        # Menus can now safely reference all actions defined above
+        # ALL view files MUST load before menus that reference them
+        # Moving menus to the END of data loading ensures all actions are defined first
         # ============================================================================
-        "views/records_management_menus.xml",
         "views/customer_inventory_report_wizard_views.xml",
         "views/hard_drive_scan_wizard_views.xml",
         "views/location_report_wizard_views.xml",
@@ -292,13 +292,8 @@
         "views/records_container_field_label_helper_views.xml",
         "views/records_billing_config_views.xml",
     # User profile selector (Records Management role abstraction)
-    "views/res_users_records_profile_views.xml",
+        "views/res_users_records_profile_views.xml",
         # Additional menus split by domain (loaded after main menu structure)
-        "views/service_item_menus.xml",
-        "views/document_retrieval_menus.xml",
-        # Ensure retrieval work order action is defined before its menu references it
-        "views/records_retrieval_work_order_views.xml",
-    "views/records_retrieval_work_order_menus.xml",
         "templates/portal_home_preconfigured.xml",
         "templates/portal_containers_list.xml",
         "templates/portal_certifications.xml",
