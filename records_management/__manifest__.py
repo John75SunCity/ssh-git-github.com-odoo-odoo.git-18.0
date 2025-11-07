@@ -51,49 +51,56 @@
         "quality"
     ],
     "data": [
-        # Security ordering: core groups first, then model security, then access CSV last
+        # ============================================================================
+        # SECURITY: Core groups first, then model security, then access CSV last
+        # ============================================================================
         "security/records_management_security.xml",
         "security/additional_models_security.xml",
         "security/destruction_certificate_security.xml",
         "security/intelligent_search_security.xml",
         "security/naid_security.xml",
         "security/portal_request_security.xml",
-        "security/work_order_portal_rules.xml",  # Portal work order record rules (company/partner scoping)
-        "security/portal_container_rules.xml",   # New: container & movement portal scoping
-        "security/portal_document_rules.xml",    # New: documents portal scoping
-        "security/portal_financial_rules.xml",   # New: financial/negotiated rates portal scoping
-        "security/portal_certificate_rules.xml", # New: destruction certificate portal scoping
-        "security/portal_temp_inventory_rules.xml", # New: temp inventory portal scoping (customer isolation)
+        "security/work_order_portal_rules.xml",
+        "security/portal_container_rules.xml",
+        "security/portal_document_rules.xml",
+        "security/portal_financial_rules.xml",
+        "security/portal_certificate_rules.xml",
+        "security/portal_temp_inventory_rules.xml",
         "security/ir.model.access.csv",
-        # Google Maps API configuration (loads API key for map widgets)
-        "views/google_maps_assets.xml",
-        # Root menus must be available before any child menus declared in scattered views
+        # ============================================================================
+        # ROOT MENUS: Parent-only menus must load EARLY before any child references
+        # These were extracted from records_management_menus.xml in commit daa1ae0e
+        # ============================================================================
         "views/records_management_root_menus.xml",
-        # Core sequence data (previously omitted, required for many next_by_code usages)
+        # ============================================================================
+        # CORE SEQUENCES: Must load before any records using them
+        # ============================================================================
         "data/ir_sequence_data.xml",
         "data/sequence_data.xml",
-        # Newly added consolidated missing sequences (must load before any records using them)
         "data/missing_sequences_data.xml",
-    # Portal barcode generic sequence (independent of container/storage specific sequences)
-    "data/portal_barcode_sequence.xml",
+        "data/portal_barcode_sequence.xml",
         "data/records_retrieval_order_sequences_data.xml",
+        # ============================================================================
+        # CORE DATA: Base records that other data/records depend on
+        # ============================================================================
         "data/core_records_data.xml",
         "data/load_data.xml",
         "data/container_types_base_rates.xml",
         "data/naid_certificate_data.xml",
         "data/paper_products_data.xml",
-        # Portal website menus (must load BEFORE configurator data references them)
         "data/website_portal_menus.xml",
         "data/core_configurator_data.xml",
         "data/paper_shred_configurator_data.xml",
         "data/document_retrieval_rates_data.xml",
         "data/products_data.xml",
         "data/storage_fee_data.xml",
+        # ============================================================================
+        # REPORTS: Report actions that will be referenced by views
+        # ============================================================================
         "report/naid_audit_log_reports.xml",
         "report/naid_compliance_action_plan_reports.xml",
         "report/naid_compliance_alert_reports.xml",
         "report/naid_compliance_reports.xml",
-        # Report actions that will be referenced by views must load before those views
         "report/container_barcode_reports.xml",
         "report/document_temp_barcode_reports.xml",
         "report/destruction_certificate_reports.xml",
@@ -107,102 +114,30 @@
         "report/document_search_attempt_report.xml",
         "report/naid_certificate_reports.xml",
         "report/report_records_management_report_customer_inventory_report.xml",
-        # Wizard/action definitions needed by menus must load first
-        "views/container_quick_add_wizard_views.xml",
-        "views/field_label_helper_wizard_views.xml",
-        # Actions referenced by menus (ensure before menus)
-        "views/records_digital_scan_views.xml",
-        # Menus (can now safely reference pre-loaded actions)
-        # Ensure pickup_request action loads before menus referencing it
-        "views/pickup_request_views.xml",
-        # Compliance related views (may reference compliance menu)
-        "views/naid_audit_log_views.xml",
-        "views/naid_audit_verification_wizard_views.xml",
-        "views/naid_compliance_checklist_item_views.xml",
-        "views/naid_compliance_checklist_views.xml",
-        "views/naid_compliance_policy_views.xml",
-        "views/naid_custody_views.xml",
-        "views/chain_of_custody_event_views.xml",
-    "views/naid_compliance_views.xml",
+        # ============================================================================
+        # EARLY CRITICAL DATA: Feedback, search, tags, cron, scheduled actions
+        # ============================================================================
         "data/feedback_survey_data.xml",
         "data/intelligent_search_indexes_data.xml",
         "data/tag_data.xml",
         "data/fsm_mail_templates_data.xml",
         "data/mail_activity_data_todo.xml",
-        # Training courses for NAID AAA compliance and customer education
-        # "data/training_courses_data.xml",
-        # "data/training_courses_naid_content.xml",
-        # "data/training_courses_customer_setup.xml",
-        # "data/training_courses_hipaa_privacy.xml",
-    # Updated: replaced removed duplicate cron file with consolidated cron data definition
-    "data/records_retrieval_order_cron_data.xml",
+        "data/records_retrieval_order_cron_data.xml",
         "data/scheduled_actions_data.xml",
         "data/field_label_customization_batch_data.xml",
         "data/temp_inventory_configurator_data.xml",
-    "data/portal_configurator_data.xml",
-        # Wizard actions must load before views that reference them
+        "data/portal_configurator_data.xml",
+        # ============================================================================
+        # WIZARD VIEWS: These define wizard actions used by menus
+        # ============================================================================
+        "views/field_label_helper_wizard_views.xml",
+        "views/container_quick_add_wizard_views.xml",
         "views/records_container_assign_barcode_wizard_views.xml",
-        # Actions must load before menus that reference them
-        "views/records_container_views.xml",
-        "views/records_document_views.xml",
-        "views/shredding_service_views.xml",
-        "views/shredding_service_bin_views.xml",
-        "views/paper_model_bale_views.xml",
-        "views/shred_model_bin_views.xml",
-        "views/records_destruction_views.xml",
-        "views/stock_lot_views.xml",
-        "views/work_order_coordinator_views.xml",
-        "views/workflow_visualization_manager_views.xml",
-        "views/portal_request_views.xml",
-        "views/customer_feedback_views.xml",
-        "views/customer_inventory_views.xml",
-        "views/inventory_item_views.xml",
-    "views/records_work_vehicle_views.xml",
-        "views/chain_of_custody_views.xml",
-        "views/records_storage_department_user_views.xml",  # MUST load before records_department_views.xml
-        "views/records_department_views.xml",
-        "views/records_location_views.xml",
-        "views/records_document_type_views.xml",
-        "views/records_tag_views.xml",
-        "views/base_rate_views.xml",
-        "views/customer_negotiated_rate_views.xml",
-        "views/destruction_event_views.xml",
-        "views/destruction_certificate_views.xml",
-        "views/res_partner_views.xml",
-        "views/advanced_billing_profile_views.xml",
-        "views/records_audit_log_views.xml",
-        "views/service_item_views.xml",  # Must load before revenue_forecast_line_views (references action_service_item_fsm_integration)
-        "views/document_retrieval_metrics_views.xml",  # Must load before revenue_forecast_line_views (references action_document_retrieval_metrics)
-        "views/payment_split_line_views.xml",  # Must load before revenue_forecast_line_views (references action_payment_split_line)
-        "views/shredding_service_photo_views.xml",  # Must load before revenue_forecast_line_views (references action_shredding_service_photo)
-        "views/revenue_forecast_line_views.xml",
-        # ============================================================================
-        # CRITICAL: Action views MUST load before menus that reference them
-        # ============================================================================
-        "views/portal_feedback_analytic_views.xml",  # defines action_feedback_analytics
-        "views/report_window_actions_views.xml",  # defines action_storage_reports, action_compliance_reports
-        "views/customer_inventory_report_views.xml",  # defines customer_inventory_report_action
-        "views/bin_unlock_service_views.xml",  # defines action_bin_key_management
-        "views/bin_key_views.xml",  # defines action_bin_key
-        "views/res_partner_key_restriction_views.xml",  # defines action_res_partner_key_restriction
-        "views/records_billing_views.xml",  # defines records_billing_action
-        "views/barcode_seasonal_pricing_views.xml",  # defines barcode_seasonal_pricing_action
-        "views/product_template_views.xml",  # defines action for product templates
-        "views/transitory_field_config_views.xml",  # defines transitory field config action
-        "views/billing_period_views.xml",  # defines billing_period_action - MOVED UP to load before menus
-        "views/records_tag_category_views.xml",  # defines action_records_tag_category - MOVED UP to load before menus
-        "views/container_retrieval_views.xml",  # defines action_container_retrieval - MOVED UP to load before menus
-        "views/paper_load_shipment_views.xml",  # defines action_paper_load_shipment - MOVED UP to load before menus
-        "views/records_retrieval_order_views.xml",  # defines action_records_retrieval_order - MOVED UP to load before menus
-        # ============================================================================
-        # ALL view files MUST load before menus that reference them
-        # Moving menus to the END of data loading ensures all actions are defined first
-        # ============================================================================
-        # Phase 1: Load all NON-MENU views first (actions, fields, etc.)
-        # ============================================================================
+        "views/report_window_actions_views.xml",
         "views/customer_inventory_report_wizard_views.xml",
         "views/hard_drive_scan_wizard_views.xml",
         "views/location_report_wizard_views.xml",
+        "views/mobile_bin_key_wizard_views.xml",
         "views/paper_bale_inspection_wizard_views.xml",
         "views/paper_bale_weigh_wizard_views.xml",
         "views/permanent_flag_wizard_views.xml",
@@ -211,7 +146,7 @@
         "views/rate_change_confirmation_wizard_views.xml",
         "views/records_container_type_converter_wizard_views.xml",
         "views/records_document_flag_permanent_wizard_views.xml",
-    "views/records_document_bulk_upload_wizard_views.xml",
+        "views/records_document_bulk_upload_wizard_views.xml",
         "views/records_location_report_wizard_views.xml",
         "views/records_permanent_flag_wizard_views.xml",
         "views/records_user_invitation_wizard_views.xml",
@@ -221,9 +156,35 @@
         "views/temp_inventory_reject_wizard_views.xml",
         "views/visitor_pos_wizard_views.xml",
         "views/work_order_bin_assignment_wizard_views.xml",
+        # ============================================================================
+        # CRITICAL EARLY VIEWS: Actions that must be defined before menus reference them
+        # ============================================================================
+        "views/records_digital_scan_views.xml",
+        "views/pickup_request_views.xml",
+        "views/naid_audit_log_views.xml",
+        "views/naid_audit_verification_wizard_views.xml",
+        "views/naid_compliance_checklist_item_views.xml",
+        "views/naid_compliance_checklist_views.xml",
+        "views/naid_compliance_policy_views.xml",
+        "views/naid_custody_views.xml",
+        "views/chain_of_custody_event_views.xml",
+        "views/naid_compliance_views.xml",
+        "views/bin_unlock_service_views.xml",
+        "views/advanced_billing_contact_views.xml",
+        "views/advanced_billing_profile_views.xml",
         "views/approval_history_views.xml",
-        # Ensure negotiated rate action loads before menus in base_rate_views.xml
+        "views/customer_negotiated_rate_views.xml",
+        "views/base_rate_views.xml",
+        "views/billing_period_views.xml",
         "views/bin_barcode_inventory_views.xml",
+        "views/chain_of_custody_views.xml",
+        "views/container_retrieval_views.xml",
+        "views/custody_transfer_event_views.xml",
+        "views/customer_feedback_views.xml",
+        "views/customer_inventory_report_views.xml",
+        "views/destruction_event_views.xml",
+        "views/destruction_certificate_views.xml",
+        "views/records_work_vehicle_views.xml",
         "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_destruction_views.xml",
         "views/inventory_item_location_transfer_views.xml",
@@ -238,11 +199,15 @@
         "views/paper_bale_movement_views.xml",
         "views/paper_bale_recycling_views.xml",
         "views/paper_bale_views.xml",
+        "views/paper_load_shipment_views.xml",
+        "views/paper_model_bale_views.xml",
         "views/payment_split_views.xml",
+        "views/payment_split_line_views.xml",
         "views/pickup_route_views.xml",
         "views/portal_feedback_views.xml",
         "views/portal_request_line_views.xml",
         "views/records_approval_workflow_views.xml",
+        "views/records_audit_log_views.xml",
         "views/records_bulk_user_import_views.xml",
         "views/records_category_views.xml",
         "views/records_center_location_views.xml",
@@ -255,110 +220,85 @@
         "views/records_deletion_request_enhanced_views.xml",
         "views/records_department_billing_approval_views.xml",
         "views/records_department_billing_contact_views.xml",
+        "views/records_department_views.xml",
         "views/records_destruction_job_views.xml",
         "views/records_destruction_line_views.xml",
+        "views/records_destruction_views.xml",
+        "views/records_document_type_views.xml",
+        "views/records_document_views.xml",
+        "views/records_document_bulk_upload_views.xml",
         "views/records_document_field_label_helper_views.xml",
         "views/records_installer_views.xml",
         "views/records_inventory_dashboard_views.xml",
         "views/records_location_inspection_line_views.xml",
         "views/records_location_inspection_views.xml",
+        "views/records_location_views.xml",
         "views/records_management_bale_views.xml",
         "views/records_policy_version_views.xml",
         "views/records_promotional_discount_views.xml",
         "views/records_request_line_views.xml",
         "views/records_request_type_views.xml",
         "views/records_request_views.xml",
+        "views/records_retention_policy_views.xml",
         "views/records_retention_rule_views.xml",
+        "views/records_retrieval_order_views.xml",
         "views/records_security_audit_views.xml",
         "views/records_series_views.xml",
         "views/records_service_type_views.xml",
-        # records_storage_department_user_views.xml moved earlier (line ~160) to load before records_department_views.xml
+        "views/records_storage_department_user_views.xml",
         "views/records_survey_user_input_views.xml",
+        "views/records_tag_category_views.xml",
+        "views/records_tag_views.xml",
         "views/records_usage_tracking_views.xml",
         "views/revenue_analytic_views.xml",
+        "views/service_item_views.xml",
+        "views/shredding_service_photo_views.xml",
+        "views/document_retrieval_metrics_views.xml",
+        "views/revenue_forecast_line_views.xml",
         "views/revenue_forecast_views.xml",
         "views/revenue_forecaster_views.xml",
+        "views/rm_module_configurator_views.xml",
+        "views/shred_model_bin_views.xml",
         "views/shredding_certificate_views.xml",
         "views/shredding_hard_drive_views.xml",
         "views/shredding_inventory_batch_views.xml",
+        "views/shredding_service_bin_views.xml",
         "views/shredding_service_event_views.xml",
+        "views/shredding_service_views.xml",
         "views/shredding_team_views.xml",
+        "views/stock_lot_views.xml",
         "views/survey_feedback_theme_views.xml",
         "views/survey_improvement_action_views.xml",
         "views/temp_inventory_views.xml",
+        "views/work_order_coordinator_views.xml",
+        "views/workflow_visualization_manager_views.xml",
+        "views/records_container_views.xml",
         "views/records_container_field_label_helper_views.xml",
         "views/records_billing_config_views.xml",
-    # User profile selector (Records Management role abstraction)
+        "views/portal_request_views.xml",
+        "views/bin_key_views.xml",
+        "views/portal_feedback_analytic_views.xml",
+        "views/inventory_item_views.xml",
+        "views/res_partner_key_restriction_views.xml",
         "views/res_users_records_profile_views.xml",
         # ============================================================================
-        # Phase 2: ALL MENU FILES - Load LAST after ALL actions/parents/children defined
+        # MENU STRUCTURE: ALL MENUS LOAD LAST after every action/view is defined
+        # Child menuitems reference parents from records_management_root_menus.xml
+        # and actions from views above. Parent menus loaded early, children loaded last.
         # ============================================================================
-        # Additional menus by domain
-        "views/advanced_billing_contact_views.xml",
-        "views/advanced_billing_line_actions_menus.xml",
-        "views/base_rates_views.xml",
-        "views/barcode_menus.xml",
-        "views/bin_key_unlock_service_views.xml",
-        "views/container_access_activity_views.xml",
-        "views/container_access_document_views.xml",
-        "views/container_access_photo_views.xml",
-        "views/container_access_report_views.xml",
-        "views/container_access_visitor_views.xml",
-        "views/custody_transfer_event_views.xml",
-        "views/custom_box_volume_calculator_views.xml",
-        "views/customer_portal_diagram_views.xml",
-        "views/departmental_billing_menus.xml",
-        "views/document_retrieval_menus.xml",
-        "views/document_search_attempt_views.xml",
-        "views/enhanced_features_menus.xml",
-        "views/file_retrieval_views.xml",
-        "views/full_customization_name_view_form.xml",
-        "views/full_customization_name_views.xml",
-        "views/hard_drive_scan_wizard_line_views.xml",
-        "views/ir_model_views.xml",
-        "views/ir_ui_view_views.xml",
-        "views/key_restriction_checker_views.xml",
-        "views/mobile_bin_key_wizard_views.xml",
-        "views/naid_audit_requirement_views.xml",
-        "views/naid_certification_views.xml",
-        "views/photo_menus.xml",
-        "views/pickup_location_view_forms.xml",
-        "views/portal_access_views.xml",
-        "views/portal_feedback_menus.xml",
-        "views/records_config_settings_views.xml",
-        "views/records_container_type_converter_views.xml",
-        "views/records_management_dashboard_views.xml",
-        "views/records_retention_policy_version_views.xml",
-        "views/records_retention_policy_views.xml",
-        "views/records_retrieval_work_order_menus.xml",
-        "views/records_storage_box_views.xml",
-        "views/rm_module_configurator_views.xml",
-        "views/service_item_menus.xml",
-        "views/shred_bin_views.xml",
-        "views/shredding_inventory_views.xml",
-        "views/stock_move_sms_validation_views.xml",
-        # Main menu structure with all action references - MUST load LAST after all views define actions
         "views/records_management_menus.xml",
-        "templates/portal_home_preconfigured.xml",
-        "templates/portal_containers_list.xml",
+        "views/service_item_menus.xml",
+        "views/document_retrieval_menus.xml",
+        "views/records_retrieval_work_order_views.xml",
+        "views/records_retrieval_work_order_menus.xml",
+        # ============================================================================
+        # TEMPLATES: Load after everything else
+        # ============================================================================
         "templates/portal_certifications.xml",
         "templates/portal_certificate_templates.xml",
-        "templates/portal_certificates_documents.xml",
         "templates/portal_inventory_template.xml",
-        "templates/portal_requests_template.xml",
-        "templates/portal_pickup_request_create.xml",
-        "templates/portal_destruction_request_create.xml",
-        "templates/portal_certificates.xml",
-        "templates/portal_documents.xml",
-        "templates/portal_containers.xml",
-        "templates/portal_feedback.xml",
-        "templates/portal_locations.xml",
-        "templates/portal_errors.xml",
-        "templates/portal_dashboards.xml",
-        "templates/portal_reports.xml",
-        "templates/portal_container_create.xml",
-    "templates/portal_barcode_row.xml",
-    "templates/portal_document_bulk_upload.xml",
+        "templates/portal_barcode_row.xml",
+        "templates/portal_document_bulk_upload.xml",
         "templates/portal_mobile_export.xml",
         "templates/portal_mobile_inventory_template.xml",
         "templates/portal_mobile_settings.xml",
