@@ -189,6 +189,7 @@
         "views/barcode_seasonal_pricing_views.xml",  # defines barcode_seasonal_pricing_action
         "views/product_template_views.xml",  # defines action for product templates
         "views/transitory_field_config_views.xml",  # defines transitory field config action
+        "views/billing_period_views.xml",  # defines billing_period_action - MOVED UP to load before menus
         # ============================================================================
         # Menus can now safely reference all actions defined above
         # ============================================================================
