@@ -56,7 +56,7 @@
                                     </div>
                                     <div class="mt-2">
                                         <span class="badge badge-info">
-                                            <i class="fa fa-ruler" aria-hidden="true" />
+                                            <i class="fa fa-ruler" aria-hidden="true" title="Capacity in cubic feet" />
                                             <field name="capacity" />
                                         cu.ft
                                     </span>
@@ -157,7 +157,7 @@
                         </div>
                         <group>
                             <group name="product_details" string="Product Details">
-                                <field name="product_code" />
+                                <field name="name" />
                                 <field name="capacity" widget="float" />
                                 <field name="dimensions" />
                                 <field name="weight_limit" widget="float" />
