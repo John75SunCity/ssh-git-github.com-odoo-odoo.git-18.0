@@ -63,7 +63,7 @@
         id="menu_inventory_item_profile"
         name="Item Profiles"
         action="action_inventory_item_profile"
-        parent="menu_records_inventory"
+        parent="records_management.menu_records_inventory"
         sequence="50"
         groups="records_management.group_records_manager"/>
     

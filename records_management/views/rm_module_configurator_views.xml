@@ -308,7 +308,7 @@ Inactive
 <!-- Main configurator menu - placed in Records Management > Configuration -->
 <menuitem id="menu_rm_module_configurator"
           name="Module Configuration"
-          parent="menu_records_configuration"
+          parent="records_management.menu_records_configuration"
           action="action_rm_module_configurator"
           sequence="5"
           groups="records_management.group_records_manager,base.group_system"/>

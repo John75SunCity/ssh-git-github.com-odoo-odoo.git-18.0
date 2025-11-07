@@ -4,7 +4,7 @@
     <!-- Photos Menu (Under Operations) -->
     <menuitem id="menu_photos_root"
               name="Photos"
-              parent="menu_records_operations"
+              parent="records_management.menu_records_operations"
               sequence="60"/>
     <menuitem id="photo_menu_list" name="All Photos" parent="photo_menu_root" action="action_photo" sequence="1"/>
 

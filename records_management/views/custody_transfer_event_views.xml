@@ -121,7 +121,7 @@
         id="menu_custody_transfer_event"
         name="Custody Transfer Event"
         action="action_custody_transfer_event"
-        parent="menu_chain_custody"
+        parent="records_management.menu_chain_custody"
         sequence="15"
         groups="records_management.group_records_user"/>
     

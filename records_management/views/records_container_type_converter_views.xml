@@ -51,7 +51,7 @@
 
     <!-- List view for Menu -->
 
-    <menuitem id="menu_container_type_converter" name="Bulk Convert Container Types" parent="menu_records_operations" action="action_container_type_converter" sequence="30"/>
+    <menuitem id="menu_container_type_converter" name="Bulk Convert Container Types" parent="records_management.menu_records_operations" action="action_container_type_converter" sequence="30"/>
 
     
     </data>

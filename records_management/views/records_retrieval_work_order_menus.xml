@@ -4,7 +4,7 @@
         <!-- Retrieval Work Order Menu -->
     <menuitem id="menu_records_retrieval_work_order"
               name="Retrieval Work Orders"
-              parent="menu_records_operations"
+              parent="records_management.menu_records_operations"
               action="action_records_retrieval_work_order"
               sequence="85"/>
     

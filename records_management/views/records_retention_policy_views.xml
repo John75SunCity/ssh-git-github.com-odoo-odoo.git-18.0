@@ -422,7 +422,7 @@
         </record>
 
         <!-- DUPLICATE MENU - Already defined in records_management_menus.xml with proper groups -->
-        <!-- <menuitem id="menu_records_retention_policy" name="Retention Policies" parent="menu_records_configuration" action="records_retention_policy_action" sequence="10" /> -->
+        <!-- <menuitem id="menu_records_retention_policy" name="Retention Policies" parent="records_management.menu_records_configuration" action="records_retention_policy_action" sequence="10" /> -->
 
 
     </data>

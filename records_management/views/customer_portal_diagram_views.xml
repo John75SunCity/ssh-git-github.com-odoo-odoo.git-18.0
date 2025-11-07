@@ -201,12 +201,12 @@
 <!-- List view for Main -->
 
     <!-- Portal Organization moved to Configuration menu -->
-    <menuitem id="menu_customer_portal_diagram" name="Portal Organization" parent="menu_records_configuration" action="action_customer_portal_diagram_admin" sequence="65" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_customer_portal_diagram" name="Portal Organization" parent="records_management.menu_records_configuration" action="action_customer_portal_diagram_admin" sequence="65" groups="records_management.group_records_manager"/>
 
 
 <!-- List view for Submenu -->
 
-    <menuitem id="menu_customer_portal_diagram_config" name="Diagram Configuration" parent="menu_records_configuration" action="action_customer_portal_diagram_admin" sequence="50" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_customer_portal_diagram_config" name="Diagram Configuration" parent="records_management.menu_records_configuration" action="action_customer_portal_diagram_admin" sequence="50" groups="records_management.group_records_manager"/>
 
     
     </data>

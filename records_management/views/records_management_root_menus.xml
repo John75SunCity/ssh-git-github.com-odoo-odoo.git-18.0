@@ -37,9 +37,9 @@
         <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="50" groups="records_management.group_records_manager,base.group_system"/>
         
         <!-- Legacy menu aliases for backward compatibility -->
-        <menuitem id="menu_records_compliance" name="NAID Compliance" parent="menu_records_compliance_reports" sequence="10" groups="records_management.group_records_user"/>
-        <menuitem id="menu_records_reporting" name="Reports" parent="menu_records_compliance_reports" sequence="20" groups="records_management.group_records_user"/>
-        <menuitem id="menu_records_portal" name="Portal Feedback" parent="menu_records_compliance_reports" sequence="30" groups="records_management.group_records_user"/>
+        <menuitem id="menu_records_compliance" name="NAID Compliance" parent="records_management.menu_records_compliance_reports" sequence="10" groups="records_management.group_records_user"/>
+        <menuitem id="menu_records_reporting" name="Reports" parent="records_management.menu_records_compliance_reports" sequence="20" groups="records_management.group_records_user"/>
+        <menuitem id="menu_records_portal" name="Portal Feedback" parent="records_management.menu_records_compliance_reports" sequence="30" groups="records_management.group_records_user"/>
 
 
     </data>

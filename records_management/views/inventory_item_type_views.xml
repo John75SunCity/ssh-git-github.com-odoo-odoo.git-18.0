@@ -62,7 +62,7 @@
         id="menu_inventory_item_type"
         name="Item Types"
         action="action_inventory_item_type"
-        parent="menu_master_data"
+        parent="records_management.menu_master_data"
         sequence="55"
         groups="records_management.group_records_manager"/>
     
