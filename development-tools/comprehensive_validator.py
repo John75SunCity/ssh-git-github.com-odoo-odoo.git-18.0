@@ -23,6 +23,13 @@ from collections import defaultdict
 import subprocess
 import sys
 
+# Try to import jingtrang for better error messages
+try:
+    from jingtrang import jing
+    JINGTRANG_AVAILABLE = True
+except ImportError:
+    JINGTRANG_AVAILABLE = False
+
 class ComprehensiveValidator:
     def __init__(self):
         self.total_files = 0
@@ -139,6 +146,11 @@ class ComprehensiveValidator:
         try:
             # Parse XML for basic structure validation
             root = ET.fromstring(content)
+            
+            # ENHANCED: Try jingtrang validation if available for better error messages
+            if JINGTRANG_AVAILABLE and 'views' in str(file_path):
+                jingtrang_issues = self._validate_with_jingtrang(file_path, content)
+                issues.extend(jingtrang_issues)
             
             # Check for duplicate field definitions in views
             if 'views' in str(file_path):
@@ -431,6 +443,70 @@ class ComprehensiveValidator:
         
         return issues
     
+    def _validate_with_jingtrang(self, file_path, content):
+        """Enhanced XML validation using jingtrang for better error messages.
+        
+        Jingtrang provides RELAX NG schema validation with more descriptive errors
+        than the default lxml validator. Falls back gracefully if validation fails.
+        """
+        issues = []
+        
+        if not JINGTRANG_AVAILABLE:
+            return issues
+        
+        try:
+            # Try to validate using jingtrang
+            # jingtrang returns True if valid, raises exception if invalid
+            from io import StringIO
+            
+            # Create a simple wrapper to catch and format jingtrang errors
+            try:
+                # Write content to temp for validation
+                import tempfile
+                with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as tmp:
+                    tmp.write(content)
+                    tmp_path = tmp.name
+                
+                # Use jingtrang to validate
+                result = subprocess.run(
+                    [sys.executable, '-m', 'jingtrang', '-i', 'rng', tmp_path],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                
+                # Clean up temp file
+                try:
+                    os.unlink(tmp_path)
+                except:
+                    pass
+                
+                # Parse jingtrang output for errors
+                if result.returncode != 0:
+                    error_output = result.stderr or result.stdout
+                    # Extract key error info from jingtrang output
+                    if 'extra content' in error_output.lower():
+                        issues.append("❌ [Jingtrang] XML structure has extra/unexpected content - verify <data> tags don't wrap <odoo> root")
+                    if 'element' in error_output.lower() and 'missing' in error_output.lower():
+                        issues.append("❌ [Jingtrang] XML has missing required elements - check schema compliance")
+                    if 'attribute' in error_output.lower():
+                        issues.append(f"❌ [Jingtrang] XML has invalid attributes: {error_output[:100]}")
+                    # Generic error if we couldn't parse output
+                    if not issues:
+                        issues.append(f"⚠️  [Jingtrang] XML validation failed: {error_output.split(chr(10))[0]}")
+                        
+            except subprocess.TimeoutExpired:
+                issues.append("⚠️  [Jingtrang] Validation timed out - using standard validation")
+            except Exception as e:
+                # If jingtrang fails, just use standard validation
+                pass
+                
+        except Exception as e:
+            # Silently fail - jingtrang is optional enhancement
+            pass
+        
+        return issues
+    
     def check_data_structure(self, content):
         """Check for proper data tag structure"""
         issues = []
@@ -468,6 +544,11 @@ class ComprehensiveValidator:
         print("🔍 COMPREHENSIVE RECORDS MANAGEMENT VALIDATOR")
         print("=" * 60)
         print("🎯 Enhanced to catch XML structural and formatting issues")
+        # Show jingtrang status for enhanced error messages
+        if JINGTRANG_AVAILABLE:
+            print("✅ Jingtrang available - XML validation will include enhanced error messages")
+        else:
+            print("ℹ️  Jingtrang not installed - using standard XML validation (install with: pip install jingtrang)")
         print()
         # Collect local model names once
         self.collect_local_model_names()
