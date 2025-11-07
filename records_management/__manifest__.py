@@ -69,6 +69,8 @@
         "views/google_maps_assets.xml",
         # Root menus must be available before any child menus declared in scattered views
         "views/records_management_root_menus.xml",
+        # Main menu structure MUST load immediately after root menus but BEFORE any views that reference menu_master_data
+        "views/records_management_menus.xml",
         # Core sequence data (previously omitted, required for many next_by_code usages)
         "data/ir_sequence_data.xml",
         "data/sequence_data.xml",
@@ -293,8 +295,6 @@
         # ============================================================================
         # Phase 2: ALL MENU FILES - Load LAST after ALL actions/parents/children defined
         # ============================================================================
-        # Main menus
-        "views/records_management_menus.xml",
         # Additional menus by domain
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_line_actions_menus.xml",
