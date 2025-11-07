@@ -472,7 +472,6 @@
         <menuitem id="menu_paper_recycling" name="Paper Recycling" parent="menu_records_operations" sequence="50" groups="records_management.group_records_user" />
         <menuitem id="menu_paper_model_bales" name="Bales" parent="menu_paper_recycling" action="action_paper_model_bale" sequence="10" groups="records_management.group_records_user" />
         <menuitem id="menu_load_shipments" name="Load Shipments" parent="menu_paper_recycling" action="action_paper_load_shipment" sequence="20" groups="records_management.group_records_user" />
-        <menuitem id="menu_paper_recycling_dashboard" name="Dashboard" parent="menu_paper_recycling" action="action_paper_recycling_dashboard" sequence="5" groups="records_management.group_records_user" />
 
         <menuitem id="menu_stock_lots" name="Serial Numbers" parent="menu_records_operations" sequence="55" groups="records_management.group_records_user" />
         <menuitem id="menu_work_order_coordinators" name="Work Order Coordinators" parent="menu_records_operations" action="action_work_order_coordinator" sequence="60" groups="records_management.group_records_user" />
