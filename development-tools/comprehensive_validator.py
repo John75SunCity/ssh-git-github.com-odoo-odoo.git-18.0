@@ -513,6 +513,14 @@ class ComprehensiveValidator:
             schema_validator = None
             print("⚠️  XML Schema Validator not available - skipping enhanced validation")
 
+        # Initialize Field Reference Validator
+        if FIELD_REFERENCE_VALIDATOR_AVAILABLE:
+            field_validator = FieldReferenceValidator()
+            print(f"✅ Field Reference Validator active ({len(field_validator.model_fields)} models in registry)")
+        else:
+            field_validator = None
+            print("⚠️  Field Reference Validator not available - skipping field validation")
+
         # Detect duplicate cron ids BEFORE per-file validation so they surface early
         self.detect_duplicate_cron_ids(xml_files)
         duplicate_cron_count = len(self._duplicate_cron_issues)
@@ -541,6 +549,19 @@ class ComprehensiveValidator:
                 if not schema_result['valid']:
                     schema_issues = schema_result['errors']
                     issues.extend(schema_issues)
+
+            # Add Field Reference validation if available
+            field_issues = []
+            if field_validator:
+                field_result = field_validator.validate_xml_file(Path(xml_file))
+                if field_result:  # If there are field errors
+                    for view_id, errors in field_result.items():
+                        if view_id != 'ERROR':
+                            for error in errors:
+                                field_issues.append(f"   View {view_id}: {error}")
+                        else:
+                            field_issues.extend(errors)
+                    issues.extend(field_issues)
 
             if issues:
                 self.files_with_issues += 1

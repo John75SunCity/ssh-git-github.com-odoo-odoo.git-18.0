@@ -201,7 +201,7 @@
                                         <field name="max_stack_height" />
                                     </group>
                                     <group string="Document Types">
-                                        <field name="suitable_document_types" widget="many2many_tags" />
+                                        <field name="suitable_document_type_ids" widget="many2many_tags" />
                                         <field name="max_file_folders" />
                                         <field name="recommended_retention_years" />
                                         <field name="access_frequency" />
