@@ -193,7 +193,6 @@
         # Menus can now safely reference all actions defined above
         # ============================================================================
         "views/records_management_menus.xml",
-        "views/bin_issue_report_wizard_views.xml",
         "views/customer_inventory_report_wizard_views.xml",
         "views/hard_drive_scan_wizard_views.xml",
         "views/location_report_wizard_views.xml",

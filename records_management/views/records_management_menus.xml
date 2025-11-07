@@ -526,9 +526,6 @@
         <!-- Billing Periods -->
         <menuitem id="menu_billing_period" name="Billing Periods" parent="menu_records_billing" action="billing_period_action" sequence="10"/>
 
-        <!-- Billing Records -->
-        <menuitem id="menu_billing_records" name="Billing Records" parent="menu_records_billing" action="records_billing_action" sequence="15" />
-
         <!-- Advanced Billing Profiles -->
         <menuitem id="menu_advanced_billing" name="Advanced Billing Profiles" parent="menu_records_billing" action="advanced_billing_profile_action" sequence="20" groups="records_management.group_records_manager" />
 
