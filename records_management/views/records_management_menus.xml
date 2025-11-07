@@ -553,8 +553,7 @@
         <!-- Audit Logs -->
         <menuitem id="menu_naid_audit_logs" name="Audit Logs" parent="records_management.menu_records_compliance_reports" action="action_naid_audit_log" sequence="40" groups="records_management.group_records_manager" />
 
-        <!-- Chain of Custody -->
-        <menuitem id="menu_chain_custody" name="Chain of Custody" parent="records_management.menu_records_compliance_reports" action="action_chain_of_custody" sequence="45" groups="records_management.group_records_user" />
+        <!-- Chain of Custody - Moved to records_management_root_menus.xml (loaded early for child references in custody_transfer_event_views.xml) -->
 
         <!-- NAID Certification Items (will be populated from separate views) -->
 

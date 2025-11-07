@@ -49,6 +49,7 @@
         <menuitem id="menu_performance_analytics" name="Performance Analytics" parent="menu_records_compliance_reports" sequence="25" />
         <menuitem id="menu_naid_audit_root" name="NAID Audits" parent="menu_records_compliance_reports" sequence="50" />
         <menuitem id="menu_naid_certification_root" name="NAID Certification" parent="menu_records_compliance_reports" sequence="55" />
+        <menuitem id="menu_chain_custody" name="Chain of Custody" parent="menu_records_compliance_reports" action="action_chain_of_custody" sequence="60" groups="records_management.group_records_user" />
         <menuitem id="menu_master_data" name="Master Data" parent="menu_records_configuration" sequence="5" groups="records_management.group_records_manager" />
         <menuitem id="menu_products_services" name="Products &amp; Services" parent="menu_records_configuration" sequence="15" groups="records_management.group_records_manager" />
         <menuitem id="menu_security_access" name="Security &amp; Access" parent="menu_records_configuration" sequence="20" groups="records_management.group_records_manager" />
