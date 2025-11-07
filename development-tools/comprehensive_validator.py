@@ -12,6 +12,7 @@ ENHANCED to catch issues missed in previous validations including:
 - Invalid menu visibility syntax
 - XML schema compliance problems
 - Field/model reference validation
+- jingtrang XML schema validation (enhanced error messages)
 """
 
 import os
@@ -23,12 +24,19 @@ from collections import defaultdict
 import subprocess
 import sys
 
-# Try to import jingtrang for better error messages
+# Try to import enhanced XML validator
 try:
-    from jingtrang import jing
-    JINGTRANG_AVAILABLE = True
+    from xml_schema_validator import OdooXMLSchemaValidator
+    XML_SCHEMA_VALIDATOR_AVAILABLE = True
 except ImportError:
-    JINGTRANG_AVAILABLE = False
+    XML_SCHEMA_VALIDATOR_AVAILABLE = False
+
+# Try to import field reference validator
+try:
+    from field_reference_validator import FieldReferenceValidator
+    FIELD_REFERENCE_VALIDATOR_AVAILABLE = True
+except ImportError:
+    FIELD_REFERENCE_VALIDATOR_AVAILABLE = False
 
 class ComprehensiveValidator:
     def __init__(self):
@@ -138,37 +146,32 @@ class ComprehensiveValidator:
                     continue
                 for match in name_regex.findall(text):
                     self.local_models.add(match.strip())
-        
+
     def validate_xml_structure(self, file_path, content):
         """Enhanced XML structure validation that catches formatting and duplication issues"""
         issues = []
-        
+
         try:
             # Parse XML for basic structure validation
             root = ET.fromstring(content)
-            
-            # ENHANCED: Try jingtrang validation if available for better error messages
-            if JINGTRANG_AVAILABLE and 'views' in str(file_path):
-                jingtrang_issues = self._validate_with_jingtrang(file_path, content)
-                issues.extend(jingtrang_issues)
-            
+
             # Check for duplicate field definitions in views
             if 'views' in str(file_path):
                 field_duplicates = self.check_duplicate_fields(content)
                 issues.extend(field_duplicates)
-            
+
             # Check for excessive whitespace that can cause parsing issues
             whitespace_issues = self.check_excessive_whitespace(content)
             issues.extend(whitespace_issues)
-            
+
             # Check menu visibility syntax
             menu_syntax_issues = self.check_menu_syntax(content)
             issues.extend(menu_syntax_issues)
-            
+
             # Check XML declaration format
             declaration_issues = self.check_xml_declaration(content)
             issues.extend(declaration_issues)
-            
+
             # Check for proper data tag structure
             data_structure_issues = self.check_data_structure(content)
             issues.extend(data_structure_issues)
@@ -191,12 +194,12 @@ class ComprehensiveValidator:
             self.check_active_id_usage(content, Path(file_path))
             # Post-parse heuristic: parent/child relation but no hierarchy view in same file
             self.check_missing_hierarchy_view(root, content, Path(file_path))
-            
+
         except ET.ParseError as e:
             issues.append(f"❌ XML Parse Error: {e}")
         except Exception as e:
             issues.append(f"❌ Structure validation error: {e}")
-            
+
         return issues
 
     def check_action_res_models(self, root: ET.Element, file_path: Path):
@@ -305,41 +308,41 @@ class ComprehensiveValidator:
                         f"❌ ir.ui.menu references unknown action ref '{ref}' (xml id '{xml_id}' not found in this module)"
                     )
         return issues
-    
+
     def check_duplicate_fields(self, content):
         """Check for TRUE duplicate field definitions within the same exact context"""
         issues = []
         lines = content.split('\n')
-        
+
         # Parse the XML to properly understand structure
         try:
             root = ET.fromstring(content)
-            
+
             # Find all view records
             for record in root.findall(".//record[@model='ir.ui.view']"):
                 record_id = record.get('id', 'unknown')
-                
+
                 # Find the arch field
                 arch_field = record.find(".//field[@name='arch']")
                 if arch_field is None:
                     continue
-                
+
                 # Check each direct child of arch for duplicates
                 arch_content = arch_field[0] if len(arch_field) > 0 else None
                 if arch_content is not None:
                     self._check_context_duplicates(arch_content, record_id, issues, content)
-                    
+
         except ET.ParseError:
             # Fallback to line-by-line if XML parsing fails
             return self._fallback_duplicate_check(content)
-            
+
         return issues
-    
+
     def _check_context_duplicates(self, element, record_id, issues, original_content):
         """Recursively check for duplicates within specific contexts"""
         # Only check direct children of structural elements for duplicates
         structural_elements = ['list', 'form', 'kanban', 'search', 'tree']
-        
+
         if element.tag in structural_elements:
             # Check direct field children for duplicates
             field_names = []
@@ -352,11 +355,11 @@ class ComprehensiveValidator:
                         issues.append(f"❌ Actual duplicate field '{field_name}' in {element.tag} view at line {line_num}")
                     else:
                         field_names.append(field_name)
-        
+
         # Recursively check children
         for child in element:
             self._check_context_duplicates(child, record_id, issues, original_content)
-    
+
     def _find_line_number(self, content, field_name, record_id):
         """Find approximate line number for error reporting"""
         lines = content.split('\n')
@@ -369,26 +372,26 @@ class ComprehensiveValidator:
             elif in_record and f'name="{field_name}"' in line or f"name='{field_name}'" in line:
                 return i
         return 0
-    
+
     def _fallback_duplicate_check(self, content):
         """Fallback method if XML parsing fails"""
         issues = []
         lines = content.split('\n')
-        
+
         current_structural_context = None
         current_fields = []
         in_arch = False
-        
+
         for i, line in enumerate(lines, 1):
             stripped = line.strip()
-            
+
             if '<field name="arch"' in stripped:
                 in_arch = True
                 continue
             elif in_arch and '</field>' in stripped and 'arch' not in stripped:
                 in_arch = False
                 continue
-                
+
             if in_arch:
                 # Detect structural elements
                 if any(f'<{tag}' in stripped for tag in ['list', 'form', 'kanban', 'tree', 'search']):
@@ -405,14 +408,14 @@ class ComprehensiveValidator:
                             issues.append(f"❌ Duplicate field '{field_name}' at line {i}")
                         else:
                             current_fields.append(field_name)
-        
+
         return issues
-    
+
     def check_excessive_whitespace(self, content):
         """Check for excessive whitespace that can cause XML parsing issues"""
         issues = []
         lines = content.split('\n')
-        
+
         consecutive_empty = 0
         for i, line in enumerate(lines, 1):
             if not line.strip():
@@ -421,96 +424,32 @@ class ComprehensiveValidator:
                 if consecutive_empty > 3:
                     issues.append(f"⚠️  Excessive whitespace: {consecutive_empty} consecutive empty lines ending at line {i}")
                 consecutive_empty = 0
-        
+
         return issues
-    
+
     def check_menu_syntax(self, content):
         """Check for invalid menu visibility syntax - DISABLED: These are valid Odoo XML patterns"""
         issues = []
-        
-        # DISABLED: The patterns invisible="field == True" and decoration="field == False" 
+
+        # DISABLED: The patterns invisible="field == True" and decoration="field == False"
         # are valid Odoo XML syntax and should NOT be flagged as deprecated
-        
+
         return issues
-    
+
     def check_xml_declaration(self, content):
         """Check XML declaration format for Odoo 18.0 compliance"""
         issues = []
-        
+
         # Check for single quotes in XML declaration
         if re.search(r"<\?xml version='1\.0' encoding='utf-8'\?>", content):
             issues.append("❌ XML declaration uses single quotes - should use double quotes for Odoo 18.0 compliance")
-        
+
         return issues
-    
-    def _validate_with_jingtrang(self, file_path, content):
-        """Enhanced XML validation using jingtrang for better error messages.
-        
-        Jingtrang provides RELAX NG schema validation with more descriptive errors
-        than the default lxml validator. Falls back gracefully if validation fails.
-        """
-        issues = []
-        
-        if not JINGTRANG_AVAILABLE:
-            return issues
-        
-        try:
-            # Try to validate using jingtrang
-            # jingtrang returns True if valid, raises exception if invalid
-            from io import StringIO
-            
-            # Create a simple wrapper to catch and format jingtrang errors
-            try:
-                # Write content to temp for validation
-                import tempfile
-                with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as tmp:
-                    tmp.write(content)
-                    tmp_path = tmp.name
-                
-                # Use jingtrang to validate
-                result = subprocess.run(
-                    [sys.executable, '-m', 'jingtrang', '-i', 'rng', tmp_path],
-                    capture_output=True,
-                    text=True,
-                    timeout=5
-                )
-                
-                # Clean up temp file
-                try:
-                    os.unlink(tmp_path)
-                except:
-                    pass
-                
-                # Parse jingtrang output for errors
-                if result.returncode != 0:
-                    error_output = result.stderr or result.stdout
-                    # Extract key error info from jingtrang output
-                    if 'extra content' in error_output.lower():
-                        issues.append("❌ [Jingtrang] XML structure has extra/unexpected content - verify <data> tags don't wrap <odoo> root")
-                    if 'element' in error_output.lower() and 'missing' in error_output.lower():
-                        issues.append("❌ [Jingtrang] XML has missing required elements - check schema compliance")
-                    if 'attribute' in error_output.lower():
-                        issues.append(f"❌ [Jingtrang] XML has invalid attributes: {error_output[:100]}")
-                    # Generic error if we couldn't parse output
-                    if not issues:
-                        issues.append(f"⚠️  [Jingtrang] XML validation failed: {error_output.split(chr(10))[0]}")
-                        
-            except subprocess.TimeoutExpired:
-                issues.append("⚠️  [Jingtrang] Validation timed out - using standard validation")
-            except Exception as e:
-                # If jingtrang fails, just use standard validation
-                pass
-                
-        except Exception as e:
-            # Silently fail - jingtrang is optional enhancement
-            pass
-        
-        return issues
-    
+
     def check_data_structure(self, content):
         """Check for proper data tag structure"""
         issues = []
-        
+
         # Check if XML has proper odoo/data structure
         if '<odoo>' in content:
             # Accept <data> with or without attributes (e.g., <data noupdate="1">)
@@ -519,36 +458,31 @@ class ComprehensiveValidator:
                 # Check if there are records that should be in data tags
                 if any(tag in content for tag in ['<record', '<menuitem', '<act_window']):
                     issues.append("⚠️  Records found without <data> wrapper - may cause schema issues")
-        
+
         return issues
-    
+
     def validate_file(self, file_path):
         """Validate a single XML file"""
         issues = []
-        
+
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             # Run all validation checks
             xml_issues = self.validate_xml_structure(file_path, content)
             issues.extend(xml_issues)
-            
+
         except Exception as e:
             issues.append(f"❌ Failed to read file: {e}")
-        
+
         return issues
-    
+
     def validate_all_files(self):
         """Validate all XML files in the records_management module"""
         print("🔍 COMPREHENSIVE RECORDS MANAGEMENT VALIDATOR")
         print("=" * 60)
         print("🎯 Enhanced to catch XML structural and formatting issues")
-        # Show jingtrang status for enhanced error messages
-        if JINGTRANG_AVAILABLE:
-            print("✅ Jingtrang available - XML validation will include enhanced error messages")
-        else:
-            print("ℹ️  Jingtrang not installed - using standard XML validation (install with: pip install jingtrang)")
         print()
         # Collect local model names once
         self.collect_local_model_names()
@@ -556,10 +490,10 @@ class ComprehensiveValidator:
             print(f"📚 Local models collected: {len(self.local_models)}")
         else:
             print("📚 Local models collected: 0 (skipping res_model cross-check)")
-        
+
         # Find all XML files
         xml_files = list(Path("records_management").rglob("*.xml"))
-        
+
         if not xml_files:
             print("❌ No XML files found in records_management/")
             return 1
@@ -567,6 +501,18 @@ class ComprehensiveValidator:
         # Pre-collect all action xml ids across module for menu cross-checks
         self.collect_action_xml_ids(xml_files)
         print(f"🧭 Action XML IDs collected: {len(self.action_xml_ids)}")
+
+        # Initialize XML Schema Validator with jingtrang if available
+        if XML_SCHEMA_VALIDATOR_AVAILABLE:
+            schema_validator = OdooXMLSchemaValidator()
+            if schema_validator.jingtrang_available:
+                print("✅ jingtrang XML schema validator active (enhanced error messages)")
+            else:
+                print("⚠️  Using lxml for XML validation (install jingtrang for enhanced messages)")
+        else:
+            schema_validator = None
+            print("⚠️  XML Schema Validator not available - skipping enhanced validation")
+
         # Detect duplicate cron ids BEFORE per-file validation so they surface early
         self.detect_duplicate_cron_ids(xml_files)
         duplicate_cron_count = len(self._duplicate_cron_issues)
@@ -578,21 +524,29 @@ class ComprehensiveValidator:
             for issue in self._duplicate_cron_issues:
                 print(f"      {issue}")
             print()
-        
+
         self.total_files = len(xml_files)
         print(f"📊 Validating {self.total_files} XML files...")
         print()
-        
+
         files_with_issues = []
-        
+
         for xml_file in xml_files:
             issues = self.validate_file(xml_file)
-            
+
+            # Add XML Schema validation if available
+            schema_issues = []
+            if schema_validator:
+                schema_result = schema_validator.validate_odoo_xml_file(Path(xml_file))
+                if not schema_result['valid']:
+                    schema_issues = schema_result['errors']
+                    issues.extend(schema_issues)
+
             if issues:
                 self.files_with_issues += 1
                 self.total_issues += len(issues)
                 files_with_issues.append((xml_file, issues))
-                
+
                 print(f"📄 {xml_file}")
                 print("🎯 Status: ❌ ISSUES FOUND")
                 for issue in issues:
@@ -604,7 +558,7 @@ class ComprehensiveValidator:
                 print("🎯 Status: ✅ PASSED")
                 print("   ✅ All validations passed!")
                 print()
-        
+
         # Run nested sublist field existence validator (catch cross-model nested list field errors)
         nested_tool = Path("development-tools/validation-tools/nested_sublist_field_validator.py")
         nested_issues = 0
@@ -658,10 +612,10 @@ class ComprehensiveValidator:
             print(f"   • Missing hierarchy view warnings: {self.missing_hierarchy_view_warnings}")
         if nested_issues:
             print(f"   • Nested sublist field errors: {nested_issues}")
-        
+
         if self.total_issues > 0:
             print(f"\n⚠️  {self.total_issues} issues need to be resolved before deployment")
-            
+
             # Show most common issue types
             issue_types = defaultdict(int)
             for _, issues in files_with_issues:
@@ -678,7 +632,7 @@ class ComprehensiveValidator:
                         issue_types["XML parse errors"] += 1
                     else:
                         issue_types["Other issues"] += 1
-            
+
             if issue_types:
                 print("\n📈 Issue breakdown:")
                 for issue_type, count in sorted(issue_types.items(), key=lambda x: x[1], reverse=True):
@@ -691,7 +645,7 @@ class ComprehensiveValidator:
             print("\n⚠️  NON-BLOCKING WARNINGS")
             for w in self.global_warnings:
                 print(f"   {w}")
-        
+
         return self.total_issues
 
     # ---------------- Additional Modernization Checks -----------------
@@ -708,15 +662,15 @@ class ComprehensiveValidator:
             return []
         # Avoid false positives inside comments by naive exclusion of <!-- ... --> blocks
         stripped = re.sub(r'<!--.*?-->', '', content, flags=re.DOTALL)
-        
+
         # Check if this is a technical fallback view with priority=0
         # These are required for One2many fallback and should not be flagged
         # Note: We no longer check for type='tree' since Odoo 18 removed it as valid view type
         has_priority_zero = 'priority" eval="0"' in content or 'priority">0</field>' in content
-        
+
         if has_priority_zero:
             return []
-        
+
         matches = re.findall(r'<tree\b', stripped)
         if not matches:
             return []
