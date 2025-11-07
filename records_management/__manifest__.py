@@ -160,7 +160,6 @@
         "views/naid_compliance_checklist_views.xml",
         "views/naid_compliance_policy_views.xml",
         "views/naid_custody_views.xml",
-        "views/chain_of_custody_event_views.xml",
         "views/naid_compliance_views.xml",
         "views/bin_unlock_service_views.xml",
         "views/approval_history_views.xml",
@@ -173,10 +172,7 @@
         "views/customer_inventory_report_views.xml",
         "views/destruction_event_views.xml",
         "views/destruction_certificate_views.xml",
-        "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_destruction_views.xml",
-        "views/inventory_item_retrieval_views.xml",
-        "views/inventory_item_type_views.xml",
         "views/location_group_views.xml",
         "views/maintenance_request_views.xml",
         "views/naid_certificate_views.xml",
@@ -218,21 +214,12 @@
         "views/records_management_bale_views.xml",
         "views/records_policy_version_views.xml",
         "views/records_promotional_discount_views.xml",
-        "views/records_request_line_views.xml",
-        "views/records_request_type_views.xml",
-        "views/records_request_views.xml",
         "views/records_retention_policy_views.xml",
         "views/records_retention_rule_views.xml",
         "views/records_retrieval_order_views.xml",
         "views/records_security_audit_views.xml",
         "views/records_series_views.xml",
         "views/records_service_type_views.xml",
-        "views/records_survey_user_input_views.xml",
-        "views/records_tag_category_views.xml",
-        "views/records_tag_views.xml",
-        "views/records_usage_tracking_views.xml",
-        "views/revenue_analytic_views.xml",
-        "views/service_item_views.xml",
         "views/shredding_service_photo_views.xml",
         "views/document_retrieval_metrics_views.xml",
         "views/revenue_forecast_line_views.xml",
@@ -267,6 +254,15 @@
         # ============================================================================
         "views/records_management_root_menus.xml",
         # ============================================================================
+        # VIEWS WITH MENUITEMS: Must load AFTER root_menus, BEFORE child menus
+        # These views define menuitems that reference parent menus defined in root_menus
+        # ============================================================================
+        "views/chain_of_custody_event_views.xml",
+        "views/custody_transfer_event_views.xml",
+        "views/inventory_adjustment_reason_views.xml",
+        "views/inventory_item_type_views.xml",
+        "views/inventory_item_views.xml",
+        # ============================================================================
         # CHILD MENUS: Must load AFTER root_menus, BEFORE views reference them
         # These define all child menus that view files will reference
         # ============================================================================
@@ -274,20 +270,6 @@
         "views/service_item_menus.xml",
         "views/document_retrieval_menus.xml",
         "views/records_retrieval_work_order_menus.xml",
-        # ============================================================================
-        # VIEWS WITH MENUITEMS: Already loaded above in PURE VIEWS section
-        # These files have menuitems but are already imported earlier:
-        # - chain_of_custody_event_views.xml
-        # - inventory_adjustment_reason_views.xml
-        # - inventory_item_type_views.xml
-        # - inventory_item_views.xml
-        # - records_request_line_views.xml
-        # - records_request_type_views.xml
-        # - records_request_views.xml
-        # - records_retention_policy_views.xml
-        # - records_retrieval_order_views.xml
-        # - records_series_views.xml
-        # ============================================================================
         # ============================================================================
         # TEMPLATES: Load after everything else
         # ============================================================================
