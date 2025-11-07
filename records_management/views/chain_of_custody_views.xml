@@ -150,5 +150,99 @@
             </field>
         </record>
         <!-- NOTE: action_chain_of_custody and action_chain_of_custody_customer moved to chain_of_custody_actions.xml (loads earlier, before root menus) -->
+        <!-- Here we enhance those actions with search view references and context now that views are defined -->
+        <record id="action_chain_of_custody" model="ir.actions.act_window">
+            <field name="search_view_id" ref="chain_of_custody_view_search" />
+            <field name="context">{'search_default_draft': 1, 'search_default_in_progress': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-exchange"/> No chain of custody transfers yet!
+                </p>
+                <p>
+                    <b>⚠️ Prerequisites for custody transfers:</b>
+                </p>
+                <ul>
+                    <li>✓ <b>Custodians Defined</b> - Go to: <i>Settings &gt; Users</i> (assign users as authorized custodians)</li>
+                    <li>✓ <b>Locations Setup</b> - Go to: <i>Configuration &gt; Master Data &gt; Storage Locations</i></li>
+                    <li>✓ <b>Documents/Containers</b> - Must have items ready to transfer in the system</li>
+                    <li>✓ <b>Witness Available</b> - Optional but recommended for high-security transfers</li>
+                </ul>
+                <p>
+                    <b>📋 Understanding Chain of Custody:</b>
+                </p>
+                <p>
+                    Chain of Custody provides a complete, <b>NAID AAA compliant audit trail</b> for every 
+                    document and container transfer. This ensures accountability, security, and regulatory 
+                    compliance by tracking who, what, when, where, and why for every custody change.
+                </p>
+                <p>
+                    <b>🎯 To create a custody transfer:</b>
+                </p>
+                <ol>
+                    <li>Click the <b>New</b> button above</li>
+                    <li>System auto-generates <b>Transfer Name</b> (e.g., "COC-2025-001")</li>
+                    <li>Set <b>Transfer Date</b> (when physical custody changes)</li>
+                    <li>Select <b>Customer</b> and <b>Department</b> (if applicable)</li>
+                    <li>Assign custodians:
+                        <ul>
+                            <li><b>From Custodian:</b> Current person responsible</li>
+                            <li><b>To Custodian:</b> New person taking responsibility</li>
+                            <li><b>Witness:</b> Optional third party to verify transfer</li>
+                        </ul>
+                    </li>
+                    <li>Specify locations:
+                        <ul>
+                            <li><b>From Location:</b> Current storage location</li>
+                            <li><b>To Location:</b> Destination location</li>
+                        </ul>
+                    </li>
+                    <li>Add items being transferred:
+                        <ul>
+                            <li><b>Documents:</b> Individual document records</li>
+                            <li><b>Containers:</b> Entire containers (includes all contents)</li>
+                        </ul>
+                    </li>
+                    <li>Add transfer <b>Notes</b> (reason, special instructions, conditions)</li>
+                    <li>Click <b>Start</b> to initiate the transfer (locks the record)</li>
+                    <li>When physical transfer is complete, click <b>Complete</b></li>
+                </ol>
+                <p>
+                    <b>📊 Custody Transfer States:</b>
+                </p>
+                <ul>
+                    <li><b>Draft:</b> Transfer being planned, can be edited</li>
+                    <li><b>In Progress:</b> Transfer started, physical movement underway</li>
+                    <li><b>Completed:</b> Transfer confirmed, custody officially changed</li>
+                    <li><b>Cancelled:</b> Transfer aborted (items remain with original custodian)</li>
+                </ul>
+                <p>
+                    <b>🚀 NAID AAA Compliance Features:</b><br/>
+                    • Complete audit trail for every custody change<br/>
+                    • Timestamped custody events with user tracking<br/>
+                    • Multi-party verification (from, to, witness)<br/>
+                    • Location tracking (origin and destination)<br/>
+                    • Immutable event log for regulatory compliance<br/>
+                    • Digital signatures for high-security transfers<br/>
+                    • Integration with NAID audit logs<br/>
+                    • Real-time status tracking and notifications
+                </p>
+                <p>
+                    <b>💡 Best Practice:</b> Always specify both custodians and add detailed notes explaining the reason for transfer. Use <b>Witness</b> for high-value or sensitive transfers.
+                </p>
+            </field>
+        </record>
+        <record id="action_chain_of_custody_customer" model="ir.actions.act_window">
+            <field name="search_view_id" ref="chain_of_custody_view_search" />
+            <field name="domain">[('partner_id', '=', active_id)]</field>
+            <field name="context">{'default_partner_id': active_id, 'search_default_draft': 1, 'search_default_in_progress': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No chain of custody records found for this customer.
+                </p>
+                <p>
+                    Create a new transfer record to track document and container movements.
+                </p>
+            </field>
+        </record>
     </data>
 </odoo>
