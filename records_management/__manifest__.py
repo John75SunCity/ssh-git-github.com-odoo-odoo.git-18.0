@@ -275,36 +275,19 @@
         "views/document_retrieval_menus.xml",
         "views/records_retrieval_work_order_menus.xml",
         # ============================================================================
-        # VIEWS WITH MENUITEMS: Must load AFTER ALL menus are defined
+        # VIEWS WITH MENUITEMS: Already loaded above in PURE VIEWS section
+        # These files have menuitems but are already imported earlier:
+        # - chain_of_custody_event_views.xml
+        # - inventory_adjustment_reason_views.xml
+        # - inventory_item_type_views.xml
+        # - inventory_item_views.xml
+        # - records_request_line_views.xml
+        # - records_request_type_views.xml
+        # - records_request_views.xml
+        # - records_retention_policy_views.xml
+        # - records_retrieval_order_views.xml
+        # - records_series_views.xml
         # ============================================================================
-        "views/advanced_billing_contact_views.xml",
-        "views/advanced_billing_profile_views.xml",
-        "views/bin_barcode_inventory_views.xml",
-        "views/chain_of_custody_event_views.xml",
-        "views/custody_transfer_event_views.xml",
-        "views/inventory_adjustment_reason_views.xml",
-        "views/inventory_item_location_transfer_views.xml",
-        "views/inventory_item_profile_views.xml",
-        "views/inventory_item_type_views.xml",
-        "views/inventory_item_views.xml",
-        "views/paper_load_shipment_views.xml",
-        "views/records_bulk_user_import_views.xml",
-        "views/records_category_views.xml",
-        "views/records_department_billing_approval_views.xml",
-        "views/records_request_line_views.xml",
-        "views/records_request_type_views.xml",
-        "views/records_request_views.xml",
-        "views/records_retention_policy_views.xml",
-        "views/records_retrieval_order_views.xml",
-        "views/records_series_views.xml",
-        "views/records_storage_department_user_views.xml",
-        "views/records_work_vehicle_views.xml",
-        "views/rm_module_configurator_views.xml",
-        "views/temp_inventory_views.xml",
-        "views/system_diagram_data_views.xml",
-        "views/hard_drive_scan_wizard_line_views.xml",
-        "views/mobile_bin_key_wizard_views.xml",
-        "views/system_flowchart_wizard_views.xml",
         # ============================================================================
         # TEMPLATES: Load after everything else
         # ============================================================================
