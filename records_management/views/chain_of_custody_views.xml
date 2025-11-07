@@ -149,9 +149,11 @@
                 </search>
             </field>
         </record>
-        <!-- NOTE: action_chain_of_custody and action_chain_of_custody_customer moved to chain_of_custody_actions.xml (loads earlier, before root menus) -->
-        <!-- Here we enhance those actions with search view references and context now that views are defined -->
+        <!-- Complete action definitions: All fields required by root menus -->
         <record id="action_chain_of_custody" model="ir.actions.act_window">
+            <field name="name">Chain of Custody</field>
+            <field name="res_model">chain.of.custody</field>
+            <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="chain_of_custody_view_search" />
             <field name="context">{'search_default_draft': 1, 'search_default_in_progress': 1}</field>
             <field name="help" type="html">
@@ -171,8 +173,8 @@
                     <b>📋 Understanding Chain of Custody:</b>
                 </p>
                 <p>
-                    Chain of Custody provides a complete, <b>NAID AAA compliant audit trail</b> for every 
-                    document and container transfer. This ensures accountability, security, and regulatory 
+                    Chain of Custody provides a complete, <b>NAID AAA compliant audit trail</b> for every
+                    document and container transfer. This ensures accountability, security, and regulatory
                     compliance by tracking who, what, when, where, and why for every custody change.
                 </p>
                 <p>
@@ -232,6 +234,9 @@
             </field>
         </record>
         <record id="action_chain_of_custody_customer" model="ir.actions.act_window">
+            <field name="name">Chain of Custody</field>
+            <field name="res_model">chain.of.custody</field>
+            <field name="view_mode">kanban,list,form</field>
             <field name="search_view_id" ref="chain_of_custody_view_search" />
             <field name="domain">[('partner_id', '=', active_id)]</field>
             <field name="context">{'default_partner_id': active_id, 'search_default_draft': 1, 'search_default_in_progress': 1}</field>

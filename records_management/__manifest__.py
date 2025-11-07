@@ -68,15 +68,6 @@
         "security/portal_temp_inventory_rules.xml",
         "security/ir.model.access.csv",
         # ============================================================================
-        # CRITICAL EARLY ACTIONS: Actions referenced by root menus must load FIRST
-        # ============================================================================
-        "views/chain_of_custody_actions.xml",
-        # ============================================================================
-        # ROOT MENUS: Parent-only menus must load EARLY before any child references
-        # These were extracted from records_management_menus.xml in commit daa1ae0e
-        # ============================================================================
-        "views/records_management_root_menus.xml",
-        # ============================================================================
         # CORE SEQUENCES: Must load before any records using them
         # ============================================================================
         "data/ir_sequence_data.xml",
@@ -286,7 +277,12 @@
         "views/res_partner_key_restriction_views.xml",
         "views/res_users_records_profile_views.xml",
         # ============================================================================
-        # MENU STRUCTURE: ALL MENUS LOAD LAST after every action/view is defined
+        # ROOT MENUS: Parent-only menus must load AFTER all views with actions defined
+        # These define the base menu structure that child menus reference
+        # ============================================================================
+        "views/records_management_root_menus.xml",
+        # ============================================================================
+        # MENU STRUCTURE: ALL CHILD MENUS LOAD after root menus and every action/view
         # Child menuitems reference parents from records_management_root_menus.xml
         # and actions from views above. Parent menus loaded early, children loaded last.
         # ============================================================================
