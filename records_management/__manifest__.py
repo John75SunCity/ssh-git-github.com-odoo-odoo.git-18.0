@@ -166,6 +166,12 @@
         "views/advanced_billing_line_form_views.xml",
         "views/advanced_billing_line_search_views.xml",
         "views/advanced_billing_line_tree_views.xml",
+        "views/barcode_generation_history_views.xml",
+        "views/barcode_models_enhanced_views.xml",
+        "views/barcode_pricing_tier_views.xml",
+        "views/barcode_product_views.xml",
+        "views/barcode_seasonal_pricing_views.xml",
+        "views/barcode_storage_box_views.xml",
         "views/customer_negotiated_rate_views.xml",
         "views/base_rate_views.xml",
         "views/billing_period_views.xml",
@@ -266,6 +272,7 @@
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_line_actions_menus.xml",
         "views/advanced_billing_profile_views.xml",
+        "views/barcode_menus.xml",
         # ============================================================================
         # CHILD MENUS: Must load AFTER root_menus, BEFORE views reference them
         # These define all child menus that view files will reference
