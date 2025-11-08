@@ -206,7 +206,7 @@
                                     <group name="barcode_input" string="Barcode Input">
                                         <field name="_barcode_scanned" readonly="1" help="Last scanned barcode value" />
                                     </group>
-                                    <group name="box_tracking" string="Box & Item Tracking">
+                                    <group name="box_tracking" string="Box &amp; Item Tracking">
                                         <field name="estimated_boxes" />
                                         <field name="actual_boxes" />
                                         <field name="estimated_weight" />
