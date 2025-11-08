@@ -101,54 +101,5 @@ invisible="records_service_type == False"/>
             </xpath>
         </field>
         </record>
-
-    <!-- Account Move Line Graph View Extension for Records Management -->
-    <record id="account_move_line_view_graph" model="ir.ui.view">
-        <field name="name">account.move.line.graph.inherit.records</field>
-        <field name="model">account.move.line</field>
-        <field name="inherit_id" ref="account.view_move_line_graph"/>
-        <field name="arch" type="xml">
-            <!-- Add Records Management dimensions -->
-            <xpath expr="//graph" position="attributes">
-                <attribute name="sample">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='account_id']" position="after">
-                <field name="records_service_type" type="row"/>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- Account Move Line Pivot View Extension for Records Management -->
-    <record id="account_move_line_view_pivot" model="ir.ui.view">
-        <field name="name">account.move.line.pivot.inherit.records</field>
-        <field name="model">account.move.line</field>
-        <field name="inherit_id" ref="account.view_move_line_pivot"/>
-        <field name="arch" type="xml">
-            <!-- Add Records Management pivot dimensions -->
-            <xpath expr="//pivot" position="attributes">
-                <attribute name="sample">1</attribute>
-            </xpath>
-            <xpath expr="//field[@name='account_id']" position="after">
-                <field name="records_service_type" type="row"/>
-                <field name="container_count" type="measure"/>
-                <field name="shredding_weight_lbs" type="measure"/>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- Account Move Line Calendar View Extension for Records Management -->
-    <record id="account_move_line_view_calendar" model="ir.ui.view">
-        <field name="name">account.move.line.calendar.inherit.records</field>
-        <field name="model">account.move.line</field>
-        <field name="inherit_id" ref="account.view_move_line_calendar"/>
-        <field name="arch" type="xml">
-            <!-- Enhance calendar with Records Management information -->
-            <xpath expr="//calendar" position="attributes">
-                <attribute name="color">records_service_type</attribute>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- No changes required in this file. Ensure 'account' is in your manifest and installed. -->
     </data>
 </odoo>
