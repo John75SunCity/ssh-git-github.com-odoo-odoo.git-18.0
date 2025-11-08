@@ -34,8 +34,8 @@
                                         </div>
                                     </div>
                                     <div class="o_kanban_card_header_right">
-                                        <div class="badge badge-pill" t-att-title="record.priority.value">
-                                            <field name="priority" widget="priority" />
+                                        <div class="badge badge-pill">
+                                            <span t-out="record.state.value" />
                                         </div>
                                     </div>
                                 </div>
@@ -106,17 +106,14 @@
             <field name="name">pickup.route.stop.view.tree</field>
             <field name="model">pickup.route.stop</field>
             <field name="arch" type="xml">
-                <list decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'" decoration-danger="priority == 'urgent'">
+                <list decoration-info="state == 'planned'" decoration-warning="state == 'in_transit'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'" decoration-danger="priority == 'urgent'">
                     <field name="sequence" />
                     <field name="display_name" />
                     <field name="route_id" />
                     <field name="partner_id" />
-                    <field name="address" />
                     <field name="planned_arrival" />
                     <field name="actual_arrival" />
-                    <field name="estimated_duration" widget="float_time" />
-                    <field name="actual_duration" widget="float_time" />
-                    <field name="state" widget="badge" decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'" />
+                    <field name="state" widget="badge" />
                     <field name="priority" widget="priority" />
                     <field name="pickup_request_id" />
                     <field name="company_id" groups="base.group_multi_company" />
@@ -129,11 +126,11 @@
             <field name="arch" type="xml">
                 <form string="Pickup Route Stop">
                     <header>
-                        <button name="action_start_stop" type="object" string="Start Stop" class="btn-primary" invisible="state != 'pending'" />
-                        <button name="action_complete_stop" type="object" string="Complete Stop" class="btn-success" invisible="state != 'in_progress'" />
+                        <button name="action_mark_in_transit" type="object" string="Start Stop" class="btn-primary" invisible="state != 'planned'" />
+                        <button name="action_complete_stop" type="object" string="Complete Stop" class="btn-success" invisible="state != 'arrived'" />
                         <button name="action_skip_stop" type="object" string="Skip Stop" class="btn-secondary" invisible="state in ['completed', 'skipped']" />
-                        <button name="action_reset_to_pending" type="object" string="Reset to Pending" class="btn-secondary" invisible="state == 'pending'" />
-                        <field name="state" widget="statusbar" statusbar_visible="pending,in_progress,completed" />
+                        <button name="action_reschedule_stop" type="object" string="Reschedule" class="btn-secondary" invisible="state == 'planned'" />
+                        <field name="state" widget="statusbar" statusbar_visible="planned,in_transit,arrived,completed" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -151,9 +148,8 @@
                             </button>
                         </div>
                         <div class="oe_title">
-                            <label for="name" />
                             <h1>
-                                <field name="name" placeholder="Stop Name..." />
+                                <field name="display_name" />
                             </h1>
                         </div>
                         <group>
@@ -163,12 +159,11 @@
                                 <field name="partner_id" required="1" />
                                 <field name="pickup_request_id" />
                                 <field name="priority" />
-                                <field name="color" />
                             </group>
                             <group name="timing" string="Timing Information">
                                 <field name="planned_arrival" required="1" />
                                 <field name="actual_arrival" readonly="1" />
-                                <field name="estimated_duration" widget="float_time" />
+                                <field name="planned_duration" widget="float_time" />
                                 <field name="actual_duration" widget="float_time" readonly="1" />
                             </group>
                         </group>
@@ -177,15 +172,11 @@
                                 <group>
                                     <group name="address_info" string="Address Information">
                                         <field name="address" required="1" />
-                                        <field name="city" />
-                                        <field name="state_id" />
-                                        <field name="zip" />
-                                        <field name="country_id" />
                                     </group>
                                     <group name="location_coordinates" string="GPS Coordinates">
-                                        <field name="latitude" />
-                                        <field name="longitude" />
-                                        <field name="location_accuracy" />
+                                        <field name="gps_latitude" />
+                                        <field name="gps_longitude" />
+                                        <field name="distance" />
                                     </group>
                                 </group>
                             </page>
@@ -198,18 +189,16 @@
                                     </group>
                                     <group name="access_info" string="Access Information">
                                         <field name="access_instructions" />
-                                        <field name="special_requirements" />
+                                        <field name="special_instructions" />
                                         <field name="delivery_instructions" />
                                     </group>
                                 </group>
-                                <group name="items_info" string="Items Information">
-                                    <field name="estimated_boxes" />
-                                    <field name="actual_boxes" readonly="1" />
+                                <group name="items_info" string="Weight Information">
                                     <field name="estimated_weight" />
                                     <field name="actual_weight" readonly="1" />
                                 </group>
                             </page>
-                            <page string="Completion Details" name="completion" invisible="state in ['pending', 'in_progress']">
+                            <page string="Completion Details" name="completion" invisible="state in ['planned', 'in_transit']">
                                 <group>
                                     <group name="completion_info" string="Completion Information">
                                         <field name="completion_notes" />
@@ -219,7 +208,6 @@
                                     <group name="verification" string="Verification">
                                         <field name="photos_taken" />
                                         <field name="verification_code" />
-                                        <field name="barcode_scanned" />
                                     </group>
                                 </group>
                             </page>
@@ -233,7 +221,7 @@
                                     </group>
                                     <group name="company" string="Company Information">
                                         <field name="company_id" groups="base.group_multi_company" />
-                                        <field name="user_id" />
+                                        <field name="active" />
                                     </group>
                                 </group>
                             </page>

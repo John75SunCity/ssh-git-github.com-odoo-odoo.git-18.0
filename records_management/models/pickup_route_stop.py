@@ -40,6 +40,12 @@ class PickupRouteStop(models.Model):
         ('failed', 'Failed'),
         ('rescheduled', 'Rescheduled')
     ], string='Completion Status', default='pending')
+    priority = fields.Selection([
+        ('low', 'Low'),
+        ('normal', 'Normal'),
+        ('high', 'High'),
+        ('urgent', 'Urgent (Rush Service)')
+    ], string='Priority', default='normal', tracking=True, help="Service priority level for scheduling and routing")
     planned_duration = fields.Float(string='Planned Duration (hours)', digits=(4, 2))
     actual_duration = fields.Float(string='Actual Duration (hours)', compute='_compute_actual_duration', store=True)
     delay_minutes = fields.Float(string='Delay (minutes)', compute='_compute_delay', store=True)
