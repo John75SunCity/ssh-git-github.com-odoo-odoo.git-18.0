@@ -61,6 +61,13 @@ class ResPartner(models.Model):
 
     destruction_address_id = fields.Many2one(comodel_name='res.partner', string='Destruction Address')
 
+    negotiated_rates_count = fields.Integer(
+        string="Negotiated Rates Count",
+        compute='_compute_negotiated_rates_count',
+        store=True,
+        help="Number of active negotiated rates for this customer"
+    )
+
     # ============================================================================
     # TRANSITORY FIELD CONFIGURATION FIELDS (used by transitory_field_config_views.xml)
     # ============================================================================
@@ -447,6 +454,20 @@ class ResPartner(models.Model):
         for partner in self:
             partner.unlock_service_count = svc_count_map.get(partner.id, 0)
             partner.total_unlock_charges = svc_cost_map.get(partner.id, 0.0)
+
+    @api.depends('partner_id')
+    def _compute_negotiated_rates_count(self):
+        """Compute the count of active negotiated rates for this partner."""
+        if not self.exists():
+            return
+        rates_data = self.env['customer.negotiated.rate']._read_group(
+            [('partner_id', 'in', self.ids), ('state', '=', 'active')],
+            ['partner_id'],
+            ['__count']
+        )
+        rates_map = {d['partner_id'][0]: d['__count'] for d in rates_data}
+        for partner in self:
+            partner.negotiated_rates_count = rates_map.get(partner.id, 0)
 
     # ============================================================================
     # ACTION METHODS
