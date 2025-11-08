@@ -8,7 +8,7 @@
             <list string="Description">
                 <field name="name"/>
                 <field name="category"/>
-                <field name="description"/>
+                <field name="description_text"/>
                 <field name="active"/>
                 <field name="company_id"/>
             </list>
@@ -24,7 +24,7 @@
                     <group>
                         <field name="name"/>
                         <field name="category"/>
-                        <field name="description"/>
+                        <field name="description_text"/>
                         <field name="active"/>
                         <field name="company_id"/>
                     </group>

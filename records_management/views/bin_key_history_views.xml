@@ -84,7 +84,7 @@
                             <field name="event_type"/>
                         </span>
                         <br/>
-                        <i class="fa fa-calendar" aria-hidden="true"/>
+                        <i class="fa fa-calendar" aria-hidden="true" title="Event Date"/>
                         <field name="event_date"/>
                     </div>
                 </div>
