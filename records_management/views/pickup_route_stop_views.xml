@@ -29,7 +29,7 @@
                                             </strong>
                                         </div>
                                         <div class="o_secondary">
-                                            <i class="fa fa-map-marker" />
+                                            <i class="fa fa-map-marker" title="Location" />
                                             <field name="partner_id" />
                                         </div>
                                     </div>
@@ -134,19 +134,22 @@
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="action_view_pickup_request" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="pickup_request_id == False">
+                            <div class="o_field_widget o_stat_button" invisible="pickup_request_id == False">
                                 <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_text">View</span>
+                                    <span class="o_stat_value">
+                                        <field name="pickup_request_id" nolabel="1" />
+                                    </span>
                                     <span class="o_stat_text">Request</span>
                                 </div>
-                            </button>
-                            <button name="action_view_route" type="object" class="oe_stat_button" icon="fa-road">
+                            </div>
+                            <div class="o_field_widget o_stat_button">
                                 <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_text">View</span>
+                                    <span class="o_stat_value">
+                                        <field name="route_id" nolabel="1" />
+                                    </span>
                                     <span class="o_stat_text">Route</span>
                                 </div>
-                            </button>
-                        </div>
+                            </div>
                         <div class="oe_title">
                             <h1>
                                 <field name="display_name" />
