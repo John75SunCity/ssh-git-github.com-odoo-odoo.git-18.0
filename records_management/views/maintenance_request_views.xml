@@ -106,25 +106,26 @@
             <field name="priority">25</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="priority">
+                    <field name="name"/>
                     <field name="cost"/>
                     <field name="priority"/>
                     <field name="records_container_id"/>
                     <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_card">
-                                <div class="o_kanban_record_headings">
-                                    <h4 class="o_kanban_record_title">
-                                        <span t-field="record.name.value"/>
-                                    </h4>
+                        <t t-name="card">
+                            <div class="o_kanban_card">
+                                <div class="o_kanban_card_header">
+                                    <h5 class="o_kanban_card_title">
+                                        <t t-esc="record.name.value"/>
+                                    </h5>
                                 </div>
-                                <div class="o_kanban_record_body">
-                                    <span t-if="record.cost.raw_value" class="badge badge-info">
+                                <div class="o_kanban_card_body">
+                                    <span t-if="record.cost.raw_value" class="badge bg-info">
                                         <t t-esc="record.cost.value"/>
                                     </span>
-                                    <span t-attf-class="badge #{record.priority.raw_value == '3' and 'badge-danger' or record.priority.raw_value == '2' and 'badge-warning' or 'badge-success'}">
+                                    <span t-attf-class="badge #{record.priority.raw_value == '3' and 'bg-danger' or record.priority.raw_value == '2' and 'bg-warning' or 'bg-success'}">
                                         <t t-esc="record.priority.value"/>
                                     </span>
-                                    <span t-if="record.records_container_id.value" class="badge badge-secondary">
+                                    <span t-if="record.records_container_id.value" class="badge bg-secondary">
                                         Container: <t t-esc="record.records_container_id.value"/>
                                     </span>
                                 </div>

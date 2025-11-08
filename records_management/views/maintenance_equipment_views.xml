@@ -162,36 +162,37 @@
             <field name="priority">25</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="security_level">
+                    <field name="name"/>
                     <field name="shredding_capacity_per_hour"/>
                     <field name="security_level"/>
                     <field name="naid_certification_expiry"/>
                     <field name="cert_expiring_30d"/>
                     <field name="total_maintenance_cost"/>
                     <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_card">
-                                <div class="o_kanban_record_headings">
-                                    <h4 class="o_kanban_record_title">
-                                        <span t-field="record.name.value"/>
-                                    </h4>
+                        <t t-name="card">
+                            <div class="o_kanban_card">
+                                <div class="o_kanban_card_header">
+                                    <h5 class="o_kanban_card_title">
+                                        <t t-esc="record.name.value"/>
+                                    </h5>
                                 </div>
-                                <div class="o_kanban_record_body">
+                                <div class="o_kanban_card_body">
                                     <!-- NAID Certification Badge -->
-                                    <span t-if="record.naid_certification_expiry.raw_value" t-attf-class="badge #{record.cert_expiring_30d.raw_value and 'badge-warning' or 'badge-success'}">
+                                    <span t-if="record.naid_certification_expiry.raw_value" t-attf-class="badge #{record.cert_expiring_30d.raw_value and 'bg-warning' or 'bg-success'}">
                                         NAID: <t t-esc="record.naid_certification_expiry.value"/>
                                     </span>
 
                                     <!-- Security Level Badge -->
-                                    <span class="badge badge-info">
+                                    <span class="badge bg-info">
                                         <t t-esc="record.security_level.value"/>
                                     </span>
 
                                     <!-- Capacity Info -->
-                                    <span t-if="record.shredding_capacity_per_hour.raw_value" class="badge badge-primary">
+                                    <span t-if="record.shredding_capacity_per_hour.raw_value" class="badge bg-primary">
                                         <t t-esc="record.shredding_capacity_per_hour.value"/> lbs/hr
                                     </span>
                                 </div>
-                                <div class="o_kanban_record_foot">
+                                <div class="o_kanban_card_footer">
                                     <span class="text-muted">
                                         Cost: <t t-esc="record.total_maintenance_cost.value"/>
                                     </span>
