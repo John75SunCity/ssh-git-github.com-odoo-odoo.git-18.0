@@ -9,7 +9,7 @@
         <record id="maintenance_request_view_form" model="ir.ui.view">
             <field name="name">maintenance.request.form.inherit.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance.maintenance_request_view_form"/>
+            <field name="inherit_id" ref="maintenance_request_view_form"/>
             <field name="arch" type="xml">
                 <sheet position="inside">
                     <notebook>
@@ -27,7 +27,7 @@
                                 </group>
                             </group>
                         </page>
-                        
+
                         <!-- Records Management Integration Tab -->
                         <page string="Records Management" name="records_management">
                             <group>
@@ -40,7 +40,7 @@
                                 </group>
                             </group>
                         </page>
-                        
+
                         <!-- Additional Tracking Tab -->
                         <page string="Equipment &amp; Team" name="equipment_team">
                             <group>
@@ -59,7 +59,7 @@
         <record id="maintenance_request_view_tree" model="ir.ui.view">
             <field name="name">maintenance.request.tree.inherit.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance.maintenance_request_view_tree"/>
+            <field name="inherit_id" ref="maintenance_request_view_tree"/>
             <field name="arch" type="xml">
                 <field name="stage_id" position="after">
                     <field name="cost" widget="monetary" optional="show"/>
@@ -74,7 +74,7 @@
         <record id="maintenance_request_view_search" model="ir.ui.view">
             <field name="name">maintenance.request.search.inherit.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance.maintenance_request_view_search"/>
+            <field name="inherit_id" ref="maintenance_request_view_search"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="cost"/>
@@ -100,7 +100,7 @@
         <record id="maintenance_request_view_kanban" model="ir.ui.view">
             <field name="name">maintenance.request.kanban.inherit.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance.maintenance_request_view_kanban"/>
+            <field name="inherit_id" ref="maintenance_request_view_kanban"/>
             <field name="arch" type="xml">
                 <kanban position="inside">
                     <field name="cost"/>
@@ -119,12 +119,12 @@
                                     <span t-if="record.cost.raw_value" class="badge badge-info">
                                         <t t-esc="record.cost.value"/>
                                     </span>
-                                    
+
                                     <!-- Priority Badge -->
                                     <span t-attf-class="badge #{record.priority.raw_value == '3' and 'badge-danger' or record.priority.raw_value == '2' and 'badge-warning' or 'badge-success'}">
                                         <t t-esc="record.priority.value"/>
                                     </span>
-                                    
+
                                     <!-- Records Container Badge -->
                                     <span t-if="record.records_container_id.value" class="badge badge-secondary">
                                         Records: <t t-esc="record.records_container_id.value"/>
@@ -141,7 +141,7 @@
         <record id="maintenance_request_view_graph" model="ir.ui.view">
             <field name="name">maintenance.request.graph.inherit.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance.maintenance_request_view_graph"/>
+            <field name="inherit_id" ref="maintenance_request_view_graph"/>
             <field name="arch" type="xml">
                 <graph position="inside">
                     <field name="cost" type="measure"/>
@@ -154,7 +154,7 @@
         <record id="maintenance_request_view_pivot" model="ir.ui.view">
             <field name="name">maintenance.request.pivot.inherit.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance.maintenance_request_view_pivot"/>
+            <field name="inherit_id" ref="maintenance_request_view_pivot"/>
             <field name="arch" type="xml">
                 <pivot position="inside">
                     <field name="cost" type="measure"/>

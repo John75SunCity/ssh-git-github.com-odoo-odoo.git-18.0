@@ -5,7 +5,7 @@
         <record id="maintenance_team_view_form" model="ir.ui.view">
             <field name="name">maintenance.team.form.inherit.records</field>
             <field name="model">maintenance.team</field>
-            <field name="inherit_id" ref="maintenance.maintenance_team_view_form"/>
+            <field name="inherit_id" ref="maintenance_team_view_form"/>
             <field name="arch" type="xml">
                 <sheet position="inside">
                     <notebook>
@@ -37,7 +37,7 @@
         <record id="maintenance_team_view_tree" model="ir.ui.view">
             <field name="name">maintenance.team.tree.inherit.records</field>
             <field name="model">maintenance.team</field>
-            <field name="inherit_id" ref="maintenance.maintenance_team_view_tree"/>
+            <field name="inherit_id" ref="maintenance_team_view_tree"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="specialization" />
@@ -52,7 +52,7 @@
         <record id="maintenance_team_view_search" model="ir.ui.view">
             <field name="name">maintenance.team.search.inherit.records</field>
             <field name="model">maintenance.team</field>
-            <field name="inherit_id" ref="maintenance.maintenance_team_view_search"/>
+            <field name="inherit_id" ref="maintenance_team_view_search"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="specialization" />
@@ -77,7 +77,7 @@
         <record id="maintenance_team_view_kanban" model="ir.ui.view">
             <field name="name">maintenance.team.kanban.inherit.records</field>
             <field name="model">maintenance.team</field>
-            <field name="inherit_id" ref="maintenance.maintenance_team_view_kanban"/>
+            <field name="inherit_id" ref="maintenance_team_view_kanban"/>
             <field name="arch" type="xml">
                 <xpath expr="//div[hasclass('oe_kanban_details')]" position="inside">
                     <div class="o_kanban_tags_section">
@@ -97,7 +97,7 @@
         <record id="maintenance_team_view_graph" model="ir.ui.view">
             <field name="name">maintenance.team.graph.inherit.records</field>
             <field name="model">maintenance.team</field>
-            <field name="inherit_id" ref="maintenance.maintenance_team_view_graph"/>
+            <field name="inherit_id" ref="maintenance_team_view_graph"/>
             <field name="arch" type="xml">
                 <xpath expr="//graph" position="attributes">
                     <attribute name="sample">1</attribute>
@@ -112,7 +112,7 @@
         <record id="maintenance_team_view_pivot" model="ir.ui.view">
             <field name="name">maintenance.team.pivot.inherit.records</field>
             <field name="model">maintenance.team</field>
-            <field name="inherit_id" ref="maintenance.maintenance_team_view_pivot"/>
+            <field name="inherit_id" ref="maintenance_team_view_pivot"/>
             <field name="arch" type="xml">
                 <xpath expr="//pivot" position="attributes">
                     <attribute name="sample">1</attribute>

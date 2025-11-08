@@ -9,7 +9,7 @@
         <record id="maintenance_equipment_view_form" model="ir.ui.view">
             <field name="name">maintenance.equipment.form.inherit.records</field>
             <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_form"/>
+            <field name="inherit_id" ref="maintenance_equipment_view_form"/>
             <field name="arch" type="xml">
                 <sheet position="inside">
                     <notebook>
@@ -101,7 +101,7 @@
         <record id="maintenance_equipment_view_tree" model="ir.ui.view">
             <field name="name">maintenance.equipment.tree.inherit.records</field>
             <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_tree"/>
+            <field name="inherit_id" ref="maintenance_equipment_view_tree"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="shredding_capacity_per_hour" optional="show"/>
@@ -118,7 +118,7 @@
         <record id="maintenance_equipment_view_search" model="ir.ui.view">
             <field name="name">maintenance.equipment.search.inherit.records</field>
             <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_search"/>
+            <field name="inherit_id" ref="maintenance_equipment_view_search"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
                     <field name="security_level"/>
@@ -144,7 +144,7 @@
         <record id="maintenance_equipment_view_kanban" model="ir.ui.view">
             <field name="name">maintenance.equipment.kanban.inherit.records</field>
             <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_kanban"/>
+            <field name="inherit_id" ref="maintenance_equipment_view_kanban"/>
             <field name="arch" type="xml">
                 <kanban position="inside">
                     <field name="shredding_capacity_per_hour"/>
@@ -192,7 +192,7 @@
         <record id="maintenance_equipment_view_graph" model="ir.ui.view">
             <field name="name">maintenance.equipment.graph.inherit.records</field>
             <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_graph"/>
+            <field name="inherit_id" ref="maintenance_equipment_view_graph"/>
             <field name="arch" type="xml">
                 <graph position="inside">
                     <field name="shredding_capacity_per_hour" type="measure"/>
@@ -206,7 +206,7 @@
         <record id="maintenance_equipment_view_pivot" model="ir.ui.view">
             <field name="name">maintenance.equipment.pivot.inherit.records</field>
             <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_pivot"/>
+            <field name="inherit_id" ref="maintenance_equipment_view_pivot"/>
             <field name="arch" type="xml">
                 <pivot position="inside">
                     <field name="shredding_capacity_per_hour" type="measure"/>
