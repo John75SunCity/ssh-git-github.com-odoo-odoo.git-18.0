@@ -58,30 +58,6 @@
     </field>
     </record>
 
-<!-- HR Employee Kanban View Extension for Records Management -->
-    <record id="hr_employee_view_kanban" model="ir.ui.view">
-        <field name="name">hr.employee.kanban.inherit.records</field>
-        <field name="model">hr.employee</field>
-        <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
-        <field name="arch" type="xml">
-        <xpath expr="//div[contains(@class,'oe_kanban_details')]" position="inside">
-        <div class="o_kanban_tags_section">
-<span t-if="record.records_department_id.raw_value" class="badge badge-info">
-    <i class="fa fa-archive"/>
-        <field name="records_department_id"/>
-</span>
-<span t-if="record.naid_certified.raw_value" class="badge badge-success">
-    <i class="fa fa-certificate"/>
-NAID Certified
-</span>
-<span t-if="record.records_access_level.raw_value and record.records_access_level.raw_value != 'none'" class="badge badge-primary">
-                    Access: <field name="records_access_level"/>
-</span>
-            </div>
-        </xpath>
-    </field>
-    </record>
-
 <!-- HR Employee Graph View for Records Management Analytics -->
     <record id="hr_employee_view_graph" model="ir.ui.view">
         <field name="name">hr.employee.view.graph.records</field>
