@@ -6,10 +6,18 @@
         <field name="name">mobile.photo.view.tree</field>
         <field name="model">mobile.photo</field>
         <field name="arch" type="xml">
-        <list>
-        <field name="name"/>
-</list>
-    </field>
+            <list string="Mobile Photos" sample="1">
+                <field name="name"/>
+                <field name="photo_date"/>
+                <field name="photo_type"/>
+                <field name="fsm_task_id"/>
+                <field name="container_id"/>
+                <field name="partner_id"/>
+                <field name="file_size"/>
+                <field name="activity_ids" widget="list_activity" optional="hide"/>
+                <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+            </list>
+        </field>
     </record>
 
 <!-- View mobile.photo form -->
@@ -27,56 +35,62 @@
                 </div>
                 <group>
                     <group name="photo_info" string="Photo Information">
-                        <field name="image_data" widget="image" options="{'size': [300, 300]}"/>
-                        <field name="capture_date"/>
-                        <field name="file_size" readonly="1"/>
-                        <field name="mime_type" readonly="1"/>
+                        <field name="photo_data" widget="image" options="{'size': [300, 300]}"/>
+                        <field name="photo_filename"/>
+                        <field name="photo_type"/>
+                        <field name="photo_date"/>
                     </group>
+                    <group name="file_info" string="File Information">
+                        <field name="file_size" readonly="1"/>
+                        <field name="resolution"/>
+                    </group>
+                </group>
+                
+                <group>
                     <group name="location_info" string="Location Information">
                         <field name="gps_latitude"/>
                         <field name="gps_longitude"/>
                         <field name="has_gps" invisible="1"/>
-                        <field name="gps_accuracy"/>
-                        <field name="location_name"/>
                     </group>
-                </group>
-                
-                <!-- Map Widget for GPS Location -->
-                <group string="📍 Location Map" invisible="not has_gps">
-                    <field name="gps_latitude" invisible="1"/>
-                    <field name="gps_longitude" invisible="1"/>
-                    <div class="row">
-                        <div class="col-12">
-                            <field name="gps_latitude" widget="map_widget" 
-                                   options="{'latitudeField': 'gps_latitude', 'longitudeField': 'gps_longitude'}" 
-                                   nolabel="1"/>
-                        </div>
-                    </div>
+                    <group name="device_info" string="Device Information">
+                        <field name="device_info"/>
+                    </group>
                 </group>
                 
                 <group>
-                    <group name="device_info" string="Device Information">
-                        <field name="device_model"/>
-                        <field name="device_os"/>
-                        <field name="app_version"/>
+                    <group name="relationships" string="Related Entities">
+                        <field name="fsm_task_id"/>
+                        <field name="work_order_reference"/>
+                        <field name="container_id"/>
+                        <field name="destruction_request_id"/>
+                        <field name="pickup_request_id"/>
+                        <field name="partner_id"/>
+                        <field name="bin_issue_id"/>
                     </group>
-                    <group name="metadata" string="Metadata">
-                        <field name="uploaded_by"/>
-                        <field name="upload_date"/>
-                        <field name="related_record_model"/>
-                        <field name="related_record_id"/>
+                </group>
+                
+                <group>
+                    <group name="compliance" string="Compliance">
+                        <field name="is_compliance_photo"/>
+                        <field name="compliance_notes"/>
                     </group>
                 </group>
                 
                 <notebook>
-                    <page string="Notes" name="notes">
-                        <field name="notes" placeholder="Additional notes about this photo..."/>
+                    <page string="Metadata" name="metadata">
+                        <group>
+                            <field name="wizard_reference" readonly="1"/>
+                            <field name="project_id" readonly="1"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
+                        </group>
                     </page>
                 </notebook>
             </sheet>
             <div class="oe_chatter">
                 <field name="message_follower_ids"/>
                 <field name="message_ids"/>
+                <field name="activity_ids"/>
             </div>
         </form>
     </field>
@@ -87,12 +101,25 @@
         <field name="name">mobile.photo.view.search</field>
         <field name="model">mobile.photo</field>
         <field name="arch" type="xml">
-        <search>
-            <group expand="1" string="Group By">
-                <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
-            </group>
-        </search>
-    </field>
+            <search>
+                <field name="name" string="Photo"/>
+                <field name="photo_type"/>
+                <field name="fsm_task_id"/>
+                <field name="container_id"/>
+                <field name="partner_id"/>
+                <field name="is_compliance_photo"/>
+                <separator/>
+                <filter string="Compliance Photos" name="compliance" domain="[('is_compliance_photo', '=', True)]"/>
+                <filter string="With GPS Data" name="with_gps" domain="[('has_gps', '=', True)]"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Photo Type" name="photo_type" domain="[]" context="{'group_by':'photo_type'}"/>
+                    <filter string="FSM Task" name="fsm_task_id" domain="[]" context="{'group_by':'fsm_task_id'}"/>
+                    <filter string="Photo Date" name="photo_date" domain="[]" context="{'group_by':'photo_date'}"/>
+                    <filter string="Customer" name="partner_id" domain="[]" context="{'group_by':'partner_id'}"/>
+                </group>
+            </search>
+        </field>
     </record>
 
 <!-- Action mobile.photo -->
