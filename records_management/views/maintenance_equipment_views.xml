@@ -21,7 +21,7 @@
                         </div>
                         <group>
                             <group string="Basic Information">
-                                <field name="category"/>
+                                <field name="name"/>
                                 <field name="technician_user_id"/>
                                 <field name="maintenance_team_id"/>
                             </group>
@@ -116,7 +116,7 @@
             <field name="arch" type="xml">
                 <list>
                     <field name="name"/>
-                    <field name="category"/>
+                    <field name="technician_user_id" optional="show"/>
                     <field name="shredding_capacity_per_hour" optional="show"/>
                     <field name="security_level" optional="show"/>
                     <field name="naid_certification_expiry" optional="show"/>
@@ -135,7 +135,7 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name" string="Equipment"/>
-                    <field name="category"/>
+                    <field name="technician_user_id"/>
                     <field name="security_level"/>
                     <field name="location_id"/>
                     <field name="naid_certification_expiry"/>
