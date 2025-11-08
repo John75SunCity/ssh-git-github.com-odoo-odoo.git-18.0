@@ -10,7 +10,6 @@
         <field name="arch" type="xml">
         <kanban sample="1" quick_create="false" class="o_kanban_small_column">
         <field name="name"/>
-        <field name="state"/>
         <field name="current_session_id"/>
         <field name="current_session_state"/>
         <field name="session_user_id"/>
@@ -29,9 +28,6 @@
                                 <strong class="o_kanban_record_title">
         <field name="name"/>
                                 </strong>
-                                <span class="float-end">
-        <field name="state" widget="label_selection" options="{'classes': {'active': 'success', 'inactive': 'secondary', 'deprecated': 'danger'}}"/>
-                                </span>
                             </div>
                             <span class="o_kanban_record_subtitle text-muted">
                                 🏪 <field name="company_id"/> | <field name="currency_id"/>
@@ -78,7 +74,7 @@
         <field name="name">pos.config.view.tree</field>
         <field name="model">pos.config</field>
         <field name="arch" type="xml">
-        <list string="POS Configuration Management" decoration-success="state=='active'" decoration-muted="state=='inactive'" decoration-danger="state=='deprecated'" multi_edit="1" sample="1">
+        <list string="POS Configuration Management" multi_edit="1" sample="1">
             <header>
                 <button name="action_activate" type="object" string="Activate"/>
                 <button name="action_deactivate" type="object" string="Deactivate"/>
@@ -92,7 +88,6 @@
         <field name="session_user_id" string="Current User"/>
         <field name="current_session_state" string="Session Status"/>
         <field name="last_session_closing_date" string="Last Closed" widget="datetime"/>
-        <field name="state" string="Status" widget="badge" decoration-success="state=='active'" decoration-muted="state=='inactive'" decoration-danger="state=='deprecated'"/>
         <field name="activity_exception_decoration" widget="activity_exception"/>
         </list>
     </field>
@@ -106,13 +101,6 @@
         <form string="POS Configuration">
             <header>
 <!-- Converted legacy states attributes to invisible expressions -->
-<button name="action_activate" string="Activate" type="object" class="btn-primary" invisible="state != 'inactive'"/>
-<button name="action_deactivate" string="Deactivate" type="object" class="btn-warning" invisible="state != 'active'"/>
-<button name="action_open_session" string="Open Session" type="object" class="btn-success" invisible="state != 'active'"/>
-<button name="action_close_session" string="Close Session" type="object" class="btn-danger" context="{'force_close': False}" invisible="state != 'active'"/>
-<button name="action_force_close_session" string="Force Close" type="object" class="btn-danger" context="{'force_close': True}" invisible="state != 'active'"/>
-
-        <field name="state" widget="statusbar" statusbar_visible="inactive,active,deprecated"/>
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
@@ -321,10 +309,6 @@
         <field name="pricelist_id" string="Pricelist"/>
         <field name="session_user_id" string="Current User"/>
 
-            <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
-            <filter string="Inactive" name="inactive" domain="[('state', '=', 'inactive')]"/>
-            <filter string="Deprecated" name="deprecated" domain="[('state', '=', 'deprecated')]"/>
-
             <separator/>
             <filter string="With Open Session" name="open_session" domain="[('current_session_id', '!=', False)]"/>
             <filter string="Walk-In Enabled" name="walk_in_enabled" domain="[('enable_walk_in_service', '=', True)]"/>
@@ -336,7 +320,6 @@
             <filter string="Today's Sales" name="today_sales" domain="[('current_session_id.start_at', '&amp;gt;=', datetime.datetime.combine(context_today, datetime.time.min))]"/>
 
             <group expand="0" string="Group By">
-                <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
                 <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
                 <filter string="Pricelist" name="group_pricelist" context="{'group_by': 'pricelist_id'}"/>
                 <filter string="Current User" name="group_user" context="{'group_by': 'session_user_id'}"/>
@@ -352,7 +335,6 @@
         <field name="arch" type="xml">
         <graph string="POS Performance" type="bar" sample="1">
         <field name="name" type="row"/>
-        <field name="state" type="col"/>
         <field name="total_sales" type="measure"/>
         </graph>
     </field>
@@ -365,7 +347,6 @@
         <field name="arch" type="xml">
         <pivot string="POS Analysis" sample="1">
         <field name="company_id" type="row"/>
-        <field name="state" type="col"/>
         <field name="total_sales" type="measure"/>
         <field name="order_count" type="measure"/>
         </pivot>
