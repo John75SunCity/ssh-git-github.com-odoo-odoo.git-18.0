@@ -97,16 +97,6 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,ready_for_pickup,loading,picked_up,invoiced,paid" />
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button name="action_view_bales" type="object" class="oe_stat_button" icon="fa-cubes" title="View Paper Bales">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="total_bales" />
-                                    </span>
-                                    <span class="o_stat_text">Paper Bales</span>
-                                </div>
-                            </button>
-                        </div>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" placeholder="Load Number" />
