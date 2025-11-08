@@ -9,7 +9,7 @@
             <field name="model">maintenance.team</field>
             <field name="inherit_id" ref="maintenance.maintenance_team_view_tree"/>
             <field name="arch" type="xml">
-                <xpath expr="//tree" position="inside">
+                <xpath expr="//list" position="inside">
                     <field name="specialization" optional="show"/>
                 </xpath>
             </field>
