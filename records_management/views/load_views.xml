@@ -9,14 +9,11 @@
                     <field name="name" />
                     <field name="state" />
                     <field name="total_weight" />
-                    <field name="bale_count" />
-                    <field name="market_price_per_ton" />
-                    <field name="estimated_revenue" />
+                    <field name="total_bales" />
                     <field name="load_date" />
-                    <field name="buyer_company" />
+                    <field name="buyer_id" />
                     <field name="activity_ids" />
-                    <field name="activity_state" />
-                    <progressbar field="activity_state" colors="{&quot;planned&quot;: &quot;success&quot;, &quot;today&quot;: &quot;warning&quot;, &quot;overdue&quot;: &quot;danger&quot;}" />
+                    <progressbar field="state" colors="{&quot;draft&quot;: &quot;secondary&quot;, &quot;loading&quot;: &quot;warning&quot;, &quot;ready_for_pickup&quot;: &quot;info&quot;, &quot;picked_up&quot;: &quot;success&quot;}" />
                     <templates>
                         <t t-name="card">
                             <div class="oe_kanban_global_click">
@@ -30,8 +27,8 @@
                                         </span>
                                     </div>
                                     <span class="o_kanban_record_subtitle text-muted">
-                                        <i class="fa fa-cog" />
-                                        <field name="bale_count" /> bales | <field name="buyer_company" />
+                                        <i class="fa fa-cubes" title="Bales"/>
+                                        <field name="total_bales" /> bales | <field name="buyer_id" />
                                     </span>
                                 </div>
                                 <div class="o_kanban_record_body">
@@ -39,13 +36,15 @@
                                         <div class="col-6">
                                             <strong>Weight:</strong>
                                             <field name="total_weight" widget="float" /> lbs<br />
-                                            <strong>Market Price:</strong> $<field name="market_price_per_ton" />/ton
-                                </div>
-                                        <div class="col-6">
-                                            <strong>Revenue:</strong> $<field name="estimated_revenue" widget="float" />
-                                            <br />
-                                            <strong>Load Date:</strong>
+                                            <strong>Date:</strong>
                                             <field name="load_date" widget="date" />
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Total Bales:</strong>
+                                            <field name="total_bales" />
+                                            <br />
+                                            <strong>Status:</strong>
+                                            <field name="state" />
                                         </div>
                                     </div>
                                     <div class="mt-2">
@@ -55,12 +54,12 @@
                                 <div class="o_kanban_record_bottom">
                                     <div class="oe_kanban_bottom_left">
                                         <span class="badge badge-pill badge-info">
-                                            <i class="fa fa-cog" />
+                                            <i class="fa fa-cog" title="Weight"/>
                                             <field name="total_weight" widget="float" /> lbs
-                                </span>
+                                        </span>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
-                                        <field name="activity_state" widget="kanban_activity" />
+                                        <field name="state" widget="label_selection" options="{'classes': {'draft': 'secondary', 'loading': 'warning', 'ready_for_pickup': 'info', 'picked_up': 'success'}}" />
                                     </div>
                                 </div>
                             </div>
