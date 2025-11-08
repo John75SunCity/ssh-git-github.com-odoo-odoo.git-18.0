@@ -1,87 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- View maintenance.team form -->
-    <record id="maintenance_team_view_form" model="ir.ui.view">
-        <field name="name">maintenance.team.view.form.inherit.records_management</field>
-        <field name="model">maintenance.team</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
+        <!-- Maintenance Team Form View Extension -->
+        <record id="maintenance_team_view_form" model="ir.ui.view">
+            <field name="name">maintenance.team.form.inherit.records</field>
+            <field name="model">maintenance.team</field>
+            <field name="inherit_id" ref="maintenance.maintenance_team_view_form"/>
+            <field name="arch" type="xml">
+                <sheet position="inside">
+                    <notebook>
+                        <page string="Records Management" name="records_management">
+                            <group>
+                                <group string="Specialization &amp; Department">
+                                    <field name="specialization" />
+                                    <field name="records_department_id" />
+                                </group>
+                                <group string="NAID Compliance">
+                                    <field name="naid_certified" widget="boolean_toggle" />
+                                    <field name="certification_level" invisible="naid_certified == False" />
+                                </group>
+                            </group>
+                            <group string="Service Locations">
+                                <field name="service_location_ids" nolabel="1" colspan="2" widget="many2many_tags" />
+                            </group>
+                            <group string="Performance Metrics">
+                                <field name="average_response_time" />
+                                <field name="average_resolution_time" />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </field>
+        </record>
 
+        <!-- Maintenance Team List View Extension -->
+        <record id="maintenance_team_view_tree" model="ir.ui.view">
+            <field name="name">maintenance.team.tree.inherit.records</field>
+            <field name="model">maintenance.team</field>
+            <field name="inherit_id" ref="maintenance.maintenance_team_view_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="specialization" />
+                    <field name="naid_certified" widget="boolean_toggle" />
+                    <field name="records_department_id" />
+                    <field name="average_response_time" />
+                </field>
+            </field>
+        </record>
 
-<!-- View maintenance.team tree -->
-        <record id="maintenance_team_view_list" model="ir.ui.view">
-        <field name="name">maintenance.team.view.list</field>
-        <field name="model">maintenance.team</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
+        <!-- Maintenance Team Search View Extension -->
+        <record id="maintenance_team_view_search" model="ir.ui.view">
+            <field name="name">maintenance.team.search.inherit.records</field>
+            <field name="model">maintenance.team</field>
+            <field name="inherit_id" ref="maintenance.maintenance_team_view_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="specialization" />
+                    <field name="records_department_id" />
+                    <field name="service_location_ids" />
+                </field>
+                <xpath expr="//filter[@name='archived']" position="after">
+                    <separator />
+                    <filter string="NAID Certified" name="naid_certified" domain="[('naid_certified', '=', True)]" />
+                    <filter string="Shredding Specialists" name="shredding_specialists" domain="[('specialization', '=', 'shredding')]" />
+                    <filter string="Baling Specialists" name="baling_specialists" domain="[('specialization', '=', 'baling')]" />
+                </xpath>
+                <xpath expr="//group[@expand='0']" position="inside">
+                    <filter string="Specialization" name="group_specialization" context="{'group_by': 'specialization'}" />
+                    <filter string="Department" name="group_department" context="{'group_by': 'records_department_id'}" />
+                    <filter string="NAID Certified" name="group_naid" context="{'group_by': 'naid_certified'}" />
+                </xpath>
+            </field>
+        </record>
 
+        <!-- Maintenance Team Kanban View Extension -->
+        <record id="maintenance_team_view_kanban" model="ir.ui.view">
+            <field name="name">maintenance.team.kanban.inherit.records</field>
+            <field name="model">maintenance.team</field>
+            <field name="inherit_id" ref="maintenance.maintenance_team_view_kanban"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('oe_kanban_details')]" position="inside">
+                    <div class="o_kanban_tags_section">
+                        <span t-if="record.naid_certified.raw_value" class="badge badge-success">
+                            <i class="fa fa-certificate" />
+                            NAID Certified
+                        </span>
+                        <span t-if="record.specialization.raw_value" class="badge badge-info">
+                            <field name="specialization" />
+                        </span>
+                    </div>
+                </xpath>
+            </field>
+        </record>
 
-<!-- View maintenance.team search -->
-    <record id="maintenance_team_view_search" model="ir.ui.view">
-        <field name="name">maintenance.team.view.search.inherit.records_management</field>
-        <field name="model">maintenance.team</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
+        <!-- Maintenance Team Graph View Extension -->
+        <record id="maintenance_team_view_graph" model="ir.ui.view">
+            <field name="name">maintenance.team.graph.inherit.records</field>
+            <field name="model">maintenance.team</field>
+            <field name="inherit_id" ref="maintenance.maintenance_team_view_graph"/>
+            <field name="arch" type="xml">
+                <xpath expr="//graph" position="attributes">
+                    <attribute name="sample">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="specialization" type="row" />
+                </xpath>
+            </field>
+        </record>
 
-
-<!-- View maintenance.team kanban -->
-    <record id="maintenance_team_view_kanban" model="ir.ui.view">
-        <field name="name">maintenance.team.view.kanban.inherit.records_management</field>
-        <field name="model">maintenance.team</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
-
-
-<!-- View maintenance.team graph -->
-    <record id="maintenance_team_view_graph" model="ir.ui.view">
-        <field name="name">maintenance.team.view.graph.inherit.records_management</field>
-        <field name="model">maintenance.team</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
-
-
-<!-- View maintenance.team pivot -->
-    <record id="maintenance_team_view_pivot" model="ir.ui.view">
-        <field name="name">maintenance.team.view.pivot.inherit.records_management</field>
-        <field name="model">maintenance.team</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
-
-
-<!-- View maintenance.team calendar -->
-    <record id="maintenance_team_view_calendar" model="ir.ui.view">
-        <field name="name">maintenance.team.view.calendar.inherit.records_management</field>
-        <field name="model">maintenance.team</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
+        <!-- Maintenance Team Pivot View Extension -->
+        <record id="maintenance_team_view_pivot" model="ir.ui.view">
+            <field name="name">maintenance.team.pivot.inherit.records</field>
+            <field name="model">maintenance.team</field>
+            <field name="inherit_id" ref="maintenance.maintenance_team_view_pivot"/>
+            <field name="arch" type="xml">
+                <xpath expr="//pivot" position="attributes">
+                    <attribute name="sample">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="specialization" type="row" />
+                    <field name="naid_certified" type="measure" />
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
