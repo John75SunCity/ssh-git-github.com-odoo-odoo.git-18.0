@@ -194,7 +194,7 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="Barcode & Scanning" name="barcode_scanning">
+                            <page string="Barcode &amp; Scanning" name="barcode_scanning">
                                 <group>
                                     <group name="barcode_setup" string="Barcode Configuration">
                                         <field name="barcode_nomenclature_id" />
