@@ -126,7 +126,7 @@
                         </group>
                         <notebook>
                             <page string="Load Items" name="load_items">
-                                <field name="bale_ids" mode="list,kanban">
+                                <field name="paper_bale_ids" mode="list,kanban">
                                     <list string="Paper Bales" editable="bottom">
                                         <field name="bale_number" />
                                         <field name="weight" sum="Total Weight" />
@@ -161,70 +161,25 @@
                                     </kanban>
                                 </field>
                             </page>
-                            <page string="Shipping and Transport" name="shipping">
+                            <page string="Weight Summary" name="weight_summary">
                                 <group>
-                                    <group string="Transport Details">
-                                        <field name="shipping_date" widget="date" />
-                                        <field name="delivery_date" widget="date" />
-                                        <field name="transport_company" />
-                                        <field name="driver_name" />
-                                        <field name="truck_license_plate" />
-                                        <field name="trailer_number" />
+                                    <group string="Total Weights">
+                                        <field name="total_weight" />
+                                        <field name="total_weight_wht" string="WHT Weight" />
+                                        <field name="total_weight_mix" string="MIX Weight" />
+                                        <field name="total_weight_occ" string="OCC Weight" />
                                     </group>
-                                    <group string="Delivery Information">
-                                        <field name="destination_address" />
-                                        <field name="delivery_contact" />
-                                        <field name="delivery_phone" />
-                                        <field name="special_delivery_instructions" />
-                                        <field name="loading_dock_requirements" />
+                                    <group string="Financial Information">
+                                        <field name="invoice_id" />
+                                        <field name="payment_status" />
+                                        <field name="currency_id" />
                                     </group>
                                 </group>
-                            </page>
-                            <page string="Documentation" name="documentation">
+                                <separator string="Manifest" />
                                 <group>
-                                    <group string=" Sales Documentation">
-                                        <field name="bill_of_lading" />
-                                        <field name="sales_contract_number" />
-                                        <field name="invoice_number" invisible="state != 'sold'" />
-                                        <field name="payment_terms" />
-                                    </group>
-                                    <group string=" Quality Documentation">
-                                        <field name="quality_certificate" />
-                                        <field name="weight_certificate" />
-                                        <field name="moisture_test_report" />
-                                        <field name="contamination_report" />
-                                    </group>
+                                    <field name="manifest_filename" />
+                                    <field name="manifest_document" widget="binary" filename="manifest_filename" />
                                 </group>
-                                <separator string="Load Photos" />
-                                <field name="photo_ids" mode="kanban">
-                                    <kanban>
-                                        <field name="name" />
-                                        <field name="image" />
-                                        <field name="photo_type" />
-                                        <templates>
-                                            <t t-name="card">
-                                                <div class="oe_kanban_global_click">
-                                                    <div class="o_kanban_image">
-                                                        <img t-att-src="kanban_image('load.photo', 'image', record.id.raw_value)" alt="Load Photo" />
-                                                    </div>
-                                                    <div class="oe_kanban_details">
-                                                        <field name="name" />
-                                                    </div>
-                                                </div>
-                                            </t>
-                                        </templates>
-                                    </kanban>
-                                </field>
-                            </page>
-                            <page string="Communication" name="communication">
-                                <field name="message_ids" mode="list">
-                                    <list string="Communications">
-                                        <field name="date" />
-                                        <field name="author_id" />
-                                        <field name="subject" />
-                                        <field name="message_type" />
-                                    </list>
-                                </field>
                             </page>
                         </notebook>
                     </sheet>
