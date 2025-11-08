@@ -255,6 +255,7 @@
         "views/res_partner_key_restriction_views.xml",
         "views/res_users_records_profile_views.xml",
         "views/records_retrieval_work_order_views.xml",
+        "views/rm_module_configurator_views.xml",
         # ============================================================================
         # ROOT MENUS: Parent-only menus must load AFTER all views with actions defined
         # These define the base menu structure that child menus reference
