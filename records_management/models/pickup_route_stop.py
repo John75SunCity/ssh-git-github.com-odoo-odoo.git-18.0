@@ -24,6 +24,10 @@ class PickupRouteStop(models.Model):
     actual_arrival = fields.Datetime(string='Actual Arrival', tracking=True)
     actual_departure = fields.Datetime(string='Actual Departure', tracking=True)
     address = fields.Text(string='Address')
+    city = fields.Char(string='City')
+    state_id = fields.Many2one(comodel_name='res.country.state', string='State/Province')
+    zip = fields.Char(string='Postal Code')
+    country_id = fields.Many2one(comodel_name='res.country', string='Country')
     gps_latitude = fields.Float(string='GPS Latitude', digits=(10, 6))
     gps_longitude = fields.Float(string='GPS Longitude', digits=(10, 6))
     distance = fields.Float(string='Distance (miles)', digits=(8, 2))
@@ -63,6 +67,16 @@ class PickupRouteStop(models.Model):
     estimated_duration = fields.Float(string='Estimated Duration (hours)', digits=(4, 2))
     estimated_weight = fields.Float(string='Estimated Weight (lbs)', digits=(8, 2))
     actual_weight = fields.Float(string='Actual Weight (lbs)', digits=(8, 2))
+    estimated_boxes = fields.Integer(string='Estimated Boxes')
+    actual_boxes = fields.Integer(string='Actual Boxes')
+    
+    # Barcode & Tracking
+    _barcode_scanned = fields.Char(string='Barcode Scanned', tracking=True, help='Last scanned barcode event')
+    scanned_product_id = fields.Many2one(comodel_name='product.product', string='Scanned Product', copy=False, help='Product identified from barcode scan')
+    scanned_location_id = fields.Many2one(comodel_name='stock.location', string='Scanned Location', copy=False, help='Inventory location scanned')
+    scanned_package_id = fields.Many2one(comodel_name='stock.package.type', string='Scanned Package Type', copy=False)
+    barcode_nomenclature_id = fields.Many2one(comodel_name='barcode.nomenclature', string='Barcode Nomenclature', help='Nomenclature for barcode pattern matching')
+    barcode_validation_enabled = fields.Boolean(string='Barcode Validation Enabled', default=True, help='Enable/disable barcode validation for this stop')
     
     # Service Information
     delivery_instructions = fields.Text(string='Delivery Instructions')
@@ -233,6 +247,77 @@ class PickupRouteStop(models.Model):
         self.ensure_one()
         self.write({"state": "planned", "completion_status": "rescheduled"})
         self.message_post(body=_("Stop rescheduled."))
+
+    # ============================================================================
+    # BARCODE PROCESSING METHODS
+    # ============================================================================
+    def action_process_barcode(self, barcode_str):
+        """
+        Process scanned barcode and identify what was scanned.
+        Supports: products, locations, package types
+        """
+        self.ensure_one()
+        if not barcode_str:
+            raise UserError(_("No barcode provided."))
+        
+        barcode_str = barcode_str.strip()
+        
+        # Store raw barcode
+        self.write({"_barcode_scanned": barcode_str})
+        
+        # Try to match against products first
+        product = self.env['product.product'].search([
+            '|',
+            ('barcode', '=', barcode_str),
+            ('product_tmpl_id.barcode', '=', barcode_str)
+        ], limit=1)
+        
+        if product:
+            self.write({"scanned_product_id": product.id})
+            return {'type': 'product', 'record': product}
+        
+        # Try to match location
+        location = self.env['stock.location'].search([
+            ('barcode', '=', barcode_str)
+        ], limit=1)
+        
+        if location:
+            self.write({"scanned_location_id": location.id})
+            return {'type': 'location', 'record': location}
+        
+        # Try to match package type
+        package_type = self.env['stock.package.type'].search([
+            ('barcode', '=', barcode_str)
+        ], limit=1)
+        
+        if package_type:
+            self.write({"scanned_package_id": package_type.id})
+            return {'type': 'package', 'record': package_type}
+        
+        # If no match found
+        return {'type': 'unknown', 'record': None}
+
+    def action_validate_barcode(self):
+        """Validate all barcodes on this stop against current system state"""
+        self.ensure_one()
+        if not self.barcode_validation_enabled:
+            return {'status': 'disabled'}
+        
+        results = {'valid': 0, 'invalid': 0, 'unmatched': 0}
+        
+        # Validate product barcode if present
+        if self.scanned_product_id:
+            results['valid'] += 1
+        
+        # Validate location barcode if present
+        if self.scanned_location_id:
+            results['valid'] += 1
+        
+        # Check if raw barcode is still valid
+        if self._barcode_scanned and not self.scanned_product_id and not self.scanned_location_id and not self.scanned_package_id:
+            results['unmatched'] += 1
+        
+        return results
 
     # ============================================================================
     # VALIDATION METHODS

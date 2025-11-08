@@ -193,9 +193,37 @@
                                         <field name="delivery_instructions" />
                                     </group>
                                 </group>
-                                <group name="items_info" string="Weight Information">
-                                    <field name="estimated_weight" />
-                                    <field name="actual_weight" readonly="1" />
+                            </page>
+                            <page string="Barcode & Scanning" name="barcode_scanning">
+                                <group>
+                                    <group name="barcode_setup" string="Barcode Configuration">
+                                        <field name="barcode_nomenclature_id" />
+                                        <field name="barcode_validation_enabled" />
+                                    </group>
+                                </group>
+                                <separator string="Scanned Items" />
+                                <group>
+                                    <group name="barcode_input" string="Barcode Input">
+                                        <field name="_barcode_scanned" readonly="1" help="Last scanned barcode value" />
+                                    </group>
+                                    <group name="box_tracking" string="Box & Item Tracking">
+                                        <field name="estimated_boxes" />
+                                        <field name="actual_boxes" />
+                                        <field name="estimated_weight" />
+                                        <field name="actual_weight" />
+                                    </group>
+                                </group>
+                                <separator string="Identified Scans" />
+                                <group>
+                                    <group name="scanned_product" string="Product Barcode">
+                                        <field name="scanned_product_id" help="Product identified from barcode scan" />
+                                    </group>
+                                    <group name="scanned_location" string="Location Barcode">
+                                        <field name="scanned_location_id" help="Inventory location identified from scan" />
+                                    </group>
+                                    <group name="scanned_package" string="Package Barcode">
+                                        <field name="scanned_package_id" help="Package type identified from scan" />
+                                    </group>
                                 </group>
                             </page>
                             <page string="Completion Details" name="completion" invisible="state in ['planned', 'in_transit']">
