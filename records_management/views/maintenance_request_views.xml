@@ -4,130 +4,126 @@
         <!-- ========================================================== -->
         <!-- MAINTENANCE REQUEST VIEWS - Records Management Integration -->
         <!-- ========================================================== -->
+        <!-- NOTE: These are STANDALONE views (not inheritances) for the -->
+        <!-- maintenance.request model extended by records_management -->
+        <!-- ========================================================== -->
 
-        <!-- FORM VIEW INHERITANCE -->
+        <!-- FORM VIEW -->
         <record id="maintenance_request_view_form" model="ir.ui.view">
-            <field name="name">maintenance.request.form.inherit.records</field>
+            <field name="name">maintenance.request.form.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance_request_view_form"/>
+            <field name="priority">25</field>
             <field name="arch" type="xml">
-                <sheet position="inside">
-                    <notebook>
-                        <!-- Cost Tracking Tab -->
-                        <page string="Cost Tracking" name="cost_tracking">
-                            <group>
-                                <group string="Cost Summary">
-                                    <field name="cost" readonly="1" widget="monetary"/>
-                                    <field name="currency_id"/>
-                                </group>
-                                <group string="Cost Breakdown">
-                                    <field name="labor_cost" widget="monetary"/>
-                                    <field name="parts_cost" widget="monetary"/>
-                                    <field name="external_cost" widget="monetary"/>
-                                </group>
+                <form>
+                    <header>
+                        <button name="action_create_invoice" type="object" string="Create Invoice" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <group string="Request Information">
+                                <field name="equipment_id"/>
+                                <field name="maintenance_team_id"/>
+                                <field name="request_date"/>
+                                <field name="priority"/>
                             </group>
-                        </page>
-
-                        <!-- Records Management Integration Tab -->
-                        <page string="Records Management" name="records_management">
-                            <group>
-                                <group string="Related Records">
-                                    <field name="records_container_id"/>
-                                </group>
-                                <group string="Request Information">
-                                    <field name="request_date"/>
-                                    <field name="priority"/>
-                                </group>
+                            <group string="Related Records">
+                                <field name="records_container_id"/>
                             </group>
-                        </page>
-
-                        <!-- Additional Tracking Tab -->
-                        <page string="Equipment &amp; Team" name="equipment_team">
-                            <group>
-                                <group string="Assignment">
-                                    <field name="equipment_id"/>
-                                    <field name="maintenance_team_id"/>
+                        </group>
+                        <notebook>
+                            <!-- Cost Tracking Tab -->
+                            <page string="Cost Tracking" name="cost_tracking">
+                                <group>
+                                    <group string="Cost Summary">
+                                        <field name="cost" readonly="1" widget="monetary"/>
+                                        <field name="currency_id"/>
+                                    </group>
+                                    <group string="Cost Breakdown">
+                                        <field name="labor_cost" widget="monetary"/>
+                                        <field name="parts_cost" widget="monetary"/>
+                                        <field name="external_cost" widget="monetary"/>
+                                    </group>
                                 </group>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
             </field>
-        </record>
-
-        <!-- LIST VIEW INHERITANCE -->
+        </record>        <!-- LIST VIEW -->
         <record id="maintenance_request_view_tree" model="ir.ui.view">
-            <field name="name">maintenance.request.tree.inherit.records</field>
+            <field name="name">maintenance.request.tree.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance_request_view_tree"/>
+            <field name="priority">25</field>
             <field name="arch" type="xml">
-                <field name="stage_id" position="after">
+                <tree>
+                    <field name="name"/>
+                    <field name="equipment_id"/>
+                    <field name="maintenance_team_id"/>
                     <field name="cost" widget="monetary" optional="show"/>
                     <field name="priority" optional="show"/>
                     <field name="request_date" optional="show"/>
                     <field name="records_container_id" optional="hide"/>
-                </field>
+                </tree>
             </field>
         </record>
 
-        <!-- SEARCH VIEW INHERITANCE -->
+        <!-- SEARCH VIEW -->
         <record id="maintenance_request_view_search" model="ir.ui.view">
-            <field name="name">maintenance.request.search.inherit.records</field>
+            <field name="name">maintenance.request.search.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance_request_view_search"/>
+            <field name="priority">25</field>
             <field name="arch" type="xml">
-                <field name="name" position="after">
+                <search>
+                    <field name="name" string="Request"/>
                     <field name="cost"/>
                     <field name="priority"/>
                     <field name="request_date"/>
                     <field name="equipment_id"/>
                     <field name="records_container_id"/>
-                </field>
-                <separator position="after">
+                    <separator/>
                     <filter name="filter_high_cost" string="High Cost" domain="[('cost', '&gt;=', 1000)]"/>
                     <filter name="filter_priority_high" string="High Priority" domain="[('priority', '=', '3')]"/>
                     <filter name="filter_has_container" string="Has Related Container" domain="[('records_container_id', '!=', False)]"/>
-                </separator>
-                <group string="Group By" position="inside">
-                    <filter name="group_by_priority" string="Priority" context="{'group_by': 'priority'}"/>
-                    <filter name="group_by_equipment" string="Equipment" context="{'group_by': 'equipment_id'}"/>
-                    <filter name="group_by_team" string="Team" context="{'group_by': 'maintenance_team_id'}"/>
-                </group>
+                    <separator/>
+                    <group string="Group By">
+                        <filter name="group_by_priority" string="Priority" context="{'group_by': 'priority'}"/>
+                        <filter name="group_by_equipment" string="Equipment" context="{'group_by': 'equipment_id'}"/>
+                        <filter name="group_by_team" string="Team" context="{'group_by': 'maintenance_team_id'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 
-        <!-- KANBAN VIEW INHERITANCE -->
+        <!-- KANBAN VIEW -->
         <record id="maintenance_request_view_kanban" model="ir.ui.view">
-            <field name="name">maintenance.request.kanban.inherit.records</field>
+            <field name="name">maintenance.request.kanban.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance_request_view_kanban"/>
+            <field name="priority">25</field>
             <field name="arch" type="xml">
-                <kanban position="inside">
+                <kanban default_group_by="priority">
                     <field name="cost"/>
                     <field name="priority"/>
                     <field name="records_container_id"/>
                     <templates>
                         <t t-name="kanban-box">
-                            <div t-attf-class="oe_kanban_card">
+                            <div class="oe_kanban_card">
                                 <div class="o_kanban_record_headings">
                                     <h4 class="o_kanban_record_title">
                                         <span t-field="record.name.value"/>
                                     </h4>
                                 </div>
                                 <div class="o_kanban_record_body">
-                                    <!-- Cost Badge -->
                                     <span t-if="record.cost.raw_value" class="badge badge-info">
                                         <t t-esc="record.cost.value"/>
                                     </span>
-
-                                    <!-- Priority Badge -->
                                     <span t-attf-class="badge #{record.priority.raw_value == '3' and 'badge-danger' or record.priority.raw_value == '2' and 'badge-warning' or 'badge-success'}">
                                         <t t-esc="record.priority.value"/>
                                     </span>
-
-                                    <!-- Records Container Badge -->
                                     <span t-if="record.records_container_id.value" class="badge badge-secondary">
-                                        Records: <t t-esc="record.records_container_id.value"/>
+                                        Container: <t t-esc="record.records_container_id.value"/>
                                     </span>
                                 </div>
                             </div>
@@ -135,28 +131,26 @@
                     </templates>
                 </kanban>
             </field>
-        </record>
-
-        <!-- GRAPH VIEW INHERITANCE -->
+        </record>        <!-- GRAPH VIEW -->
         <record id="maintenance_request_view_graph" model="ir.ui.view">
-            <field name="name">maintenance.request.graph.inherit.records</field>
+            <field name="name">maintenance.request.graph.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance_request_view_graph"/>
+            <field name="priority">25</field>
             <field name="arch" type="xml">
-                <graph position="inside">
+                <graph string="Maintenance Requests Analysis" type="bar">
                     <field name="cost" type="measure"/>
                     <field name="priority" type="row"/>
                 </graph>
             </field>
         </record>
 
-        <!-- PIVOT VIEW INHERITANCE -->
+        <!-- PIVOT VIEW -->
         <record id="maintenance_request_view_pivot" model="ir.ui.view">
-            <field name="name">maintenance.request.pivot.inherit.records</field>
+            <field name="name">maintenance.request.pivot.records</field>
             <field name="model">maintenance.request</field>
-            <field name="inherit_id" ref="maintenance_request_view_pivot"/>
+            <field name="priority">25</field>
             <field name="arch" type="xml">
-                <pivot position="inside">
+                <pivot string="Maintenance Requests Analysis">
                     <field name="cost" type="measure"/>
                     <field name="priority" type="row"/>
                     <field name="equipment_id" type="col"/>
