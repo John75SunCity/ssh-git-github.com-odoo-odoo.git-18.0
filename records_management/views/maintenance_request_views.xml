@@ -52,13 +52,15 @@
                     </sheet>
                 </form>
             </field>
-        </record>        <!-- LIST VIEW -->
-        <record id="maintenance_request_view_tree" model="ir.ui.view">
-            <field name="name">maintenance.request.tree.records</field>
+        </record>
+
+        <!-- LIST VIEW -->
+        <record id="maintenance_request_view_list" model="ir.ui.view">
+            <field name="name">maintenance.request.list.records</field>
             <field name="model">maintenance.request</field>
             <field name="priority">25</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="equipment_id"/>
                     <field name="maintenance_team_id"/>
@@ -66,7 +68,7 @@
                     <field name="priority" optional="show"/>
                     <field name="request_date" optional="show"/>
                     <field name="records_container_id" optional="hide"/>
-                </tree>
+                </list>
             </field>
         </record>
 

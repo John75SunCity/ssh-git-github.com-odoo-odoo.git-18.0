@@ -96,10 +96,10 @@
                             <!-- Services Tab -->
                             <page string="Services" name="services">
                                 <field name="shredding_service_ids">
-                                    <tree>
+                                    <list>
                                         <field name="name"/>
                                         <field name="state"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
@@ -109,12 +109,12 @@
         </record>
 
         <!-- LIST VIEW -->
-        <record id="maintenance_equipment_view_tree" model="ir.ui.view">
-            <field name="name">maintenance.equipment.tree.records</field>
+        <record id="maintenance_equipment_view_list" model="ir.ui.view">
+            <field name="name">maintenance.equipment.list.records</field>
             <field name="model">maintenance.equipment</field>
             <field name="priority">25</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="category"/>
                     <field name="shredding_capacity_per_hour" optional="show"/>
