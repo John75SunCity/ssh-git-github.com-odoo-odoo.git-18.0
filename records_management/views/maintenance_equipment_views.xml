@@ -1,19 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <!-- NOTE: Maintenance Equipment views disabled due to non-existent parent views -->
-        <!-- The maintenance module may not have all expected views: -->
-        <!-- - maintenance.view_maintenance_equipment_form -->
-        <!-- - maintenance.view_maintenance_equipment_tree -->
-        <!-- - maintenance.view_maintenance_equipment_filter -->
-        <!-- - maintenance.view_maintenance_equipment_kanban -->
-        <!-- - maintenance.view_maintenance_equipment_graph -->
-        <!-- - maintenance.view_maintenance_equipment_pivot -->
-        <!-- - maintenance.view_maintenance_equipment_calendar -->
-        <!-- 
-        Maintenance equipment integration can be added later when:
-        1. The parent views are verified to exist in the maintenance module
-        2. The maintenance.equipment model fields are confirmed to support the integration
-        -->
+        <!-- ========================================================== -->
+        <!-- MAINTENANCE EQUIPMENT VIEWS - Records Management Integration -->
+        <!-- ========================================================== -->
+
+        <!-- FORM VIEW INHERITANCE -->
+        <record id="maintenance_equipment_view_form" model="ir.ui.view">
+            <field name="name">maintenance.equipment.form.inherit.records</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_form"/>
+            <field name="arch" type="xml">
+                <sheet position="inside">
+                    <notebook>
+                        <!-- Shredding Specifications Tab -->
+                        <page string="Shredding Specs" name="shredding_specs">
+                            <group>
+                                <group string="Capacity &amp; Security">
+                                    <field name="shredding_capacity_per_hour"/>
+                                    <field name="security_level"/>
+                                </group>
+                                <group string="Destruction Quality">
+                                    <field name="particle_size"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Compliance &amp; Certification Tab -->
+                        <page string="Compliance" name="compliance">
+                            <group>
+                                <group string="NAID Certification">
+                                    <field name="naid_certification_date"/>
+                                    <field name="naid_certification_expiry"/>
+                                    <field name="cert_expiring_30d" readonly="1"/>
+                                </group>
+                                <group string="Compliance Notes">
+                                    <field name="compliance_notes" nolabel="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Calibration &amp; Maintenance Tab -->
+                        <page string="Calibration" name="calibration">
+                            <group>
+                                <group string="Calibration Schedule">
+                                    <field name="calibration_required"/>
+                                    <field name="maintenance_frequency"/>
+                                    <field name="last_calibration_date"/>
+                                    <field name="next_calibration_date" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Maintenance Costs Tab -->
+                        <page string="Maintenance Costs" name="maintenance_costs">
+                            <group>
+                                <group string="Cost Breakdown">
+                                    <field name="parts_cost"/>
+                                    <field name="labor_cost"/>
+                                    <field name="external_cost"/>
+                                </group>
+                                <group string="Summary">
+                                    <field name="total_maintenance_cost" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Warranty Tab -->
+                        <page string="Warranty" name="warranty">
+                            <group>
+                                <group string="Warranty Information">
+                                    <field name="warranty_expiry_date"/>
+                                    <field name="is_under_warranty" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Records Management Integration Tab -->
+                        <page string="Records Management" name="records_management">
+                            <group>
+                                <group string="Physical Location">
+                                    <field name="location_id"/>
+                                </group>
+                                <group string="Services">
+                                    <field name="shredding_service_ids" nolabel="1" readonly="1">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="state"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </field>
+        </record>
+
+        <!-- LIST VIEW INHERITANCE -->
+        <record id="maintenance_equipment_view_tree" model="ir.ui.view">
+            <field name="name">maintenance.equipment.tree.inherit.records</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="shredding_capacity_per_hour" optional="show"/>
+                    <field name="security_level" optional="show"/>
+                    <field name="naid_certification_expiry" optional="show"/>
+                    <field name="location_id" optional="show"/>
+                    <field name="total_maintenance_cost" optional="show"/>
+                    <field name="cert_expiring_30d" optional="hide"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- SEARCH VIEW INHERITANCE -->
+        <record id="maintenance_equipment_view_search" model="ir.ui.view">
+            <field name="name">maintenance.equipment.search.inherit.records</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="security_level"/>
+                    <field name="location_id"/>
+                    <field name="naid_certification_expiry"/>
+                    <field name="maintenance_frequency"/>
+                </field>
+                <separator position="after">
+                    <filter name="filter_naid_certified" string="NAID Certified" domain="[('naid_certification_expiry', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter name="filter_cert_expiring" string="Cert. Expiring in 30d" domain="[('cert_expiring_30d', '=', True)]"/>
+                    <filter name="filter_calibration_needed" string="Needs Calibration" domain="[('calibration_required', '=', True)]"/>
+                    <filter name="filter_under_warranty" string="Under Warranty" domain="[('is_under_warranty', '=', True)]"/>
+                </separator>
+                <group string="Group By" position="inside">
+                    <filter name="group_by_security" string="Security Level" context="{'group_by': 'security_level'}"/>
+                    <filter name="group_by_location" string="Location" context="{'group_by': 'location_id'}"/>
+                    <filter name="group_by_frequency" string="Maintenance Frequency" context="{'group_by': 'maintenance_frequency'}"/>
+                </group>
+            </field>
+        </record>
+
+        <!-- KANBAN VIEW INHERITANCE -->
+        <record id="maintenance_equipment_view_kanban" model="ir.ui.view">
+            <field name="name">maintenance.equipment.kanban.inherit.records</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_kanban"/>
+            <field name="arch" type="xml">
+                <kanban position="inside">
+                    <field name="shredding_capacity_per_hour"/>
+                    <field name="security_level"/>
+                    <field name="naid_certification_expiry"/>
+                    <field name="cert_expiring_30d"/>
+                    <field name="total_maintenance_cost"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_card">
+                                <div class="o_kanban_record_headings">
+                                    <h4 class="o_kanban_record_title">
+                                        <span t-field="record.name.value"/>
+                                    </h4>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <!-- NAID Certification Badge -->
+                                    <span t-if="record.naid_certification_expiry.raw_value" t-attf-class="badge #{record.cert_expiring_30d.raw_value and 'badge-warning' or 'badge-success'}">
+                                        NAID: <t t-esc="record.naid_certification_expiry.value"/>
+                                    </span>
+                                    
+                                    <!-- Security Level Badge -->
+                                    <span class="badge badge-info">
+                                        <t t-esc="record.security_level.value"/>
+                                    </span>
+                                    
+                                    <!-- Capacity Info -->
+                                    <span t-if="record.shredding_capacity_per_hour.raw_value" class="badge badge-primary">
+                                        <t t-esc="record.shredding_capacity_per_hour.value"/> lbs/hr
+                                    </span>
+                                </div>
+                                <div class="o_kanban_record_foot">
+                                    <span class="text-muted">
+                                        Cost: <t t-esc="record.total_maintenance_cost.value"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- GRAPH VIEW INHERITANCE -->
+        <record id="maintenance_equipment_view_graph" model="ir.ui.view">
+            <field name="name">maintenance.equipment.graph.inherit.records</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_graph"/>
+            <field name="arch" type="xml">
+                <graph position="inside">
+                    <field name="shredding_capacity_per_hour" type="measure"/>
+                    <field name="total_maintenance_cost" type="measure"/>
+                    <field name="security_level" type="row"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- PIVOT VIEW INHERITANCE -->
+        <record id="maintenance_equipment_view_pivot" model="ir.ui.view">
+            <field name="name">maintenance.equipment.pivot.inherit.records</field>
+            <field name="model">maintenance.equipment</field>
+            <field name="inherit_id" ref="maintenance.maintenance_equipment_view_pivot"/>
+            <field name="arch" type="xml">
+                <pivot position="inside">
+                    <field name="shredding_capacity_per_hour" type="measure"/>
+                    <field name="total_maintenance_cost" type="measure"/>
+                    <field name="security_level" type="row"/>
+                    <field name="location_id" type="col"/>
+                </pivot>
+            </field>
+        </record>
+
     </data>
 </odoo>
