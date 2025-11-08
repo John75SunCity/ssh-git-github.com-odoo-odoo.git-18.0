@@ -455,7 +455,6 @@ class ResPartner(models.Model):
             partner.unlock_service_count = svc_count_map.get(partner.id, 0)
             partner.total_unlock_charges = svc_cost_map.get(partner.id, 0.0)
 
-    @api.depends('partner_id')
     def _compute_negotiated_rates_count(self):
         """Compute the count of active negotiated rates for this partner."""
         if not self.exists():
