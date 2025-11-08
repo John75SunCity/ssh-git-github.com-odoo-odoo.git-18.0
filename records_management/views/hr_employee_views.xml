@@ -84,17 +84,5 @@
         </pivot>
     </field>
     </record>
-
-<!-- HR Employee Calendar View Extension for Records Management -->
-    <record id="hr_employee_view_calendar" model="ir.ui.view">
-        <field name="name">hr.employee.calendar.inherit.records</field>
-        <field name="model">hr.employee</field>
-        <field name="inherit_id" ref="hr.hr_employee_view_calendar"/>
-        <field name="arch" type="xml">
-        <xpath expr="//calendar" position="attributes">
-            <attribute name="color">records_access_level</attribute>
-        </xpath>
-    </field>
-    </record>
     </data>
 </odoo>
