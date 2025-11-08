@@ -44,7 +44,7 @@
                             <field name="service_location_ids" nolabel="1">
                                 <list editable="bottom">
                                     <field name="name"/>
-                                    <field name="address"/>
+                                    <field name="full_address"/>
                                     <field name="usage"/>
                                     <field name="active"/>
                                 </list>
