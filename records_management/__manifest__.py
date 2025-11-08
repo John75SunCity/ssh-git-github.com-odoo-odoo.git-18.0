@@ -299,7 +299,6 @@
         "views/naid_operator_certification_views.xml",
         "views/naid_performance_history_views.xml",
         "views/naid_risk_assessment_views.xml",
-        "views/name_views.xml",
         "views/partner_bin_key_views.xml",
         "views/partner_rate_management_extension.xml",
         "views/photo_views.xml",
