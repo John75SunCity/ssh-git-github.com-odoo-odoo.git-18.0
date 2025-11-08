@@ -55,14 +55,6 @@
 <filter name="naid_certified" string="NAID Certified" domain="[('naid_certified', '=', True)]"/>
 <filter name="has_records_access" string="Has Records Access" domain="[('records_access_level', '!=', 'none')]"/>
 </xpath>
-
-<!-- Add groupby options -->
-        <xpath expr="//group[@name='group_by']" position="inside">
-<filter name="group_by_records_department" string="Records Department"
-                    context="{'group_by': 'records_department_id'}"/>
-<filter name="group_by_access_level" string="Records Access Level"
-                    context="{'group_by': 'records_access_level'}"/>
-        </xpath>
     </field>
     </record>
 
