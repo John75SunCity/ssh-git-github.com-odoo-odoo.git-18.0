@@ -13,7 +13,7 @@
                 <field name="certificate_number"/>
                 <field name="issue_date"/>
                 <field name="expiry_date"/>
-                <field name="state"/>
+                <field name="status"/>
                 <field name="active"/>
             </list>
         </field>
@@ -41,7 +41,7 @@ invisible="status not in ('expired', 'active')"
                             <field name="operator_id"/>
                             <field name="certification_type"/>
                             <field name="certificate_number"/>
-                            <field name="state"/>
+                            <field name="status"/>
                             <field name="active"/>
                         </group>
                         <group name="dates">
@@ -81,10 +81,7 @@ invisible="status not in ('expired', 'active')"
                 <field name="issuing_authority"/>
                 <filter string="Active" name="active" domain="[('active', '=', True)]"/>
                 <filter string="Expired" name="expired" domain="[('status', '=', 'expired')]"/>
-                <filter string="Active Status" name="active_status" domain="[('status', '=', 'active')]"/>
-                <separator/>
-                <filter string="NAID AAA" name="naid_aaa" domain="[('certification_type', '=', 'aaa')]"/>
-                <filter string="Hard Drive Destruction" name="hard_drive" domain="[('certification_type', '=', 'hard_drive')]"/>
+                <filter string="Certified" name="certified_status" domain="[('status', '=', 'certified')]"/>
                 <separator/>
                 <group expand="0" string="Group By">
                     <filter string="Operator" name="group_operator" domain="[]" context="{'group_by': 'operator_id'}"/>
