@@ -196,6 +196,7 @@
         "views/pickup_route_views.xml",
         "views/portal_feedback_views.xml",
         "views/portal_request_line_views.xml",
+        "views/product_template_views.xml",
         "views/records_approval_workflow_views.xml",
         "views/records_audit_log_views.xml",
         "views/records_center_location_views.xml",
