@@ -98,7 +98,9 @@
                                 <field name="shredding_service_ids">
                                     <list>
                                         <field name="name"/>
-                                        <field name="state"/>
+                                        <field name="service_type"/>
+                                        <field name="service_date"/>
+                                        <field name="naid_compliant"/>
                                     </list>
                                 </field>
                             </page>
