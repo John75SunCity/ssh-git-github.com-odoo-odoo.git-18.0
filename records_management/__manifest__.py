@@ -255,7 +255,6 @@
         "views/res_partner_key_restriction_views.xml",
         "views/res_users_records_profile_views.xml",
         "views/records_retrieval_work_order_views.xml",
-        "views/rm_module_configurator_views.xml",
         # ============================================================================
         # ADDITIONAL VIEW FILES: All remaining view definitions
         # ============================================================================
@@ -435,6 +434,7 @@
         "views/advanced_billing_line_actions_menus.xml",
         "views/advanced_billing_profile_views.xml",
         "views/barcode_menus.xml",
+        "views/rm_module_configurator_views.xml",
         # ============================================================================
         # CHILD MENUS: Must load AFTER root_menus, BEFORE views reference them
         # These define all child menus that view files will reference
