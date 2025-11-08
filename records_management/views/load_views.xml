@@ -72,22 +72,13 @@
             <field name="name">paper.bale.load.view.list</field>
             <field name="model">paper.bale.load</field>
             <field name="arch" type="xml">
-                <list string="Paper Bale Load Management" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'" decoration-muted="state=='cancelled'" multi_edit="1" sample="1">
-                    <header>
-                        <button name="action_prepare_load" type="object" string="Prepare Load" />
-                        <button name="action_start_loading" type="object" string="Start Loading" />
-                        <button name="action_ship_load" type="object" string="Ship Load" />
-                        <button name="action_mark_sold" type="object" string="Mark Sold" />
-                    </header>
+                <list string="Paper Bale Load Management" decoration-info="state=='ready_for_pickup'" decoration-warning="state=='loading'" decoration-muted="state=='cancel'" multi_edit="1" sample="1">
                     <field name="name" string="Load #" />
                     <field name="load_date" widget="date" />
-                    <field name="buyer_company" string="Buyer" />
-                    <field name="bale_count" string="Bales" sum="Total Bales" />
+                    <field name="buyer_id" string="Buyer" />
+                    <field name="total_bales" string="Bales" sum="Total Bales" />
                     <field name="total_weight" string="Weight (lbs)" widget="float" sum="Total Weight" />
-                    <field name="market_price_per_ton" string="Price/Ton" widget="monetary" />
-                    <field name="estimated_revenue" string="Est. Revenue" widget="monetary" sum="Total Revenue" />
-                    <field name="shipping_date" string="Ship Date" widget="date" />
-                    <field name="state" string="Status" widget="badge" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'" />
+                    <field name="state" string="Status" widget="badge" decoration-info="state=='ready_for_pickup'" decoration-warning="state=='loading'" />
                     <field name="activity_exception_decoration" widget="activity_exception" />
                 </list>
             </field>
@@ -98,37 +89,21 @@
             <field name="arch" type="xml">
                 <form string="Paper Bale Load Management">
                     <header>
-                        <button name="action_prepare_load" string="Prepare Load" type="object" class="btn-primary" invisible="state != 'draft'" />
-                        <button name="action_start_loading" string="Start Loading" type="object" class="btn-primary" invisible="state != 'ready'" />
-                        <button name="action_ship_load" string="Ship Load" type="object" class="btn-success" invisible="state != 'loading'" />
-                        <button name="action_mark_sold" string="Mark Sold" type="object" class="btn-success" invisible="state != 'shipped'" />
-                        <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['draft', 'ready', 'loading']" />
-                        <field name="state" widget="statusbar" statusbar_visible="draft,ready,loading,shipped,sold" />
+                        <button name="action_mark_ready_for_pickup" string="Mark Ready for Pickup" type="object" class="btn-primary" invisible="state != 'draft'" />
+                        <button name="action_mark_picked_up" string="Mark Picked Up" type="object" class="btn-primary" invisible="state != 'ready_for_pickup'" />
+                        <button name="action_generate_manifest" string="Generate Manifest" type="object" class="btn-info" invisible="state != 'picked_up'" />
+                        <button name="action_create_invoice" string="Create Invoice" type="object" class="btn-success" invisible="state != 'loading'" />
+                        <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['draft', 'ready_for_pickup', 'loading', 'picked_up']" />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,ready_for_pickup,loading,picked_up,invoiced,paid" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button name="action_view_bales" type="object" class="oe_stat_button" icon="fa-cubes" title="View Paper Bales">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
-                                        <field name="bale_count" />
+                                        <field name="total_bales" />
                                     </span>
                                     <span class="o_stat_text">Paper Bales</span>
-                                </div>
-                            </button>
-                            <button name="action_view_revenue_report" type="object" class="oe_stat_button" icon="fa-dollar" title="View Revenue Report">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="estimated_revenue" widget="monetary" />
-                                    </span>
-                                    <span class="o_stat_text">Revenue</span>
-                                </div>
-                            </button>
-                            <button name="action_view_weight_tickets" type="object" class="oe_stat_button" icon="fa-balance-scale" title="View Weight Tickets">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="weight_ticket_count" />
-                                    </span>
-                                    <span class="o_stat_text">Weight Tickets</span>
                                 </div>
                             </button>
                         </div>
@@ -138,35 +113,26 @@
                             </h1>
                             <div class="o_row">
                                 <field name="load_date" widget="date" />
-                                <label for="buyer_company" string="Buyer:" />
-                                <field name="buyer_company" placeholder="Paper Company" />
+                                <label for="buyer_id" string="Buyer:" />
+                                <field name="buyer_id" placeholder="Paper Company" />
                             </div>
                         </div>
                         <group>
-                            <group name="load_details" string=" Load Details">
+                            <group name="load_details" string="Load Details">
                                 <field name="total_weight" widget="float" />
-                                <field name="bale_count" />
-                                <field name="average_bale_weight" widget="float" />
-                                <field name="load_quality_grade" />
-                                <field name="moisture_content" widget="percentage" />
-                                <field name="contamination_level" />
+                                <field name="total_bales" />
+                                <field name="priority" widget="priority" />
+                                <field name="active" widget="boolean_toggle" />
                             </group>
-                            <group name="market_details" string=" Market Details">
-                                <field name="market_price_per_ton" widget="monetary" />
-                                <field name="estimated_revenue" widget="monetary" />
-                                <field name="actual_sale_price" widget="monetary" invisible="state != 'sold'" />
-                                <field name="price_variance" widget="monetary" invisible="state != 'sold'" />
-                                <field name="buyer_company" />
-                                <field name="sale_contract_number" invisible="state not in ['shipped', 'sold']" />
+                            <group name="logistics" string="Logistics">
+                                <field name="pickup_date" widget="date" />
+                                <field name="driver_name" />
+                                <field name="driver_signature" />
+                                <field name="completion_date" widget="date" invisible="state not in ['picked_up', 'invoiced', 'paid']" />
                             </group>
                         </group>
-                        <group name="tracking" string="Tracking and Status">
-                            <field name="priority" widget="priority" />
-                            <field name="temperature_controlled" widget="boolean_toggle" />
-                            <field name="hazmat_required" widget="boolean_toggle" />
-                            <field name="special_instructions" placeholder="Special handling instructions..." />
-                            <field name="estimated_delivery" widget="datetime" />
-                            <field name="actual_delivery" widget="datetime" invisible="state != 'delivered'" />
+                        <group name="tracking" string="Notes">
+                            <field name="notes" placeholder="Additional information..." />
                         </group>
                         <notebook>
                             <page string="Load Items" name="load_items">
@@ -286,33 +252,18 @@
             <field name="arch" type="xml">
                 <search string="Search Loads">
                     <field name="name" string="Load #" filter_domain="[('name', 'ilike', self)]" />
-                    <field name="trailer_id" string="Trailer" />
-                    <field name="driver_id" string="Driver" />
-                    <field name="route_code" string="Route" />
+                    <field name="buyer_id" string="Buyer" />
                     <field name="load_date" string="Load Date" />
-                    <filter string="My Loads" name="my_loads" domain="[('driver_id.user_id', '=', uid)]" />
-                    <filter string="Today's Loads" name="today" domain="[('load_date', '!=', False)]" />
-                    <filter string="This Week" name="week" domain="[('load_date', '&amp;gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d')), ('load_date', '&lt;=', (context_today + datetime.timedelta(days=6-context_today.weekday())).strftime('%Y-%m-%d'))]" />
-                    <separator />
                     <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
-                    <filter string="Planned" name="planned" domain="[('state', '=', 'planned')]" />
+                    <filter string="Ready for Pickup" name="ready" domain="[('state', '=', 'ready_for_pickup')]" />
                     <filter string="Loading" name="loading" domain="[('state', '=', 'loading')]" />
-                    <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]" />
-                    <filter string="Delivered" name="delivered" domain="[('state', '=', 'delivered')]" />
+                    <filter string="Picked Up" name="picked_up" domain="[('state', '=', 'picked_up')]" />
                     <separator />
-                    <filter string="Temperature Controlled" name="temp_controlled" domain="[('temperature_controlled', '=', True)]" />
-                    <filter string="Hazmat Required" name="hazmat" domain="[('hazmat_required', '=', True)]" />
-                    <filter string="High Priority" name="high_priority" domain="[('priority', '=', '3')]" />
-                    <separator />
-                    <filter string="Overdue" name="overdue" domain="[('state', 'in', ['draft', 'planned', 'loading'])]" />
-                    <filter string="Late Delivery" name="late_delivery" domain="[('state', '=', 'in_transit')]" />
+                    <filter string="Active" name="active_only" domain="[('active', '=', True)]" />
                     <group expand="0" string="Group By">
                         <filter string="Status" name="group_state" context="{'group_by': 'state'}" />
-                        <filter string="Driver" name="group_driver" context="{'group_by': 'driver_id'}" />
-                        <filter string="Trailer" name="group_trailer" context="{'group_by': 'trailer_id'}" />
-                        <filter string="Route" name="group_route" context="{'group_by': 'route_code'}" />
+                        <filter string="Buyer" name="group_buyer" context="{'group_by': 'buyer_id'}" />
                         <filter string="Load Date" name="group_date" context="{'group_by': 'load_date'}" />
-                        <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}" />
                     </group>
                 </search>
             </field>
@@ -321,12 +272,10 @@
             <field name="name">load.view.calendar</field>
             <field name="model">paper.bale.load</field>
             <field name="arch" type="xml">
-                <calendar string="Load Schedule" date_start="scheduled_departure" date_stop="estimated_delivery" color="driver_id" mode="month">
+                <calendar string="Load Schedule" date_start="load_date" date_stop="completion_date" color="buyer_id" mode="month">
                     <field name="name" />
-                    <field name="trailer_id" />
-                    <field name="driver_id" />
+                    <field name="buyer_id" />
                     <field name="state" />
-                    <field name="route_code" />
                 </calendar>
             </field>
         </record>
@@ -346,23 +295,19 @@
             <field name="model">paper.bale.load</field>
             <field name="arch" type="xml">
                 <pivot string="Load Performance" sample="1">
-                    <field name="driver_id" type="row" />
+                    <field name="buyer_id" type="row" />
                     <field name="state" type="col" />
                     <field name="total_weight" type="measure" />
-                    <field name="capacity_utilization" type="measure" />
+                    <field name="total_bales" type="measure" />
                 </pivot>
             </field>
         </record>
         <record id="action_load" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model paper.bale.load has state field - consider using default search filters -->
             <field name="name">Paper Bale Load Management</field>
             <field name="res_model">paper.bale.load</field>
             <field name="view_mode">list,form,calendar,graph,pivot</field>
             <field name="search_view_id" ref="load_view_search" />
-            <field name="context">{
-        'search_default_today': 1,
-        'search_default_my_loads': 1
-    }</field>
+            <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     <i class="fa fa-cog" /> Create your first paper bale load!
