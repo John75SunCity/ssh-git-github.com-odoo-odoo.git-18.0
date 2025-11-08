@@ -292,7 +292,6 @@
                     <filter string="Last 7 Days" name="recent_7d" domain="[('scheduled_recent_7d', '=', True)]" />
                     <filter string="Overdue" name="overdue" domain="[('scheduled_overdue', '=', True)]" />
                     <separator />
-                    <filter string="My Stops" name="my_stops" domain="[('user_id', '=', uid)]" />
                     <filter string="Active" name="active" domain="[('active', '=', True)]" />
                     <separator />
                     <!-- Hidden technical activity filters (used by automated contexts / kanban quick links) -->
@@ -304,7 +303,6 @@
                         <filter string="Priority" name="priority" context="{'group_by': 'priority'}" />
                         <filter string="Route" name="pickup_route" context="{'group_by': 'route_id'}" />
                         <filter string="Customer" name="partner" context="{'group_by': 'partner_id'}" />
-                        <filter string="Assigned User" name="user" context="{'group_by': 'user_id'}" />
                         <filter string="Company" name="company" context="{'group_by': 'company_id'}" groups="base.group_multi_company" />
                         <separator />
                         <filter string="Scheduled Date" name="scheduled_date" context="{'group_by': 'planned_arrival:day'}" />
