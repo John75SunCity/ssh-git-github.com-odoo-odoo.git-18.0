@@ -8,7 +8,7 @@
         <field name="name">pos.config.view.kanban</field>
         <field name="model">pos.config</field>
         <field name="arch" type="xml">
-        <kanban default_group_by="state" sample="1" quick_create="false" class="o_kanban_small_column">
+        <kanban sample="1" quick_create="false" class="o_kanban_small_column">
         <field name="name"/>
         <field name="state"/>
         <field name="current_session_id"/>
