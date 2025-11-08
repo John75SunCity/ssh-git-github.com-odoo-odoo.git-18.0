@@ -43,7 +43,15 @@ DB_NAME="${PGDATABASE:-${DB_NAME:-}}"
 # Attempt upgrade with minimal logging for speed; adjust log-level via FAST_UPGRADE_LOG_LEVEL if desired
 LOG_LEVEL=${FAST_UPGRADE_LOG_LEVEL:-info}
 
-${EXECUTABLE} -d "${DB_NAME}" -u "${UPGRADE_LIST}" --log-level=${LOG_LEVEL} || {
+# Enable detailed logging for specific handlers if DEBUG_MODE is set
+# Usage: DEBUG_MODE=1 odoo.sh build (on Odoo.sh platform)
+LOG_HANDLERS=""
+if [[ -n "${DEBUG_MODE:-}" ]]; then
+  LOG_HANDLERS="--log-handler=odoo.tools.convert:DEBUG --log-handler=odoo.modules:DEBUG"
+  echo "[fast-upgrade] DEBUG_MODE enabled; using detailed logging handlers" >&2
+fi
+
+${EXECUTABLE} -d "${DB_NAME}" -u "${UPGRADE_LIST}" --log-level=${LOG_LEVEL} ${LOG_HANDLERS} || {
   echo "[fast-upgrade] Upgrade failed; allowing platform to continue so you can inspect logs." >&2
 }
 
