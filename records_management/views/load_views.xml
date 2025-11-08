@@ -130,17 +130,15 @@
                                     <list string="Paper Bales" editable="bottom">
                                         <field name="bale_number" />
                                         <field name="weight" sum="Total Weight" />
-                                        <field name="quality_grade" />
-                                        <field name="moisture_content" widget="percentage" />
-                                        <field name="contamination_notes" />
-                                        <field name="production_date" widget="date" />
-                                        <field name="value_per_ton" widget="monetary" />
+                                        <field name="paper_grade" />
+                                        <field name="state" />
+                                        <field name="location_id" />
                                     </list>
                                     <kanban>
                                         <field name="bale_number" />
                                         <field name="weight" />
-                                        <field name="quality_grade" />
-                                        <field name="value_per_ton" />
+                                        <field name="paper_grade" />
+                                        <field name="state" />
                                         <templates>
                                             <t t-name="card">
                                                 <div class="oe_kanban_global_click">
@@ -148,12 +146,12 @@
                                                         <strong>
                                                             <field name="bale_number" />
                                                         </strong>
-                                                        <span class="float-end">Grade: <field name="quality_grade" />
+                                                        <span class="float-end">Grade: <field name="paper_grade" />
                                                         </span>
                                                     </div>
                                                     <div class="o_kanban_record_body">
-                                                Weight: <field name="weight" /> lbs<br />
-                                                Value: $<field name="value_per_ton" />/ton
+                                                Weight: <field name="weight" /> kg<br />
+                                                State: <field name="state" />
                                             </div>
                                                 </div>
                                             </t>
