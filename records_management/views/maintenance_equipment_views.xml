@@ -206,13 +206,13 @@
             </field>
         </record>
 
-        <!-- GRAPH VIEW INHERITANCE -->
+        <!-- GRAPH VIEW -->
         <record id="maintenance_equipment_view_graph" model="ir.ui.view">
-            <field name="name">maintenance.equipment.graph.inherit.records</field>
+            <field name="name">maintenance.equipment.graph.records</field>
             <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance_equipment_view_graph"/>
+            <field name="priority">25</field>
             <field name="arch" type="xml">
-                <graph position="inside">
+                <graph string="Equipment Analysis" type="bar">
                     <field name="shredding_capacity_per_hour" type="measure"/>
                     <field name="total_maintenance_cost" type="measure"/>
                     <field name="security_level" type="row"/>
@@ -220,13 +220,13 @@
             </field>
         </record>
 
-        <!-- PIVOT VIEW INHERITANCE -->
+        <!-- PIVOT VIEW -->
         <record id="maintenance_equipment_view_pivot" model="ir.ui.view">
-            <field name="name">maintenance.equipment.pivot.inherit.records</field>
+            <field name="name">maintenance.equipment.pivot.records</field>
             <field name="model">maintenance.equipment</field>
-            <field name="inherit_id" ref="maintenance_equipment_view_pivot"/>
+            <field name="priority">25</field>
             <field name="arch" type="xml">
-                <pivot position="inside">
+                <pivot string="Equipment Analysis">
                     <field name="shredding_capacity_per_hour" type="measure"/>
                     <field name="total_maintenance_cost" type="measure"/>
                     <field name="security_level" type="row"/>
