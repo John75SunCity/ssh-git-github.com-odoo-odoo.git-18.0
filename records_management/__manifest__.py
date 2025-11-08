@@ -257,7 +257,7 @@
         "views/records_retrieval_work_order_views.xml",
         # ============================================================================
         # ADDITIONAL VIEW FILES: All remaining view definitions
-        # ============================================================================
+
         "views/account_move_line_views.xml",
         "views/bin_key_history_views.xml",
         "views/certificate_template_data_views.xml",
@@ -362,36 +362,28 @@
         "views/work_order_shredding_views.xml",
         # ============================================================================
         # ============================================================================
+
         # ROOT MENUS: Parent-only menus must load AFTER all views with actions defined
         # These define the base menu structure that child menus reference
         "views/records_management_root_menus.xml",
         # ============================================================================
         # VIEWS WITH MENUITEMS: Must load AFTER root_menus, BEFORE child menus
-        # These views define menuitems that reference parent menus defined in root_menus
-        # ============================================================================
-        "views/chain_of_custody_event_views.xml",
-        "views/custody_transfer_event_views.xml",
-        "views/inventory_adjustment_reason_views.xml",
-        "views/inventory_item_type_views.xml",
-        "views/inventory_item_views.xml",
-        "views/records_retention_policy_views.xml",
-        "views/records_retrieval_order_views.xml",
-        "views/records_series_views.xml",
+
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_line_actions_menus.xml",
         "views/advanced_billing_profile_views.xml",
         "views/barcode_menus.xml",
-        "views/rm_module_configurator_views.xml",
-        # ============================================================================
         "views/base_rates_views.xml",
         "views/bin_barcode_inventory_views.xml",
         "views/bin_issue_report_wizard_views.xml",
         "views/bin_key_unlock_service_views.xml",
+        "views/chain_of_custody_event_views.xml",
         "views/container_access_activity_views.xml",
         "views/container_access_document_views.xml",
         "views/container_access_photo_views.xml",
         "views/container_access_report_views.xml",
         "views/container_access_visitor_views.xml",
+        "views/custody_transfer_event_views.xml",
         "views/custom_box_volume_calculator_views.xml",
         "views/customer_portal_diagram_views.xml",
         "views/departmental_billing_menus.xml",
@@ -401,9 +393,12 @@
         "views/full_customization_name_view_form.xml",
         "views/full_customization_name_views.xml",
         "views/hard_drive_scan_wizard_line_views.xml",
+        "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_location_transfer_views.xml",
         "views/inventory_item_profile_views.xml",
         "views/inventory_item_retrieval_line_views.xml",
+        "views/inventory_item_type_views.xml",
+        "views/inventory_item_views.xml",
         "views/ir_model_views.xml",
         "views/ir_ui_view_views.xml",
         "views/key_restriction_checker_views.xml",
@@ -426,9 +421,13 @@
         "views/records_request_type_views.xml",
         "views/records_request_views.xml",
         "views/records_retention_policy_version_views.xml",
+        "views/records_retention_policy_views.xml",
+        "views/records_retrieval_order_views.xml",
+        "views/records_series_views.xml",
         "views/records_storage_box_views.xml",
         "views/records_storage_department_user_views.xml",
         "views/records_work_vehicle_views.xml",
+        "views/rm_module_configurator_views.xml",
         "views/shred_bin_views.xml",
         "views/shredding_inventory_views.xml",
         "views/stock_move_sms_validation_views.xml",
@@ -436,6 +435,9 @@
         "views/system_flowchart_wizard_views.xml",
         "views/temp_inventory_views.xml",
         "views/transitory_field_config_views.xml",
+        # ============================================================================
+        # ============================================================================
+
         # CHILD MENUS: Must load AFTER root_menus, BEFORE views reference them
         # These define all child menus that view files will reference
         # ============================================================================
