@@ -20,12 +20,14 @@
 
     <!-- Enhanced FSM Integration -->
 
-    <menuitem id="menu_enhanced_fsm_integration" name="Enhanced FSM Integration" parent="menu_fsm_integration" sequence="10" action="records_management_fsm.action_enhanced_fsm_integration" groups="records_management.group_records_manager"/>
+    <!-- NOTE: Action defined in records_management_fsm module -->
+    <!-- <menuitem id="menu_enhanced_fsm_integration" name="Enhanced FSM Integration" parent="menu_fsm_integration" sequence="10" action="records_management_fsm.action_enhanced_fsm_integration" groups="records_management.group_records_manager"/> -->
 
 
     <!-- Mobile FSM Integration -->
 
-    <menuitem id="menu_mobile_fsm_integration" name="Mobile FSM Integration" parent="menu_fsm_integration" sequence="20" action="records_management_fsm.action_mobile_fsm_integration" groups="records_management.group_records_manager"/>
+    <!-- NOTE: Action defined in records_management_fsm module -->
+    <!-- <menuitem id="menu_mobile_fsm_integration" name="Mobile FSM Integration" parent="menu_fsm_integration" sequence="20" action="records_management_fsm.action_mobile_fsm_integration" groups="records_management.group_records_manager"/> -->
 
 
     <!-- Mobile Features Submenu -->
