@@ -181,9 +181,8 @@
         <field name="help">Calculate custom box volumes and compare with standard containers</field>
     </record>
 
-<!-- Volume Calculator Menu Item -->
-
-    <menuitem id="custom_box_volume_calculator_menu" name="Volume Calculator" parent="records_management.records_management_menu" action="custom_box_volume_calculator_action" sequence="20" groups="records_management.group_records_user"/>
+    <!-- Volume Calculator Menu Item -->
+    <menuitem id="custom_box_volume_calculator_menu" name="Volume Calculator" parent="records_management.menu_records_configuration" action="custom_box_volume_calculator_action" sequence="25" groups="records_management.group_records_user"/>
 
     
     </data>
