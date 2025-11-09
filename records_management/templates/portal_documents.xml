@@ -97,22 +97,29 @@
                                                     <td>
                                                         <strong t-esc="document.name"/>
                                                         <t t-if="document.description">
-                                                            <br/><small class="text-muted" t-esc="document.description"/>
+                                                            <br/>
+                                                            <small class="text-muted">
+                                                                <t t-esc="document.description"/>
+                                                            </small>
                                                         </t>
                                                     </td>
-                                                    <td t-esc="document.document_type_id.name if document.document_type_id else &apos;N/A&apos;"/></td>
+                                                    <td>
+                                                        <t t-esc="document.document_type_id.name if document.document_type_id else 'N/A'"/>
+                                                    </td>
                                                     <td>
                                                         <t t-if="document.attachment_id and document.attachment_id.file_size">
                                                             <t t-set="file_size" t-value="document.attachment_id.file_size"/>
                                                             <t t-set="size_mb" t-value="file_size / (1024*1024)"/>
                                                             <t t-set="size_kb" t-value="file_size / 1024"/>
-                                                            <t t-esc="(&apos;{:.1f} MB&apos;.format(size_mb) if file_size > 1024*1024 else &apos;{:.1f} KB&apos;.format(size_kb))"/>
+                                                            <t t-esc="('{:.1f} MB'.format(size_mb) if file_size > 1024*1024 else '{:.1f} KB'.format(size_kb))"/>
                                                         </t>
                                                         <t t-else="">
                                                             N/A
                                                         </t>
                                                     </td>
-                                                    <td t-esc="document.create_date.strftime(&apos;%Y-%m-%d&apos;) if document.create_date else &apos;N/A&apos;"/></td>
+                                                    <td>
+                                                        <t t-esc="document.create_date.strftime('%Y-%m-%d') if document.create_date else 'N/A'"/>
+                                                    </td>
                                                     <td>
                                                         <span t-if="document.active and not document.permanently_flagged" class="badge badge-success">Active</span>
                                                         <span t-if="not document.active" class="badge badge-secondary">Inactive</span>
@@ -165,13 +172,19 @@
                                 <div class="col-md-6">
                                     <dl class="row">
                                         <dt class="col-sm-4">Name:</dt>
-                                        <dd class="col-sm-8" t-esc="document.name"/>
+                                        <dd class="col-sm-8">
+                                            <t t-esc="document.name"/>
+                                        </dd>
 
                                         <dt class="col-sm-4">Type:</dt>
-                                        <dd class="col-sm-8" t-esc="document.document_type_id.name if document.document_type_id else &apos;N/A&apos;"/>
+                                        <dd class="col-sm-8">
+                                            <t t-esc="document.document_type_id.name if document.document_type_id else 'N/A'"/>
+                                        </dd>
 
                                         <dt class="col-sm-4">Upload Date:</dt>
-                                        <dd class="col-sm-8" t-esc="document.create_date.strftime(&apos;%B %d, %Y&apos;) if document.create_date else &apos;N/A&apos;"/>
+                                        <dd class="col-sm-8">
+                                            <t t-esc="document.create_date.strftime('%B %d, %Y') if document.create_date else 'N/A'"/>
+                                        </dd>
 
                                         <dt class="col-sm-4">Size:</dt>
                                         <dd class="col-sm-8">
@@ -179,7 +192,7 @@
                                                 <t t-set="file_size" t-value="document.attachment_id.file_size"/>
                                                 <t t-set="size_mb" t-value="file_size / (1024*1024)"/>
                                                 <t t-set="size_kb" t-value="file_size / 1024"/>
-                                                <t t-esc="(&apos;{:.1f} MB&apos;.format(size_mb) if file_size > 1024*1024 else &apos;{:.1f} KB&apos;.format(size_kb))"/>
+                                                <t t-esc="('{:.1f} MB'.format(size_mb) if file_size > 1024*1024 else '{:.1f} KB'.format(size_kb))"/>
                                             </t>
                                             <t t-else="">
                                                 N/A
@@ -196,7 +209,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <h5>Description</h5>
-                                    <p t-esc="document.description or &apos;No description available.&apos;"/>
+                                    <p>
+                                        <t t-esc="document.description or 'No description available.'"/>
+                                    </p>
 
                                     <t t-if="document.container_id">
                                         <h5>Container</h5>
