@@ -89,21 +89,21 @@
             <field name="name">General Business Records</field>
             <field name="code">BC-GEN</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
-            
+
         </record>
 
         <record id="dept_big_chairs_payroll" model="records.department">
             <field name="name">Payroll &amp; HR</field>
             <field name="code">BC-PAY</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
-            
+
         </record>
 
         <record id="dept_big_chairs_financial" model="records.department">
             <field name="name">Financial Records</field>
             <field name="code">BC-FIN</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
-            
+
         </record>
 
         <!-- JOHN AND LILI COPE DEPARTMENTS -->
@@ -111,7 +111,7 @@
             <field name="name">Personal Records</field>
             <field name="code">JC-PER</field>
             <field name="partner_id" ref="customer_john_lili_cope"/>
-            
+
         </record>
 
         <!-- BIO PAPPEL DEPARTMENTS -->
@@ -119,7 +119,7 @@
             <field name="name">Bio Pappel General Records</field>
             <field name="code">BP-GEN</field>
             <field name="partner_id" ref="customer_bio_pappel"/>
-            
+
         </record>
 
         <!-- CITY OF EL PASO DEPARTMENTS -->
@@ -127,7 +127,7 @@
             <field name="name">General City Records</field>
             <field name="code">CEP-GEN</field>
             <field name="partner_id" ref="customer_city_el_paso"/>
-            
+
         </record>
 
         <!-- CHASE BANK DEPARTMENTS -->
@@ -135,7 +135,7 @@
             <field name="name">General Financial Records</field>
             <field name="code">CB-GEN</field>
             <field name="partner_id" ref="customer_chase_bank"/>
-            
+
         </record>
 
         <!-- ===================================================== -->
@@ -147,7 +147,7 @@
             <field name="name">Main Warehouse - Section A</field>
             <field name="code">MAIN-WH-A</field>
             <field name="description">Primary storage warehouse section A</field>
-            <field name="location_type">warehouse</field>
+            <field name="usage">internal</field>
             <field name="building">Main Warehouse</field>
             <field name="zone">Section A</field>
             <field name="active">True</field>
@@ -155,14 +155,14 @@
             <field name="humidity_controlled">True</field>
             <field name="security_level">level_2</field>
             <field name="max_capacity">5000</field>
-            
+
         </record>
 
         <record id="location_main_warehouse_b" model="records.location">
             <field name="name">Main Warehouse - Section B</field>
             <field name="code">MAIN-WH-B</field>
             <field name="description">Primary storage warehouse section B</field>
-            <field name="location_type">warehouse</field>
+            <field name="usage">internal</field>
             <field name="building">Main Warehouse</field>
             <field name="zone">Section B</field>
             <field name="active">True</field>
@@ -170,14 +170,12 @@
             <field name="humidity_controlled">True</field>
             <field name="security_level">level_2</field>
             <field name="max_capacity">5000</field>
-            
-        </record>
 
-        <record id="location_secure_vault" model="records.location">
+        </record>        <record id="location_secure_vault" model="records.location">
             <field name="name">Secure Records Vault</field>
             <field name="code">SECURE-VAULT</field>
             <field name="description">High-security vault for confidential documents</field>
-            <field name="location_type">vault</field>
+            <field name="usage">internal</field>
             <field name="building">Main Building</field>
             <field name="zone">Vault Zone</field>
             <field name="active">True</field>
@@ -185,7 +183,7 @@
             <field name="humidity_controlled">True</field>
             <field name="security_level">level_4</field>
             <field name="max_capacity">1000</field>
-            
+
         </record>
 
         <!-- ===================================================== -->
@@ -196,35 +194,35 @@
             <field name="name">Invoices &amp; Financial</field>
             <field name="code">INV-FIN</field>
             <field name="description">Financial invoices, receipts, and payment records</field>
-            
+
         </record>
 
         <record id="doc_type_payroll" model="records.document.type">
             <field name="name">Payroll &amp; HR Records</field>
             <field name="code">PAY-HR</field>
             <field name="description">Payroll records, employee files, and HR documents</field>
-            
+
         </record>
 
         <record id="doc_type_legal" model="records.document.type">
             <field name="name">Legal &amp; Contracts</field>
             <field name="code">LEGAL</field>
             <field name="description">Legal documents, contracts, and agreements</field>
-            
+
         </record>
 
         <record id="doc_type_work_orders" model="records.document.type">
             <field name="name">Work Orders &amp; Operations</field>
             <field name="code">WORK-OPS</field>
             <field name="description">Work orders, operational records, and maintenance logs</field>
-            
+
         </record>
 
         <record id="doc_type_mixed" model="records.document.type">
             <field name="name">Mixed Business Records</field>
             <field name="code">MIXED</field>
             <field name="description">Various business records and miscellaneous documents</field>
-            
+
         </record>
 
         <!-- ===================================================== -->
