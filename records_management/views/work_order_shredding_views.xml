@@ -352,9 +352,8 @@ lbs
                 <graph string="Shredding Performance" type="bar" stacked="True">
                     <field name="scheduled_date" interval="day" />
                     <field name="actual_duration" type="measure" />
-                    <field name="estimated_duration" type="measure" />
-                    <field name="total_weight" type="measure" />
-                    <field name="container_count" type="measure" />
+                    <field name="actual_weight" type="measure" />
+                    <field name="boxes_count" type="measure" />
                     <field name="state" />
                 </graph>
             </field>
@@ -367,15 +366,12 @@ lbs
                 <pivot string="Shredding Analysis" disable_linking="True">
                     <field name="scheduled_date" interval="month" />
                     <field name="partner_id" />
-                    <field name="coordinator_id" />
-                    <field name="department_id" />
                     <field name="priority" />
-                    <field name="shredding_type" />
+                    <field name="material_type" />
                     <field name="state" />
                     <field name="actual_duration" type="measure" />
-                    <field name="estimated_duration" type="measure" />
-                    <field name="total_weight" type="measure" />
-                    <field name="container_count" type="measure" />
+                    <field name="actual_weight" type="measure" />
+                    <field name="boxes_count" type="measure" />
                 </pivot>
             </field>
         </record>
