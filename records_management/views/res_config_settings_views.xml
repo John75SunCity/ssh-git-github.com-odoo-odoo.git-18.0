@@ -1,87 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Form view for base.rate -->
-    <record id="res_config_settings_view_form" model="ir.ui.view">
-        <field name="name">res.config.settings.view.form</field>
+
+    <!-- Inherit from base res.config.settings form to add Records Management settings -->
+    <record id="res_config_settings_inherit_records_management" model="ir.ui.view">
+        <field name="name">res.config.settings.inherit.records_management</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref=""/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
+            <xpath expr="//form" position="inside">
+                <separator string="Records Management"/>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="rm_module_enabled" widget="boolean_toggle"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="rm_module_enabled" string="Enable Records Management Module"/>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
     </record>
 
-
-<!-- List view for base.rate -->
-    <record id="res_config_settings_view_tree" model="ir.ui.view">
-        <field name="name">res.config.settings.view.tree</field>
-        <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
-
-
-<!-- Search view for base.rate -->
-    <record id="res_config_settings_view_search" model="ir.ui.view">
-        <field name="name">res.config.settings.view.search</field>
-        <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
-
-
-<!-- Kanban view for View -->
-    <record id="res_config_settings_view_kanban" model="ir.ui.view">
-        <field name="name">res.config.settings.view.kanban</field>
-        <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
-
-
-<!-- List view for View -->
-    <record id="res_config_settings_view_graph" model="ir.ui.view">
-        <field name="name">res.config.settings.view.graph</field>
-        <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
-
-
-<!-- List view for View -->
-    <record id="res_config_settings_view_pivot" model="ir.ui.view">
-        <field name="name">res.config.settings.view.pivot</field>
-        <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
-
-
-<!-- List view for View -->
-    <record id="res_config_settings_view_calendar" model="ir.ui.view">
-        <field name="name">res.config.settings.view.calendar</field>
-        <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref=""/>
-        <field name="arch" type="xml">
-        <xpath expr="//field[@name='']" position="after">
-        </xpath>
-    </field>
-    </record>
     </data>
 </odoo>
