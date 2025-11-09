@@ -10,56 +10,46 @@
         <sheet>
             <div class="col-md-6 text-center">
                 <i class="fa fa-key" title="Key Restrictions" aria-hidden="true"/>
-                <h5 class="mt-2">Key Restrictions</h5>
-                <p>Current restrictions and permissions for this key</p>
+                <h5 class="mt-2">Key Restriction Checker</h5>
+                <p>Check customer key issuance permissions and restrictions</p>
             </div>
             <group name="input_section">
-                <group name="employee_info">
-                    <field name="employee_id"/>
-                    <field name="user_id" readonly="1"/>
+                <group name="customer_info">
+                    <field name="customer_name" placeholder="Start typing customer name..."/>
+                    <field name="customer_id" options="{'no_create': True, 'no_edit': True}"/>
                 </group>
-                <group name="key_info">
-                    <field name="key_type"/>
-                    <field name="key_identifier"/>
+                <group name="bin_info">
+                    <field name="bin_identifier" placeholder="Enter bin number or identifier"/>
                 </group>
-            </group>
-            <group name="access_context">
-                <group name="location_dept">
-                    <field name="requested_location_id"/>
-                    <field name="requested_department_id"/>
-                </group>
-                <group name="container_reason">
-                    <field name="container_id"/>
-                    <field name="access_reason"/>
-                </group>
-            </group>
-            <group name="time_info">
-                <field name="requested_start_time"/>
-                <field name="requested_end_time"/>
-            </group>
-            <group name="detailed_info">
-                <field name="detailed_reason"/>
             </group>
 
-            <separator string="Access Decision"/>
-            <group name="decision_section">
+            <separator string="Check Results"/>
+            <group name="results_section">
+                <field name="check_performed" invisible="1"/>
                 <group>
-                    <field name="access_granted" readonly="1"/>
-                    <field name="supervisor_approval_required" readonly="1"/>
+                    <field name="key_allowed" readonly="1"/>
+                    <field name="restriction_reason" readonly="1"/>
                 </group>
                 <group>
-                    <field name="override_available" readonly="1"/>
-                    <field name="restriction_reason" readonly="1" nolabel="1"/>
+                    <field name="restriction_date" readonly="1"/>
+                    <field name="restriction_notes" readonly="1" nolabel="1"/>
                 </group>
             </group>
+
+            <div class="oe_inline">
+                <field name="status_message" readonly="1" nolabel="1"/>
+            </div>
+            <div class="oe_inline">
+                <field name="action_required" readonly="1" nolabel="1"/>
+            </div>
         </sheet>
 
         <footer>
-            <button name="action_grant_access" string="Grant Access" type="object" class="btn-primary" invisible="not access_granted">
-                <i class="fa fa-check" title="Grant Access" aria-hidden="true"/>
+            <button name="action_check_customer" string="Check Customer" type="object" class="btn-primary" invisible="not customer_id">
+                <i class="fa fa-search" title="Check Customer" aria-hidden="true"/>
             </button>
-            <button name="action_deny_access" string="Deny Access" type="object" class="btn-danger" invisible="access_granted">
-                <i class="fa fa-times" title="Deny Access" aria-hidden="true"/>
+            <button name="action_create_unlock_service" string="Create Unlock Service" type="object" class="btn-warning" invisible="not key_allowed">
+                <i class="fa fa-lock-open" title="Create Unlock Service" aria-hidden="true"/>
             </button>
             <button string="Close" class="btn-secondary" special="cancel"/>
         </footer>
