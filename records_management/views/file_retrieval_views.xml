@@ -25,7 +25,7 @@
             <form string="File Retrieval">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button type="action" name="action_start_search" string="Start Search"
+                        <button type="object" name="action_start_retrieval" string="Start Retrieval"
 invisible="status != 'pending'"
                                 class="oe_stat_button" icon="fa-play"/>
                     </div>
