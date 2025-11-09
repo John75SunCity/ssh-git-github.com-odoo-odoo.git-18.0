@@ -11,243 +11,35 @@
                     </header>
 
                     <sheet>
-                        <div class="row mt16 o_settings_container">
-                            <!-- List view for Dashboard -->
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane"/>
-                                <div class="o_setting_right_pane">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <h3>System Overview</h3>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <div class="o_field_widget o_field_integer">
-                                                        <label for="total_active_containers" class="o_form_label">Active Containers</label>
-                                                        <field name="total_active_containers" readonly="1"/>
-                                                    </div>
-                                                    <div class="o_field_widget o_field_integer">
-                                                        <label for="total_stored_documents" class="o_form_label">Stored Documents</label>
-                                                        <field name="total_stored_documents" readonly="1"/>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <div class="o_field_widget o_field_integer">
-                                                        <label for="pending_destruction_requests" class="o_form_label">Pending Destructions</label>
-                                                        <field name="pending_destruction_requests" readonly="1"/>
-                                                    </div>
-                                                    <div class="o_field_widget o_field_float">
-                                                        <label for="compliance_score" class="o_form_label">Compliance Score</label>
-                                                        <field name="compliance_score" readonly="1" widget="percentage"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- List view for Records -->
-                        <h2>Records Management</h2>
-                        <div class="row mt16 o_settings_container">
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="records_auto_barcode_generation"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="records_auto_barcode_generation"/>
-                                    <div class="text-muted">
-                                        Automatically generate barcodes for new containers and documents
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="records_enable_advanced_search"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="records_enable_advanced_search"/>
-                                    <div class="text-muted">
-                                        Enable advanced search and filtering capabilities
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="records_auto_location_assignment"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="records_auto_location_assignment"/>
-                                    <div class="text-muted">
-                                        Automatically assign optimal storage locations for new containers
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="records_enable_container_weight_tracking"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="records_enable_container_weight_tracking"/>
-                                    <div class="text-muted">
-                                        Track container weights for billing and capacity planning
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <label for="records_barcode_nomenclature_id" class="o_form_label">Barcode Nomenclature</label>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <field name="records_barcode_nomenclature_id" class="oe_inline"/>
-                                    <div class="text-muted">
-                                        Barcode nomenclature for records management system
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <label for="records_default_retention_days" class="o_form_label">Default Retention (Days)</label>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <field name="records_default_retention_days" class="oe_inline"/>
-                                    <div class="text-muted">
-                                        Default retention period for documents without specific policy
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <label for="records_default_container_type_id" class="o_form_label">Default Container Type</label>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <field name="records_default_container_type_id" class="oe_inline"/>
-                                    <div class="text-muted">
-                                        Default container type for new storage boxes
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <label for="records_container_capacity_warning_threshold" class="o_form_label">Capacity Warning (%)</label>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <field name="records_container_capacity_warning_threshold" class="oe_inline"/>
-                                    <div class="text-muted">
-                                        Warning threshold for container capacity utilization
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- List view for NAID -->
                         <h2>NAID Compliance &amp; Security</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_left_pane">
-                                    <label for="naid_compliance_level" class="o_form_label">Compliance Level</label>
+                                    <field name="naid_compliance_enabled"/>
                                 </div>
                                 <div class="o_setting_right_pane">
-                                    <field name="naid_compliance_level" class="oe_inline"/>
+                                    <label for="naid_compliance_enabled"/>
                                     <div class="text-muted">
-                                        Level of NAID compliance enforcement
+                                        Enable NAID AAA compliance tracking and reporting
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_left_pane">
-                                    <field name="naid_auto_audit_logging"/>
+                                    <label for="naid_audit_retention_days" class="o_form_label">Audit Retention (Days)</label>
                                 </div>
                                 <div class="o_setting_right_pane">
-                                    <label for="naid_auto_audit_logging"/>
+                                    <field name="naid_audit_retention_days" class="oe_inline"/>
                                     <div class="text-muted">
-                                        Automatically create audit logs for all critical operations
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="naid_require_dual_authorization"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="naid_require_dual_authorization"/>
-                                    <div class="text-muted">
-                                        Require dual authorization for destruction and sensitive operations
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="security_department_isolation"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="security_department_isolation"/>
-                                    <div class="text-muted">
-                                        Isolate data access by department assignments
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="security_require_bin_key_management"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="security_require_bin_key_management"/>
-                                    <div class="text-muted">
-                                        Require physical key management for secure storage bins
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <label for="naid_audit_retention_years" class="o_form_label">Audit Retention (Years)</label>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <field name="naid_audit_retention_years" class="oe_inline"/>
-                                    <div class="text-muted">
-                                        Number of years to retain audit logs for compliance
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_left_pane">
-                                    <field name="security_failed_access_lockout_enabled"/>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="security_failed_access_lockout_enabled"/>
-                                    <div class="text-muted">
-                                        Lock accounts after failed access attempts
-                                    </div>
-                                </div>
-                            </div>
-
-<div class="col-12 col-lg-6 o_setting_box" invisible="security_failed_access_lockout_enabled == False">
-                                <div class="o_setting_left_pane">
-                                    <label for="security_failed_access_attempt_limit" class="o_form_label">Failed Access Limit</label>
-                                </div>
-                                <div class="o_setting_right_pane">
-                                    <field name="security_failed_access_attempt_limit" class="oe_inline"/>
-                                    <div class="text-muted">
-                                        Maximum failed access attempts before lockout
+                                        Number of days to retain NAID audit logs for compliance
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- List view for Pickup -->
+                        <!-- Placeholder for future sections -->                        <!-- List view for Pickup -->
                         <h2>Pickup &amp; Field Service</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
