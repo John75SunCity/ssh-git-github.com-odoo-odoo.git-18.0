@@ -27,7 +27,7 @@
             <field name="arch" type="xml">
                 <form string="Retention Policy Version">
                     <header>
-                        <button name="action_activate" type="object" string="Activate Version" class="oe_highlight" invisible="is_active == True" />
+                        <button name="action_activate" type="object" string="Activate Version" class="oe_highlight" invisible="state == 'active'" />
                         <field name="state" widget="statusbar" statusbar_visible="draft,active,superseded,archived" />
                     </header>
                     <sheet>
@@ -44,82 +44,29 @@
                             </button>
                         </div>
                         <div class="oe_title">
-                            <div class="o_row">
-                                <h1>
-                                    <field name="policy_id" required="1" options="{'no_create': True, 'no_create_edit': True}" />
-                                </h1>
-                                <div class="o_row" style="margin-left: 20px;">
-                                    <h3>
-                                        Version <field name="version_number" required="1" class="oe_inline" />
-                                    </h3>
-                                </div>
-                            </div>
+                            <h1>
+                                <field name="policy_id" required="1" options="{'no_create': True, 'no_create_edit': True}" />
+                            </h1>
                         </div>
                         <group>
                             <group name="version_info">
+                                <field name="version" required="1" />
                                 <field name="effective_date" required="1" />
-                                <field name="expiration_date" />
-                                <field name="is_active" readonly="1" />
-                                <field name="superseded_by" readonly="1" invisible="superseded_by == False" />
+                                <field name="expiry_date" />
+                                <field name="active" />
+                                <field name="superseded_by_id" readonly="1" invisible="superseded_by_id == False" />
                             </group>
                             <group name="approval_info">
-                                <field name="created_by" readonly="1" />
-                                <field name="approved_by" readonly="1" invisible="approved_by == False" />
-                                <field name="approval_date" readonly="1" invisible="approval_date == False" />
-                                <field name="rejection_reason" invisible="state != 'archived'" required="state == 'archived'" />
+                                <field name="created_by_id" readonly="1" />
+                                <field name="created_date" readonly="1" />
+                                <field name="approved_by_id" readonly="1" invisible="approved_by_id == False" />
+                                <field name="approved_date" readonly="1" invisible="approved_date == False" />
                             </group>
                         </group>
-                        <notebook>
-                            <page string="Policy Content" name="content">
-                                <group>
-                                    <group name="retention_info">
-                                        <field name="version" required="1" />
-                                        <field name="state" required="1" />
-                                        <field name="active" />
-                                    </group>
-                                    <group name="compliance_info">
-                                        <field name="is_current" />
-                                        <field name="effective_date" />
-                                        <field name="expiry_date" />
-                                    </group>
-                                </group>
-                                <separator string="Policy Description" />
-                                <field name="description" widget="html" placeholder="Detailed description of retention policy requirements..." />
-                                <separator string="Changes from Previous Version" />
-                                <field name="changes" widget="html" placeholder="Summary of changes made in this version..." />
-                            </page>
-                            <page string="Document Types" name="document_types">
-                                <field name="applicable_document_types" widget="many2many_tags" />
-                                <separator string="Special Handling" />
-                                <field name="special_handling_notes" widget="text" placeholder="Special handling requirements for specific document types..." />
-                            </page>
-                            <page string="Compliance" name="compliance">
-                                <group>
-                                    <group string="Compliance Information">
-                                        <field name="created_date" />
-                                        <field name="approved_date" />
-                                        <field name="effective_date" />
-                                        <field name="expiry_date" />
-                                    </group>
-                                    <group string="Audit Information">
-                                        <field name="created_by_id" />
-                                        <field name="approved_by_id" />
-                                    </group>
-                                </group>
-                            </page>
-                            <page string="Version History" name="history">
-                                <field name="superseded_by_id" readonly="1">
-                                    <list>
-                                        <field name="version" />
-                                        <field name="effective_date" />
-                                        <field name="expiry_date" />
-                                        <field name="created_by_id" />
-                                        <field name="state" widget="badge" />
-                                        <field name="is_current" widget="boolean_toggle" />
-                                    </list>
-                                </field>
-                            </page>
-                        </notebook>
+                        <separator string="Description" />
+                        <field name="description" widget="html" placeholder="Detailed description of retention policy..." />
+                        <separator string="Changes from Previous Version" />
+                        <field name="changes" widget="html" placeholder="Summary of changes made in this version..." />
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" />
@@ -136,24 +83,24 @@
             <field name="arch" type="xml">
                 <search string="Search Retention Policy Versions">
                     <field name="policy_id" />
-                    <field name="version_number" />
-                    <field name="created_by" />
-                    <field name="approved_by" />
+                    <field name="version" />
+                    <field name="created_by_id" />
+                    <field name="approved_by_id" />
                     <separator />
-                    <filter string="Active Versions" name="active" domain="[('is_active', '=', True)]" />
-                    <filter string="Inactive Versions" name="inactive" domain="[('is_active', '=', False)]" />
+                    <filter string="Active Versions" name="active" domain="[('active', '=', True)]" />
+                    <filter string="Inactive Versions" name="inactive" domain="[('active', '=', False)]" />
                     <separator />
                     <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
-                    <filter string="Active" name="active" domain="[('state', '=', 'active')]" />
+                    <filter string="Active" name="active_state" domain="[('state', '=', 'active')]" />
                     <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]" />
                     <separator />
-                    <filter string="Current" name="current" domain="[('effective_date', '&lt;=', context_today()), '|', ('expiration_date', '&gt;=', context_today()), ('expiration_date', '=', False)]" />
+                    <filter string="Current" name="current" domain="[('effective_date', '&lt;=', context_today()), '|', ('expiry_date', '&gt;=', context_today()), ('expiry_date', '=', False)]" />
                     <filter string="Future" name="future" domain="[('effective_date', '&gt;', context_today())]" />
-                    <filter string="Expired" name="expired" domain="[('expiration_date', '&lt;', context_today()), ('expiration_date', '!=', False)]" />
+                    <filter string="Expired" name="expired" domain="[('expiry_date', '&lt;', context_today()), ('expiry_date', '!=', False)]" />
                     <group expand="1" string="Group By">
                         <filter string="Policy" name="group_policy" domain="[]" context="{'group_by': 'policy_id'}" />
                         <filter string="State" name="group_status" domain="[]" context="{'group_by': 'state'}" />
-                        <filter string="Created By" name="group_creator" domain="[]" context="{'group_by': 'created_by'}" />
+                        <filter string="Created By" name="group_creator" domain="[]" context="{'group_by': 'created_by_id'}" />
                         <filter string="Effective Date" name="group_date" domain="[]" context="{'group_by': 'effective_date:month'}" />
                     </group>
                 </search>
@@ -166,12 +113,12 @@
             <field name="arch" type="xml">
                 <kanban class="o_kanban_mobile">
                     <field name="policy_id" />
-                    <field name="version_number" />
+                    <field name="version" />
                     <field name="state" />
-                    <field name="is_active" />
+                    <field name="active" />
                     <field name="effective_date" />
-                    <field name="expiration_date" />
-                    <field name="created_by" />
+                    <field name="expiry_date" />
+                    <field name="created_by_id" />
                     <templates>
                         <t t-name="card">
                             <div class="o_kanban_record o_kanban_global_click">
@@ -183,7 +130,7 @@
                                     </div>
                                     <div class="o_kanban_primary_right">
                                         <span class="badge">
-                                            v<t t-esc="record.version_number.value"/>
+                                            v<t t-esc="record.version.value"/>
                                         </span>
                                     </div>
                                 </div>
@@ -197,14 +144,14 @@
                                     <div class="o_kanban_primary_right">
                                         <span>
                                             <i class="fas fa-user" aria-hidden="true"/>
-                                            <t t-esc="record.created_by.value"/>
+                                            <t t-esc="record.created_by_id.value"/>
                                         </span>
                                     </div>
                                 </div>
                                 <div class="o_kanban_record_bottom">
                                     <div>
-                                        <t t-if="record.is_active.raw_value">Active</t>
-                                        <t t-if="!record.is_active.raw_value">Inactive</t>
+                                        <t t-if="record.active.raw_value">Active</t>
+                                        <t t-if="!record.active.raw_value">Inactive</t>
                                     </div>
                                     <div>
                                         <t t-esc="record.state.value"/>
