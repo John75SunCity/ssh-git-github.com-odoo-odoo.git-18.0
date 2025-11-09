@@ -78,6 +78,9 @@ class WorkOrderShredding(models.Model):
     currency_id = fields.Many2one(comodel_name='res.currency', related='company_id.currency_id')
     active = fields.Boolean(default=True)
 
+    # Computed count fields for stat buttons
+    certificate_count = fields.Integer(string="Certificates Count", compute='_compute_certificate_count', store=False)
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
@@ -101,6 +104,12 @@ class WorkOrderShredding(models.Model):
     def _compute_invoiced(self):
         for order in self:
             order.invoiced = order.state == 'invoiced' or bool(order.invoice_id)
+
+    @api.depends('certificate_id')
+    def _compute_certificate_count(self):
+        """Compute whether a destruction certificate exists"""
+        for order in self:
+            order.certificate_count = 1 if order.certificate_id else 0
 
     # ============================================================================
     # ORM OVERRIDES
@@ -173,6 +182,20 @@ class WorkOrderShredding(models.Model):
         self.message_post(body=_("Work order marked as invoiced."))
 
     def action_view_certificate(self):
+        self.ensure_one()
+        if not self.certificate_id:
+            raise UserError(_("No certificate associated with this work order."))
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Destruction Certificate"),
+            "res_model": "naid.certificate",
+            "res_id": self.certificate_id.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def action_view_certificates(self):
+        """Open the associated destruction certificate"""
         self.ensure_one()
         if not self.certificate_id:
             raise UserError(_("No certificate associated with this work order."))

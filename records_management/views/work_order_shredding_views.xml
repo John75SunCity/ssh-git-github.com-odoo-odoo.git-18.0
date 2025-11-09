@@ -6,10 +6,6 @@
             <field name="model">work.order.shredding</field>
             <field name="arch" type="xml">
                 <list string="Shredding Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'" decoration-danger="priority=='urgent'">
-                    <header>
-                        <button name="action_bulk_confirm" string="Bulk Confirm" type="object" class="btn-primary" />
-                        <button name="action_bulk_start" string="Bulk Start" type="object" class="btn-warning" />
-                    </header>
                     <field name="priority" widget="priority" />
                     <field name="name" />
                     <field name="partner_id" />
@@ -31,27 +27,16 @@
                 <form string="Shredding Work Order">
                     <header>
                         <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'" />
-                        <button name="action_start" string="Start Shredding" type="object" class="btn-warning" invisible="state != 'confirmed'" />
-                        <button name="action_pause" string="Pause" type="object" class="btn-secondary" invisible="state != 'in_progress'" />
-                        <button name="action_resume" string="Resume" type="object" class="btn-warning" invisible="state != 'paused'" />
-                        <button name="action_complete" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'" />
+                        <button name="action_start_work" string="Start Shredding" type="object" class="btn-warning" invisible="state != 'confirmed'" />
+                        <button name="action_complete_work" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'" />
                         <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['draft','confirmed']" />
                         <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'" />
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-archive">
-                                <field name="container_count" string="Containers" widget="statinfo" />
-                            </button>
-                            <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o">
-                                <field name="document_count" string="Documents" widget="statinfo" />
-                            </button>
                             <button class="oe_stat_button" type="object" name="action_view_certificates" icon="fa-certificate">
                                 <field name="certificate_count" string="Certificates" widget="statinfo" />
-                            </button>
-                            <button class="oe_stat_button" type="object" name="action_view_audit_logs" icon="fa-history">
-                                <field name="audit_log_count" string="Audit Logs" widget="statinfo" />
                             </button>
                         </div>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True" />
