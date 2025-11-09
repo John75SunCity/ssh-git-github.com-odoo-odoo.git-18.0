@@ -6,17 +6,15 @@
             <field name="model">work.order.retrieval</field>
             <field name="arch" type="xml">
                 <list string="Work Order Retrievals" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
-                    <field name="name" />
-                    <field name="work_order_id" />
-                    <field name="customer_id" />
-                    <field name="retrieval_date" />
-                    <field name="assigned_technician_id" />
-                    <field name="state" widget="badge" />
-                    <field name="priority" widget="priority" />
-                    <field name="location_id" />
-                    <field name="total_boxes" />
-                    <field name="completed_boxes" />
-                    <field name="activity_ids" widget="list_activity" />
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="customer_id"/>
+                    <field name="scheduled_date"/>
+                    <field name="user_id"/>
+                    <field name="state" widget="badge"/>
+                    <field name="priority" widget="priority"/>
+                    <field name="work_order_type"/>
+                    <field name="item_count"/>
                 </list>
             </field>
         </record>

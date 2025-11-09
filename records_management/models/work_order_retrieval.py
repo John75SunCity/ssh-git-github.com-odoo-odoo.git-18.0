@@ -104,6 +104,30 @@ class WorkOrderRetrieval(models.Model):
     # Related Records
     coordinator_id = fields.Many2one(comodel_name='work.order.coordinator', string='Work Order Coordinator')
 
+    # Retrieval-specific fields
+    retrieval_date = fields.Date(string='Retrieval Date', tracking=True)
+    retrieval_type = fields.Selection([
+        ('temporary', 'Temporary'),
+        ('permanent', 'Permanent'),
+        ('inspection', 'Inspection')
+    ], string='Retrieval Type', default='temporary')
+    assigned_technician_id = fields.Many2one(comodel_name='res.users', string='Assigned Technician')
+    location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
+    pickup_address = fields.Text(string='Pickup Address')
+    total_boxes = fields.Integer(string='Total Boxes', default=0)
+    completed_boxes = fields.Integer(string='Completed Boxes', default=0)
+    progress_percentage = fields.Float(string='Progress (%)', compute='_compute_progress', store=True)
+    start_time = fields.Datetime(string='Start Time')
+    completion_time = fields.Datetime(string='Completion Time')
+    equipment_needed = fields.Text(string='Equipment Needed')
+    access_requirements = fields.Text(string='Access Requirements')
+    safety_notes = fields.Text(string='Safety Notes')
+    retrieval_item_ids = fields.One2many(comodel_name='retrieval.item.line', inverse_name='work_order_id', string='Items to Retrieve')
+    audit_log_ids = fields.One2many(comodel_name='naid.audit.log', inverse_name='work_order_retrieval_id', string='Audit Logs')
+    audit_log_count = fields.Integer(string='Audit Log Count', compute='_compute_audit_log_count', store=True)
+    attachment_ids = fields.Many2many(comodel_name='ir.attachment', string='Attachments')
+    technician_signature = fields.Binary(string='Technician Signature')
+
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
@@ -118,6 +142,21 @@ class WorkOrderRetrieval(models.Model):
                 type_label = dict(record._fields['work_order_type'].selection).get(record.work_order_type, '')
                 parts.append(f"- {type_label}")
             record.display_name = ' '.join(parts)
+
+    @api.depends('completed_boxes', 'total_boxes')
+    def _compute_progress(self):
+        """Compute progress percentage based on completed vs total boxes."""
+        for record in self:
+            if record.total_boxes > 0:
+                record.progress_percentage = (record.completed_boxes / record.total_boxes) * 100
+            else:
+                record.progress_percentage = 0.0
+
+    @api.depends('audit_log_ids')
+    def _compute_audit_log_count(self):
+        """Compute count of related audit logs."""
+        for record in self:
+            record.audit_log_count = len(record.audit_log_ids)
 
     # ============================================================================
     # CONSTRAINTS
@@ -195,7 +234,12 @@ class WorkOrderRetrieval(models.Model):
             raise UserError(_("Only assigned work orders can be started."))
         self.state = 'in_progress'
         self.start_date = fields.Datetime.now()
+        self.start_time = fields.Datetime.now()
         self.message_post(body=_("Work order started."))
+
+    def action_start_retrieval(self):
+        """Start retrieval - alias for action_start"""
+        return self.action_start()
 
     def action_complete(self):
         """Complete the work order"""
@@ -204,6 +248,7 @@ class WorkOrderRetrieval(models.Model):
             raise UserError(_("Only in-progress work orders can be completed."))
         self.state = 'completed'
         self.completion_date = fields.Datetime.now()
+        self.completion_time = fields.Datetime.now()
         if self.start_date:
             start_dt = fields.Datetime.from_string(self.start_date)
             completion_dt = fields.Datetime.from_string(self.completion_date)
@@ -217,6 +262,34 @@ class WorkOrderRetrieval(models.Model):
                 completion_dt = completion_dt.astimezone(UTC)
             self.actual_duration = (completion_dt - start_dt).total_seconds() / 3600.0
         self.message_post(body=_("Work order completed."))
+
+    def action_complete_retrieval(self):
+        """Complete retrieval - alias for action_complete"""
+        return self.action_complete()
+
+    def action_cancel(self):
+        """Cancel the work order"""
+        self.ensure_one()
+        if self.state == 'completed':
+            raise UserError(_("Completed work orders cannot be cancelled."))
+        self.state = 'cancelled'
+        self.message_post(body=_("Work order cancelled."))
+
+    def action_cancel_retrieval(self):
+        """Cancel retrieval - alias for action_cancel"""
+        return self.action_cancel()
+
+    def action_view_audit_logs(self):
+        """View audit logs for this retrieval"""
+        self.ensure_one()
+        return {
+            'name': _('Audit Logs'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'naid.audit.log',
+            'view_mode': 'list,form',
+            'domain': [('work_order_retrieval_id', '=', self.id)],
+            'context': {'default_work_order_retrieval_id': self.id},
+        }
 
     def action_reset_to_draft(self):
         """Reset to draft state"""
