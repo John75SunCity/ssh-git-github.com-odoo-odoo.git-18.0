@@ -98,6 +98,6 @@
     </record>
 
     <!-- Menu (under Reporting) -->
-    <menuitem id="records_management_dashboard_menu" name="Management Dashboards" parent="records_management.menu_records_reporting_root" action="records_management.records_management_dashboard_action" sequence="90"/>
+    <menuitem id="records_management_dashboard_menu" name="Management Dashboards" parent="records_management.menu_records_reporting" action="records_management.records_management_dashboard_action" sequence="90"/>
   </data>
 </odoo>
