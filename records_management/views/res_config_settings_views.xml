@@ -9,14 +9,24 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <separator string="Records Management"/>
+                <separator string="Records Management - NAID Compliance"/>
                 <div class="row mt16 o_settings_container">
                     <div class="col-12 col-lg-6 o_setting_box">
                         <div class="o_setting_left_pane">
-                            <field name="rm_module_enabled" widget="boolean_toggle"/>
+                            <field name="naid_compliance_enabled" widget="boolean_toggle"/>
                         </div>
                         <div class="o_setting_right_pane">
-                            <label for="rm_module_enabled" string="Enable Records Management Module"/>
+                            <label for="naid_compliance_enabled" string="Enable NAID Compliance"/>
+                            <div class="text-muted">Full NAID AAA compliance tracking and reporting</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="naid_audit_retention_days" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="naid_audit_retention_days" string="NAID Audit Retention (Days)"/>
+                            <div class="text-muted">Number of days to retain NAID audit logs</div>
                         </div>
                     </div>
                 </div>
