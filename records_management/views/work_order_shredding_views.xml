@@ -9,11 +9,9 @@
                     <field name="priority" widget="priority" />
                     <field name="name" />
                     <field name="partner_id" />
-                    <field name="coordinator_id" />
                     <field name="scheduled_date" />
-                    <field name="container_count" string="Containers" />
-                    <field name="total_weight" string="Weight (lbs)" sum="Total Weight" />
-                    <field name="estimated_duration" widget="timesheet_uom" />
+                    <field name="boxes_count" string="Boxes" />
+                    <field name="actual_weight" string="Weight (kg)" sum="Total Weight" />
                     <field name="state" widget="badge" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" />
                     <field name="completion_percentage" widget="progressbar" />
                     <field name="company_id" groups="base.group_multi_company" />

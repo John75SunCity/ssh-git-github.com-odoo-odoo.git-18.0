@@ -63,6 +63,7 @@ class WorkOrderShredding(models.Model):
     ], string="Material Type", default='paper')
     estimated_weight = fields.Float(string="Estimated Weight (kg)")
     actual_weight = fields.Float(string="Actual Weight (kg)", tracking=True)
+    boxes_count = fields.Integer(string="Number of Boxes Picked Up", default=0, tracking=True)
 
     special_instructions = fields.Text(string="Special Instructions")
     completion_notes = fields.Text(string="Completion Notes")
@@ -80,6 +81,7 @@ class WorkOrderShredding(models.Model):
 
     # Computed count fields for stat buttons
     certificate_count = fields.Integer(string="Certificates Count", compute='_compute_certificate_count', store=False)
+    completion_percentage = fields.Float(string="Completion %", compute='_compute_completion_percentage', store=False)
 
     # ============================================================================
     # COMPUTE METHODS
@@ -110,6 +112,22 @@ class WorkOrderShredding(models.Model):
         """Compute whether a destruction certificate exists"""
         for order in self:
             order.certificate_count = 1 if order.certificate_id else 0
+
+    @api.depends('state')
+    def _compute_completion_percentage(self):
+        """Compute completion percentage based on state"""
+        state_completion = {
+            'draft': 0,
+            'confirmed': 20,
+            'assigned': 40,
+            'in_progress': 70,
+            'completed': 95,
+            'verified': 100,
+            'invoiced': 100,
+            'cancelled': 0,
+        }
+        for order in self:
+            order.completion_percentage = state_completion.get(order.state, 0)
 
     # ============================================================================
     # ORM OVERRIDES
