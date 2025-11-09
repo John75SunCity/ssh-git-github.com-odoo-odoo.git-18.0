@@ -26,11 +26,10 @@
             <field name="arch" type="xml">
                 <form string="My Shred Bin" create="false" edit="false" delete="false">
                     <header>
-                        <button name="action_customer_mark_full" type="object" string="Mark Full" class="btn-primary" invisible="state != 'in_service'" />
-                        <button name="action_request_upsize" type="object" string="Request Upsize" class="btn-warning" invisible="state != 'in_service'" />
-                        <button name="action_request_downsize" string="Request Smaller Bin" type="object" class="btn-secondary" invisible="can_downsize == False" confirm="Request a smaller bin size? This will create a service request for our team to downgrade your bin." />
-                        <button name="action_request_additional_bins" string="Request Additional Bins" type="object" class="btn-success" invisible="bin_size != '96'" confirm="Request additional bins for your location? Our sales team will contact you to discuss options." />
-                        <field name="state" widget="statusbar" statusbar_visible="in_service,full,collecting" statusbar_colors="{&quot;full&quot;:&quot;red&quot;,&quot;collecting&quot;:&quot;orange&quot;,&quot;in_service&quot;:&quot;green&quot;}" />
+                        <button name="action_mark_full" type="object" string="Mark Full" class="btn-primary" invisible="state != 'in_service'" />
+                        <button name="action_start_collection" type="object" string="Request Collection" class="btn-warning" invisible="state != 'full'" />
+                        <button name="action_complete_service" type="object" string="Complete Service" class="btn-success" invisible="state != 'collecting'" />
+                        <field name="state" widget="statusbar" statusbar_visible="deployed,in_service,full,collecting" statusbar_colors="{&quot;full&quot;:&quot;red&quot;,&quot;collecting&quot;:&quot;orange&quot;,&quot;in_service&quot;:&quot;green&quot;}" />
                     </header>
                     <sheet>
                         <widget name="web_ribbon" title="Collection Requested" bg_color="bg-danger" invisible="needs_collection == False" />
@@ -43,52 +42,42 @@
                             <group string="Bin Information">
                                 <field name="bin_size" readonly="1" />
                                 <field name="customer_location" readonly="1" />
-                                <field name="current_fill_level" widget="progressbar" />
+                                <field name="capacity_pounds" readonly="1" />
+                                <field name="is_locked" readonly="1" />
                                 <field name="needs_collection" readonly="1" />
                             </group>
                             <group string="Service Information">
-                                <field name="days_since_last_service" readonly="1" />
-                                <field name="current_billing_period_services" readonly="1" />
+                                <field name="partner_id" readonly="1" />
+                                <field name="user_id" readonly="1" />
                                 <field name="last_service_date" readonly="1" />
-                            </group>
-                            <group string="Sizing Options" invisible="(can_upsize == False) and (can_downsize == False) and (bin_size != '96')">
-                                <field name="can_upsize" readonly="1" />
-                                <field name="next_size_up" readonly="1" invisible="can_upsize == False" />
-                                <field name="can_downsize" readonly="1" />
-                                <field name="next_size_down" readonly="1" invisible="can_downsize == False" />
+                                <field name="service_count" readonly="1" />
                             </group>
                         </group>
-                        <div class="alert alert-info" role="status" invisible="current_fill_level &lt; 75">
+                        <separator string="Description" />
+                        <field name="description" readonly="1" />
+                        <div class="alert alert-info" role="status" invisible="capacity_pounds &lt; 50">
                             <strong>Collection Notice:</strong> Your bin is getting full. Consider requesting collection when ready.
-                    </div>
+                        </div>
                         <div class="alert alert-success" role="status" invisible="needs_collection == True">
                             <strong>Service Status:</strong> Your bin is in good service. We'll collect it when you request or when it's full.
-                    </div>
+                        </div>
                         <notebook>
-                            <page string="Service History" invisible="current_billing_period_services == 0">
-                                <field name="shredding_service_ids" readonly="1">
+                            <page string="Service History">
+                                <field name="service_ids" readonly="1">
                                     <list>
                                         <field name="name" />
-                                        <field name="service_date" />
-                                        <field name="service_type" />
+                                        <field name="date_start" />
                                         <field name="state" />
-                                        <field name="actual_weight" string="Weight Destroyed" />
-                                    </list>
-                                </field>
-                            </page>
-                            <page string="Collection Requests">
-                                <field name="pickup_request_ids" readonly="1">
-                                    <list>
-                                        <field name="name" />
-                                        <field name="request_date" />
-                                        <field name="urgency" />
-                                        <field name="state" />
-                                        <field name="notes" />
                                     </list>
                                 </field>
                             </page>
                         </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" />
+                        <field name="activity_ids" />
+                        <field name="message_ids" />
+                    </div>
                 </form>
             </field>
         </record>
@@ -126,16 +115,16 @@
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="bin_size" />
-                    <field name="current_fill_level" />
+                    <field name="capacity_pounds" />
                     <field name="needs_collection" />
                     <field name="state" />
                     <field name="service_count" />
                     <field name="customer_location" />
                     <templates>
                         <t t-name="card">
-                            <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.state.raw_value=='full' ? 'border-danger' : record.current_fill_level.raw_value &gt;= 75 ? 'border-warning' : record.state.raw_value=='in_service' ? 'border-success' : record.state.raw_value=='deployed' ? 'border-info' : record.state.raw_value=='maintenance' ? 'border-dark' : 'border-secondary'}">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.state.raw_value=='full' ? 'border-danger' : record.state.raw_value=='in_service' ? 'border-success' : record.state.raw_value=='deployed' ? 'border-info' : record.state.raw_value=='maintenance' ? 'border-dark' : 'border-secondary'}">
                                 <div class="o_kanban_image">
-                                    <i t-attf-class="fa fa-trash fa-2x" t-attf-style="color: #{record.state.raw_value=='full' ? '#dc3545' : record.current_fill_level.raw_value &gt;= 75 ? '#ffc107' : record.state.raw_value=='in_service' ? '#28a745' : record.state.raw_value=='deployed' ? '#007bff' : record.state.raw_value=='maintenance' ? '#6f42c1' : record.state.raw_value=='collecting' ? '#fd7e14' : '#6c757d'};" title="Shred Bin" />
+                                    <i class="fa fa-trash fa-2x" t-attf-style="color: #{record.state.raw_value=='full' ? '#dc3545' : record.state.raw_value=='in_service' ? '#28a745' : record.state.raw_value=='deployed' ? '#007bff' : record.state.raw_value=='maintenance' ? '#6f42c1' : record.state.raw_value=='collecting' ? '#fd7e14' : '#6c757d'};" title="Shred Bin" />
                                 </div>
                                 <div class="oe_kanban_details">
                                     <div class="o_kanban_record_top">
@@ -146,7 +135,6 @@
                                             <br />
                                             <small class="o_kanban_record_subtitle text-muted">
                                                 <field name="partner_id" />
-                                                <field name="customer_location" />
                                             </small>
                                         </div>
                                     </div>
@@ -160,15 +148,12 @@
                                             </div>
                                             <div class="col-6">
                                                 <small>
-                                                    <strong>Fill:</strong>
-                                                    <field name="current_fill_level" />%
-                                            </small>
+                                                    <strong>Capacity:</strong>
+                                                    <field name="capacity_pounds" /> lbs
+                                                </small>
                                             </div>
                                         </div>
-                                        <div class="progress mb-2" style="height: 8px;">
-                                            <div class="progress-bar" role="progressbar" t-attf-style="width: #{record.current_fill_level.raw_value}%;" t-attf-class="#{record.current_fill_level.raw_value &gt;= 90 ? 'bg-danger' : record.current_fill_level.raw_value &gt;= 75 ? 'bg-warning' : record.current_fill_level.raw_value &gt;= 50 ? 'bg-info' : 'bg-success'}" />
-                                        </div>
-                                        <div class="row">
+                                        <div class="row mt-2">
                                             <div class="col-12">
                                                 <span t-attf-class="badge #{record.state.raw_value=='full' ? 'badge-danger' : record.state.raw_value=='in_service' ? 'badge-success' : record.state.raw_value=='deployed' ? 'badge-info' : record.state.raw_value=='maintenance' ? 'badge-secondary' : record.state.raw_value=='collecting' ? 'badge-warning' : 'badge-light'}">
                                                     <field name="state" />
@@ -181,13 +166,12 @@
                                             <small t-if="record.service_count.raw_value &gt; 0">
                                                 <i class="fa fa-scissors text-muted" title="Services" />
                                                 <field name="service_count" /> services
-                                        </small>
+                                            </small>
                                         </div>
                                         <div class="oe_kanban_bottom_right">
                                             <span t-if="record.needs_collection.raw_value" class="badge badge-danger">
-                                                <i class="fa fa-exclamation-triangle" title="Alert" />
-                                            Collection Due
-                                        </span>
+                                                Collection Due
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
