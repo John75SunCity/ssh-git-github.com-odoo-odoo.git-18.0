@@ -9,12 +9,11 @@
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="bin_key_id" />
-                    <field name="requested_date" />
                     <field name="service_date" />
                     <field name="technician_id" />
-                    <field name="state" decoration-success="state=='completed'" decoration-info="state=='confirmed'" decoration-warning="state=='in_progress'" decoration-muted="state=='cancelled'" widget="badge" />
+                    <field name="state" decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-warning="state=='in_progress'" decoration-muted="state=='cancelled'" widget="badge" />
                     <field name="priority" widget="priority" />
-                    <field name="total_cost" widget="monetary" optional="show" />
+                    <field name="unlock_charge" widget="monetary" optional="show" />
                     <field name="company_id" groups="base.group_multi_company" />
                 </list>
             </field>
@@ -28,19 +27,11 @@
                         <button name="action_confirm" type="object" string="Confirm Service" class="oe_highlight" invisible="state != 'draft'" />
                         <button name="action_start_service" type="object" string="Start Service" class="oe_highlight" invisible="state != 'confirmed'" />
                         <button name="action_complete_service" type="object" string="Complete Service" class="oe_highlight" invisible="state != 'in_progress'" />
-                        <button name="action_cancel" type="object" string="Cancel" invisible="state in ['completed', 'cancelled']" />
+                        <button name="action_cancel" type="object" string="Cancel" invisible="state in ['done', 'cancelled']" />
                         <button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state != 'cancelled'" />
-                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed" />
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,done,billed" />
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button name="action_view_audit_logs" type="object" class="oe_stat_button" icon="fa-history">
-                                <field name="audit_log_count" widget="statinfo" string="Audit Logs" />
-                            </button>
-                            <button name="action_view_access_history" type="object" class="oe_stat_button" icon="fa-key">
-                                <field name="access_history_count" widget="statinfo" string="Access History" />
-                            </button>
-                        </div>
                         <div class="oe_title">
                             <label for="name" />
                             <h1>
@@ -49,77 +40,52 @@
                         </div>
                         <group>
                             <group name="service_info" string="Service Information">
-                                <field name="partner_id" options="{'no_create': True, 'no_open': True}" />
-                                <field name="bin_key_id" domain="[('partner_id', '=', partner_id)]" options="{'no_create': True}" />
-                                <field name="service_type" />
+                                <field name="partner_id" />
+                                <field name="bin_key_id" domain="[('partner_id', '=', partner_id)]" />
+                                <field name="department_id" />
                                 <field name="priority" widget="priority" />
-                                <field name="requested_date" />
+                            </group>
+                            <group name="scheduling" string="Schedule &amp; Resources">
                                 <field name="service_date" />
                                 <field name="completion_date" readonly="1" />
-                            </group>
-                            <group name="assignment_info" string="Assignment Information">
-                                <field name="technician_id" domain="[('share', '=', False)]" />
-                                <field name="department_id" />
-                                <field name="location_id" />
-                                <field name="estimated_duration" />
-                                <field name="actual_duration" readonly="1" />
-                                <field name="company_id" groups="base.group_multi_company" />
+                                <field name="technician_id" />
+                                <field name="emergency_access" widget="boolean_toggle" />
                             </group>
                         </group>
                         <notebook>
-                            <page name="service_details" string="Service Details">
+                            <page name="details" string="Details">
                                 <group>
-                                    <group name="unlock_details" string="Unlock Details">
+                                    <group name="reason" string="Unlock Reason">
                                         <field name="unlock_reason" />
-                                        <field name="access_level_required" />
-                                        <field name="emergency_access" widget="boolean_toggle" />
-                                        <field name="authorized_by" required="emergency_access == True" />
-                                        <field name="authorization_reference" />
+                                        <field name="unlock_reason_description" />
                                     </group>
-                                    <group name="verification" string="Verification">
+                                    <group name="service_detail" string="Service Details">
+                                        <field name="unlock_bin_location" />
+                                        <field name="shred_bin_id" />
+                                    </group>
+                                </group>
+                                <separator string="Notes &amp; Items" />
+                                <field name="service_notes" />
+                                <field name="items_retrieved" />
+                            </page>
+                            <page name="verification" string="Verification &amp; Photos">
+                                <group>
+                                    <group name="verification_info" string="Verification">
                                         <field name="identity_verified" widget="boolean_toggle" />
-                                        <field name="verification_method" />
-                                        <field name="verification_reference" />
-                                        <field name="witness_required" widget="boolean_toggle" />
-                                        <field name="witness_id" required="witness_required == True" />
+                                        <field name="witness_id" />
                                     </group>
                                 </group>
-                                <separator string="Service Notes" />
-                                <field name="description" placeholder="Detailed service description and notes..." />
+                                <separator string="Verification Photos" />
+                                <field name="photo_ids" widget="many2many_kanban" />
                             </page>
-                            <page name="security" string="Security &amp; Compliance">
+                            <page name="billing" string="Billing">
                                 <group>
-                                    <group name="security_info" string="Security Information">
-                                        <field name="security_level" />
-                                        <field name="access_code_changed" widget="boolean_toggle" />
-                                        <field name="new_access_code" password="True" invisible="access_code_changed == False" />
-                                        <field name="biometric_update" widget="boolean_toggle" />
-                                        <field name="audit_trail_generated" widget="boolean_toggle" readonly="1" />
+                                    <group name="charges" string="Service Charges">
+                                        <field name="unlock_charge" />
+                                        <field name="billable" />
                                     </group>
-                                    <group name="compliance" string="NAID Compliance">
-                                        <field name="naid_compliant" widget="boolean_toggle" readonly="1" />
-                                        <field name="chain_of_custody_maintained" widget="boolean_toggle" readonly="1" />
-                                        <field name="compliance_officer_id" />
-                                        <field name="compliance_notes" />
-                                    </group>
-                                </group>
-                            </page>
-                            <page name="financial" string="Financial Information">
-                                <group>
-                                    <group name="pricing" string="Service Pricing">
-                                        <field name="service_rate" />
-                                        <field name="emergency_surcharge" invisible="emergency_access == False" />
-                                        <field name="travel_cost" />
-                                        <field name="additional_fees" />
-                                        <field name="total_cost" readonly="1" />
-                                        <!-- Removed always-invisible 'currency_id' column; not needed in unlock service list -->
-                                    </group>
-                                    <group name="billing" string="Billing Information">
-                                        <field name="billing_method" />
-                                        <field name="invoiced" widget="boolean_toggle" readonly="1" />
+                                    <group name="invoice_info" string="Invoice">
                                         <field name="invoice_id" readonly="1" />
-                                        <field name="payment_terms" />
-                                        <field name="billing_notes" />
                                     </group>
                                 </group>
                             </page>
@@ -144,13 +110,10 @@
                     <field name="technician_id" string="Technician" />
                     <field name="department_id" string="Department" />
                     <separator />
-                    <filter name="my_services" string="My Services" domain="[('technician_id', '=', uid)]" />
                     <filter name="emergency" string="Emergency Access" domain="[('emergency_access', '=', True)]" />
                     <filter name="active_services" string="Active Services" domain="[('state', 'in', ['confirmed', 'in_progress'])]" />
-                    <filter name="completed_services" string="Completed" domain="[('state', '=', 'completed')]" />
+                    <filter name="completed_services" string="Completed" domain="[('state', '=', 'done')]" />
                     <separator />
-                    <filter name="today" string="Today" domain="[('service_date', '!=', False)]" />
-                    <filter name="this_week" string="This Week" domain="[('service_date', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d')), ('service_date', '&lt;', (context_today + datetime.timedelta(days=7-context_today.weekday())).strftime('%Y-%m-%d'))]" />
                     <group expand="0" string="Group By">
                         <filter name="group_partner" string="Customer" context="{'group_by': 'partner_id'}" />
                         <filter name="group_technician" string="Technician" context="{'group_by': 'technician_id'}" />
@@ -173,11 +136,10 @@
                     <field name="priority" />
                     <field name="state" />
                     <field name="emergency_access" />
-                    <field name="total_cost" />
-                    <field name="color" />
+                    <field name="unlock_charge" />
                     <templates>
                         <t t-name="card">
-                            <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_dropdown_kanban dropdown">
                                     <a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
                                         <span class="fa fa-ellipsis-v" aria-hidden="true" />
@@ -215,14 +177,11 @@
                                     <div class="oe_kanban_footer">
                                         <div class="oe_kanban_footer_left">
                                             <span class="oe_kanban_record_subtitle">
-                                                <field name="total_cost" widget="monetary" />
+                                                <field name="unlock_charge" widget="monetary" />
                                             </span>
                                         </div>
                                         <div class="oe_kanban_footer_right">
                                             <field name="priority" widget="priority" readonly="1" />
-                                            <div class="oe_kanban_avatar">
-                                                <img t-att-src="kanban_image('res.users', 'image_128', record.technician_id.raw_value)" t-att-title="record.technician_id.value" alt="Technician" />
-                                            </div>
                                         </div>
                                     </div>
                                 </div>

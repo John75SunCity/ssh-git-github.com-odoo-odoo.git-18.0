@@ -51,8 +51,10 @@ class BinKeyUnlockService(models.Model):
     # ============================================================================
     partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True, tracking=True)
     technician_id = fields.Many2one(comodel_name='res.users', string='Technician', tracking=True)
+    department_id = fields.Many2one(comodel_name='records.department', string='Department', tracking=True)
     service_date = fields.Datetime(string='Service Date', default=fields.Datetime.now, tracking=True)
     completion_date = fields.Datetime(string='Completion Date', readonly=True)
+    emergency_access = fields.Boolean(string='Emergency Access', default=False, tracking=True)
     unlock_reason = fields.Selection([
         ('lost_key', 'Lost Key'),
         ('forgotten_code', 'Forgotten Code'),
