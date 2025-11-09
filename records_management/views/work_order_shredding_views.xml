@@ -116,13 +116,13 @@
                 <kanban default_group_by="state" class="o_kanban_small_column">
                     <field name="name" />
                     <field name="partner_id" />
-                    <field name="coordinator_id" />
                     <field name="state" />
                     <field name="priority" />
                     <field name="scheduled_date" />
                     <field name="completion_percentage" />
-                    <field name="container_count" />
-                    <field name="total_weight" />
+                    <field name="boxes_count" />
+                    <field name="actual_weight" />
+                    <field name="material_type" />
                     <templates>
                         <t t-name="card">
                             <div t-attf-class="oe_kanban_card oe_kanban_global_click">
