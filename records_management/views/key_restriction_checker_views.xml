@@ -14,60 +14,55 @@
                 <p>Current restrictions and permissions for this key</p>
             </div>
             <group name="input_section">
-                <group name="customer_info">
-        <field name="customer_name" placeholder="Start typing customer name..."/>
-        <field name="partner_id" options="{'no_create': True, 'no_edit': True}"/>
+                <group name="employee_info">
+                    <field name="employee_id"/>
+                    <field name="user_id" readonly="1"/>
                 </group>
-                <group name="bin_info">
-        <field name="bin_identifier" placeholder="Enter bin number or identifier"/>
+                <group name="key_info">
+                    <field name="key_type"/>
+                    <field name="key_identifier"/>
                 </group>
             </group>
+            <group name="access_context">
+                <group name="location_dept">
+                    <field name="requested_location_id"/>
+                    <field name="requested_department_id"/>
+                </group>
+                <group name="container_reason">
+                    <field name="container_id"/>
+                    <field name="access_reason"/>
+                </group>
+            </group>
+            <group name="time_info">
+                <field name="requested_start_time"/>
+                <field name="requested_end_time"/>
+            </group>
+            <group name="detailed_info">
+                <field name="detailed_reason"/>
+            </group>
 
-        <div class="oe_button_box" name="action_buttons">
-<button name="action_check_customer" string="Check Customer" type="object" class="oe_highlight" invisible="not customer_id">
-    <i class="fa fa-search" title="Search Customer" aria-hidden="true"/>
+            <separator string="Access Decision"/>
+            <group name="decision_section">
+                <group>
+                    <field name="access_granted" readonly="1"/>
+                    <field name="supervisor_approval_required" readonly="1"/>
+                </group>
+                <group>
+                    <field name="override_available" readonly="1"/>
+                    <field name="restriction_reason" readonly="1" nolabel="1"/>
+                </group>
+            </group>
+        </sheet>
 
-Check Status
-</button>
-<button name="action_reset" string="Reset" type="object" class="oe_button" invisible="not check_performed">
-<i class="fa fa-refresh" title="Reset Check" aria-hidden="true"/>
-
-Reset
-</button>
-</div>
-
-<separator string="Check Results" invisible="not check_performed"/>
-
-
-        <group name="results_section" invisible="not check_performed">
-        <field name="status_message" nolabel="1"/>
-        <field name="action_required" nolabel="1"/>
-</group>
-
-        <group name="restriction_details" invisible="key_allowed or not check_performed">
-        <group>
-        <field name="restriction_reason"/>
-        <field name="restriction_date"/>
-</group>
-        <group>
-        <field name="restriction_notes" nolabel="1" placeholder="No additional notes available"/>
-</group>
-</group>
-
-<!-- Hidden fields for conditional logic -->
-    <!-- Technical state flags controlling dynamic wizard result sections -->
-    <field name="check_performed" invisible="1"/>
-    <field name="key_allowed" invisible="1"/>
-</sheet>
-
-<footer>
-<button name="action_create_unlock_service" string="Create Unlock Service" type="object" class="btn-primary" invisible="key_allowed or not check_performed or not bin_identifier">
-    <i class="fa fa-unlock-alt" title="Unlock Service" aria-hidden="true"/>
-
-Create Service Request
-</button>
-<button string="Close" class="btn-secondary" special="cancel"/>
-</footer>
+        <footer>
+            <button name="action_grant_access" string="Grant Access" type="object" class="btn-primary" invisible="not access_granted">
+                <i class="fa fa-check" title="Grant Access" aria-hidden="true"/>
+            </button>
+            <button name="action_deny_access" string="Deny Access" type="object" class="btn-danger" invisible="access_granted">
+                <i class="fa fa-times" title="Deny Access" aria-hidden="true"/>
+            </button>
+            <button string="Close" class="btn-secondary" special="cancel"/>
+        </footer>
 </form>
 </field>
     </record>
