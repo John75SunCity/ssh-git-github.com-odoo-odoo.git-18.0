@@ -24,98 +24,95 @@
             <field name="arch" type="xml">
                 <form string="Work Order Retrieval">
                     <header>
-                        <button name="action_start_retrieval" type="object" string="Start Retrieval" class="oe_highlight" invisible="state != 'draft'" />
-                        <button name="action_complete_retrieval" type="object" string="Complete Retrieval" class="oe_highlight" invisible="state != 'in_progress'" />
-                        <button name="action_cancel_retrieval" type="object" string="Cancel" invisible="state in ('completed', 'cancelled')" />
-                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed" />
+                        <button name="action_start_retrieval" type="object" string="Start Retrieval" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_complete_retrieval" type="object" string="Complete Retrieval" class="oe_highlight" invisible="state != 'in_progress'"/>
+                        <button name="action_cancel_retrieval" type="object" string="Cancel" invisible="state in ('completed', 'cancelled')"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" type="action" name="%(action_records_box)d" icon="fa-archive" context="{'search_default_retrieval_id': active_id}">
-                                <field name="total_boxes" string="Boxes" widget="statinfo" />
-                            </button>
                             <button class="oe_stat_button" type="object" name="action_view_audit_logs" icon="fa-list-alt">
-                                <field name="audit_log_count" string="Audit Logs" widget="statinfo" />
+                                <field name="audit_log_count" string="Audit Logs" widget="statinfo"/>
                             </button>
                         </div>
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True" />
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
                         <div class="oe_title">
-                            <label for="name" class="oe_edit_only" />
+                            <label for="name" class="oe_edit_only"/>
                             <h1>
-                                <field name="name" placeholder="e.g. WOR-2024-001" />
+                                <field name="name" placeholder="e.g. WOR-2024-001"/>
                             </h1>
                         </div>
                         <group>
                             <group name="main_info">
-                                <field name="work_order_id" required="1" />
-                                <field name="customer_id" />
-                                <field name="retrieval_date" required="1" />
-                                <field name="priority" />
-                                <field name="assigned_technician_id" domain="[('share', '=', False)]" />
+                                <field name="partner_id" required="1"/>
+                                <field name="customer_id"/>
+                                <field name="retrieval_date" required="1"/>
+                                <field name="retrieval_type"/>
+                                <field name="priority"/>
+                                <field name="assigned_technician_id" domain="[('share', '=', False)]"/>
                             </group>
                             <group name="location_info">
-                                <field name="location_id" required="1" />
-                                <field name="pickup_address" />
-                                <field name="special_instructions" />
-                                <field name="estimated_duration" />
+                                <field name="location_id" required="1"/>
+                                <field name="pickup_address"/>
+                                <field name="special_instructions"/>
+                                <field name="estimated_duration"/>
                             </group>
                         </group>
                         <group name="progress_info">
                             <group>
-                                <field name="total_boxes" readonly="1" />
-                                <field name="completed_boxes" readonly="1" />
-                                <field name="progress_percentage" widget="progressbar" />
+                                <field name="total_boxes" readonly="1"/>
+                                <field name="completed_boxes" readonly="1"/>
+                                <field name="progress_percentage" widget="progressbar"/>
                             </group>
                             <group>
-                                <field name="start_time" />
-                                <field name="completion_time" />
-                                <field name="actual_duration" />
+                                <field name="start_time"/>
+                                <field name="completion_time"/>
+                                <field name="actual_duration"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Retrieval Details" name="details">
                                 <group>
-                                    <field name="retrieval_type" />
-                                    <field name="equipment_needed" />
-                                    <field name="access_requirements" />
-                                    <field name="safety_notes" />
+                                    <field name="equipment_needed"/>
+                                    <field name="access_requirements"/>
+                                    <field name="safety_notes"/>
                                 </group>
                             </page>
                             <page string="Items to Retrieve" name="items">
                                 <field name="retrieval_item_ids">
                                     <list editable="bottom">
-                                        <field name="box_id" domain="[('location_id', '=', parent.location_id)]" />
-                                        <field name="item_description" />
-                                        <field name="retrieved" widget="boolean_toggle" />
-                                        <field name="retrieval_time" />
-                                        <field name="notes" />
+                                        <field name="box_id" domain="[('location_id', '=', parent.location_id)]"/>
+                                        <field name="item_description"/>
+                                        <field name="retrieved" widget="boolean_toggle"/>
+                                        <field name="retrieval_time"/>
+                                        <field name="notes"/>
                                     </list>
                                 </field>
                             </page>
                             <page string="Audit Trail" name="audit">
                                 <field name="audit_log_ids" readonly="1">
                                     <list>
-                                        <field name="timestamp" />
-                                        <field name="user_id" />
-                                        <field name="action" />
-                                        <field name="details" />
+                                        <field name="timestamp"/>
+                                        <field name="user_id"/>
+                                        <field name="action"/>
+                                        <field name="details"/>
                                     </list>
                                 </field>
                             </page>
                             <page string="Documents" name="documents">
-                                <field name="attachment_ids" widget="many2many_binary" />
+                                <field name="attachment_ids" widget="many2many_binary"/>
                             </page>
                         </notebook>
                         <group name="completion_info" invisible="state != 'completed'">
-                            <field name="completion_notes" />
-                            <field name="customer_signature" widget="signature" />
-                            <field name="technician_signature" widget="signature" />
+                            <field name="completion_notes"/>
+                            <field name="customer_signature" widget="signature"/>
+                            <field name="technician_signature" widget="signature"/>
                         </group>
                     </sheet>
                     <div class="oe_chatter">
-                        <field name="message_follower_ids" />
-                        <field name="activity_ids" />
-                        <field name="message_ids" />
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
                     </div>
                 </form>
             </field>
@@ -125,35 +122,35 @@
             <field name="model">work.order.retrieval</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_small_column">
-                    <field name="name" />
-                    <field name="customer_id" />
-                    <field name="assigned_technician_id" />
-                    <field name="retrieval_date" />
-                    <field name="priority" />
-                    <field name="state" />
-                    <field name="progress_percentage" />
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="assigned_technician_id"/>
+                    <field name="scheduled_date"/>
+                    <field name="priority"/>
+                    <field name="state"/>
+                    <field name="progress_percentage"/>
                     <templates>
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_content">
                                     <div class="o_kanban_record_title">
-                                        <field name="name" />
+                                        <field name="name"/>
                                     </div>
                                     <div class="o_kanban_record_subtitle">
-                                        <field name="customer_id" />
+                                        <field name="partner_id"/>
                                     </div>
                                     <div class="o_kanban_record_bottom">
                                         <div class="oe_kanban_bottom_left">
-                                            <field name="priority" widget="priority" />
-                                            <field name="retrieval_date" />
+                                            <field name="priority" widget="priority"/>
+                                            <field name="scheduled_date"/>
                                         </div>
                                         <div class="oe_kanban_bottom_right">
-                                            <field name="assigned_technician_id" widget="many2one_avatar_user" />
+                                            <field name="assigned_technician_id" widget="many2one_avatar_user"/>
                                         </div>
                                     </div>
                                     <div class="o_kanban_record_top">
                                         <div class="o_kanban_top_right">
-                                            <field name="progress_percentage" widget="progressbar" />
+                                            <field name="progress_percentage" widget="progressbar"/>
                                         </div>
                                     </div>
                                 </div>
@@ -168,29 +165,25 @@
             <field name="model">work.order.retrieval</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name" string="Retrieval" filter_domain="[('name', 'ilike', self)]" />
-                    <field name="customer_id" />
-                    <field name="work_order_id" />
-                    <field name="assigned_technician_id" />
-                    <field name="location_id" />
-                    <separator />
-                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
-                    <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]" />
-                    <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]" />
-                    <separator />
-                    <filter string="High Priority" name="high_priority" domain="[('priority', '=', '3')]" />
-                    <filter string="My Retrievals" name="my_retrievals" domain="[('assigned_technician_id', '=', uid)]" />
-                    <filter string="Today" name="today" domain="[('retrieval_date', '!=', False)]" />
-                    <filter string="This Week" name="this_week" domain="[('retrieval_date', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d')),                                         ('retrieval_date', '&lt;=', (context_today + datetime.timedelta(days=6-context_today.weekday())).strftime('%Y-%m-%d'))]" />
-                    <separator />
-                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]" />
+                    <field name="name" string="Retrieval" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="partner_id"/>
+                    <field name="assigned_technician_id"/>
+                    <field name="location_id"/>
+                    <separator/>
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                    <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <separator/>
+                    <filter string="High Priority" name="high_priority" domain="[('priority', 'in', ['2', '3'])]"/>
+                    <filter string="My Retrievals" name="my_retrievals" domain="[('assigned_technician_id', '=', uid)]"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
                     <group expand="0" string="Group By">
-                        <filter string="State" name="group_state" context="{'group_by': 'state'}" />
-                        <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}" />
-                        <filter string="Technician" name="group_technician" context="{'group_by': 'assigned_technician_id'}" />
-                        <filter string="Retrieval Date" name="group_date" context="{'group_by': 'retrieval_date'}" />
-                        <filter string="Location" name="group_location" context="{'group_by': 'location_id'}" />
-                        <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}" />
+                        <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Technician" name="group_technician" context="{'group_by': 'assigned_technician_id'}"/>
+                        <filter string="Location" name="group_location" context="{'group_by': 'location_id'}"/>
+                        <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
                     </group>
                 </search>
             </field>
@@ -311,11 +304,11 @@
             <field name="model">work.order.retrieval</field>
             <field name="arch" type="xml">
                 <graph string="Retrieval Performance" type="bar" stacked="True">
-                    <field name="scheduled_date" interval="day" />
-                    <field name="actual_duration" type="measure" />
-                    <field name="estimated_duration" type="measure" />
-                    <field name="item_count" type="measure" />
-                    <field name="state" />
+                    <field name="scheduled_date" interval="day"/>
+                    <field name="actual_duration" type="measure"/>
+                    <field name="estimated_duration" type="measure"/>
+                    <field name="item_count" type="measure"/>
+                    <field name="state"/>
                 </graph>
             </field>
         </record>
@@ -325,14 +318,14 @@
             <field name="model">work.order.retrieval</field>
             <field name="arch" type="xml">
                 <pivot string="Retrieval Analysis" disable_linking="True">
-                    <field name="scheduled_date" interval="month" />
-                    <field name="partner_id" />
-                    <field name="state" />
-                    <field name="priority" />
-                    <field name="assigned_team_id" />
-                    <field name="actual_duration" type="measure" />
-                    <field name="estimated_duration" type="measure" />
-                    <field name="item_count" type="measure" />
+                    <field name="scheduled_date" interval="month"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                    <field name="priority"/>
+                    <field name="assigned_team_id"/>
+                    <field name="actual_duration" type="measure"/>
+                    <field name="estimated_duration" type="measure"/>
+                    <field name="item_count" type="measure"/>
                 </pivot>
             </field>
         </record>
