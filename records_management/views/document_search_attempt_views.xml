@@ -84,9 +84,9 @@
             </p>
             </field>
         </record>
-    
-        <menuitem id="menu_document_search_attempt" name="Search Attempts" action="action_document_search_attempt" parent="records_management.menu_document_retrieval_work_order" sequence="20" />
-    
-    
+
+        <!-- Menu item removed - parent menu does not exist. Add this back once parent menu is created -->
+        <!-- <menuitem id="menu_document_search_attempt" name="Search Attempts" action="action_document_search_attempt" parent="records_management.menu_document_retrieval_work_order" sequence="20" /> -->
+
     </data>
 </odoo>
