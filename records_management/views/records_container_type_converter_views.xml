@@ -10,30 +10,15 @@
                 <group>
                     <group>
                         <field name="container_ids" widget="many2many_tags" options="{'no_create': True, 'no_open': True}"/>
-                        <!-- Technical field holding original type for validation; hidden from user -->
-                        <field name="current_type" invisible="1"/>
-                        <label for="current_type" string="Current Type" invisible="current_type == False"/>
-                        <div invisible="current_type == False">
-                            <field name="current_type" readonly="1" nolabel="1"/>
-                        </div>
+                        <field name="container_count" readonly="1"/>
+                        <field name="source_container_type_id" readonly="1"/>
                     </group>
                     <group>
-                        <field name="new_container_type_code" required="1"/>
-                        <field name="update_location"/>
+                        <field name="target_container_type_id" required="1"/>
                     </group>
                 </group>
-
-                <group string="Conversion Summary">
-                    <field name="summary_line" nolabel="1"/>
-                </group>
-
-                <group string="Optional Information">
-                    <field name="reason" placeholder="Why are you converting these containers? (Optional)"/>
-                </group>
-
                 <footer>
                     <button name="action_convert_containers" string="Convert Containers" type="object" class="btn-primary"/>
-                    <button name="action_preview_changes" string="Preview Changes" type="object" class="btn-secondary"/>
                     <button string="Cancel" class="btn-default" special="cancel"/>
                 </footer>
             </form>
