@@ -68,12 +68,12 @@
         <field name="name">customer.portal.diagram.view.technical</field>
         <field name="model">customer.portal.diagram</field>
         <field name="arch" type="xml">
-        <tree>
+        <list>
     <!-- Technical JSON/layout fields - stored for client rendering logic; intentionally hidden from UI -->
     <field name="diagram_data" invisible="1"/>
     <field name="diagram_stats" invisible="1"/>
     <field name="layout_type" invisible="1"/>
-        </tree>
+        </list>
     </field>
     </record>
 
