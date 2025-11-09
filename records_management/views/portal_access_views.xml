@@ -123,7 +123,7 @@
     <!-- Menu Item -->
     <menuitem id="menu_portal_access_log"
               name="Portal Access Log"
-              parent="records_management.menu_settings_records"
+              parent="records_management.menu_records_configuration"
               action="action_portal_access_log"
               sequence="100"
               groups="base.group_system"/>
