@@ -16,12 +16,12 @@
                 <group>
                     <group string="Feature Settings">
                         <field name="enable_records_management" widget="boolean_toggle"/>
-                        <field name="enable_walk_in_service" widget="boolean_toggle" 
+                        <field name="enable_walk_in_service" widget="boolean_toggle"
                             invisible="not enable_records_management"/>
-                        <field name="enable_pos_customer_history" widget="boolean_toggle" 
+                        <field name="enable_pos_customer_history" widget="boolean_toggle"
                             invisible="not enable_records_management"/>
                     </group>
-                    <group string="Service Configuration" 
+                    <group string="Service Configuration"
                         invisible="not enable_records_management">
                         <field name="destruction_service_product_id"/>
                         <field name="pickup_request_product_id"/>
@@ -29,7 +29,7 @@
                     </group>
                 </group>
 
-                <separator string="Walk-In Customer Configuration" 
+                <separator string="Walk-In Customer Configuration"
                     invisible="not enable_walk_in_service"/>
                 <group invisible="not enable_walk_in_service">
                     <group string="Customer Setup">
@@ -71,7 +71,7 @@
     <menuitem
         id="menu_pos_config_records_management"
         name="POS Configurations"
-        parent="records_management.menu_records_management_portal"
+        parent="records_management.menu_records_operations"
         action="action_pos_config_records_management"
         groups="point_of_sale.group_pos_manager,records_management.group_records_manager"
         sequence="30"/>
