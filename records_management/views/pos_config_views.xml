@@ -2,33 +2,35 @@
 <odoo>
     <data>
 
-    <!-- ============================================================================
-         POS CONFIG VIEWS - Records Management Integration
-         Properly extends pos.config with only valid Records Management fields.
-         ============================================================================ -->
+    <!-- POS CONFIG VIEWS - Records Management Integration -->
+    <!-- Extends pos.config with only valid Records Management fields -->
 
-    <!-- INHERITED FORM VIEW - Add Records Management section at the end -->
+    <!-- INHERITED FORM VIEW - Add Records Management section -->
     <record id="pos_config_form_inherit_records_management" model="ir.ui.view">
         <field name="name">pos.config.form.inherit.records_management</field>
         <field name="model">pos.config</field>
         <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <separator string="🏪 Records Management Integration"/>
+                <separator string="Records Management Integration"/>
                 <group>
                     <group string="Feature Settings">
                         <field name="enable_records_management" widget="boolean_toggle"/>
-                        <field name="enable_walk_in_service" widget="boolean_toggle" invisible="not enable_records_management"/>
-                        <field name="enable_pos_customer_history" widget="boolean_toggle" invisible="not enable_records_management"/>
+                        <field name="enable_walk_in_service" widget="boolean_toggle" 
+                            invisible="not enable_records_management"/>
+                        <field name="enable_pos_customer_history" widget="boolean_toggle" 
+                            invisible="not enable_records_management"/>
                     </group>
-                    <group string="Service Configuration" invisible="not enable_records_management">
-                        <field name="destruction_service_product_id" invisible="not enable_records_management"/>
-                        <field name="pickup_request_product_id" invisible="not enable_records_management"/>
-                        <field name="default_destruction_location_id" invisible="not enable_records_management"/>
+                    <group string="Service Configuration" 
+                        invisible="not enable_records_management">
+                        <field name="destruction_service_product_id"/>
+                        <field name="pickup_request_product_id"/>
+                        <field name="default_destruction_location_id"/>
                     </group>
                 </group>
 
-                <separator string="Walk-In Customer Configuration" invisible="not enable_walk_in_service"/>
+                <separator string="Walk-In Customer Configuration" 
+                    invisible="not enable_walk_in_service"/>
                 <group invisible="not enable_walk_in_service">
                     <group string="Customer Setup">
                         <field name="walk_in_customer_id"/>
@@ -43,56 +45,15 @@
         </field>
     </record>
 
-    <!-- INHERITED KANBAN VIEW - Add Records Management fields to kanban -->
-    <record id="pos_config_kanban_inherit_records_management" model="ir.ui.view">
-        <field name="name">pos.config.kanban.inherit.records_management</field>
-        <field name="model">pos.config</field>
-        <field name="inherit_id" ref="point_of_sale.pos_config_kanban_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//kanban" position="inside">
-                <field name="enable_records_management"/>
-                <field name="enable_walk_in_service"/>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- INHERITED TREE/LIST VIEW - Add Records Management columns -->
-    <record id="pos_config_tree_inherit_records_management" model="ir.ui.view">
-        <field name="name">pos.config.tree.inherit.records_management</field>
-        <field name="model">pos.config</field>
-        <field name="inherit_id" ref="point_of_sale.pos_config_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//tree/field[last()]" position="after">
-                <field name="enable_records_management" widget="boolean"/>
-                <field name="enable_walk_in_service" widget="boolean" invisible="not enable_records_management"/>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- INHERITED SEARCH VIEW - Add Records Management filters -->
-    <record id="pos_config_search_inherit_records_management" model="ir.ui.view">
-        <field name="name">pos.config.search.inherit.records_management</field>
-        <field name="model">pos.config</field>
-        <field name="inherit_id" ref="point_of_sale.pos_config_search_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//search" position="inside">
-                <separator/>
-                <filter string="Records Management Enabled" name="records_mgmt_enabled" domain="[('enable_records_management', '=', True)]"/>
-                <filter string="Walk-In Service Enabled" name="walk_in_enabled" domain="[('enable_walk_in_service', '=', True)]"/>
-            </xpath>
-        </field>
-    </record>
-
     <!-- ACTION - Records Management POS Configurations -->
     <record id="action_pos_config_records_management" model="ir.actions.act_window">
-        <field name="name">🏪 POS Configurations (Records Management)</field>
+        <field name="name">POS Configurations (Records Management)</field>
         <field name="res_model">pos.config</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="search_view_id" ref="point_of_sale.pos_config_search_view"/>
-        <field name="context">{'search_default_records_mgmt_enabled': 1, 'default_enable_records_management': True}</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'default_enable_records_management': True}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                🏪 Configure Point of Sale systems with Records Management integration!
+                Configure Point of Sale systems with Records Management integration!
             </p>
             <p>
                 Set up POS terminals to process Records Management services including:
