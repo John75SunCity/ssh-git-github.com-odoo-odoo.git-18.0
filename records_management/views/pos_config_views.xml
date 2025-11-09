@@ -44,37 +44,5 @@
             </xpath>
         </field>
     </record>
-
-    <!-- ACTION - Records Management POS Configurations -->
-    <record id="action_pos_config_records_management" model="ir.actions.act_window">
-        <field name="name">POS Configurations (Records Management)</field>
-        <field name="res_model">pos.config</field>
-        <field name="view_mode">kanban,tree,form</field>
-        <field name="context">{'default_enable_records_management': True}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Configure Point of Sale systems with Records Management integration!
-            </p>
-            <p>
-                Set up POS terminals to process Records Management services including:
-            </p>
-            <ul>
-                <li>Walk-in customer service for document pickup and destruction</li>
-                <li>On-the-spot destruction services</li>
-                <li>Document handling and tracking</li>
-                <li>Integration with customer records and invoicing</li>
-            </ul>
-        </field>
-    </record>
-
-    <!-- MENU ITEM - POS Configuration (Records Management) -->
-    <menuitem
-        id="menu_pos_config_records_management"
-        name="POS Configurations"
-        parent="records_management.menu_records_operations"
-        action="action_pos_config_records_management"
-        groups="point_of_sale.group_pos_manager,records_management.group_records_manager"
-        sequence="30"/>
-
     </data>
 </odoo>
