@@ -162,15 +162,15 @@
                                             <span t-if="record.emergency_access.raw_value" class="fa fa-exclamation-triangle text-danger" title="Emergency Access" />
                                         </strong>
                                         <div class="o_kanban_record_subtitle">
-                                            <i class="fa fa-user" aria-hidden="true" />
+                                            <i class="fa fa-user" aria-hidden="true" title="Customer" />
                                             <field name="partner_id" />
                                         </div>
                                         <div class="o_kanban_record_subtitle" t-if="record.technician_id.raw_value">
-                                            <i class="fa fa-wrench" aria-hidden="true" />
+                                            <i class="fa fa-wrench" aria-hidden="true" title="Technician" />
                                             <field name="technician_id" />
                                         </div>
                                         <div class="o_kanban_record_subtitle" t-if="record.service_date.raw_value">
-                                            <i class="fa fa-calendar" aria-hidden="true" />
+                                            <i class="fa fa-calendar" aria-hidden="true" title="Service Date" />
                                             <field name="service_date" />
                                         </div>
                                     </div>
