@@ -340,7 +340,6 @@
         "views/scan_retrieval_item_views.xml",
         "views/scan_retrieval_views.xml",
         "views/scan_retrieval_work_order_views.xml",
-        "views/serial_number_views.xml",
         "views/service_item_views.xml",
         "views/shredding_bin_views.xml",
         "views/shredding_rate_views.xml",
