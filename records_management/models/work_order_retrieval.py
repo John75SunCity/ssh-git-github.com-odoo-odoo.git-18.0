@@ -106,11 +106,6 @@ class WorkOrderRetrieval(models.Model):
 
     # Retrieval-specific fields
     retrieval_date = fields.Date(string='Retrieval Date', tracking=True)
-    retrieval_type = fields.Selection([
-        ('temporary', 'Temporary'),
-        ('permanent', 'Permanent'),
-        ('inspection', 'Inspection')
-    ], string='Retrieval Type', default='temporary')
     assigned_technician_id = fields.Many2one(comodel_name='res.users', string='Assigned Technician')
     location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
     pickup_address = fields.Text(string='Pickup Address')

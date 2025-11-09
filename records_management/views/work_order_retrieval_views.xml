@@ -31,9 +31,6 @@
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" type="object" name="action_view_audit_logs" icon="fa-list-alt">
-                                <field name="audit_log_count" string="Audit Logs" widget="statinfo"/>
-                            </button>
                         </div>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
                         <div class="oe_title">

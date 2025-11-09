@@ -29,7 +29,7 @@ class RetrievalItemLine(models.Model):
     item_description = fields.Char(string='Item Description')
     
     # Retrieval status
-    retrieved = fields.Boolean(string='Retrieved', default=False, tracking=True)
+    retrieved = fields.Boolean(string='Retrieved', default=False)
     retrieval_time = fields.Datetime(string='Retrieval Time')
     notes = fields.Text(string='Notes')
 
