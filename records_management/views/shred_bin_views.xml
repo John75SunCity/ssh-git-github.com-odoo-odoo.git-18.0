@@ -4,7 +4,7 @@
         <record id="shred_bin_view_tree" model="ir.ui.view">
             <field name="model">shred.bin</field>
             <field name="arch" type="xml">
-                <list string="Customer Shred Bins" decoration-danger="state=='full'" decoration-warning="current_fill_level &amp;gt;= 75 and state=='in_service'" decoration-success="state=='in_service' and current_fill_level &amp;lt; 75" decoration-info="state=='deployed'" decoration-muted="state=='retired'" decoration-bf="state=='maintenance'" class="o_list_view_shred_bins">
+                <list string="Customer Shred Bins" decoration-danger="state=='full'" decoration-warning="current_fill_level >= 75 and state=='in_service'" decoration-success="state=='in_service' and current_fill_level &lt; 75" decoration-info="state=='deployed'" decoration-muted="state=='retired'" decoration-bf="state=='maintenance'" class="o_list_view_shred_bins">
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="bin_size" />
