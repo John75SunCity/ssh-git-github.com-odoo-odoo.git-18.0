@@ -7,22 +7,32 @@
             <field name="arch" type="xml">
                 <form string="SMS Validation">
                     <header>
-                        <button name="action_send_sms" type="object" string="Send SMS" class="btn-primary" invisible="is_validated == True" />
-                        <field name="is_validated" widget="boolean_toggle" />
+                        <button name="action_send_sms" type="object" string="Send SMS" class="btn-primary" invisible="state != 'draft'" />
+                        <button name="action_cancel" type="object" string="Cancel" invisible="state == 'cancelled'" />
+                        <field name="state" widget="statusbar" />
                     </header>
                     <sheet>
+                        <h1><field name="name" /></h1>
                         <group>
-                            <group string="Basic Information">
-                                <field name="name" />
-                                <field name="move_id" />
-                                <field name="picking_id" />
-                                <field name="user_id" />
+                            <group string="Stock Move">
+                                <field name="stock_move_id" />
+                                <field name="partner_id" />
                             </group>
-                            <group string="Validation Details">
-                                <field name="sms_code" />
+                            <group string="Status">
+                                <field name="is_validated" />
+                                <field name="state" />
+                            </group>
+                        </group>
+                        <group>
+                            <group string="SMS Details">
+                                <field name="phone_number" />
+                                <field name="sms_message" />
+                                <field name="sms_sent_date" />
+                            </group>
+                            <group string="Validation">
+                                <field name="validation_code" />
                                 <field name="validation_date" />
-                                <field name="company_id" groups="base.group_multi_company" />
-                                <field name="active" />
+                                <field name="validated_by_id" />
                             </group>
                         </group>
                     </sheet>
@@ -40,11 +50,12 @@
             <field name="arch" type="xml">
                 <list string="SMS Validations" decoration-success="is_validated == True" decoration-warning="is_validated == False">
                     <field name="name" />
-                    <field name="picking_id" />
-                    <field name="user_id" />
+                    <field name="stock_move_id" />
+                    <field name="partner_id" />
+                    <field name="phone_number" />
+                    <field name="state" />
                     <field name="is_validated" widget="boolean_toggle" />
                     <field name="validation_date" />
-                    <field name="company_id" groups="base.group_multi_company" />
                 </list>
             </field>
         </record>
@@ -54,17 +65,18 @@
             <field name="arch" type="xml">
                 <search string="Search SMS Validations">
                     <field name="name" />
-                    <field name="picking_id" />
-                    <field name="user_id" />
+                    <field name="stock_move_id" />
+                    <field name="partner_id" />
+                    <field name="phone_number" />
                     <filter string="Validated" name="validated" domain="[('is_validated', '=', True)]" />
                     <filter string="Pending" name="pending" domain="[('is_validated', '=', False)]" />
+                    <filter string="Sent" name="sent" domain="[('state', '=', 'sent')]" />
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
                     <separator />
-                    <filter string="Active" name="active" domain="[('active', '=', True)]" />
                     <group expand="0" string="Group By">
-                        <filter string="User" name="group_user" context="{'group_by': 'user_id'}" />
-                        <filter string="Transfer" name="group_picking" context="{'group_by': 'picking_id'}" />
-                        <filter string="Validation Status" name="group_status" context="{'group_by': 'is_validated'}" />
-                        <filter string="Company" name="group_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company" />
+                        <filter string="Partner" name="group_partner" context="{'group_by': 'partner_id'}" />
+                        <filter string="Status" name="group_state" context="{'group_by': 'state'}" />
+                        <filter string="Validation Status" name="group_validation" context="{'group_by': 'is_validated'}" />
                     </group>
                 </search>
             </field>
