@@ -232,7 +232,7 @@
     <!-- Shredding Inventory moved to Inventory menu -->
     <menuitem id="menu_shredding_inventory_root" name="Shredding Inventory" parent="records_management.menu_records_inventory" sequence="30" />
 
-    <menuitem id="menu_shredding_inventory_items" name="Inventory Items" parent="records_management.menu_shredding_inventory_root" action="action_shredding_inventory_item" sequence="10" />
+    <menuitem id="menu_shredding_inventory_items" name="Inventory Items" parent="records_management.menu_shredding_inventory_root" action="records_management.shredding_inventory_item_action" sequence="10" />
 
     <menuitem id="menu_shredding_picklist_items" name="Picklist Items" parent="records_management.menu_shredding_inventory_root" action="action_shredding_picklist_item" sequence="20" />
 
