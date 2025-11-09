@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data>
         <!-- List View -->
         <record id="document_search_attempt_view_list" model="ir.ui.view">
             <field name="name">document.search.attempt.view.list</field>
