@@ -123,8 +123,6 @@ class WorkOrderRetrieval(models.Model):
     access_requirements = fields.Text(string='Access Requirements')
     safety_notes = fields.Text(string='Safety Notes')
     retrieval_item_ids = fields.One2many(comodel_name='retrieval.item.line', inverse_name='work_order_id', string='Items to Retrieve')
-    audit_log_ids = fields.One2many(comodel_name='naid.audit.log', inverse_name='work_order_retrieval_id', string='Audit Logs')
-    audit_log_count = fields.Integer(string='Audit Log Count', compute='_compute_audit_log_count', store=True)
     attachment_ids = fields.Many2many(comodel_name='ir.attachment', string='Attachments')
     technician_signature = fields.Binary(string='Technician Signature')
 
@@ -151,12 +149,6 @@ class WorkOrderRetrieval(models.Model):
                 record.progress_percentage = (record.completed_boxes / record.total_boxes) * 100
             else:
                 record.progress_percentage = 0.0
-
-    @api.depends('audit_log_ids')
-    def _compute_audit_log_count(self):
-        """Compute count of related audit logs."""
-        for record in self:
-            record.audit_log_count = len(record.audit_log_ids)
 
     # ============================================================================
     # CONSTRAINTS
