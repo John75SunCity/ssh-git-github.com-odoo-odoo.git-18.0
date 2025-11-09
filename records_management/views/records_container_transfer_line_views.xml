@@ -6,7 +6,11 @@
             <field name="model">records.container.transfer.line</field>
             <field name="arch" type="xml">
                 <list>
-                    <field name="name" />
+                    <field name="transfer_id" />
+                    <field name="container_id" />
+                    <field name="from_location_id" />
+                    <field name="to_location_id" />
+                    <field name="state" />
                 </list>
             </field>
         </record>
@@ -16,12 +20,13 @@
             <field name="arch" type="xml">
                 <form string="Records Container Transfer Line">
                     <sheet>
-                        <div class="oe_title">
-                            <label for="name" />
-                            <h1>
-                                <field name="name" placeholder="Name..." />
-                            </h1>
-                        </div>
+                        <group>
+                            <field name="transfer_id" />
+                            <field name="container_id" />
+                            <field name="from_location_id" />
+                            <field name="to_location_id" />
+                            <field name="state" />
+                        </group>
                     </sheet>
                 </form>
             </field>
@@ -31,8 +36,15 @@
             <field name="model">records.container.transfer.line</field>
             <field name="arch" type="xml">
                 <search>
+                    <field name="container_id" />
+                    <field name="transfer_id" />
+                    <separator/>
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]" />
+                    <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]" />
+                    <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]" />
                     <group expand="1" string="Group By">
-                        <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}" />
+                        <filter string="Transfer" name="transfer_group_by" context="{'group_by':'transfer_id'}" />
+                        <filter string="State" name="state_group_by" context="{'group_by':'state'}" />
                     </group>
                 </search>
             </field>
