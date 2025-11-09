@@ -30,18 +30,16 @@
                     <group name="configuration" string="Configuration">
         <field name="layout_type"/>
         <field name="show_access_rights"/>
-        <field name="show_messaging"/>
                     </group>
                 </group>
 
                 <group string="Search &amp;amp; Filters">
                     <group>
         <field name="search_query" placeholder="Search nodes and edges..."/>
-        <field name="search_user_id" domain="[('company_id', '=', company_id)]"/>
+        <field name="search_partner_id"/>
                     </group>
                     <group>
-        <field name="search_company_id"/>
-        <field name="search_department_id" domain="[('company_id', '=', company_id)]"/>
+        <field name="search_department_id" domain="[('partner_id', '=', search_partner_id)]"/>
                     </group>
                 </group>
 
@@ -51,8 +49,7 @@
                     </page>
                     <page string="Advanced Settings" name="advanced">
                         <group>
-        <field name="restricted_models" placeholder="model.name1,model.name2"/>
-        <field name="allowed_user_ids" widget="many2many_tags" domain="[('company_id', '=', company_id)]"/>
+        <field name="diagram_data" widget="text" readonly="1"/>
                         </group>
                     </page>
                 </notebook>
@@ -66,25 +63,23 @@
     </field>
     </record>
 
-<!-- List view for Custom -->
-    <record id="customer_portal_diagram_view_tree" model="ir.ui.view">
-        <field name="name">customer.portal.diagram.view.tree</field>
+<!-- Technical view for stored computation fields -->
+    <record id="customer_portal_diagram_view_technical" model="ir.ui.view">
+        <field name="name">customer.portal.diagram.view.technical</field>
         <field name="model">customer.portal.diagram</field>
         <field name="arch" type="xml">
-        <customer_portal_diagram>
+        <tree>
     <!-- Technical JSON/layout fields - stored for client rendering logic; intentionally hidden from UI -->
-    <field name="node_data" invisible="1"/>
-    <field name="edge_data" invisible="1"/>
+    <field name="diagram_data" invisible="1"/>
     <field name="diagram_stats" invisible="1"/>
-    <field name="show_messaging" invisible="1"/>
     <field name="layout_type" invisible="1"/>
-        </customer_portal_diagram>
+        </tree>
     </field>
     </record>
 
 <!-- List view for base.rate -->
-    <record id="customer_portal_diagram_view_tree" model="ir.ui.view">
-        <field name="name">customer.portal.diagram.view.tree</field>
+    <record id="customer_portal_diagram_view_list" model="ir.ui.view">
+        <field name="name">customer.portal.diagram.view.list</field>
         <field name="model">customer.portal.diagram</field>
         <field name="arch" type="xml">
         <list string="Portal Diagrams" create="true" delete="true">
@@ -92,7 +87,6 @@
         <field name="user_id"/>
         <field name="company_id"/>
         <field name="show_access_rights"/>
-        <field name="show_messaging"/>
         <field name="layout_type"/>
         </list>
     </field>
@@ -110,13 +104,11 @@
         <field name="search_query" string="Search Query"/>
 
             <filter string="My Diagrams" name="my_diagrams" domain="[('user_id', '=', uid)]"/>
-            <filter string="With Messaging" name="with_messaging" domain="[('show_messaging', '=', True)]"/>
             <filter string="With Access Rights" name="with_access" domain="[('show_access_rights', '=', True)]"/>
 
             <separator/>
             <filter string="Hierarchical Layout" name="hierarchical" domain="[('layout_type', '=', 'hierarchical')]"/>
-            <filter string="Network Layout" name="network" domain="[('layout_type', '=', 'network')]"/>
-            <filter string="Circular Layout" name="circular" domain="[('layout_type', '=', 'circular')]"/>
+            <filter string="Force Directed Layout" name="force_directed" domain="[('layout_type', '=', 'force_directed')]"/>
 
             <group expand="0" string="Group By">
                 <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
