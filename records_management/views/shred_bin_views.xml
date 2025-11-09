@@ -4,13 +4,13 @@
         <record id="shred_bin_view_tree" model="ir.ui.view">
             <field name="model">shred.bin</field>
             <field name="arch" type="xml">
-                <list string="Customer Shred Bins" decoration-danger="state=='full'" decoration-warning="current_fill_level >= 75 and state=='in_service'" decoration-success="state=='in_service' and current_fill_level &lt; 75" decoration-info="state=='deployed'" decoration-muted="state=='retired'" decoration-bf="state=='maintenance'" class="o_list_view_shred_bins">
+                <list string="Customer Shred Bins" decoration-danger="state=='full'" decoration-warning="capacity_pounds >= 75 and state=='in_service'" decoration-success="state=='in_service' and capacity_pounds &lt; 75" decoration-info="state=='deployed'" decoration-muted="state=='retired'" decoration-bf="state=='maintenance'" class="o_list_view_shred_bins">
                     <field name="name" />
                     <field name="partner_id" />
                     <field name="bin_size" />
                     <field name="customer_location" />
                     <field name="state" />
-                    <field name="current_fill_level" widget="progressbar" />
+                    <field name="capacity_pounds" />
                     <!-- Technical scheduling flag used for batch planning; hidden from direct editing -->
                     <field name="needs_collection" invisible="1" />
                     <field name="last_service_date" />
