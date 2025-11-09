@@ -1,60 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- List view for base.rate -->
-    <record id="shredding_bin_view_tree" model="ir.ui.view">
-        <field name="name">shredding.service.bin.view.tree</field>
-        <field name="model">shredding.service.bin</field>
-        <field name="arch" type="xml">
-        <list>
-        <field name="name"/>
-        </list>
-    </field>
-    </record>
+        <!-- List View -->
+        <record id="shredding_bin_view_tree" model="ir.ui.view">
+            <field name="name">shredding.service.bin.view.tree</field>
+            <field name="model">shredding.service.bin</field>
+            <field name="arch" type="xml">
+                <list decoration-success="current_fill_level == 'empty'" decoration-warning="current_fill_level == 'full'">
+                    <field name="barcode" widget="barcode"/>
+                    <field name="bin_size" widget="badge"/>
+                    <field name="current_fill_level" widget="badge"/>
+                    <field name="shredding_service_id"/>
+                    <field name="current_customer_id"/>
+                    <field name="last_service_date"/>
+                    <field name="total_services_count"/>
+                </list>
+            </field>
+        </record>
 
-<!-- Form view for base.rate -->
-    <record id="shredding_bin_view_form" model="ir.ui.view">
-        <field name="name">shredding.service.bin.view.form</field>
-        <field name="model">shredding.service.bin</field>
-        <field name="arch" type="xml">
-        <form string="Shredding Bin">
-            <sheet>
-                <div class="oe_title">
-                    <label for="name"/>
-                    <h1>
-        <field name="name" placeholder="Name..."/>
-                    </h1>
-                </div>
-            </sheet>
-        </form>
-    </field>
-    </record>
+        <!-- Form View -->
+        <record id="shredding_bin_view_form" model="ir.ui.view">
+            <field name="name">shredding.service.bin.view.form</field>
+            <field name="model">shredding.service.bin</field>
+            <field name="arch" type="xml">
+                <form string="Shredding Service Bin">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="barcode" placeholder="Barcode..." widget="barcode"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="main_info" string="Bin Information">
+                                <field name="bin_size" widget="badge"/>
+                                <field name="current_fill_level" widget="badge"/>
+                                <field name="barcode_scan_status"/>
+                                <field name="shredding_service_id"/>
+                                <field name="current_work_order_id"/>
+                            </group>
+                            <group name="customer_dept" string="Customer and Department">
+                                <field name="current_customer_id"/>
+                                <field name="current_department_id"/>
+                                <field name="last_scan_customer_id"/>
+                                <field name="last_scan_location_id"/>
+                            </group>
+                        </group>
+                        <group name="capacity" string="Capacity">
+                            <group>
+                                <field name="weight_capacity_lbs"/>
+                                <field name="volume_capacity_cf"/>
+                                <field name="estimated_weight_per_service"/>
+                            </group>
+                            <group>
+                                <field name="manual_size_override"/>
+                                <field name="base_rate_per_service"/>
+                                <field name="currency_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <group name="service_history" string="Service History">
+                            <field name="last_service_date"/>
+                            <field name="total_services_count"/>
+                            <field name="current_period_services"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
-<!-- Search view for base.rate -->
-    <record id="shredding_bin_view_search" model="ir.ui.view">
-        <field name="name">shredding.service.bin.view.search</field>
-        <field name="model">shredding.service.bin</field>
-        <field name="arch" type="xml">
-        <search>
-            <group expand="1" string="Group By">
-                <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
-            </group>
-        </search>
-    </field>
-    </record>
-
-<!-- List view for Action -->
-    <record id="action_shredding_bin" model="ir.actions.act_window">
-        <field name="name">Shredding Bin</field>
-        <field name="res_model">shredding.service.bin</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-            There is no examples click here to add new Shredding Bin.
-        </p>
-    </field>
-    </record>
+        <!-- Search View -->
+        <record id="shredding_bin_view_search" model="ir.ui.view">
+            <field name="name">shredding.service.bin.view.search</field>
+            <field name="model">shredding.service.bin</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="barcode" string="Barcode"/>
+                    <field name="current_customer_id"/>
+                    <field name="current_department_id"/>
+                    <field name="shredding_service_id"/>
+                    <separator/>
+                    <filter string="Empty" name="empty" domain="[('current_fill_level', '=', 'empty')]"/>
+                    <filter string="Partial" name="partial" domain="[('current_fill_level', '=', 'partial')]"/>
+                    <filter string="Full" name="full" domain="[('current_fill_level', '=', 'full')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Bin Size" name="group_by_size" context="{'group_by': 'bin_size'}"/>
+                        <filter string="Fill Level" name="group_by_fill" context="{'group_by': 'current_fill_level'}"/>
+                        <filter string="Customer" name="group_by_customer" context="{'group_by': 'current_customer_id'}"/>
+                        <filter string="Status" name="group_by_status" context="{'group_by': 'barcode_scan_status'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
     </data>
 </odoo>
