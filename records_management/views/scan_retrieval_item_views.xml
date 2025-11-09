@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- List View -->
+        <record id="scan_retrieval_item_view_list" model="ir.ui.view">
+            <field name="name">scan.retrieval.item.view.list</field>
+            <field name="model">scan.retrieval.item</field>
+            <field name="arch" type="xml">
+                <list decoration-success="scan_completed == True" decoration-warning="status == 'quality_check'">
+                    <field name="display_name"/>
+                    <field name="document_id"/>
+                    <field name="status" widget="badge"/>
+                    <field name="scan_quality" widget="badge"/>
+                    <field name="digital_format"/>
+                    <field name="page_count"/>
+                    <field name="scan_completed" widget="boolean"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="scan_retrieval_item_view_form" model="ir.ui.view">
+            <field name="name">scan.retrieval.item.view.form</field>
+            <field name="model">scan.retrieval.item</field>
+            <field name="arch" type="xml">
+                <form string="Scan Retrieval Item">
+                    <header>
+                        <field name="status" widget="statusbar" statusbar_visible="pending,file_retrieved,scanning,quality_check,completed,cancelled"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="display_name" placeholder="Scan Item"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="main_info" string="Scan Information">
+                                <field name="document_id"/>
+                                <field name="work_order_id"/>
+                                <field name="retrieval_line_id"/>
+                                <field name="status"/>
+                            </group>
+                            <group name="scan_details" string="Scan Details">
+                                <field name="digital_format"/>
+                                <field name="scan_quality"/>
+                                <field name="page_count"/>
+                                <field name="scan_required"/>
+                                <field name="scan_completed"/>
+                            </group>
+                        </group>
+                        <group name="timestamps" string="Timestamps">
+                            <field name="scan_start_time" readonly="1"/>
+                            <field name="scan_completion_time" readonly="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="scan_retrieval_item_view_search" model="ir.ui.view">
+            <field name="name">scan.retrieval.item.view.search</field>
+            <field name="model">scan.retrieval.item</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="display_name" string="Name"/>
+                    <field name="document_id"/>
+                    <field name="work_order_id"/>
+                    <separator/>
+                    <filter string="Completed" name="completed" domain="[('scan_completed', '=', True)]"/>
+                    <filter string="Pending" name="pending" domain="[('scan_completed', '=', False)]"/>
+                    <separator/>
+                    <filter string="High Quality" name="high_quality" domain="[('scan_quality', '=', 'high')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="group_by_status" context="{'group_by': 'status'}"/>
+                        <filter string="Quality" name="group_by_quality" context="{'group_by': 'scan_quality'}"/>
+                        <filter string="Format" name="group_by_format" context="{'group_by': 'digital_format'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+    </data>
+</odoo>
