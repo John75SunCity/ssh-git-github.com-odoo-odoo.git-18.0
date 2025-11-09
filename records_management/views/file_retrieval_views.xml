@@ -86,7 +86,6 @@ invisible="status != 'located'"
                 <filter string="Not Found" name="not_found" domain="[('status', '=', 'not_found')]"/>
                 <separator/>
                 <filter string="High Priority" name="high_priority" domain="[('priority', 'in', ['2', '3'])]"/>
-                <filter string="File Discovered" name="discovered" domain="[('file_discovered', '=', True)]"/>
                 <separator/>
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_status" domain="[]" context="{'group_by': 'status'}"/>
