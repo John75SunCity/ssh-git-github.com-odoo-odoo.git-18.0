@@ -25,9 +25,12 @@
             <form string="File Retrieval">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button type="object" name="action_start_retrieval" string="Start Retrieval"
+                        <button type="object" name="action_locate_container" string="Mark Located"
 invisible="status != 'pending'"
-                                class="oe_stat_button" icon="fa-play"/>
+                                class="oe_stat_button" icon="fa-check"/>
+                        <button type="object" name="action_retrieve_container" string="Mark Retrieved"
+invisible="status != 'located'"
+                                class="oe_stat_button" icon="fa-package"/>
                     </div>
                     <div class="oe_title">
                         <h1>
