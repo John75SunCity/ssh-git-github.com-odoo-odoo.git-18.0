@@ -62,6 +62,8 @@
                             <group name="progress_info" string=" Progress &amp; Status">
                                 <field name="started_date" readonly="1" />
                                 <field name="completed_date" readonly="1" />
+                                <field name="boxes_count" string="Boxes to Shred" />
+                                <field name="actual_weight" string="Actual Weight (kg)" />
                                 <field name="estimated_duration" />
                                 <field name="actual_duration" readonly="1" />
                                 <field name="completion_percentage" widget="progressbar" />

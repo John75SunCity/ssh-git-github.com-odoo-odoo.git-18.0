@@ -230,6 +230,7 @@ class WorkOrderShredding(models.Model):
     # BUSINESS METHODS
     # ============================================================================
     def _generate_destruction_certificate(self):
+        """Generate destruction certificate with box count details"""
         self.ensure_one()
         if self.certificate_id:
             return self.certificate_id
@@ -244,8 +245,18 @@ class WorkOrderShredding(models.Model):
             'material_type': self.material_type,
         }
         certificate = self.env['naid.certificate'].create(certificate_vals)
+        
+        # Create destruction item line for the boxes count
+        if self.boxes_count > 0:
+            self.env['naid.certificate.destruction.item'].create({
+                'certificate_id': certificate.id,
+                'description': _("%d Boxes of %s", self.boxes_count, self.material_type or 'Mixed Media'),
+                'quantity': self.boxes_count,
+                'weight': self.actual_weight / self.boxes_count if self.boxes_count else 0,
+            })
+        
         self.certificate_id = certificate
-        self.message_post(body=_("Destruction Certificate %s created.", certificate.name))
+        self.message_post(body=_("Destruction Certificate %s created for %d boxes.", certificate.name, self.boxes_count))
         return certificate
 
     # ============================================================================
