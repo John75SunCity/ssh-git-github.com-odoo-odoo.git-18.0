@@ -82,16 +82,6 @@
                                     </list>
                                 </field>
                             </page>
-                            <page string="Audit Trail" name="audit">
-                                <field name="audit_log_ids" readonly="1">
-                                    <list>
-                                        <field name="timestamp"/>
-                                        <field name="user_id"/>
-                                        <field name="action"/>
-                                        <field name="details"/>
-                                    </list>
-                                </field>
-                            </page>
                             <page string="Documents" name="documents">
                                 <field name="attachment_ids" widget="many2many_binary"/>
                             </page>
