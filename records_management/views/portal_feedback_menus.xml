@@ -16,7 +16,7 @@
 
 <menuitem id="menu_feedback_analytics" 
             name="Analytics Dashboard" 
-            parent="records_management.menu_portal_feedback" 
+            parent="records_management.menu_portal_feedback_root" 
             action="action_feedback_analytics"
             sequence="10"
             groups="records_management.group_records_manager"/>
