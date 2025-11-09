@@ -8,13 +8,11 @@
         <field name="arch" type="xml">
             <list string="File Retrieval" decoration-warning="status == 'searching'" decoration-info="status == 'located'" decoration-success="status == 'delivered'">
         <field name="name"/>
-        <field name="requested_file_name"/>
         <field name="partner_id"/>
-        <field name="state"/>
+        <field name="status"/>
         <field name="priority"/>
         <field name="user_id"/>
-        <field name="discovery_date"/>
-        <field name="containers_accessed_count"/>
+        <field name="retrieval_date"/>
             </list>
         </field>
     </record>
@@ -37,47 +35,28 @@ invisible="status != 'pending'"
                         </h1>
                     </div>
                     <group>
-                        <group name="main_info">
+                    <group name="main_info">
         <field name="name"/>
-        <field name="requested_file_name"/>
         <field name="partner_id"/>
         <field name="user_id"/>
-        <field name="state"/>
+        <field name="status"/>
         <field name="priority"/>
-                        </group>
+                    </group>
                         <group name="details">
-        <field name="document_id"/>
-        <field name="container_ids"/>
-        <field name="barcode"/>
+        <field name="container_id"/>
+        <field name="location_id"/>
         <field name="company_id"/>
         <field name="active"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Search Details" name="search">
+                        <page string="Retrieval Details" name="details">
                             <group>
-                                <group name="discovery">
-        <field name="file_discovered"/>
-        <field name="discovery_date" invisible="file_discovered == False"/>
-
-        <field name="discovery_container_id" invisible="file_discovered == False"/>
-
-                                </group>
-                                <group name="condition">
-        <field name="condition_before"/>
-        <field name="condition_after"/>
-                                </group>
-                            </group>
-                            <separator string="Searched Containers"/>
-        <field name="searched_container_ids" nolabel="1"/>
-                        </page>
-                        <page string="Search Attempts" name="attempts">
-        <field name="search_attempt_ids" nolabel="1"/>
-                        </page>
-        <page string="Not Found" name="not_found" invisible="status != 'not_found'">
-                            <group>
-        <field name="not_found_reason"/>
-        <field name="not_found_notes"/>
+                                <field name="container_id"/>
+                                <field name="retrieval_date"/>
+                                <field name="retrieved_by_id"/>
+                                <field name="estimated_time"/>
+                                <field name="actual_time"/>
                             </group>
                         </page>
                     </notebook>
@@ -93,11 +72,10 @@ invisible="status != 'pending'"
         <field name="arch" type="xml">
             <search string="Search File Retrieval">
         <field name="name"/>
-        <field name="requested_file_name"/>
         <field name="partner_id"/>
         <field name="user_id"/>
-        <field name="container_ids"/>
-        <field name="state"/>
+        <field name="container_id"/>
+        <field name="status"/>
         <field name="priority"/>
                 <filter string="Pending" name="pending" domain="[('status', '=', 'pending')]"/>
                 <filter string="Searching" name="searching" domain="[('status', '=', 'searching')]"/>
