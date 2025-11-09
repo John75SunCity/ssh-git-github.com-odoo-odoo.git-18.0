@@ -23,54 +23,58 @@
     <field name="arch" type="xml">
             <form string="Shredding Inventory Item">
                 <header>
-                    <button name="action_approve_item" type="object" string="Approve for Destruction" class="oe_highlight" invisible="status != 'draft'" />
-                    <button name="action_mark_retrieved" type="object" string="Mark Retrieved" invisible="status != 'pending_pickup'" />
-                    <button name="action_mark_destroyed" type="object" string="Mark Destroyed" invisible="status != 'retrieved'" />
+                    <button name="action_schedule" type="object" string="Schedule" class="oe_highlight" invisible="state != 'pending'" />
+                    <button name="action_start_shredding" type="object" string="Start Shredding" invisible="state != 'scheduled'" />
+                    <button name="action_complete_shredding" type="object" string="Mark Shredded" invisible="state != 'in_progress'" />
+                    <button name="action_mark_completed" type="object" string="Complete" invisible="state != 'shredded'" />
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ('cancelled', 'completed')" />
                     <field name="state" widget="statusbar" />
                 </header>
                 <sheet>
+                    <h1><field name="display_name" /></h1>
                     <group>
                         <group>
                             <field name="work_order_id" />
-                            <field name="sequence" />
-                            <field name="container_ids" invisible="document_id" />
-                            <field name="document_id" invisible="container_id" />
+                            <field name="batch_id" />
+                            <field name="customer_id" />
                         </group>
                         <group>
                             <field name="current_location_id" />
-                            <field name="original_location_id" />
+                            <field name="priority" />
+                            <field name="scheduled_date" />
                         </group>
                     </group>
                     <notebook>
+                        <page string="Items">
+                            <group>
+                                <field name="container_ids" nolabel="1" />
+                                <field name="document_id" />
+                            </group>
+                        </page>
                         <page string="Costing">
                             <group>
                                 <group>
-                                    <field name="retrieval_cost" />
-                                    <field name="permanent_removal_cost" />
+                                    <field name="weight" />
+                                    <field name="quantity" />
                                 </group>
                                 <group>
-                                    <field name="shredding_cost" />
                                     <field name="total_cost" />
+                                    <field name="currency_id" />
                                 </group>
                             </group>
                         </page>
-                        <page string="Approval &amp;amp; Tracking">
+                        <page string="Tracking">
                             <group>
                                 <group>
-                                    <field name="customer_approved" />
-                                    <field name="supervisor_approved" />
-                                    <field name="approval_date" />
+                                    <field name="scheduled_date" />
+                                    <field name="completed_date" />
                                 </group>
                                 <group>
-                                    <field name="retrieved_date" />
-                                    <field name="destruction_date" />
-                                    <field name="retrieved_by" />
-                                    <field name="destroyed_by" />
+                                    <field name="company_id" />
                                 </group>
                             </group>
                             <group>
-                                <field name="retrieval_notes" />
-                                <field name="destruction_notes" />
+                                <field name="notes" />
                             </group>
                         </page>
                     </notebook>
