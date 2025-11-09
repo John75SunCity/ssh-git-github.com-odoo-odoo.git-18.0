@@ -7,11 +7,11 @@
         <field name="model">ir.model</field>
     <field name="arch" type="xml">
             <list string="Model">
-                name
-                model
-                state
-                info
-                field_id
+                <field name="name"/>
+                <field name="model"/>
+                <field name="state"/>
+                <field name="info"/>
+                <field name="field_id"/>
             </list>
         </field>
     </record>
@@ -24,11 +24,11 @@
             <form string="Model">
                 <sheet>
                     <group>
-                        name
-                        model
-                        state
-                        info
-                        field_id
+                        <field name="name"/>
+                        <field name="model"/>
+                        <field name="state"/>
+                        <field name="info"/>
+                        <field name="field_id"/>
                     </group>
                 </sheet>
             </form>
