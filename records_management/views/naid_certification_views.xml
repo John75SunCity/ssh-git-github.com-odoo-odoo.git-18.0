@@ -9,7 +9,7 @@
         <list string="NAID Operator Certifications">
         <field name="certification_number"/>
         <field name="name"/>
-        <field name="state"/>
+        <field name="status"/>
         <field name="certification_date"/>
         <field name="expiry_date"/>
         <field name="training_progress"/>
@@ -29,7 +29,7 @@
 <button name="action_issue_certification" string="Issue Certification" type="object" class="btn-success" invisible="not training_verified"/>
 <button name="action_schedule_refresher" string="Schedule Refresher" type="object" class="btn-warning" invisible="not refresher_training_required"/>
 
-        <field name="state" widget="statusbar"/>
+        <field name="status" widget="statusbar"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -73,7 +73,7 @@
         <list>
         <field name="training_id"/>
         <field name="scheduled_date"/>
-        <field name="state"/>
+        <field name="status"/>
         <field name="completed_date"/>
         <field name="instructor_id"/>
 </list>
@@ -108,7 +108,7 @@
             <search string="NAID Operator Certifications">
         <field name="name"/>
         <field name="certification_number"/>
-        <field name="state"/>
+        <field name="status"/>
         <field name="company_id"/>
                 <filter string="Certified" name="certified" domain="[('status', '=', 'certified')]"/>
                 <filter string="Expired" name="expired" domain="[('status', '=', 'expired')]"/>
@@ -131,7 +131,7 @@
         <field name="certification_id"/>
         <field name="training_id"/>
         <field name="scheduled_date"/>
-        <field name="state"/>
+        <field name="status"/>
         <field name="completed_date"/>
         <field name="instructor_id"/>
 </list>
@@ -153,7 +153,7 @@
         <field name="certification_id"/>
         <field name="training_id"/>
         <field name="scheduled_date"/>
-        <field name="state"/>
+        <field name="status"/>
         <field name="completed_date"/>
         <field name="instructor_id"/>
         <field name="location"/>
