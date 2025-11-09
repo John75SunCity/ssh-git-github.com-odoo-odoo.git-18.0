@@ -97,10 +97,10 @@
                         <page string="Audit History">
         <field name="related_audit_ids">
                                 <list>
-        <field name="audit_date"/>
-        <field name="auditor_id"/>
-        <field name="result"/>
-        <field name="notes"/>
+        <field name="event_date"/>
+        <field name="user_id"/>
+        <field name="action_type"/>
+        <field name="description"/>
                                 </list>
                             </field>
                         </page>
