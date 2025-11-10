@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Utility helpers for Records Management FSM installation."""
+"""Utility helpers for Records Management FSM installation.
+
+NOTE: This file has been corrected. Previous cached version had syntax error.
+Cache Invalidation: Force Odoo.sh to reload from GitHub (Error 118 resolution).
+Deployment: Version bumps in __manifest__.py files + file content change.
+"""
 
 from odoo import SUPERUSER_ID, api, models
 
