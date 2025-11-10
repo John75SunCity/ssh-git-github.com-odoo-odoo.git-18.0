@@ -5,7 +5,7 @@
         <field name="name">system.diagram.data.view.tree</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-            <tree string="System Diagrams"
+            <list string="System Diagrams"
                   decoration-info="search_type == 'access'"
                   decoration-success="search_type == 'models'"
                   decoration-warning="search_type == 'company'">
@@ -18,7 +18,7 @@
                 <field name="edge_count" string="Edges"/>
                 <field name="cache_timestamp" string="Cache Updated"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -192,7 +192,7 @@
     <record id="action_system_diagram_data" model="ir.actions.act_window">
         <field name="name">System Diagrams</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">list,form,kanban</field>
         <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="context">{'default_search_type': 'all'}</field>
         <field name="help" type="html">
@@ -209,7 +209,7 @@
     <record id="action_system_diagram_access" model="ir.actions.act_window">
         <field name="name">Access Focus Diagrams</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">list,form,kanban</field>
         <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="domain">[('search_type', '=', 'access')]</field>
         <field name="context">{'default_search_type': 'access', 'default_show_access_only': True}</field>
@@ -218,7 +218,7 @@
     <record id="action_system_diagram_models" model="ir.actions.act_window">
         <field name="name">Model Explorer</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">list,form,kanban</field>
         <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="domain">[('search_type', '=', 'models')]</field>
         <field name="context">{'default_search_type': 'models'}</field>
@@ -227,7 +227,7 @@
     <record id="action_system_diagram_relationships" model="ir.actions.act_window">
         <field name="name">Relationship Maps</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">list,form,kanban</field>
         <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="domain">[('search_type', '=', 'relationships')]</field>
         <field name="context">{'default_search_type': 'relationships'}</field>
@@ -236,7 +236,7 @@
     <record id="action_system_diagram_company" model="ir.actions.act_window">
         <field name="name">Company Overview</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">list,form,kanban</field>
         <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="domain">[('search_type', '=', 'company')]</field>
         <field name="context">{'default_search_type': 'company'}</field>
@@ -245,7 +245,7 @@
     <record id="action_system_flowchart" model="ir.actions.act_window">
         <field name="name">System Architecture Flowcharts</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">list,form,kanban</field>
         <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="target">current</field>
         <field name="context">{
