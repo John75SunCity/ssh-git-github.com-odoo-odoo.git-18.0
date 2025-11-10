@@ -7,7 +7,7 @@
             <field name="category">compliance</field>
             <field name="config_key">naid.compliance.enabled</field>
             <field name="config_type">feature_toggle</field>
-            <field name="value_boolean">True</field>
+            <field name="value_boolean">False</field>
             <field name="description">Master toggle for NAID AAA compliance features. When disabled, NAID-specific validation and tracking is turned off.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
