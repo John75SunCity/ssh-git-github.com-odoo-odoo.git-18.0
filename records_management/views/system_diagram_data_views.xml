@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    <record id="system_diagram_data_view_list" model="ir.ui.view">
-        <field name="name">system.diagram.data.view.list</field>
+    <record id="system_diagram_data_view_tree" model="ir.ui.view">
+        <field name="name">system.diagram.data.view.tree</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-            <list string="System Diagrams"
+            <tree string="System Diagrams"
                   decoration-info="search_type == 'access'"
                   decoration-success="search_type == 'models'"
                   decoration-warning="search_type == 'company'">
@@ -18,7 +18,7 @@
                 <field name="edge_count" string="Edges"/>
                 <field name="cache_timestamp" string="Cache Updated"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -43,6 +43,7 @@
                             <field name="group_by_module"/>
                             <field name="exclude_system_models"/>
                             <field name="max_depth"/>
+                            <button name="action_regenerate_diagram" string="Regenerate Diagram" type="object" class="btn-primary"/>
                         </group>
                         <group name="system_info" string="System Information">
                             <field name="company_id" groups="base.group_multi_company"/>
@@ -63,13 +64,13 @@
                             </group>
                         </page>
                         <page name="data_nodes" string="Nodes JSON">
-                            <field name="nodes_data" widget="ace" options="{'mode': 'json'}" readonly="1" nolabel="1"/>
+                            <field name="nodes_data" widget="text" readonly="1" nolabel="1"/>
                         </page>
                         <page name="data_edges" string="Edges JSON">
-                            <field name="edges_data" widget="ace" options="{'mode': 'json'}" readonly="1" nolabel="1"/>
+                            <field name="edges_data" widget="text" readonly="1" nolabel="1"/>
                         </page>
                         <page name="configuration_json" string="Configuration JSON">
-                            <field name="diagram_config" widget="ace" options="{'mode': 'json'}" readonly="1" nolabel="1"/>
+                            <field name="diagram_config" widget="text" readonly="1" nolabel="1"/>
                         </page>
                         <page name="performance_stats" string="Performance Statistics">
                             <group>
@@ -83,9 +84,9 @@
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
                 </div>
             </form>
         </field>
@@ -141,10 +142,10 @@
                                         <strong class="o_kanban_record_title">
                                             <field name="name"/>
                                         </strong>
-                                        <span class="badge badge-pill float-end" t-attf-class="badge-{{record.search_type.raw_value == 'access' and 'primary' or record.search_type.raw_value == 'models' and 'success' or record.search_type.raw_value == 'relationships' and 'warning' or record.search_type.raw_value == 'company' and 'info' or 'secondary'}}">
+                                        <span class="badge badge-pill float-end badge-secondary">
                                             <t t-if="record.search_type.raw_value == 'access'"><i class="fa fa-user"/> Access</t>
-                                            <t t-elif="record.search_type.raw_value == 'models'"><i class="fa fa-building-o"/> Models</t>
-                                            <t t-elif="record.search_type.raw_value == 'relationships'"><i class="fa fa-project-diagram"/> Relationships</t>
+                                            <t t-elif="record.search_type.raw_value == 'models'"><i class="fa fa-cubes"/> Models</t>
+                                            <t t-elif="record.search_type.raw_value == 'relationships'"><i class="fa fa-sitemap"/> Relationships</t>
                                             <t t-elif="record.search_type.raw_value == 'company'"><i class="fa fa-building"/> Company</t>
                                             <t t-else=""><i class="fa fa-globe"/> All</t>
                                         </span>
@@ -191,7 +192,8 @@
     <record id="action_system_diagram_data" model="ir.actions.act_window">
         <field name="name">System Diagrams</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="context">{'default_search_type': 'all'}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_create">
@@ -207,7 +209,8 @@
     <record id="action_system_diagram_access" model="ir.actions.act_window">
         <field name="name">Access Focus Diagrams</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="domain">[('search_type', '=', 'access')]</field>
         <field name="context">{'default_search_type': 'access', 'default_show_access_only': True}</field>
     </record>
@@ -215,7 +218,8 @@
     <record id="action_system_diagram_models" model="ir.actions.act_window">
         <field name="name">Model Explorer</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="domain">[('search_type', '=', 'models')]</field>
         <field name="context">{'default_search_type': 'models'}</field>
     </record>
@@ -223,7 +227,8 @@
     <record id="action_system_diagram_relationships" model="ir.actions.act_window">
         <field name="name">Relationship Maps</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="domain">[('search_type', '=', 'relationships')]</field>
         <field name="context">{'default_search_type': 'relationships'}</field>
     </record>
@@ -231,7 +236,8 @@
     <record id="action_system_diagram_company" model="ir.actions.act_window">
         <field name="name">Company Overview</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="domain">[('search_type', '=', 'company')]</field>
         <field name="context">{'default_search_type': 'company'}</field>
     </record>
@@ -239,7 +245,8 @@
     <record id="action_system_flowchart" model="ir.actions.act_window">
         <field name="name">System Architecture Flowcharts</field>
         <field name="res_model">system.diagram.data</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_id" ref="system_diagram_data_view_tree"/>
         <field name="target">current</field>
         <field name="context">{
             'search_default_with_nodes': 1,

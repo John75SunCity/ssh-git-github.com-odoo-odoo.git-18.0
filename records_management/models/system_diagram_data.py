@@ -262,6 +262,7 @@ class SystemDiagramData(models.Model):
             }
             record.diagram_config = json.dumps(config, indent=2)
 
+    @api.depends('nodes_data', 'edges_data', 'diagram_config')
     def _compute_diagram_html(self):
         """Generates the full HTML for the diagram to be rendered in a field.
 
@@ -845,3 +846,17 @@ class SystemDiagramData(models.Model):
             "url": f"data:application/json;charset=utf-8;base64,{b64_data}",
             "target": "new",
         }
+
+    def action_regenerate_diagram(self):
+        """Manually trigger diagram regeneration.
+        
+        This method forces recomputation of all diagram data by invalidating
+        the cache and triggering field recomputation.
+        """
+        self.ensure_one()
+        # Force recomputation of computed fields
+        self.invalidate_cache(['nodes_data', 'edges_data', 'diagram_config', 'diagram_html'])
+        self._compute_diagram_data()
+        self._compute_diagram_config()
+        self._compute_diagram_html()
+        return True
