@@ -263,8 +263,7 @@
         <field name="context">{
             'default_name': 'User Access Analysis',
             'default_search_type': 'access',
-            'default_show_access_only': True,
-            'form_view_initial_mode': 'edit'
+            'default_show_access_only': True
         }</field>
     </record>
 
@@ -276,8 +275,7 @@
         <field name="context">{
             'default_name': 'Model Structure Explorer',
             'default_search_type': 'models',
-            'default_show_access_only': False,
-            'form_view_initial_mode': 'edit'
+            'default_show_access_only': False
         }</field>
     </record>
 
@@ -289,8 +287,7 @@
         <field name="context">{
             'default_name': 'Relationship Map',
             'default_search_type': 'relationships',
-            'default_show_access_only': False,
-            'form_view_initial_mode': 'edit'
+            'default_show_access_only': False
         }</field>
     </record>
 
@@ -302,8 +299,7 @@
         <field name="context">{
             'default_name': 'Company System Overview',
             'default_search_type': 'company',
-            'default_show_access_only': False,
-            'form_view_initial_mode': 'edit'
+            'default_show_access_only': False
         }</field>
     </record>
 
