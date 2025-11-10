@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
+        <!-- CACHE INVALIDATION MARKER: 2025-11-10 00:46:38 GMT -->
         <!-- Fleet FSM Action Bridge setup - removed in favor of post-init hook -->
         <!-- This file is retained for backwards compatibility but no longer loads FSM setup function -->
+        <!-- All FSM initialization now occurs in post_init_hooks.py with proper API context -->
     </data>
 </odoo>
