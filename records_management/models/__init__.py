@@ -1,3 +1,7 @@
+# CACHE INVALIDATION TIMESTAMP: 2025-11-10 00:50:00 GMT - Error 122 Fix
+# This timestamp forces complete module rebuild on Odoo.sh
+# Previous errors: Demo data field values (119-120), FSM cache (121)
+
 from . import ir_rule
 from . import retrieval_item_base
 from . import scan_retrieval_item
