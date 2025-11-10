@@ -855,7 +855,7 @@ class SystemDiagramData(models.Model):
         """
         self.ensure_one()
         # Force recomputation of computed fields
-        self.invalidate_cache(['nodes_data', 'edges_data', 'diagram_config', 'diagram_html'])
+        self._invalidate_cache(['nodes_data', 'edges_data', 'diagram_config', 'diagram_html'])
         self._compute_diagram_data()
         self._compute_diagram_config()
         self._compute_diagram_html()
