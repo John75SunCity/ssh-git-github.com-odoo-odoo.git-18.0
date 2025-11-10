@@ -2,6 +2,8 @@
 # This timestamp forces complete module rebuild on Odoo.sh
 # Previous errors: Demo data field values (119-120), FSM cache (121)
 
+# Compatibility patches for Odoo 18.0
+from . import hr_timesheet_compat
 from . import ir_rule
 from . import retrieval_item_base
 from . import scan_retrieval_item
