@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <function model="records.management.fsm.setup" name="_ensure_fleet_vehicle_action"/>
+        <!-- Fleet FSM Action Bridge setup - removed in favor of post-init hook -->
+        <!-- This file is retained for backwards compatibility but no longer loads FSM setup function -->
     </data>
 </odoo>
