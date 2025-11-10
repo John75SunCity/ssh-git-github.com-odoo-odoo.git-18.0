@@ -73,4 +73,3 @@ class RecordsManagementFSMSetup(models.AbstractModel):
         })
 
         return action
-*** End Patch
