@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Cache invalidation marker: Force Odoo.sh rebuild (Error 118 - Sync issue)
 
 from . import enhanced_fsm_integration
 from . import fsm_notification
