@@ -1,6 +1,6 @@
 <odoo>
     <data>
-<template id="report_work_order_shredding">
+<template id="report_work_order_shredding_template">
         <t t-call="web.external_layout">
             <div class="page">
                 <h2>Work Order Shredding Report</h2>
@@ -29,17 +29,17 @@
         <field name="name">Work Order Shredding</field>
         <field name="model">work.order.shredding</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">records_management.report_work_order_shredding</field>
+        <field name="report_name">records_management.report_work_order_shredding_template</field>
         <field name="binding_model_id" ref="records_management.model_work_order_shredding"/>
         <field name="binding_type">report</field>
     </record>
 
-    <record id="report_work_order_shredding" model="ir.actions.report">
+    <record id="report_work_order_shredding_html" model="ir.actions.report">
         <field name="name">Work Order Shredding</field>
         <field name="model">work.order.shredding</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_work_order_shredding_view</field>
-        <field name="report_file">records_management.report_work_order_shredding</field>
+        <field name="report_file">records_management.report_work_order_shredding_template</field>
         <field name="print_report_name">"(Work Order Shredding Report) %s" % (object.name or 'N/A')</field>
         <field name="binding_model_id" ref="records_management.model_work_order_shredding"/>
         <field name="binding_type">report</field>
