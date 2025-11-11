@@ -34,7 +34,7 @@ class RecordsManagementController(http.Controller):
     Main controller for Records Management dashboard and administrative operations.
     Provides comprehensive business intelligence and operational control interface.
     """
-    
+
     # Portal pagination configuration
     _items_per_page = 20
 
@@ -1351,33 +1351,233 @@ class RecordsManagementController(http.Controller):
         return request.render("records_management.portal_container_detail", values)
 
     @http.route(['/my/inventory'], type='http', auth="user", website=True)
-    def portal_my_inventory(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, **kw):
+    def portal_my_inventory(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, inventory_type=None, **kw):
         """
-        Display temp inventory for portal users with proper permissions
+        Display comprehensive inventory for portal users including:
+        - Records containers (boxes)
+        - File folders within containers
+        - Individual documents
+        - Temp inventory items
+        - PDF scans/attachments
         """
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
+        commercial_partner = partner.commercial_partner_id
 
-        TempInventory = request.env['temp.inventory']
+        # Initialize inventory collections
+        all_inventory_items = []
+        total_count = 0
 
-        domain = [
-            ('partner_id', '=', partner.id),
-        ]
+        # Search term for filtering across all inventory types
+        search_term = search or ''
 
-        # Search filter
+        # Inventory type filter
+        inventory_type_filters = {
+            'all': {'label': 'All Inventory', 'types': ['containers', 'files', 'documents', 'temp']},
+            'containers': {'label': 'Containers/Boxes', 'types': ['containers']},
+            'files': {'label': 'File Folders', 'types': ['files']},
+            'documents': {'label': 'Documents', 'types': ['documents']},
+            'temp': {'label': 'Temp Inventory', 'types': ['temp']},
+        }
+
+        if not inventory_type:
+            inventory_type = 'all'
+
+        active_types = inventory_type_filters[inventory_type]['types']
+
+        # 1. CONTAINERS/BOXES
+        if 'containers' in active_types:
+            Container = request.env['records.container']
+            container_domain = [('partner_id', '=', commercial_partner.id)]
+
+            if search_term:
+                container_domain += ['|', '|', ('name', 'ilike', search_term),
+                                   ('barcode', 'ilike', search_term),
+                                   ('temp_barcode', 'ilike', search_term)]
+
+            containers = Container.search(container_domain, order='create_date desc')
+
+            for container in containers:
+                all_inventory_items.append({
+                    'type': 'container',
+                    'id': container.id,
+                    'name': container.name,
+                    'barcode': container.barcode or container.temp_barcode,
+                    'description': f"Container - {container.state.title() if container.state else 'Active'}",
+                    'location': container.current_location_id.name if container.current_location_id else 'Unknown',
+                    'date': container.create_date,
+                    'state': container.state or 'active',
+                    'model': 'records.container',
+                    'icon': 'fa-archive',
+                    'color': 'primary'
+                })
+
+        # 2. FILE FOLDERS
+        if 'files' in active_types:
+            FileFolder = request.env['records.file']
+            file_domain = [('partner_id', '=', commercial_partner.id)]
+
+            if search_term:
+                file_domain += ['|', '|', ('name', 'ilike', search_term),
+                              ('barcode', 'ilike', search_term),
+                              ('description', 'ilike', search_term)]
+
+            file_folders = FileFolder.search(file_domain, order='create_date desc')
+
+            for file_folder in file_folders:
+                all_inventory_items.append({
+                    'type': 'file',
+                    'id': file_folder.id,
+                    'name': file_folder.name,
+                    'barcode': file_folder.barcode,
+                    'description': f"File Folder - {file_folder.description or 'No description'}",
+                    'location': file_folder.current_location_id.name if file_folder.current_location_id else 'Unknown',
+                    'date': file_folder.create_date,
+                    'state': file_folder.state or 'active',
+                    'model': 'records.file',
+                    'icon': 'fa-folder',
+                    'color': 'info'
+                })
+
+        # 3. DOCUMENTS (including PDF scans)
+        if 'documents' in active_types:
+            Document = request.env['records.document']
+            doc_domain = [('partner_id', '=', commercial_partner.id)]
+
+            if search_term:
+                doc_domain += ['|', '|', ('name', 'ilike', search_term),
+                              ('temp_barcode', 'ilike', search_term),
+                              ('description', 'ilike', search_term)]
+
+            documents = Document.search(doc_domain, order='create_date desc')
+
+            for document in documents:
+                # Check if document has PDF attachments/scans
+                attachments = request.env['ir.attachment'].search([
+                    ('res_model', '=', 'records.document'),
+                    ('res_id', '=', document.id),
+                    ('mimetype', 'like', 'pdf')
+                ])
+
+                attachment_info = f" - {len(attachments)} PDF scan(s)" if attachments else ""
+
+                all_inventory_items.append({
+                    'type': 'document',
+                    'id': document.id,
+                    'name': document.name,
+                    'barcode': document.temp_barcode,
+                    'description': f"Document - {document.description or 'No description'}{attachment_info}",
+                    'location': document.container_id.current_location_id.name if document.container_id and document.container_id.current_location_id else 'Unknown',
+                    'date': document.create_date,
+                    'state': document.state or 'active',
+                    'model': 'records.document',
+                    'icon': 'fa-file-text',
+                    'color': 'success',
+                    'has_pdf': bool(attachments),
+                    'pdf_count': len(attachments)
+                })
+
+        # 4. TEMP INVENTORY
+        if 'temp' in active_types:
+            TempInventory = request.env['temp.inventory']
+            temp_domain = [('partner_id', '=', partner.id)]
+
+            if search_term:
+                temp_domain += ['|', ('name', 'ilike', search_term), ('description', 'ilike', search_term)]
+
+            temp_inventory = TempInventory.search(temp_domain, order='date_created desc')
+
+            for temp_item in temp_inventory:
+                all_inventory_items.append({
+                    'type': 'temp',
+                    'id': temp_item.id,
+                    'name': temp_item.name,
+                    'barcode': temp_item.temp_barcode or '',
+                    'description': f"Temp Item - {temp_item.description or 'No description'}",
+                    'location': 'Temporary',
+                    'date': temp_item.date_created,
+                    'state': temp_item.state or 'draft',
+                    'model': 'temp.inventory',
+                    'icon': 'fa-clock-o',
+                    'color': 'warning'
+                })
+
+        # Sort all inventory items
+        sortby_options = {
+            'date': lambda x: x['date'],
+            'name': lambda x: x['name'].lower(),
+            'type': lambda x: x['type'],
+            'state': lambda x: x['state']
+        }
+
+        if not sortby:
+            sortby = 'date'
+
+        reverse_sort = sortby == 'date'  # Most recent first for dates
+        all_inventory_items.sort(key=sortby_options.get(sortby, sortby_options['date']), reverse=reverse_sort)
+
+        # Apply pagination
+        total_count = len(all_inventory_items)
+        items_per_page = self._items_per_page
+        start_index = (page - 1) * items_per_page
+        end_index = start_index + items_per_page
+        inventory_records = all_inventory_items[start_index:end_index]
+
+        # Pager setup
+        pager = request.website.pager(
+            url="/my/inventory",
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby, 'filterby': filterby, 'search': search, 'inventory_type': inventory_type},
+            total=total_count,
+            page=page,
+            step=items_per_page,
+        )
+
+        # Sorting options
+        searchbar_sortings = {
+            'date': {'label': 'Recent First', 'order': 'date desc'},
+            'name': {'label': 'Name A-Z', 'order': 'name asc'},
+            'type': {'label': 'Type', 'order': 'type asc'},
+            'state': {'label': 'Status', 'order': 'state asc'},
+        }
+
+        values.update({
+            'inventory_records': inventory_records,
+            'page_name': 'inventory',
+            'pager': pager,
+            'default_url': '/my/inventory',
+            'searchbar_sortings': searchbar_sortings,
+            'inventory_type_filters': inventory_type_filters,
+            'sortby': sortby,
+            'inventory_type': inventory_type,
+            'search': search_term,
+            'inventory_count': total_count,
+            'commercial_partner': commercial_partner,
+        })
+
+        return request.render("records_management.portal_my_inventory", values)
+
+    # ============================================================================
+    # INVENTORY TAB ROUTES (Backend-style list/detail views)
+    # ============================================================================
+
+    @http.route(['/my/inventory/containers'], type='http', auth="user", website=True)
+    def portal_inventory_containers(self, page=1, sortby=None, filterby=None, search=None, **kw):
+        """Containers tab - backend-style list view with bulk actions"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        Container = request.env['records.container']
+        domain = [('partner_id', '=', partner.id)]
+
         if search:
-            domain += ['|', ('name', 'ilike', search), ('description', 'ilike', search)]
+            domain += ['|', '|', ('name', 'ilike', search), ('barcode', 'ilike', search), ('temp_barcode', 'ilike', search)]
 
-        # Date filtering
-        if date_begin and date_end:
-            domain += [('date_created', '>=', date_begin), ('date_created', '<=', date_end)]
-
-        # Status filter
+        # Filtering options
         searchbar_filters = {
-            'all': {'label': 'All Items', 'domain': []},
-            'draft': {'label': 'Draft', 'domain': [('state', '=', 'draft')]},
+            'all': {'label': 'All Containers', 'domain': []},
             'active': {'label': 'Active', 'domain': [('state', '=', 'active')]},
-            'in_use': {'label': 'In Use', 'domain': [('state', '=', 'in_use')]},
+            'storage': {'label': 'In Storage', 'domain': [('state', '=', 'in_storage')]},
+            'transit': {'label': 'In Transit', 'domain': [('state', '=', 'in_transit')]},
         }
 
         if not filterby:
@@ -1386,44 +1586,480 @@ class RecordsManagementController(http.Controller):
 
         # Sorting options
         searchbar_sortings = {
-            'date': {'label': 'Recent First', 'order': 'date_created desc'},
             'name': {'label': 'Name', 'order': 'name'},
-            'state': {'label': 'Status', 'order': 'state'},
+            'date': {'label': 'Date Created', 'order': 'create_date desc'},
+            'location': {'label': 'Location', 'order': 'current_location_id'},
         }
 
         if not sortby:
             sortby = 'date'
         order = searchbar_sortings[sortby]['order']
 
-        # Count total inventory
-        inventory_count = TempInventory.search_count(domain)
-
-        # Pager setup
+        # Get containers
+        container_count = Container.search_count(domain)
         pager = request.website.pager(
-            url="/my/inventory",
-            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby, 'filterby': filterby, 'search': search},
-            total=inventory_count,
+            url="/my/inventory/containers",
+            url_args={'sortby': sortby, 'filterby': filterby, 'search': search},
+            total=container_count,
             page=page,
-            step=self._items_per_page,
+            step=20,
         )
 
-        # Get inventory records for current page
-        inventory_records = TempInventory.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        containers = Container.search(domain, order=order, limit=20, offset=pager['offset'])
 
         values.update({
-            'inventory_records': inventory_records,
-            'page_name': 'inventory',
+            'containers': containers,
+            'page_name': 'inventory_containers',
             'pager': pager,
-            'default_url': '/my/inventory',
             'searchbar_sortings': searchbar_sortings,
             'searchbar_filters': searchbar_filters,
             'sortby': sortby,
             'filterby': filterby,
             'search': search or '',
-            'inventory_count': inventory_count,
+            'container_count': container_count,
         })
 
-        return request.render("records_management.portal_my_inventory", values)
+        return request.render("records_management.portal_inventory_containers", values)
+
+    @http.route(['/my/inventory/files'], type='http', auth="user", website=True)
+    def portal_inventory_files(self, page=1, sortby=None, filterby=None, search=None, **kw):
+        """File folders tab - backend-style list view"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        RecordsFile = request.env['records.file']
+        domain = [('partner_id', '=', partner.id)]
+
+        if search:
+            domain += ['|', '|', ('name', 'ilike', search), ('barcode', 'ilike', search), ('description', 'ilike', search)]
+
+        # Get files
+        file_count = RecordsFile.search_count(domain)
+        pager = request.website.pager(
+            url="/my/inventory/files",
+            url_args={'sortby': sortby, 'filterby': filterby, 'search': search},
+            total=file_count,
+            page=page,
+            step=20,
+        )
+
+        files = RecordsFile.search(domain, order='create_date desc', limit=20, offset=pager['offset'])
+
+        values.update({
+            'files': files,
+            'page_name': 'inventory_files',
+            'pager': pager,
+            'search': search or '',
+            'file_count': file_count,
+        })
+
+        return request.render("records_management.portal_inventory_files", values)
+
+    @http.route(['/my/inventory/documents'], type='http', auth="user", website=True)
+    def portal_inventory_documents(self, page=1, sortby=None, filterby=None, search=None, **kw):
+        """Documents tab - backend-style list view with PDF scan info"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        Document = request.env['records.document']
+        domain = [('partner_id', '=', partner.id)]
+
+        if search:
+            domain += ['|', '|', ('name', 'ilike', search), ('temp_barcode', 'ilike', search), ('description', 'ilike', search)]
+
+        # Get documents
+        doc_count = Document.search_count(domain)
+        pager = request.website.pager(
+            url="/my/inventory/documents",
+            url_args={'sortby': sortby, 'filterby': filterby, 'search': search},
+            total=doc_count,
+            page=page,
+            step=20,
+        )
+
+        documents = Document.search(domain, order='create_date desc', limit=20, offset=pager['offset'])
+
+        # Get PDF scan info for each document
+        for doc in documents:
+            doc.pdf_scans = request.env['ir.attachment'].search([
+                ('res_model', '=', 'records.document'),
+                ('res_id', '=', doc.id),
+                ('mimetype', 'like', 'pdf')
+            ])
+
+        values.update({
+            'documents': documents,
+            'page_name': 'inventory_documents',
+            'pager': pager,
+            'search': search or '',
+            'doc_count': doc_count,
+        })
+
+        return request.render("records_management.portal_inventory_documents", values)
+
+    @http.route(['/my/inventory/temp'], type='http', auth="user", website=True)
+    def portal_inventory_temp(self, page=1, sortby=None, filterby=None, search=None, **kw):
+        """Temp inventory tab - backend-style list view"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+
+        TempInventory = request.env['temp.inventory']
+        domain = [('partner_id', '=', partner.id)]
+
+        if search:
+            domain += ['|', ('name', 'ilike', search), ('description', 'ilike', search)]
+
+        # Get temp inventory
+        temp_count = TempInventory.search_count(domain)
+        pager = request.website.pager(
+            url="/my/inventory/temp",
+            url_args={'sortby': sortby, 'filterby': filterby, 'search': search},
+            total=temp_count,
+            page=page,
+            step=20,
+        )
+
+        temp_items = TempInventory.search(domain, order='date_created desc', limit=20, offset=pager['offset'])
+
+        values.update({
+            'temp_items': temp_items,
+            'page_name': 'inventory_temp',
+            'pager': pager,
+            'search': search or '',
+            'temp_count': temp_count,
+        })
+
+        return request.render("records_management.portal_inventory_temp", values)
+
+    # ============================================================================
+    # INDIVIDUAL ITEM DETAIL ROUTES
+    # ============================================================================
+
+    @http.route(['/my/inventory/container/<int:container_id>'], type='http', auth="user", website=True)
+    def portal_container_detail(self, container_id, **kw):
+        """Individual container detail view with management options"""
+        container = request.env['records.container'].browse(container_id)
+
+        # Security check
+        if container.partner_id != request.env.user.partner_id.commercial_partner_id:
+            return request.not_found()
+
+        # Get files in this container
+        files_in_container = request.env['records.file'].search([
+            ('container_id', '=', container_id),
+            ('partner_id', '=', container.partner_id.id)
+        ])
+
+        values = {
+            'container': container,
+            'files_in_container': files_in_container,
+            'page_name': 'container_detail',
+        }
+
+        return request.render("records_management.portal_container_detail", values)
+
+    @http.route(['/my/inventory/file/<int:file_id>'], type='http', auth="user", website=True)
+    def portal_file_detail(self, file_id, **kw):
+        """Individual file folder detail view"""
+        file_folder = request.env['records.file'].browse(file_id)
+
+        # Security check
+        if file_folder.partner_id != request.env.user.partner_id.commercial_partner_id:
+            return request.not_found()
+
+        # Get documents in this file folder
+        documents_in_file = request.env['records.document'].search([
+            ('file_folder_id', '=', file_id),
+            ('partner_id', '=', file_folder.partner_id.id)
+        ])
+
+        values = {
+            'file_folder': file_folder,
+            'documents_in_file': documents_in_file,
+            'page_name': 'file_detail',
+        }
+
+        return request.render("records_management.portal_file_detail", values)
+
+    @http.route(['/my/inventory/document/<int:document_id>'], type='http', auth="user", website=True)
+    def portal_document_detail(self, document_id, **kw):
+        """Individual document detail view with PDF scans"""
+        document = request.env['records.document'].browse(document_id)
+
+        # Security check
+        if document.partner_id != request.env.user.partner_id.commercial_partner_id:
+            return request.not_found()
+
+        # Get PDF scans
+        pdf_scans = request.env['ir.attachment'].search([
+            ('res_model', '=', 'records.document'),
+            ('res_id', '=', document_id),
+            ('mimetype', 'like', 'pdf')
+        ])
+
+        values = {
+            'document': document,
+            'pdf_scans': pdf_scans,
+            'page_name': 'document_detail',
+        }
+
+        return request.render("records_management.portal_document_detail", values)
+
+    # ============================================================================
+    # BULK ACTION ROUTES
+    # ============================================================================
+
+    @http.route(['/my/inventory/bulk/retrieve'], type='json', auth='user', methods=['POST'])
+    def portal_bulk_retrieve(self, **post):
+        """Request retrieval for selected items"""
+        if not (request.env.user.has_group('records_management.group_portal_company_admin') or
+                request.env.user.has_group('records_management.group_portal_department_admin') or
+                request.env.user.has_group('records_management.group_portal_department_user')):
+            return {'success': False, 'error': 'Insufficient permissions'}
+
+        try:
+            item_ids = post.get('item_ids', [])
+            item_type = post.get('item_type')  # 'container', 'file', 'document'
+
+            # Create retrieval request
+            portal_request = request.env['portal.request'].create({
+                'partner_id': request.env.user.partner_id.commercial_partner_id.id,
+                'request_type': 'retrieval',
+                'retrieval_items': json.dumps({
+                    'type': item_type,
+                    'ids': item_ids,
+                    'action': 'retrieve'
+                }),
+                'notes': post.get('notes', ''),
+                'state': 'draft'
+            })
+
+            return {
+                'success': True,
+                'message': f'Retrieval request created for {len(item_ids)} items',
+                'request_id': portal_request.id
+            }
+
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+
+    @http.route(['/my/inventory/bulk/destroy'], type='json', auth='user', methods=['POST'])
+    def portal_bulk_destroy(self, **post):
+        """Request destruction for selected items"""
+        if not (request.env.user.has_group('records_management.group_portal_company_admin') or
+                request.env.user.has_group('records_management.group_portal_department_admin') or
+                request.env.user.has_group('records_management.group_portal_department_user')):
+            return {'success': False, 'error': 'Insufficient permissions'}
+
+        try:
+            item_ids = post.get('item_ids', [])
+            item_type = post.get('item_type')
+
+            # Create destruction request
+            portal_request = request.env['portal.request'].create({
+                'partner_id': request.env.user.partner_id.commercial_partner_id.id,
+                'request_type': 'destruction',
+                'retrieval_items': json.dumps({
+                    'type': item_type,
+                    'ids': item_ids,
+                    'action': 'destroy',
+                    'method': post.get('destruction_method', 'shredding')
+                }),
+                'notes': post.get('notes', ''),
+                'state': 'draft'
+            })
+
+            return {
+                'success': True,
+                'message': f'Destruction request created for {len(item_ids)} items',
+                'request_id': portal_request.id
+            }
+
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+
+    @http.route(['/my/inventory/bulk/pickup'], type='json', auth='user', methods=['POST'])
+    def portal_bulk_pickup(self, **post):
+        """Schedule pickup for items at customer location"""
+        if not (request.env.user.has_group('records_management.group_portal_company_admin') or
+                request.env.user.has_group('records_management.group_portal_department_admin') or
+                request.env.user.has_group('records_management.group_portal_department_user')):
+            return {'success': False, 'error': 'Insufficient permissions'}
+
+        try:
+            item_ids = post.get('item_ids', [])
+            item_type = post.get('item_type')
+
+            # Create pickup request
+            portal_request = request.env['portal.request'].create({
+                'partner_id': request.env.user.partner_id.commercial_partner_id.id,
+                'request_type': 'pickup',
+                'retrieval_items': json.dumps({
+                    'type': item_type,
+                    'ids': item_ids,
+                    'action': 'pickup'
+                }),
+                'notes': post.get('notes', ''),
+                'pickup_date': post.get('pickup_date'),
+                'state': 'draft'
+            })
+
+            return {
+                'success': True,
+                'message': f'Pickup request created for {len(item_ids)} items',
+                'request_id': portal_request.id
+            }
+
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+
+    # ============================================================================
+    # ITEM MANAGEMENT ROUTES
+    # ============================================================================
+
+    @http.route(['/my/inventory/container/<int:container_id>/update'], type='json', auth='user', methods=['POST'])
+    def portal_update_container(self, container_id, **post):
+        """Update container information"""
+        try:
+            container = request.env['records.container'].browse(container_id)
+
+            # Security check
+            if container.partner_id != request.env.user.partner_id.commercial_partner_id:
+                return {'success': False, 'error': 'Access denied'}
+
+            # Update allowed fields
+            update_vals = {}
+            if 'sequence_range' in post:
+                update_vals['sequence_range'] = post['sequence_range']
+            if 'notes' in post:
+                update_vals['notes'] = post['notes']
+
+            container.write(update_vals)
+
+            return {'success': True, 'message': 'Container updated successfully'}
+
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+
+    @http.route(['/my/inventory/file/add_to_container'], type='json', auth='user', methods=['POST'])
+    def portal_add_file_to_container(self, **post):
+        """Add selected files to a container"""
+        try:
+            file_ids = post.get('file_ids', [])
+            container_id = post.get('container_id')
+
+            files = request.env['records.file'].browse(file_ids)
+            container = request.env['records.container'].browse(container_id)
+
+            # Security check
+            partner = request.env.user.partner_id.commercial_partner_id
+            if container.partner_id != partner or any(f.partner_id != partner for f in files):
+                return {'success': False, 'error': 'Access denied'}
+
+            # Update file locations
+            files.write({'container_id': container_id})
+
+            return {
+                'success': True,
+                'message': f'{len(files)} files added to container {container.name}'
+            }
+
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+
+    # ============================================================================
+    # OVERVIEW TAB DATA ROUTES
+    # ============================================================================
+
+    @http.route(['/my/inventory/counts'], type='http', auth='user', website=True)
+    def portal_inventory_counts(self, **kw):
+        """Get inventory counts for overview dashboard"""
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        counts = {
+            'containers': request.env['records.container'].search_count([('partner_id', '=', partner.id)]),
+            'files': request.env['records.file'].search_count([('partner_id', '=', partner.id)]),
+            'documents': request.env['records.document'].search_count([('partner_id', '=', partner.id)]),
+            'temp': request.env['temp.inventory'].search_count([('partner_id', '=', request.env.user.partner_id.id)]),
+        }
+
+        return request.make_response(
+            json.dumps(counts),
+            headers=[('Content-Type', 'application/json')]
+        )
+
+    @http.route(['/my/inventory/recent_activity'], type='http', auth='user', website=True)
+    def portal_recent_activity(self, **kw):
+        """Get recent activity for overview dashboard"""
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        # Get recent containers
+        recent_containers = request.env['records.container'].search([
+            ('partner_id', '=', partner.id)
+        ], order='create_date desc', limit=5)
+
+        # Get recent requests
+        recent_requests = request.env['portal.request'].search([
+            ('partner_id', '=', partner.id)
+        ], order='create_date desc', limit=5)
+
+        activity_html = '<ul class="list-unstyled">'
+
+        for container in recent_containers:
+            activity_html += f'''
+            <li class="mb-2">
+                <i class="fa fa-archive text-primary"></i>
+                <strong>Container:</strong> {container.name}
+                <small class="text-muted">- Created {container.create_date.strftime('%Y-%m-%d')}</small>
+            </li>
+            '''
+
+        for req in recent_requests:
+            activity_html += f'''
+            <li class="mb-2">
+                <i class="fa fa-paper-plane text-info"></i>
+                <strong>Request:</strong> {req.request_type.title()}
+                <small class="text-muted">- {req.create_date.strftime('%Y-%m-%d')}</small>
+            </li>
+            '''
+
+        if not recent_containers and not recent_requests:
+            activity_html += '<li class="text-muted">No recent activity</li>'
+
+        activity_html += '</ul>'
+
+        response_data = {'html': activity_html}
+
+        return request.make_response(
+            json.dumps(response_data),
+            headers=[('Content-Type', 'application/json')]
+        )
+
+    @http.route(['/my/inventory/files/available'], type='http', auth='user', website=True)
+    def portal_available_files(self, **kw):
+        """Get files not assigned to any container"""
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        available_files = request.env['records.file'].search([
+            ('partner_id', '=', partner.id),
+            ('container_id', '=', False)  # Not in any container
+        ])
+
+        files_data = []
+        for file_folder in available_files:
+            files_data.append({
+                'id': file_folder.id,
+                'name': file_folder.name,
+                'barcode': file_folder.barcode or '',
+                'description': file_folder.description or ''
+            })
+
+        response_data = {'files': files_data}
+
+        return request.make_response(
+            json.dumps(response_data),
+            headers=[('Content-Type', 'application/json')]
+        )
 
     # ============================================================================
     # BARCODE GENERATION ROUTES
@@ -1530,7 +2166,7 @@ class RecordsManagementController(http.Controller):
         """
         # Check user permissions
         user = request.env.user
-        if not (user.has_group('records_management.group_portal_company_admin') or 
+        if not (user.has_group('records_management.group_portal_company_admin') or
                 user.has_group('records_management.group_portal_department_admin') or
                 user.has_group('records_management.group_portal_department_user')):
             return {
@@ -1541,7 +2177,7 @@ class RecordsManagementController(http.Controller):
         try:
             item_type = post.get('type', '').strip()
             description = post.get('description', '').strip()
-            
+
             if not item_type or not description:
                 return {
                     'success': False,
@@ -1558,7 +2194,7 @@ class RecordsManagementController(http.Controller):
 
             # Generate barcode using sequence
             barcode = request.env['ir.sequence'].next_by_code('temp.inventory') or f"TEMP-{temp_inventory.id}"
-            
+
             # Update the temp inventory with the barcode in the name if needed
             if temp_inventory.name == description:
                 temp_inventory.write({'name': f"{description} ({barcode})"})
@@ -1591,7 +2227,7 @@ class RecordsManagementController(http.Controller):
         """
         # Check user permissions
         user = request.env.user
-        if not (user.has_group('records_management.group_portal_company_admin') or 
+        if not (user.has_group('records_management.group_portal_company_admin') or
                 user.has_group('records_management.group_portal_department_admin') or
                 user.has_group('records_management.group_portal_department_user')):
             return {
@@ -1670,7 +2306,7 @@ class RecordsManagementController(http.Controller):
         """
         # Check user permissions
         user = request.env.user
-        if not (user.has_group('records_management.group_portal_company_admin') or 
+        if not (user.has_group('records_management.group_portal_company_admin') or
                 user.has_group('records_management.group_portal_department_admin') or
                 user.has_group('records_management.group_portal_department_user')):
             return {

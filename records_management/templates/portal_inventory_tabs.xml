@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================================ -->
+    <!-- INVENTORY TAB TEMPLATES - Backend-style list views with bulk actions -->
+    <!-- ============================================================================ -->
+
+    <!-- Containers Tab Template -->
+    <template id="portal_inventory_containers" name="Portal Inventory - Containers">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-set="title">Containers &amp; Boxes</t>
+
+            <div class="container-fluid">
+                <!-- Action Bar -->
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search containers..." 
+                                   t-att-value="search" name="search" id="search_input"/>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" onclick="performSearch()">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <div class="btn-group">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                <i class="fa fa-cogs"></i> Bulk Actions
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#" onclick="bulkAction('retrieve')">
+                                    <i class="fa fa-truck"></i> Request Retrieval
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="bulkAction('destroy')">
+                                    <i class="fa fa-trash"></i> Request Destruction
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="bulkAction('pickup')">
+                                    <i class="fa fa-calendar"></i> Schedule Pickup
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selection Bar -->
+                <div class="alert alert-info" id="selection-bar" style="display: none;">
+                    <span id="selection-count">0</span> containers selected
+                    <button class="btn btn-sm btn-secondary ml-2" onclick="clearSelection()">Clear</button>
+                </div>
+
+                <!-- Containers Table -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th width="40">
+                                            <input type="checkbox" id="select-all" onchange="toggleAll(this)"/>
+                                        </th>
+                                        <th>Name</th>
+                                        <th>Barcode</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                        <th>Files Count</th>
+                                        <th>Created</th>
+                                        <th width="100">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="not containers">
+                                        <tr>
+                                            <td colspan="8" class="text-center py-4">
+                                                <i class="fa fa-info-circle text-muted"></i>
+                                                No containers found
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-foreach="containers" t-as="container">
+                                        <tr class="inventory-row" t-att-data-id="container.id">
+                                            <td>
+                                                <input type="checkbox" class="item-checkbox" 
+                                                       t-att-value="container.id" onchange="updateSelection()"/>
+                                            </td>
+                                            <td>
+                                                <a t-att-href="'/my/inventory/container/%s' % container.id" 
+                                                   class="text-decoration-none">
+                                                    <strong t-esc="container.name"/>
+                                                </a>
+                                                <t t-if="container.description">
+                                                    <br/><small class="text-muted" t-esc="container.description"/>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-secondary" t-esc="container.barcode or container.temp_barcode or 'No barcode'"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="container.current_location_id.name if container.current_location_id else 'Unknown'"/>
+                                            </td>
+                                            <td>
+                                                <span class="badge" 
+                                                      t-att-class="'badge-success' if container.state == 'active' else 'badge-warning'"
+                                                      t-esc="container.state.title() if container.state else 'Active'"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="len(container.file_ids)" class="badge badge-info"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="container.create_date.strftime('%Y-%m-%d')" class="text-muted"/>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a t-att-href="'/my/inventory/container/%s' % container.id" 
+                                                       class="btn btn-outline-primary btn-sm" title="View Details">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                    <button class="btn btn-outline-secondary btn-sm" 
+                                                            t-att-onclick="'editContainer(%s)' % container.id" title="Edit">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <t t-if="pager" t-call="portal.pager"/>
+            </div>
+
+            <!-- Bulk Action Modal -->
+            <div class="modal fade" id="bulkActionModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="bulkActionTitle">Bulk Action</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&amp;times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="bulkActionContent"></div>
+                            <div class="form-group">
+                                <label for="bulkActionNotes">Notes (optional):</label>
+                                <textarea class="form-control" id="bulkActionNotes" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="executeBulkAction()">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JavaScript -->
+            <script>
+                let selectedItems = [];
+                let currentBulkAction = null;
+
+                function toggleAll(checkbox) {
+                    const checkboxes = document.querySelectorAll('.item-checkbox');
+                    checkboxes.forEach(cb => {
+                        cb.checked = checkbox.checked;
+                    });
+                    updateSelection();
+                }
+
+                function updateSelection() {
+                    selectedItems = Array.from(document.querySelectorAll('.item-checkbox:checked'))
+                                        .map(cb => parseInt(cb.value));
+                    
+                    const selectionBar = document.getElementById('selection-bar');
+                    const selectionCount = document.getElementById('selection-count');
+                    
+                    if (selectedItems.length > 0) {
+                        selectionBar.style.display = 'block';
+                        selectionCount.textContent = selectedItems.length;
+                    } else {
+                        selectionBar.style.display = 'none';
+                    }
+                }
+
+                function clearSelection() {
+                    document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = false);
+                    document.getElementById('select-all').checked = false;
+                    updateSelection();
+                }
+
+                function bulkAction(action) {
+                    if (selectedItems.length === 0) {
+                        alert('Please select at least one container');
+                        return;
+                    }
+
+                    currentBulkAction = action;
+                    const modal = $('#bulkActionModal');
+                    const title = document.getElementById('bulkActionTitle');
+                    const content = document.getElementById('bulkActionContent');
+
+                    switch(action) {
+                        case 'retrieve':
+                            title.textContent = 'Request Retrieval';
+                            content.innerHTML = `
+                                &lt;p&gt;Request retrieval of ${selectedItems.length} containers.&lt;/p&gt;
+                                &lt;p class="text-muted"&gt;Selected containers will be prepared for pickup.&lt;/p&gt;
+                            `;
+                            break;
+                        case 'destroy':
+                            title.textContent = 'Request Destruction';
+                            content.innerHTML = `
+                                &lt;div class="alert alert-warning"&gt;
+                                    &lt;strong&gt;Warning:&lt;/strong&gt; Destruction is permanent and cannot be undone.
+                                &lt;/div&gt;
+                                &lt;p&gt;Request destruction of ${selectedItems.length} containers.&lt;/p&gt;
+                                &lt;div class="form-group"&gt;
+                                    &lt;label&gt;Destruction Method:&lt;/label&gt;
+                                    &lt;select class="form-control" id="destructionMethod"&gt;
+                                        &lt;option value="shredding"&gt;Cross-Cut Shredding&lt;/option&gt;
+                                        &lt;option value="pulping"&gt;Pulping&lt;/option&gt;
+                                        &lt;option value="incineration"&gt;Incineration&lt;/option&gt;
+                                    &lt;/select&gt;
+                                &lt;/div&gt;
+                            `;
+                            break;
+                        case 'pickup':
+                            title.textContent = 'Schedule Pickup';
+                            content.innerHTML = `
+                                &lt;p&gt;Schedule pickup for ${selectedItems.length} containers.&lt;/p&gt;
+                                &lt;div class="form-group"&gt;
+                                    &lt;label&gt;Preferred Pickup Date:&lt;/label&gt;
+                                    &lt;input type="date" class="form-control" id="pickupDate" 
+                                           min="${new Date().toISOString().split('T')[0]}"&gt;
+                                &lt;/div&gt;
+                            `;
+                            break;
+                    }
+
+                    modal.modal('show');
+                }
+
+                function executeBulkAction() {
+                    const notes = document.getElementById('bulkActionNotes').value;
+                    let extraData = {};
+
+                    if (currentBulkAction === 'destroy') {
+                        extraData.destruction_method = document.getElementById('destructionMethod').value;
+                    } else if (currentBulkAction === 'pickup') {
+                        extraData.pickup_date = document.getElementById('pickupDate').value;
+                    }
+
+                    $.ajax({
+                        url: `/my/inventory/bulk/${currentBulkAction}`,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            item_ids: selectedItems,
+                            item_type: 'container',
+                            notes: notes,
+                            ...extraData
+                        }),
+                        success: function(response) {
+                            if (response.success) {
+                                $('#bulkActionModal').modal('hide');
+                                alert(response.message);
+                                clearSelection();
+                            } else {
+                                alert('Error: ' + response.error);
+                            }
+                        },
+                        error: function() {
+                            alert('An error occurred. Please try again.');
+                        }
+                    });
+                }
+
+                function performSearch() {
+                    const search = document.getElementById('search_input').value;
+                    window.location.href = `/my/inventory/containers?search=${encodeURIComponent(search)}`;
+                }
+
+                function editContainer(containerId) {
+                    window.location.href = `/my/inventory/container/${containerId}`;
+                }
+            </script>
+        </t>
+    </template>
+
+    <!-- Files Tab Template -->
+    <template id="portal_inventory_files" name="Portal Inventory - Files">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">File Folders</t>
+
+            <div class="container-fluid">
+                <!-- Search Bar -->
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" placeholder="Search file folders..." 
+                               t-att-value="search" name="search" id="search_input"/>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary" onclick="performSearch()">
+                            <i class="fa fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Files Table -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th width="40">
+                                            <input type="checkbox" id="select-all-files" onchange="toggleAllFiles(this)"/>
+                                        </th>
+                                        <th>Name</th>
+                                        <th>Barcode</th>
+                                        <th>Container</th>
+                                        <th>Location</th>
+                                        <th>Documents</th>
+                                        <th>Created</th>
+                                        <th width="100">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="not files">
+                                        <tr>
+                                            <td colspan="8" class="text-center py-4">
+                                                <i class="fa fa-info-circle text-muted"></i>
+                                                No file folders found
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-foreach="files" t-as="file_folder">
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="file-checkbox" t-att-value="file_folder.id"/>
+                                            </td>
+                                            <td>
+                                                <a t-att-href="'/my/inventory/file/%s' % file_folder.id">
+                                                    <strong t-esc="file_folder.name"/>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-secondary" t-esc="file_folder.barcode or 'No barcode'"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="file_folder.container_id.name if file_folder.container_id else 'Not in container'"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="file_folder.current_location_id.name if file_folder.current_location_id else 'Unknown'"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="len(file_folder.document_ids)" class="badge badge-info"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="file_folder.create_date.strftime('%Y-%m-%d')" class="text-muted"/>
+                                            </td>
+                                            <td>
+                                                <a t-att-href="'/my/inventory/file/%s' % file_folder.id" 
+                                                   class="btn btn-outline-primary btn-sm">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <t t-if="pager" t-call="portal.pager"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- Documents Tab Template -->
+    <template id="portal_inventory_documents" name="Portal Inventory - Documents">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">Documents &amp; PDF Scans</t>
+
+            <div class="container-fluid">
+                <!-- Documents Table -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th width="40">
+                                            <input type="checkbox" id="select-all-docs"/>
+                                        </th>
+                                        <th>Name</th>
+                                        <th>Temp Barcode</th>
+                                        <th>File Folder</th>
+                                        <th>Container</th>
+                                        <th>PDF Scans</th>
+                                        <th>Created</th>
+                                        <th width="100">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="not documents">
+                                        <tr>
+                                            <td colspan="8" class="text-center py-4">
+                                                <i class="fa fa-info-circle text-muted"></i>
+                                                No documents found
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-foreach="documents" t-as="document">
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="doc-checkbox" t-att-value="document.id"/>
+                                            </td>
+                                            <td>
+                                                <a t-att-href="'/my/inventory/document/%s' % document.id">
+                                                    <strong t-esc="document.name"/>
+                                                </a>
+                                                <t t-if="document.description">
+                                                    <br/><small class="text-muted" t-esc="document.description"/>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-secondary" t-esc="document.temp_barcode or 'No barcode'"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="document.file_folder_id.name if document.file_folder_id else 'Not in file'"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="document.container_id.name if document.container_id else 'Not in container'"/>
+                                            </td>
+                                            <td>
+                                                <t t-if="document.pdf_scans">
+                                                    <span class="badge badge-success" t-esc="len(document.pdf_scans)"/>
+                                                    <i class="fa fa-file-pdf-o ml-1" title="Has PDF scans"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="text-muted">No scans</span>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <span t-esc="document.create_date.strftime('%Y-%m-%d')" class="text-muted"/>
+                                            </td>
+                                            <td>
+                                                <a t-att-href="'/my/inventory/document/%s' % document.id" 
+                                                   class="btn btn-outline-primary btn-sm">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <t t-if="pager" t-call="portal.pager"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- Temp Inventory Tab Template -->
+    <template id="portal_inventory_temp" name="Portal Inventory - Temp Items">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">Temporary Inventory</t>
+
+            <div class="container-fluid">
+                <!-- Temp Items Table -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th width="40">
+                                            <input type="checkbox" id="select-all-temp"/>
+                                        </th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Temp Barcode</th>
+                                        <th>State</th>
+                                        <th>Date Created</th>
+                                        <th width="100">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="not temp_items">
+                                        <tr>
+                                            <td colspan="7" class="text-center py-4">
+                                                <i class="fa fa-info-circle text-muted"></i>
+                                                No temporary inventory items found
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-foreach="temp_items" t-as="temp_item">
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="temp-checkbox" t-att-value="temp_item.id"/>
+                                            </td>
+                                            <td>
+                                                <strong t-esc="temp_item.name"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="temp_item.description or 'No description'"/>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-warning" t-esc="temp_item.temp_barcode or 'No barcode'"/>
+                                            </td>
+                                            <td>
+                                                <span class="badge" 
+                                                      t-att-class="'badge-success' if temp_item.state == 'active' else 'badge-secondary'"
+                                                      t-esc="temp_item.state.title() if temp_item.state else 'Draft'"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="temp_item.date_created.strftime('%Y-%m-%d %H:%M')" class="text-muted"/>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-outline-primary btn-sm" 
+                                                        t-att-onclick="'editTempItem(%s)' % temp_item.id">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <t t-if="pager" t-call="portal.pager"/>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -637,6 +637,8 @@
         "templates/portal_errors.xml",
         # Inventory & Container Templates
         "templates/my_portal_inventory.xml",
+        "templates/portal_inventory_tabs.xml",
+        "templates/portal_inventory_detail.xml",
         "templates/portal_inventory_template.xml",
         "templates/portal_containers.xml",
         "templates/portal_containers_list.xml",

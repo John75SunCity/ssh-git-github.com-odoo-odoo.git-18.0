@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================================ -->
+    <!-- INVENTORY ITEM DETAIL TEMPLATES - Individual item management views -->
+    <!-- ============================================================================ -->
+
+    <!-- Container Detail Template -->
+    <template id="portal_container_detail" name="Container Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-set="title" t-esc="container.name"/>
+
+            <div class="container-fluid">
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <h2>
+                            <i class="fa fa-archive text-primary"></i>
+                            <span t-esc="container.name"/>
+                            <span class="badge" 
+                                  t-att-class="'badge-success' if container.state == 'active' else 'badge-warning'"
+                                  t-esc="container.state.title() if container.state else 'Active'"/>
+                        </h2>
+                        <p class="text-muted" t-esc="container.description or 'No description'"/>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="requestRetrieval()">
+                                <i class="fa fa-truck"></i> Request Retrieval
+                            </button>
+                            <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-cogs"></i> Actions
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#" onclick="editContainer()">
+                                    <i class="fa fa-edit"></i> Edit Details
+                                </a>
+                                <a class="dropdown-item" href="#" onclick="updateSequenceRange()">
+                                    <i class="fa fa-sort-numeric-asc"></i> Update Sequence Range
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="#" onclick="requestDestruction()">
+                                    <i class="fa fa-trash"></i> Request Destruction
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Container Information -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fa fa-info-circle"></i> Container Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th width="150">Barcode:</th>
+                                        <td>
+                                            <span class="badge badge-secondary" 
+                                                  t-esc="container.barcode or container.temp_barcode or 'No barcode'"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Location:</th>
+                                        <td t-esc="container.current_location_id.name if container.current_location_id else 'Unknown'"/>
+                                    </tr>
+                                    <tr>
+                                        <th>Created:</th>
+                                        <td t-esc="container.create_date.strftime('%Y-%m-%d %H:%M')"/>
+                                    </tr>
+                                    <tr>
+                                        <th>Sequence Range:</th>
+                                        <td>
+                                            <span id="sequence-range-display" t-esc="container.sequence_range or 'Not set'"/>
+                                            <button class="btn btn-sm btn-outline-secondary ml-2" onclick="editSequenceRange()">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>File Count:</th>
+                                        <td>
+                                            <span class="badge badge-info" t-esc="len(files_in_container)"/>
+                                            files in this container
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fa fa-notes-medical"></i> Notes</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="notes-display">
+                                    <p t-esc="container.notes or 'No notes'"/>
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="editNotes()">
+                                        <i class="fa fa-edit"></i> Edit Notes
+                                    </button>
+                                </div>
+                                <div id="notes-edit" style="display: none;">
+                                    <textarea id="notes-textarea" class="form-control mb-2" rows="4" 
+                                              t-esc="container.notes or ''"></textarea>
+                                    <button class="btn btn-sm btn-success" onclick="saveNotes()">Save</button>
+                                    <button class="btn btn-sm btn-secondary" onclick="cancelEditNotes()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Files in Container -->
+                <div class="card mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fa fa-folder"></i> Files in Container (<span t-esc="len(files_in_container)"/>)</h5>
+                        <button class="btn btn-success btn-sm" onclick="addFilesToContainer()">
+                            <i class="fa fa-plus"></i> Add Files
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <t t-if="not files_in_container">
+                            <div class="text-center py-4">
+                                <i class="fa fa-folder-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No files in this container</p>
+                                <button class="btn btn-primary" onclick="addFilesToContainer()">
+                                    <i class="fa fa-plus"></i> Add First File
+                                </button>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>File Name</th>
+                                            <th>Barcode</th>
+                                            <th>Documents Count</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="files_in_container" t-as="file_folder">
+                                            <tr>
+                                                <td>
+                                                    <a t-att-href="'/my/inventory/file/%s' % file_folder.id">
+                                                        <strong t-esc="file_folder.name"/>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-secondary" 
+                                                          t-esc="file_folder.barcode or 'No barcode'"/>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-info" 
+                                                          t-esc="len(file_folder.document_ids)"/>
+                                                </td>
+                                                <td>
+                                                    <a t-att-href="'/my/inventory/file/%s' % file_folder.id" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="fa fa-eye"></i> View
+                                                    </a>
+                                                    <button class="btn btn-sm btn-outline-danger" 
+                                                            t-att-onclick="'removeFileFromContainer(%s)' % file_folder.id">
+                                                        <i class="fa fa-times"></i> Remove
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Files Modal -->
+            <div class="modal fade" id="addFilesModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Files to Container</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&amp;times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="available-files">Loading available files...</div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="confirmAddFiles()">Add Selected</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JavaScript -->
+            <script>
+                function editSequenceRange() {
+                    const currentRange = document.getElementById('sequence-range-display').textContent;
+                    const newRange = prompt('Enter new sequence range:', currentRange === 'Not set' ? '' : currentRange);
+                    
+                    if (newRange !== null) {
+                        updateContainer({ sequence_range: newRange });
+                    }
+                }
+
+                function editNotes() {
+                    document.getElementById('notes-display').style.display = 'none';
+                    document.getElementById('notes-edit').style.display = 'block';
+                }
+
+                function cancelEditNotes() {
+                    document.getElementById('notes-display').style.display = 'block';
+                    document.getElementById('notes-edit').style.display = 'none';
+                }
+
+                function saveNotes() {
+                    const notes = document.getElementById('notes-textarea').value;
+                    updateContainer({ notes: notes }, function() {
+                        document.getElementById('notes-display').innerHTML = 
+                            `&lt;p&gt;${notes || 'No notes'}&lt;/p&gt;
+                             &lt;button class="btn btn-sm btn-outline-secondary" onclick="editNotes()"&gt;
+                                 &lt;i class="fa fa-edit"&gt;&lt;/i&gt; Edit Notes
+                             &lt;/button&gt;`;
+                        cancelEditNotes();
+                    });
+                }
+
+                function updateContainer(data, callback) {
+                    $.ajax({
+                        url: `/my/inventory/container/${<t t-esc="container.id"/>}/update`,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
+                        success: function(response) {
+                            if (response.success) {
+                                if (data.sequence_range) {
+                                    document.getElementById('sequence-range-display').textContent = data.sequence_range;
+                                }
+                                if (callback) callback();
+                                alert('Container updated successfully');
+                            } else {
+                                alert('Error: ' + response.error);
+                            }
+                        },
+                        error: function() {
+                            alert('An error occurred while updating the container');
+                        }
+                    });
+                }
+
+                function addFilesToContainer() {
+                    $('#addFilesModal').modal('show');
+                    loadAvailableFiles();
+                }
+
+                function loadAvailableFiles() {
+                    // Load files not in any container
+                    $.ajax({
+                        url: '/my/inventory/files/available',
+                        type: 'GET',
+                        success: function(data) {
+                            const filesHtml = data.files.map(file => 
+                                `&lt;div class="form-check"&gt;
+                                    &lt;input class="form-check-input" type="checkbox" value="${file.id}" id="file-${file.id}"&gt;
+                                    &lt;label class="form-check-label" for="file-${file.id}"&gt;
+                                        ${file.name} ${file.barcode ? '(' + file.barcode + ')' : ''}
+                                    &lt;/label&gt;
+                                &lt;/div&gt;`
+                            ).join('');
+                            
+                            document.getElementById('available-files').innerHTML = 
+                                filesHtml || '&lt;p class="text-muted"&gt;No available files found&lt;/p&gt;';
+                        },
+                        error: function() {
+                            document.getElementById('available-files').innerHTML = 
+                                '&lt;div class="alert alert-warning"&gt;Error loading files&lt;/div&gt;';
+                        }
+                    });
+                }
+
+                function confirmAddFiles() {
+                    const selectedFiles = Array.from(document.querySelectorAll('#available-files input:checked'))
+                                               .map(cb => parseInt(cb.value));
+                    
+                    if (selectedFiles.length === 0) {
+                        alert('Please select at least one file');
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '/my/inventory/file/add_to_container',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            file_ids: selectedFiles,
+                            container_id: <t t-esc="container.id"/>
+                        }),
+                        success: function(response) {
+                            if (response.success) {
+                                $('#addFilesModal').modal('hide');
+                                alert(response.message);
+                                location.reload();
+                            } else {
+                                alert('Error: ' + response.error);
+                            }
+                        },
+                        error: function() {
+                            alert('An error occurred while adding files');
+                        }
+                    });
+                }
+
+                function requestRetrieval() {
+                    if (confirm('Request retrieval of this container?')) {
+                        $.ajax({
+                            url: '/my/inventory/bulk/retrieve',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                item_ids: [<t t-esc="container.id"/>],
+                                item_type: 'container',
+                                notes: ''
+                            }),
+                            success: function(response) {
+                                if (response.success) {
+                                    alert(response.message);
+                                } else {
+                                    alert('Error: ' + response.error);
+                                }
+                            },
+                            error: function() {
+                                alert('An error occurred while requesting retrieval');
+                            }
+                        });
+                    }
+                }
+
+                function requestDestruction() {
+                    if (confirm('Are you sure you want to request destruction of this container? This action cannot be undone.')) {
+                        $.ajax({
+                            url: '/my/inventory/bulk/destroy',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                item_ids: [<t t-esc="container.id"/>],
+                                item_type: 'container',
+                                destruction_method: 'shredding',
+                                notes: ''
+                            }),
+                            success: function(response) {
+                                if (response.success) {
+                                    alert(response.message);
+                                } else {
+                                    alert('Error: ' + response.error);
+                                }
+                            },
+                            error: function() {
+                                alert('An error occurred while requesting destruction');
+                            }
+                        });
+                    }
+                }
+            </script>
+        </t>
+    </template>
+
+    <!-- File Folder Detail Template -->
+    <template id="portal_file_detail" name="File Folder Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="title" t-esc="file_folder.name"/>
+
+            <div class="container-fluid">
+                <h2>
+                    <i class="fa fa-folder text-info"></i>
+                    <span t-esc="file_folder.name"/>
+                </h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>File Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th>Barcode:</th>
+                                        <td t-esc="file_folder.barcode or 'No barcode'"/>
+                                    </tr>
+                                    <tr>
+                                        <th>Container:</th>
+                                        <td>
+                                            <t t-if="file_folder.container_id">
+                                                <a t-att-href="'/my/inventory/container/%s' % file_folder.container_id.id"
+                                                   t-esc="file_folder.container_id.name"/>
+                                            </t>
+                                            <t t-else="">Not in container</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Documents:</th>
+                                        <td>
+                                            <span class="badge badge-info" t-esc="len(documents_in_file)"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents in File -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Documents in File (<span t-esc="len(documents_in_file)"/>)</h5>
+                    </div>
+                    <div class="card-body">
+                        <t t-if="not documents_in_file">
+                            <p class="text-muted">No documents in this file folder</p>
+                        </t>
+                        <t t-else="">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Document Name</th>
+                                            <th>Temp Barcode</th>
+                                            <th>PDF Scans</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="documents_in_file" t-as="document">
+                                            <tr>
+                                                <td t-esc="document.name"/>
+                                                <td t-esc="document.temp_barcode or 'No barcode'"/>
+                                                <td>
+                                                    <span class="badge badge-success" 
+                                                          t-esc="len(document.attachment_ids.filtered(lambda a: 'pdf' in a.mimetype))"/>
+                                                </td>
+                                                <td>
+                                                    <a t-att-href="'/my/inventory/document/%s' % document.id" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="fa fa-eye"></i> View
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Document Detail Template -->
+    <template id="portal_document_detail" name="Document Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="title" t-esc="document.name"/>
+
+            <div class="container-fluid">
+                <h2>
+                    <i class="fa fa-file-text text-success"></i>
+                    <span t-esc="document.name"/>
+                </h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Document Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th>Temp Barcode:</th>
+                                        <td t-esc="document.temp_barcode or 'No barcode'"/>
+                                    </tr>
+                                    <tr>
+                                        <th>File Folder:</th>
+                                        <td>
+                                            <t t-if="document.file_folder_id">
+                                                <a t-att-href="'/my/inventory/file/%s' % document.file_folder_id.id"
+                                                   t-esc="document.file_folder_id.name"/>
+                                            </t>
+                                            <t t-else="">Not in file folder</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Container:</th>
+                                        <td>
+                                            <t t-if="document.container_id">
+                                                <a t-att-href="'/my/inventory/container/%s' % document.container_id.id"
+                                                   t-esc="document.container_id.name"/>
+                                            </t>
+                                            <t t-else="">Not in container</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description:</th>
+                                        <td t-esc="document.description or 'No description'"/>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PDF Scans -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>PDF Scans (<span t-esc="len(pdf_scans)"/>)</h5>
+                    </div>
+                    <div class="card-body">
+                        <t t-if="not pdf_scans">
+                            <div class="text-center py-4">
+                                <i class="fa fa-file-pdf-o fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No PDF scans available</p>
+                                <button class="btn btn-primary" onclick="uploadPDFScan()">
+                                    <i class="fa fa-upload"></i> Upload PDF Scan
+                                </button>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="row">
+                                <t t-foreach="pdf_scans" t-as="pdf">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <i class="fa fa-file-pdf-o fa-3x text-danger mb-2"></i>
+                                                <h6 t-esc="pdf.name"/>
+                                                <p class="text-muted small">
+                                                    <span t-esc="round(pdf.file_size / 1024.0, 1)"/> KB
+                                                </p>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a t-att-href="'/web/content/%s?download=true' % pdf.id" 
+                                                       class="btn btn-primary btn-sm">
+                                                        <i class="fa fa-download"></i> Download
+                                                    </a>
+                                                    <a t-att-href="'/web/content/%s' % pdf.id" 
+                                                       class="btn btn-secondary btn-sm" target="_blank">
+                                                        <i class="fa fa-eye"></i> View
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

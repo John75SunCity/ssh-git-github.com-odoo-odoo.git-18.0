@@ -47,14 +47,172 @@
             </xpath>
         </template>
 
-        <!-- Modern Customer Inventory with Multi-select and Advanced Search -->
+        <!-- Modern Tabbed Inventory Interface -->
         <template id="portal_my_inventory" name="My Inventory">
             <t t-call="portal.portal_layout">
                 <t t-set="breadcrumbs_searchbar" t-value="True"/>
                 <t t-set="title">My Inventory</t>
 
-                <!-- Legacy inventory UI used for stable portal functionality -->
-                <div class="o_portal_inventory highlight-modern">
+                <!-- Main Tabbed Inventory Interface -->
+                <div class="container-fluid mt-4">
+                    <!-- Navigation Tabs -->
+                    <ul class="nav nav-tabs nav-justified mb-4" id="inventoryTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab">
+                                <i class="fa fa-dashboard"></i> Overview
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="containers-tab" data-toggle="tab" href="#containers" role="tab">
+                                <i class="fa fa-archive"></i> Containers/Boxes
+                                <span class="badge badge-primary ml-1" t-esc="inventory_count if inventory_type == 'containers' else 0"/>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab">
+                                <i class="fa fa-folder"></i> File Folders
+                                <span class="badge badge-info ml-1">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="documents-tab" data-toggle="tab" href="#documents" role="tab">
+                                <i class="fa fa-file-text"></i> Documents &amp; PDFs
+                                <span class="badge badge-success ml-1">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="temp-tab" data-toggle="tab" href="#temp" role="tab">
+                                <i class="fa fa-clock-o"></i> Temp Inventory
+                                <span class="badge badge-warning ml-1">0</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="inventoryTabContent">
+                        <!-- Overview Tab -->
+                        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="card text-center bg-primary text-white">
+                                        <div class="card-body">
+                                            <i class="fa fa-archive fa-2x mb-2"></i>
+                                            <h4 id="containers-count">Loading...</h4>
+                                            <p>Containers</p>
+                                            <button class="btn btn-light btn-sm" onclick="switchTab('containers')">View All</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center bg-info text-white">
+                                        <div class="card-body">
+                                            <i class="fa fa-folder fa-2x mb-2"></i>
+                                            <h4 id="files-count">Loading...</h4>
+                                            <p>File Folders</p>
+                                            <button class="btn btn-light btn-sm" onclick="switchTab('files')">View All</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center bg-success text-white">
+                                        <div class="card-body">
+                                            <i class="fa fa-file-text fa-2x mb-2"></i>
+                                            <h4 id="documents-count">Loading...</h4>
+                                            <p>Documents</p>
+                                            <button class="btn btn-light btn-sm" onclick="switchTab('documents')">View All</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center bg-warning text-white">
+                                        <div class="card-body">
+                                            <i class="fa fa-clock-o fa-2x mb-2"></i>
+                                            <h4 id="temp-count">Loading...</h4>
+                                            <p>Temp Items</p>
+                                            <button class="btn btn-light btn-sm" onclick="switchTab('temp')">View All</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Recent Activity -->
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    <h5><i class="fa fa-clock-o"></i> Recent Activity</h5>
+                                </div>
+                                <div class="card-body" id="recent-activity">
+                                    Loading recent activity...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Containers Tab -->
+                        <div class="tab-pane fade" id="containers" role="tabpanel">
+                            <iframe id="containers-frame" src="/my/inventory/containers" style="width: 100%; height: 800px; border: none;"></iframe>
+                        </div>
+
+                        <!-- Files Tab -->
+                        <div class="tab-pane fade" id="files" role="tabpanel">
+                            <iframe id="files-frame" src="/my/inventory/files" style="width: 100%; height: 800px; border: none;"></iframe>
+                        </div>
+
+                        <!-- Documents Tab -->
+                        <div class="tab-pane fade" id="documents" role="tabpanel">
+                            <iframe id="documents-frame" src="/my/inventory/documents" style="width: 100%; height: 800px; border: none;"></iframe>
+                        </div>
+
+                        <!-- Temp Inventory Tab -->
+                        <div class="tab-pane fade" id="temp" role="tabpanel">
+                            <iframe id="temp-frame" src="/my/inventory/temp" style="width: 100%; height: 800px; border: none;"></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JavaScript for Tab Management -->
+                <script>
+                    function switchTab(tabName) {
+                        $('#' + tabName + '-tab').tab('show');
+                    }
+
+                    // Load counts on page load
+                    $(document).ready(function() {
+                        loadInventoryCounts();
+                        loadRecentActivity();
+                    });
+
+                    function loadInventoryCounts() {
+                        // Load counts for each inventory type
+                        $.ajax({
+                            url: '/my/inventory/counts',
+                            type: 'GET',
+                            success: function(data) {
+                                $('#containers-count').text(data.containers || 0);
+                                $('#files-count').text(data.files || 0);
+                                $('#documents-count').text(data.documents || 0);
+                                $('#temp-count').text(data.temp || 0);
+                            },
+                            error: function() {
+                                $('#containers-count, #files-count, #documents-count, #temp-count').text('Error');
+                            }
+                        });
+                    }
+
+                    function loadRecentActivity() {
+                        $.ajax({
+                            url: '/my/inventory/recent_activity',
+                            type: 'GET',
+                            success: function(data) {
+                                $('#recent-activity').html(data.html || 'No recent activity');
+                            },
+                            error: function() {
+                                $('#recent-activity').html('<div class="alert alert-warning">Unable to load recent activity</div>');
+                            }
+                        });
+                    }
+                </script>
+
+                <!-- Legacy inventory UI used for stable portal functionality (kept for backward compatibility) -->
+                <div class="o_portal_inventory highlight-modern" style="display: none;">
                     <!-- NOTE: Legacy inventory UI kept for fallback; will be removed after full parity & QA. -->
                     <!-- Enhanced Search and Filter Section -->
                     <div class="card mb-4">
