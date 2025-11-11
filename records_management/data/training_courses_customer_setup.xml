@@ -4,7 +4,21 @@
         <!-- Customer Records System Setup Course Slides -->
 
         <!-- Introduction -->
-        <record id="slide_customer_setup_intro" model="slide.slide">
+        <?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+        <!-- Training Channel for Customer Records Management -->
+        <record id="slide_channel_customer_records_setup" model="slide.channel">
+            <field name="name">Customer Records Management Setup</field>
+            <field name="description">Essential training for customers starting with records management services</field>
+            <field name="channel_type">training</field>
+            <field name="website_id" ref="website.default_website"/>
+            <field name="enroll">public</field>
+            <field name="allow_comment">True</field>
+        </record>
+
+        <!-- Customer Records Management Training Course - First Slide -->
+        <record id="slide_customer_records_training_intro" model="slide.slide">
             <field name="name">Setting Up Your Records Management System</field>
             <field name="channel_id" ref="slide_channel_customer_records_setup"/>
             <field name="slide_type">webpage</field>
