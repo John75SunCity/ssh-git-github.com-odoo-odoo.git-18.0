@@ -20,7 +20,7 @@ class UnlockServicePart(models.Model):
     partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", related='service_id.partner_id', store=True)
     technician_id = fields.Many2one(comodel_name='res.users', string="Technician", related='service_id.user_id', store=True)
 
-    product_id = fields.Many2one(comodel_name='product.product', string="Product", required=True, domain="[('product_type', '=', 'product')]")
+    product_id = fields.Many2one(comodel_name='product.product', string="Product", required=True, domain="[('type', '=', 'product')]")
     product_category_id = fields.Many2one(comodel_name='product.category', string="Product Category", related='product_id.categ_id', store=True)
     uom_id = fields.Many2one(comodel_name='uom.uom', string="Unit of Measure", related='product_id.uom_id')
 

@@ -21,7 +21,7 @@ class TempInventoryMovement(models.Model):
         'product.product',
         string="Product",
         required=True,
-        domain="[('product_type', '=', 'product')]",
+        domain="[('type', '=', 'product')]",
         help="The product being moved (e.g., a records container)."
     )
     container_id = fields.Many2one(
