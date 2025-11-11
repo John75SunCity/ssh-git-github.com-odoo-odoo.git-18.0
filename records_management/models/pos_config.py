@@ -14,13 +14,13 @@ class PosConfig(models.Model):
     destruction_service_product_id = fields.Many2one(
         'product.product',
         string="Destruction Service Product",
-        domain="[('sale_ok', '=', True), ('type', '=', 'service')]",
+        domain="[('sale_ok', '=', True), ('product_type', '=', 'service')]",
         help="The product used for on-the-spot destruction services."
     )
     pickup_request_product_id = fields.Many2one(
         'product.product',
         string="Pickup Request Product",
-        domain="[('sale_ok', '=', True), ('type', '=', 'service')]",
+        domain="[('sale_ok', '=', True), ('product_type', '=', 'service')]",
         help="The product used to create a records pickup request from the PoS."
     )
     default_destruction_location_id = fields.Many2one(

@@ -115,7 +115,7 @@ class ProductTemplate(models.Model):
     def _onchange_is_records_management_product(self):
         """Set default type to 'Service' if this is a records management product."""
         if self.is_records_management_product:
-            self.type = 'service'
+            self.product_type = 'service'
 
     # ============================================================================
     # BUSINESS METHODS

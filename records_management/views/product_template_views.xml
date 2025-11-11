@@ -98,11 +98,11 @@
         <field name="name">product.template.view.tree</field>
         <field name="model">product.template</field>
         <field name="arch" type="xml">
-            <list decoration-success="sale_ok == True and active == True" decoration-warning="type == 'service'" decoration-info="purchase_ok == True">
+            <list decoration-success="sale_ok == True and active == True" decoration-warning="product_type == 'service'" decoration-info="purchase_ok == True">
                 <field name="name" string="Product Name"/>
                 <field name="default_code" string="Internal Reference"/>
                 <field name="categ_id" string="Category"/>
-                <field name="type" string="Type" widget="badge"/>
+                <field name="product_type" string="Type" widget="badge"/>
                 <field name="list_price" string="Sale Price"/>
                 <field name="standard_price" string="Cost"/>
                 <field name="uom_id" string="Unit of Measure"/>
@@ -185,8 +185,8 @@
                                 <group string="Units &amp; Measurements">
                                     <field name="uom_id"/>
                                     <field name="uom_po_id"/>
-                                    <field name="weight" invisible="type != 'product'"/>
-                                    <field name="volume" invisible="type != 'product'"/>
+                                    <field name="weight" invisible="product_type != 'product'"/>
+                                    <field name="volume" invisible="product_type != 'product'"/>
                                 </group>
                             </group>
                             <!-- Cost Structure and Billing Settings fields not implemented in model -->
@@ -257,8 +257,8 @@
                 <separator/>
                 <filter string="Can be Sold" name="sale_ok" domain="[('sale_ok', '=', True)]"/>
                 <filter string="Can be Purchased" name="purchase_ok" domain="[('purchase_ok', '=', True)]"/>
-                <filter string="Services" name="services" domain="[('type', '=', 'service')]"/>
-                <filter string="Products" name="products" domain="[('type', '=', 'product')]"/>
+                <filter string="Services" name="services" domain="[('product_type', '=', 'service')]"/>
+                <filter string="Products" name="products" domain="[('product_type', '=', 'product')]"/>
 
                 <separator/>
                 <filter string="Featured Services" name="featured" domain="[('is_featured_service', '=', True)]"/>
