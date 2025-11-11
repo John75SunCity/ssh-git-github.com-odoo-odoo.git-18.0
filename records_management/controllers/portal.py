@@ -179,7 +179,7 @@ class RecordsManagementController(http.Controller):
             domain.append(('create_date', '<=', date_to))
 
         # Get containers with applied filters
-        containers = request.env['records.container'].search(domain, order='create_date desc')
+        containers = request.env['records.container'].sudo().search(domain, order='create_date desc')
 
         # Calculate summary statistics
         summary_stats = self._calculate_container_summary(containers)
@@ -220,7 +220,7 @@ class RecordsManagementController(http.Controller):
             return {"success": False, "error": "Insufficient permissions"}
 
         try:
-            Container = request.env['records.container']
+            Container = request.env['records.container'].sudo()
             domain = []
 
             partner_id = post.get('partner_id')
@@ -354,7 +354,7 @@ class RecordsManagementController(http.Controller):
         if location_id and location_id.isdigit():  # Added check to avoid int(None)
             domain.append(("location_id", "=", int(location_id)))
 
-        containers = request.env['records.container'].search(domain)
+        containers = request.env['records.container'].sudo().search(domain)
 
         # Create CSV content
         output = io.StringIO()
@@ -1037,7 +1037,7 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
-        Certificate = request.env['destruction.certificate']
+        Certificate = request.env['destruction.certificate'].sudo()
 
         domain = [
             ('partner_id', 'child_of', partner.commercial_partner_id.id),
@@ -1049,7 +1049,7 @@ class RecordsManagementController(http.Controller):
 
         # Sorting options
         searchbar_sortings = {
-            'date': {'label': 'Date', 'order': 'date desc'},
+            'date': {'label': 'Date', 'order': 'certificate_date desc'},
             'name': {'label': 'Certificate Number', 'order': 'name'},
             'state': {'label': 'Status', 'order': 'state'},
         }
@@ -1087,7 +1087,7 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/certificate/<int:certificate_id>'], type='http', auth="user", website=True)
     def portal_my_certificate(self, certificate_id=None, **kw):
         """Display individual certificate details"""
-        certificate = request.env['destruction.certificate'].browse(certificate_id)
+        certificate = request.env['destruction.certificate'].sudo().browse(certificate_id)
 
         # Security check
         if not certificate.exists() or certificate.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
@@ -1103,7 +1103,7 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/certificate/<int:certificate_id>/download'], type='http', auth="user")
     def portal_certificate_download(self, certificate_id=None, **kw):
         """Download certificate PDF"""
-        certificate = request.env['destruction.certificate'].browse(certificate_id)
+        certificate = request.env['destruction.certificate'].sudo().browse(certificate_id)
 
         # Security check
         if not certificate.exists() or certificate.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
@@ -1240,7 +1240,7 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
-        Container = request.env['records.container']
+        Container = request.env['records.container'].sudo()
 
         # Build domain - use hierarchical access for stock_owner_id
         # Users can see containers where:
@@ -1327,12 +1327,12 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/container/<int:container_id>'], type='http', auth="user", website=True)
     def portal_my_container(self, container_id=None, **kw):
         """Display individual container details"""
-        container = request.env['records.container'].browse(container_id)
+        container = request.env['records.container'].sudo().browse(container_id)
         partner = request.env.user.partner_id
 
         # Security check - verify ownership via partner_id OR hierarchical stock_owner_id
         # Check if container would be visible under the same domain as portal_my_containers
-        visible_containers = request.env['records.container'].search([
+        visible_containers = request.env['records.container'].sudo().search([
             ('id', '=', container_id),
             '|',
             ('partner_id', '=', partner.id),
@@ -1387,7 +1387,7 @@ class RecordsManagementController(http.Controller):
 
         # 1. CONTAINERS/BOXES
         if 'containers' in active_types:
-            Container = request.env['records.container']
+            Container = request.env['records.container'].sudo()
             container_domain = [('partner_id', '=', commercial_partner.id)]
 
             if search_term:
@@ -1566,7 +1566,7 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id.commercial_partner_id
 
-        Container = request.env['records.container']
+        Container = request.env['records.container'].sudo()
         domain = [('partner_id', '=', partner.id)]
 
         if search:
@@ -1738,7 +1738,7 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/inventory/container/<int:container_id>'], type='http', auth="user", website=True)
     def portal_container_detail(self, container_id, **kw):
         """Individual container detail view with management options"""
-        container = request.env['records.container'].browse(container_id)
+        container = request.env['records.container'].sudo().browse(container_id)
 
         # Security check
         if container.partner_id != request.env.user.partner_id.commercial_partner_id:
@@ -1921,7 +1921,7 @@ class RecordsManagementController(http.Controller):
     def portal_update_container(self, container_id, **post):
         """Update container information"""
         try:
-            container = request.env['records.container'].browse(container_id)
+            container = request.env['records.container'].sudo().browse(container_id)
 
             # Security check
             if container.partner_id != request.env.user.partner_id.commercial_partner_id:
@@ -1949,7 +1949,7 @@ class RecordsManagementController(http.Controller):
             container_id = post.get('container_id')
 
             files = request.env['records.file'].browse(file_ids)
-            container = request.env['records.container'].browse(container_id)
+            container = request.env['records.container'].sudo().browse(container_id)
 
             # Security check
             partner = request.env.user.partner_id.commercial_partner_id
@@ -1977,7 +1977,7 @@ class RecordsManagementController(http.Controller):
         partner = request.env.user.partner_id.commercial_partner_id
 
         counts = {
-            'containers': request.env['records.container'].search_count([('partner_id', '=', partner.id)]),
+            'containers': request.env['records.container'].sudo().search_count([('partner_id', '=', partner.id)]),
             'files': request.env['records.file'].search_count([('partner_id', '=', partner.id)]),
             'documents': request.env['records.document'].search_count([('partner_id', '=', partner.id)]),
             'temp': request.env['temp.inventory'].search_count([('partner_id', '=', request.env.user.partner_id.id)]),
@@ -1994,7 +1994,7 @@ class RecordsManagementController(http.Controller):
         partner = request.env.user.partner_id.commercial_partner_id
 
         # Get recent containers
-        recent_containers = request.env['records.container'].search([
+        recent_containers = request.env['records.container'].sudo().search([
             ('partner_id', '=', partner.id)
         ], order='create_date desc', limit=5)
 
@@ -2069,7 +2069,7 @@ class RecordsManagementController(http.Controller):
     def generate_container_barcode(self, **kw):
         """Generate barcode for records.container using ir.sequence"""
         try:
-            Container = request.env['records.container']
+            Container = request.env['records.container'].sudo()
             # Use your container sequence
             barcode_value = request.env['ir.sequence'].next_by_code('records.container.barcode')
 
