@@ -526,11 +526,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const animateCounters = function() {
         const counters = document.querySelectorAll('.stat-card h3');
         counters.forEach(counter => {
+            // Add null check to prevent textContent errors
+            if (!counter || !counter.textContent) {
+                return;
+            }
+            
             const target = parseInt(counter.textContent) || 0;
             const increment = target / 50;
             let current = 0;
             
             const timer = setInterval(() => {
+                // Check if counter still exists before setting textContent
+                if (!counter || !document.contains(counter)) {
+                    clearInterval(timer);
+                    return;
+                }
+                
                 current += increment;
                 if (current >= target) {
                     counter.textContent = target;
@@ -565,6 +576,9 @@ document.addEventListener('DOMContentLoaded', function() {
             this.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Loading...';
         });
     });
+
+    // Make animateCounters available globally
+    window.portalFunctions.animateCounters = animateCounters;
 });
 
 // Export for global access

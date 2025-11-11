@@ -685,7 +685,7 @@ class PortalInventorySearch {
 
     updateResultCount(count) {
         const countElement = document.getElementById('result_count');
-        if (countElement) {
+        if (countElement && countElement.textContent !== undefined) {
             countElement.textContent = `${count} item${count !== 1 ? 's' : ''} found`;
         }
     }

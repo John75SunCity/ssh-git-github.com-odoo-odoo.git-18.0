@@ -77,7 +77,9 @@ odoo.define('records_management.portal_organization_diagram', function(require) 
             };
             for (const key in mapping) {
                 const el = this.el.querySelector(mapping[key]);
-                if (el) { el.textContent = stats[key] != null ? stats[key] : '-'; }
+                if (el && el.textContent !== undefined) { 
+                    el.textContent = stats[key] != null ? stats[key] : '-'; 
+                }
             }
         },
         _onRefresh(ev) {

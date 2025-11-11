@@ -40,13 +40,17 @@ odoo.define('records_management.portal_dashboard_bootstrap', function (require) 
 
         const title = document.createElement('h5');
         title.className = 'card-title mb-0';
-        title.textContent = card.title;
+        if (card.title && title.textContent !== undefined) {
+            title.textContent = card.title;
+        }
         header.appendChild(title);
         body.appendChild(header);
 
         const description = document.createElement('p');
         description.className = 'card-text text-muted small flex-grow-1';
-        description.textContent = card.description || '';
+        if (description.textContent !== undefined) {
+            description.textContent = card.description || '';
+        }
         body.appendChild(description);
 
         if (card.type === 'summary') {
@@ -57,12 +61,16 @@ odoo.define('records_management.portal_dashboard_bootstrap', function (require) 
             if (badge.value) {
                 const badgeEl = document.createElement('span');
                 badgeEl.className = 'badge bg-info text-white';
-                badgeEl.textContent = `${badge.value} ${badge.label || ''}`.trim();
+                if (badgeEl.textContent !== undefined) {
+                    badgeEl.textContent = `${badge.value} ${badge.label || ''}`.trim();
+                }
                 footerRow.appendChild(badgeEl);
             } else if (badge.empty_label) {
                 const emptyBadge = document.createElement('span');
                 emptyBadge.className = 'badge bg-secondary';
-                emptyBadge.textContent = badge.empty_label;
+                if (emptyBadge.textContent !== undefined) {
+                    emptyBadge.textContent = badge.empty_label;
+                }
                 footerRow.appendChild(emptyBadge);
             }
 
