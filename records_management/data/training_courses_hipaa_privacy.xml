@@ -7,7 +7,6 @@
         <record id="slide_hipaa_overview" model="slide.slide">
             <field name="name">HIPAA Compliance Overview</field>
             <field name="channel_id" ref="slide_channel_hipaa_privacy_training"/>
-            <field name="slide_type">document</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="completion_time">8</field>
@@ -68,7 +67,6 @@
         <record id="slide_physical_security" model="slide.slide">
             <field name="name">Physical Security for PHI Documents</field>
             <field name="channel_id" ref="slide_channel_hipaa_privacy_training"/>
-            <field name="slide_type">document</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="completion_time">12</field>
@@ -176,7 +174,6 @@
         <record id="slide_document_handling" model="slide.slide">
             <field name="name">PHI Document Handling Procedures</field>
             <field name="channel_id" ref="slide_channel_hipaa_privacy_training"/>
-            <field name="slide_type">document</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="completion_time">11</field>
@@ -328,7 +325,6 @@
         <record id="slide_breach_prevention" model="slide.slide">
             <field name="name">Breach Prevention and Incident Response</field>
             <field name="channel_id" ref="slide_channel_hipaa_privacy_training"/>
-            <field name="slide_type">document</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="completion_time">13</field>
@@ -460,7 +456,6 @@
         <record id="slide_retention_destruction" model="slide.slide">
             <field name="name">PHI Record Retention and Secure Destruction</field>
             <field name="channel_id" ref="slide_channel_hipaa_privacy_training"/>
-            <field name="slide_type">document</field>
             <field name="is_published">true</field>
             <field name="website_published">true</field>
             <field name="completion_time">12</field>
