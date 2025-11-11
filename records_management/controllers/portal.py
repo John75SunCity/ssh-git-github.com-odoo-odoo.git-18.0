@@ -36,6 +36,21 @@ class RecordsManagementController(http.Controller):
     """
 
     # ============================================================================
+    # COMMON HELPER METHODS
+    # ============================================================================
+
+    def _prepare_portal_layout_values(self):
+        """
+        Prepare common values for portal layout templates.
+        Returns base context dictionary for portal pages.
+        """
+        return {
+            'page_name': 'records_management',
+            'user': request.env.user,
+            'partner': request.env.user.partner_id,
+        }
+
+    # ============================================================================
     # DASHBOARD ROUTES
     # ============================================================================
 
