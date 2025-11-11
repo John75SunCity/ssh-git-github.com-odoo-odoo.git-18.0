@@ -19,7 +19,7 @@ except Exception:  # pragma: no cover - optional dependency fallback
 class RecordsContainer(models.Model):
     _name = "records.container"
     _description = "Records Container"
-    _inherit = ["mail.thread", "mail.activity.mixin", "barcodes.barcode_events_mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "barcodes.barcode_events_mixin", "records.container.movement.mixin"]
     _order = "create_date desc, name"
 
     # ============================================================================
@@ -413,6 +413,26 @@ class RecordsContainer(models.Model):
             for record in self:
                 if record.state not in ('draft',) and not record.quant_id:
                     record._create_stock_quant()
+
+        # ✅ PHASE 1 ENHANCEMENT: Real-time location synchronization
+        # When location_id changes, create movement record and sync with quant
+        if 'location_id' in vals:
+            for record in self:
+                # Only process if we have a quant and the location actually changed
+                if record.quant_id and record.location_id:
+                    old_location = record.quant_id.location_id
+                    new_location = record.location_id
+                    
+                    if old_location != new_location:
+                        # Update quant location to match container
+                        record.quant_id.sudo().write({'location_id': new_location.id})
+                        
+                        # Create movement record for audit trail
+                        record.create_movement(
+                            to_location=new_location,
+                            movement_type='location_change',
+                            reason='Location updated via container management interface'
+                        ).action_confirm()
 
         return result
 
@@ -1311,6 +1331,160 @@ class RecordsContainer(models.Model):
             'target': 'current',
             'context': {'create': False},
         }
+
+    # ============================================================================
+    # ENHANCED STOCK INTEGRATION METHODS
+    # ============================================================================
+    
+    def get_stock_summary(self):
+        """
+        Customer-friendly stock summary for portal display.
+        Returns comprehensive stock status and location information.
+        """
+        self.ensure_one()
+        
+        # Get stock quant information
+        quant_data = {}
+        if self.quant_id:
+            quant_data = {
+                'quantity': self.quant_id.quantity,
+                'location': self.quant_id.location_id.complete_name,
+                'last_update': self.quant_id.write_date,
+                'owner': self.quant_id.owner_id.name if self.quant_id.owner_id else None,
+            }
+        
+        # Get movement summary
+        movement_summary = self._get_movement_summary()
+        
+        return {
+            'container_name': self.name,
+            'barcode': self.barcode or self.temp_barcode,
+            'current_location': self.current_location_id.complete_name if self.current_location_id else 'Unknown',
+            'state': self.state,
+            'quant_data': quant_data,
+            'movement_summary': movement_summary,
+            'partner_name': self.partner_id.name,
+        }
+    
+    def _get_movement_summary(self):
+        """Get movement summary statistics"""
+        total_movements = len(self.movement_ids)
+        recent_movements = self.movement_ids.filtered(
+            lambda m: m.movement_date and 
+            (fields.Datetime.now() - m.movement_date).days <= 30
+        )
+        
+        return {
+            'total_movements': total_movements,
+            'recent_movements': len(recent_movements),
+            'last_movement_date': self.last_movement_date,
+            'last_movement_location': self.last_movement_location,
+        }
+    
+    def move_to_location(self, location, reason=None, movement_type='location_change'):
+        """
+        Move container to new location with comprehensive tracking.
+        
+        Args:
+            location: stock.location record
+            reason: optional reason for the movement
+            movement_type: type of movement (default: 'location_change')
+        
+        Returns:
+            records.stock.movement record
+        """
+        self.ensure_one()
+        
+        # Create movement record
+        movement = self.create_movement(
+            to_location=location,
+            movement_type=movement_type,
+            reason=reason
+        )
+        
+        # Confirm the movement (updates quant and location)
+        movement.action_confirm()
+        
+        return movement
+    
+    def sync_with_stock_quant(self):
+        """
+        Synchronize container location with stock quant location.
+        Called automatically when quant location changes.
+        """
+        self.ensure_one()
+        
+        if not self.quant_id:
+            return
+        
+        # Check if locations are out of sync
+        if self.location_id != self.quant_id.location_id:
+            old_location = self.location_id
+            new_location = self.quant_id.location_id
+            
+            # Update container location to match quant
+            self.write({'location_id': new_location.id})
+            
+            # Create automatic movement record
+            self.env['records.stock.movement'].sudo().create_movement(
+                container=self,
+                to_location=new_location,
+                movement_type='adjustment',
+                reason=f'Auto-sync with stock system. Previous location: {old_location.complete_name if old_location else "Unknown"}',
+            )
+            
+            # Log the sync
+            self.message_post(
+                body=_("Location automatically synchronized with stock system: %s → %s") % (
+                    old_location.complete_name if old_location else 'Unknown',
+                    new_location.complete_name
+                ),
+                message_type='notification'
+            )
+    
+    @api.model
+    def sync_all_containers_with_stock(self):
+        """
+        Batch synchronization of all containers with their stock quants.
+        Can be called via cron job for regular sync maintenance.
+        """
+        containers = self.search([('quant_id', '!=', False)])
+        synced_count = 0
+        
+        for container in containers:
+            if container.location_id != container.quant_id.location_id:
+                container.sync_with_stock_quant()
+                synced_count += 1
+        
+        if synced_count > 0:
+            _logger.info(f"Synchronized {synced_count} containers with stock system")
+        
+        return synced_count
+    
+    def get_stock_movement_history(self, limit=None, movement_type=None):
+        """
+        Get formatted movement history for this container.
+        
+        Args:
+            limit: maximum number of records (default: all)
+            movement_type: filter by movement type (optional)
+        
+        Returns:
+            list of formatted movement data
+        """
+        self.ensure_one()
+        
+        domain = [('container_id', '=', self.id)]
+        if movement_type:
+            domain.append(('movement_type', '=', movement_type))
+        
+        movements = self.env['records.stock.movement'].search(
+            domain, 
+            order='movement_date desc',
+            limit=limit
+        )
+        
+        return movements.get_portal_movements(self.partner_id)['movements']
 
     # ============================================================================
     # VALIDATION METHODS

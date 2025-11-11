@@ -53,6 +53,47 @@ class RecordsManagementController(http.Controller):
             'partner': request.env.user.partner_id,
         }
 
+    def _check_dashboard_access(self):
+        """
+        Check if user has access to dashboard functionality.
+        Includes internal users and all portal user types.
+        """
+        user = request.env.user
+        return (
+            user.has_group("records_management.group_records_user") or
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin") or
+            user.has_group("records_management.group_portal_department_user") or
+            user.has_group("records_management.group_portal_readonly")
+        )
+
+    def _check_analytics_access(self):
+        """
+        Check if user has access to analytics functionality.
+        Analytics: Managers + Portal Company Admins + Portal Department Admins.
+        """
+        user = request.env.user
+        return (
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin")
+        )
+
+    def _check_bulk_update_access(self):
+        """
+        Check if user has access to bulk update functionality.
+        Bulk Updates: Internal Users + Portal Admins + Portal Department Users.
+        """
+        user = request.env.user
+        return (
+            user.has_group("records_management.group_records_user") or
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin") or
+            user.has_group("records_management.group_portal_department_user")
+        )
+
     # ============================================================================
     # DASHBOARD ROUTES
     # ============================================================================
@@ -62,8 +103,9 @@ class RecordsManagementController(http.Controller):
         """
         Enhanced dashboard with comprehensive business intelligence.
         Provides real-time operational metrics and performance indicators.
+        Accessible to all internal users and portal users (all types).
         """
-        if not request.env.user.has_group("records_management.group_records_user"):
+        if not self._check_dashboard_access():
             return request.redirect("/web/login?redirect=/records/dashboard")
 
         # Get comprehensive dashboard data (now filtered by user partner)
@@ -138,8 +180,9 @@ class RecordsManagementController(http.Controller):
     def records_analytics(self):
         """
         Comprehensive analytics dashboard for business intelligence.
+        Accessible to managers and portal company/department admins.
         """
-        if not request.env.user.has_group("records_management.group_records_manager"):
+        if not self._check_analytics_access():
             return request.redirect("/records/dashboard")
 
         analytics_data = {
@@ -215,8 +258,9 @@ class RecordsManagementController(http.Controller):
 
         Accepts optional filters: partner_id, limit, offset, search (matches name, barcode, temp_barcode).
         This endpoint is designed for modern Owl portal components needing real-time barcode visibility.
+        Accessible to all authenticated users including portal read-only.
         """
-        if not request.env.user.has_group("records_management.group_records_user") and not request.env.user.has_group("records_management.group_portal_company_admin"):
+        if not self._check_dashboard_access():
             return {"success": False, "error": "Insufficient permissions"}
 
         try:
@@ -273,9 +317,10 @@ class RecordsManagementController(http.Controller):
         """
         Bulk update operations for containers.
         Supports location changes, status updates, and batch processing.
+        Accessible to internal users, portal admins, and portal department users.
         """
-        if not request.env.user.has_group("records_management.group_records_user"):
-            return {'success': False, 'error': 'Insufficient permissions'}
+        if not self._check_bulk_update_access():
+            return {'success': False, 'error': 'Insufficient permissions for bulk updates'}
 
         try:
             container_ids = post.get('container_ids', [])
@@ -341,8 +386,9 @@ class RecordsManagementController(http.Controller):
     def export_containers(self, **get):
         """
         Export container data to CSV format.
+        Accessible to internal users, portal admins, and portal department users.
         """
-        if not request.env.user.has_group("records_management.group_records_user"):
+        if not self._check_bulk_update_access():
             return request.redirect("/web/login")
 
         # Build domain based on filters
@@ -460,9 +506,16 @@ class RecordsManagementController(http.Controller):
     def _check_system_health(self):
         """
         System health check endpoint for monitoring.
+        Accessible to managers and portal company admins only.
         """
-        if not request.env.user.has_group("records_management.group_records_manager"):
-            return {'success': False, 'error': 'Insufficient permissions'}
+        user = request.env.user
+        can_manage_system = (
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin")
+        )
+
+        if not can_manage_system:
+            return {'success': False, 'error': 'Insufficient permissions for system monitoring'}
 
         try:
             health_data = {
@@ -505,9 +558,17 @@ class RecordsManagementController(http.Controller):
         PickupRequest = request.env["pickup.request"]
         ShredService = request.env["shredding.service"]
 
-        # Determine if user is a portal user (customer) - exclude sensitive data like location capacity
-        is_portal_user = not request.env.user.has_group("records_management.group_records_manager")
-        user_partner_id = request.env.user.partner_id.id
+        # Determine if user is a portal user (not internal user) - exclude sensitive data like location capacity
+        user = request.env.user
+        is_portal_user = not user.has_group("base.group_user")
+
+        # Portal users should see filtered data, internal users see all data
+        # Portal company admins get more access than regular portal users
+        is_portal_admin = (
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin")
+        )
+        user_partner_id = user.partner_id.id
 
         # Base domain for filtering by user partner (for portal users)
         partner_domain = [("partner_id", "=", user_partner_id)] if is_portal_user else []
@@ -575,7 +636,7 @@ class RecordsManagementController(http.Controller):
         activities = []
 
         # Determine if user is a portal user and get their partner
-        is_portal_user = not request.env.user.has_group("records_management.group_records_manager")
+        is_portal_user = not request.env.user.has_group("base.group_user")
         user_partner_id = request.env.user.partner_id.id
         partner_domain = [("partner_id", "=", user_partner_id)] if is_portal_user else []
 
@@ -620,7 +681,7 @@ class RecordsManagementController(http.Controller):
         last_week = now - timedelta(days=7)
 
         # Determine if user is a portal user and get their partner
-        is_portal_user = not request.env.user.has_group("records_management.group_records_manager")
+        is_portal_user = not request.env.user.has_group("base.group_user")
         user_partner_id = request.env.user.partner_id.id
         partner_domain = [("partner_id", "=", user_partner_id)] if is_portal_user else []
 
@@ -683,15 +744,82 @@ class RecordsManagementController(http.Controller):
         return alerts
 
     def _get_user_dashboard_permissions(self):
-        """Get user permissions for dashboard functionality."""
+        """Get user permissions for dashboard functionality including portal users."""
         user = request.env.user
 
+        # Define permission groups for comprehensive access control
+        # Analytics: Managers + Portal Company Admins + Portal Department Admins
+        can_view_analytics = (
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin")
+        )
+
+        # Bulk Updates: Internal Users + Portal Admins + Portal Department Users
+        can_bulk_update = (
+            user.has_group("records_management.group_records_user") or
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin") or
+            user.has_group("records_management.group_portal_department_user")
+        )
+
+        # Data Export: Internal Users + Portal Admins + Portal Department Users
+        can_export_data = (
+            user.has_group("records_management.group_records_user") or
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin") or
+            user.has_group("records_management.group_portal_department_user")
+        )
+
+        # System Management: Managers + Portal Company Admins only
+        can_manage_system = (
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin")
+        )
+
+        # Billing: Managers + Portal Company Admins + Portal Department Admins
+        can_view_billing = (
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin")
+        )
+
+        # Stock Movement History: All authenticated users (including portal read-only)
+        can_view_stock_movements = (
+            user.has_group("records_management.group_records_user") or
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin") or
+            user.has_group("records_management.group_portal_department_user") or
+            user.has_group("records_management.group_portal_readonly")
+        )
+
+        # Real-time Monitoring: Internal Users + Portal Admins + Portal Department Users
+        can_view_realtime_monitoring = (
+            user.has_group("records_management.group_records_user") or
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin") or
+            user.has_group("records_management.group_portal_department_user")
+        )
+
         return {
-            "can_view_analytics": user.has_group("records_management.group_records_manager"),
-            "can_bulk_update": user.has_group("records_management.group_records_user"),
-            "can_export_data": user.has_group("records_management.group_records_user"),
-            "can_manage_system": user.has_group("records_management.group_records_manager"),
-            "can_view_billing": user.has_group("records_management.group_records_manager"),
+            "can_view_analytics": can_view_analytics,
+            "can_bulk_update": can_bulk_update,
+            "can_export_data": can_export_data,
+            "can_manage_system": can_manage_system,
+            "can_view_billing": can_view_billing,
+            "can_view_stock_movements": can_view_stock_movements,
+            "can_view_realtime_monitoring": can_view_realtime_monitoring,
+            # User type identification for UI customization
+            "is_portal_user": not user.has_group("base.group_user"),
+            "is_internal_user": user.has_group("base.group_user"),
+            "is_portal_company_admin": user.has_group("records_management.group_portal_company_admin"),
+            "is_portal_department_admin": user.has_group("records_management.group_portal_department_admin"),
+            "is_portal_department_user": user.has_group("records_management.group_portal_department_user"),
+            "is_portal_readonly": user.has_group("records_management.group_portal_readonly"),
         }
 
     def _calculate_container_summary(self, containers):
@@ -730,16 +858,17 @@ class RecordsManagementController(http.Controller):
         }
 
     def _create_movement_record(self, container, new_location_id):
-        """Create movement audit record for container location changes."""
-        request.env["records.container.movement"].sudo().create(
-            {
-                "container_id": container.id,
-                "from_location_id": container.location_id.id if container.location_id else False,
-                "to_location_id": new_location_id,
-                "movement_date": datetime.now(),
-                "moved_by": request.env.user.id,
-                "movement_type": "location_change",
-            }
+        """Create comprehensive movement record using enhanced stock movement tracking."""
+        # Get the new location record
+        new_location = request.env['stock.location'].sudo().browse(new_location_id)
+
+        # Use the new comprehensive movement tracking system
+        request.env['records.stock.movement'].sudo().create_movement(
+            container=container,
+            to_location=new_location,
+            movement_type='location_change',
+            reason='Bulk location update via portal',
+            user=request.env.user
         )
 
     def _create_audit_log(self, action_type, description):
@@ -1351,18 +1480,38 @@ class RecordsManagementController(http.Controller):
         return request.render("records_management.portal_container_detail", values)
 
     @http.route(['/my/inventory'], type='http', auth="user", website=True)
-    def portal_my_inventory(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, inventory_type=None, **kw):
+    def portal_inventory_dashboard(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, inventory_type=None, **kw):
         """
-        Display comprehensive inventory for portal users including:
-        - Records containers (boxes)
-        - File folders within containers
-        - Individual documents
-        - Temp inventory items
-        - PDF scans/attachments
+        Enhanced inventory dashboard with comprehensive stock integration.
+        
+        Features:
+        - Real-time stock quant synchronization
+        - Comprehensive movement tracking
+        - Location-based filtering and search
+        - Mobile-optimized responsive design
+        
+        Security Layer Pattern: Use sudo() for model access but maintain data filtering
         """
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
         commercial_partner = partner.commercial_partner_id
+
+        # Enhanced Dashboard with Stock Integration (Phase 1 Implementation)
+        # Get stock quants owned by customer (Security Layer Pattern)
+        stock_quants = request.env['stock.quant'].sudo().search([
+            ('owner_id', '=', commercial_partner.id),
+            ('quantity', '>', 0),
+            ('product_id.default_code', '=', 'RECORDS-CONTAINER')
+        ])
+
+        # Get comprehensive stock summary
+        stock_summary = self._get_comprehensive_stock_summary(stock_quants)
+
+        # Get recent movements for dashboard
+        recent_movements = self._get_recent_dashboard_movements(commercial_partner)
+
+        # Group containers by location for location-based overview
+        containers_by_location = self._group_containers_by_location(stock_quants)
 
         # Initialize inventory collections
         all_inventory_items = []
@@ -1552,9 +1701,16 @@ class RecordsManagementController(http.Controller):
             'search': search_term,
             'inventory_count': total_count,
             'commercial_partner': commercial_partner,
+            # Phase 1 Enhanced Stock Integration Data
+            'stock_summary': stock_summary,
+            'recent_movements': recent_movements,
+            'containers_by_location': containers_by_location,
+            # Real-time monitoring capabilities
+            'enable_real_time_updates': True,
+            'movement_refresh_interval': 30000,  # 30 seconds
         })
 
-        return request.render("records_management.portal_my_inventory", values)
+        return request.render("records_management.portal_inventory_enhanced", values)
 
     # ============================================================================
     # INVENTORY TAB ROUTES (Backend-style list/detail views)
@@ -1812,10 +1968,8 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/inventory/bulk/retrieve'], type='json', auth='user', methods=['POST'])
     def portal_bulk_retrieve(self, **post):
         """Request retrieval for selected items"""
-        if not (request.env.user.has_group('records_management.group_portal_company_admin') or
-                request.env.user.has_group('records_management.group_portal_department_admin') or
-                request.env.user.has_group('records_management.group_portal_department_user')):
-            return {'success': False, 'error': 'Insufficient permissions'}
+        if not self._check_bulk_update_access():
+            return {'success': False, 'error': 'Insufficient permissions for bulk operations'}
 
         try:
             item_ids = post.get('item_ids', [])
@@ -1846,10 +2000,8 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/inventory/bulk/destroy'], type='json', auth='user', methods=['POST'])
     def portal_bulk_destroy(self, **post):
         """Request destruction for selected items"""
-        if not (request.env.user.has_group('records_management.group_portal_company_admin') or
-                request.env.user.has_group('records_management.group_portal_department_admin') or
-                request.env.user.has_group('records_management.group_portal_department_user')):
-            return {'success': False, 'error': 'Insufficient permissions'}
+        if not self._check_bulk_update_access():
+            return {'success': False, 'error': 'Insufficient permissions for bulk operations'}
 
         try:
             item_ids = post.get('item_ids', [])
@@ -1881,10 +2033,8 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/inventory/bulk/pickup'], type='json', auth='user', methods=['POST'])
     def portal_bulk_pickup(self, **post):
         """Schedule pickup for items at customer location"""
-        if not (request.env.user.has_group('records_management.group_portal_company_admin') or
-                request.env.user.has_group('records_management.group_portal_department_admin') or
-                request.env.user.has_group('records_management.group_portal_department_user')):
-            return {'success': False, 'error': 'Insufficient permissions'}
+        if not self._check_bulk_update_access():
+            return {'success': False, 'error': 'Insufficient permissions for bulk operations'}
 
         try:
             item_ids = post.get('item_ids', [])
@@ -2162,13 +2312,10 @@ class RecordsManagementController(http.Controller):
     def add_temp_inventory(self, **post):
         """
         Add temporary inventory item for portal users.
-        Requires appropriate portal permissions.
+        Accessible to internal users, portal admins, and portal department users.
         """
-        # Check user permissions
-        user = request.env.user
-        if not (user.has_group('records_management.group_portal_company_admin') or
-                user.has_group('records_management.group_portal_department_admin') or
-                user.has_group('records_management.group_portal_department_user')):
+        # Check user permissions using enhanced permission system
+        if not self._check_bulk_update_access():
             return {
                 'success': False,
                 'error': 'Insufficient permissions. You need admin or department user access to add inventory.'
@@ -2223,13 +2370,10 @@ class RecordsManagementController(http.Controller):
     def add_to_pickup(self, **post):
         """
         Add inventory item to pickup request.
-        Requires appropriate portal permissions.
+        Accessible to internal users, portal admins, and portal department users.
         """
-        # Check user permissions
-        user = request.env.user
-        if not (user.has_group('records_management.group_portal_company_admin') or
-                user.has_group('records_management.group_portal_department_admin') or
-                user.has_group('records_management.group_portal_department_user')):
+        # Check user permissions using enhanced permission system
+        if not self._check_bulk_update_access():
             return {
                 'success': False,
                 'error': 'Insufficient permissions. You need admin or department user access to request pickup.'
@@ -2302,13 +2446,10 @@ class RecordsManagementController(http.Controller):
     def request_destruction(self, **post):
         """
         Request destruction for selected inventory items.
-        Requires appropriate portal permissions.
+        Accessible to internal users, portal admins, and portal department users.
         """
-        # Check user permissions
-        user = request.env.user
-        if not (user.has_group('records_management.group_portal_company_admin') or
-                user.has_group('records_management.group_portal_department_admin') or
-                user.has_group('records_management.group_portal_department_user')):
+        # Check user permissions using enhanced permission system
+        if not self._check_bulk_update_access():
             return {
                 'success': False,
                 'error': 'Insufficient permissions. You need admin or department user access to request destruction.'
@@ -2370,6 +2511,286 @@ class RecordsManagementController(http.Controller):
             }
 
     # ============================================================================
+    # STOCK MOVEMENT HISTORY PORTAL ROUTES (PHASE 1 ENHANCEMENT)
+    # ============================================================================
+
+    @http.route(['/my/inventory/movements'], type='http', auth='user', website=True)
+    def portal_stock_movements(self, page=1, date_begin=None, date_end=None,
+                              sortby=None, filterby=None, search=None, **kw):
+        """
+        Stock movement history for portal users with comprehensive filtering.
+        Phase 1 Enhancement: Real-time movement tracking with customer portal access.
+        """
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        # Use sudo() for model access but maintain data filtering (Security Layer Pattern)
+        Movement = request.env['records.stock.movement'].sudo()
+        domain = [('partner_id', '=', partner.id), ('is_portal_visible', '=', True)]
+
+        # Search filter
+        if search:
+            domain += [
+                '|', '|', '|',
+                ('container_id.name', 'ilike', search),
+                ('container_id.barcode', 'ilike', search),
+                ('to_location_id.complete_name', 'ilike', search),
+                ('reason', 'ilike', search)
+            ]
+
+        # Date filtering
+        if date_begin and date_end:
+            domain += [('movement_date', '>=', date_begin), ('movement_date', '<=', date_end)]
+
+        # Movement type filter
+        searchbar_filters = {
+            'all': {'label': 'All Movements', 'domain': []},
+            'location_change': {'label': 'Location Changes', 'domain': [('movement_type', '=', 'location_change')]},
+            'pickup': {'label': 'Pickups', 'domain': [('movement_type', '=', 'pickup')]},
+            'delivery': {'label': 'Deliveries', 'domain': [('movement_type', '=', 'delivery')]},
+            'retrieval': {'label': 'Retrievals', 'domain': [('movement_type', '=', 'retrieval')]},
+            'transfer': {'label': 'Transfers', 'domain': [('movement_type', '=', 'transfer')]},
+        }
+
+        if not filterby:
+            filterby = 'all'
+        domain += searchbar_filters[filterby]['domain']
+
+        # Sorting options
+        searchbar_sortings = {
+            'date': {'label': 'Recent First', 'order': 'movement_date desc'},
+            'container': {'label': 'Container Name', 'order': 'container_id'},
+            'location': {'label': 'Location', 'order': 'to_location_id'},
+            'type': {'label': 'Movement Type', 'order': 'movement_type'},
+        }
+
+        if not sortby:
+            sortby = 'date'
+        order = searchbar_sortings[sortby]['order']
+
+        # Count total movements
+        movement_count = Movement.search_count(domain)
+
+        # Pager setup
+        pager = request.website.pager(
+            url="/my/inventory/movements",
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby,
+                     'filterby': filterby, 'search': search},
+            total=movement_count,
+            page=page,
+            step=self._items_per_page,
+        )
+
+        # Get movements for current page
+        movements = Movement.search(domain, order=order,
+                                  limit=self._items_per_page,
+                                  offset=pager['offset'])
+
+        # Get movement summary statistics
+        movement_stats = self._get_movement_statistics(partner)
+
+        values.update({
+            'movements': movements,
+            'page_name': 'stock_movements',
+            'pager': pager,
+            'default_url': '/my/inventory/movements',
+            'searchbar_sortings': searchbar_sortings,
+            'searchbar_filters': searchbar_filters,
+            'sortby': sortby,
+            'filterby': filterby,
+            'search': search or '',
+            'movement_count': movement_count,
+            'movement_stats': movement_stats,
+        })
+
+        return request.render("records_management.portal_stock_movements", values)
+
+    @http.route(['/my/inventory/movements/data'], type='json', auth='user', methods=['POST'])
+    def get_movements_data(self, **post):
+        """
+        AJAX endpoint for real-time movement data updates.
+        Supports filtering and pagination for modern frontend.
+        """
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+
+            # Get filter parameters
+            filters = {
+                'movement_type': post.get('movement_type'),
+                'date_from': post.get('date_from'),
+                'date_to': post.get('date_to'),
+                'container_id': int(post.get('container_id')) if post.get('container_id') else None,
+            }
+
+            # Remove None values
+            filters = {k: v for k, v in filters.items() if v is not None}
+
+            # Get movements using the portal method
+            movement_data = request.env['records.stock.movement'].sudo().get_portal_movements(
+                partner=partner,
+                limit=int(post.get('limit', 20)),
+                offset=int(post.get('offset', 0)),
+                filters=filters
+            )
+
+            return {
+                'success': True,
+                'data': movement_data
+            }
+
+        except Exception as e:
+            _logger.error("Error fetching movement data: %s", e)
+            return {
+                'success': False,
+                'error': 'Failed to load movement data'
+            }
+
+    @http.route(['/my/inventory/container/<int:container_id>/movements'], type='http', auth='user', website=True)
+    def portal_container_movements(self, container_id, **kw):
+        """Individual container movement history"""
+        # Security Layer Pattern: Use sudo() but filter by partner
+        container = request.env['records.container'].sudo().browse(container_id)
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        # Verify access
+        if not container.exists() or container.partner_id.commercial_partner_id != partner:
+            return request.not_found()
+
+        # Get movement history for this container
+        movements = container.get_stock_movement_history()
+
+        # Get stock summary
+        stock_summary = container.get_stock_summary()
+
+        values = {
+            'container': container,
+            'movements': movements,
+            'stock_summary': stock_summary,
+            'page_name': 'container_movements',
+        }
+
+        return request.render("records_management.portal_container_movements", values)
+
+    def _get_movement_statistics(self, partner):
+        """Get movement statistics for dashboard display"""
+        Movement = request.env['records.stock.movement'].sudo()
+
+        # Movement counts by type (last 30 days)
+        thirty_days_ago = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
+        domain_base = [
+            ('partner_id', '=', partner.id),
+            ('movement_date', '>=', thirty_days_ago),
+            ('is_portal_visible', '=', True)
+        ]
+
+        stats = {}
+        movement_types = ['location_change', 'pickup', 'delivery', 'retrieval', 'transfer']
+
+        for movement_type in movement_types:
+            count = Movement.search_count(domain_base + [('movement_type', '=', movement_type)])
+            stats[movement_type] = count
+
+        # Total movements
+        stats['total_recent'] = Movement.search_count(domain_base)
+
+        # Most active locations
+        recent_movements = Movement.search(domain_base, limit=100)
+        location_activity = {}
+        for movement in recent_movements:
+            location = movement.to_location_id.complete_name
+            location_activity[location] = location_activity.get(location, 0) + 1
+
+        # Sort and get top 5
+        top_locations = sorted(location_activity.items(), key=lambda x: x[1], reverse=True)[:5]
+        stats['top_locations'] = top_locations
+
+        return stats
+
+    # ============================================================================
+    # ENHANCED STOCK LOCATION MANAGEMENT (PHASE 2 PREVIEW)
+    # ============================================================================
+
+    @http.route(['/my/inventory/locations'], type='http', auth='user', website=True)
+    def portal_stock_locations(self, **kw):
+        """
+        Stock location overview for portal users.
+        Shows locations where customer containers are stored.
+        """
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        # Get locations with customer containers (Security Layer Pattern)
+        Container = request.env['records.container'].sudo()
+        containers = Container.search([('partner_id', '=', partner.id), ('quant_id', '!=', False)])
+
+        # Group by location
+        location_data = {}
+        for container in containers:
+            location = container.current_location_id
+            if location:
+                if location.id not in location_data:
+                    location_data[location.id] = {
+                        'location': location,
+                        'containers': [],
+                        'total_containers': 0,
+                        'last_activity': False,
+                    }
+                location_data[location.id]['containers'].append(container)
+                location_data[location.id]['total_containers'] += 1
+
+                # Update last activity
+                if container.last_movement_date:
+                    current_last = location_data[location.id]['last_activity']
+                    if not current_last or container.last_movement_date > current_last:
+                        location_data[location.id]['last_activity'] = container.last_movement_date
+
+        values.update({
+            'location_data': list(location_data.values()),
+            'page_name': 'stock_locations',
+            'total_locations': len(location_data),
+        })
+
+        return request.render("records_management.portal_stock_locations", values)
+
+    @http.route(['/my/inventory/location/<int:location_id>'], type='http', auth='user', website=True)
+    def portal_location_detail(self, location_id, **kw):
+        """Detailed view of containers at a specific location"""
+        location = request.env['stock.location'].sudo().browse(location_id)
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        if not location.exists():
+            return request.not_found()
+
+        # Get customer containers at this location (Security Layer Pattern)
+        Container = request.env['records.container'].sudo()
+        containers = Container.search([
+            ('partner_id', '=', partner.id),
+            ('current_location_id', '=', location_id)
+        ])
+
+        # If no containers, redirect back
+        if not containers:
+            return request.redirect('/my/inventory/locations')
+
+        # Get recent movements for this location
+        Movement = request.env['records.stock.movement'].sudo()
+        recent_movements = Movement.search([
+            ('partner_id', '=', partner.id),
+            ('to_location_id', '=', location_id),
+            ('is_portal_visible', '=', True)
+        ], order='movement_date desc', limit=10)
+
+        values = {
+            'location': location,
+            'containers': containers,
+            'recent_movements': recent_movements,
+            'page_name': 'location_detail',
+            'container_count': len(containers),
+        }
+
+        return request.render("records_management.portal_location_detail", values)
+
+    # ============================================================================
     # DOCUMENT RETRIEVAL PORTAL ROUTES
     # ============================================================================
 
@@ -2400,6 +2821,103 @@ class RecordsManagementController(http.Controller):
             'document_options': json.dumps(document_options),
         }
         return request.render('records_management.portal_document_retrieval_template', values)
+
+    # ============================================================================
+    # ENHANCED STOCK INTEGRATION HELPER METHODS (PHASE 1)
+    # ============================================================================
+
+    def _get_comprehensive_stock_summary(self, stock_quants):
+        """
+        Get comprehensive stock summary for enhanced dashboard.
+        Integrates with native Odoo stock system for real-time data.
+        """
+        if not stock_quants:
+            return {
+                'total_quantity': 0,
+                'locations_count': 0,
+                'last_movement': None,
+                'total_containers': 0,
+                'stock_value': 0.0,
+            }
+
+        # Calculate comprehensive metrics
+        total_quantity = sum(quant.quantity for quant in stock_quants)
+        unique_locations = stock_quants.mapped('location_id')
+
+        # Get containers linked to these quants
+        Container = request.env['records.container'].sudo()
+        containers = Container.search([('quant_id', 'in', stock_quants.ids)])
+
+        # Get last movement from any container
+        last_movement = None
+        if containers:
+            latest_movements = request.env['records.stock.movement'].sudo().search([
+                ('container_id', 'in', containers.ids)
+            ], order='movement_date desc', limit=1)
+            if latest_movements:
+                last_movement = latest_movements[0].movement_date
+
+        return {
+            'total_quantity': int(total_quantity),
+            'locations_count': len(unique_locations),
+            'last_movement': last_movement,
+            'total_containers': len(containers),
+            'stock_value': sum(quant.value for quant in stock_quants),
+            'locations': [{'name': loc.complete_name, 'id': loc.id} for loc in unique_locations],
+        }
+
+    def _get_recent_dashboard_movements(self, partner, limit=10):
+        """Get recent movements for dashboard display"""
+        Movement = request.env['records.stock.movement'].sudo()
+        movements = Movement.search([
+            ('partner_id', '=', partner.id),
+            ('is_portal_visible', '=', True),
+            ('state', 'in', ['confirmed', 'done'])
+        ], order='movement_date desc', limit=limit)
+
+        movement_data = []
+        for movement in movements:
+            movement_data.append({
+                'container_name': movement.container_id.name,
+                'movement_type': movement._get_movement_type_display(),
+                'location': movement.to_location_id.complete_name,
+                'date': movement.movement_date.strftime('%Y-%m-%d %H:%M'),
+                'user': movement.user_id.name,
+            })
+
+        return movement_data
+
+    def _group_containers_by_location(self, stock_quants):
+        """Group containers by location with enhanced data"""
+        location_groups = {}
+
+        for quant in stock_quants:
+            location = quant.location_id
+            if location.id not in location_groups:
+                location_groups[location.id] = {
+                    'location': location,
+                    'container_count': 0,
+                    'total_quantity': 0,
+                    'containers': [],
+                }
+
+            # Get container for this quant
+            container = request.env['records.container'].sudo().search([
+                ('quant_id', '=', quant.id)
+            ], limit=1)
+
+            if container:
+                location_groups[location.id]['containers'].append({
+                    'id': container.id,
+                    'name': container.name,
+                    'barcode': container.barcode or container.temp_barcode,
+                    'state': container.state,
+                })
+
+            location_groups[location.id]['container_count'] += 1
+            location_groups[location.id]['total_quantity'] += quant.quantity
+
+        return list(location_groups.values())
 
     @http.route(['/my/document-retrieval/calculate-price'], type='json', auth='user')
     def calculate_retrieval_price(self, priority='standard', item_count=1, **kw):
