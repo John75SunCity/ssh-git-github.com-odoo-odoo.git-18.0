@@ -6,7 +6,7 @@ import csv
 import io
 
 class PortalDocumentBulkUpload(http.Controller):
-    @http.route(['/my/documents/bulk_upload'], type='http', auth='user', website=True, methods=['GET', 'POST'])
+    @http.route(['/my/documents/bulk_upload'], type='http', auth='user', website=True, methods=['GET', 'POST'], csrf=False)
     def portal_bulk_upload(self, **post):
         values = {}
         Wizard = request.env['records.document.bulk.upload.wizard'].sudo()
@@ -112,7 +112,7 @@ class PortalDocumentBulkUpload(http.Controller):
             ]
         )
 
-    @http.route(['/my/documents/bulk_upload/commit/<int:wizard_id>'], type='http', auth='user', website=True, methods=['POST'])
+    @http.route(['/my/documents/bulk_upload/commit/<int:wizard_id>'], type='http', auth='user', website=True, methods=['POST'], csrf=False)
     def portal_bulk_upload_commit(self, wizard_id, **post):
         wizard = request.env['records.document.bulk.upload.wizard'].sudo().browse(wizard_id)
         if not wizard or not wizard.exists():

@@ -23,6 +23,7 @@
                 </div>
                 
                 <form method="post" enctype="multipart/form-data" t-att-action="request.httprequest.path">
+                  <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
