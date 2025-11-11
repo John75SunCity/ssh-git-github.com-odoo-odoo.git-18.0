@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="report_shredding_service_photo" model="ir.actions.report">
+            <field name="name">Shredding Service Photo Report</field>
+            <field name="model">shredding.service.photo</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">records_management.report_shredding_service_photo_view</field>
+            <field name="report_file">records_management.report_shredding_service_photo</field>
+            <field name="print_report_name">"Shredding Service Photo Report - %s" % (object.name or object.id)</field>
+            <field name="binding_model_id" ref="records_management.model_shredding_service_photo"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="report_shredding_service_photo_view">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2>Shredding Service Photo Report</h2>
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>ID:</strong></td>
+                                                <td><span t-esc="doc.id"/></td>
+                                            </tr>
+                                            <t t-if="hasattr(doc, 'name')">
+                                            <tr>
+                                                <td><strong>Name:</strong></td>
+                                                <td><span t-esc="doc.name"/></td>
+                                            </tr>
+                                            </t>
+                                            <t t-if="hasattr(doc, 'create_date')">
+                                            <tr>
+                                                <td><strong>Created:</strong></td>
+                                                <td><span t-esc="doc.create_date"/></td>
+                                            </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

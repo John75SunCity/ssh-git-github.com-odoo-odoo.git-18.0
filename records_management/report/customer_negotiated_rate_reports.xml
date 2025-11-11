@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="report_customer_negotiated_rate" model="ir.actions.report">
+            <field name="name">Customer Negotiated Rate Report</field>
+            <field name="model">customer.negotiated.rate</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">records_management.report_customer_negotiated_rate_view</field>
+            <field name="report_file">records_management.report_customer_negotiated_rate</field>
+            <field name="print_report_name">"Customer Negotiated Rate Report - %s" % (object.name or object.id)</field>
+            <field name="binding_model_id" ref="records_management.model_customer_negotiated_rate"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="report_customer_negotiated_rate_view">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2>Customer Negotiated Rate Report</h2>
+                            <div class="row">
+                                <div class="col-12">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>ID:</strong></td>
+                                                <td><span t-esc="doc.id"/></td>
+                                            </tr>
+                                            <t t-if="hasattr(doc, 'name')">
+                                            <tr>
+                                                <td><strong>Name:</strong></td>
+                                                <td><span t-esc="doc.name"/></td>
+                                            </tr>
+                                            </t>
+                                            <t t-if="hasattr(doc, 'create_date')">
+                                            <tr>
+                                                <td><strong>Created:</strong></td>
+                                                <td><span t-esc="doc.create_date"/></td>
+                                            </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
