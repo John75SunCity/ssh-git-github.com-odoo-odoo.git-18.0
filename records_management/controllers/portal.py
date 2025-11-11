@@ -34,6 +34,9 @@ class RecordsManagementController(http.Controller):
     Main controller for Records Management dashboard and administrative operations.
     Provides comprehensive business intelligence and operational control interface.
     """
+    
+    # Portal pagination configuration
+    _items_per_page = 20
 
     # ============================================================================
     # COMMON HELPER METHODS

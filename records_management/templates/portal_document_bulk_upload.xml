@@ -4,7 +4,7 @@
   <template id="portal_document_bulk_upload" name="Portal Document Bulk Upload">
     <t t-call="portal.portal_layout">
       <t t-set="breadcrumbs_searchbar" t-value="True"/>
-      <t t-call="portal.portal_breadcrumb">
+      <t t-call="portal.portal_breadcrumbs">
         <t t-set="breadcrumbs" t-value="[(None, 'Bulk Upload Files')]"/>
       </t>
       <h2>Bulk Upload Files</h2>

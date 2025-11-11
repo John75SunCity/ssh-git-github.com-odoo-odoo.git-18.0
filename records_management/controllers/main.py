@@ -871,9 +871,10 @@ class RecordsManagementPortal(CustomerPortal):
         }
         return response_payload
 
-    @http.route(['/my/containers', '/my/containers/page/<int:page>'],
-                type='http', auth='user', website=True)
-    def portal_my_containers(self, page=1, sortby=None, filterby=None, search=None, **kw):
+    # NOTE: Route disabled to avoid conflict with portal.py - use portal.py version instead
+    # @http.route(['/my/containers', '/my/containers/page/<int:page>'],
+    #             type='http', auth='user', website=True)
+    def portal_my_containers_disabled(self, page=1, sortby=None, filterby=None, search=None, **kw):
         """Customer portal container listing"""
         partner = request.env.user.partner_id
         domain = [('partner_id', '=', partner.id), ('active', '=', True)]
@@ -919,6 +920,7 @@ class RecordsManagementPortal(CustomerPortal):
             'filterby': filterby,
             'search': search or '',
             'container_count': len(containers),
+            'default_url': '/my/containers',
         }
 
         return request.render('records_management.portal_my_containers', values)
