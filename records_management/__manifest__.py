@@ -135,9 +135,7 @@
         "report/billing_period_reports.xml",
         # Bin & Key Management Reports
         "report/bin_key_history_reports.xml",
-        "report/bin_key_management_reports.xml",
-        "report/bin_key_report.xml",
-        "report/bin_key_reports.xml",
+        "report/bin_key_management_reports.xml",        "report/bin_key_reports.xml",
         "report/bin_key_unlock_service_reports.xml",
         # Container & Storage Reports
         "report/container_access_work_order_reports.xml",
@@ -171,8 +169,7 @@
         "report/customer_inventory_reports.xml",
         "report/customer_negotiated_rate_reports.xml",        "report/customer_portal_diagram_reports.xml",
         # Document & Search Reports
-        "report/document_retrieval_item_reports.xml",        "report/document_search_attempt_report.xml",
-        "report/required_document_reports.xml",
+        "report/document_retrieval_item_reports.xml",        "report/required_document_reports.xml",
         # Destruction Reports
         "report/destruction_event_reports.xml",
         "report/destruction_item_reports.xml",
