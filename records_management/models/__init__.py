@@ -301,4 +301,43 @@ try:
 except Exception as e:  # broad on purpose during staged syntax cleanup
     _logger.warning("Skipped loading naid_performance_history: %s", e)
 
+# Stock integration models (need to be before records_location)
+from . import stock_location
+from . import stock_quant
+
+# Core records models
+from . import records_file
+from . import records_location
+
+# Billing and negotiation models
+from . import customer_negotiated_rates
+
+# Configuration models
+from . import field_label_config
+from . import key_restriction_history
+from . import naid_compliance_checklist
+
+# Work order and retrieval models
+from . import container_retrieval_item
+from . import container_retrieval_work_order
+from . import file_retrieval
+from . import file_retrieval_work_order
+from . import scan_retrieval_work_order
+from . import work_order_coordinator_actions
+
+# Report models
+from . import destruction_certificate_report
+from . import res_partner_certification_stats
+
+# Wizard models (some may need to be moved to wizards/__init__.py)
+from . import business_metrics_dashboard_wizard
+from . import container_lifecycle_management_wizard
+from . import records_container_type_converter_wizard
+
+# Department and user models
+from . import records_storage_department_user
+
+# History and service models
+from . import unlock_service_history
+
 # Wizard models are imported via records_management/wizards/__init__.py at module root.

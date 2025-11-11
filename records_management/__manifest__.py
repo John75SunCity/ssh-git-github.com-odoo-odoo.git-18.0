@@ -56,6 +56,7 @@
         # ============================================================================
         "security/records_management_security.xml",
         "security/additional_models_security.xml",
+        "security/admin_portal_access.xml",
         "security/destruction_certificate_security.xml",
         "security/intelligent_search_security.xml",
         "security/naid_security.xml",
@@ -90,6 +91,30 @@
         "data/document_retrieval_rates_data.xml",
         "data/products_data.xml",
         "data/storage_fee_data.xml",
+        
+        # Additional data files - previously not loaded
+        "data/base_rates_container_access_data.xml",
+        "data/billing_data.xml",
+        "data/field_label_customization_batch_data.xml",
+        "data/field_label_customization_batch4_data.xml",
+        "data/field_label_customization_batch4.xml",
+        "data/fsm_data.xml",
+        "data/fsm_mail_templates_data.xml",
+        "data/mail_activity_data_todo.xml",
+        "data/naid_compliance_data.xml",
+        "data/naid_training_demo_data.xml",
+        "data/portal_configurator_data.xml",
+        "data/portal_mail_templates_data.xml",
+        "data/records_retrieval_order_cron_data.xml",
+        "data/records_retrieval_order_cron.xml",
+        "data/records_retrieval_order_sequences.xml",
+        "data/required_document_cron.xml",
+        "data/scheduled_actions_data.xml",
+        "data/temp_inventory_configurator_data.xml",
+        "data/training_courses_customer_setup.xml",
+        "data/training_courses_data.xml",
+        "data/training_courses_hipaa_privacy.xml",
+        "data/training_courses_naid_content.xml",
         # ============================================================================
         # REPORTS: All report templates and actions (174 files)
         # ============================================================================
