@@ -12,6 +12,7 @@ from odoo import models, fields, api, _
 class RecordsDepartmentBillingContact(models.Model):
     _name = 'records.department.billing.contact'
     _description = 'Department Billing Contact'
+    _table = 'records_dept_billing_contact'  # Shortened table name
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'department_id, contact_name'
 

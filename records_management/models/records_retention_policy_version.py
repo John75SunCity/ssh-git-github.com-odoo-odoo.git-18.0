@@ -16,6 +16,7 @@ class RecordsRetentionPolicyVersion(models.Model):
     """
     _name = 'records.retention.policy.version'
     _description = 'Records Retention Policy Version'
+    _table = 'records_retention_policy_ver'  # Shortened table name
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'policy_id, version desc'
 

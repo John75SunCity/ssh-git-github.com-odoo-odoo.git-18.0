@@ -5,6 +5,7 @@ from odoo import models, fields
 class RecordsDepartmentBillingApproval(models.Model):
     _name = 'records.department.billing.approval'
     _description = 'Department Billing Approval'
+    _table = 'records_dept_billing_approval'  # Shortened table name
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'approval_date desc'
 
