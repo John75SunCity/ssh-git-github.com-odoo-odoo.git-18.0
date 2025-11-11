@@ -51,7 +51,9 @@ class BillingConfigAuditReport(models.AbstractModel):
     """Billing Config Audit Report - Consolidated"""
 
     _name = 'report.records_management.billing_config_audit_report.consolidated'
-    _description = 'Billing Configuration Audit Trail Report (Consolidated)'    @api.model
+    _description = 'Billing Configuration Audit Trail Report (Consolidated)'
+
+    @api.model
     def _get_report_values(self, docids, data=None):
         """Get values for billing config audit report"""
         docs = self.env['records.audit.log'].browse(docids)
@@ -91,7 +93,9 @@ class DocumentRetrievalMetricsReport(models.AbstractModel):
     """Document Retrieval Performance Metrics Report - Consolidated"""
 
     _name = 'report.records_management.retrieval_metrics_report.consolidated'
-    _description = 'Document Retrieval Performance Report (Consolidated)'    @api.model
+    _description = 'Document Retrieval Performance Report (Consolidated)'
+
+    @api.model
     def _get_report_values(self, docids, data=None):
         """Get values for retrieval metrics report"""
         docs = self.env['retrieval.metric'].browse(docids)
