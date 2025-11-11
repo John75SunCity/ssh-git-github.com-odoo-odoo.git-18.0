@@ -768,7 +768,7 @@ class RecordsContainer(models.Model):
             self.barcode = self.env["ir.sequence"].next_by_code("records.container.barcode") or self.name
         return self.env.ref("records_management.report_container_barcode").report_action(self)
 
-    def action_assign_physical_barcode(self, barcode_value):
+    def action_assign_physical_barcode(self, barcode_value=None):
         """Assign a physical (warehouse) barcode, preserving the temporary barcode.
 
         Contract:
@@ -778,6 +778,19 @@ class RecordsContainer(models.Model):
         - Leaves temp_barcode unchanged and immutable after assignment.
         """
         self.ensure_one()
+
+        # Handle case where method is called without arguments (UI button)
+        if barcode_value is None:
+            # Return action to open wizard for barcode assignment
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Assign Physical Barcode'),
+                'res_model': 'records.container.assign.barcode.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {'default_container_id': self.id},
+            }
+
         force_reassign = bool(self.env.context.get("force_reassign"))
         if self.barcode and not force_reassign:
             raise UserError(_("A physical barcode is already assigned. Use force_reassign in context to override."))
@@ -877,19 +890,19 @@ class RecordsContainer(models.Model):
         This creates the complete workflow from customer request to warehouse storage.
         """
         self.ensure_one()
-        
+
         # Only draft or active containers can be stored
         if self.state not in ('draft', 'active'):
             raise UserError(_("Only draft or active containers can be processed for storage"))
-        
+
         # Create field service ticket for pickup
         fsm_project = self.env['project.project'].search([
             ('is_fsm', '=', True)
         ], limit=1)
-        
+
         if not fsm_project:
             raise UserError(_("No Field Service Management project found. Please configure FSM first."))
-        
+
         # Create the pickup task
         task_vals = {
             'name': _('Pickup Container: %s', self.name),
@@ -907,24 +920,24 @@ class RecordsContainer(models.Model):
             ),
             'container_id': self.id,
         }
-        
+
         pickup_task = self.env['project.task'].create(task_vals)
-        
+
         # Change container state to pending pickup
         vals = {
             'state': 'pending_pickup',
         }
         if not self.storage_start_date:
             vals['storage_start_date'] = fields.Date.today()
-            
+
         self.write(vals)
-        
+
         # Post message with link to service ticket
         self.message_post(
             body=_('Field service ticket created for container pickup. <a href="/web#id=%s&model=project.task&view_type=form">View Ticket #%s</a>',
                    pickup_task.id, pickup_task.id)
         )
-        
+
         # Return action to view the created task
         return {
             'name': _('Pickup Service Ticket'),
@@ -1157,7 +1170,7 @@ class RecordsContainer(models.Model):
                     body=_("Container indexed with barcode %s and added to inventory") % record.barcode
                 )
 
-    def action_move_container(self, new_location_id):
+    def action_move_container(self, new_location_id=None):
         """
         Move container to new location using stock.picking (proper Odoo way).
         
@@ -1168,6 +1181,22 @@ class RecordsContainer(models.Model):
         which creates audit trail and updates quant.location_id automatically.
         """
         self.ensure_one()
+
+        # Handle case where method is called without arguments (UI button)
+        if new_location_id is None:
+            # Return action to open location selection wizard
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Move Container'),
+                'res_model': 'stock.location',
+                'view_mode': 'list',
+                'target': 'new',
+                'domain': [('usage', '=', 'internal')],
+                'context': {
+                    'search_default_internal': 1,
+                    'container_id': self.id,
+                },
+            }
 
         if not self.quant_id:
             raise UserError(_("Container not in inventory system. Please index it first."))
@@ -1255,23 +1284,23 @@ class RecordsContainer(models.Model):
             ('barcode', '=', barcode),
             ('company_id', '=', self.env.company.id)
         ], limit=1)
-        
+
         # Fallback to temp barcode if physical barcode not assigned yet
         if not container:
             container = self.env['records.container'].search([
                 ('temp_barcode', '=', barcode),
                 ('company_id', '=', self.env.company.id)
             ], limit=1)
-        
+
         if not container:
             raise UserError(_('No container found with barcode: %s') % barcode)
-        
+
         # Post audit message
         container.message_post(
             body=_('Container scanned via barcode: %s') % barcode,
             message_type='notification'
         )
-        
+
         # Return action to open container form
         return {
             'type': 'ir.actions.act_window',
