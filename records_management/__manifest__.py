@@ -91,7 +91,7 @@
         "data/document_retrieval_rates_data.xml",
         "data/products_data.xml",
         "data/storage_fee_data.xml",
-        
+
         # Additional data files - previously not loaded
         "data/base_rates_container_access_data.xml",
         "data/billing_data.xml",
