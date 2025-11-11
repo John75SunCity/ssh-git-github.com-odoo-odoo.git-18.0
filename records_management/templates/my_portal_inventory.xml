@@ -105,9 +105,17 @@
                             <i class="fa fa-info-circle fa-2x mb-3"></i>
                             <h4>No Inventory Records Found</h4>
                             <p>There are currently no records in your inventory matching the selected criteria.</p>
-                            <button class="btn btn-primary" onclick="addTempInventory()">
-                                <i class="fa fa-plus"></i> Add New Inventory
-                            </button>
+                            <t t-if="request.env.user.has_group('records_management.group_portal_company_admin') or request.env.user.has_group('records_management.group_portal_department_admin') or request.env.user.has_group('records_management.group_portal_department_user')">
+                                <button class="btn btn-primary" onclick="addTempInventory()">
+                                    <i class="fa fa-plus"></i> Add New Inventory
+                                </button>
+                            </t>
+                            <t t-else="">
+                                <p class="text-muted">
+                                    <i class="fa fa-info-circle"></i> 
+                                    Contact your administrator to add inventory items.
+                                </p>
+                            </t>
                         </div>
                     </t>
 
@@ -121,15 +129,23 @@
                                         <span class="text-muted ml-2">Total: <t t-esc="len(inventory_records)"/> items</span>
                                     </div>
                                     <div class="btn-group">
-                                        <button class="btn btn-success" onclick="addTempInventory()">
-                                            <i class="fa fa-plus"></i> Add New Inventory
-                                        </button>
-                                        <button class="btn btn-warning" onclick="batchToPickup()" disabled="disabled" id="batch_pickup_btn">
-                                            <i class="fa fa-truck"></i> Add Selected to Pickup
-                                        </button>
-                                        <button class="btn btn-danger" onclick="batchAction('destruction')" disabled="disabled" id="batch_destroy_btn">
-                                            <i class="fa fa-trash"></i> Request Destruction
-                                        </button>
+                                        <t t-if="request.env.user.has_group('records_management.group_portal_company_admin') or request.env.user.has_group('records_management.group_portal_department_admin') or request.env.user.has_group('records_management.group_portal_department_user')">
+                                            <button class="btn btn-success" onclick="addTempInventory()">
+                                                <i class="fa fa-plus"></i> Add New Inventory
+                                            </button>
+                                            <button class="btn btn-warning" onclick="batchToPickup()" disabled="disabled" id="batch_pickup_btn">
+                                                <i class="fa fa-truck"></i> Add Selected to Pickup
+                                            </button>
+                                            <button class="btn btn-danger" onclick="batchAction('destruction')" disabled="disabled" id="batch_destroy_btn">
+                                                <i class="fa fa-trash"></i> Request Destruction
+                                            </button>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="alert alert-info m-0">
+                                                <i class="fa fa-info-circle"></i> 
+                                                Contact your administrator for inventory management access.
+                                            </div>
+                                        </t>
                                     </div>
                                 </div>
                             </div>

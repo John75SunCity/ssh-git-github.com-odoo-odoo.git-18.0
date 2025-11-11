@@ -23,7 +23,7 @@ import logging
 from datetime import datetime, timedelta
 
 # Odoo core imports
-from odoo import http
+from odoo import http, _
 from odoo.http import request
 
 _logger = logging.getLogger(__name__)
@@ -1351,9 +1351,79 @@ class RecordsManagementController(http.Controller):
         return request.render("records_management.portal_container_detail", values)
 
     @http.route(['/my/inventory'], type='http', auth="user", website=True)
-    def portal_my_inventory_redirect(self, **kw):
-        """Redirect old /my/inventory route to new /my/containers route"""
-        return request.redirect('/my/containers')
+    def portal_my_inventory(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, **kw):
+        """
+        Display temp inventory for portal users with proper permissions
+        """
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+
+        TempInventory = request.env['temp.inventory']
+
+        domain = [
+            ('partner_id', '=', partner.id),
+        ]
+
+        # Search filter
+        if search:
+            domain += ['|', ('name', 'ilike', search), ('description', 'ilike', search)]
+
+        # Date filtering
+        if date_begin and date_end:
+            domain += [('date_created', '>=', date_begin), ('date_created', '<=', date_end)]
+
+        # Status filter
+        searchbar_filters = {
+            'all': {'label': 'All Items', 'domain': []},
+            'draft': {'label': 'Draft', 'domain': [('state', '=', 'draft')]},
+            'active': {'label': 'Active', 'domain': [('state', '=', 'active')]},
+            'in_use': {'label': 'In Use', 'domain': [('state', '=', 'in_use')]},
+        }
+
+        if not filterby:
+            filterby = 'all'
+        domain += searchbar_filters[filterby]['domain']
+
+        # Sorting options
+        searchbar_sortings = {
+            'date': {'label': 'Recent First', 'order': 'date_created desc'},
+            'name': {'label': 'Name', 'order': 'name'},
+            'state': {'label': 'Status', 'order': 'state'},
+        }
+
+        if not sortby:
+            sortby = 'date'
+        order = searchbar_sortings[sortby]['order']
+
+        # Count total inventory
+        inventory_count = TempInventory.search_count(domain)
+
+        # Pager setup
+        pager = request.website.pager(
+            url="/my/inventory",
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby, 'filterby': filterby, 'search': search},
+            total=inventory_count,
+            page=page,
+            step=self._items_per_page,
+        )
+
+        # Get inventory records for current page
+        inventory_records = TempInventory.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+
+        values.update({
+            'inventory_records': inventory_records,
+            'page_name': 'inventory',
+            'pager': pager,
+            'default_url': '/my/inventory',
+            'searchbar_sortings': searchbar_sortings,
+            'searchbar_filters': searchbar_filters,
+            'sortby': sortby,
+            'filterby': filterby,
+            'search': search or '',
+            'inventory_count': inventory_count,
+        })
+
+        return request.render("records_management.portal_my_inventory", values)
 
     # ============================================================================
     # BARCODE GENERATION ROUTES
@@ -1447,6 +1517,221 @@ class RecordsManagementController(http.Controller):
         except Exception as e:
             _logger.exception("Temp barcode generation failed")
             return {'success': False, 'error': str(e)}
+
+    # ============================================================================
+    # PORTAL INVENTORY MANAGEMENT ROUTES
+    # ============================================================================
+
+    @http.route('/my/inventory/add_temp', type='json', auth='user', methods=['POST'])
+    def add_temp_inventory(self, **post):
+        """
+        Add temporary inventory item for portal users.
+        Requires appropriate portal permissions.
+        """
+        # Check user permissions
+        user = request.env.user
+        if not (user.has_group('records_management.group_portal_company_admin') or 
+                user.has_group('records_management.group_portal_department_admin') or
+                user.has_group('records_management.group_portal_department_user')):
+            return {
+                'success': False,
+                'error': 'Insufficient permissions. You need admin or department user access to add inventory.'
+            }
+
+        try:
+            item_type = post.get('type', '').strip()
+            description = post.get('description', '').strip()
+            
+            if not item_type or not description:
+                return {
+                    'success': False,
+                    'error': 'Type and description are required.'
+                }
+
+            # Create temp inventory record
+            temp_inventory = request.env['temp.inventory'].create({
+                'name': description,
+                'description': description,
+                'partner_id': user.partner_id.id,
+                'state': 'draft',
+            })
+
+            # Generate barcode using sequence
+            barcode = request.env['ir.sequence'].next_by_code('temp.inventory') or f"TEMP-{temp_inventory.id}"
+            
+            # Update the temp inventory with the barcode in the name if needed
+            if temp_inventory.name == description:
+                temp_inventory.write({'name': f"{description} ({barcode})"})
+
+            # Create audit log
+            self._create_audit_log(
+                "temp_inventory_created",
+                f"Temp inventory created by portal user: {description}"
+            )
+
+            return {
+                'success': True,
+                'barcode': barcode,
+                'temp_inventory_id': temp_inventory.id,
+                'message': f'Temporary inventory "{description}" created successfully with barcode {barcode}.'
+            }
+
+        except Exception as e:
+            _logger.error("Add temp inventory error: %s", e)
+            return {
+                'success': False,
+                'error': 'Failed to create temporary inventory. Please try again.'
+            }
+
+    @http.route('/my/inventory/add_to_pickup', type='json', auth='user', methods=['POST'])
+    def add_to_pickup(self, **post):
+        """
+        Add inventory item to pickup request.
+        Requires appropriate portal permissions.
+        """
+        # Check user permissions
+        user = request.env.user
+        if not (user.has_group('records_management.group_portal_company_admin') or 
+                user.has_group('records_management.group_portal_department_admin') or
+                user.has_group('records_management.group_portal_department_user')):
+            return {
+                'success': False,
+                'error': 'Insufficient permissions. You need admin or department user access to request pickup.'
+            }
+
+        try:
+            item_id = post.get('item_id')
+            if not item_id:
+                return {
+                    'success': False,
+                    'error': 'Item ID is required.'
+                }
+
+            # Get the temp inventory item
+            temp_item = request.env['temp.inventory'].browse(int(item_id))
+            if not temp_item.exists() or temp_item.partner_id.id != user.partner_id.id:
+                return {
+                    'success': False,
+                    'error': 'Item not found or access denied.'
+                }
+
+            # Create or find existing pickup request
+            pickup_request = request.env['portal.request'].search([
+                ('partner_id', '=', user.partner_id.id),
+                ('request_type', '=', 'pickup'),
+                ('state', 'in', ['draft', 'submitted'])
+            ], limit=1)
+
+            if not pickup_request:
+                pickup_request = request.env['portal.request'].create({
+                    'partner_id': user.partner_id.id,
+                    'request_type': 'pickup',
+                    'state': 'draft',
+                    'description': f'Pickup request for temp inventory items',
+                    'retrieval_items': json.dumps([]),
+                })
+
+            # Add item to pickup request - update retrieval_items JSON
+            existing_items = json.loads(pickup_request.retrieval_items or '[]')
+            existing_items.append({
+                'type': 'temp_inventory',
+                'id': temp_item.id,
+                'name': temp_item.name,
+                'description': temp_item.description or '',
+            })
+            pickup_request.write({
+                'retrieval_items': json.dumps(existing_items)
+            })
+
+            # Create audit log
+            self._create_audit_log(
+                "temp_inventory_added_to_pickup",
+                f"Temp inventory {temp_item.name} added to pickup request by portal user"
+            )
+
+            return {
+                'success': True,
+                'pickup_request_id': pickup_request.id,
+                'message': f'Item "{temp_item.name}" added to pickup request.'
+            }
+
+        except Exception as e:
+            _logger.error("Add to pickup error: %s", e)
+            return {
+                'success': False,
+                'error': 'Failed to add item to pickup request. Please try again.'
+            }
+
+    @http.route('/my/inventory/request_destruction', type='json', auth='user', methods=['POST'])
+    def request_destruction(self, **post):
+        """
+        Request destruction for selected inventory items.
+        Requires appropriate portal permissions.
+        """
+        # Check user permissions
+        user = request.env.user
+        if not (user.has_group('records_management.group_portal_company_admin') or 
+                user.has_group('records_management.group_portal_department_admin') or
+                user.has_group('records_management.group_portal_department_user')):
+            return {
+                'success': False,
+                'error': 'Insufficient permissions. You need admin or department user access to request destruction.'
+            }
+
+        try:
+            item_ids = post.get('item_ids', [])
+            if not item_ids:
+                return {
+                    'success': False,
+                    'error': 'No items selected for destruction.'
+                }
+
+            # Get temp inventory items
+            temp_items = request.env['temp.inventory'].browse(item_ids)
+            # Verify ownership
+            for item in temp_items:
+                if not item.exists() or item.partner_id.id != user.partner_id.id:
+                    return {
+                        'success': False,
+                        'error': 'Access denied for one or more selected items.'
+                    }
+
+            # Create destruction request with temp inventory data in retrieval_items
+            items_data = []
+            for item in temp_items:
+                items_data.append({
+                    'type': 'temp_inventory',
+                    'id': item.id,
+                    'name': item.name,
+                    'description': item.description or '',
+                })
+
+            destruction_request = request.env['portal.request'].create({
+                'partner_id': user.partner_id.id,
+                'request_type': 'destruction',
+                'state': 'draft',
+                'description': f'Destruction request for {len(temp_items)} items',
+                'retrieval_items': json.dumps(items_data)
+            })
+
+            # Create audit log
+            self._create_audit_log(
+                "destruction_request_created",
+                f"Destruction request created by portal user for {len(temp_items)} items"
+            )
+
+            return {
+                'success': True,
+                'destruction_request_id': destruction_request.id,
+                'message': f'Destruction request created for {len(temp_items)} items.'
+            }
+
+        except Exception as e:
+            _logger.error("Request destruction error: %s", e)
+            return {
+                'success': False,
+                'error': 'Failed to create destruction request. Please try again.'
+            }
 
     # ============================================================================
     # DOCUMENT RETRIEVAL PORTAL ROUTES
