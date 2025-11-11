@@ -14,7 +14,7 @@
                     <div style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">[[ doc.display_name or doc.name ]]</div>
                     <div style="font-size:9px;">[[ doc.partner_id.name or '' ]]</div>
                 </div>
-                <t t-if="(loop.index % 15) == 0"><div style="page-break-after:always;"></div></t>
+                <t t-if="(doc_index + 1) % 15 == 0"><div style="page-break-after:always;"></div></t>
             </t>
         </t>
     </template>
