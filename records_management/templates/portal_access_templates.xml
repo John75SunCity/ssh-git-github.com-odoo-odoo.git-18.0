@@ -23,17 +23,22 @@
         </t>
     </template>
 
-    <!-- Portal Header: Add "Switch Back to Admin" button when accessed via token -->
-    <template id="portal_layout_inherit_switch_back" inherit_id="portal.portal_layout" name="Add Switch Back Button">
-        <xpath expr="//main" position="prepend">
-            <t t-if="request.session.get('original_admin_uid')">
-                <div class="alert alert-warning m-3 text-center">
-                    <i class="fa fa-user-secret"/> You are viewing this portal as an administrator
-                    <a href="/portal/switch_back" class="btn btn-sm btn-primary ml-3">
-                        <i class="fa fa-sign-out"/> Switch Back to Admin Account
-                    </a>
-                </div>
-            </t>
+    <!-- Portal Admin Switch Back Button - Standalone Template -->
+    <template id="portal_admin_switch_back" name="Portal Admin Switch Back Button">
+        <t t-if="request.session.get('original_admin_uid')">
+            <div class="alert alert-warning m-3 text-center">
+                <i class="fa fa-user-secret"/> You are viewing this portal as an administrator
+                <a href="/portal/switch_back" class="btn btn-sm btn-primary ml-3">
+                    <i class="fa fa-sign-out"/> Switch Back to Admin Account
+                </a>
+            </div>
+        </t>
+    </template>
+
+    <!-- Include admin switch button in portal breadcrumbs area -->
+    <template id="portal_breadcrumbs_admin_switch" inherit_id="portal.portal_breadcrumbs" name="Add Admin Switch to Breadcrumbs">
+        <xpath expr="//ol[hasclass('breadcrumb')]" position="before">
+            <t t-call="records_management.portal_admin_switch_back"/>
         </xpath>
     </template>
     </data>
