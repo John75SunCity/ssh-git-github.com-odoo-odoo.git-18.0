@@ -85,6 +85,7 @@
         "data/naid_certificate_data.xml",
         "data/paper_products_data.xml",
         "data/website_portal_menus.xml",
+        "data/website_pages.xml",
         "data/core_configurator_data.xml",
         "data/paper_shred_configurator_data.xml",
         "data/naid_configurator_data.xml",
