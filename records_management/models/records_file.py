@@ -97,6 +97,17 @@ class RecordsFile(models.Model):
     )
     
     # ============================================================================
+    # CUSTOMER RELATIONSHIP
+    # ============================================================================
+    partner_id = fields.Many2one(
+        'res.partner',
+        string="Customer",
+        compute='_compute_partner_id',
+        store=True,
+        help="Customer who owns this file (inherited from container or owner)"
+    )
+    
+    # ============================================================================
     # DOCUMENT RELATIONSHIPS
     # ============================================================================
     document_ids = fields.One2many(
@@ -156,6 +167,17 @@ class RecordsFile(models.Model):
         """Count documents in this file"""
         for file in self:
             file.document_count = len(file.document_ids)
+    
+    @api.depends('owner_id', 'container_id.partner_id')
+    def _compute_partner_id(self):
+        """Compute customer from owner or container"""
+        for file in self:
+            if file.owner_id:
+                file.partner_id = file.owner_id.id
+            elif file.container_id and file.container_id.partner_id:
+                file.partner_id = file.container_id.partner_id.id
+            else:
+                file.partner_id = False
     
     # ============================================================================
     # LIFECYCLE METHODS

@@ -330,6 +330,29 @@ class RecordsDocument(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.document') or _('New')
+                
+            # AUTO-INHERIT PARTNER_ID: If not set, inherit from file or container
+            if not vals.get('partner_id'):
+                # Try to get partner from file folder
+                if vals.get('file_id'):
+                    file_record = self.env['records.file'].browse(vals['file_id'])
+                    if file_record and file_record.owner_id:
+                        vals['partner_id'] = file_record.owner_id.id
+                    elif file_record and file_record.container_id and file_record.container_id.partner_id:
+                        vals['partner_id'] = file_record.container_id.partner_id.id
+                
+                # Try to get partner from container if still not set
+                if not vals.get('partner_id') and vals.get('container_id'):
+                    container_record = self.env['records.container'].browse(vals['container_id'])
+                    if container_record and container_record.partner_id:
+                        vals['partner_id'] = container_record.partner_id.id
+                
+                # Fallback to current user's partner
+                if not vals.get('partner_id'):
+                    user_partner = self.env.user.partner_id
+                    if user_partner:
+                        vals['partner_id'] = user_partner.commercial_partner_id.id
+                        
             # Assign TF* temp barcode if absent and no physical barcode present
             if not vals.get('temp_barcode') and not vals.get('barcode'):
                 seq = self.env['ir.sequence'].next_by_code('records.document.temp.barcode')
