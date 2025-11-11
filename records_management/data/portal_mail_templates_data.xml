@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <data noupdate="1">
+<odoo noupdate="1">
         <!-- Portal Request Submission Email Template -->
         <record id="portal_request_submitted_email" model="mail.template">
             <field name="name">Portal Request Submitted</field>
@@ -603,5 +602,4 @@
             <field name="auto_delete" eval="True"/>
             <field name="lang">${object.lang}</field>
         </record>
-    </data>
 </odoo>
