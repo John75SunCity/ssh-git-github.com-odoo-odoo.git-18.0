@@ -447,16 +447,51 @@
         # ============================================================================
         # TEMPLATES: Load after everything else
         # ============================================================================
-        "templates/portal_certifications.xml",
-        "templates/portal_certificate_templates.xml",
+        # Core Portal Templates
+        "templates/portal_overview.xml",
+        "templates/portal_dashboards.xml",
+        "templates/portal_home_preconfigured.xml",
+        "templates/portal_access_templates.xml",
+        "templates/portal_errors.xml",
+        # Inventory & Container Templates
+        "templates/my_portal_inventory.xml",
         "templates/portal_inventory_template.xml",
-        "templates/portal_barcode_row.xml",
+        "templates/portal_containers.xml",
+        "templates/portal_containers_list.xml",
+        "templates/portal_container_create.xml",
+        # Document & Barcode Templates
+        "templates/portal_documents.xml",
+        "templates/portal_document_retrieval.xml",
         "templates/portal_document_bulk_upload.xml",
-        "templates/portal_mobile_export.xml",
-        "templates/portal_mobile_inventory_template.xml",
-        "templates/portal_mobile_settings.xml",
+        "templates/portal_barcode_template.xml",
+        "templates/portal_barcode_row.xml",
+        "templates/portal_centralized_docs.xml",
+        # Request & Workflow Templates
+        "templates/portal_requests_template.xml",
+        "templates/portal_pickup_request_create.xml",
+        "templates/portal_destruction_request_create.xml",
+        "templates/portal_work_order_templates.xml",
+        "templates/portal_workflow_template.xml",
+        # Financial Templates
+        "templates/portal_billing_template.xml",
+        "templates/portal_quote_template.xml",
+        "templates/portal_invoice_template.xml",
+        # Certificate Templates
+        "templates/portal_certifications.xml",
+        "templates/portal_certificates.xml",
+        "templates/portal_certificate_templates.xml",
+        # Report & Location Templates
+        "templates/portal_reports.xml",
+        "templates/portal_locations.xml",
+        "templates/portal_organization_diagram.xml",
+        # Feedback Templates
+        "templates/portal_feedback.xml",
+        "templates/portal_feedback_template.xml",
+        # Mobile Templates
         "templates/portal_mobile_template.xml",
-        "templates/portal_work_order_templates.xml"
+        "templates/portal_mobile_inventory_template.xml",
+        "templates/portal_mobile_export.xml",
+        "templates/portal_mobile_settings.xml"
     ],
     "demo": [
         "demo/customer_inventory_demo.xml",
