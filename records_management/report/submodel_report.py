@@ -13,6 +13,7 @@ class RevenueforecastReport(models.AbstractModel):
 
     _name = 'report.records_management.revenue_forecast_report.consolidated'
     _description = 'Revenue Forecast Report (Consolidated)'
+    _table = 'report_rm_revenue_forecast'  # Shortened table name
 
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -52,6 +53,7 @@ class BillingConfigAuditReport(models.AbstractModel):
 
     _name = 'report.records_management.billing_config_audit_report.consolidated'
     _description = 'Billing Configuration Audit Trail Report (Consolidated)'
+    _table = 'report_rm_billing_config_audit'  # Shortened table name
 
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -94,6 +96,7 @@ class DocumentRetrievalMetricsReport(models.AbstractModel):
 
     _name = 'report.records_management.retrieval_metrics_report.consolidated'
     _description = 'Document Retrieval Performance Report (Consolidated)'
+    _table = 'report_rm_doc_retrieval_metrics'  # Shortened table name
 
     @api.model
     def _get_report_values(self, docids, data=None):
