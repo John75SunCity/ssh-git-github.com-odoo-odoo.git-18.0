@@ -170,12 +170,12 @@ from . import records_bulk_user_import
 from . import records_category
 from . import records_center_location
 from . import records_config_settings
+from . import records_stock_movement  # Enhanced stock movement tracking - MUST load before records_container (provides mixin)
 from . import records_container
 from . import records_container_content_line
 from . import records_container_line
 from . import records_container_log
 from . import records_container_movement
-from . import records_stock_movement  # Enhanced stock movement tracking
 from . import records_container_transfer
 from . import records_container_transfer_line
 from . import records_container_type
