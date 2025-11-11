@@ -47,31 +47,40 @@
             <field name="is_published">true</field>
         </record>
 
+        <!-- Demo Employees for NAID Training -->
+        <record id="employee_john_smith" model="hr.employee">
+            <field name="name">John Smith</field>
+            <field name="work_email">john.smith@example.com</field>
+            <field name="work_phone">+1-555-0123</field>
+        </record>
+
+        <record id="employee_sarah_johnson" model="hr.employee">
+            <field name="name">Sarah Johnson</field>
+            <field name="work_email">sarah.johnson@example.com</field>
+            <field name="work_phone">+1-555-0124</field>
+        </record>
+
         <!-- NAID Training Requirements -->
         <record id="naid_basic_certification" model="naid.operator.certification">
-            <field name="name">John Smith - NAID AAA Basic Certification</field>
+            <field name="name">NAID AAA Basic Certification</field>
             <field name="certification_number">NAID-BASIC-001</field>
             <field name="status">certified</field>
             <field name="refresher_training_required">true</field>
             <field name="refresher_interval_months">12</field>
             <field name="portal_visible">true</field>
-            <!-- Employee fields required for hr.employee inheritance -->
-            <field name="work_email">john.smith@example.com</field>
-            <field name="work_phone">+1-555-0123</field>
+            <field name="operator_id" ref="employee_john_smith"/>
             <field name="required_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_security'))]"/>
             <field name="completed_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_security'))]"/>
         </record>
 
         <record id="naid_advanced_certification" model="naid.operator.certification">
-            <field name="name">Sarah Johnson - NAID AAA Advanced Certification</field>
+            <field name="name">NAID AAA Advanced Certification</field>
             <field name="certification_number">NAID-ADV-001</field>
             <field name="status">certified</field>
             <field name="refresher_training_required">true</field>
             <field name="refresher_interval_months">12</field>
             <field name="portal_visible">true</field>
-            <!-- Employee fields required for hr.employee inheritance -->
-            <field name="work_email">sarah.johnson@example.com</field>
-            <field name="work_phone">+1-555-0124</field>
+            <field name="operator_id" ref="employee_sarah_johnson"/>
             <field name="required_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_advanced')), (4, ref('naid_training_course_security')), (4, ref('naid_training_course_equipment'))]"/>
             <field name="completed_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_advanced')), (4, ref('naid_training_course_security')), (4, ref('naid_training_course_equipment'))]"/>
         </record>

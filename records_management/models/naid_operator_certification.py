@@ -28,19 +28,13 @@ from odoo import models, fields, api, _
 class NaidOperatorCertification(models.Model):
     _name = 'naid.operator.certification'
     _description = 'NAID Operator Certification'
-    _inherit = ['hr.employee', 'mail.thread', 'mail.activity.mixin', 'portal.mixin']  # Inherit from hr.employee for employee data integration
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']  # Removed hr.employee inheritance to prevent model mixing
     _order = 'certification_number desc'  # Use stored field instead of non-stored 'name'
 
     # ------------------------------------------------------------------
     # FIELD LABEL DISAMBIGUATION
     # ------------------------------------------------------------------
-    # hr.employee provides employee_token (label "Security Token") and
-    # portal.mixin provides access_token (label "Security Token"). Both
-    # inherited simultaneously here caused the runtime warning about
-    # duplicate labels. We override their string labels to make them
-    # semantically distinct while preserving underlying behavior.
-    # Use plain strings (no _()) to avoid import-time translation context warnings; field labels still extractable via pot init
-    employee_token = fields.Char(string='Employee Security Token')  # override label only
+    # Portal access token field with custom label to avoid conflicts
     access_token = fields.Char(string='Portal Access Token')  # override label only
 
     # Core certification fields
@@ -89,45 +83,17 @@ class NaidOperatorCertification(models.Model):
     # Customer portal visibility
     portal_visible = fields.Boolean(string='Visible to Customers', default=True, help='Whether this certification info is visible to customers in portal')
 
-    category_ids = fields.Many2many(
-        'hr.employee.category', 'naid_cert_category_rel',
-        'cert_id', 'category_id', string='NAID Tags')
-
     # Additional details
     notes = fields.Text(string='Notes', help='Additional notes on certification or training')
     attachment_ids = fields.Many2many('ir.attachment', 'naid_operator_cert_attachment_rel', 'certification_id', 'attachment_id', string='Supporting Documents', help='Certificates, training records, etc.')
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company)
-    # Explicit override of hr.employee's bank_account_ids to ensure a unique relation table.
-    # Odoo 19 registry error reported a collision: Many2many fields share the same table/columns.
-    # We provide a distinct relation table name to avoid conflict with hr.employee's default.
-    bank_account_ids = fields.Many2many(
-        comodel_name='res.partner.bank',
-        relation='naid_operator_cert_bank_rel',  # unique relation table
-        column1='cert_id',  # FK to this certification model
-        column2='bank_id',  # FK to res.partner.bank
-        string='Bank Accounts',
-        help='Bank accounts associated specifically with this operator certification record'
-    )
-
-    # Explicit override of hr.employee's goals_ids to ensure a unique relation table.
-    # Similar registry collision observed for goals_ids (performance/gamification goals) on Odoo 19.
-    # We provide a distinct relation table and column names to isolate this model's linkage.
-    goals_ids = fields.Many2many(
-        comodel_name='gamification.goal',
-        relation='naid_operator_cert_goal_rel',  # unique relation table distinct from hr.employee default
-        column1='cert_id',  # FK to this certification model
-        column2='goal_id',  # FK to gamification.goal
-        string='Performance Goals',
-        help='Gamification / performance goals tracked specifically for this operator certification'
-    )
 
     # ------------------------------------------------------------------
     # VIEW-REFERENCED FIELDS (Added to satisfy missing field audit)
     # ------------------------------------------------------------------
-    # 'name' is used in views explicitly; hr.employee inheritance already provides name but we
-    # expose an explicit related for clarity and to ensure store behavior for this model's table.
-    name = fields.Char(string='Operator Name', related='display_name', store=False)
+    # Define name field explicitly since hr.employee inheritance was removed
+    name = fields.Char(string='Certification Name', required=True, tracking=True, help='Name/title of this certification')
     # certificate_number (alias of certification_number for legacy view references)
     certificate_number = fields.Char(string='Certificate Number', help='Legacy alias referencing certification number')
     certification_type = fields.Selection([
