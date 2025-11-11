@@ -198,7 +198,10 @@ class OdooXMLSchemaValidator:
             if record.get('model') == 'ir.ui.view':
                 arch_field = record.find("field[@name='arch']")
                 if arch_field is not None:
-                    if arch_field.text is None or not arch_field.text.strip():
+                    # Check if arch has content either as text or child elements
+                    has_text = arch_field.text is not None and arch_field.text.strip()
+                    has_children = len(list(arch_field)) > 0
+                    if not has_text and not has_children:
                         errors.append(
                             f"⚠️ View {record.get('id', 'unknown')} has empty arch definition"
                         )
