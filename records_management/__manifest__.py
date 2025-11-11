@@ -143,7 +143,6 @@
         "report/container_access_work_order_reports.xml",
         "report/container_content_reports.xml",
         "report/container_destruction_work_order_reports.xml",
-        "report/container_retrieval_item_reports.xml",
         "report/container_retrieval_reports.xml",
         "report/container_retrieval_work_order_reports.xml",
         "report/custom_box_volume_calculator_reports.xml",
