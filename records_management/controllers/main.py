@@ -878,6 +878,20 @@ class RecordsManagementPortal(CustomerPortal):
         partner = request.env.user.partner_id
         domain = [('partner_id', '=', partner.id), ('active', '=', True)]
 
+        # Status filter options
+        searchbar_filters = {
+            'all': {'label': _('All Containers'), 'domain': []},
+            'active': {'label': _('Active'), 'domain': [('state', '=', 'active')]},
+            'in_storage': {'label': _('In Storage'), 'domain': [('state', '=', 'in_storage')]},
+            'in_transit': {'label': _('In Transit'), 'domain': [('state', '=', 'in_transit')]},
+            'pending': {'label': _('Pending Pickup'), 'domain': [('state', '=', 'pending_pickup')]},
+            'destroyed': {'label': _('Destroyed'), 'domain': [('state', '=', 'destroyed')]},
+        }
+
+        if not filterby:
+            filterby = 'all'
+        domain += searchbar_filters[filterby]['domain']
+
         # Sorting options
         searchbar_sortings = {
             'name': {'label': _('Name'), 'order': 'name'},
@@ -900,8 +914,11 @@ class RecordsManagementPortal(CustomerPortal):
             'containers': containers,
             'page_name': 'container',
             'searchbar_sortings': searchbar_sortings,
+            'searchbar_filters': searchbar_filters,
             'sortby': sortby,
-            'search': search,
+            'filterby': filterby,
+            'search': search or '',
+            'container_count': len(containers),
         }
 
         return request.render('records_management.portal_my_containers', values)
