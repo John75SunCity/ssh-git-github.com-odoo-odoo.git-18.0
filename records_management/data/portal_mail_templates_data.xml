@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
-    <data>
+<odoo>
+    <data noupdate="1">
         <!-- Portal Model XML ID definitions for security rules -->
         <record id="model_customer_feedback" model="ir.model">
             <field name="model">customer.feedback</field>
