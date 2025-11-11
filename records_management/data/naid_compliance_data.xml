@@ -238,6 +238,7 @@
         <record id="audit_requirement_annual" model="naid.audit.requirement">
             <field name="name">Annual NAID Certification Audit</field>
             <field name="audit_type">certification</field>
+            <field name="checklist_category">regulatory_compliance</field>
             <field name="frequency_months">12</field>
             <field name="scope">Complete facility and process audit</field>
             <field name="auditor_requirements">NAID certified auditor required</field>
@@ -247,6 +248,7 @@
         <record id="audit_requirement_internal" model="naid.audit.requirement">
             <field name="name">Internal Compliance Audit</field>
             <field name="audit_type">internal</field>
+            <field name="checklist_category">documentation_compliance</field>
             <field name="frequency_months">3</field>
             <field name="scope">Policy compliance, equipment status, training compliance</field>
             <field name="auditor_requirements">Internal compliance officer</field>

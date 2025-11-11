@@ -185,7 +185,6 @@
         "report/document_search_attempt_report.xml",
         "report/required_document_reports.xml",
         # Destruction Reports
-        "report/destruction_certificate_reports.xml",
         "report/destruction_event_reports.xml",
         "report/destruction_item_reports.xml",
         # File & Digital Scan Reports
@@ -344,13 +343,7 @@
         "data/feedback_survey_data.xml",
         "data/intelligent_search_indexes_data.xml",
         "data/tag_data.xml",
-        "data/fsm_mail_templates_data.xml",
-        "data/mail_activity_data_todo.xml",
-        "data/records_retrieval_order_cron_data.xml",
-        "data/scheduled_actions_data.xml",
-        "data/field_label_customization_batch_data.xml",
-        "data/temp_inventory_configurator_data.xml",
-        "data/portal_configurator_data.xml",
+
         # ============================================================================
         # WIZARD VIEWS: Pure action/form definitions (no menuitems)
         # Menuitems will be moved after root_menus.xml
