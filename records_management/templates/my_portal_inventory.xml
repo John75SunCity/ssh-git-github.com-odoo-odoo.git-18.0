@@ -53,12 +53,8 @@
                 <t t-set="breadcrumbs_searchbar" t-value="True"/>
                 <t t-set="title">My Inventory</t>
 
-                <!-- Owl Inventory Component (progressive enhancement). Fallback legacy block retained below. -->
-                <div class="o_portal_inventory_modern mb-4">
-                    <owl-component name="records_management.PortalInventoryComponent"/>
-                </div>
-
-                <div class="o_portal_inventory highlight-modern legacy-inventory-fallback d-none d-md-block">
+                <!-- Legacy inventory UI used for stable portal functionality -->
+                <div class="o_portal_inventory highlight-modern">
                     <!-- NOTE: Legacy inventory UI kept for fallback; will be removed after full parity & QA. -->
                     <!-- Enhanced Search and Filter Section -->
                     <div class="card mb-4">
