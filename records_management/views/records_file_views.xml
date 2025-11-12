@@ -102,11 +102,11 @@
     </record>
 
 <!-- Tree view for File Folders -->
-    <record id="records_file_view_tree" model="ir.ui.view">
-        <field name="name">records.file.view.tree</field>
+    <record id="records_file_view_list" model="ir.ui.view">
+        <field name="name">records.file.view.list</field>
         <field name="model">records.file</field>
         <field name="arch" type="xml">
-        <tree string="File Folders" multi_edit="1" sample="1">
+        <list string="File Folders" multi_edit="1" sample="1">
             <field name="name" string="File Name"/>
             <field name="barcode" optional="show"/>
             <field name="temp_barcode" optional="hide"/>
@@ -118,7 +118,7 @@
             <field name="document_count" string="Documents"/>
             <field name="state" decoration-success="state == 'stored'" decoration-info="state == 'draft'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'at_customer'"/>
             <field name="date_created" optional="show"/>
-        </tree>
+        </list>
     </field>
     </record>
 

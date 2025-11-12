@@ -29,7 +29,7 @@
                         </group>
 
                         <field name="department_user_assignment_ids" nolabel="1">
-                            <tree editable="bottom" create="true" delete="true">
+                            <list editable="bottom" create="true" delete="true">
                                 <field name="department_id" 
                                        domain="[('partner_id', '=', parent.id)]"
                                        required="1"/>
@@ -41,7 +41,7 @@
                                 <field name="can_create_records"/>
                                 <field name="can_delete_records"/>
                                 <field name="active"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
                 </xpath>

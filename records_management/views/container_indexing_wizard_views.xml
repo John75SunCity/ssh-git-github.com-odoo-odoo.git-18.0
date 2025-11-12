@@ -2,11 +2,11 @@
 <odoo>
     <data>
         <!-- Container Indexing Wizard File Tree View -->
-        <record id="container_indexing_wizard_file_view_tree" model="ir.ui.view">
-            <field name="name">container.indexing.wizard.file.tree</field>
+        <record id="container_indexing_wizard_file_view_list" model="ir.ui.view">
+            <field name="name">container.indexing.wizard.file.list</field>
             <field name="model">container.indexing.wizard.file</field>
             <field name="arch" type="xml">
-                <tree string="Files" editable="bottom" create="1" delete="1">
+                <list string="Files" editable="bottom" create="1" delete="1">
                     <field name="sequence" widget="handle"/>
                     <field name="name" 
                            placeholder="e.g., HR-Personnel-2024, Finance-Invoices-Q1"
@@ -22,7 +22,7 @@
                            string="Auto Temp Barcode"
                            readonly="1"/>
                     <field name="partner_id" column_invisible="1"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -80,7 +80,7 @@
                                 <field name="file_ids" nolabel="1" 
                                        widget="one2many_list" 
                                        context="{'default_wizard_id': active_id, 'default_partner_id': customer_id}">
-                                    <tree string="Files" editable="bottom" create="1" delete="1">
+                                    <list string="Files" editable="bottom" create="1" delete="1">
                                         <field name="sequence" widget="handle"/>
                                         <field name="name" 
                                                placeholder="e.g., HR-Personnel-2024, Finance-Invoices-Q1"
@@ -96,7 +96,7 @@
                                                string="Auto Temp Barcode"
                                                readonly="1"/>
                                         <field name="partner_id" column_invisible="1"/>
-                                    </tree>
+                                    </list>
                                 </field>
                                 
                                 <div class="row mt-3">

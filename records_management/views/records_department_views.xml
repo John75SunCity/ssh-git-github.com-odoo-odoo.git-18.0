@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="records_department_view_tree" model="ir.ui.view">
-            <field name="name">records.department.view.tree</field>
+        <record id="records_department_view_list" model="ir.ui.view">
+            <field name="name">records.department.view.list</field>
             <field name="model">records.department</field>
             <field name="arch" type="xml">
                 <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
