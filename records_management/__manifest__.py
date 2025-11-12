@@ -312,6 +312,7 @@
         "views/field_label_helper_wizard_views.xml",
         "views/container_quick_add_wizard_views.xml",
         "views/records_container_assign_barcode_wizard_views.xml",
+        "views/container_indexing_wizard_views.xml",
         "views/report_window_actions_views.xml",
         "views/customer_inventory_report_wizard_views.xml",
         "views/hard_drive_scan_wizard_views.xml",

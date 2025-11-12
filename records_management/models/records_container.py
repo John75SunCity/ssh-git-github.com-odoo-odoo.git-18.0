@@ -1214,35 +1214,91 @@ class RecordsContainer(models.Model):
 
     def action_index_container(self):
         """
-        Index container: Transition from draft to active and create stock quant.
+        Launch indexing wizard to index container and add files in one step.
         
-        This is called when:
-        - Physical barcode is assigned
-        - Container is physically received at warehouse
-        - Ready to track in inventory system
+        Replaces separate "Index Container" and "Add Files" buttons with unified workflow.
+        Allows bulk file addition during container indexing process.
         """
-        for record in self:
-            if record.state == 'draft':
-                # Validate barcode assigned
-                if not record.barcode:
-                    raise UserError(_(
-                        "Cannot index container without physical barcode. "
-                        "Please assign a barcode from the pre-printed sheet first."
-                    ))
+        self.ensure_one()
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Index Container & Add Files'),
+            'res_model': 'container.indexing.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_container_id': self.id,
+                'default_container_name': self.name,
+                'default_customer_id': self.partner_id.id if self.partner_id else False,
+                'default_barcode': self.barcode or False,
+            }
+        }
 
-                # Create stock quant if not exists
-                if not record.quant_id:
-                    record._create_stock_quant()
+    def _index_container_with_files(self, barcode, file_data_list):
+        """
+        Internal method to complete container indexing with files.
+        Called from the indexing wizard.
+        
+        Args:
+            barcode (str): Physical barcode to assign
+            file_data_list (list): List of file dictionaries to create
+        """
+        self.ensure_one()
+        
+        if self.state != 'draft':
+            raise UserError(_("Only draft containers can be indexed"))
+        
+        # Assign barcode
+        if barcode and barcode != self.barcode:
+            self.barcode = barcode
+        
+        # Validate barcode assigned
+        if not self.barcode:
+            raise UserError(_(
+                "Cannot index container without physical barcode. "
+                "Please assign a barcode from the pre-printed sheet first."
+            ))
 
-                # Update state
-                record.write({
-                    'state': 'active',
-                })
+        # Create stock quant if not exists
+        if not self.quant_id:
+            self._create_stock_quant()
 
-                # Post message
-                record.message_post(
-                    body=_("Container indexed with barcode %s and added to inventory") % record.barcode
-                )
+        # Create files in bulk
+        created_files = []
+        for file_data in file_data_list:
+            if file_data.get('name'):  # Only create files with names
+                file_vals = {
+                    'name': file_data['name'],
+                    'description': file_data.get('description', ''),
+                    'container_id': self.id,
+                    'partner_id': self.partner_id.id,
+                    'file_category': file_data.get('file_category', 'general'),
+                    'received_date': file_data.get('received_date') or fields.Date.today(),
+                    'barcode': file_data.get('barcode', ''),
+                    'temp_barcode': file_data.get('temp_barcode', ''),
+                }
+                file_record = self.env['records.file'].create(file_vals)
+                created_files.append(file_record)
+
+        # Update container state
+        self.write({
+            'state': 'active',
+        })
+
+        # Post message
+        files_msg = ""
+        if created_files:
+            files_msg = _(" and %d files created") % len(created_files)
+        
+        self.message_post(
+            body=_("Container indexed with barcode %s%s") % (self.barcode, files_msg)
+        )
+        
+        return {
+            'created_files_count': len(created_files),
+            'created_file_names': [f.name for f in created_files]
+        }
 
     def action_move_container(self, new_location_id=None):
         """

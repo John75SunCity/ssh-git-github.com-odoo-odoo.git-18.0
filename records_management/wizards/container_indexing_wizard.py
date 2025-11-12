@@ -1,0 +1,237 @@
+# -*- coding: utf-8 -*-
+"""
+Container Indexing Wizard
+
+Combines Index Container + Add Files functionality into a single workflow:
+1. Index container (assign barcode, create stock tracking)  
+2. Bulk add files to container with details grid
+3. Set container to active status
+
+This replaces separate "Index Container" and "Add Files" buttons with
+a unified "Index Container & Add Files" wizard.
+"""
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
+
+
+class ContainerIndexingWizard(models.TransientModel):
+    _name = 'container.indexing.wizard'
+    _description = 'Container Indexing & File Addition Wizard'
+
+    # Container being indexed
+    container_id = fields.Many2one(
+        'records.container',
+        string='Container',
+        required=True,
+        readonly=True
+    )
+    
+    # Container details (display only)
+    container_name = fields.Char(related='container_id.name', readonly=True)
+    customer_id = fields.Many2one(related='container_id.partner_id', readonly=True)
+    
+    # Barcode assignment (if not already assigned)
+    barcode = fields.Char(
+        string='Physical Barcode',
+        help='Scan or enter barcode from pre-printed sheet'
+    )
+    
+    # Files to add to container
+    file_ids = fields.One2many(
+        'container.indexing.wizard.file',
+        'wizard_id',
+        string='Files to Add'
+    )
+    
+    # Options
+    auto_generate_temp_barcodes = fields.Boolean(
+        string='Auto-generate Temporary Barcodes',
+        default=True,
+        help='Automatically generate temporary barcodes for files without physical barcodes'
+    )
+    
+    @api.model
+    def default_get(self, fields):
+        """Set default values from container context"""
+        res = super().default_get(fields)
+        
+        container_id = self.env.context.get('active_id')
+        if container_id:
+            container = self.env['records.container'].browse(container_id)
+            res.update({
+                'container_id': container_id,
+                'barcode': container.barcode,  # Pre-fill if already assigned
+            })
+            
+            # Add some default file slots for easy data entry
+            if not res.get('file_ids'):
+                res['file_ids'] = [
+                    (0, 0, {'sequence': i, 'partner_id': container.partner_id.id}) 
+                    for i in range(1, 6)  # 5 empty file slots to start
+                ]
+        
+        return res
+    
+    def action_index_container(self):
+        """
+        Execute the container indexing workflow:
+        1. Validate and assign barcode to container
+        2. Create files with details from grid
+        3. Index container (create stock tracking)
+        4. Set container status to active
+        """
+        self.ensure_one()
+        
+        container = self.container_id
+        
+        # Step 1: Validate container state
+        if container.state != 'draft':
+            raise UserError(_(
+                "Container %s is already indexed (status: %s). "
+                "Only draft containers can be indexed."
+            ) % (container.name, container.state))
+        
+        # Step 2: Assign barcode if provided
+        if self.barcode and self.barcode != container.barcode:
+            container.barcode = self.barcode
+        
+        if not container.barcode:
+            raise UserError(_(
+                "Physical barcode is required to index container. "
+                "Please scan or enter the barcode from your pre-printed sheet."
+            ))
+        
+        # Step 3: Create files from wizard grid
+        created_files = self._create_files_from_grid()
+        
+        # Step 4: Index container (create stock quant, set active)
+        container._index_container_with_files(created_files)
+        
+        # Step 5: Show success message and open container
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Container Indexed Successfully'),
+                'message': _(
+                    'Container %s indexed with %d files. '
+                    'Barcode: %s'
+                ) % (container.name, len(created_files), container.barcode),
+                'type': 'success',
+                'next': {
+                    'type': 'ir.actions.act_window',
+                    'res_model': 'records.container',
+                    'res_id': container.id,
+                    'view_mode': 'form',
+                    'target': 'current',
+                }
+            }
+        }
+    
+    def _create_files_from_grid(self):
+        """Create records.file objects from wizard grid data"""
+        files_created = []
+        
+        for file_line in self.file_ids.filtered(lambda f: f.name):  # Only create files with names
+            file_vals = {
+                'name': file_line.name,
+                'description': file_line.description,
+                'container_id': self.container_id.id,
+                'partner_id': file_line.partner_id.id or self.container_id.partner_id.id,
+                'file_category': file_line.file_category,
+                'received_date': file_line.received_date,
+                'barcode': file_line.barcode,  # Physical barcode if assigned
+                # temp_barcode will be auto-generated if needed
+            }
+            
+            file_record = self.env['records.file'].create(file_vals)
+            files_created.append(file_record)
+        
+        return files_created
+    
+    def action_add_file_row(self):
+        """Add another file row to the grid"""
+        max_sequence = max(self.file_ids.mapped('sequence') or [0])
+        self.write({
+            'file_ids': [(0, 0, {
+                'sequence': max_sequence + 1,
+                'partner_id': self.container_id.partner_id.id,
+            })]
+        })
+        
+        return {
+            'type': 'ir.actions.do_nothing',
+        }
+
+
+class ContainerIndexingWizardFile(models.TransientModel):
+    _name = 'container.indexing.wizard.file'
+    _description = 'File Entry for Container Indexing'
+    _order = 'sequence, id'
+
+    wizard_id = fields.Many2one(
+        'container.indexing.wizard',
+        string='Wizard',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    sequence = fields.Integer(string='#', default=1)
+    
+    # File details
+    name = fields.Char(
+        string='File Name',
+        help='Name/identifier for this file folder'
+    )
+    
+    description = fields.Text(
+        string='Description',
+        help='Brief description of file contents'
+    )
+    
+    partner_id = fields.Many2one(
+        'res.partner',
+        string='Customer',
+        help='Customer that owns this file (defaults to container customer)'
+    )
+    
+    file_category = fields.Selection([
+        ('personnel', 'Personnel Files'),
+        ('financial', 'Financial Records'),
+        ('legal', 'Legal Documents'),
+        ('medical', 'Medical Records'),
+        ('tax', 'Tax Documents'),
+        ('contracts', 'Contracts'),
+        ('correspondence', 'Correspondence'),
+        ('other', 'Other'),
+    ], string='Category', default='other')
+    
+    received_date = fields.Date(
+        string='Received Date',
+        default=fields.Date.context_today,
+        help='Date file was received from customer'
+    )
+    
+    barcode = fields.Char(
+        string='Physical Barcode',
+        help='Scan or enter physical barcode if pre-assigned'
+    )
+    
+    # Display computed temp barcode (read-only)
+    temp_barcode_preview = fields.Char(
+        string='Temp Barcode',
+        compute='_compute_temp_barcode_preview',
+        help='Preview of auto-generated temporary barcode'
+    )
+    
+    @api.depends('wizard_id.container_id', 'sequence')
+    def _compute_temp_barcode_preview(self):
+        """Show preview of what temp barcode will be generated"""
+        for record in self:
+            if record.wizard_id.container_id and record.name:
+                container = record.wizard_id.container_id
+                # Preview format: CONTAINER_TEMP-FILE01, CONTAINER_TEMP-FILE02, etc.
+                preview = f"{container.temp_barcode or 'TEMP'}-FILE{record.sequence:02d}"
+                record.temp_barcode_preview = preview
+            else:
+                record.temp_barcode_preview = ""

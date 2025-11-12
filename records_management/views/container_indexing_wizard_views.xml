@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Container Indexing Wizard Form -->
+        <record id="container_indexing_wizard_view_form" model="ir.ui.view">
+            <field name="name">container.indexing.wizard.form</field>
+            <field name="model">container.indexing.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Index Container & Add Files">
+                    <header>
+                        <button name="action_index_container" 
+                                string="Index Container & Create Files" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="container_name" readonly="1"/>
+                            </h1>
+                            <h3>
+                                Index Container & Add Files
+                            </h3>
+                        </div>
+                        
+                        <group>
+                            <group string="Container Information">
+                                <field name="container_id" invisible="1"/>
+                                <field name="customer_id" string="Customer"/>
+                                <field name="barcode" 
+                                       placeholder="Scan or enter physical barcode"
+                                       widget="barcode"
+                                       help="Scan barcode from pre-printed sheet"/>
+                            </group>
+                            <group string="Options">
+                                <field name="auto_generate_temp_barcodes"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Files to Add" name="files">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <p class="text-muted">
+                                            <i class="fa fa-info-circle"/> Add file folders to this container. 
+                                            Enter file names and descriptions, then click "Index Container & Create Files" to complete the process.
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <field name="file_ids" nolabel="1">
+                                    <tree string="Files" editable="bottom" create="1" delete="1">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name" 
+                                               placeholder="e.g., HR-Personnel-2024, Finance-Invoices-Q1"
+                                               required="1"/>
+                                        <field name="description" 
+                                               placeholder="Brief description of file contents"/>
+                                        <field name="file_category"/>
+                                        <field name="received_date"/>
+                                        <field name="barcode" 
+                                               placeholder="Physical barcode (optional)"
+                                               widget="barcode"/>
+                                        <field name="temp_barcode_preview" 
+                                               string="Auto Temp Barcode"
+                                               readonly="1"/>
+                                        <field name="partner_id" column_invisible="1"/>
+                                    </tree>
+                                </field>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <button name="action_add_file_row" 
+                                                string="Add File Row" 
+                                                type="object" 
+                                                class="btn-link">
+                                            <i class="fa fa-plus"/> Add Another File
+                                        </button>
+                                    </div>
+                                </div>
+                            </page>
+                            
+                            <page string="Instructions" name="instructions">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h4><i class="fa fa-list-ol"/> Container Indexing Process</h4>
+                                            <ol class="mt-3">
+                                                <li><strong>Scan Physical Barcode:</strong> Use the barcode scanner to assign the pre-printed barcode to this container.</li>
+                                                <li><strong>Add Files:</strong> Create file folder entries for each physical file folder going into this container.</li>
+                                                <li><strong>Enter Details:</strong> Provide names, descriptions, categories, and dates for each file.</li>
+                                                <li><strong>Physical Barcodes (Optional):</strong> If you have pre-printed barcodes for individual files, scan them now.</li>
+                                                <li><strong>Complete Indexing:</strong> Click "Index Container & Create Files" to activate the container and create all files.</li>
+                                            </ol>
+                                            
+                                            <div class="alert alert-info mt-4">
+                                                <h5><i class="fa fa-lightbulb-o"/> Tips</h5>
+                                                <ul>
+                                                    <li>Temporary barcodes will be auto-generated for files without physical barcodes</li>
+                                                    <li>You can add more file rows using the "Add Another File" button</li>
+                                                    <li>Only files with names will be created - empty rows are ignored</li>
+                                                    <li>The container will be activated and added to inventory tracking after indexing</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Wizard Action -->
+        <record id="action_container_indexing_wizard" model="ir.actions.act_window">
+            <field name="name">Index Container & Add Files</field>
+            <field name="res_model">container.indexing.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_records_container"/>
+            <field name="binding_view_types">form</field>
+        </record>
+    </data>
+</odoo>
