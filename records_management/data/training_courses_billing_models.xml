@@ -3,7 +3,7 @@
     <data>
         <!-- Training Channel for Billing Models -->
         <record id="slide_channel_billing_models" model="slide.channel">
-            <field name="name">Billing Models & Relationships</field>
+            <field name="name">Billing Models &amp; Relationships</field>
             <field name="description">Complete documentation of all billing-related models, fields, and their relationships</field>
             <field name="channel_type">documentation</field>
             <field name="enroll">public</field>
@@ -46,7 +46,7 @@
             <tr>
                 <td><strong>Storage Record</strong></td>
                 <td><code>records.management.storage</code></td>
-                <td>Tracks storage contracts & recurring fees</td>
+                <td>Tracks storage contracts &amp; recurring fees</td>
                 <td>records_management</td>
             </tr>
             <tr>
@@ -138,7 +138,7 @@ erDiagram
     }
     </div>
 
-    <h3>📋 Inheritance & Extensions</h3>
+    <h3>📋 Inheritance &amp; Extensions</h3>
     <div class="card">
         <div class="card-body">
             <h5>How Custom Models Extend Odoo Core:</h5>
