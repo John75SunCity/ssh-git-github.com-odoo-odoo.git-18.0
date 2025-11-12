@@ -65,7 +65,7 @@ class RecordsManagementController(http.Controller):
             user.has_group("records_management.group_portal_company_admin") or
             user.has_group("records_management.group_portal_department_admin") or
             user.has_group("records_management.group_portal_department_user") or
-            user.has_group("records_management.group_portal_readonly")
+            user.has_group("records_management.group_portal_readonly_employee")
         )
 
     def _check_analytics_access(self):
@@ -793,7 +793,7 @@ class RecordsManagementController(http.Controller):
             user.has_group("records_management.group_portal_company_admin") or
             user.has_group("records_management.group_portal_department_admin") or
             user.has_group("records_management.group_portal_department_user") or
-            user.has_group("records_management.group_portal_readonly")
+            user.has_group("records_management.group_portal_readonly_employee")
         )
 
         # Real-time Monitoring: Internal Users + Portal Admins + Portal Department Users
@@ -819,7 +819,7 @@ class RecordsManagementController(http.Controller):
             "is_portal_company_admin": user.has_group("records_management.group_portal_company_admin"),
             "is_portal_department_admin": user.has_group("records_management.group_portal_department_admin"),
             "is_portal_department_user": user.has_group("records_management.group_portal_department_user"),
-            "is_portal_readonly": user.has_group("records_management.group_portal_readonly"),
+            "is_portal_readonly": user.has_group("records_management.group_portal_readonly_employee"),
         }
 
     def _calculate_container_summary(self, containers):
@@ -1499,7 +1499,7 @@ class RecordsManagementController(http.Controller):
                user.has_group("records_management.group_portal_company_admin") or
                user.has_group("records_management.group_portal_department_admin") or
                user.has_group("records_management.group_portal_department_user") or
-               user.has_group("records_management.group_portal_readonly")):
+               user.has_group("records_management.group_portal_readonly_employee")):
             return request.render("website.403")
 
         values = self._prepare_portal_layout_values()
