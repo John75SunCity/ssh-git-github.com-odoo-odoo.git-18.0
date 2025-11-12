@@ -137,7 +137,7 @@ Destroy Container</a>
 <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
 
             </header>
-        <field name="name" string="Container ID"/>
+        <field name="name" string="Box Number"/>
         <field name="temp_barcode" string="Temp Barcode"/>
         <field name="barcode" string="Barcode"/>
         <field name="container_type_id" string="Container Type"/>
@@ -263,18 +263,39 @@ Destroy Container</a>
 
                 <group>
                     <group string="Container Information">
-    <field name="name"
-           placeholder="e.g., HR Personnel 2024"
-           help="Customer's name for this container - fully editable"
-           readonly="state == 'destroyed'"/>
-    <!-- Include computed flag field (hidden) so invisible expression works reliably -->
-    <field name="barcode_assigned" invisible="1"/>
-    <field name="temp_barcode" readonly="1" invisible="barcode_assigned" context="{'allow_temp_barcode_edit': False}"/>
-    <field name="barcode" placeholder="Assign from pre-printed barcode sheet" help="Physical barcode - manually assigned by staff"/>
-        <field name="container_type_id" required="1"/>
-        <field name="weight"/>
-        <field name="cubic_feet" readonly="1"/>
-        <field name="is_full"/>
+                        <field name="name"
+                               string="Box Number"
+                               placeholder="e.g., HR-1001, Finance-Q4-2024"
+                               help="Unique name/identifier for this container"
+                               required="1"
+                               readonly="state == 'destroyed'"/>
+                        <field name="description"
+                               string="Description"
+                               placeholder="Brief description of container purpose or contents"
+                               help="Optional description to help identify this container"/>
+                        <field name="container_type_id" 
+                               string="Container Type"
+                               required="1"/>
+                        <field name="weight" string="Weight (lbs)"/>
+                        <field name="cubic_feet" string="Capacity (ft³)" readonly="1"/>
+                        <field name="is_full" string="Container Full" widget="boolean_toggle"/>
+                    </group>
+                    <group string="Barcode Tracking">
+                        <!-- Include computed flag field (hidden) so invisible expression works reliably -->
+                        <field name="barcode_assigned" invisible="1"/>
+                        <field name="temp_barcode" 
+                               string="Temporary Barcode"
+                               readonly="1" 
+                               help="System-generated temporary barcode (auto-assigned)"
+                               invisible="barcode_assigned"/>
+                        <field name="barcode" 
+                               string="Physical Barcode"
+                               placeholder="Scan or type barcode from pre-printed sheet"
+                               help="Physical barcode - scan with camera or laser scanner"
+                               widget="barcode"/>
+                        <div colspan="2" class="text-muted small" invisible="not barcode or not temp_barcode">
+                            <i class="fa fa-info-circle"/> Both temporary and physical barcodes are active
+                        </div>
                     </group>
                     <group string="Customer &amp; Location">
         <field name="partner_id" required="1" groups="base.group_user" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"/>

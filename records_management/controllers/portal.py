@@ -1413,7 +1413,7 @@ class RecordsManagementController(http.Controller):
         # Sorting options
         searchbar_sortings = {
             'date': {'label': 'Recent First', 'order': 'write_date desc'},
-            'name': {'label': 'Container Name', 'order': 'name'},
+            'name': {'label': 'Box Number', 'order': 'name'},
             'barcode': {'label': 'Barcode', 'order': 'barcode'},
             'location': {'label': 'Location', 'order': 'location_id'},
             'state': {'label': 'Status', 'order': 'state'},
@@ -2595,7 +2595,7 @@ class RecordsManagementController(http.Controller):
         # Sorting options
         searchbar_sortings = {
             'date': {'label': 'Recent First', 'order': 'movement_date desc'},
-            'container': {'label': 'Container Name', 'order': 'container_id'},
+            'container': {'label': 'Box Number', 'order': 'container_id'},
             'location': {'label': 'Location', 'order': 'to_location_id'},
             'type': {'label': 'Movement Type', 'order': 'movement_type'},
         }

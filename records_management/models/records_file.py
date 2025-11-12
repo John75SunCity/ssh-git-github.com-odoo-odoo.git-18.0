@@ -411,15 +411,12 @@ class RecordsFile(models.Model):
         """Upload new document/PDF to this file"""
         self.ensure_one()
         return {
-            'name': _('Upload Document to File: %s') % self.name,
+            'name': _('Upload Documents to File: %s') % self.name,
             'type': 'ir.actions.act_window',
-            'res_model': 'records.document',
+            'res_model': 'document.upload.wizard',
             'view_mode': 'form',
             'context': {
                 'default_file_id': self.id,
-                'default_container_id': self.container_id.id if self.container_id else False,
-                'default_partner_id': self.partner_id.id if self.partner_id else False,
-                'form_view_initial_mode': 'edit',
             },
             'target': 'new',
         }

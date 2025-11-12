@@ -325,6 +325,7 @@
         "views/records_container_type_converter_wizard_views.xml",
         "views/records_document_flag_permanent_wizard_views.xml",
         "views/records_document_bulk_upload_wizard_views.xml",
+        "views/document_upload_wizard_views.xml",
         "views/records_location_report_wizard_views.xml",
         "views/records_permanent_flag_wizard_views.xml",
         "views/records_user_invitation_wizard_views.xml",

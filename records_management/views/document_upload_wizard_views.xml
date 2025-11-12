@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Document Upload Wizard Form View -->
+        <record id="document_upload_wizard_view_form" model="ir.ui.view">
+            <field name="name">document.upload.wizard.view.form</field>
+            <field name="model">document.upload.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Upload Documents to File Folder">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="file_id" string="Upload Documents"/>
+                            <h1>
+                                <field name="file_id" placeholder="Select File Folder..." options="{'no_create': True}"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group string="Document Information">
+                                <field name="document_name" placeholder="e.g., Contract Set, Invoice Batch"/>
+                                <field name="document_type_id" options="{'no_create': True}"/>
+                                <field name="received_date"/>
+                            </group>
+                            <group string="Upload Options">
+                                <field name="generate_barcode" widget="boolean_toggle"/>
+                                <field name="auto_assign_sequence" widget="boolean_toggle"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Files to Upload">
+                            <field name="attachment_ids" widget="many2many_binary" 
+                                   context="{'default_type': 'binary'}"
+                                   options="{'accepted_file_extensions': '.pdf,.jpg,.jpeg,.png,.tiff,.doc,.docx'}"/>
+                        </group>
+                        
+                        <group string="Additional Information">
+                            <field name="description" placeholder="Optional notes about these documents..."/>
+                        </group>
+                    </sheet>
+                    
+                    <footer>
+                        <button name="action_upload_documents" string="Upload Documents" 
+                                type="object" class="btn-primary"/>
+                        <button name="action_cancel" string="Cancel" 
+                                type="object" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Wizard Action -->
+        <record id="action_document_upload_wizard" model="ir.actions.act_window">
+            <field name="name">Upload Documents</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">document.upload.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_records_file"/>
+            <field name="binding_type">action</field>
+        </record>
+    </data>
+</odoo>

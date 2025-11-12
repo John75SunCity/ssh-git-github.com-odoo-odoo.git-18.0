@@ -172,12 +172,34 @@
                         </div>
                         <group>
                             <group string="Document Information">
-                                <field name="name" placeholder="e.g., Invoice-2024-001" />
-                                <field name="document_type_id" />
-                                <field name="partner_id" />
+                                <field name="name" 
+                                       string="Document Name"
+                                       placeholder="e.g., Invoice-2024-001, Contract-ABC-Corp"
+                                       help="Unique name/identifier for this document"/>
+                                <field name="document_type_id" string="Document Type"/>
+                                <field name="partner_id" string="Customer"/>
                                 <field name="stock_owner_id" groups="records_management.group_records_manager" readonly="1" />
-                                <field name="department_id" />
-                                <field name="container_id" />
+                                <field name="department_id" string="Department"/>
+                                <field name="container_id" string="Container"/>
+                                <field name="file_id" string="File Folder"/>
+                            </group>
+                            <group string="Barcode Tracking">
+                                <field name="temp_barcode" 
+                                       string="Temporary Barcode"
+                                       readonly="1" 
+                                       help="System-generated temporary barcode (auto-assigned)"
+                                       invisible="barcode"/>
+                                <field name="barcode" 
+                                       string="Physical Barcode"
+                                       placeholder="Scan or type barcode from pre-printed sheet"
+                                       help="Physical barcode - scan with camera or laser scanner"
+                                       widget="barcode"/>
+                                <field name="reference" 
+                                       string="Reference"
+                                       placeholder="Additional reference or external barcode"/>
+                                <div colspan="2" class="text-muted small" invisible="not barcode or not temp_barcode">
+                                    <i class="fa fa-info-circle"/> Both temporary and physical barcodes are active
+                                </div>
                             </group>
                             <group string="Security &amp; Compliance">
                                 <field name="is_permanent" widget="boolean_toggle" />

@@ -25,3 +25,4 @@ from . import visitor_pos_wizard
 from . import wizard_template
 from . import work_order_bin_assignment_wizard
 from . import records_document_bulk_upload_wizard
+from . import document_upload_wizard

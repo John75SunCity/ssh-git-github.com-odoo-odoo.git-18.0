@@ -18,6 +18,7 @@
                     <t t-call="web.external_layout">
                         <div class="page">
                             <h2>Records Category Report</h2>
+                            <h3 t-if="doc.name"><span t-esc="doc.name or doc.complete_name or 'Category #' + str(doc.id)"/></h3>
                             <div class="row">
                                 <div class="col-12">
                                     <table class="table table-sm">
@@ -26,16 +27,40 @@
                                                 <td><strong>ID:</strong></td>
                                                 <td><span t-esc="doc.id"/></td>
                                             </tr>
-                                            <t t-if="hasattr(doc, 'name')">
+                                            <t t-if="doc.name">
                                             <tr>
                                                 <td><strong>Name:</strong></td>
-                                                <td><span t-esc="doc.name"/></td>
+                                                <td><span t-esc="doc.name or 'Unnamed Category'"/></td>
                                             </tr>
                                             </t>
-                                            <t t-if="hasattr(doc, 'create_date')">
+                                            <t t-if="doc.create_date">
                                             <tr>
                                                 <td><strong>Created:</strong></td>
                                                 <td><span t-esc="doc.create_date"/></td>
+                                            </tr>
+                                            </t>
+                                            <t t-if="doc.complete_name">
+                                            <tr>
+                                                <td><strong>Full Path:</strong></td>
+                                                <td><span t-esc="doc.complete_name"/></td>
+                                            </tr>
+                                            </t>
+                                            <t t-if="doc.code">
+                                            <tr>
+                                                <td><strong>Code:</strong></td>
+                                                <td><span t-esc="doc.code"/></td>
+                                            </tr>
+                                            </t>
+                                            <t t-if="doc.state">
+                                            <tr>
+                                                <td><strong>Status:</strong></td>
+                                                <td><span t-esc="doc.state.title()"/></td>
+                                            </tr>
+                                            </t>
+                                            <t t-if="doc.document_count">
+                                            <tr>
+                                                <td><strong>Document Types:</strong></td>
+                                                <td><span t-esc="doc.document_count"/></td>
                                             </tr>
                                             </t>
                                         </tbody>

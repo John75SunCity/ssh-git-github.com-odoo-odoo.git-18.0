@@ -26,7 +26,7 @@ class RecordsContainer(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(
-        string="Container Name/Number",
+        string="Box Number",
         required=True,
         copy=False,
         tracking=True,
