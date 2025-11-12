@@ -1,0 +1,987 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <data>
+        <!-- Training Channel for Billing Models -->
+        <record id="slide_channel_billing_models" model="slide.channel">
+            <field name="name">Billing Models & Relationships</field>
+            <field name="description">Complete documentation of all billing-related models, fields, and their relationships</field>
+            <field name="channel_type">documentation</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="allow_comment">true</field>
+        </record>
+
+        <!-- Slide 1: Model Architecture Overview -->
+        <record id="slide_billing_models_overview" model="slide.slide">
+            <field name="name">Billing Model Architecture</field>
+            <field name="channel_id" ref="slide_channel_billing_models"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">10</field>
+            <field name="sequence">1</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h1>💾 Billing Model Architecture</h1>
+    <h2>Understanding the Data Structure</h2>
+
+    <div class="alert alert-info">
+        <strong>Purpose:</strong> This documentation explains every model involved in billing, 
+        their fields, relationships, and how they work together.
+    </div>
+
+    <h3>🏗️ Core Billing Models</h3>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Model</th>
+                <th>Technical Name</th>
+                <th>Purpose</th>
+                <th>Module</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Storage Record</strong></td>
+                <td><code>records.management.storage</code></td>
+                <td>Tracks storage contracts & recurring fees</td>
+                <td>records_management</td>
+            </tr>
+            <tr>
+                <td><strong>Request</strong></td>
+                <td><code>records.management.request</code></td>
+                <td>Access/retrieval requests with fees</td>
+                <td>records_management</td>
+            </tr>
+            <tr>
+                <td><strong>Destruction</strong></td>
+                <td><code>records.management.destruction</code></td>
+                <td>Disposal services and certificates</td>
+                <td>records_management</td>
+            </tr>
+            <tr>
+                <td><strong>Audit</strong></td>
+                <td><code>records.management.audit</code></td>
+                <td>NAID compliance audits</td>
+                <td>records_management</td>
+            </tr>
+            <tr>
+                <td><strong>FSM Task</strong></td>
+                <td><code>project.task</code></td>
+                <td>Field service activities</td>
+                <td>records_management_fsm</td>
+            </tr>
+            <tr>
+                <td><strong>Timesheet</strong></td>
+                <td><code>account.analytic.line</code></td>
+                <td>Labor time tracking</td>
+                <td>records_management_fsm</td>
+            </tr>
+            <tr>
+                <td><strong>Sales Order</strong></td>
+                <td><code>sale.order</code></td>
+                <td>Charge aggregation</td>
+                <td>Core Odoo</td>
+            </tr>
+            <tr>
+                <td><strong>Invoice</strong></td>
+                <td><code>account.move</code></td>
+                <td>Customer billing</td>
+                <td>Core Odoo</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>🔗 Model Relationship Diagram</h3>
+    <div class="mermaid">
+erDiagram
+    STORAGE ||--o{ SALE-ORDER-LINE : generates
+    REQUEST ||--o{ SALE-ORDER-LINE : generates
+    DESTRUCTION ||--o{ SALE-ORDER-LINE : generates
+    AUDIT ||--o{ SALE-ORDER-LINE : generates
+    FSM-TASK ||--o{ SALE-ORDER-LINE : generates
+    TIMESHEET }|--|| FSM-TASK : belongs_to
+    SALE-ORDER ||--|{ SALE-ORDER-LINE : contains
+    SALE-ORDER ||--o{ INVOICE : creates
+    INVOICE ||--|{ INVOICE-LINE : contains
+    
+    STORAGE {
+        float storage_volume
+        monetary rate_per_unit
+        selection billing_frequency
+    }
+    
+    FSM-TASK {
+        boolean is_records_task
+        many2one partner_id
+        float effective_hours
+    }
+    
+    TIMESHEET {
+        float unit_amount
+        monetary amount
+        many2one task_id
+    }
+    
+    SALE-ORDER {
+        many2one partner_id
+        monetary amount_total
+        selection state
+    }
+    
+    INVOICE {
+        many2one partner_id
+        monetary amount_total
+        selection state
+    }
+    </div>
+
+    <h3>📋 Inheritance & Extensions</h3>
+    <div class="card">
+        <div class="card-body">
+            <h5>How Custom Models Extend Odoo Core:</h5>
+            <ul>
+                <li><code>records.management.storage</code> inherits from <code>product.product</code> for pricing</li>
+                <li><code>records.management.destruction</code> inherits from <code>mail.thread</code> for tracking</li>
+                <li><code>project.task</code> extended with <code>is_records_task</code> field</li>
+                <li><code>sale.order</code> overridden with <code>_generate_so_from_charges()</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="alert alert-success">
+        <strong>Next:</strong> We'll examine each model's fields and methods in detail.
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 2: Storage Model Deep Dive -->
+        <record id="slide_storage_model" model="slide.slide">
+            <field name="name">Storage Model (records.management.storage)</field>
+            <field name="channel_id" ref="slide_channel_billing_models"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">12</field>
+            <field name="sequence">2</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h2>🗄️ records.management.storage</h2>
+    <p class="lead">The primary model for managing recurring storage fees and contracts</p>
+
+    <h3>📝 Field Definitions</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Field Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Required</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>storage_volume</code></td>
+                <td>Float</td>
+                <td>Number of boxes or cubic feet stored</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>rate_per_unit</code></td>
+                <td>Monetary</td>
+                <td>Monthly cost per storage unit</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>billing_frequency</code></td>
+                <td>Selection</td>
+                <td>Options: 'monthly', 'quarterly', 'annual'</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>partner_id</code></td>
+                <td>Many2one (res.partner)</td>
+                <td>Customer being billed</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>department_id</code></td>
+                <td>Many2one (records.department)</td>
+                <td>Department for access control</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>start_date</code></td>
+                <td>Date</td>
+                <td>Contract start date</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>end_date</code></td>
+                <td>Date</td>
+                <td>Contract end date (optional)</td>
+                <td>❌</td>
+            </tr>
+            <tr>
+                <td><code>state</code></td>
+                <td>Selection</td>
+                <td>'draft', 'active', 'archived', 'terminated'</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><code>container_ids</code></td>
+                <td>One2many (records.container)</td>
+                <td>List of stored containers</td>
+                <td>❌</td>
+            </tr>
+            <tr>
+                <td><code>sale_order_line_ids</code></td>
+                <td>One2many (sale.order.line)</td>
+                <td>Generated charge lines</td>
+                <td>❌</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>⚙️ Key Methods</h3>
+    <div class="accordion" id="methodsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#method1">
+                    <code>_cron_generate_storage_charges()</code>
+                </button>
+            </h2>
+            <div id="method1" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    <p><strong>Purpose:</strong> Automated monthly charge generation</p>
+                    <p><strong>Trigger:</strong> Cron job (runs on 1st of each month)</p>
+                    <p><strong>Logic:</strong></p>
+                    <pre><code>for storage in active_storages:
+    months_elapsed = calculate_months(storage.start_date, today)
+    charge_amount = storage.storage_volume * storage.rate_per_unit * months
+    create_sale_order_line(storage, charge_amount)</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#method2">
+                    <code>_onchange_storage_volume()</code>
+                </button>
+            </h2>
+            <div id="method2" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <p><strong>Purpose:</strong> Real-time charge preview</p>
+                    <p><strong>Trigger:</strong> When user changes storage_volume field</p>
+                    <p><strong>Returns:</strong> Warning message with estimated monthly cost</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#method3">
+                    <code>action_archive_storage()</code>
+                </button>
+            </h2>
+            <div id="method3" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <p><strong>Purpose:</strong> End storage contract and generate final bill</p>
+                    <p><strong>Trigger:</strong> Button click or automatic on end_date</p>
+                    <p><strong>Actions:</strong> Pro-rated final charge + status update</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">🔐 Security Rules</h3>
+    <div class="card bg-light">
+        <div class="card-body">
+            <h5>Department-Based Access:</h5>
+            <pre><code>domain = [
+    '|',
+    ('partner_id.user_ids', 'in', user.id),
+    ('department_id.user_ids', 'in', user.id)
+]</code></pre>
+            <p class="mb-0"><strong>Result:</strong> Users only see storage records for their department or assigned customers</p>
+        </div>
+    </div>
+
+    <h3>📊 Usage Example</h3>
+    <div class="card">
+        <div class="card-header">Creating a Storage Contract</div>
+        <div class="card-body">
+            <pre><code>storage = self.env['records.management.storage'].create({
+    'partner_id': customer.id,
+    'department_id': department.id,
+    'storage_volume': 100.0,
+    'rate_per_unit': 0.50,
+    'billing_frequency': 'monthly',
+    'start_date': fields.Date.today(),
+    'state': 'active'
+})
+
+# Automatically generates $50/month charges via cron</code></pre>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 3: FSM Task Model -->
+        <record id="slide_fsm_task_model" model="slide.slide">
+            <field name="name">FSM Task Model (project.task)</field>
+            <field name="channel_id" ref="slide_channel_billing_models"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">12</field>
+            <field name="sequence">3</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h2>🚛 project.task (Extended for Records Management FSM)</h2>
+    <p class="lead">Field service tasks with integrated billing capabilities</p>
+
+    <h3>🆕 Custom Fields Added</h3>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Field Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Billing Impact</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>is_records_task</code></td>
+                <td>Boolean</td>
+                <td>Identifies records management tasks</td>
+                <td>Triggers specialized billing logic</td>
+            </tr>
+            <tr>
+                <td><code>effective_hours</code></td>
+                <td>Float (computed)</td>
+                <td>Billable hours from timesheets</td>
+                <td>Multiplied by hourly_rate for labor charges</td>
+            </tr>
+            <tr>
+                <td><code>hourly_rate</code></td>
+                <td>Monetary</td>
+                <td>Rate for labor billing</td>
+                <td>Direct charge calculation</td>
+            </tr>
+            <tr>
+                <td><code>mileage</code></td>
+                <td>Float</td>
+                <td>Miles traveled for service</td>
+                <td>Generates travel surcharge</td>
+            </tr>
+            <tr>
+                <td><code>mileage_rate</code></td>
+                <td>Monetary</td>
+                <td>Cost per mile (default $0.50)</td>
+                <td>Travel charge calculation</td>
+            </tr>
+            <tr>
+                <td><code>product_line_ids</code></td>
+                <td>One2many</td>
+                <td>Materials/services used</td>
+                <td>Each line = separate charge</td>
+            </tr>
+            <tr>
+                <td><code>barcode_scan_ids</code></td>
+                <td>One2many</td>
+                <td>Barcode scan logs</td>
+                <td>Auto-time tracking for billing</td>
+            </tr>
+            <tr>
+                <td><code>complexity_level</code></td>
+                <td>Selection</td>
+                <td>'low', 'medium', 'high'</td>
+                <td>Multiplier for fixed fees</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>⚙️ Billing Methods</h3>
+    <div class="card mb-3">
+        <div class="card-header bg-primary text-white">
+            <h5><code>_compute_effective_hours()</code></h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Purpose:</strong> Calculate billable time from timesheets</p>
+            <pre><code>@api.depends('timesheet_ids.unit_amount')
+def _compute_effective_hours(self):
+    for task in self:
+        task.effective_hours = sum(
+            task.timesheet_ids.mapped('unit_amount')
+        )</code></pre>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header bg-success text-white">
+            <h5><code>_compute_travel_charge()</code></h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Purpose:</strong> Generate mileage-based charges</p>
+            <pre><code>def _compute_travel_charge(self):
+    for task in self:
+        if task.mileage > 0:
+            charge = task.mileage * task.mileage_rate
+            self._create_charge_line('Travel Fee', charge)</code></pre>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header bg-info text-white">
+            <h5><code>_prepare_invoice_values()</code></h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Purpose:</strong> Aggregate all task charges for invoicing</p>
+            <pre><code>def _prepare_invoice_values(self):
+    values = super()._prepare_invoice_values()
+    
+    # Add labor charges
+    if self.effective_hours:
+        labor_charge = self.effective_hours * self.hourly_rate
+        values['line_ids'].append(labor_line)
+    
+    # Add material charges
+    for product_line in self.product_line_ids:
+        values['line_ids'].append(material_line)
+    
+    # Add travel if applicable
+    if self.mileage:
+        values['line_ids'].append(travel_line)
+    
+    return values</code></pre>
+        </div>
+    </div>
+
+    <h3>🔗 Relationship with Timesheets</h3>
+    <div class="mermaid">
+graph LR
+    A[Field Technician] --> B[Log Timesheet]
+    B --> C[account.analytic.line]
+    C --> D[task_id links to project.task]
+    D --> E[_compute_effective_hours]
+    E --> F[Billable Hours Updated]
+    F --> G[Labor Charge Created]
+    </div>
+
+    <h3>📊 Complete Charge Flow</h3>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Charge Type</th>
+                <th>Method Called</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Technician logs 2.5 hours</td>
+                <td>Labor</td>
+                <td><code>_compute_effective_hours()</code></td>
+            </tr>
+            <tr>
+                <td>Scan barcode on arrival</td>
+                <td>Auto-timer start</td>
+                <td><code>_barcode_scan_trigger()</code></td>
+            </tr>
+            <tr>
+                <td>Add 3 boxes to task</td>
+                <td>Material</td>
+                <td><code>_onchange_product_line_ids()</code></td>
+            </tr>
+            <tr>
+                <td>Enter 15 miles driven</td>
+                <td>Travel</td>
+                <td><code>_compute_travel_charge()</code></td>
+            </tr>
+            <tr>
+                <td>Mark task "Done"</td>
+                <td>All charges</td>
+                <td><code>_prepare_invoice_values()</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="alert alert-success">
+        <strong>Pro Tip:</strong> Enable barcode scanning for automatic time tracking and 
+        improved billing accuracy!
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 4: Sales Order Integration -->
+        <record id="slide_sales_order_model" model="slide.slide">
+            <field name="name">Sales Order Model (sale.order)</field>
+            <field name="channel_id" ref="slide_channel_billing_models"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">10</field>
+            <field name="sequence">4</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h2>📋 sale.order (Extended for Charge Aggregation)</h2>
+    <p class="lead">The bridge between charges and invoices</p>
+
+    <h3>🎯 Purpose in Billing Process</h3>
+    <div class="card bg-light mb-4">
+        <div class="card-body">
+            <p class="lead">Sales Orders act as a <strong>charge collection container</strong> before invoicing.</p>
+            <ul>
+                <li>Aggregates charges from multiple sources (storage, FSM, etc.)</li>
+                <li>Allows review/approval before final billing</li>
+                <li>Supports partial invoicing (e.g., 50% upfront)</li>
+                <li>Maintains audit trail for NAID compliance</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>🆕 Custom Method: _generate_so_from_charges()</h3>
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5>Charge Aggregation Logic</h5>
+        </div>
+        <div class="card-body">
+            <pre><code>def _generate_so_from_charges(self, charge_records):
+    """
+    Create Sales Order from multiple charge sources
+    
+    Args:
+        charge_records: recordset of storage/request/task records
+    
+    Returns:
+        sale.order: Created sales order with all charge lines
+    """
+    # Group charges by customer
+    charges_by_partner = defaultdict(list)
+    for charge in charge_records:
+        charges_by_partner[charge.partner_id].append(charge)
+    
+    sales_orders = self.env['sale.order']
+    
+    for partner, charges in charges_by_partner.items():
+        # Create SO
+        so = self.create({
+            'partner_id': partner.id,
+            'date_order': fields.Datetime.now(),
+            'state': 'draft'
+        })
+        
+        # Add all charge lines
+        for charge in charges:
+            line_vals = {
+                'order_id': so.id,
+                'product_id': charge.product_id.id,
+                'product_uom_qty': charge.quantity,
+                'price_unit': charge.unit_price,
+                'name': charge.description,
+                # Link back to source for audit trail
+                'source_model': charge._name,
+                'source_id': charge.id
+            }
+            self.env['sale.order.line'].create(line_vals)
+        
+        sales_orders |= so
+    
+    return sales_orders</code></pre>
+        </div>
+    </div>
+
+    <h3>📊 Sale Order Line Structure</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Source</th>
+                <th>Example Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>product_id</code></td>
+                <td>Charge record's product</td>
+                <td>"Storage Service - Monthly"</td>
+            </tr>
+            <tr>
+                <td><code>product_uom_qty</code></td>
+                <td>Quantity from charge</td>
+                <td>100 (boxes)</td>
+            </tr>
+            <tr>
+                <td><code>price_unit</code></td>
+                <td>Rate from charge</td>
+                <td>$0.50</td>
+            </tr>
+            <tr>
+                <td><code>name</code></td>
+                <td>Charge description</td>
+                <td>"Storage Fee - Record #123"</td>
+            </tr>
+            <tr>
+                <td><code>source_model</code></td>
+                <td>Originating model</td>
+                <td>"records.management.storage"</td>
+            </tr>
+            <tr>
+                <td><code>source_id</code></td>
+                <td>Charge record ID</td>
+                <td>456 (database ID)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>🔄 Workflow States</h3>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-header">Draft</div>
+                <div class="card-body">
+                    <p>Charges collected, can be edited</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-header">Confirmed</div>
+                <div class="card-body">
+                    <p>Ready for invoicing, triggers stock moves</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-header">Invoiced</div>
+                <div class="card-body">
+                    <p>Invoice created, awaiting payment</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-header">Done</div>
+                <div class="card-body">
+                    <p>Completed and paid</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">🎯 Example: Multi-Source Charge Aggregation</h3>
+    <div class="card">
+        <div class="card-body">
+            <h5>Scenario: Customer "Acme Corp" has charges from multiple sources:</h5>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Source</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Storage Record #123</td>
+                        <td>Monthly storage - 100 boxes</td>
+                        <td>$50.00</td>
+                    </tr>
+                    <tr>
+                        <td>FSM Task #456</td>
+                        <td>Pickup service - 2.5 hrs labor</td>
+                        <td>$187.50</td>
+                    </tr>
+                    <tr>
+                        <td>Request #789</td>
+                        <td>Urgent retrieval fee</td>
+                        <td>$25.00</td>
+                    </tr>
+                    <tr class="table-success">
+                        <td colspan="2"><strong>Sales Order Total</strong></td>
+                        <td><strong>$262.50</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="mb-0"><strong>Result:</strong> One Sales Order with 3 lines, ready for single invoice</p>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 5: Complete Model Relationships -->
+        <record id="slide_model_relationships" model="slide.slide">
+            <field name="name">Complete Model Relationship Map</field>
+            <field name="channel_id" ref="slide_channel_billing_models"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">15</field>
+            <field name="sequence">5</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h1>🗺️ Complete Model Relationship Map</h1>
+
+    <div class="alert alert-info">
+        <strong>Master Reference:</strong> This diagram shows every billing model and how 
+        they connect to each other.
+    </div>
+
+    <h2>📊 Full Entity Relationship Diagram</h2>
+    <div class="mermaid">
+erDiagram
+    RES-PARTNER ||--o{ RECORDS-STORAGE : customer
+    RES-PARTNER ||--o{ PROJECT-TASK : customer
+    RES-PARTNER ||--o{ SALE-ORDER : customer
+    RES-PARTNER ||--o{ ACCOUNT-MOVE : customer
+    
+    RECORDS-DEPARTMENT ||--o{ RECORDS-STORAGE : manages
+    RECORDS-DEPARTMENT ||--o{ PROJECT-TASK : manages
+    
+    RECORDS-STORAGE ||--o{ RECORDS-CONTAINER : stores
+    RECORDS-STORAGE ||--o{ SALE-ORDER-LINE : generates
+    
+    RECORDS-REQUEST ||--o{ SALE-ORDER-LINE : generates
+    RECORDS-DESTRUCTION ||--o{ SALE-ORDER-LINE : generates
+    RECORDS-AUDIT ||--o{ SALE-ORDER-LINE : generates
+    
+    PROJECT-TASK ||--o{ ACCOUNT-ANALYTIC-LINE : tracks_time
+    PROJECT-TASK ||--o{ BARCODE-SCAN : logs
+    PROJECT-TASK ||--o{ FSM-PRODUCT-LINE : uses_materials
+    PROJECT-TASK ||--o{ SALE-ORDER-LINE : generates
+    
+    SALE-ORDER ||--|{ SALE-ORDER-LINE : contains
+    SALE-ORDER ||--o{ ACCOUNT-MOVE : invoices
+    
+    ACCOUNT-MOVE ||--|{ ACCOUNT-MOVE-LINE : contains
+    SALE-ORDER-LINE ||--|| ACCOUNT-MOVE-LINE : maps_to
+    
+    PRODUCT-PRODUCT ||--o{ SALE-ORDER-LINE : sold_as
+    PRODUCT-PRODUCT ||--o{ ACCOUNT-MOVE-LINE : invoiced_as
+    
+    RES-PARTNER {
+        int id PK
+        string name
+        string email
+    }
+    
+    RECORDS-STORAGE {
+        int id PK
+        int partner_id FK
+        int department_id FK
+        float storage_volume
+        float rate_per_unit
+        string billing_frequency
+    }
+    
+    PROJECT-TASK {
+        int id PK
+        int partner_id FK
+        boolean is_records_task
+        float effective_hours
+        float hourly_rate
+        float mileage
+    }
+    
+    SALE-ORDER {
+        int id PK
+        int partner_id FK
+        float amount_total
+        string state
+    }
+    
+    SALE-ORDER-LINE {
+        int id PK
+        int order_id FK
+        int product_id FK
+        float product_uom_qty
+        float price_unit
+        string source_model
+        int source_id
+    }
+    
+    ACCOUNT-MOVE {
+        int id PK
+        int partner_id FK
+        string move_type
+        float amount_total
+        string state
+    }
+    
+    ACCOUNT-MOVE-LINE {
+        int id PK
+        int move_id FK
+        int product_id FK
+        float quantity
+        float price_unit
+        int sale_line_id FK
+    }
+    </div>
+
+    <h2 class="mt-5">🔗 Key Relationship Patterns</h2>
+    
+    <h3>1. One2many Relationships</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Parent Model</th>
+                <th>Child Model</th>
+                <th>Field Name</th>
+                <th>Inverse Field</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>records.management.storage</td>
+                <td>sale.order.line</td>
+                <td><code>sale_order_line_ids</code></td>
+                <td><code>source_id</code></td>
+            </tr>
+            <tr>
+                <td>project.task</td>
+                <td>account.analytic.line</td>
+                <td><code>timesheet_ids</code></td>
+                <td><code>task_id</code></td>
+            </tr>
+            <tr>
+                <td>sale.order</td>
+                <td>sale.order.line</td>
+                <td><code>order_line</code></td>
+                <td><code>order_id</code></td>
+            </tr>
+            <tr>
+                <td>sale.order</td>
+                <td>account.move</td>
+                <td><code>invoice_ids</code></td>
+                <td><code>invoice_origin</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>2. Many2one Relationships</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Child Model</th>
+                <th>Parent Model</th>
+                <th>Field Name</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>All billing models</td>
+                <td>res.partner</td>
+                <td><code>partner_id</code></td>
+                <td>Customer identification</td>
+            </tr>
+            <tr>
+                <td>Most RM models</td>
+                <td>records.department</td>
+                <td><code>department_id</code></td>
+                <td>Access control</td>
+            </tr>
+            <tr>
+                <td>sale.order.line</td>
+                <td>product.product</td>
+                <td><code>product_id</code></td>
+                <td>Service/material definition</td>
+            </tr>
+            <tr>
+                <td>account.move.line</td>
+                <td>sale.order.line</td>
+                <td><code>sale_line_id</code></td>
+                <td>Traceability</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>3. Polymorphic Relationships</h3>
+    <div class="card bg-light">
+        <div class="card-body">
+            <h5>Dynamic Source Linking in sale.order.line</h5>
+            <pre><code># Uses generic fields to link to ANY charge source
+source_model = fields.Char(string='Source Model')
+source_id = fields.Integer(string='Source ID')
+
+# Example values:
+# - source_model: 'records.management.storage'
+# - source_id: 123
+
+# Can also be:
+# - source_model: 'project.task'
+# - source_id: 456</code></pre>
+            <p class="mb-0"><strong>Benefit:</strong> Single line item can trace back to storage, FSM, or any other charge source</p>
+        </div>
+    </div>
+
+    <h2 class="mt-5">📋 Model Summary Table</h2>
+    <table class="table table-sm table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Model</th>
+                <th>Records</th>
+                <th>Children</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>res.partner</code></td>
+                <td>One per customer</td>
+                <td>Many charges, orders, invoices</td>
+                <td>Customer master</td>
+            </tr>
+            <tr>
+                <td><code>records.management.storage</code></td>
+                <td>One per storage contract</td>
+                <td>Many charge lines</td>
+                <td>Recurring billing source</td>
+            </tr>
+            <tr>
+                <td><code>project.task</code></td>
+                <td>One per FSM job</td>
+                <td>Many timesheets, charge lines</td>
+                <td>Labor/service billing source</td>
+            </tr>
+            <tr>
+                <td><code>sale.order</code></td>
+                <td>One per billing period</td>
+                <td>Many lines, invoices</td>
+                <td>Charge aggregator</td>
+            </tr>
+            <tr>
+                <td><code>sale.order.line</code></td>
+                <td>One per charge</td>
+                <td>One invoice line</td>
+                <td>Individual charge record</td>
+            </tr>
+            <tr>
+                <td><code>account.move</code></td>
+                <td>One per invoice</td>
+                <td>Many lines</td>
+                <td>Customer-facing bill</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="alert alert-success">
+        <strong>💡 Key Takeaway:</strong> All billing paths converge at <code>sale.order.line</code>, 
+        which then flows to <code>account.move.line</code> for final invoicing.
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+    </data>
+</odoo>

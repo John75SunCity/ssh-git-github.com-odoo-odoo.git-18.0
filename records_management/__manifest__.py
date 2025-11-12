@@ -116,6 +116,9 @@
         "data/training_courses_data.xml",
         "data/training_courses_hipaa_privacy.xml",
         "data/training_courses_naid_content.xml",
+        "data/training_courses_billing_flowchart.xml",
+        "data/training_courses_billing_models.xml",
+        "data/training_courses_user_guide.xml",
         # ============================================================================
         # REPORTS: All report templates and actions (174 files)
         # ============================================================================

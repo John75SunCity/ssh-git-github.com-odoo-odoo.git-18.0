@@ -1,0 +1,1081 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <data>
+        <!-- Training Channel for Module Usage -->
+        <record id="slide_channel_module_training" model="slide.channel">
+            <field name="name">Records Management Module - Complete User Guide</field>
+            <field name="description">Step-by-step training on how to use every feature of the Records Management system</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="allow_comment">true</field>
+        </record>
+
+        <!-- Slide 1: Getting Started -->
+        <record id="slide_getting_started" model="slide.slide">
+            <field name="name">Getting Started with Records Management</field>
+            <field name="channel_id" ref="slide_channel_module_training"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">10</field>
+            <field name="sequence">1</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h1>📚 Welcome to Records Management Training</h1>
+    <h2>Your Complete Guide to the System</h2>
+
+    <div class="alert alert-success">
+        <strong>Welcome!</strong> This course will teach you everything you need to know about 
+        using the Records Management module effectively.
+    </div>
+
+    <h3>🎯 What You'll Learn</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <h5>Core Features</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Creating and managing containers</li>
+                        <li>Setting up storage locations</li>
+                        <li>Tracking chain of custody</li>
+                        <li>Managing destruction requests</li>
+                        <li>Running compliance audits</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-success text-white">
+                    <h5>Billing & Services</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Understanding billing methods</li>
+                        <li>Requesting services via portal</li>
+                        <li>Tracking invoices</li>
+                        <li>FSM task management</li>
+                        <li>Customer portal features</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>🗺️ Navigation Overview</h3>
+    <div class="card bg-light mb-4">
+        <div class="card-body">
+            <h5>Main Menu Structure:</h5>
+            <ul>
+                <li><strong>Records Management</strong> → Core container and storage management</li>
+                <li><strong>Field Service</strong> → FSM tasks and scheduling</li>
+                <li><strong>Billing</strong> → Invoices and payment tracking</li>
+                <li><strong>Reports</strong> → Analytics and compliance reports</li>
+                <li><strong>Configuration</strong> → System settings and customization</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>👥 User Roles</h3>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Role</th>
+                <th>Permissions</th>
+                <th>Typical Tasks</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Portal User</strong></td>
+                <td>View own records, request services</td>
+                <td>Check inventory, submit requests</td>
+            </tr>
+            <tr>
+                <td><strong>Records User</strong></td>
+                <td>Create/edit records, process requests</td>
+                <td>Daily operations, customer service</td>
+            </tr>
+            <tr>
+                <td><strong>Records Manager</strong></td>
+                <td>Full access, approve workflows</td>
+                <td>Oversight, reporting, configuration</td>
+            </tr>
+            <tr>
+                <td><strong>FSM Technician</strong></td>
+                <td>Manage tasks, log timesheets</td>
+                <td>Field service execution</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>🚀 Quick Start Checklist</h3>
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5>Before You Begin:</h5>
+        </div>
+        <div class="card-body">
+            <ol class="lead">
+                <li>✅ Verify you have the correct user role assigned</li>
+                <li>✅ Familiarize yourself with the main menu structure</li>
+                <li>✅ Bookmark the customer portal (if applicable)</li>
+                <li>✅ Complete this training course</li>
+                <li>✅ Review department-specific procedures</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="alert alert-warning mt-4">
+        <strong>Important:</strong> This system handles sensitive information. Always follow 
+        NAID AAA compliance procedures and maintain proper chain of custody documentation.
+    </div>
+
+    <h3>📞 Getting Help</h3>
+    <ul>
+        <li><strong>In-App Help:</strong> Look for the <code>?</code> icon on any page</li>
+        <li><strong>Documentation:</strong> Available in the Help menu</li>
+        <li><strong>Support:</strong> Contact your system administrator</li>
+        <li><strong>Training:</strong> Additional courses available in eLearning portal</li>
+    </ul>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 2: Creating Containers -->
+        <record id="slide_creating_containers" model="slide.slide">
+            <field name="name">Creating and Managing Containers</field>
+            <field name="channel_id" ref="slide_channel_module_training"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">15</field>
+            <field name="sequence">2</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h2>📦 Creating and Managing Containers</h2>
+    <p class="lead">Learn how to create, label, and track document containers</p>
+
+    <h3>🎯 Step-by-Step: Creating a New Container</h3>
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5>Method 1: Manual Creation</h5>
+        </div>
+        <div class="card-body">
+            <ol class="lead">
+                <li><strong>Navigate:</strong> Records Management → Containers → Create</li>
+                <li><strong>Fill Required Fields:</strong>
+                    <ul>
+                        <li>Container Label (min 4 digits)</li>
+                        <li>Customer/Partner</li>
+                        <li>Department</li>
+                        <li>Container Type (box, folder, etc.)</li>
+                    </ul>
+                </li>
+                <li><strong>Optional Details:</strong>
+                    <ul>
+                        <li>Contents description</li>
+                        <li>Retention period</li>
+                        <li>Security level</li>
+                        <li>Barcode (auto-generated if blank)</li>
+                    </ul>
+                </li>
+                <li><strong>Click Save</strong></li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+            <h5>Method 2: Import from Excel/CSV</h5>
+        </div>
+        <div class="card-body">
+            <ol>
+                <li>Download template: Containers → Favorites → Download Template</li>
+                <li>Fill in container data in Excel</li>
+                <li>Import: Containers → Favorites → Import Records</li>
+                <li>Map columns and validate</li>
+                <li>Confirm import</li>
+            </ol>
+        </div>
+    </div>
+
+    <h3>🏷️ Container Labeling Best Practices</h3>
+    <div class="alert alert-warning">
+        <strong>Critical Rule:</strong> Label only ONE panel per container to prevent confusion!
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>✅ Correct</th>
+                <th>❌ Incorrect</th>
+                <th>Why</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>HR-2024-0001</td>
+                <td>HR-24-1</td>
+                <td>Must have minimum 4 digits</td>
+            </tr>
+            <tr>
+                <td>ACME-FIN-2024-0123</td>
+                <td>ACME FIN 123</td>
+                <td>Use hyphens, not spaces</td>
+            </tr>
+            <tr>
+                <td>MED-REC-2024-0456</td>
+                <td>medicalrecords456</td>
+                <td>Use clear department codes</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>📊 Container Fields Explained</h3>
+    <div class="accordion" id="fieldsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#field1">
+                    Container Label (Required)
+                </button>
+            </h2>
+            <div id="field1" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    <p><strong>Purpose:</strong> Primary identifier for the container</p>
+                    <p><strong>Format:</strong> Department-Year-Number (e.g., HR-2024-0001)</p>
+                    <p><strong>Rules:</strong></p>
+                    <ul>
+                        <li>Minimum 4 digits required</li>
+                        <li>Must be unique across system</li>
+                        <li>Auto-increments if you leave blank</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#field2">
+                    Security Level (Required)
+                </button>
+            </h2>
+            <div id="field2" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <p><strong>Options:</strong></p>
+                    <ul>
+                        <li><strong>1 - Public:</strong> General business records</li>
+                        <li><strong>2 - Internal:</strong> Company confidential</li>
+                        <li><strong>3 - Confidential:</strong> Restricted access</li>
+                        <li><strong>4 - Highly Confidential:</strong> Executive/legal only</li>
+                    </ul>
+                    <p><strong>Impact:</strong> Controls who can view/access container</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#field3">
+                    Retention Period
+                </button>
+            </h2>
+            <div id="field3" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <p><strong>Purpose:</strong> How long to keep before eligible for destruction</p>
+                    <p><strong>Examples:</strong></p>
+                    <ul>
+                        <li>Tax Records: 7 years</li>
+                        <li>Employee Files: 7 years after termination</li>
+                        <li>Medical Records: Varies by state (often 10+ years)</li>
+                    </ul>
+                    <p><strong>Auto-Alerts:</strong> System warns when retention period expires</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">🔄 Container Lifecycle</h3>
+    <div class="mermaid">
+graph LR
+    A[Created] --> B[In Storage]
+    B --> C[Retrieved for Access]
+    C --> B
+    B --> D[Retention Expired]
+    D --> E[Destruction Request]
+    E --> F[Destroyed]
+    F --> G[Certificate Issued]
+    </div>
+
+    <h3>📱 Barcode Integration</h3>
+    <div class="card bg-light">
+        <div class="card-body">
+            <h5>Automatic Barcode Generation:</h5>
+            <ul>
+                <li>QR code automatically created on save</li>
+                <li>Printable labels available via Print → Container Labels</li>
+                <li>Mobile barcode scanning for quick lookup</li>
+                <li>Scan history tracked for chain of custody</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>💡 Pro Tips</h3>
+    <div class="alert alert-success">
+        <ul class="mb-0">
+            <li><strong>Batch Creation:</strong> Use import for creating 10+ containers at once</li>
+            <li><strong>Templates:</strong> Create container templates for common record types</li>
+            <li><strong>Bulk Edit:</strong> Select multiple containers → Actions → Update</li>
+            <li><strong>Smart Search:</strong> Use filters to find containers by date, department, or status</li>
+        </ul>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 3: Portal Usage -->
+        <record id="slide_portal_usage" model="slide.slide">
+            <field name="name">Using the Customer Portal</field>
+            <field name="channel_id" ref="slide_channel_module_training"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">12</field>
+            <field name="sequence">3</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h2>🌐 Using the Customer Portal</h2>
+    <p class="lead">Access your records inventory and request services online</p>
+
+    <h3>🔐 Logging In</h3>
+    <div class="card mb-4">
+        <div class="card-body">
+            <ol class="lead">
+                <li>Navigate to your portal URL (provided by your records manager)</li>
+                <li>Enter your email address</li>
+                <li>Check email for login link (passwordless authentication)</li>
+                <li>Click link to access your portal dashboard</li>
+            </ol>
+        </div>
+    </div>
+
+    <h3>🏠 Portal Dashboard Overview</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5>Quick Stats</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Total containers in storage</li>
+                        <li>Active service requests</li>
+                        <li>Pending invoices</li>
+                        <li>Upcoming retention expirations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>View My Inventory</li>
+                        <li>Request Service</li>
+                        <li>Submit Feedback</li>
+                        <li>View Invoices</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">📋 Viewing Your Inventory</h3>
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5>My Inventory Page Features:</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Search & Filter:</h6>
+                    <ul>
+                        <li>Search by container label</li>
+                        <li>Filter by date range</li>
+                        <li>Filter by department</li>
+                        <li>Filter by document type</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>View Options:</h6>
+                    <ul>
+                        <li>List view (default)</li>
+                        <li>Kanban cards</li>
+                        <li>Export to Excel</li>
+                        <li>Print inventory report</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>📝 Requesting Services</h3>
+    <div class="accordion" id="servicesAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#service1">
+                    Retrieval Request (Temporary Access)
+                </button>
+            </h2>
+            <div id="service1" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    <ol>
+                        <li>Click "Request Service" → "Retrieval Request"</li>
+                        <li>Search and select containers to retrieve</li>
+                        <li>Choose urgency level (affects cost):
+                            <ul>
+                                <li>Standard (5-7 days): Base rate</li>
+                                <li>Rush (2-3 days): 1.5x rate</li>
+                                <li>Emergency (same day): 2x rate</li>
+                            </ul>
+                        </li>
+                        <li>Specify delivery location</li>
+                        <li>Add notes if needed</li>
+                        <li>Review pricing and submit</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#service2">
+                    Destruction Request (Permanent)
+                </button>
+            </h2>
+            <div id="service2" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <div class="alert alert-danger">
+                        <strong>Warning:</strong> Destruction is permanent and irreversible!
+                    </div>
+                    <ol>
+                        <li>Click "Request Service" → "Destruction Request"</li>
+                        <li>Select containers for destruction</li>
+                        <li>Verify retention periods have passed</li>
+                        <li>Choose destruction method:
+                            <ul>
+                                <li>On-site shredding (NAID AAA certified)</li>
+                                <li>Off-site destruction (bulk)</li>
+                            </ul>
+                        </li>
+                        <li><strong>E-Signature Required:</strong> Sign destruction authorization</li>
+                        <li>System sends to manager for approval</li>
+                        <li>Receive destruction certificate after completion</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#service3">
+                    Pickup/Delivery Request
+                </button>
+            </h2>
+            <div id="service3" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <ol>
+                        <li>Click "Request Service" → "Pickup/Delivery"</li>
+                        <li>Specify service type:
+                            <ul>
+                                <li>New box pickup (adding to storage)</li>
+                                <li>Return delivery (after retrieval)</li>
+                            </ul>
+                        </li>
+                        <li>Enter pickup/delivery address</li>
+                        <li>Schedule date and time window</li>
+                        <li>Estimate number of boxes</li>
+                        <li>Submit request → FSM task created</li>
+                        <li>Track technician status in real-time</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">💰 Viewing Invoices</h3>
+    <div class="card bg-light">
+        <div class="card-body">
+            <h5>Invoice Portal Features:</h5>
+            <ul>
+                <li><strong>View All Invoices:</strong> Current and historical</li>
+                <li><strong>Download PDFs:</strong> For accounting records</li>
+                <li><strong>See Breakdown:</strong> Line-item details for each charge</li>
+                <li><strong>Payment Status:</strong> Paid, pending, overdue</li>
+                <li><strong>Pay Online:</strong> Credit card or ACH (if enabled)</li>
+                <li><strong>Recurring Charges:</strong> View upcoming automatic bills</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>📧 Email Notifications</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Trigger</th>
+                <th>Notification Sent</th>
+                <th>Action Required</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Service request submitted</td>
+                <td>Confirmation email</td>
+                <td>None - just FYI</td>
+            </tr>
+            <tr>
+                <td>Request approved</td>
+                <td>Approval notice + timeline</td>
+                <td>Prepare for service</td>
+            </tr>
+            <tr>
+                <td>Technician en route</td>
+                <td>GPS tracking link</td>
+                <td>Be available</td>
+            </tr>
+            <tr>
+                <td>Service completed</td>
+                <td>Completion summary</td>
+                <td>Review and approve charges</td>
+            </tr>
+            <tr>
+                <td>Invoice generated</td>
+                <td>Invoice PDF attached</td>
+                <td>Review and pay</td>
+            </tr>
+            <tr>
+                <td>Retention expiring soon</td>
+                <td>30-day warning</td>
+                <td>Request destruction or extension</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>💬 Submitting Feedback</h3>
+    <div class="card">
+        <div class="card-header bg-warning">
+            <h5>AI-Powered Feedback System</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>How it works:</strong></p>
+            <ol>
+                <li>Click "Submit Feedback" button</li>
+                <li>Rate your experience (1-5 stars)</li>
+                <li>Write detailed comments</li>
+                <li>Submit → AI analyzes sentiment automatically</li>
+                <li>Negative feedback escalated immediately</li>
+                <li>You'll receive response within 24-48 hours</li>
+            </ol>
+            <p class="mb-0"><strong>Your feedback helps us improve service quality!</strong></p>
+        </div>
+    </div>
+
+    <div class="alert alert-info mt-4">
+        <strong>Mobile Tip:</strong> The portal is fully responsive - works great on phones and tablets!
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 4: FSM Tasks -->
+        <record id="slide_fsm_tasks" model="slide.slide">
+            <field name="name">Field Service Management</field>
+            <field name="channel_id" ref="slide_channel_module_training"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">15</field>
+            <field name="sequence">4</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h2>🚛 Field Service Management (FSM)</h2>
+    <p class="lead">For technicians and dispatchers managing on-site services</p>
+
+    <h3>🎯 FSM Task Types</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5>Pickup</h5>
+                </div>
+                <div class="card-body">
+                    <p>Collecting new boxes from customer location</p>
+                    <ul class="small">
+                        <li>Travel to site</li>
+                        <li>Scan/count boxes</li>
+                        <li>Transport to facility</li>
+                        <li>Update inventory</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-success text-white text-center">
+                    <h5>Delivery</h5>
+                </div>
+                <div class="card-body">
+                    <p>Bringing boxes to customer for access</p>
+                    <ul class="small">
+                        <li>Retrieve from storage</li>
+                        <li>Verify containers</li>
+                        <li>Deliver to customer</li>
+                        <li>Get signature</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-warning text-center">
+                    <h5>On-Site Audit</h5>
+                </div>
+                <div class="card-body">
+                    <p>Compliance verification at customer site</p>
+                    <ul class="small">
+                        <li>Physical inventory</li>
+                        <li>Barcode validation</li>
+                        <li>Condition check</li>
+                        <li>Report generation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">📱 Mobile App Workflow</h3>
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5>Step-by-Step Mobile Task Execution:</h5>
+        </div>
+        <div class="card-body">
+            <ol class="lead">
+                <li><strong>Morning:</strong> Open FSM app, see assigned tasks</li>
+                <li><strong>En Route:</strong> Tap "Start Travel" → GPS tracking begins</li>
+                <li><strong>Arrival:</strong> Tap "On Site" → Customer notified</li>
+                <li><strong>Scan Barcodes:</strong> Use camera to scan containers
+                    <ul>
+                        <li>Auto-logs time per container</li>
+                        <li>Updates chain of custody</li>
+                        <li>Validates against expected list</li>
+                    </ul>
+                </li>
+                <li><strong>Log Materials:</strong> Add any supplies used
+                    <ul>
+                        <li>Boxes, labels, packing materials</li>
+                        <li>Auto-calculates charges</li>
+                    </ul>
+                </li>
+                <li><strong>Customer Signature:</strong> Capture on-screen signature</li>
+                <li><strong>Complete Task:</strong> Tap "Mark Done"
+                    <ul>
+                        <li>Auto-generates invoice</li>
+                        <li>Sends receipt to customer</li>
+                        <li>Updates inventory</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <h3>⏱️ Time Tracking & Billing</h3>
+    <div class="card bg-light">
+        <div class="card-body">
+            <h5>Automatic Timesheet Generation:</h5>
+            <div class="mermaid">
+graph LR
+    A[Scan Container] --> B[Timer Starts]
+    B --> C[Work on Task]
+    C --> D[Scan Complete]
+    D --> E[Timer Stops]
+    E --> F[Timesheet Auto-Created]
+    F --> G[Hours × Rate = Charge]
+            </div>
+            <p class="mt-3 mb-0"><strong>Benefit:</strong> No manual timesheet entry - scanning does it all!</p>
+        </div>
+    </div>
+
+    <h3>📦 Adding Materials to Tasks</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Material Type</th>
+                <th>How to Add</th>
+                <th>Billing Impact</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Storage Boxes</td>
+                <td>Tap "Add Product" → Search "Box"</td>
+                <td>$10 per box added to invoice</td>
+            </tr>
+            <tr>
+                <td>Labels</td>
+                <td>Scan label barcode or manual entry</td>
+                <td>$0.50 per label sheet</td>
+            </tr>
+            <tr>
+                <td>Packing Materials</td>
+                <td>Select from product list</td>
+                <td>Varies by material</td>
+            </tr>
+            <tr>
+                <td>Special Equipment</td>
+                <td>Enter quantity used</td>
+                <td>Daily rental rate applied</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>🗺️ GPS & Route Optimization</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">For Dispatchers:</div>
+                <div class="card-body">
+                    <ul>
+                        <li>See all technician locations in real-time</li>
+                        <li>Auto-assign tasks by proximity</li>
+                        <li>Route optimization to minimize drive time</li>
+                        <li>ETA alerts for customers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">For Customers:</div>
+                <div class="card-body">
+                    <ul>
+                        <li>Real-time technician tracking link</li>
+                        <li>Accurate arrival time estimates</li>
+                        <li>SMS/email when technician en route</li>
+                        <li>Notification when task complete</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">💼 Dispatcher Dashboard</h3>
+    <div class="card">
+        <div class="card-body">
+            <h5>Key Features:</h5>
+            <ul>
+                <li><strong>Kanban Board:</strong> Drag tasks between "Scheduled", "In Progress", "Done"</li>
+                <li><strong>Calendar View:</strong> See all appointments at a glance</li>
+                <li><strong>Map View:</strong> Geographic task distribution</li>
+                <li><strong>Technician Workload:</strong> Balance assignments fairly</li>
+                <li><strong>Emergency Override:</strong> Bump urgent tasks to top of queue</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>📊 Task Completion Checklist</h3>
+    <div class="card bg-success text-white">
+        <div class="card-body">
+            <h5>Before Marking Task "Done":</h5>
+            <ol class="mb-0">
+                <li>✅ All containers scanned and verified</li>
+                <li>✅ Materials/products added to task</li>
+                <li>✅ Travel time/mileage logged</li>
+                <li>✅ Customer signature captured</li>
+                <li>✅ Photos taken (if damage or issues)</li>
+                <li>✅ Notes added for any special situations</li>
+                <li>✅ Chain of custody form completed</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="alert alert-warning mt-4">
+        <strong>Important:</strong> Incomplete tasks cannot be invoiced! Ensure all steps are done before marking complete.
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 5: Compliance & Reporting -->
+        <record id="slide_compliance" model="slide.slide">
+            <field name="name">Compliance & Reporting</field>
+            <field name="channel_id" ref="slide_channel_module_training"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">12</field>
+            <field name="sequence">5</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h2>🔒 NAID AAA Compliance & Reporting</h2>
+    <p class="lead">Maintaining audit trails and generating compliance reports</p>
+
+    <h3>🛡️ What is NAID AAA Compliance?</h3>
+    <div class="card mb-4">
+        <div class="card-body">
+            <p class="lead"><strong>NAID (National Association for Information Destruction)</strong> 
+            sets the standard for secure document destruction.</p>
+            <p><strong>AAA Certification</strong> means we follow the highest security protocols:</p>
+            <ul>
+                <li><strong>A</strong>ccountability - Complete chain of custody tracking</li>
+                <li><strong>A</strong>ssurance - Destruction certificates for every job</li>
+                <li><strong>A</strong>udit - Regular third-party compliance audits</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>📋 Chain of Custody Tracking</h3>
+    <div class="card bg-light mb-4">
+        <div class="card-header">
+            <h5>Every Action is Logged:</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-sm table-bordered mb-0">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Data Captured</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Container Created</td>
+                        <td>User, timestamp, initial location</td>
+                        <td>Establish baseline</td>
+                    </tr>
+                    <tr>
+                        <td>Container Moved</td>
+                        <td>From/to location, mover, reason</td>
+                        <td>Track physical custody</td>
+                    </tr>
+                    <tr>
+                        <td>Barcode Scanned</td>
+                        <td>Scanner ID, location, GPS coordinates</td>
+                        <td>Verify current location</td>
+                    </tr>
+                    <tr>
+                        <td>Access Granted</td>
+                        <td>Who, when, why, duration</td>
+                        <td>Security audit trail</td>
+                    </tr>
+                    <tr>
+                        <td>Destruction Requested</td>
+                        <td>Requestor signature, approver, date</td>
+                        <td>Legal authorization</td>
+                    </tr>
+                    <tr>
+                        <td>Destruction Completed</td>
+                        <td>Method, certificate, witness</td>
+                        <td>Compliance proof</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h3>📊 Available Reports</h3>
+    <div class="accordion" id="reportsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#report1">
+                    Destruction Certificate
+                </button>
+            </h2>
+            <div id="report1" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    <p><strong>Generated:</strong> Automatically after each destruction job</p>
+                    <p><strong>Contains:</strong></p>
+                    <ul>
+                        <li>List of destroyed containers (with labels)</li>
+                        <li>Destruction method (shredding, pulping, etc.)</li>
+                        <li>Date and time of destruction</li>
+                        <li>Technician name and certification</li>
+                        <li>Customer signature (if on-site)</li>
+                        <li>Certificate number for audit trail</li>
+                        <li>NAID AAA logo and certification info</li>
+                    </ul>
+                    <p><strong>Access:</strong> Reports → Destruction Certificates</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#report2">
+                    Inventory Report
+                </button>
+            </h2>
+            <div id="report2" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <p><strong>Purpose:</strong> Current snapshot of all containers in storage</p>
+                    <p><strong>Filter Options:</strong></p>
+                    <ul>
+                        <li>By customer/department</li>
+                        <li>By date range</li>
+                        <li>By location</li>
+                        <li>By document type</li>
+                        <li>By retention status</li>
+                    </ul>
+                    <p><strong>Formats:</strong> PDF, Excel, CSV</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#report3">
+                    Chain of Custody Audit Report
+                </button>
+            </h2>
+            <div id="report3" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <p><strong>Shows:</strong> Complete movement history for selected containers</p>
+                    <p><strong>Includes:</strong></p>
+                    <ul>
+                        <li>Timeline view of all events</li>
+                        <li>Who accessed containers and when</li>
+                        <li>All location changes</li>
+                        <li>Barcode scan history</li>
+                        <li>Any security incidents or anomalies</li>
+                    </ul>
+                    <p><strong>Use Case:</strong> Legal discovery, compliance audits</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#report4">
+                    Retention Expiration Report
+                </button>
+            </h2>
+            <div id="report4" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <p><strong>Purpose:</strong> Identify containers eligible for destruction</p>
+                    <p><strong>Parameters:</strong></p>
+                    <ul>
+                        <li>Expiring in next 30/60/90 days</li>
+                        <li>Already expired (overdue for review)</li>
+                        <li>Grouped by customer</li>
+                    </ul>
+                    <p><strong>Action:</strong> Generate bulk destruction requests</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#report5">
+                    Billing Summary Report
+                </button>
+            </h2>
+            <div id="report5" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <p><strong>Shows:</strong> All billable activities by period</p>
+                    <p><strong>Breakdown:</strong></p>
+                    <ul>
+                        <li>Storage fees by container count</li>
+                        <li>Service charges (retrieval, delivery, etc.)</li>
+                        <li>FSM labor and materials</li>
+                        <li>Total revenue by customer</li>
+                        <li>Unbilled charges pending invoicing</li>
+                    </ul>
+                    <p><strong>Use Case:</strong> Financial reconciliation, forecasting</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">🔍 Running an Audit</h3>
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5>NAID Audit Checklist:</h5>
+        </div>
+        <div class="card-body">
+            <ol>
+                <li>Navigate to: Compliance → Run Audit</li>
+                <li>Select audit scope:
+                    <ul>
+                        <li>All containers</li>
+                        <li>Specific customer</li>
+                        <li>Date range</li>
+                    </ul>
+                </li>
+                <li>System performs automated checks:
+                    <ul>
+                        <li>Chain of custody completeness</li>
+                        <li>Missing barcode scans</li>
+                        <li>Unauthorized access attempts</li>
+                        <li>Retention policy violations</li>
+                        <li>Destruction certificate validation</li>
+                    </ul>
+                </li>
+                <li>Review audit findings</li>
+                <li>Address any flagged issues</li>
+                <li>Generate audit completion certificate</li>
+                <li>Store for compliance records</li>
+            </ol>
+        </div>
+    </div>
+
+    <h3>📧 Automated Alerts</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Alert Type</th>
+                <th>Trigger</th>
+                <th>Recipients</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Retention Expiring</td>
+                <td>30 days before expiration</td>
+                <td>Customer + Records Manager</td>
+            </tr>
+            <tr>
+                <td>Unauthorized Access</td>
+                <td>Failed security check</td>
+                <td>Security Team + Compliance Officer</td>
+            </tr>
+            <tr>
+                <td>Missing Chain of Custody</td>
+                <td>Gap detected in audit trail</td>
+                <td>Department Manager</td>
+            </tr>
+            <tr>
+                <td>Audit Due</td>
+                <td>Quarterly audit schedule</td>
+                <td>Compliance Team</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="alert alert-success mt-4">
+        <strong>💡 Best Practice:</strong> Run monthly audits and address findings immediately 
+        to maintain NAID AAA certification!
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+    </data>
+</odoo>

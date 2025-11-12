@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <data>
+        <!-- Training Channel for Billing Process -->
+        <record id="slide_channel_billing_flowchart" model="slide.channel">
+            <field name="name">Charge-to-Invoice Process Flowchart</field>
+            <field name="description">Complete visual guide to how charges are generated and flow to invoices in Records Management and FSM modules</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="allow_comment">true</field>
+        </record>
+
+        <!-- Slide 1: Overview of Billing Process -->
+        <record id="slide_billing_overview" model="slide.slide">
+            <field name="name">Billing Process Overview</field>
+            <field name="channel_id" ref="slide_channel_billing_flowchart"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">8</field>
+            <field name="sequence">1</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>📊 Charge-to-Invoice Process Overview</h1>
+            <h2>Understanding Your Billing Workflow</h2>
+
+            <div class="alert alert-info">
+                <strong>Purpose:</strong> This course explains every step from charge generation 
+                to final invoice delivery in your Records Management system.
+            </div>
+
+            <h3>🎯 Key Concepts</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4>💰 Charge Generation</h4>
+                            <p>Creating billable line items from services, storage, or time</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4>📋 Aggregation</h4>
+                            <p>Collecting charges into Sales Orders</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h4>🧾 Invoicing</h4>
+                            <p>Converting to customer-facing invoices</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>📈 The Complete Flow</h3>
+            <div class="mermaid">
+graph TD
+    A[Service Activity] --> B{Charge Type}
+    B -->|Storage| C[Storage Fee]
+    B -->|Retrieval| D[Access Fee]
+    B -->|Destruction| E[Disposal Fee]
+    B -->|FSM Task| F[Labor/Material]
+    C --> G[Charge Line Created]
+    D --> G
+    E --> G
+    F --> G
+    G --> H[Aggregated to Sales Order]
+    H --> I[SO Confirmed]
+    I --> J[Invoice Generated]
+    J --> K[Customer Portal]
+    K --> L[Payment]
+            </div>
+
+            <h3>🔍 Two Module Pathways</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Module</th>
+                        <th>Primary Charges</th>
+                        <th>Trigger</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>records_management</strong></td>
+                        <td>Storage, Retrieval, Destruction, Audits</td>
+                        <td>Record lifecycle events</td>
+                    </tr>
+                    <tr>
+                        <td><strong>records_management_fsm</strong></td>
+                        <td>Labor, Materials, Travel, Fixed Services</td>
+                        <td>Field service task completion</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert alert-success">
+                <strong>Next:</strong> We'll dive into each charge generation method in detail.
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 2: Storage Fee Process -->
+        <record id="slide_storage_fees" model="slide.slide">
+            <field name="name">Storage Fee Generation</field>
+            <field name="channel_id" ref="slide_channel_billing_flowchart"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">10</field>
+            <field name="sequence">2</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h2>🗄️ Storage Fee Generation Process</h2>
+
+    <h3>Method 1: Recurring Storage Charges</h3>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Process Flow</h4>
+        </div>
+        <div class="card-body">
+            <ol class="lead">
+                <li><strong>Cron Job Trigger:</strong> <code>_cron_generate_storage_charges()</code> runs monthly</li>
+                <li><strong>Scan Records:</strong> Finds all active storage contracts in <code>records.management.storage</code></li>
+                <li><strong>Calculate Fees:</strong> <code>charge_amount = storage_volume × rate_per_unit × months</code></li>
+                <li><strong>Create Charge Line:</strong> Added to <code>sale.order.line</code></li>
+                <li><strong>Customer Notification:</strong> Portal alert sent</li>
+            </ol>
+        </div>
+    </div>
+
+    <h3>📝 Technical Details</h3>
+    <table class="table table-striped">
+        <tr>
+            <th>Model</th>
+            <td><code>records.management.storage</code></td>
+        </tr>
+        <tr>
+            <th>Key Fields</th>
+            <td>
+                <code>storage_volume</code> (Float)<br>
+                <code>rate_per_unit</code> (Monetary)<br>
+                <code>billing_frequency</code> (Selection)
+            </td>
+        </tr>
+        <tr>
+            <th>Method</th>
+            <td><code>_cron_generate_storage_charges()</code></td>
+        </tr>
+        <tr>
+            <th>Security</th>
+            <td>Department-based access via <code>ir.rule</code></td>
+        </tr>
+    </table>
+
+    <h3>💡 Example Calculation</h3>
+    <div class="card bg-light">
+        <div class="card-body">
+            <h5>Scenario: Medical Records Storage</h5>
+            <ul>
+                <li><strong>Volume:</strong> 100 boxes</li>
+                <li><strong>Rate:</strong> $0.50 per box per month</li>
+                <li><strong>Duration:</strong> 1 month</li>
+                <li><strong>Charge:</strong> 100 × $0.50 × 1 = <strong class="text-success">$50.00</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>🔄 Automation Features</h3>
+    <ul>
+        <li>✅ <strong>Auto-Generate:</strong> No manual intervention needed</li>
+        <li>✅ <strong>Pro-Rated:</strong> Partial month calculations</li>
+        <li>✅ <strong>Chain of Custody:</strong> Audit logs automatically created</li>
+        <li>✅ <strong>Batch Processing:</strong> Handles thousands of records efficiently</li>
+    </ul>
+
+    <div class="alert alert-warning">
+        <strong>Important:</strong> Storage charges are cumulative - ensure proper archival 
+        to avoid unnecessary fees!
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 3: FSM Labor Charges -->
+        <record id="slide_fsm_labor" model="slide.slide">
+            <field name="name">FSM Labor & Timesheet Charges</field>
+            <field name="channel_id" ref="slide_channel_billing_flowchart"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">12</field>
+            <field name="sequence">3</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h2>⏱️ FSM Labor & Timesheet Billing</h2>
+
+    <h3>Process Overview</h3>
+    <div class="mermaid">
+flowchart LR
+    A[Field Technician] --> B[Log Timesheet]
+    B --> C[Barcode Scan Start/Stop]
+    C --> D[_compute_effective_hours]
+    D --> E[Calculate: hours × hourly_rate]
+    E --> F[Create Charge Line]
+    F --> G[Attach to Task]
+    G --> H[Task Completion]
+    H --> I[Add to Sales Order]
+    </div>
+
+    <h3>🎯 Key Integration: Barcode Time Tracking</h3>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Automated Time Logging</h5>
+            <ol>
+                <li><strong>Scan Record Box:</strong> Starts timer automatically</li>
+                <li><strong>Perform Service:</strong> Time tracked in background</li>
+                <li><strong>Scan Complete:</strong> Stops timer, calculates billable hours</li>
+                <li><strong>Auto-Charge:</strong> Creates line item with labor cost</li>
+            </ol>
+        </div>
+    </div>
+
+    <h3>📊 Calculation Formula</h3>
+    <div class="card bg-info text-white">
+        <div class="card-body">
+            <h4 class="text-center">
+                <code>Billable Amount = effective_hours × hourly_rate</code>
+            </h4>
+            <p class="text-center mb-0">
+                Where <code>effective_hours</code> comes from <code>account.analytic.line</code><br>
+                And <code>hourly_rate</code> from employee contract or service product
+            </p>
+        </div>
+    </div>
+
+    <h3>🔧 Technical Details</h3>
+    <table class="table table-bordered">
+        <tr>
+            <th>Model</th>
+            <td><code>project.task</code> (with <code>is_records_task=True</code>)</td>
+        </tr>
+        <tr>
+            <th>Timesheet Model</th>
+            <td><code>account.analytic.line</code></td>
+        </tr>
+        <tr>
+            <th>Method</th>
+            <td><code>_compute_effective_hours()</code></td>
+        </tr>
+        <tr>
+            <th>Approval</th>
+            <td>Manager approval required for batch timesheets</td>
+        </tr>
+    </table>
+
+    <h3>💼 Example: On-Site Pickup Service</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">Timesheet Entry</div>
+                <div class="card-body">
+                    <ul>
+                        <li>Task: Box Pickup - Acme Corp</li>
+                        <li>Duration: 2.5 hours</li>
+                        <li>Hourly Rate: $75/hour</li>
+                        <li>Employee: John Smith</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">Charge Generated</div>
+                <div class="card-body">
+                    <ul>
+                        <li>Product: Field Service Labor</li>
+                        <li>Quantity: 2.5 hrs</li>
+                        <li>Unit Price: $75.00</li>
+                        <li><strong>Total: $187.50</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-success mt-4">
+        <strong>Best Practice:</strong> Enable GPS tracking for accurate travel time billing!
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 4: Invoice Generation -->
+        <record id="slide_invoice_generation" model="slide.slide">
+            <field name="name">From Charges to Invoice</field>
+            <field name="channel_id" ref="slide_channel_billing_flowchart"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">10</field>
+            <field name="sequence">4</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h2>🧾 Invoice Generation Process</h2>
+
+    <h3>The 4-Step Journey</h3>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-header bg-primary text-white"><h5>Step 1</h5></div>
+                <div class="card-body">
+                    <h6>Charge Aggregation</h6>
+                    <p>Method: <code>_generate_so_from_charges()</code></p>
+                    <p>Collects all charges into <code>sale.order</code></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-header bg-info text-white"><h5>Step 2</h5></div>
+                <div class="card-body">
+                    <h6>SO Validation</h6>
+                    <p>Confirms sales order</p>
+                    <p>Updates chain-of-custody logs</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-header bg-success text-white"><h5>Step 3</h5></div>
+                <div class="card-body">
+                    <h6>Invoice Creation</h6>
+                    <p>Method: <code>action_invoice_create()</code></p>
+                    <p>Creates <code>account.move</code></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-header bg-warning"><h5>Step 4</h5></div>
+                <div class="card-body">
+                    <h6>Portal Delivery</h6>
+                    <p>Email notification</p>
+                    <p>Customer portal access</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">📋 Sales Order Structure</h3>
+    <div class="card">
+        <div class="card-body">
+            <h5>Example Sales Order Lines</h5>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Storage Fee - Record ID #123</td>
+                        <td>100 boxes</td>
+                        <td>$0.50</td>
+                        <td>$50.00</td>
+                    </tr>
+                    <tr>
+                        <td>Retrieval Service - Urgent</td>
+                        <td>1</td>
+                        <td>$25.00</td>
+                        <td>$25.00</td>
+                    </tr>
+                    <tr>
+                        <td>Field Service Labor</td>
+                        <td>2.5 hrs</td>
+                        <td>$75.00</td>
+                        <td>$187.50</td>
+                    </tr>
+                    <tr class="table-success">
+                        <td colspan="3"><strong>Total</strong></td>
+                        <td><strong>$262.50</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h3>⚡ Optimization Features</h3>
+    <ul>
+        <li><strong>Batch Operations:</strong> <code>_batch_invoice_tasks()</code> for high-volume</li>
+        <li><strong>Partial Invoicing:</strong> Bill 50% upfront option</li>
+        <li><strong>Direct Invoicing:</strong> Skip SO step via config parameter</li>
+        <li><strong>NAID Compliance:</strong> Immutable audit logs attached</li>
+    </ul>
+
+    <h3>🔐 Security & Compliance</h3>
+    <div class="alert alert-danger">
+        <strong>Chain of Custody:</strong> Every invoice includes:
+        <ul class="mb-0">
+            <li>Barcode scan timestamps</li>
+            <li>Employee certification status</li>
+            <li>NAID AAA compliance notes</li>
+            <li>Encrypted signature trail</li>
+        </ul>
+    </div>
+
+    <h3>📧 Customer Portal Integration</h3>
+    <div class="card bg-light">
+        <div class="card-body">
+            <h5>What Customers See:</h5>
+            <ol>
+                <li>Email notification with invoice PDF</li>
+                <li>Portal link to view details</li>
+                <li>Line-item breakdown with service descriptions</li>
+                <li>Payment options (credit card, ACH, check)</li>
+                <li>Download/print capability</li>
+            </ol>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Slide 5: Complete Flowchart -->
+        <record id="slide_complete_flowchart" model="slide.slide">
+            <field name="name">Complete Billing Flowchart</field>
+            <field name="channel_id" ref="slide_channel_billing_flowchart"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">15</field>
+            <field name="sequence">5</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <h1>📊 Complete Charge-to-Invoice Flowchart</h1>
+
+    <div class="alert alert-success">
+        <strong>Master Reference:</strong> This flowchart shows every charge generation method 
+        and how they all flow to final invoices.
+    </div>
+
+    <h2>🏢 Records Management Module (Core)</h2>
+    <div class="mermaid">
+graph TB
+    subgraph "Charge Generation Methods"
+        A1[Storage Fee<br/>Recurring/Cron] --> AGG[Charge Aggregation]
+        A2[Retrieval Fee<br/>On-Demand] --> AGG
+        A3[Destruction Fee<br/>Fixed] --> AGG
+        A4[Audit Fee<br/>Ad-Hoc] --> AGG
+        A5[Custom Fee<br/>Manual] --> AGG
+    end
+    
+    AGG --> SO[Sales Order<br/>_generate_so_from_charges]
+    SO --> CONF[SO Confirmation<br/>Stock Moves + CoC Logs]
+    CONF --> INV[Invoice Creation<br/>action_invoice_create]
+    INV --> PORT[Customer Portal]
+    PORT --> PAY[Payment]
+    </div>
+
+    <h2 class="mt-5">🚛 FSM Module (Field Service)</h2>
+    <div class="mermaid">
+graph TB
+    subgraph "FSM Charge Types"
+        F1[Timesheet Labor<br/>Hourly] --> FSMAGG[FSM Aggregation]
+        F2[Materials/Products<br/>Unit Price] --> FSMAGG
+        F3[Fixed Service Fee<br/>Package] --> FSMAGG
+        F4[Travel/Mileage<br/>Variable] --> FSMAGG
+        F5[Upsell Charges<br/>Dynamic] --> FSMAGG
+        F6[Recurring Maintenance<br/>Subscription] --> FSMAGG
+    end
+    
+    FSMAGG --> TASK[Task Completion<br/>_prepare_invoice_values]
+    TASK --> FSMSO[Sales Order<br/>with FSM Details]
+    FSMSO --> FSMCONF[Confirmation<br/>Stock Reservation]
+    FSMCONF --> FSMINV[Invoice<br/>action_generate_invoice]
+    FSMINV --> FSMPORT[Portal Delivery]
+    </div>
+
+    <h2 class="mt-5">🔗 Cross-Module Integration</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>When FSM Tasks Link to Storage Records:</h4>
+            <div class="mermaid">
+graph LR
+    TASK[FSM Pickup Task] --> LINK[_link_fsm_to_record]
+    STORAGE[Storage Record] --> LINK
+    LINK --> COMBINED[Combined SO]
+    COMBINED --> MERGED[Merged Invoice<br/>FSM + Storage Fees]
+            </div>
+        </div>
+    </div>
+
+    <h2>📈 Data Flow Summary</h2>
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Stage</th>
+                <th>Model</th>
+                <th>Key Method</th>
+                <th>Output</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1. Generation</td>
+                <td>Various (storage, task, etc.)</td>
+                <td><code>_compute_*_charge()</code></td>
+                <td>Charge line items</td>
+            </tr>
+            <tr>
+                <td>2. Aggregation</td>
+                <td><code>sale.order</code></td>
+                <td><code>_generate_so_from_charges()</code></td>
+                <td>Draft sales order</td>
+            </tr>
+            <tr>
+                <td>3. Validation</td>
+                <td><code>sale.order</code></td>
+                <td><code>action_confirm()</code></td>
+                <td>Confirmed SO</td>
+            </tr>
+            <tr>
+                <td>4. Invoicing</td>
+                <td><code>account.move</code></td>
+                <td><code>action_invoice_create()</code></td>
+                <td>Customer invoice</td>
+            </tr>
+            <tr>
+                <td>5. Delivery</td>
+                <td>Portal</td>
+                <td><code>_send_invoice_email()</code></td>
+                <td>Notification + PDF</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🎯 Quick Reference: All 11 Charge Methods</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5>Records Management (5)</h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li>Storage Fees (Recurring)</li>
+                        <li>Retrieval Fees (On-Demand)</li>
+                        <li>Destruction Fees (Fixed)</li>
+                        <li>Audit Fees (Ad-Hoc)</li>
+                        <li>Custom Fees (Manual)</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5>FSM Module (6)</h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li>Timesheet Labor (Hourly)</li>
+                        <li>Materials/Products (Unit)</li>
+                        <li>Fixed Service Fees (Package)</li>
+                        <li>Travel/Mileage (Variable)</li>
+                        <li>Upsell Charges (Dynamic)</li>
+                        <li>Recurring Maintenance (Subscription)</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info mt-4">
+        <strong>💡 Pro Tip:</strong> Use the <code>Unbilled Charges Report</code> to see 
+        all pending charges before generating invoices!
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+    </data>
+</odoo>
