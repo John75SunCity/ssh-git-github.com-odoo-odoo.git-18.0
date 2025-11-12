@@ -501,6 +501,31 @@
 			"label": "Clean CSV File",
 			"type": "shell",
 			"command": "python3 clean_csv_final.py"
+		},
+		{
+			"label": "🤖 Ask Grok-4 (Odoo Expert)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				".github/agents/grok-helper.py",
+				"${input:grokQuestion}"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"problemMatcher": []
+		}
+	],
+	"inputs": [
+		{
+			"id": "grokQuestion",
+			"type": "promptString",
+			"description": "What would you like to ask Grok-4 about Odoo?",
+			"default": "Analyze the records.container model"
 		}
 	]
 }
