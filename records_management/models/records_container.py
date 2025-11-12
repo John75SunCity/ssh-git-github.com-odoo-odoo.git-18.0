@@ -800,13 +800,13 @@ class RecordsContainer(models.Model):
         }
 
     def action_add_files(self):
-        """Add files to this container"""
+        """Add individual files to this container (on-the-fly during retrieval)"""
         self.ensure_one()
         return {
-            "name": _("Add Files to Container %s", self.name),
+            "name": _("Add Individual Files to Container %s", self.name),
             "type": "ir.actions.act_window",
             "res_model": "records.file",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("container_id", "=", False), ("partner_id", "=", self.partner_id.id)],
             "context": {
                 "default_container_id": self.id,

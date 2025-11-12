@@ -99,17 +99,7 @@
                                         <field name="partner_id" column_invisible="1"/>
                                     </list>
                                 </field>
-                                
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <button name="action_add_file_row" 
-                                                string="Add Another File Folder" 
-                                                type="object" 
-                                                class="btn-link">
-                                            <i class="fa fa-plus"/> Add Another File Folder
-                                        </button>
-                                    </div>
-                                </div>
+
                             </page>
                             
                             <page string="Instructions" name="instructions">
@@ -121,19 +111,19 @@
                                             
                                             <ol class="mt-3">
                                                 <li><strong>Scan Container Barcode:</strong> Assign the pre-printed barcode to this container.</li>
-                                                <li><strong>Create File Records:</strong> Each row = one separate file folder (not volumes of same file).</li>
-                                                <li><strong>Add More Files:</strong> Click "Add Another File" button to create additional file folder entries.</li>
+                                                <li><strong>Create File Records:</strong> Each row = one separate file folder. Use all available rows.</li>
                                                 <li><strong>Complete Metadata:</strong> Enter names, descriptions, categories, and dates for comprehensive tracking.</li>
-                                                <li><strong>Generate Barcodes:</strong> Click "Generate Temp Barcodes &amp; Index Container" - each file gets its own barcode.</li>
+                                                <li><strong>File Barcodes:</strong> Each file gets its own temp barcode (separate from container barcode).</li>
+                                                <li><strong>Generate &amp; Index:</strong> Click "Generate Temp Barcodes &amp; Index Container" to complete.</li>
                                             </ol>
                                             
-                                            <div class="alert alert-warning mt-3" role="alert">
-                                                <h6><i class="fa fa-file-o"/> File vs Volume Management</h6>
+                                            <div class="alert alert-info mt-3" role="alert">
+                                                <h6><i class="fa fa-barcode"/> Barcode Hierarchy</h6>
                                                 <ul class="mb-0">
-                                                    <li><strong>One Row = One File Folder:</strong> Each grid row represents a separate, distinct file folder</li>
-                                                    <li><strong>Multiple Volumes:</strong> If one file has multiple volumes, create separate rows for each volume</li>
-                                                    <li><strong>Examples:</strong> "Personnel File Vol 1", "Personnel File Vol 2", etc.</li>
-                                                    <li><strong>Add Files:</strong> Use "Add Another File" button to create new file folder entries</li>
+                                                    <li><strong>Container Barcode:</strong> Links to container metadata + all files within it</li>
+                                                    <li><strong>File Barcode/Temp Barcode:</strong> Links to specific file metadata + parent container</li>
+                                                    <li><strong>Many2One Relationship:</strong> All files point to one container (like products on a shelf)</li>
+                                                    <li><strong>Search Either:</strong> Container barcode shows all files; file barcode shows specific file + container</li>
                                                 </ul>
                                             </div>
                                             

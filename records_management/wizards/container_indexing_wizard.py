@@ -157,10 +157,10 @@ class ContainerIndexingWizard(models.TransientModel):
                         }) for i, file in enumerate(container.file_ids)
                     ]
                 else:
-                    # Add some default empty file slots for new data entry
+                    # Add default empty file slots for new data entry
                     res['file_ids'] = [
                         (0, 0, {'sequence': i, 'partner_id': container.partner_id.id}) 
-                        for i in range(1, 6)  # 5 empty file slots to start
+                        for i in range(1, 11)  # 10 empty file slots to start
                     ]
         
         return res
@@ -247,26 +247,7 @@ class ContainerIndexingWizard(models.TransientModel):
         
         return files_created
     
-    def action_add_file_row(self):
-        """Add another file row to the grid for a new separate file"""
-        max_sequence = max(self.file_ids.mapped('sequence') or [0])
-        self.write({
-            'file_ids': [(0, 0, {
-                'sequence': max_sequence + 1,
-                'partner_id': self.container_id.partner_id.id,
-            })]
-        })
-        
-        # Return action to reload the wizard form to show the new row
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'container.indexing.wizard',
-            'res_id': self.id,
-            'view_mode': 'form',
-            'target': 'new',
-            'context': self.env.context,
-        }
-    
+
     def _complete_container_indexing(self, container, created_files):
         """Complete the container indexing process"""
         # Create stock quant if not exists
