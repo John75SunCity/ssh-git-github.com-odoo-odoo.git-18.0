@@ -144,7 +144,7 @@ Department user assignments allow you to manage which users have access to speci
             </field>
         </record>
     
-        <menuitem id="menu_records_storage_department_user" name="Department Users" parent="records_management.menu_records_configuration" action="action_records_storage_department_user" sequence="30" groups="records_management.group_records_manager" />
+        <menuitem id="menu_records_storage_department_user" name="Department Users" parent="records_management.menu_records_configuration" action="action_records_storage_department_user" sequence="30" groups="records_management.group_records_manager,records_management.group_records_admin" />
     
     
     </data>

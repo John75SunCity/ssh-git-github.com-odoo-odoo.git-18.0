@@ -61,7 +61,7 @@
         </record>
     
         <!-- Bulk User Import moved to Configuration menu -->
-        <menuitem id="records_bulk_user_import_menu" name="Bulk User Import" parent="records_management.menu_records_configuration" action="records_bulk_user_import_action" groups="records_management.group_records_manager" sequence="75" />
+        <menuitem id="records_bulk_user_import_menu" name="Bulk User Import" parent="records_management.menu_records_configuration" action="records_bulk_user_import_action" groups="records_management.group_records_manager,records_management.group_records_admin" sequence="75" />
     
     
     </data>

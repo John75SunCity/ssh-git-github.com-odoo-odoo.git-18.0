@@ -84,7 +84,7 @@ Ready to Launch!
     </record>
 
     <!-- System Flowchart moved to Configuration menu -->
-    <menuitem id="system_flowchart_wizard_menu" name="System Flowchart" parent="records_management.menu_records_configuration" action="system_flowchart_wizard_action" sequence="60" groups="records_management.group_records_manager"/>
+    <menuitem id="system_flowchart_wizard_menu" name="System Flowchart" parent="records_management.menu_records_configuration" action="system_flowchart_wizard_action" sequence="60" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     </data>

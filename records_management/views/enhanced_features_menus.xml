@@ -5,17 +5,17 @@
 
     <!-- Main Enhanced Features Menu -->
 
-    <menuitem id="menu_enhanced_features" name="Enhanced Features" parent="records_management.menu_records_configuration" sequence="100" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_enhanced_features" name="Enhanced Features" parent="records_management.menu_records_configuration" sequence="100" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     <!-- Workflow Visualization Submenu -->
 
-    <menuitem id="menu_workflow_visualization" name="Workflow Visualization" parent="menu_enhanced_features" sequence="10" action="action_workflow_visualization_manager" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_workflow_visualization" name="Workflow Visualization" parent="menu_enhanced_features" sequence="10" action="action_workflow_visualization_manager" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     <!-- FSM Integration Submenu -->
 
-    <menuitem id="menu_fsm_integration" name="FSM Integration" parent="menu_enhanced_features" sequence="20" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_fsm_integration" name="FSM Integration" parent="menu_enhanced_features" sequence="20" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     <!-- Enhanced FSM Integration -->
@@ -32,37 +32,37 @@
 
     <!-- Mobile Features Submenu -->
 
-    <menuitem id="menu_mobile_features" name="Mobile Features" parent="menu_enhanced_features" sequence="30" groups="records_management.group_records_user,records_management.group_records_manager"/>
+    <menuitem id="menu_mobile_features" name="Mobile Features" parent="menu_enhanced_features" sequence="30" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     <!-- Mobile Dashboard -->
 
-    <menuitem id="menu_mobile_dashboard" name="Mobile Dashboard" parent="menu_mobile_features" sequence="10" groups="records_management.group_records_user,records_management.group_records_manager"/>
+    <menuitem id="menu_mobile_dashboard" name="Mobile Dashboard" parent="menu_mobile_features" sequence="10" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     <!-- Mobile Settings -->
 
-    <menuitem id="menu_mobile_settings" name="Mobile Settings" parent="menu_mobile_features" sequence="20" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_mobile_settings" name="Mobile Settings" parent="menu_mobile_features" sequence="20" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     <!-- Analytics & Reporting Submenu -->
 
-    <menuitem id="menu_analytics_reporting" name="Analytics &amp; Reporting" parent="menu_enhanced_features" sequence="40" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_analytics_reporting" name="Analytics &amp; Reporting" parent="menu_enhanced_features" sequence="40" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     <!-- Workflow Analytics -->
 
-    <menuitem id="menu_workflow_analytics" name="Workflow Analytics" parent="menu_analytics_reporting" sequence="10" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_workflow_analytics" name="Workflow Analytics" parent="menu_analytics_reporting" sequence="10" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     <!-- Mobile Analytics -->
 
-    <menuitem id="menu_mobile_analytics" name="Mobile Analytics" parent="menu_analytics_reporting" sequence="20" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_mobile_analytics" name="Mobile Analytics" parent="menu_analytics_reporting" sequence="20" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
 
     <!-- FSM Analytics -->
 
-    <menuitem id="menu_fsm_analytics" name="FSM Analytics" parent="menu_analytics_reporting" sequence="30" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_fsm_analytics" name="FSM Analytics" parent="menu_analytics_reporting" sequence="30" groups="records_management.group_records_manager,records_management.group_records_admin"/>
 
     
     </data>
