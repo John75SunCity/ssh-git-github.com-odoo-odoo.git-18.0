@@ -53,7 +53,7 @@
         <div class="col-md-6">
             <div class="card mb-3">
                 <div class="card-header bg-success text-white">
-                    <h5>Billing & Services</h5>
+                    <h5>Billing &amp; Services</h5>
                 </div>
                 <div class="card-body">
                     <ul>
@@ -406,7 +406,7 @@ graph LR
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h6>Search & Filter:</h6>
+                    <h6>Search &amp; Filter:</h6>
                     <ul>
                         <li>Search by container label</li>
                         <li>Filter by date range</li>
@@ -696,7 +696,7 @@ graph LR
         </div>
     </div>
 
-    <h3>⏱️ Time Tracking & Billing</h3>
+    <h3>⏱️ Time Tracking &amp; Billing</h3>
     <div class="card bg-light">
         <div class="card-body">
             <h5>Automatic Timesheet Generation:</h5>
@@ -746,7 +746,7 @@ graph LR
         </tbody>
     </table>
 
-    <h3>🗺️ GPS & Route Optimization</h3>
+    <h3>🗺️ GPS &amp; Route Optimization</h3>
     <div class="row">
         <div class="col-md-6">
             <div class="card">
@@ -813,9 +813,9 @@ graph LR
             ]]></field>
         </record>
 
-        <!-- Slide 5: Compliance & Reporting -->
+        <!-- Slide 5: Compliance &amp; Reporting -->
         <record id="slide_compliance" model="slide.slide">
-            <field name="name">Compliance & Reporting</field>
+            <field name="name">Compliance &amp; Reporting</field>
             <field name="channel_id" ref="slide_channel_module_training"/>
             <field name="slide_type">article</field>
             <field name="is_published">true</field>
@@ -824,7 +824,7 @@ graph LR
             <field name="sequence">5</field>
             <field name="html_content"><![CDATA[
 <div class="container">
-    <h2>🔒 NAID AAA Compliance & Reporting</h2>
+    <h2>🔒 NAID AAA Compliance &amp; Reporting</h2>
     <p class="lead">Maintaining audit trails and generating compliance reports</p>
 
     <h3>🛡️ What is NAID AAA Compliance?</h3>

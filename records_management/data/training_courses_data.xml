@@ -46,7 +46,7 @@
             <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_other')])]"/>
         </record>
 
-        <!-- HIPAA & Data Privacy Course -->
+        <!-- HIPAA &amp; Data Privacy Course -->
         <record id="slide_channel_hipaa_privacy_training" model="slide.channel">
             <field name="name">HIPAA Compliance &amp; Data Privacy for Physical Records</field>
             <field name="description">Protecting sensitive information in physical document storage and handling</field>

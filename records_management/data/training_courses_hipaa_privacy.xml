@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
-        <!-- HIPAA & Data Privacy Course Slides -->
+        <!-- HIPAA &amp; Data Privacy Course Slides -->
 
         <!-- HIPAA Overview -->
         <record id="slide_hipaa_overview" model="slide.slide">
@@ -14,7 +14,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1>HIPAA Compliance & Data Privacy</h1>
+            <h1>HIPAA Compliance &amp; Data Privacy</h1>
             <h2>Protecting Sensitive Health Information in Physical Records</h2>
 
             <div class="alert alert-danger">
@@ -484,7 +484,7 @@
                         <td>State laws vary</td>
                     </tr>
                     <tr>
-                        <td>X-rays & Imaging</td>
+                        <td>X-rays &amp; Imaging</td>
                         <td>5-7 years</td>
                         <td>State medical boards</td>
                     </tr>
