@@ -167,11 +167,13 @@ class ContainerIndexingWizard(models.TransientModel):
     
     def action_index_container(self):
         """
-        Execute the container indexing workflow:
-        1. Validate and assign barcode to container
-        2. Create files with details from grid
-        3. Index container (create stock tracking)
-        4. Set container status to active
+        Execute the container file manifest workflow:
+        1. Validate container has physical barcode (for file temp barcode generation)
+        2. Create detailed file manifest from grid data
+        3. Generate temporary file barcodes based on container barcode
+        
+        Note: This does NOT activate the container. Container activation happens
+        automatically when the physical barcode is first assigned by technicians.
         """
         self.ensure_one()
         
@@ -197,15 +199,15 @@ class ContainerIndexingWizard(models.TransientModel):
         # Step 3: Create files from wizard grid
         created_files = self._create_files_from_grid()
         
-        # Step 4: Index container (create stock quant, set active)
+        # Step 4: Create file manifest (indexing only - no container activation)
         self._complete_container_indexing(container, created_files)
         
         # Step 5: Show success message and return to container
         message = _(
-            'Container %s indexed successfully!\n'
+            'Container %s file manifest completed!\n'
             'Created %d files with temporary barcodes.\n'
-            'Physical Barcode: %s'
-        ) % (container.name, len(created_files), container.barcode)
+            'Note: Container activation happens when physical barcode is assigned.'
+        ) % (container.name, len(created_files))
         
         # Post success message
         container.message_post(body=message)
@@ -259,21 +261,16 @@ class ContainerIndexingWizard(models.TransientModel):
     
 
     def _complete_container_indexing(self, container, created_files):
-        """Complete the container indexing process"""
-        # Create stock quant if not exists
-        if not container.quant_id:
+        """Complete the container indexing process - file manifest creation only"""
+        # Create stock quant if container is already active and doesn't have one
+        if container.state != 'draft' and not container.quant_id:
             container._create_stock_quant()
 
-        # Update container state
-        container.write({
-            'state': 'active',
-        })
-
-        # Post message
+        # Post message about indexing completion (no state change)
         files_msg = ""
         if created_files:
             files_msg = _(" and %d files created") % len(created_files)
         
         container.message_post(
-            body=_("Container indexed with barcode %s%s") % (container.barcode, files_msg)
+            body=_("Container file manifest completed%s") % (files_msg)
         )
