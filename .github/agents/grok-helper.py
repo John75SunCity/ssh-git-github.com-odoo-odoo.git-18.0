@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/opt/homebrew/bin/python3.12
 """
 Grok-4 Helper for Odoo Development
 Uses xAI API directly with Grok-4-0709 model
