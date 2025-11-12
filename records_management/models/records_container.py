@@ -411,7 +411,8 @@ class RecordsContainer(models.Model):
             vals.pop("temp_barcode")
 
         # ✅ BARCODE-DRIVEN ACTIVATION: Auto-activate when physical barcode assigned
-        if 'barcode' in vals and vals.get('barcode'):
+        if 'barcode' in vals and vals.get('barcode') and 'state' not in vals:
+            # Only auto-activate if state is not already being set explicitly
             for record in self:
                 if record.state == 'draft':
                     vals['state'] = 'active'  # Activate container when barcode assigned
