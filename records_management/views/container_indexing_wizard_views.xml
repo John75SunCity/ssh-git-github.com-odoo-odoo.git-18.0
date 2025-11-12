@@ -79,7 +79,7 @@
                                 
                                 <field name="file_ids" nolabel="1" 
                                        widget="one2many_list" 
-                                       context="{'default_wizard_id': active_id, 'default_partner_id': customer_id}">
+                                       context="{'default_wizard_id': id, 'default_partner_id': customer_id}">
                                     <list string="Files" editable="bottom" create="1" delete="1">
                                         <field name="sequence" widget="handle"/>
                                         <field name="name" 
@@ -126,7 +126,7 @@
                                                 <li><strong>Complete Manifest:</strong> Click "Complete Container Indexing" to activate full tracking.</li>
                                             </ol>
                                             
-                                            <div class="alert alert-info mt-4">
+                                            <div class="alert alert-info mt-4" role="alert">
                                                 <h5><i class="fa fa-lightbulb-o"/> Indexing vs. On-the-Fly File Addition</h5>
                                                 <ul>
                                                     <li><strong>Container Indexing:</strong> Complete manifest of ALL files for premium customers who want perfect tracking</li>
