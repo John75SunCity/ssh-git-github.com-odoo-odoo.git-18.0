@@ -177,6 +177,15 @@ class ContainerIndexingWizard(models.TransientModel):
         
         container = self.container_id
         
+        # Debug logging
+        import logging
+        _logger = logging.getLogger(__name__)
+        _logger.info(f"=== CONTAINER INDEXING START ===")
+        _logger.info(f"Container: {container.name} (ID: {container.id})")
+        _logger.info(f"File rows in wizard: {len(self.file_ids)}")
+        _logger.info(f"Files with names: {len(self.file_ids.filtered(lambda f: f.name))}")
+        _logger.info(f"Transaction state: closed={self.env.cr.closed}")
+        
         # Step 1: Validate container state
         if container.state != 'draft':
             raise UserError(_(
@@ -196,6 +205,18 @@ class ContainerIndexingWizard(models.TransientModel):
         
         # Step 3: Create files from wizard grid
         created_files = self._create_files_from_grid()
+        _logger.info(f"Created {len(created_files)} files: {[f.name for f in created_files]}")
+        
+        # Check if files exist in database after creation
+        for file_rec in created_files:
+            if not self.env['records.file'].browse(file_rec.id).exists():
+                _logger.error(f"File {file_rec.id} does not exist after creation!")
+            else:
+                _logger.info(f"Verified file {file_rec.id} exists, container_id: {file_rec.container_id.id}")
+        
+        # Commit transaction to ensure files are saved
+        _logger.info("Committing transaction to save files...")
+        self.env.cr.commit()
         
         # Step 4: Index container (create stock quant, set active)
         self._complete_container_indexing(container, created_files)
@@ -224,7 +245,13 @@ class ContainerIndexingWizard(models.TransientModel):
         """Create records.file objects from wizard grid data"""
         files_created = []
         
-        for file_line in self.file_ids.filtered(lambda f: f.name):  # Only create files with names
+        import logging
+        _logger = logging.getLogger(__name__)
+        
+        files_with_names = self.file_ids.filtered(lambda f: f.name)
+        _logger.info(f"Processing {len(files_with_names)} files with names")
+        
+        for file_line in files_with_names:  # Only create files with names
             # Generate temp barcode if no physical barcode assigned and auto-generate is enabled
             temp_barcode = None
             if not file_line.barcode and self.auto_generate_temp_barcodes:
@@ -242,9 +269,12 @@ class ContainerIndexingWizard(models.TransientModel):
                 'temp_barcode': temp_barcode,  # Generated temp barcode
             }
             
+            _logger.info(f"Creating file: {file_vals}")
             file_record = self.env['records.file'].create(file_vals)
+            _logger.info(f"Created file record ID: {file_record.id}, name: {file_record.name}")
             files_created.append(file_record)
         
+        _logger.info(f"=== FILE CREATION COMPLETE: {len(files_created)} files ===")
         return files_created
     
 
