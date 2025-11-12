@@ -14,13 +14,86 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
+class ContainerIndexingWizardFile(models.TransientModel):
+    _name = 'container.indexing.wizard.file'
+    _description = 'File Entry for Container Indexing'
+    _order = 'sequence, id'
+
+    wizard_id = fields.Many2one(
+        comodel_name='container.indexing.wizard',
+        string='Wizard',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    sequence = fields.Integer(string='#', default=1)
+    
+    # File details
+    name = fields.Char(
+        string='File Name',
+        help='Name/identifier for this file folder'
+    )
+    
+    description = fields.Text(
+        string='Description',
+        help='Brief description of file contents'
+    )
+    
+    partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        string='Customer',
+        help='Customer that owns this file (defaults to container customer)'
+    )
+    
+    file_category = fields.Selection([
+        ('personnel', 'Personnel Files'),
+        ('financial', 'Financial Records'),
+        ('legal', 'Legal Documents'),
+        ('medical', 'Medical Records'),
+        ('tax', 'Tax Documents'),
+        ('contracts', 'Contracts'),
+        ('correspondence', 'Correspondence'),
+        ('other', 'Other'),
+    ], string='Category', default='other')
+    
+    received_date = fields.Date(
+        string='Received Date',
+        default=fields.Date.context_today,
+        help='Date file was received from customer'
+    )
+    
+    barcode = fields.Char(
+        string='Physical Barcode',
+        help='Scan or enter physical barcode if pre-assigned'
+    )
+    
+    # Display computed temp barcode (read-only)
+    temp_barcode_preview = fields.Char(
+        string='Temp Barcode',
+        compute='_compute_temp_barcode_preview',
+        help='Preview of auto-generated temporary barcode'
+    )
+    
+    @api.depends('wizard_id.container_id', 'sequence')
+    def _compute_temp_barcode_preview(self):
+        """Show preview of what temp barcode will be generated"""
+        for record in self:
+            if record.wizard_id.container_id and record.name:
+                container = record.wizard_id.container_id
+                # Preview format: CONTAINER_TEMP-FILE01, CONTAINER_TEMP-FILE02, etc.
+                preview = f"{container.temp_barcode or 'TEMP'}-FILE{record.sequence:02d}"
+                record.temp_barcode_preview = preview
+            else:
+                record.temp_barcode_preview = ""
+
+
 class ContainerIndexingWizard(models.TransientModel):
     _name = 'container.indexing.wizard'
     _description = 'Container Indexing & File Addition Wizard'
 
     # Container being indexed
     container_id = fields.Many2one(
-        'records.container',
+        comodel_name='records.container',
         string='Container',
         required=True,
         readonly=True
@@ -28,7 +101,11 @@ class ContainerIndexingWizard(models.TransientModel):
     
     # Container details (display only)
     container_name = fields.Char(related='container_id.name', readonly=True)
-    customer_id = fields.Many2one(related='container_id.partner_id', readonly=True)
+    customer_id = fields.Many2one(
+        comodel_name='res.partner',
+        related='container_id.partner_id', 
+        readonly=True
+    )
     
     # Barcode assignment (if not already assigned)
     barcode = fields.Char(
@@ -38,8 +115,8 @@ class ContainerIndexingWizard(models.TransientModel):
     
     # Files to add to container
     file_ids = fields.One2many(
-        'container.indexing.wizard.file',
-        'wizard_id',
+        comodel_name='container.indexing.wizard.file',
+        inverse_name='wizard_id',
         string='Files to Add'
     )
     
@@ -190,7 +267,7 @@ class ContainerIndexingWizardFile(models.TransientModel):
     _order = 'sequence, id'
 
     wizard_id = fields.Many2one(
-        'container.indexing.wizard',
+        comodel_name='container.indexing.wizard',
         string='Wizard',
         required=True,
         ondelete='cascade'
@@ -210,7 +287,7 @@ class ContainerIndexingWizardFile(models.TransientModel):
     )
     
     partner_id = fields.Many2one(
-        'res.partner',
+        comodel_name='res.partner',
         string='Customer',
         help='Customer that owns this file (defaults to container customer)'
     )

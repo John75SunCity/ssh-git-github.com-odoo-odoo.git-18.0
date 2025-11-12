@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Container Indexing Wizard File Tree View -->
+        <record id="container_indexing_wizard_file_view_tree" model="ir.ui.view">
+            <field name="name">container.indexing.wizard.file.tree</field>
+            <field name="model">container.indexing.wizard.file</field>
+            <field name="arch" type="xml">
+                <tree string="Files" editable="bottom" create="1" delete="1">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name" 
+                           placeholder="e.g., HR-Personnel-2024, Finance-Invoices-Q1"
+                           required="1"/>
+                    <field name="description" 
+                           placeholder="Brief description of file contents"/>
+                    <field name="file_category"/>
+                    <field name="received_date"/>
+                    <field name="barcode" 
+                           placeholder="Physical barcode (optional)"
+                           widget="barcode"/>
+                    <field name="temp_barcode_preview" 
+                           string="Auto Temp Barcode"
+                           readonly="1"/>
+                    <field name="partner_id" column_invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
         <!-- Container Indexing Wizard Form -->
         <record id="container_indexing_wizard_view_form" model="ir.ui.view">
             <field name="name">container.indexing.wizard.form</field>
@@ -49,7 +74,9 @@
                                     </div>
                                 </div>
                                 
-                                <field name="file_ids" nolabel="1">
+                                <field name="file_ids" nolabel="1" 
+                                       widget="one2many_list" 
+                                       context="{'default_wizard_id': active_id, 'default_partner_id': customer_id}">
                                     <tree string="Files" editable="bottom" create="1" delete="1">
                                         <field name="sequence" widget="handle"/>
                                         <field name="name" 
