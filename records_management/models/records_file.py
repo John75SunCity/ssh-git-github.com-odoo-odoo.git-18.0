@@ -167,6 +167,13 @@ class RecordsFile(models.Model):
         tracking=True
     )
     
+    received_date = fields.Date(
+        string="Received Date",
+        default=fields.Date.context_today,
+        tracking=True,
+        help="Date when the file was received from the customer"
+    )
+    
     # ============================================================================
     # STATUS TRACKING
     # ============================================================================
