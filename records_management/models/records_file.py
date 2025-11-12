@@ -53,6 +53,14 @@ class RecordsFile(models.Model):
              "Scanning this barcode displays: file name, location, customer, parent container, etc."
     )
     
+    temp_barcode = fields.Char(
+        string="Temporary Barcode",
+        copy=False,
+        index=True,
+        help="Auto-generated temporary barcode for files without physical barcodes.\n"
+             "Generated during Container Indexing Service workflow."
+    )
+    
     # ============================================================================
     # STOCK INTEGRATION (Hierarchical Inventory Tracking)
     # ============================================================================

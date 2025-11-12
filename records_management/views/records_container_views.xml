@@ -402,7 +402,10 @@ Destroy Container</a>
         <field name="file_ids" mode="list,form" context="{'default_container_id': id}">
                             <list string="File Folders">
                                 <field name="name"/>
-                                <field name="barcode"/>
+                                <field name="barcode" string="Physical Barcode"/>
+                                <field name="temp_barcode" string="🏷️ Temp Barcode"/>
+                                <field name="file_category"/>
+                                <field name="received_date"/>
                                 <field name="location_id"/>
                                 <field name="partner_id"/>
                                 <field name="create_date"/>
@@ -410,7 +413,10 @@ Destroy Container</a>
                             <form string="File Folder">
                                 <group>
                                     <field name="name"/>
-                                    <field name="barcode"/>
+                                    <field name="barcode" string="Physical Barcode"/>
+                                    <field name="temp_barcode" string="🏷️ Temp Barcode" readonly="1"/>
+                                    <field name="file_category"/>
+                                    <field name="received_date"/>
                                     <field name="container_id"/>
                                     <field name="partner_id"/>
                                     <field name="location_id"/>
