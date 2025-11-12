@@ -410,13 +410,6 @@ class RecordsContainer(models.Model):
         if "temp_barcode" in vals and any(rec.barcode for rec in self) and not self.env.context.get("allow_temp_barcode_edit"):
             vals.pop("temp_barcode")
 
-        # ✅ BARCODE-DRIVEN ACTIVATION: Auto-activate when physical barcode assigned
-        if 'barcode' in vals and vals.get('barcode'):
-            for record in self:
-                if record.state == 'draft':
-                    vals['state'] = 'active'  # Activate container when barcode assigned
-                    break
-
         result = super().write(vals)
 
         # ✅ FIX: Create stock.quant when container is activated (state changes from draft)
@@ -1226,9 +1219,6 @@ class RecordsContainer(models.Model):
         Creates a complete manifest of ALL files in the container with barcodes
         for premium customers who want comprehensive tracking. This is different
         from on-the-fly file addition during retrieval requests.
-        
-        Note: This does NOT activate the container. Container activation happens
-        automatically when a physical barcode is assigned by technicians.
         """
         self.ensure_one()
 
@@ -1292,7 +1282,12 @@ class RecordsContainer(models.Model):
                 file_record = self.env['records.file'].create(file_vals)
                 created_files.append(file_record)
 
-        # Post message about indexing completion (no state change)
+        # Update container state
+        self.write({
+            'state': 'active',
+        })
+
+        # Post message
         files_msg = ""
         if created_files:
             files_msg = _(" and %d files created") % len(created_files)
