@@ -17,13 +17,21 @@ class TestRecordsManagement(TransactionCase):
                 "email": "records.test@company.example",
             }
         )
-        cls.product_container = cls.env["product.product"].create(
-            {
-                "name": "Test Container",
-                "detailed_type": "product",  # Odoo 18.0 compatibility
-                "tracking": "lot",
-            }
-        )
+        # Version-agnostic product creation (Odoo 17.0 vs 18.0 compatibility)
+        product_vals = {
+            "name": "Test Container",
+            "tracking": "lot",
+        }
+        
+        # Use the correct field name based on Odoo version
+        if hasattr(cls.env['product.product'], '_fields') and 'detailed_type' in cls.env['product.product']._fields:
+            # Odoo 18.0+
+            product_vals['detailed_type'] = 'product'
+        else:
+            # Odoo 17.0 and earlier
+            product_vals['type'] = 'product'
+            
+        cls.product_container = cls.env["product.product"].create(product_vals)
         cls.lot = cls.env["stock.lot"].create(
             {
                 "name": "TEST001",
