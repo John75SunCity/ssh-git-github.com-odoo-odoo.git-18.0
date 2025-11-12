@@ -221,6 +221,14 @@ class ContainerIndexingWizard(models.TransientModel):
         # Step 4: Index container (create stock quant, set active)
         self._complete_container_indexing(container, created_files)
         
+        # Final verification: Check container's files after completion
+        _logger.info(f"=== FINAL VERIFICATION ===")
+        container.invalidate_cache()  # Clear any cached values
+        final_files = container.file_ids
+        _logger.info(f"Container {container.id} now has {len(final_files)} files")
+        for f in final_files:
+            _logger.info(f"  - File {f.id}: {f.name}")
+        
         # Step 5: Show success message and return to container
         message = _(
             'Container %s indexed successfully!\n'
@@ -258,21 +266,34 @@ class ContainerIndexingWizard(models.TransientModel):
                 container_barcode = self.container_id.barcode or self.barcode or 'TEMP'
                 temp_barcode = f"{container_barcode}-FILE{file_line.sequence:02d}"
             
+            # Get partner_id safely
+            partner_id = False
+            if file_line.partner_id:
+                partner_id = file_line.partner_id.id
+            elif self.container_id.partner_id:
+                partner_id = self.container_id.partner_id.id
+                
             file_vals = {
                 'name': file_line.name,
-                'description': file_line.description,
+                'description': file_line.description or '',
                 'container_id': self.container_id.id,
-                'partner_id': file_line.partner_id.id or self.container_id.partner_id.id,
-                'file_category': file_line.file_category,
-                'received_date': file_line.received_date,
-                'barcode': file_line.barcode,  # Physical barcode if assigned
-                'temp_barcode': temp_barcode,  # Generated temp barcode
+                'partner_id': partner_id,
+                'file_category': file_line.file_category or 'general',
+                'received_date': file_line.received_date or fields.Date.today(),
+                'barcode': file_line.barcode or False,  # Physical barcode if assigned
+                'temp_barcode': temp_barcode or False,  # Generated temp barcode
             }
             
             _logger.info(f"Creating file: {file_vals}")
-            file_record = self.env['records.file'].create(file_vals)
-            _logger.info(f"Created file record ID: {file_record.id}, name: {file_record.name}")
-            files_created.append(file_record)
+            try:
+                # Use sudo() to ensure we have proper access rights
+                file_record = self.env['records.file'].sudo().create(file_vals)
+                _logger.info(f"Created file record ID: {file_record.id}, name: {file_record.name}")
+                _logger.info(f"File container relationship: file.container_id = {file_record.container_id.id}")
+                files_created.append(file_record)
+            except Exception as e:
+                _logger.error(f"Failed to create file: {e}")
+                raise
         
         _logger.info(f"=== FILE CREATION COMPLETE: {len(files_created)} files ===")
         return files_created
