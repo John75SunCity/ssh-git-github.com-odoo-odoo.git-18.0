@@ -1492,6 +1492,16 @@ class RecordsManagementController(http.Controller):
         
         Security Layer Pattern: Use sudo() for model access but maintain data filtering
         """
+        # Permission check: All portal user types can view inventory
+        user = request.env.user
+        if not (user.has_group("records_management.group_records_user") or
+               user.has_group("records_management.group_records_manager") or
+               user.has_group("records_management.group_portal_company_admin") or
+               user.has_group("records_management.group_portal_department_admin") or
+               user.has_group("records_management.group_portal_department_user") or
+               user.has_group("records_management.group_portal_readonly")):
+            return request.render("website.403")
+
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
         commercial_partner = partner.commercial_partner_id

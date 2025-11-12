@@ -1433,6 +1433,19 @@ class RecordsManagementPortal(CustomerPortal):
     @http.route(['/my/request/new/pickup/submit'], type='http', auth='user', methods=['POST'], website=True, csrf=True)
     def portal_pickup_request_create(self, **kw):
         """Create a new pickup request from portal"""
+        # Check permissions - all portal users except read-only can create pickup requests
+        user = request.env.user
+        can_create_pickup = (
+            user.has_group("records_management.group_records_user") or
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin") or
+            user.has_group("records_management.group_portal_department_user")
+        )
+        
+        if not can_create_pickup:
+            return request.redirect('/my/request/new/pickup?error=insufficient_permissions')
+
         try:
             partner = request.env.user.partner_id
 
@@ -1490,6 +1503,19 @@ class RecordsManagementPortal(CustomerPortal):
     @http.route(['/my/request/new/destruction/submit'], type='http', auth='user', methods=['POST'], website=True, csrf=True)
     def portal_destruction_request_create(self, **kw):
         """Create a new destruction request from portal"""
+        # Check permissions - all portal users except read-only can create destruction requests
+        user = request.env.user
+        can_create_destruction = (
+            user.has_group("records_management.group_records_user") or
+            user.has_group("records_management.group_records_manager") or
+            user.has_group("records_management.group_portal_company_admin") or
+            user.has_group("records_management.group_portal_department_admin") or
+            user.has_group("records_management.group_portal_department_user")
+        )
+        
+        if not can_create_destruction:
+            return request.redirect('/my/request/new/destruction?error=insufficient_permissions')
+
         try:
             partner = request.env.user.partner_id
 
