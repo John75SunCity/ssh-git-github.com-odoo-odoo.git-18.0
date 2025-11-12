@@ -242,6 +242,10 @@ class RecordsContainer(models.Model):
     document_ids = fields.One2many("records.document", "container_id", string="Documents")
     document_count = fields.Integer(compute="_compute_document_count", string="Document Count", store=True)
 
+    # File Folder Management
+    file_ids = fields.One2many("records.file", "container_id", string="File Folders")
+    file_count = fields.Integer(compute="_compute_file_count", string="File Count", store=True)
+
     # ============================================================================
     # BILLING & RATES (Derived from customer rates, then container type)
     # ============================================================================
@@ -422,11 +426,11 @@ class RecordsContainer(models.Model):
                 if record.quant_id and record.location_id:
                     old_location = record.quant_id.location_id
                     new_location = record.location_id
-                    
+
                     if old_location != new_location:
                         # Update quant location to match container
                         record.quant_id.sudo().write({'location_id': new_location.id})
-                        
+
                         # Create movement record for audit trail
                         record.create_movement(
                             to_location=new_location,
@@ -471,6 +475,11 @@ class RecordsContainer(models.Model):
     def _compute_document_count(self):
         for container in self:
             container.document_count = len(container.document_ids)
+
+    @api.depends("file_ids")
+    def _compute_file_count(self):
+        for container in self:
+            container.file_count = len(container.file_ids)
 
     @api.depends("storage_start_date", "retention_policy_id.retention_years", "permanent_retention")
     def _compute_destruction_due_date(self):
@@ -776,6 +785,51 @@ class RecordsContainer(models.Model):
             "view_mode": "tree,form",
             "domain": [("container_id", "=", self.id)],
             "context": {"default_container_id": self.id},
+        }
+
+    def action_view_files(self):
+        """View all file folders in this container"""
+        self.ensure_one()
+        return {
+            "name": _("File Folders in Container %s", self.name),
+            "type": "ir.actions.act_window",
+            "res_model": "records.file",
+            "view_mode": "tree,form",
+            "domain": [("container_id", "=", self.id)],
+            "context": {"default_container_id": self.id},
+        }
+
+    def action_add_files(self):
+        """Add files to this container"""
+        self.ensure_one()
+        return {
+            "name": _("Add Files to Container %s", self.name),
+            "type": "ir.actions.act_window",
+            "res_model": "records.file",
+            "view_mode": "tree,form",
+            "domain": [("container_id", "=", False), ("partner_id", "=", self.partner_id.id)],
+            "context": {
+                "default_container_id": self.id,
+                "default_partner_id": self.partner_id.id,
+                "search_default_available": 1,
+            },
+            "target": "new",
+        }
+
+    def action_remove_files(self):
+        """Remove files from this container"""
+        self.ensure_one()
+        return {
+            "name": _("Remove Files from Container %s", self.name),
+            "type": "ir.actions.act_window",
+            "res_model": "records.file",
+            "view_mode": "tree",
+            "domain": [("container_id", "=", self.id)],
+            "context": {
+                "container_remove_mode": True,
+                "active_container_id": self.id,
+            },
+            "target": "new",
         }
 
     def action_generate_barcode(self):
@@ -1335,14 +1389,14 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # ENHANCED STOCK INTEGRATION METHODS
     # ============================================================================
-    
+
     def get_stock_summary(self):
         """
         Customer-friendly stock summary for portal display.
         Returns comprehensive stock status and location information.
         """
         self.ensure_one()
-        
+
         # Get stock quant information
         quant_data = {}
         if self.quant_id:
@@ -1352,10 +1406,10 @@ class RecordsContainer(models.Model):
                 'last_update': self.quant_id.write_date,
                 'owner': self.quant_id.owner_id.name if self.quant_id.owner_id else None,
             }
-        
+
         # Get movement summary
         movement_summary = self._get_movement_summary()
-        
+
         return {
             'container_name': self.name,
             'barcode': self.barcode or self.temp_barcode,
@@ -1365,22 +1419,22 @@ class RecordsContainer(models.Model):
             'movement_summary': movement_summary,
             'partner_name': self.partner_id.name,
         }
-    
+
     def _get_movement_summary(self):
         """Get movement summary statistics"""
         total_movements = len(self.movement_ids)
         recent_movements = self.movement_ids.filtered(
-            lambda m: m.movement_date and 
+            lambda m: m.movement_date and
             (fields.Datetime.now() - m.movement_date).days <= 30
         )
-        
+
         return {
             'total_movements': total_movements,
             'recent_movements': len(recent_movements),
             'last_movement_date': self.last_movement_date,
             'last_movement_location': self.last_movement_location,
         }
-    
+
     def move_to_location(self, location, reason=None, movement_type='location_change'):
         """
         Move container to new location with comprehensive tracking.
@@ -1394,37 +1448,37 @@ class RecordsContainer(models.Model):
             records.stock.movement record
         """
         self.ensure_one()
-        
+
         # Create movement record
         movement = self.create_movement(
             to_location=location,
             movement_type=movement_type,
             reason=reason
         )
-        
+
         # Confirm the movement (updates quant and location)
         movement.action_confirm()
-        
+
         return movement
-    
+
     def sync_with_stock_quant(self):
         """
         Synchronize container location with stock quant location.
         Called automatically when quant location changes.
         """
         self.ensure_one()
-        
+
         if not self.quant_id:
             return
-        
+
         # Check if locations are out of sync
         if self.location_id != self.quant_id.location_id:
             old_location = self.location_id
             new_location = self.quant_id.location_id
-            
+
             # Update container location to match quant
             self.write({'location_id': new_location.id})
-            
+
             # Create automatic movement record
             self.env['records.stock.movement'].sudo().create_movement(
                 container=self,
@@ -1432,7 +1486,7 @@ class RecordsContainer(models.Model):
                 movement_type='adjustment',
                 reason=f'Auto-sync with stock system. Previous location: {old_location.complete_name if old_location else "Unknown"}',
             )
-            
+
             # Log the sync
             self.message_post(
                 body=_("Location automatically synchronized with stock system: %s → %s") % (
@@ -1441,7 +1495,7 @@ class RecordsContainer(models.Model):
                 ),
                 message_type='notification'
             )
-    
+
     @api.model
     def sync_all_containers_with_stock(self):
         """
@@ -1450,17 +1504,17 @@ class RecordsContainer(models.Model):
         """
         containers = self.search([('quant_id', '!=', False)])
         synced_count = 0
-        
+
         for container in containers:
             if container.location_id != container.quant_id.location_id:
                 container.sync_with_stock_quant()
                 synced_count += 1
-        
+
         if synced_count > 0:
             _logger.info(f"Synchronized {synced_count} containers with stock system")
-        
+
         return synced_count
-    
+
     def get_stock_movement_history(self, limit=None, movement_type=None):
         """
         Get formatted movement history for this container.
@@ -1473,17 +1527,17 @@ class RecordsContainer(models.Model):
             list of formatted movement data
         """
         self.ensure_one()
-        
+
         domain = [('container_id', '=', self.id)]
         if movement_type:
             domain.append(('movement_type', '=', movement_type))
-        
+
         movements = self.env['records.stock.movement'].search(
-            domain, 
+            domain,
             order='movement_date desc',
             limit=limit
         )
-        
+
         return movements.get_portal_movements(self.partner_id)['movements']
 
     # ============================================================================

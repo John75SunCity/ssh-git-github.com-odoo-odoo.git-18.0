@@ -2107,14 +2107,38 @@ class RecordsManagementController(http.Controller):
         try:
             file_ids = post.get('file_ids', [])
             container_id = post.get('container_id')
+            
+            # Validate inputs
+            if not file_ids or not container_id:
+                return {'success': False, 'error': 'Missing file IDs or container ID'}
+            
+            # Convert to integers if they're strings
+            if isinstance(file_ids, str):
+                file_ids = [int(file_ids)]
+            elif isinstance(file_ids, list):
+                file_ids = [int(f_id) for f_id in file_ids if str(f_id).isdigit()]
+            
+            container_id = int(container_id) if container_id else None
+            
+            if not file_ids or not container_id:
+                return {'success': False, 'error': 'Invalid file IDs or container ID'}
 
             files = request.env['records.file'].browse(file_ids)
             container = request.env['records.container'].sudo().browse(container_id)
 
             # Security check
             partner = request.env.user.partner_id.commercial_partner_id
-            if container.partner_id != partner or any(f.partner_id != partner for f in files):
-                return {'success': False, 'error': 'Access denied'}
+            
+            # Check container access
+            if not container.exists() or container.partner_id != partner:
+                return {'success': False, 'error': 'Container access denied'}
+            
+            # Check file access
+            for file_rec in files:
+                if not file_rec.exists():
+                    return {'success': False, 'error': f'File {file_rec.id} not found'}
+                if hasattr(file_rec, 'partner_id') and file_rec.partner_id and file_rec.partner_id != partner:
+                    return {'success': False, 'error': f'File {file_rec.name} access denied'}
 
             # Update file locations
             files.write({'container_id': container_id})
@@ -2124,8 +2148,10 @@ class RecordsManagementController(http.Controller):
                 'message': f'{len(files)} files added to container {container.name}'
             }
 
+        except ValueError as e:
+            return {'success': False, 'error': f'Invalid data format: {str(e)}'}
         except Exception as e:
-            return {'success': False, 'error': str(e)}
+            return {'success': False, 'error': f'Server error: {str(e)}'}
 
     # ============================================================================
     # OVERVIEW TAB DATA ROUTES

@@ -218,6 +218,13 @@ Destroy Container</a>
                 <button name="action_destroy" type="object" string="Destroy Container" class="btn-danger" invisible="state != 'pending_destruction'"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
                 <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
+                <!-- File Management Buttons -->
+                <button name="action_add_files" type="object" string="Add Files" class="btn-success" 
+                        invisible="state in ['destroyed', 'pending_destruction']"
+                        help="Add file folders to this container"/>
+                <button name="action_remove_files" type="object" string="Remove Files" class="btn-warning"
+                        invisible="state in ['destroyed', 'pending_destruction'] or file_count == 0"
+                        help="Remove file folders from this container"/>
                 <!-- Modernized visibility: use barcode_assigned compute field instead of deprecated attrs expression -->
                 <button name="%(action_records_container_assign_barcode_wizard)d" type="action" string="Assign Physical Barcode" class="btn-secondary" invisible="barcode_assigned"/>
         <field name="state" widget="statusbar" statusbar_visible="draft,active,pending_pickup,in_storage,in_transit,retrieved,pending_destruction,destroyed"/>
@@ -226,6 +233,9 @@ Destroy Container</a>
                 <div class="oe_button_box" name="button_box">
 <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o" title="View Documents">
         <field name="document_count" string="Documents" widget="statinfo"/>
+                    </button>
+                    <button class="oe_stat_button" type="object" name="action_view_files" icon="fa-folder-o" title="View File Folders">
+                        <field name="file_count" string="File Folders" widget="statinfo"/>
                     </button>
 
                     <!-- ✅ NEW: Stock Quant smart button -->
@@ -363,6 +373,26 @@ Destroy Container</a>
         <field name="document_type_id"/>
         <field name="state"/>
         <field name="description"/>
+                                </group>
+                            </form>
+                        </field>
+                    </page>
+                    <page string="File Folders" name="files">
+        <field name="file_ids" mode="list,form" context="{'default_container_id': id}">
+                            <list string="File Folders">
+                                <field name="name"/>
+                                <field name="barcode"/>
+                                <field name="location_id"/>
+                                <field name="partner_id"/>
+                                <field name="create_date"/>
+                            </list>
+                            <form string="File Folder">
+                                <group>
+                                    <field name="name"/>
+                                    <field name="barcode"/>
+                                    <field name="container_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="location_id"/>
                                 </group>
                             </form>
                         </field>
