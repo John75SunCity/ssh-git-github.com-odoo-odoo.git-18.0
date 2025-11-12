@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
+<odoo noupdate="0">
     <data>
         <!-- Training Channel for Customer Records Management -->
         <record id="slide_channel_customer_records_setup" model="slide.channel">
