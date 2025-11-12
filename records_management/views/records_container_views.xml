@@ -206,7 +206,7 @@ Destroy Container</a>
         <form>
             <header>
                 <!-- ✅ NEW: Index Container button (creates stock quant) -->
-                <button name="action_index_container" type="object" string="Index Container & Add Files"
+                <button name="action_index_container" type="object" string="Index Container &amp; Add Files"
                         class="btn-primary"
                         invisible="state != 'draft'"
                         help="Index container with barcode scanning and bulk file addition in one step"/>

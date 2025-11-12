@@ -105,7 +105,7 @@ class ContainerIndexingWizard(models.TransientModel):
         created_files = self._create_files_from_grid()
         
         # Step 4: Index container (create stock quant, set active)
-        container._index_container_with_files(created_files)
+        self._complete_container_indexing(container, created_files)
         
         # Step 5: Show success message and open container
         return {
@@ -162,6 +162,26 @@ class ContainerIndexingWizard(models.TransientModel):
         return {
             'type': 'ir.actions.do_nothing',
         }
+    
+    def _complete_container_indexing(self, container, created_files):
+        """Complete the container indexing process"""
+        # Create stock quant if not exists
+        if not container.quant_id:
+            container._create_stock_quant()
+
+        # Update container state
+        container.write({
+            'state': 'active',
+        })
+
+        # Post message
+        files_msg = ""
+        if created_files:
+            files_msg = _(" and %d files created") % len(created_files)
+        
+        container.message_post(
+            body=_("Container indexed with barcode %s%s") % (container.barcode, files_msg)
+        )
 
 
 class ContainerIndexingWizardFile(models.TransientModel):

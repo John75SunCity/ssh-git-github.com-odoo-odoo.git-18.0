@@ -6,10 +6,10 @@
             <field name="name">container.indexing.wizard.form</field>
             <field name="model">container.indexing.wizard</field>
             <field name="arch" type="xml">
-                <form string="Index Container & Add Files">
+                <form string="Index Container &amp; Add Files">
                     <header>
                         <button name="action_index_container" 
-                                string="Index Container & Create Files" 
+                                string="Index Container &amp; Create Files" 
                                 type="object" 
                                 class="btn-primary"/>
                         <button string="Cancel" class="btn-secondary" special="cancel"/>
@@ -20,7 +20,7 @@
                                 <field name="container_name" readonly="1"/>
                             </h1>
                             <h3>
-                                Index Container & Add Files
+                                Index Container &amp; Add Files
                             </h3>
                         </div>
                         
@@ -44,7 +44,7 @@
                                     <div class="col-12">
                                         <p class="text-muted">
                                             <i class="fa fa-info-circle"/> Add file folders to this container. 
-                                            Enter file names and descriptions, then click "Index Container & Create Files" to complete the process.
+                                            Enter file names and descriptions, then click "Index Container &amp; Create Files" to complete the process.
                                         </p>
                                     </div>
                                 </div>
@@ -91,7 +91,7 @@
                                                 <li><strong>Add Files:</strong> Create file folder entries for each physical file folder going into this container.</li>
                                                 <li><strong>Enter Details:</strong> Provide names, descriptions, categories, and dates for each file.</li>
                                                 <li><strong>Physical Barcodes (Optional):</strong> If you have pre-printed barcodes for individual files, scan them now.</li>
-                                                <li><strong>Complete Indexing:</strong> Click "Index Container & Create Files" to activate the container and create all files.</li>
+                                                <li><strong>Complete Indexing:</strong> Click "Index Container &amp; Create Files" to activate the container and create all files.</li>
                                             </ol>
                                             
                                             <div class="alert alert-info mt-4">
@@ -115,7 +115,7 @@
 
         <!-- Wizard Action -->
         <record id="action_container_indexing_wizard" model="ir.actions.act_window">
-            <field name="name">Index Container & Add Files</field>
+            <field name="name">Index Container &amp; Add Files</field>
             <field name="res_model">container.indexing.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
