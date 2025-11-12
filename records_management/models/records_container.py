@@ -1214,16 +1214,17 @@ class RecordsContainer(models.Model):
 
     def action_index_container(self):
         """
-        Launch indexing wizard to index container and add files in one step.
+        Launch Container Indexing Service wizard.
         
-        Replaces separate "Index Container" and "Add Files" buttons with unified workflow.
-        Allows bulk file addition during container indexing process.
+        Creates a complete manifest of ALL files in the container with barcodes
+        for premium customers who want comprehensive tracking. This is different
+        from on-the-fly file addition during retrieval requests.
         """
         self.ensure_one()
         
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Index Container & Add Files'),
+            'name': _('Container Indexing Service - Complete Manifest'),
             'res_model': 'container.indexing.wizard',
             'view_mode': 'form',
             'target': 'new',

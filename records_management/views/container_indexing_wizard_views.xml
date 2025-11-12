@@ -31,10 +31,10 @@
             <field name="name">container.indexing.wizard.form</field>
             <field name="model">container.indexing.wizard</field>
             <field name="arch" type="xml">
-                <form string="Index Container &amp; Add Files">
+                <form string="Container Indexing Service - Complete Manifest">
                     <header>
                         <button name="action_index_container" 
-                                string="Index Container &amp; Create Files" 
+                                string="Complete Container Indexing" 
                                 type="object" 
                                 class="btn-primary"/>
                         <button string="Cancel" class="btn-secondary" special="cancel"/>
@@ -45,8 +45,11 @@
                                 <field name="container_name" readonly="1"/>
                             </h1>
                             <h3>
-                                Index Container &amp; Add Files
+                                Container Indexing Service
                             </h3>
+                            <p class="text-muted">
+                                Create a complete manifest of ALL files in this container with barcodes and metadata
+                            </p>
                         </div>
                         
                         <group>
@@ -68,8 +71,8 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <p class="text-muted">
-                                            <i class="fa fa-info-circle"/> Add file folders to this container. 
-                                            Enter file names and descriptions, then click "Index Container &amp; Create Files" to complete the process.
+                                            <i class="fa fa-clipboard-list"/> Create a complete manifest of ALL files in this container. 
+                                            Enter every file with names, descriptions, and metadata for complete tracking and retrieval.
                                         </p>
                                     </div>
                                 </div>
@@ -112,22 +115,24 @@
                                 <div class="container-fluid">
                                     <div class="row">
                                         <div class="col-12">
-                                            <h4><i class="fa fa-list-ol"/> Container Indexing Process</h4>
+                                            <h4><i class="fa fa-clipboard-list"/> Container Indexing Service</h4>
+                                            <p><strong>This service creates a complete manifest of ALL files in the container for premium tracking.</strong></p>
+                                            
                                             <ol class="mt-3">
-                                                <li><strong>Scan Physical Barcode:</strong> Use the barcode scanner to assign the pre-printed barcode to this container.</li>
-                                                <li><strong>Add Files:</strong> Create file folder entries for each physical file folder going into this container.</li>
-                                                <li><strong>Enter Details:</strong> Provide names, descriptions, categories, and dates for each file.</li>
-                                                <li><strong>Physical Barcodes (Optional):</strong> If you have pre-printed barcodes for individual files, scan them now.</li>
-                                                <li><strong>Complete Indexing:</strong> Click "Index Container &amp; Create Files" to activate the container and create all files.</li>
+                                                <li><strong>Scan Container Barcode:</strong> Assign the pre-printed barcode to this container.</li>
+                                                <li><strong>Catalog ALL Files:</strong> Create entries for EVERY file folder in this container.</li>
+                                                <li><strong>Complete Metadata:</strong> Enter names, descriptions, categories, and dates for comprehensive tracking.</li>
+                                                <li><strong>Assign File Barcodes:</strong> Each file gets a barcode for individual tracking.</li>
+                                                <li><strong>Complete Manifest:</strong> Click "Complete Container Indexing" to activate full tracking.</li>
                                             </ol>
                                             
                                             <div class="alert alert-info mt-4">
-                                                <h5><i class="fa fa-lightbulb-o"/> Tips</h5>
+                                                <h5><i class="fa fa-lightbulb-o"/> Indexing vs. On-the-Fly File Addition</h5>
                                                 <ul>
-                                                    <li>Temporary barcodes will be auto-generated for files without physical barcodes</li>
-                                                    <li>You can add more file rows using the "Add Another File" button</li>
-                                                    <li>Only files with names will be created - empty rows are ignored</li>
-                                                    <li>The container will be activated and added to inventory tracking after indexing</li>
+                                                    <li><strong>Container Indexing:</strong> Complete manifest of ALL files for premium customers who want perfect tracking</li>
+                                                    <li><strong>On-the-Fly Addition:</strong> Individual file records created during retrieval requests from non-indexed containers</li>
+                                                    <li><strong>Use Date/Sequence Ranges:</strong> Non-indexed containers rely on exterior labels to locate files during requests</li>
+                                                    <li><strong>Barcode Everything:</strong> Indexed files get individual barcodes for precise location tracking</li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -142,7 +147,7 @@
 
         <!-- Wizard Action -->
         <record id="action_container_indexing_wizard" model="ir.actions.act_window">
-            <field name="name">Index Container &amp; Add Files</field>
+            <field name="name">Container Indexing Service - Complete Manifest</field>
             <field name="res_model">container.indexing.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>

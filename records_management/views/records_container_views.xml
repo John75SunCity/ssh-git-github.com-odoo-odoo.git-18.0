@@ -206,10 +206,10 @@ Destroy Container</a>
         <form>
             <header>
                 <!-- ✅ NEW: Index Container button (creates stock quant) -->
-                <button name="action_index_container" type="object" string="Index Container &amp; Add Files"
+                <button name="action_index_container" type="object" string="Container Indexing Service"
                         class="btn-primary"
                         invisible="state != 'draft'"
-                        help="Index container with barcode scanning and bulk file addition in one step"/>
+                        help="Create complete manifest of ALL files in container with barcodes for premium tracking"/>
 
                 <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/>
                 <button name="action_store_container" type="object" string="Store Container" class="btn-primary" invisible="state != 'active'"/>
@@ -219,9 +219,9 @@ Destroy Container</a>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
                 <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
                 <!-- File Management Buttons -->
-                <button name="action_add_files" type="object" string="Add More Files" class="btn-success" 
-                        invisible="state in ['draft', 'destroyed', 'pending_destruction']"
-                        help="Add additional file folders to this indexed container"/>
+                <button name="action_add_files" type="object" string="Add Individual Files" class="btn-success" 
+                        invisible="state in ['destroyed', 'pending_destruction']"
+                        help="Add individual file records (for retrieval requests or additional files found in container)"/>
                 <button name="action_remove_files" type="object" string="Remove Files" class="btn-warning"
                         invisible="state in ['destroyed', 'pending_destruction'] or file_count == 0"
                         help="Remove file folders from this container"/>
