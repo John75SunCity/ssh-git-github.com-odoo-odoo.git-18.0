@@ -248,7 +248,7 @@ class ContainerIndexingWizard(models.TransientModel):
         return files_created
     
     def action_add_file_row(self):
-        """Add another file row to the grid"""
+        """Add another file row to the grid for a new separate file"""
         max_sequence = max(self.file_ids.mapped('sequence') or [0])
         self.write({
             'file_ids': [(0, 0, {
@@ -257,8 +257,14 @@ class ContainerIndexingWizard(models.TransientModel):
             })]
         })
         
+        # Return action to reload the wizard form to show the new row
         return {
-            'type': 'ir.actions.do_nothing',
+            'type': 'ir.actions.act_window',
+            'res_model': 'container.indexing.wizard',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new',
+            'context': self.env.context,
         }
     
     def _complete_container_indexing(self, container, created_files):
