@@ -198,7 +198,7 @@ graph TD
 
         <!-- Slide 3: FSM Labor Charges -->
         <record id="slide_fsm_labor" model="slide.slide">
-            <field name="name">FSM Labor & Timesheet Charges</field>
+            <field name="name">FSM Labor &amp; Timesheet Charges</field>
             <field name="channel_id" ref="slide_channel_billing_flowchart"/>
             <field name="slide_type">article</field>
             <field name="is_published">true</field>
@@ -207,7 +207,7 @@ graph TD
             <field name="sequence">3</field>
             <field name="html_content"><![CDATA[
 <div class="container">
-    <h2>⏱️ FSM Labor & Timesheet Billing</h2>
+    <h2>⏱️ FSM Labor &amp; Timesheet Billing</h2>
 
     <h3>Process Overview</h3>
     <div class="mermaid">
@@ -411,7 +411,7 @@ flowchart LR
         <li><strong>NAID Compliance:</strong> Immutable audit logs attached</li>
     </ul>
 
-    <h3>🔐 Security & Compliance</h3>
+    <h3>🔐 Security &amp; Compliance</h3>
     <div class="alert alert-danger">
         <strong>Chain of Custody:</strong> Every invoice includes:
         <ul class="mb-0">
