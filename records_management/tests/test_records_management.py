@@ -20,7 +20,7 @@ class TestRecordsManagement(TransactionCase):
         cls.product_container = cls.env["product.product"].create(
             {
                 "name": "Test Container",
-                "type": "product",
+                "detailed_type": "product",  # Odoo 18.0 compatibility
                 "tracking": "lot",
             }
         )

@@ -266,7 +266,7 @@ class RecordsFile(models.Model):
             product = self.env['product.product'].create({
                 'name': 'Records File Folder',
                 'default_code': 'RM-FILE-FOLDER',
-                'type': 'product',
+                'detailed_type': 'product',  # Odoo 18.0 compatibility
                 'tracking': 'serial',
                 'categ_id': self.env.ref('stock.product_category_all').id,
             })
