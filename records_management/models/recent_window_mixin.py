@@ -60,13 +60,16 @@ class RMRecentWindowMixin(models.AbstractModel):
             try:
                 prefix, logical = self._rm_parse_virtual_search_name(name)
             except ValueError:
-                return super().__getattr__(name)
+                # In Odoo 18.0, we need to raise AttributeError directly
+                raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
 
             def dynamic_search(op, value):
                 return self._rm_build_dynamic_domain(prefix, logical, op, value)
 
             return dynamic_search
-        return super().__getattr__(name)
+        
+        # In Odoo 18.0, we need to raise AttributeError directly instead of calling super().__getattr__
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
 
     # ------------------------------------------------------------------
     # Parsing helpers

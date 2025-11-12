@@ -992,7 +992,7 @@ class RecordsContainer(models.Model):
                 self.partner_id.name,
                 self.department_id.name if self.department_id else 'N/A'
             ),
-            'container_id': self.id,
+            'container_ids': [(6, 0, [self.id])],
         }
 
         pickup_task = self.env['project.task'].create(task_vals)
@@ -1201,7 +1201,7 @@ class RecordsContainer(models.Model):
             product = self.env['product.product'].create({
                 'name': 'Records Container (Generic)',
                 'default_code': 'RECORDS-CONTAINER',
-                'product_type': 'product',  # Storable product for Odoo 18.0
+                'detailed_type': 'product',  # Storable product for Odoo 18.0
                 'categ_id': self.env.ref('product.product_category_all').id,
                 'list_price': 0.0,
                 'standard_price': 0.0,
@@ -1221,7 +1221,7 @@ class RecordsContainer(models.Model):
         from on-the-fly file addition during retrieval requests.
         """
         self.ensure_one()
-        
+
         return {
             'type': 'ir.actions.act_window',
             'name': _('Container Indexing Service - Complete Manifest'),
@@ -1246,14 +1246,14 @@ class RecordsContainer(models.Model):
             file_data_list (list): List of file dictionaries to create
         """
         self.ensure_one()
-        
+
         if self.state != 'draft':
             raise UserError(_("Only draft containers can be indexed"))
-        
+
         # Assign barcode
         if barcode and barcode != self.barcode:
             self.barcode = barcode
-        
+
         # Validate barcode assigned
         if not self.barcode:
             raise UserError(_(
@@ -1291,11 +1291,11 @@ class RecordsContainer(models.Model):
         files_msg = ""
         if created_files:
             files_msg = _(" and %d files created") % len(created_files)
-        
+
         self.message_post(
             body=_("Container indexed with barcode %s%s") % (self.barcode, files_msg)
         )
-        
+
         return {
             'created_files_count': len(created_files),
             'created_file_names': [f.name for f in created_files]
