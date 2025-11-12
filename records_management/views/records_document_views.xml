@@ -123,6 +123,7 @@
                     <field name="name" string="Document" />
                     <field name="document_type_id" string="Type" />
                     <field name="partner_id" string="Customer" />
+                    <field name="stock_owner_id" string="Stock Owner" groups="records_management.group_records_manager" />
                     <field name="container_id" string="Container" />
                     <field name="is_permanent" string="Permanent" widget="boolean" />
                     <field name="retention_policy_id" string="Retention Policy" />
@@ -174,6 +175,7 @@
                                 <field name="name" placeholder="e.g., Invoice-2024-001" />
                                 <field name="document_type_id" />
                                 <field name="partner_id" />
+                                <field name="stock_owner_id" groups="records_management.group_records_manager" readonly="1" />
                                 <field name="department_id" />
                                 <field name="container_id" />
                             </group>
@@ -303,6 +305,7 @@
                     <filter string="Accessed Last 30 Days" name="recent_access" domain="[('is_recent_30d_last_access', '=', True)]" />
                     <group expand="0" string="Group By">
                         <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}" />
+                        <filter string="Stock Owner" name="group_by_stock_owner" context="{'group_by': 'stock_owner_id'}" groups="records_management.group_records_manager" />
                         <filter string="Document Type" name="group_by_type" context="{'group_by': 'document_type_id'}" />
                         <filter string="Container" name="group_by_container" context="{'group_by': 'container_id'}" />
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}" />
