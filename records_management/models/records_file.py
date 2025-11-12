@@ -272,12 +272,14 @@ class RecordsFile(models.Model):
             }
             
             # Use the correct field name based on Odoo version
+            # In Odoo 18+, use 'detailed_type' with 'storable' for serial tracking
+            # In older versions, use 'type' with 'product' for storable items
             if hasattr(self.env['product.product'], '_fields') and 'detailed_type' in self.env['product.product']._fields:
-                # Odoo 18.0+
-                product_vals['detailed_type'] = 'product'
+                # Odoo 18.0+ - Use 'storable' for serial number tracking
+                product_vals['detailed_type'] = 'storable'
             else:
-                # Odoo 17.0 and earlier
-                product_vals['type'] = 'product'
+                # Odoo 17.0 and earlier - Use 'product' for storable items with tracking
+                product_vals['type'] = 'consu'
                 
             product = self.env['product.product'].create(product_vals)
         
