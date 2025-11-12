@@ -74,14 +74,15 @@ class ContainerIndexingWizardFile(models.TransientModel):
         help='Preview of auto-generated temporary barcode'
     )
     
-    @api.depends('wizard_id.container_id', 'sequence')
+    @api.depends('wizard_id.container_id', 'wizard_id.barcode', 'sequence', 'name')
     def _compute_temp_barcode_preview(self):
         """Show preview of what temp barcode will be generated"""
         for record in self:
             if record.wizard_id.container_id and record.name:
-                container = record.wizard_id.container_id
-                # Preview format: CONTAINER_TEMP-FILE01, CONTAINER_TEMP-FILE02, etc.
-                preview = f"{container.temp_barcode or 'TEMP'}-FILE{record.sequence:02d}"
+                # Use the same logic as in file creation
+                container_barcode = (record.wizard_id.container_id.barcode or 
+                                   record.wizard_id.barcode or 'TEMP')
+                preview = f"{container_barcode}-FILE{record.sequence:02d}"
                 record.temp_barcode_preview = preview
             else:
                 record.temp_barcode_preview = ""
@@ -140,12 +141,27 @@ class ContainerIndexingWizard(models.TransientModel):
                 'barcode': container.barcode,  # Pre-fill if already assigned
             })
             
-            # Add some default file slots for easy data entry
+            # Load existing files or add default empty slots
             if not res.get('file_ids'):
-                res['file_ids'] = [
-                    (0, 0, {'sequence': i, 'partner_id': container.partner_id.id}) 
-                    for i in range(1, 6)  # 5 empty file slots to start
-                ]
+                if container.file_ids:
+                    # Load existing files from container for editing
+                    res['file_ids'] = [
+                        (0, 0, {
+                            'sequence': i+1,
+                            'name': file.name,
+                            'description': file.description,
+                            'partner_id': file.partner_id.id,
+                            'file_category': file.file_category,
+                            'received_date': file.received_date,
+                            'barcode': file.barcode,
+                        }) for i, file in enumerate(container.file_ids)
+                    ]
+                else:
+                    # Add some default empty file slots for new data entry
+                    res['file_ids'] = [
+                        (0, 0, {'sequence': i, 'partner_id': container.partner_id.id}) 
+                        for i in range(1, 6)  # 5 empty file slots to start
+                    ]
         
         return res
     
@@ -184,25 +200,24 @@ class ContainerIndexingWizard(models.TransientModel):
         # Step 4: Index container (create stock quant, set active)
         self._complete_container_indexing(container, created_files)
         
-        # Step 5: Show success message and open container
+        # Step 5: Show success message and return to container
+        message = _(
+            'Container %s indexed successfully!\n'
+            'Created %d files with temporary barcodes.\n'
+            'Physical Barcode: %s'
+        ) % (container.name, len(created_files), container.barcode)
+        
+        # Post success message
+        container.message_post(body=message)
+        
+        # Return to container form view to show the created files
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Container Indexed Successfully'),
-                'message': _(
-                    'Container %s indexed with %d files. '
-                    'Barcode: %s'
-                ) % (container.name, len(created_files), container.barcode),
-                'type': 'success',
-                'next': {
-                    'type': 'ir.actions.act_window',
-                    'res_model': 'records.container',
-                    'res_id': container.id,
-                    'view_mode': 'form',
-                    'target': 'current',
-                }
-            }
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.container',
+            'res_id': container.id,
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {'active_tab': 'files'}  # Open Files tab by default
         }
     
     def _create_files_from_grid(self):
@@ -210,6 +225,12 @@ class ContainerIndexingWizard(models.TransientModel):
         files_created = []
         
         for file_line in self.file_ids.filtered(lambda f: f.name):  # Only create files with names
+            # Generate temp barcode if no physical barcode assigned and auto-generate is enabled
+            temp_barcode = None
+            if not file_line.barcode and self.auto_generate_temp_barcodes:
+                container_barcode = self.container_id.barcode or self.barcode or 'TEMP'
+                temp_barcode = f"{container_barcode}-FILE{file_line.sequence:02d}"
+            
             file_vals = {
                 'name': file_line.name,
                 'description': file_line.description,
@@ -218,7 +239,7 @@ class ContainerIndexingWizard(models.TransientModel):
                 'file_category': file_line.file_category,
                 'received_date': file_line.received_date,
                 'barcode': file_line.barcode,  # Physical barcode if assigned
-                # temp_barcode will be auto-generated if needed
+                'temp_barcode': temp_barcode,  # Generated temp barcode
             }
             
             file_record = self.env['records.file'].create(file_vals)

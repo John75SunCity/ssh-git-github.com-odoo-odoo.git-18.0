@@ -34,7 +34,7 @@
                 <form string="Container Indexing Service - Complete Manifest">
                     <header>
                         <button name="action_index_container" 
-                                string="Complete Container Indexing" 
+                                string="Generate Temp Barcodes &amp; Index Container" 
                                 type="object" 
                                 class="btn-primary"/>
                         <button string="Cancel" class="btn-secondary" special="cancel"/>
@@ -93,8 +93,9 @@
                                                placeholder="Physical barcode (optional)"
                                                widget="barcode"/>
                                         <field name="temp_barcode_preview" 
-                                               string="Auto Temp Barcode"
-                                               readonly="1"/>
+                                               string="🏷️ Temp Barcode (Auto)"
+                                               readonly="1"
+                                               attrs="{'invisible': [('name', '=', False)]}"/>
                                         <field name="partner_id" column_invisible="1"/>
                                     </list>
                                 </field>
@@ -123,7 +124,7 @@
                                                 <li><strong>Catalog ALL Files:</strong> Create entries for EVERY file folder in this container.</li>
                                                 <li><strong>Complete Metadata:</strong> Enter names, descriptions, categories, and dates for comprehensive tracking.</li>
                                                 <li><strong>Assign File Barcodes:</strong> Each file gets a barcode for individual tracking.</li>
-                                                <li><strong>Complete Manifest:</strong> Click "Complete Container Indexing" to activate full tracking.</li>
+                                                <li><strong>Complete Manifest:</strong> Click "Generate Temp Barcodes &amp; Index Container" to create files with barcodes and activate full tracking.</li>
                                             </ol>
                                             
                                             <div class="alert alert-info mt-4" role="alert">
