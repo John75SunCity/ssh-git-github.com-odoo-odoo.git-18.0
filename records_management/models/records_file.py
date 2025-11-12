@@ -107,6 +107,18 @@ class RecordsFile(models.Model):
         help="Customer who owns this file (inherited from container or owner)"
     )
     
+    stock_owner_id = fields.Many2one(
+        "res.partner",
+        string="Stock Owner",
+        tracking=True,
+        index=True,
+        compute='_compute_stock_owner_id',
+        store=True,
+        help="Inventory ownership hierarchy: Company → Department → Child Department. "
+             "Auto-filled from Container or Customer selection. "
+             "Organizational unit ownership (not individual users)."
+    )
+    
     # ============================================================================
     # DOCUMENT RELATIONSHIPS
     # ============================================================================
@@ -178,6 +190,19 @@ class RecordsFile(models.Model):
                 file.partner_id = file.container_id.partner_id.id
             else:
                 file.partner_id = False
+
+    @api.depends('container_id.stock_owner_id', 'partner_id')
+    def _compute_stock_owner_id(self):
+        """Compute stock owner from container or customer for organizational hierarchy"""
+        for file in self:
+            if file.container_id and file.container_id.stock_owner_id:
+                # Inherit from container's stock owner
+                file.stock_owner_id = file.container_id.stock_owner_id.id
+            elif file.partner_id:
+                # Use customer as stock owner
+                file.stock_owner_id = file.partner_id.id
+            else:
+                file.stock_owner_id = False
     
     # ============================================================================
     # LIFECYCLE METHODS
@@ -380,6 +405,103 @@ class RecordsFile(models.Model):
             'res_model': 'stock.move.line',
             'view_mode': 'tree,form',
             'domain': [('lot_id', '=', self.quant_id.lot_id.id)],
+        }
+
+    def action_upload_document(self):
+        """Upload new document/PDF to this file"""
+        self.ensure_one()
+        return {
+            'name': _('Upload Document to File: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document',
+            'view_mode': 'form',
+            'context': {
+                'default_file_id': self.id,
+                'default_container_id': self.container_id.id if self.container_id else False,
+                'default_partner_id': self.partner_id.id if self.partner_id else False,
+                'form_view_initial_mode': 'edit',
+            },
+            'target': 'new',
+        }
+    
+    def action_add_documents(self):
+        """Add existing documents to this file"""
+        self.ensure_one()
+        return {
+            'name': _('Add Documents to File: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document',
+            'view_mode': 'tree',
+            'domain': [('file_id', '=', False), ('partner_id', '=', self.partner_id.id if self.partner_id else False)],
+            'context': {
+                'default_file_id': self.id,
+                'default_container_id': self.container_id.id if self.container_id else False,
+                'search_default_available': 1,
+            },
+            'target': 'new',
+        }
+    
+    def action_remove_documents(self):
+        """Remove documents from this file"""
+        self.ensure_one()
+        return {
+            'name': _('Remove Documents from File: %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.document',
+            'view_mode': 'tree',
+            'domain': [('file_id', '=', self.id)],
+            'context': {
+                'file_remove_mode': True,
+                'active_file_id': self.id,
+            },
+            'target': 'new',
+        }
+
+    def action_view_container(self):
+        """View the container this file belongs to"""
+        self.ensure_one()
+        if not self.container_id:
+            raise UserError(_("This file is not assigned to any container."))
+        return {
+            'name': _('Container: %s') % self.container_id.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.container',
+            'res_id': self.container_id.id,
+            'view_mode': 'form',
+        }
+
+    def action_generate_barcode(self):
+        """Generate barcode for this file"""
+        self.ensure_one()
+        if not self.barcode and not self.temp_barcode:
+            # Generate temp barcode if none exists
+            self.temp_barcode = self.env['ir.sequence'].next_by_code('records.file.temp.barcode') or f"FILE-{self.id}"
+        
+        # Use existing barcode or temp barcode for printing
+        barcode_to_print = self.barcode or self.temp_barcode
+        
+        # Return print action (this would need a proper report template)
+        return {
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.report_file_barcode',
+            'report_type': 'qweb-pdf',
+            'data': {'barcode': barcode_to_print},
+            'context': self.env.context,
+        }
+
+    def action_generate_qr_code(self):
+        """Generate QR code for this file"""
+        self.ensure_one()
+        if not self.temp_barcode:
+            self.temp_barcode = self.env['ir.sequence'].next_by_code('records.file.temp.barcode') or f"FILE-{self.id}"
+        
+        # Return QR code generation action
+        return {
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.report_file_qrcode',
+            'report_type': 'qweb-pdf',
+            'data': {'qr_code': self.temp_barcode},
+            'context': self.env.context,
         }
     
     # ============================================================================

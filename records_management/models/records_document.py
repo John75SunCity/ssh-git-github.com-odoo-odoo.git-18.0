@@ -154,6 +154,18 @@ class RecordsDocument(models.Model):
         help="Customer who owns this document (from inventory tracking)"
     )
     
+    stock_owner_id = fields.Many2one(
+        "res.partner",
+        string="Stock Owner",
+        tracking=True,
+        index=True,
+        compute='_compute_stock_owner_id',
+        store=True,
+        help="Inventory ownership hierarchy: Company → Department → Child Department. "
+             "Auto-filled from File or Container selection. "
+             "Organizational unit ownership (not individual users)."
+    )
+    
     parent_quant_id = fields.Many2one(
         related='quant_id.parent_quant_id',
         string="Parent Item (File/Container)",
@@ -401,6 +413,18 @@ class RecordsDocument(models.Model):
                     record.barcode_image = False
             else:
                 record.barcode_image = False
+
+    @api.depends('file_id.stock_owner_id', 'container_id.stock_owner_id')
+    def _compute_stock_owner_id(self):
+        """Compute stock owner from file or container hierarchy"""
+        for record in self:
+            # Priority: file's stock owner > container's stock owner > None
+            if record.file_id and record.file_id.stock_owner_id:
+                record.stock_owner_id = record.file_id.stock_owner_id
+            elif record.container_id and record.container_id.stock_owner_id:
+                record.stock_owner_id = record.container_id.stock_owner_id
+            else:
+                record.stock_owner_id = False
 
     @api.depends('received_date', 'document_type_id.effective_retention_years', 'is_permanent')
     def _compute_destruction_eligible_date(self):

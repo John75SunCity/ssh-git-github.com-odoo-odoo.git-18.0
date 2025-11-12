@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<!-- ========================================== -->
+<!-- RECORDS FILE VIEWS -->
+<!-- ========================================== -->
+    <record id="records_file_view_kanban" model="ir.ui.view">
+        <field name="name">records.file.view.kanban</field>
+        <field name="model">records.file</field>
+        <field name="arch" type="xml">
+        <kanban default_group_by="state" class="o_kanban_file_dashboard">
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="stock_owner_id"/>
+        <field name="container_id"/>
+        <field name="location_id"/>
+        <field name="state"/>
+        <field name="create_date"/>
+        <field name="file_category"/>
+        <field name="document_count"/>
+        <field name="temp_barcode"/>
+        <field name="barcode"/>
+            <templates>
+                <t t-name="card">
+                    <div class="oe_kanban_card oe_kanban_global_click">
+                        <div class="o_kanban_card_header">
+                            <div class="o_kanban_card_header_title">
+                                <div class="o_primary">
+                                    <i class="fa fa-folder-o" title="File Folder" aria-hidden="true"/>
+                                    <field name="name"/>
+                                </div>
+                                <div class="o_secondary">
+                                    <i class="fa fa-user" title="Customer" aria-hidden="true"/>
+                                    <field name="partner_id"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_manage_button_section">
+                                <a class="o_kanban_manage_toggle_button" href="#">
+                                    <i class="fa fa-ellipsis-v" title="More options" role="img" aria-label="More options"/>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div>
+                                        <i class="fa fa-cube" title="Container" aria-label="Container" role="img"/>
+                                        <field name="container_id"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-tag" title="Category" aria-label="Category" role="img"/>
+                                        <field name="file_category"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-map-marker" title="Location" aria-label="Location" role="img"/>
+                                        <field name="location_id"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-calendar" title="Creation Date" aria-label="Creation Date" role="img"/>
+                                        <field name="create_date"/>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <span class="badge" t-att-class="record.state.raw_value === 'stored' ? 'badge-success' : record.state.raw_value === 'draft' ? 'badge-info' : record.state.raw_value === 'retrieved' ? 'badge-warning' : record.state.raw_value === 'at_customer' ? 'badge-danger' : 'badge-secondary'">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    <button class="btn btn-primary btn-sm" type="object" name="action_view_documents">
+                                        <i class="fas fa-file-pdf-o" title="View Documents" aria-hidden="true"/>
+                                        Documents
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-info btn-sm" type="object" name="action_generate_barcode">
+                                        <i class="fas fa-barcode" title="Generate Barcode" aria-hidden="true"/>
+                                        Barcode
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row mt-1">
+                                <div class="col-12">
+                                    <button class="btn btn-success btn-sm" type="object" name="action_upload_document">
+                                        <i class="fas fa-upload" title="Upload Document" aria-hidden="true"/>
+                                        Upload PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                            <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">View Documents</a>
+                            <a role="menuitem" type="object" name="action_upload_document" class="dropdown-item">Upload Document</a>
+                            <a role="menuitem" type="object" name="action_add_documents" class="dropdown-item">Add Existing Documents</a>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+    </record>
+
+<!-- Tree view for File Folders -->
+    <record id="records_file_view_tree" model="ir.ui.view">
+        <field name="name">records.file.view.tree</field>
+        <field name="model">records.file</field>
+        <field name="arch" type="xml">
+        <tree string="File Folders" multi_edit="1" sample="1">
+            <field name="name" string="File Name"/>
+            <field name="barcode" optional="show"/>
+            <field name="temp_barcode" optional="hide"/>
+            <field name="partner_id" string="Customer"/>
+            <field name="stock_owner_id" string="Inventory Owner" optional="show"/>
+            <field name="container_id" string="Container"/>
+            <field name="file_category" optional="show"/>
+            <field name="location_id" optional="show"/>
+            <field name="document_count" string="Documents"/>
+            <field name="state" decoration-success="state == 'stored'" decoration-info="state == 'draft'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'at_customer'"/>
+            <field name="date_created" optional="show"/>
+        </tree>
+    </field>
+    </record>
+
+<!-- Form view for File Folders -->
+    <record id="records_file_view_form" model="ir.ui.view">
+        <field name="name">records.file.view.form</field>
+        <field name="model">records.file</field>
+        <field name="arch" type="xml">
+        <form>
+            <header>
+                <!-- Document Management Buttons -->
+                <button name="action_upload_document" type="object" string="Upload Document"
+                        class="btn-primary"
+                        help="Upload a new PDF document to this file folder"/>
+                <button name="action_add_documents" type="object" string="Add Documents"
+                        class="btn-success"
+                        help="Add existing documents to this file folder"/>
+                <button name="action_remove_documents" type="object" string="Remove Documents"
+                        class="btn-warning"
+                        invisible="document_count == 0"
+                        help="Remove documents from this file folder"/>
+                <!-- Barcode Actions -->
+                <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
+                <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,stored,retrieved,at_customer,in_transit,returned"/>
+            </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-pdf-o" title="View Documents">
+                        <field name="document_count" string="Documents" widget="statinfo"/>
+                    </button>
+                    <!-- Container Link -->
+                    <button class="oe_stat_button" type="object" name="action_view_container"
+                            icon="fa-cube"
+                            title="View Container"
+                            invisible="not container_id">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Container</span>
+                        </div>
+                    </button>
+                </div>
+
+                <group>
+                    <group string="File Information">
+                        <field name="name" placeholder="e.g., Employee Records - John Doe" help="Customer's name for this file folder"/>
+                        <field name="barcode" placeholder="Assign from pre-printed barcode sheet"/>
+                        <field name="temp_barcode" readonly="1" invisible="barcode"/>
+                        <field name="file_category"/>
+                        <field name="description"/>
+                    </group>
+                    <group string="Location &amp; Ownership">
+                        <field name="partner_id" string="Customer" options="{'no_create': True, 'no_create_edit': True}"/>
+                        <field name="stock_owner_id"
+                               string="Inventory Owner"
+                               readonly="1"
+                               options="{'no_create': True}"
+                               help="Organizational unit that owns this inventory (Company → Department → Child Department). Auto-filled when you select customer or container."/>
+                        <field name="container_id" string="Container" options="{'no_create': True}"/>
+                        <field name="location_id" string="Current Location" readonly="1"/>
+                        <field name="owner_id" string="Stock Inventory Owner" readonly="1"/>
+                    </group>
+                </group>
+
+                <notebook>
+                    <page string="Documents" name="documents">
+                        <field name="document_ids" mode="list,form" context="{'default_file_id': id}">
+                            <list string="Documents">
+                                <field name="name"/>
+                                <field name="reference"/>
+                                <field name="barcode" optional="show"/>
+                                <field name="document_type_id" optional="show"/>
+                                <field name="state"/>
+                                <field name="create_date"/>
+                            </list>
+                            <form string="Document">
+                                <group>
+                                    <field name="name"/>
+                                    <field name="reference"/>
+                                    <field name="barcode"/>
+                                    <field name="document_type_id"/>
+                                    <field name="state"/>
+                                    <field name="description"/>
+                                </group>
+                            </form>
+                        </field>
+                    </page>
+                    <page string="Stock &amp; Tracking" name="stock" invisible="not quant_id">
+                        <group>
+                            <group string="Stock Information">
+                                <field name="quant_id" readonly="1"/>
+                                <field name="owner_id" readonly="1"/>
+                                <field name="location_id" readonly="1"/>
+                            </group>
+                            <group string="Dates">
+                                <field name="date_created"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids"/>
+                <field name="activity_ids"/>
+                <field name="message_ids"/>
+            </div>
+        </form>
+    </field>
+    </record>
+
+<!-- Search view for File Folders -->
+    <record id="records_file_view_search" model="ir.ui.view">
+        <field name="name">records.file.view.search</field>
+        <field name="model">records.file</field>
+        <field name="arch" type="xml">
+        <search>
+            <field name="name" string="File" filter_domain="['|','|', ('name', 'ilike', self), ('barcode', 'ilike', self), ('temp_barcode', 'ilike', self)]"/>
+            <field name="partner_id"/>
+            <field name="stock_owner_id"/>
+            <field name="container_id"/>
+            <field name="file_category"/>
+            <field name="location_id"/>
+            <field name="state"/>
+
+            <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+            <filter string="Stored" name="stored" domain="[('state', '=', 'stored')]"/>
+            <filter string="Retrieved" name="retrieved" domain="[('state', '=', 'retrieved')]"/>
+            <filter string="At Customer" name="at_customer" domain="[('state', '=', 'at_customer')]"/>
+            <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
+
+            <separator/>
+            <filter string="Has Documents" name="has_documents" domain="[('document_count', '>', 0)]"/>
+            <filter string="Empty Files" name="empty_files" domain="[('document_count', '=', 0)]"/>
+
+            <separator/>
+            <filter string="This Month" name="this_month" domain="[('date_created', '>=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+            <filter string="This Year" name="this_year" domain="[('date_created', '>=', context_today().strftime('%Y-01-01'))]"/>
+
+            <group expand="0" string="Group By">
+                <filter string="Customer" name="customer" context="{'group_by': 'partner_id'}"/>
+                <filter string="Inventory Owner" name="stock_owner" context="{'group_by': 'stock_owner_id'}"/>
+                <filter string="Container" name="container" context="{'group_by': 'container_id'}"/>
+                <filter string="Category" name="category" context="{'group_by': 'file_category'}"/>
+                <filter string="Status" name="status" context="{'group_by': 'state'}"/>
+                <filter string="Location" name="location" context="{'group_by': 'location_id'}"/>
+            </group>
+        </search>
+    </field>
+    </record>
+
+<!-- Action for File Folders -->
+    <record id="action_records_file" model="ir.actions.act_window">
+        <field name="name">File Folders</field>
+        <field name="res_model">records.file</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first file folder!
+            </p>
+            <p>
+                File folders contain individual documents and PDFs.<br/>
+                They can be stored in containers or tracked independently.
+            </p>
+        </field>
+    </record>
+
+    </data>
+</odoo>
