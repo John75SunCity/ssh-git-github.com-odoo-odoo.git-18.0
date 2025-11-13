@@ -49,19 +49,19 @@
         "mass_mailing",
         "website_slides",
         "quality",
-        # Additional development/utility apps (auto-install during dev phase)
-        "hr_attendance",
-        "iot",
-        "hr_payroll",
-        "knowledge",
-        "subscription",
-        "planning",
-        "rental",
-        "appointment",
-        "account_accountant",
-        "sale_ecommerce",
-        "hr_expense",
-        "frontdesk",
+        # Additional development/utility apps (only available apps from screenshots)
+        # "hr_attendance",  # Comment out if not available
+        # "iot",  # Comment out if not available
+        # "hr_payroll",  # Comment out if not available
+        # "knowledge",  # Comment out if not available
+        # "subscription",  # Comment out if not available
+        # "planning",  # Comment out if not available
+        # "rental",  # Comment out if not available
+        # "appointment",  # Comment out if not available
+        # "account_accountant",  # Comment out if not available
+        # "sale_ecommerce",  # Not available in your system
+        # "hr_expense",  # Comment out if not available
+        # "frontdesk",  # Comment out if not available
     ],
     "data": [
         # ============================================================================
