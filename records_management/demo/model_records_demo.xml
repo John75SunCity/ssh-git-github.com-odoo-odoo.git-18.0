@@ -380,7 +380,7 @@
             <field name="key">records_management.naid_compliance_required</field>
             <field name="value">True</field>
         </record>
-        <record id="demo_portal_feature_flag" model="ir.config_parameter">
+        <record id="demo_portal_feature_flag" model="ir.config_parameter" forcecreate="0">
             <field name="key">records_management.portal.enabled</field>
             <field name="value">True</field>
         </record>

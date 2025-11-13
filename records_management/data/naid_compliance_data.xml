@@ -119,12 +119,12 @@
             <field name="code">model.check_expiring_credentials()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-<field name="active">True</field>
+<field name="active">False</field>
         </record>
 
         <record id="cron_cleanup_audit_logs" model="ir.cron">
             <field name="name">Cleanup Old Audit Logs</field>
-            <field name="model_id" ref="records_management.model_naid_audit_log"/>
+            <field name="model_id" ref="records_management.model_records_access_log"/>
             <field name="state">code</field>
             <field name="code">model.cleanup_old_logs()</field>
             <field name="interval_number">1</field>
@@ -279,7 +279,7 @@
             <field name="name">Equipment Calibration Check</field>
             <field name="model_id" ref="maintenance.model_maintenance_equipment"/>
             <field name="state">code</field>
-            <field name="code">model.check_calibration_due()</field>
+            <field name="code">model._check_calibration_due()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
 <field name="active">True</field>
