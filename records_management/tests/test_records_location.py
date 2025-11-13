@@ -14,14 +14,14 @@ class TestRecordsLocation(TransactionCase):
         self.child_location = self.location_model.create({
             'name': 'Child Location',
             'code': 'CHILD',
-            'parent_location_id': self.parent_location.id,
+            'location_id': self.parent_location.id,
             'max_capacity': 5,
         })
 
     def test_hierarchy_constraint(self):
         """Test that recursive location hierarchies are not allowed."""
         with self.assertRaises(ValidationError):
-            self.parent_location.write({'parent_location_id': self.child_location.id})
+            self.parent_location.write({'location_id': self.child_location.id})
 
     def test_max_capacity_constraint(self):
         """Test that max_capacity cannot be negative."""

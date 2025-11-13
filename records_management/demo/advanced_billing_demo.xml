@@ -7,7 +7,6 @@
         <record id="billing_profile_monthly_both" model="records.billing">
             <field name="name">Monthly Storage + Service</field>
             <field name="partner_id" ref="base.res_partner_1"/>
-            <field name="billing_config_id" ref="records_management.billing_config_monthly"/>
             <field name="date">2025-01-01</field>
             <field name="state">draft</field>
         </record>
@@ -16,7 +15,6 @@
         <record id="billing_profile_quarterly_storage" model="records.billing">
             <field name="name">Quarterly Storage + Monthly Service</field>
             <field name="partner_id" ref="base.res_partner_2"/>
-            <field name="billing_config_id" ref="records_management.billing_config_quarterly"/>
             <field name="date">2025-01-01</field>
             <field name="state">draft</field>
         </record>
@@ -25,7 +23,6 @@
         <record id="billing_profile_prepaid" model="records.billing">
             <field name="name">Prepaid Storage</field>
             <field name="partner_id" ref="base.res_partner_3"/>
-            <field name="billing_config_id" ref="records_management.billing_config_annual"/>
             <field name="date">2025-01-01</field>
             <field name="state">draft</field>
         </record>
