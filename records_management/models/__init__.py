@@ -7,8 +7,6 @@ from . import hr_timesheet_compat
 from . import ir_rule
 from . import retrieval_item_base
 from . import scan_retrieval_item
-# Barcode-based operations (NEW: replaces direct stock.quant creation)
-from . import barcode_container_operations
 # Account integration
 from . import account_move
 from . import account_move_line
@@ -174,6 +172,8 @@ from . import records_center_location
 from . import records_config_settings
 from . import records_stock_movement  # Enhanced stock movement tracking - MUST load before records_container (provides mixin)
 from . import records_container
+# Barcode-based operations (NEW: replaces direct stock.quant creation) - MUST load AFTER records_container
+from . import barcode_container_operations
 from . import records_container_content_line
 from . import records_container_line
 from . import records_container_log
