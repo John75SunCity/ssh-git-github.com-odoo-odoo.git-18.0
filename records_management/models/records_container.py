@@ -1150,10 +1150,18 @@ class RecordsContainer(models.Model):
             ], limit=1)
 
             if not stock_location:
-                # Create default records storage location
+                # Find a valid parent location (stock location in the warehouse)
+                # Look for WH/Stock or any internal location to use as parent
+                parent_location = self.env['stock.location'].search([
+                    ('usage', '=', 'internal'),
+                    ('company_id', '=', self.company_id.id),
+                ], limit=1)
+                
+                # Create default records storage location under proper parent
                 stock_location = self.env['stock.location'].create({
                     'name': 'Records Storage',
                     'usage': 'internal',
+                    'location_id': parent_location.id if parent_location else False,
                     'company_id': self.company_id.id,
                 })
 
