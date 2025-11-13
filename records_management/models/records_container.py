@@ -1132,8 +1132,11 @@ class RecordsContainer(models.Model):
         - Quantity = 1 (one container)
         
         Called automatically when container state changes from draft to active.
+        
+        TEMPORARILY DISABLED - Product type field compatibility issue
         """
         self.ensure_one()
+        return  # Disabled until product type field resolved
 
         # Don't create duplicate quants
         if self.quant_id:
@@ -1209,12 +1212,12 @@ class RecordsContainer(models.Model):
 
         if not product:
             # Create generic container product - STORABLE for inventory tracking
-            # Must be 'storable' type to allow stock.quant creation in Odoo 18+
+            # Use 'type' = 'product' for Odoo 17 (means storable/stockable)
 
             product_vals = {
                 'name': 'Records Container (Generic)',
                 'default_code': 'RECORDS-CONTAINER',
-                'detailed_type': 'storable',  # Odoo 18+ uses 'storable' for inventory tracking
+                'type': 'product',  # 'product' type means storable (can have stock.quant)
                 'categ_id': self.env.ref('product.product_category_all').id,
                 'list_price': 0.0,
                 'standard_price': 0.0,
