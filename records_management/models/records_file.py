@@ -263,23 +263,14 @@ class RecordsFile(models.Model):
         ], limit=1)
         
         if not product:
-            # Version-agnostic product creation (Odoo 17.0 vs 18.0 compatibility)
+            # Create file folder product with serial tracking (Odoo 18+)
             product_vals = {
                 'name': 'Records File Folder',
                 'default_code': 'RM-FILE-FOLDER',
+                'detailed_type': 'storable',  # Odoo 18+ uses 'storable' for serial tracking
                 'tracking': 'serial',
                 'categ_id': self.env.ref('stock.product_category_all').id,
             }
-            
-            # Use the correct field name based on Odoo version
-            # In Odoo 18+, use 'detailed_type' with 'storable' for serial tracking
-            # In older versions, use 'type' with 'product' (which means storable)
-            if hasattr(self.env['product.product'], '_fields') and 'detailed_type' in self.env['product.product']._fields:
-                # Odoo 18.0+ - Use 'storable' for serial number tracking
-                product_vals['detailed_type'] = 'storable'
-            else:
-                # Odoo 17.0 and earlier - 'product' means storable/stockable with tracking
-                product_vals['type'] = 'product'
                 
             product = self.env['product.product'].create(product_vals)
         
