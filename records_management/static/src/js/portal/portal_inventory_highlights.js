@@ -3,9 +3,15 @@
 odoo.define('records_management.portal_inventory_highlights', function (require) {
     "use strict";
 
-    var core = require('web.core');
-    var rpc = require('web.rpc');
+    // Frontend-compatible implementation - no backend dependencies
     var $ = window.jQuery || window.$;
+    var rpc = { query: function(params) {
+        return fetch('/web/dataset/call_kw', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(params)
+        }).then(r => r.json()).then(r => r.result);
+    } };
 
     if (!$) {
         console.warn('[records_management.portal_inventory_highlights] jQuery not found – skipping interactive inventory helpers.');

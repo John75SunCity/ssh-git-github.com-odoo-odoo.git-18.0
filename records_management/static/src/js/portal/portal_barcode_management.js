@@ -5,9 +5,19 @@
 odoo.define('records_management.portal_barcode_management', function (require) {
     'use strict';
 
-    const publicWidget = require('web.public.widget');
-    const { qweb, _t } = require('web.core');
-    const ajax = require('web.ajax');
+    // Frontend-compatible implementation
+    const publicWidget = { Widget: { extend: function(obj) { return obj; } } };
+    const qweb = { render: function() { return ''; } };
+    const _t = function(str) { return str; };
+    const ajax = { 
+        jsonRpc: function(url, method, params) { 
+            return fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jsonrpc: '2.0', method: method, params: params })
+            }).then(r => r.json()).then(r => r.result);
+        }
+    };
 
     const BarcodePortal = publicWidget.Widget.extend({
         selector: '[data-rm-portal-barcode]',

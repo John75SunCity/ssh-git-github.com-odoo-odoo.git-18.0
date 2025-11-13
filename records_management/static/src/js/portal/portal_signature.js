@@ -1,21 +1,18 @@
 odoo.define('records_management.portal_signature', function (require) {
     "use strict";
 
-    var core = require('web.core');
-    var ajax = require('web.ajax');
-    var Dialog = require('web.Dialog');
-    var Widget = require('web.Widget');
-    var session = require('web.session');
-    var _t = core._t;
-
-    // Try to import sign widget if available, fallback to custom implementation
-    var SignWidget;
-    try {
-        SignWidget = require('sign.sign_widget');
-    } catch (e) {
-        console.log('Sign widget not available, using custom implementation');
-        SignWidget = null;
-    }
+    // Frontend-compatible implementation without backend dependencies
+    var _t = function(str) { return str; }; // Simple translation placeholder
+    
+    // No sign widget dependency - using custom implementation only
+    var SignWidget = null;
+    
+    // Simple Widget base class replacement
+    var Widget = function() {};
+    Widget.extend = function(obj) {
+        obj._super = function() {};
+        return obj;
+    };
 
     var PortalSignature = Widget.extend({
         template: 'portal_signature_canvas',

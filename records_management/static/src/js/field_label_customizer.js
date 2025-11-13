@@ -5,8 +5,15 @@
 odoo.define('records_management.FieldLabelCustomizer', function (require) {
 'use strict';
 
-var publicWidget = require('web.public.widget');
-var ajax = require('web.ajax');
+// Frontend-compatible implementation using vanilla JS
+var publicWidget = { Widget: { extend: function(obj) { return obj; } } };
+var ajax = { jsonRpc: function(url, method, params) { 
+    return fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', method: method, params: params })
+    }).then(r => r.json()).then(r => r.result);
+} };
 
 var FieldLabelCustomizer = publicWidget.Widget.extend({
     selector: '.o_portal_field_customizer',

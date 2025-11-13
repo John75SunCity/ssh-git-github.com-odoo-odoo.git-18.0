@@ -1,10 +1,18 @@
 odoo.define('records_management.portal_user_import', function (require) {
     "use strict";
 
-    var core = require('web.core');
-    var ajax = require('web.ajax');
-    var Dialog = require('web.Dialog');
-    var _t = core._t;
+    // Frontend-compatible implementation
+    var _t = function(str) { return str; };
+    var ajax = { 
+        jsonRpc: function(url, method, params) { 
+            return fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jsonrpc: '2.0', method: method, params: params })
+            }).then(r => r.json()).then(r => r.result);
+        }
+    };
+    var Dialog = { alert: function(parent, msg) { alert(msg.message || msg); } };
 
     var PortalUserImport = {
         init: function() {

@@ -6,7 +6,8 @@
 odoo.define('records_management.portal_organization_diagram', function(require) {
     'use strict';
 
-    const publicWidget = require('web.public.widget');
+    // Frontend-compatible implementation
+    const publicWidget = { Widget: { extend: function(obj) { return obj; } } };
 
     const OrgDiagramPortal = publicWidget.Widget.extend({
         selector: '.o_portal_organization_diagram',

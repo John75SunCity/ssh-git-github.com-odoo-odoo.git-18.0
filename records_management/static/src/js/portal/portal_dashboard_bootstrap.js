@@ -8,7 +8,7 @@
 odoo.define('records_management.portal_dashboard_bootstrap', function (require) {
     'use strict';
 
-    const ajax = require('web.ajax');
+    // Using native fetch instead of web.ajax for frontend compatibility
 
     /**
      * Render a single dashboard card into a DOM node.
