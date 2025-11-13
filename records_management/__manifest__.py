@@ -679,9 +679,8 @@
         "templates/portal_mobile_template.xml",
         "templates/portal_mobile_inventory_template.xml",
         "templates/portal_mobile_export.xml",
-        "templates/portal_mobile_settings.xml"
-    ],
-    "demo": [
+        "templates/portal_mobile_settings.xml",
+        # Demo Data (moved to data section to auto-load on installation)
         "demo/customer_inventory_demo.xml",
         "demo/advanced_billing_demo.xml",
         "demo/model_records_demo.xml",
@@ -689,6 +688,8 @@
         "demo/intelligent_search_demo_data.xml",
         "demo/naid_demo_certificates.xml",
         "demo/records_config_mail_templates_data.xml"
+    ],
+    "demo": [
     ],
     "pre_init_hook": "pre_init_hook",
     "post_init_hook": "post_init_hook",
