@@ -896,7 +896,7 @@ class RecordsDocument(models.Model):
         self.env['naid.audit.log'].create({
             'document_id': self.id,
             'event_type': 'checkout',
-            'event_description': _('Document checked out by %s') % self.env.user.name,
+            'description': _('Document checked out by %s') % self.env.user.name,
             'user_id': self.env.user.id,
             'event_date': checkout_date,
         })
@@ -929,7 +929,7 @@ class RecordsDocument(models.Model):
         self.env['naid.audit.log'].create({
             'document_id': self.id,
             'event_type': 'return',
-            'event_description': _('Document returned by %s') % self.env.user.name,
+            'description': _('Document returned by %s') % self.env.user.name,
             'user_id': self.env.user.id,
             'event_date': return_date,
         })
@@ -1164,13 +1164,13 @@ class RecordsDocument(models.Model):
     def schedule_destruction_message(self):
         return 'destruction_scheduled', _('Destruction scheduled for %s') % self.destruction_eligible_date
 
-    def _create_audit_log(self, event_type, event_description):
+    def _create_audit_log(self, event_type, description):
         """Helper to create audit log entries (standardized field names)."""
         self.env["naid.audit.log"].create(
             {
                 "document_id": self.id,
                 "event_type": event_type,
-                "event_description": event_description,
+                "description": description,
                 "user_id": self.env.user.id,
                 "event_date": datetime.now(),
             }
