@@ -1422,10 +1422,16 @@ class RecordsManagementPortal(CustomerPortal):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
+        # Get departments for user's company
+        departments = request.env['records.department'].sudo().search([
+            ('partner_id', '=', partner.commercial_partner_id.id),
+        ])
+
         values.update({
             'partner': partner,
             'page_name': 'new_pickup_request',
             'error': kw.get('error'),
+            'departments': departments,
         })
 
         return request.render('records_management.portal_pickup_request_create', values)
@@ -1452,6 +1458,8 @@ class RecordsManagementPortal(CustomerPortal):
             # Prepare pickup request values
             vals = {
                 'partner_id': partner.commercial_partner_id.id,
+                'company_id': int(kw.get('company_id')) if kw.get('company_id') else partner.commercial_partner_id.id,
+                'department_id': int(kw.get('department_id')) if kw.get('department_id') else False,
                 'contact_name': kw.get('contact_name', partner.name),
                 'contact_phone': kw.get('contact_phone', partner.phone),
                 'contact_email': kw.get('contact_email', partner.email),

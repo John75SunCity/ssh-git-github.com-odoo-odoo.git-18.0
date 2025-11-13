@@ -64,6 +64,48 @@
                                         </small>
                                     </div>
 
+                                    <!-- Company and Department Selection -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="company_id" class="font-weight-bold">
+                                                    <i class="fa fa-building"></i> Company
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <select name="company_id" id="company_id" class="form-control" required="required">
+                                                    <option value="" t-att-selected="not partner.commercial_partner_id">Select Company...</option>
+                                                    <t t-if="partner.commercial_partner_id">
+                                                        <option t-att-value="partner.commercial_partner_id.id" selected="selected">
+                                                            <t t-esc="partner.commercial_partner_id.name"/>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                                <small class="form-text text-muted">
+                                                    Your company account
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="department_id" class="font-weight-bold">
+                                                    <i class="fa fa-sitemap"></i> Department
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <select name="department_id" id="department_id" class="form-control" required="required">
+                                                    <option value="">Select Department...</option>
+                                                    <t t-foreach="departments or []" t-as="dept">
+                                                        <option t-att-value="dept.id">
+                                                            <t t-esc="dept.name"/>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                                <small class="form-text text-muted">
+                                                    Select your department for billing and tracking
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <!-- Contact Information -->
                                     <div class="row">
                                         <div class="col-md-6">
