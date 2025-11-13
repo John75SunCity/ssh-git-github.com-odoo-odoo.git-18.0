@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- ========================================================================
+         BARCODE OPERATION BUTTONS - UI TO BARCODE VALUE BRIDGE
+         
+         These buttons emit barcode values when clicked, triggering automated
+         workflows via barcode nomenclature rules. Users see friendly button
+         labels like "Store Container" but the system emits "WH/STOCK/NEW-IN".
+         
+         This eliminates manual barcode scanning errors and simplifies complex
+         workflows into single-click actions.
+    ======================================================================== -->
+    
+    <!-- Enhanced Container Form View with Barcode Operation Buttons -->
+    <record id="view_records_container_form_barcode_operations" model="ir.ui.view">
+        <field name="name">records.container.form.barcode.operations</field>
+        <field name="model">records.container</field>
+        <field name="inherit_id" ref="records_management.view_records_container_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add Barcode Operations in header -->
+            <xpath expr="//header" position="inside">
+                
+                <!-- Convert Temp to Storage Container -->
+                <button name="action_barcode_convert_to_storage" 
+                        type="object" 
+                        string="Store Container"
+                        class="oe_highlight"
+                        invisible="state != 'temp'"
+                        icon="fa-archive"
+                        help="Convert temporary container to storage (Barcode: WH/STOCK/NEW-IN)"/>
+                
+                <!-- Mark for Pickup -->
+                <button name="action_barcode_mark_for_pickup" 
+                        type="object" 
+                        string="Ready for Pickup"
+                        invisible="state not in ['active', 'temp']"
+                        icon="fa-truck"
+                        help="Mark container ready for customer pickup (Barcode: WH/STOCK/PICKUP)"/>
+                
+                <!-- Queue for Shredding -->
+                <button name="action_barcode_queue_for_shredding" 
+                        type="object" 
+                        string="Queue for Destruction"
+                        invisible="state not in ['active', 'retention_expired']"
+                        icon="fa-trash"
+                        help="Queue container for destruction (Barcode: WH/SHRED/QUEUE)"/>
+                
+                <!-- Complete Shredding -->
+                <button name="action_barcode_complete_shredding" 
+                        type="object" 
+                        string="Complete Destruction"
+                        class="oe_highlight"
+                        invisible="state != 'pending_destruction'"
+                        icon="fa-check-circle"
+                        help="Mark destruction complete (Barcode: WH/SHRED/COMPLETE)"/>
+                
+                <!-- Add to Inventory -->
+                <button name="action_barcode_add_to_inventory" 
+                        type="object" 
+                        string="Add Inventory"
+                        invisible="quant_id != False"
+                        icon="fa-plus-square"
+                        help="Add container to inventory tracking (Barcode: INV/ADD/STOCK)"/>
+                
+            </xpath>
+            
+            <!-- Add Barcode Operations Notebook Page -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Barcode Operations" name="barcode_operations">
+                    <group>
+                        <group string="Last Barcode Operation">
+                            <field name="last_barcode_operation" readonly="1"/>
+                            <field name="last_barcode_operation_date" readonly="1"/>
+                            <field name="barcode_operation_count" readonly="1"/>
+                        </group>
+                        <group string="Pending Transfer">
+                            <field name="pending_transfer_id" readonly="1"/>
+                            <button name="action_view_barcode_operations" 
+                                    type="object" 
+                                    string="View All Operations"
+                                    class="oe_link"
+                                    icon="fa-history"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Quick Action Buttons Grid -->
+                    <group string="Quick Barcode Actions">
+                        <group>
+                            <button name="action_barcode_convert_to_storage" 
+                                    type="object" 
+                                    string="🏢 Store Container"
+                                    class="btn btn-primary"
+                                    invisible="state != 'temp'"/>
+                            
+                            <button name="action_barcode_mark_for_pickup" 
+                                    type="object" 
+                                    string="🚚 Ready for Pickup"
+                                    class="btn btn-info"
+                                    invisible="state not in ['active', 'temp']"/>
+                            
+                            <button name="action_barcode_add_to_inventory" 
+                                    type="object" 
+                                    string="📦 Add to Inventory"
+                                    class="btn btn-success"
+                                    invisible="quant_id != False"/>
+                        </group>
+                        
+                        <group>
+                            <button name="action_barcode_queue_for_shredding" 
+                                    type="object" 
+                                    string="🔥 Queue Destruction"
+                                    class="btn btn-warning"
+                                    invisible="state not in ['active', 'retention_expired']"/>
+                            
+                            <button name="action_barcode_complete_shredding" 
+                                    type="object" 
+                                    string="✅ Complete Destruction"
+                                    class="btn btn-danger"
+                                    invisible="state != 'pending_destruction'"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Barcode Operation Help -->
+                    <div class="alert alert-info" role="alert">
+                        <h4>How Barcode Operations Work:</h4>
+                        <ul>
+                            <li><strong>Click Button:</strong> Each button emits a specific barcode value (e.g., "WH/STOCK/NEW-IN")</li>
+                            <li><strong>Automatic Processing:</strong> Barcode nomenclature rules trigger the appropriate workflow</li>
+                            <li><strong>Stock Movements:</strong> Internal transfers are created and processed automatically</li>
+                            <li><strong>Audit Trail:</strong> All operations are logged for NAID compliance</li>
+                        </ul>
+                        <p><em>No manual barcode scanning required - just click the button!</em></p>
+                    </div>
+                </page>
+            </xpath>
+            
+        </field>
+    </record>
+    
+    <!-- Container Tree View - Add Barcode Operation Indicators -->
+    <record id="view_records_container_tree_barcode" model="ir.ui.view">
+        <field name="name">records.container.tree.barcode</field>
+        <field name="model">records.container</field>
+        <field name="inherit_id" ref="records_management.view_records_container_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-success">last_barcode_operation == 'Added to Inventory'</attribute>
+                <attribute name="decoration-info">last_barcode_operation == 'Convert to Storage'</attribute>
+                <attribute name="decoration-warning">last_barcode_operation == 'Queued for Shredding'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="last_barcode_operation" optional="show"/>
+                <field name="barcode_operation_count" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Kanban View - Barcode Quick Actions -->
+    <record id="view_records_container_kanban_barcode" model="ir.ui.view">
+        <field name="name">records.container.kanban.barcode</field>
+        <field name="model">records.container</field>
+        <field name="inherit_id" ref="records_management.view_records_container_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//templates//div[hasclass('oe_kanban_bottom_right')]" position="inside">
+                
+                <!-- Barcode Operation Quick Actions on Kanban Cards -->
+                <div class="o_kanban_barcode_operations">
+                    <button name="action_barcode_convert_to_storage" 
+                            type="object" 
+                            class="btn btn-sm btn-primary" 
+                            invisible="state != 'temp'"
+                            title="Store Container">
+                        <i class="fa fa-archive"/> Store
+                    </button>
+                    
+                    <button name="action_barcode_add_to_inventory" 
+                            type="object" 
+                            class="btn btn-sm btn-success" 
+                            invisible="quant_id != False"
+                            title="Add to Inventory">
+                        <i class="fa fa-plus-square"/> Inventory
+                    </button>
+                    
+                    <button name="action_barcode_mark_for_pickup" 
+                            type="object" 
+                            class="btn btn-sm btn-info" 
+                            invisible="state not in ['active', 'temp']"
+                            title="Ready for Pickup">
+                        <i class="fa fa-truck"/> Pickup
+                    </button>
+                </div>
+                
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Wizard: Batch Barcode Operations -->
+    <record id="view_batch_barcode_operations_wizard" model="ir.ui.view">
+        <field name="name">batch.barcode.operations.wizard</field>
+        <field name="model">batch.barcode.operations</field>
+        <field name="arch" type="xml">
+            <form string="Batch Barcode Operations">
+                <group>
+                    <field name="operation_type" widget="radio"/>
+                    <field name="container_ids" widget="many2many_tags"/>
+                    <field name="target_location_id" invisible="operation_type not in ['transfer', 'store']"/>
+                </group>
+                
+                <group string="Selected Operation Details">
+                    <div class="alert alert-info" role="alert">
+                        <p><strong>Operation:</strong> <span><field name="operation_display" readonly="1"/></span></p>
+                        <p><strong>Barcode Value:</strong> <span><field name="barcode_value" readonly="1"/></span></p>
+                        <p><strong>Containers:</strong> <span><field name="container_count" readonly="1"/></span></p>
+                    </div>
+                </group>
+                
+                <footer>
+                    <button name="action_process_batch" type="object" string="Process Batch" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Action: Open Batch Barcode Operations Wizard -->
+    <record id="action_batch_barcode_operations" model="ir.actions.act_window">
+        <field name="name">Batch Barcode Operations</field>
+        <field name="res_model">batch.barcode.operations</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="records_management.model_records_container"/>
+        <field name="binding_view_types">list</field>
+    </record>
+    
+</odoo>

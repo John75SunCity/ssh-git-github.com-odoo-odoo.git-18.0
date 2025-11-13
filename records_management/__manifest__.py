@@ -90,6 +90,10 @@
         "data/portal_barcode_sequence.xml",
         "data/records_retrieval_order_sequences_data.xml",
         # ============================================================================
+        # BARCODE OPERATIONS: Nomenclature rules for automated workflows
+        # ============================================================================
+        "data/barcode_nomenclature_rules.xml",
+        # ============================================================================
         # CORE DATA: Base records that other data/records depend on
         # ============================================================================
         "data/core_records_data.xml",
@@ -456,6 +460,10 @@
         "views/res_partner_key_restriction_views.xml",
         "views/res_users_records_profile_views.xml",
         "views/records_retrieval_work_order_views.xml",
+        # ============================================================================
+        # BARCODE OPERATION VIEWS: UI buttons for barcode-triggered workflows
+        # ============================================================================
+        "views/barcode_operation_buttons.xml",
         # ============================================================================
         # ADDITIONAL VIEW FILES: All remaining view definitions
 

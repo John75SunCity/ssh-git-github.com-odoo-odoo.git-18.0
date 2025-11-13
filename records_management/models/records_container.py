@@ -1156,14 +1156,14 @@ class RecordsContainer(models.Model):
                 # Use WH/Stock as parent (standard Odoo location that always exists)
                 # This is the main warehouse stock location, guaranteed to be usage='internal'
                 wh_stock = self.env.ref('stock.stock_location_stock', raise_if_not_found=False)
-                
+
                 if not wh_stock:
                     # Fallback: search for any location named 'Stock' with usage='internal'
                     wh_stock = self.env['stock.location'].search([
                         ('usage', '=', 'internal'),
                         ('name', '=', 'Stock'),
                     ], limit=1)
-                
+
                 # Create Records Storage as child of WH/Stock
                 stock_location = self.env['stock.location'].create({
                     'name': 'Records Storage',

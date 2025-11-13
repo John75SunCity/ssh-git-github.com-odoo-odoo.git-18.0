@@ -7,6 +7,8 @@ from . import hr_timesheet_compat
 from . import ir_rule
 from . import retrieval_item_base
 from . import scan_retrieval_item
+# Barcode-based operations (NEW: replaces direct stock.quant creation)
+from . import barcode_container_operations
 # Account integration
 from . import account_move
 from . import account_move_line
