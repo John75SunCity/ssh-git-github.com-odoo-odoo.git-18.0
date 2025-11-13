@@ -48,7 +48,20 @@
         "helpdesk",
         "mass_mailing",
         "website_slides",
-        "quality"
+        "quality",
+        # Additional development/utility apps (auto-install during dev phase)
+        "hr_attendance",
+        "iot",
+        "hr_payroll",
+        "knowledge",
+        "subscription",
+        "planning",
+        "rental",
+        "appointment",
+        "account_accountant",
+        "sale_ecommerce",
+        "hr_expense",
+        "frontdesk",
     ],
     "data": [
         # ============================================================================
