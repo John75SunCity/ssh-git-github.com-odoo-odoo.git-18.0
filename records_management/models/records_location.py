@@ -243,9 +243,19 @@ class RecordsLocation(models.Model):
     @api.constrains('location_id')  # parent field in stock.location
     def _check_location_hierarchy(self):
         """Prevent recursive location hierarchies"""
-        # Note: parent field is 'location_id' in stock.location (not parent_location_id)
-        if self._has_cycle('location_id'):
-            raise ValidationError(_('You cannot create recursive locations.'))
+        # Manual cycle check since _has_cycle may not work with inherited fields
+        for record in self:
+            if not record.location_id:
+                continue
+            visited = set()
+            current = record
+            while current.location_id:
+                if current.location_id.id in visited:
+                    raise ValidationError(_('You cannot create recursive locations.'))
+                visited.add(current.id)
+                current = current.location_id
+                if current == record:
+                    raise ValidationError(_('You cannot create recursive locations.'))
 
     @api.constrains('max_capacity')
     def _check_max_capacity(self):

@@ -705,7 +705,7 @@
     ],
     "demo": [
         "demo/customer_inventory_demo.xml",
-        "demo/advanced_billing_demo.xml",
+        # "demo/advanced_billing_demo.xml",  # Commented out - requires billing_config records
         "demo/model_records_demo.xml",
         "demo/field_label_demo_data.xml",
         "demo/intelligent_search_demo_data.xml",
