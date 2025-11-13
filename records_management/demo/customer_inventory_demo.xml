@@ -235,7 +235,6 @@
             <field name="barcode">405000</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -254,7 +253,6 @@
             <field name="barcode">405001</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -273,7 +271,6 @@
             <field name="barcode">405002</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -292,7 +289,6 @@
             <field name="barcode">405003</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -311,7 +307,6 @@
             <field name="barcode">405004</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -330,7 +325,6 @@
             <field name="barcode">405005</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -349,7 +343,6 @@
             <field name="barcode">405006</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -368,7 +361,6 @@
             <field name="barcode">405007</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -387,7 +379,6 @@
             <field name="barcode">405008</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -406,7 +397,6 @@
             <field name="barcode">405009</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -425,7 +415,6 @@
             <field name="barcode">405010</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -444,7 +433,6 @@
             <field name="barcode">405011</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -463,7 +451,6 @@
             <field name="barcode">405012</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -482,7 +469,6 @@
             <field name="barcode">405013</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -501,7 +487,6 @@
             <field name="barcode">405014</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -520,7 +505,6 @@
             <field name="barcode">405015</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -539,7 +523,6 @@
             <field name="barcode">405017</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -558,7 +541,6 @@
             <field name="barcode">405018</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -577,7 +559,6 @@
             <field name="barcode">405019</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -596,7 +577,6 @@
             <field name="barcode">405020</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -615,7 +595,6 @@
             <field name="barcode">405021</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -634,7 +613,6 @@
             <field name="barcode">405022</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -653,7 +631,6 @@
             <field name="barcode">405023</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -672,7 +649,6 @@
             <field name="barcode">405024</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -691,7 +667,6 @@
             <field name="barcode">405025</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -710,7 +685,6 @@
             <field name="barcode">405026</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -729,7 +703,6 @@
             <field name="barcode">405027</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -748,7 +721,6 @@
             <field name="barcode">405028</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -767,7 +739,6 @@
             <field name="barcode">405029</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -786,7 +757,6 @@
             <field name="barcode">405030</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -805,7 +775,6 @@
             <field name="barcode">405031</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -824,7 +793,6 @@
             <field name="barcode">405032</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -843,7 +811,6 @@
             <field name="barcode">405033</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -862,7 +829,6 @@
             <field name="barcode">405034</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -881,7 +847,6 @@
             <field name="barcode">405035</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -900,7 +865,6 @@
             <field name="barcode">405036</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -919,7 +883,6 @@
             <field name="barcode">405037</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -938,7 +901,6 @@
             <field name="barcode">405038</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -957,7 +919,6 @@
             <field name="barcode">405039</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -976,7 +937,6 @@
             <field name="barcode">405041</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">PICKUP/PULL LISTS 08-09 CALENDARS 98-09</field>
@@ -995,7 +955,6 @@
             <field name="barcode">405042</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO'S</field>
@@ -1014,7 +973,6 @@
             <field name="barcode">405043</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO'S</field>
@@ -1033,7 +991,6 @@
             <field name="barcode">405044</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES/CHECKS</field>
@@ -1052,7 +1009,6 @@
             <field name="barcode">405045</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES/CHECKS</field>
@@ -1071,7 +1027,6 @@
             <field name="barcode">405046</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">RECEIPTS/PAYROLL CHECK STUBS</field>
@@ -1090,7 +1045,6 @@
             <field name="barcode">405047</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">RECEIPTS</field>
@@ -1109,7 +1063,6 @@
             <field name="barcode">405048</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO</field>
@@ -1128,7 +1081,6 @@
             <field name="barcode">405049</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO</field>
@@ -1147,7 +1099,6 @@
             <field name="barcode">405050</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -1166,7 +1117,6 @@
             <field name="barcode">405051</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
@@ -1185,7 +1135,6 @@
             <field name="barcode">405052</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_payroll"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_payroll"/>
             <field name="description">PAYROLL/RECEIPTS CHECK COPIES</field>
@@ -1204,7 +1153,6 @@
             <field name="barcode">405053</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">RECEIPTS</field>
@@ -1223,7 +1171,6 @@
             <field name="barcode">405054</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES CHECKS RECEIPTS</field>
@@ -1242,7 +1189,6 @@
             <field name="barcode">405055</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">CLOSING DOCS 9230 &amp; 9270 BTK</field>
@@ -1261,7 +1207,6 @@
             <field name="barcode">405056</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_payroll"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_payroll"/>
             <field name="description">PAY STUBS ALL RECEIPTS 2007-2009</field>
@@ -1280,7 +1225,6 @@
             <field name="barcode">405057</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES</field>
@@ -1299,7 +1243,6 @@
             <field name="barcode">405058</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO'S</field>
@@ -1318,7 +1261,6 @@
             <field name="barcode">405059</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO'S</field>
@@ -1337,7 +1279,6 @@
             <field name="barcode">405060</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES 2010 RECEIPTS 2010 CHECKS 2010</field>
@@ -1356,7 +1297,6 @@
             <field name="barcode">405061</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">W.O.</field>
@@ -1375,7 +1315,6 @@
             <field name="barcode">405062</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">W.O.</field>
@@ -1394,7 +1333,6 @@
             <field name="barcode">405063</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WORK ORDERS</field>
@@ -1413,7 +1351,6 @@
             <field name="barcode">405064</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">EMPL II</field>
@@ -1432,7 +1369,6 @@
             <field name="barcode">405065</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">OFFICE</field>
@@ -1451,7 +1387,6 @@
             <field name="barcode">405066</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">OFFICE</field>
@@ -1470,7 +1405,6 @@
             <field name="barcode">405067</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO</field>
@@ -1489,7 +1423,6 @@
             <field name="barcode">405068</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO</field>
@@ -1508,7 +1441,6 @@
             <field name="barcode">405069</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">FAXES</field>
@@ -1527,7 +1459,6 @@
             <field name="barcode">405070</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">FAXES PULL REQUEST</field>
@@ -1546,7 +1477,6 @@
             <field name="barcode">405071</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WORKORDERS</field>
@@ -1565,7 +1495,6 @@
             <field name="barcode">405072</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">CALENDER 2013</field>
@@ -1584,7 +1513,6 @@
             <field name="barcode">405073</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WORKORDERS</field>
@@ -1603,7 +1531,6 @@
             <field name="barcode">405074</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_payroll"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_payroll"/>
             <field name="description">PAYROLL SELECT STAFFING</field>
@@ -1622,7 +1549,6 @@
             <field name="barcode">405075</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">CREDIT CARDS PAID DEPOSITS</field>
@@ -1641,7 +1567,6 @@
             <field name="barcode">405076</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES</field>
@@ -1660,7 +1585,6 @@
             <field name="barcode">405077</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_payroll"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_payroll"/>
             <field name="description">TIME CARDS PAYROLL CHECK COPIES</field>
@@ -1679,7 +1603,6 @@
             <field name="barcode">405078</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES</field>
@@ -1698,7 +1621,6 @@
             <field name="barcode">405079</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES</field>
@@ -1717,7 +1639,6 @@
             <field name="barcode">405080</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">RECEIPTS</field>
@@ -1736,7 +1657,6 @@
             <field name="barcode">405081</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">FAX/WO'S</field>
@@ -1755,7 +1675,6 @@
             <field name="barcode">405082</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">FAX/WO'S</field>
@@ -1774,7 +1693,6 @@
             <field name="barcode">405083</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO FAXES</field>
@@ -1793,7 +1711,6 @@
             <field name="barcode">405084</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">DEPOSITS 2014</field>
@@ -1812,7 +1729,6 @@
             <field name="barcode">405085</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES 2014</field>
@@ -1831,7 +1747,6 @@
             <field name="barcode">405086</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES 2014</field>
@@ -1850,7 +1765,6 @@
             <field name="barcode">405087</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO &amp; FAX</field>
@@ -1869,7 +1783,6 @@
             <field name="barcode">405088</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">JESUS</field>
@@ -1889,7 +1802,6 @@
             <field name="barcode">405089</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">DESTROY</field>
@@ -1908,7 +1820,6 @@
             <field name="barcode">405090</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO &amp; FAX</field>
@@ -1927,7 +1838,6 @@
             <field name="barcode">405091</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO &amp; FAX</field>
@@ -1946,7 +1856,6 @@
             <field name="barcode">405092</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">FAX &amp; WO</field>
@@ -1965,7 +1874,6 @@
             <field name="barcode">405093</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">W.O.'S</field>
@@ -1984,7 +1892,6 @@
             <field name="barcode">405094</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">CALENDER</field>
@@ -2003,7 +1910,6 @@
             <field name="barcode">405095</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
             <field name="department_id" ref="dept_big_chairs_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">DESTRUCTION LIST 2015</field>
@@ -2026,7 +1932,6 @@
             <field name="barcode">910881</field>
             <field name="partner_id" ref="customer_john_lili_cope"/>
             <field name="department_id" ref="dept_john_cope_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">SPRAY PAINT CANS</field>
@@ -2045,7 +1950,6 @@
             <field name="barcode">910928</field>
             <field name="partner_id" ref="customer_bio_pappel"/>
             <field name="department_id" ref="dept_bio_pappel_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BALE LOG SHEETS</field>
@@ -2064,7 +1968,6 @@
             <field name="barcode">910931</field>
             <field name="partner_id" ref="customer_city_el_paso"/>
             <field name="department_id" ref="dept_city_el_paso_general"/>
-            <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WORK ORDERS - CITY OF EL PASO</field>
@@ -2083,7 +1986,6 @@
             <field name="barcode">900007</field>
             <field name="partner_id" ref="customer_chase_bank"/>
             <field name="department_id" ref="dept_chase_bank_general"/>
-            <field name="location_id" ref="location_secure_vault"/>
             <field name="container_type_id" ref="demo_container_type_secure_box"/>
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">DEPOSITS-2024</field>
