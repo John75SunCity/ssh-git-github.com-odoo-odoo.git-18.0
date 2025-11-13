@@ -145,11 +145,6 @@
         <field name="model">records.container</field>
         <field name="inherit_id" ref="records_management.records_container_view_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//tree" position="attributes">
-                <attribute name="decoration-success">last_barcode_operation == 'Added to Inventory'</attribute>
-                <attribute name="decoration-info">last_barcode_operation == 'Convert to Storage'</attribute>
-                <attribute name="decoration-warning">last_barcode_operation == 'Queued for Shredding'</attribute>
-            </xpath>
             <xpath expr="//field[@name='state']" position="after">
                 <field name="last_barcode_operation" optional="show"/>
                 <field name="barcode_operation_count" optional="hide"/>
@@ -163,35 +158,28 @@
         <field name="model">records.container</field>
         <field name="inherit_id" ref="records_management.records_container_view_kanban"/>
         <field name="arch" type="xml">
-            <xpath expr="//templates//div[hasclass('oe_kanban_bottom_right')]" position="inside">
-                
+            <xpath expr="//div[@class='row mt-1']" position="after">
                 <!-- Barcode Operation Quick Actions on Kanban Cards -->
-                <div class="o_kanban_barcode_operations">
-                    <button name="action_barcode_convert_to_storage" 
-                            type="object" 
-                            class="btn btn-sm btn-primary" 
-                            invisible="state != 'temp'"
-                            title="Store Container">
-                        <i class="fa fa-archive"/> Store
-                    </button>
-                    
-                    <button name="action_barcode_add_to_inventory" 
-                            type="object" 
-                            class="btn btn-sm btn-success" 
-                            invisible="quant_id != False"
-                            title="Add to Inventory">
-                        <i class="fa fa-plus-square"/> Inventory
-                    </button>
-                    
-                    <button name="action_barcode_mark_for_pickup" 
-                            type="object" 
-                            class="btn btn-sm btn-info" 
-                            invisible="state not in ['active', 'temp']"
-                            title="Ready for Pickup">
-                        <i class="fa fa-truck"/> Pickup
-                    </button>
+                <div class="row mt-1">
+                    <div class="col-6">
+                        <button name="action_barcode_convert_to_storage" 
+                                type="object" 
+                                class="btn btn-sm btn-primary" 
+                                invisible="state != 'temp'"
+                                title="Store Container">
+                            <i class="fa fa-archive"/> Store
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button name="action_barcode_add_to_inventory" 
+                                type="object" 
+                                class="btn btn-sm btn-success" 
+                                invisible="quant_id != False"
+                                title="Add to Inventory">
+                            <i class="fa fa-plus-square"/> Inventory
+                        </button>
+                    </div>
                 </div>
-                
             </xpath>
         </field>
     </record>
