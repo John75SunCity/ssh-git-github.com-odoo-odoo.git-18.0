@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
-        
+
         <!-- ========================================================================
              BARCODE NOMENCLATURE RULES FOR CONTAINER OPERATIONS
-             
+
              These rules enable barcode-triggered workflows:
              - Temp → Storage container conversion
              - Container status changes
              - Location transfers
              - Automated stock movements
-             
+
              UI buttons emit these barcode values, triggering backend automation
         ======================================================================== -->
-        
+
         <!-- Container Status Change Rules -->
         <record id="barcode_rule_convert_temp_to_storage" model="barcode.nomenclature.rule">
             <field name="name">Convert Temp Container to Storage</field>
@@ -24,7 +24,7 @@
             <field name="alias">Convert to Storage Container</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to the "Store Container" button in container form views. Modifying or deleting this rule will cause the button to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <record id="barcode_rule_mark_container_for_pickup" model="barcode.nomenclature.rule">
             <field name="name">Mark Container for Pickup</field>
             <field name="sequence">11</field>
@@ -34,7 +34,7 @@
             <field name="alias">Ready for Pickup</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to the "Ready for Pickup" button in container form views. Modifying or deleting this rule will cause the button to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <record id="barcode_rule_move_to_shredding" model="barcode.nomenclature.rule">
             <field name="name">Move to Shredding Queue</field>
             <field name="sequence">12</field>
@@ -44,7 +44,7 @@
             <field name="alias">Queue for Destruction</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to the "Queue for Destruction" button in container form views. Modifying or deleting this rule will cause the button to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <record id="barcode_rule_complete_shredding" model="barcode.nomenclature.rule">
             <field name="name">Complete Shredding Process</field>
             <field name="sequence">13</field>
@@ -54,7 +54,7 @@
             <field name="alias">Destruction Complete</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to the "Complete Destruction" button in container form views. Modifying or deleting this rule will cause the button to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <record id="barcode_rule_archive_container" model="barcode.nomenclature.rule">
             <field name="name">Archive Container</field>
             <field name="sequence">14</field>
@@ -64,7 +64,7 @@
             <field name="alias">Move to Archive</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to container archive operations. Modifying or deleting this rule will cause archive workflows to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <record id="barcode_rule_return_to_customer" model="barcode.nomenclature.rule">
             <field name="name">Return Container to Customer</field>
             <field name="sequence">15</field>
@@ -74,7 +74,7 @@
             <field name="alias">Return to Customer</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to customer return operations. Modifying or deleting this rule will cause return workflows to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <!-- Inventory Adjustment Rules -->
         <record id="barcode_rule_add_inventory" model="barcode.nomenclature.rule">
             <field name="name">Add to Inventory</field>
@@ -85,7 +85,7 @@
             <field name="alias">Add Inventory</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to the "Add Inventory" button in container form views. Modifying or deleting this rule will cause the button to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <record id="barcode_rule_remove_inventory" model="barcode.nomenclature.rule">
             <field name="name">Remove from Inventory</field>
             <field name="sequence">21</field>
@@ -95,7 +95,7 @@
             <field name="alias">Remove Inventory</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to inventory removal operations. Modifying or deleting this rule will cause inventory adjustment workflows to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <!-- Location Transfer Rules -->
         <record id="barcode_rule_transfer_to_warehouse" model="barcode.nomenclature.rule">
             <field name="name">Transfer to Main Warehouse</field>
@@ -106,7 +106,7 @@
             <field name="alias">Transfer to Warehouse</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to warehouse transfer operations. Modifying or deleting this rule will cause transfer workflows to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <record id="barcode_rule_transfer_to_offsite" model="barcode.nomenclature.rule">
             <field name="name">Transfer to Offsite Storage</field>
             <field name="sequence">31</field>
@@ -116,7 +116,7 @@
             <field name="alias">Transfer to Offsite</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to offsite transfer operations. Modifying or deleting this rule will cause transfer workflows to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <!-- Quality Control Rules -->
         <record id="barcode_rule_qc_inspection" model="barcode.nomenclature.rule">
             <field name="name">QC Inspection Required</field>
@@ -127,7 +127,7 @@
             <field name="alias">Quality Check Required</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to quality control inspection workflows. Modifying or deleting this rule will cause QC processes to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <record id="barcode_rule_qc_approved" model="barcode.nomenclature.rule">
             <field name="name">QC Approved</field>
             <field name="sequence">41</field>
@@ -137,7 +137,7 @@
             <field name="alias">QC Approved</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to quality control approval workflows. Modifying or deleting this rule will cause QC approval processes to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <!-- Customer Request Rules -->
         <record id="barcode_rule_retrieval_request" model="barcode.nomenclature.rule">
             <field name="name">Retrieval Request Processing</field>
@@ -148,7 +148,7 @@
             <field name="alias">Process Retrieval</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to retrieval request processing workflows. Modifying or deleting this rule will cause retrieval operations to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
         <record id="barcode_rule_service_request" model="barcode.nomenclature.rule">
             <field name="name">Service Request Processing</field>
             <field name="sequence">51</field>
@@ -158,6 +158,6 @@
             <field name="alias">Process Service Request</field>
             <field name="notes">⚠️ WARNING: This barcode rule is linked to service request processing workflows. Modifying or deleting this rule will cause service request operations to stop functioning correctly. Only modify if you understand the barcode-based workflow system.</field>
         </record>
-        
+
     </data>
 </odoo>
