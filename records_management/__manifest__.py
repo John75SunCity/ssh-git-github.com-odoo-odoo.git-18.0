@@ -91,8 +91,9 @@
         "data/records_retrieval_order_sequences_data.xml",
         # ============================================================================
         # BARCODE OPERATIONS: Nomenclature rules for automated workflows
+        # COMMENTED OUT: Requires 'barcodes' module - uncomment after verifying module installed
         # ============================================================================
-        "data/barcode_nomenclature_rules.xml",
+        # "data/barcode_nomenclature_rules.xml",
         # ============================================================================
         # CORE DATA: Base records that other data/records depend on
         # ============================================================================
