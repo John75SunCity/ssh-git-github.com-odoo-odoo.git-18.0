@@ -16,7 +16,7 @@
     <record id="view_records_container_form_barcode_operations" model="ir.ui.view">
         <field name="name">records.container.form.barcode.operations</field>
         <field name="model">records.container</field>
-        <field name="inherit_id" ref="records_management.view_records_container_form"/>
+        <field name="inherit_id" ref="records_management.records_container_view_form"/>
         <field name="arch" type="xml">
             
             <!-- Add Barcode Operations in header -->
@@ -143,7 +143,7 @@
     <record id="view_records_container_tree_barcode" model="ir.ui.view">
         <field name="name">records.container.tree.barcode</field>
         <field name="model">records.container</field>
-        <field name="inherit_id" ref="records_management.view_records_container_tree"/>
+        <field name="inherit_id" ref="records_management.records_container_view_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//tree" position="attributes">
                 <attribute name="decoration-success">last_barcode_operation == 'Added to Inventory'</attribute>
@@ -161,7 +161,7 @@
     <record id="view_records_container_kanban_barcode" model="ir.ui.view">
         <field name="name">records.container.kanban.barcode</field>
         <field name="model">records.container</field>
-        <field name="inherit_id" ref="records_management.view_records_container_kanban"/>
+        <field name="inherit_id" ref="records_management.records_container_view_kanban"/>
         <field name="arch" type="xml">
             <xpath expr="//templates//div[hasclass('oe_kanban_bottom_right')]" position="inside">
                 
