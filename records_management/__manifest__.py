@@ -787,3 +787,4 @@
         "static/description/icon.png"
     ],
 }
+
