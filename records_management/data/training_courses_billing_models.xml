@@ -22,7 +22,7 @@
             <field name="website_published">true</field>
             <field name="completion_time">10</field>
             <field name="sequence">1</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <h1>💾 Billing Model Architecture</h1>
     <h2>Understanding the Data Structure</h2>
@@ -167,7 +167,7 @@ erDiagram
             <field name="website_published">true</field>
             <field name="completion_time">12</field>
             <field name="sequence">2</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <h2>🗄️ records.management.storage</h2>
     <p class="lead">The primary model for managing recurring storage fees and contracts</p>
@@ -341,7 +341,7 @@ erDiagram
             <field name="website_published">true</field>
             <field name="completion_time">12</field>
             <field name="sequence">3</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <h2>🚛 project.task (Extended for Records Management FSM)</h2>
     <p class="lead">Field service tasks with integrated billing capabilities</p>
@@ -530,7 +530,7 @@ graph LR
             <field name="website_published">true</field>
             <field name="completion_time">10</field>
             <field name="sequence">4</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <h2>📋 sale.order (Extended for Charge Aggregation)</h2>
     <p class="lead">The bridge between charges and invoices</p>
@@ -728,7 +728,7 @@ graph LR
             <field name="website_published">true</field>
             <field name="completion_time">15</field>
             <field name="sequence">5</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <h1>🗺️ Complete Model Relationship Map</h1>
 

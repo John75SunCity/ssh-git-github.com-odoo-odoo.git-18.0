@@ -10,7 +10,7 @@
             <field name="slide_type">article</field>            <field name="website_published">true</field>
             <field name="completion_time">6</field>
             <field name="sequence">1</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -49,7 +49,7 @@
             <field name="slide_type">article</field>            <field name="website_published">true</field>
             <field name="completion_time">12</field>
             <field name="sequence">2</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -97,7 +97,7 @@
             <field name="slide_type">article</field>            <field name="website_published">true</field>
             <field name="completion_time">9</field>
             <field name="sequence">3</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -152,7 +152,7 @@
             <field name="slide_type">article</field>            <field name="website_published">true</field>
             <field name="completion_time">15</field>
             <field name="sequence">4</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <div class="row">
         <div class="col-md-12">

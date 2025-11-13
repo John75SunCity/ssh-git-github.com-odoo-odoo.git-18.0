@@ -22,7 +22,7 @@
             <field name="website_published">true</field>
             <field name="completion_time">10</field>
             <field name="sequence">1</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <h1>📚 Welcome to Records Management Training</h1>
     <h2>Your Complete Guide to the System</h2>
@@ -156,7 +156,7 @@
             <field name="website_published">true</field>
             <field name="completion_time">15</field>
             <field name="sequence">2</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <h2>📦 Creating and Managing Containers</h2>
     <p class="lead">Learn how to create, label, and track document containers</p>
@@ -347,7 +347,7 @@ graph LR
             <field name="website_published">true</field>
             <field name="completion_time">12</field>
             <field name="sequence">3</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <h2>🌐 Using the Customer Portal</h2>
     <p class="lead">Access your records inventory and request services online</p>
@@ -604,7 +604,7 @@ graph LR
             <field name="website_published">true</field>
             <field name="completion_time">15</field>
             <field name="sequence">4</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <h2>🚛 Field Service Management (FSM)</h2>
     <p class="lead">For technicians and dispatchers managing on-site services</p>
@@ -822,7 +822,7 @@ graph LR
             <field name="website_published">true</field>
             <field name="completion_time">12</field>
             <field name="sequence">5</field>
-            <field name="body_html"><![CDATA[
+            <field name="html_content"><![CDATA[
 <div class="container">
     <h2>🔒 NAID AAA Compliance &amp; Reporting</h2>
     <p class="lead">Maintaining audit trails and generating compliance reports</p>
