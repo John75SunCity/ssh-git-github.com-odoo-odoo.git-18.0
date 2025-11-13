@@ -599,7 +599,6 @@
         "views/records_billing_views.xml",
         "views/records_bulk_user_import_views.xml",
         "views/records_category_views.xml",
-        "views/records_config_settings_views.xml",
         "views/records_container_type_converter_views.xml",
         "views/records_department_billing_approval_views.xml",
         "views/records_management_dashboard_views.xml",
