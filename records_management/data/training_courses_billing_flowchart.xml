@@ -22,7 +22,7 @@
             <field name="website_published">true</field>
             <field name="completion_time">8</field>
             <field name="sequence">1</field>
-            <field name="html_content"><![CDATA[
+            <field name="body_html"><![CDATA[
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -122,7 +122,7 @@ graph TD
             <field name="website_published">true</field>
             <field name="completion_time">10</field>
             <field name="sequence">2</field>
-            <field name="html_content"><![CDATA[
+            <field name="body_html"><![CDATA[
 <div class="container">
     <h2>🗄️ Storage Fee Generation Process</h2>
 
@@ -205,7 +205,7 @@ graph TD
             <field name="website_published">true</field>
             <field name="completion_time">12</field>
             <field name="sequence">3</field>
-            <field name="html_content"><![CDATA[
+            <field name="body_html"><![CDATA[
 <div class="container">
     <h2>⏱️ FSM Labor &amp; Timesheet Billing</h2>
 
@@ -314,7 +314,7 @@ flowchart LR
             <field name="website_published">true</field>
             <field name="completion_time">10</field>
             <field name="sequence">4</field>
-            <field name="html_content"><![CDATA[
+            <field name="body_html"><![CDATA[
 <div class="container">
     <h2>🧾 Invoice Generation Process</h2>
 
@@ -448,7 +448,7 @@ flowchart LR
             <field name="website_published">true</field>
             <field name="completion_time">15</field>
             <field name="sequence">5</field>
-            <field name="html_content"><![CDATA[
+            <field name="body_html"><![CDATA[
 <div class="container">
     <h1>📊 Complete Charge-to-Invoice Flowchart</h1>
 

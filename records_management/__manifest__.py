@@ -701,7 +701,9 @@
         "templates/portal_mobile_template.xml",
         "templates/portal_mobile_inventory_template.xml",
         "templates/portal_mobile_export.xml",
-        "templates/portal_mobile_settings.xml"
+        "templates/portal_mobile_settings.xml",
+        # Portal Template Aliases (fixes missing page errors)
+        "templates/portal_template_aliases.xml"
     ],
     "demo": [
         "demo/customer_inventory_demo.xml",
