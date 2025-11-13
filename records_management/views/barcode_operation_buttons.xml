@@ -158,7 +158,7 @@
         <field name="model">records.container</field>
         <field name="inherit_id" ref="records_management.records_container_view_kanban"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[@class='row mt-1']" position="after">
+            <xpath expr="//div[hasclass('row', 'mt-1')]" position="after">
                 <!-- Barcode Operation Quick Actions on Kanban Cards -->
                 <div class="row mt-1">
                     <div class="col-6">
