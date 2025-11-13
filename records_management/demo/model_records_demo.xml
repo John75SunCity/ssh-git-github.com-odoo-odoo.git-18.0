@@ -380,10 +380,15 @@
             <field name="key">records_management.naid_compliance_required</field>
             <field name="value">True</field>
         </record>
-        <record id="demo_portal_feature_flag" model="ir.config_parameter" forcecreate="0">
-            <field name="key">records_management.portal.enabled</field>
-            <field name="value">True</field>
-        </record>
+        
+        <!-- Wrap portal.enabled in noupdate to prevent duplicate key errors on reinstall -->
+        <data noupdate="1">
+            <record id="demo_portal_feature_flag" model="ir.config_parameter">
+                <field name="key">records_management.portal.enabled</field>
+                <field name="value">True</field>
+            </record>
+        </data>
+        
         <record id="demo_default_security_level" model="ir.config_parameter">
             <field name="key">records_management.default_security_level</field>
             <field name="value">level_3</field>
