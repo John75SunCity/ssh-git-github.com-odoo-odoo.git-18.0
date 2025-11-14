@@ -11,7 +11,8 @@
         "hr",
         "hr_timesheet",
         "hr_attendance",
-        "project"
+        "project",
+        "records_management"  # Required for security groups in ir.model.access.csv
     ],
     "data": [
         "security/qb_tsheet_sync_groups.xml",
