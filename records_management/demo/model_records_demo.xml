@@ -381,13 +381,9 @@
             <field name="value">True</field>
         </record>
         
-        <!-- Wrap portal.enabled in noupdate to prevent duplicate key errors on reinstall -->
-        <data noupdate="1">
-            <record id="demo_portal_feature_flag" model="ir.config_parameter">
-                <field name="key">records_management.portal.enabled</field>
-                <field name="value">True</field>
-            </record>
-        </data>
+        <!-- NOTE: records_management.portal.enabled is automatically created by -->
+        <!-- rm.module.configurator in action_apply_portal_feature_pack_toggle() -->
+        <!-- when portal_configurator_data.xml loads. No need to create here. -->
         
         <record id="demo_default_security_level" model="ir.config_parameter">
             <field name="key">records_management.default_security_level</field>
