@@ -112,7 +112,7 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">personnel</field>
             <field name="search_keywords">employee files, HR records, performance reviews, hiring documents, benefits, payroll</field>
-            <field name="security_level">confidential</field>
+            <field name="security_level">2</field>
         </record>
 
         <record id="demo_container_personnel_inactive" model="records.container">
@@ -128,7 +128,7 @@
             <field name="content_date_to">2023-12-31</field>
             <field name="primary_content_type">personnel</field>
             <field name="search_keywords">terminated employees, HR records, exit interviews, final pay stubs, references</field>
-            <field name="security_level">confidential</field>
+            <field name="security_level">2</field>
         </record>
 
         <!-- Insurance Records Container -->
@@ -206,7 +206,7 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">compliance</field>
             <field name="search_keywords">SOX compliance, Sarbanes-Oxley, internal controls, financial audits, control testing, audit reports</field>
-            <field name="security_level">confidential</field>
+            <field name="security_level">2</field>
             <!-- Removed field not defined on model: compliance_category -->
         </record>
 
@@ -221,7 +221,7 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">medical</field>
             <field name="search_keywords">HIPAA medical records, patient confidentiality, PHI, protected health information, medical charts</field>
-            <field name="security_level">confidential</field>
+            <field name="security_level">2</field>
             <!-- Removed field not defined on model: compliance_category -->
         </record>
 
@@ -270,7 +270,7 @@
             <field name="content_date_to">2024-12-31</field>
             <field name="primary_content_type">litigation</field>
             <field name="search_keywords">litigation hold, legal hold, active lawsuits, court documents, depositions, discovery materials</field>
-            <field name="security_level">confidential</field>
+            <field name="security_level">2</field>
             <!-- Removed fields not defined on model: retention_category, priority_level -->
         </record>
 
