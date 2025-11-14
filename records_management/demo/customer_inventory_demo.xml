@@ -153,7 +153,7 @@
             <field name="active">True</field>
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
-            <field name="security_level">internal</field>
+            <field name="security_level">1</field>
             <field name="max_capacity">5000</field>
 
         </record>        <record id="location_main_warehouse_b" model="records.location">
@@ -166,7 +166,7 @@
             <field name="active">True</field>
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
-            <field name="security_level">internal</field>
+            <field name="security_level">1</field>
             <field name="max_capacity">5000</field>
 
         </record>        <record id="location_secure_vault" model="records.location">
@@ -179,7 +179,7 @@
             <field name="active">True</field>
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
-            <field name="security_level">restricted</field>
+            <field name="security_level">3</field>
             <field name="max_capacity">1000</field>
 
         </record>

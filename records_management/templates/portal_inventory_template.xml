@@ -140,21 +140,21 @@
                             <!-- Storage Summary -->
                             <div class="card mt-3">
                                 <div class="card-header">
-                                    <h6><i class="fa fa-pie-chart"/> Storage Utilization</h6>
+                                    <h6><i class="fa fa-pie-chart"/> Storage by Location</h6>
                                 </div>
                                 <div class="card-body">
-                                    <t t-foreach="storage_locations" t-as="location">
-                                        <div class="mb-2">
-                                            <div class="d-flex justify-content-between">
-                                                <small><t t-esc="location.name"/></small>
-                                                <small><t t-esc="location.utilization_percent"/>%</small>
+                                    <t t-if="containers_by_location">
+                                        <t t-foreach="containers_by_location.items()" t-as="location_item">
+                                            <div class="mb-2">
+                                                <div class="d-flex justify-content-between">
+                                                    <small><t t-esc="location_item[0]"/></small>
+                                                    <small><t t-esc="location_item[1]"/> containers</small>
+                                                </div>
                                             </div>
-                                            <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar"
-                                                     t-att-style="'width: ' + str(location.utilization_percent) + '%'"
-                                                     t-att-class="'bg-success' if location.utilization_percent &lt; 80 else 'bg-warning' if location.utilization_percent &lt; 95 else 'bg-danger'"/>
-                                            </div>
-                                        </div>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <p class="text-muted mb-0">No containers in storage</p>
                                     </t>
                                 </div>
                             </div>

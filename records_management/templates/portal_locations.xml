@@ -1,7 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <!-- Location Detail Template -->
+        <!-- Portal Location Detail Template (for customer portal) -->
+        <template id="portal_location_detail" name="Portal Location Detail">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Location Details</t>
+
+                <div class="o_portal_location_detail">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h3 class="mb-0">
+                                <i class="fa fa-map-marker-alt"></i>
+                                Location: <span t-esc="location.name"/>
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <dl class="row">
+                                        <dt class="col-sm-4">Complete Name:</dt>
+                                        <dd class="col-sm-8" t-esc="location.complete_name"/>
+
+                                        <dt class="col-sm-4">Usage:</dt>
+                                        <dd class="col-sm-8" t-esc="location.usage"/>
+
+                                        <dt class="col-sm-4">Container Count:</dt>
+                                        <dd class="col-sm-8" t-esc="container_count"/>
+                                    </dl>
+                                </div>
+                            </div>
+
+                            <!-- Containers at this location -->
+                            <div class="mt-4" t-if="containers">
+                                <h4>Containers at this Location</h4>
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Container #</th>
+                                            <th>Description</th>
+                                            <th>Type</th>
+                                            <th>State</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="containers" t-as="container">
+                                            <tr>
+                                                <td><t t-esc="container.name"/></td>
+                                                <td><t t-esc="container.description or '-'"/></td>
+                                                <td><t t-esc="container.container_type_id.name if container.container_type_id else '-'"/></td>
+                                                <td><t t-esc="container.state"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="mt-3">
+                                <a href="/my/inventory/locations" class="btn btn-secondary">
+                                    <i class="fa fa-arrow-left"></i> Back to Locations
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Backend Location Detail Template -->
         <template id="location_detail" name="Location Detail">
             <t t-call="portal.portal_layout">
                 <t t-set="title">Location Details</t>
