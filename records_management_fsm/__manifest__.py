@@ -1,6 +1,6 @@
 {
     "name": "Records Management FSM Integration",
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.0.4",
     "category": "Records Management",
     "summary": "FSM integration for Records Management",
     "author": "John Cope",
