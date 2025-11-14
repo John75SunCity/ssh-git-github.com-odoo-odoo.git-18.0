@@ -106,9 +106,10 @@
         </field>
     </record>
 
-    <!-- ============================================================================ -->
-    <!-- BATCH BARCODE OPERATIONS WIZARD - ADD VALIDATE/DISCARD BUTTONS -->
-    <!-- ============================================================================ -->
+    <!-- ============================================================================
+         BATCH BARCODE OPERATIONS WIZARD - Add Command Reference
+         Note: Barcode commands work on individual containers, not the wizard itself
+         ============================================================================ -->
     
     <record id="view_batch_barcode_operations_wizard_commands" model="ir.ui.view">
         <field name="name">batch.barcode.operations.wizard.commands</field>
@@ -116,40 +117,27 @@
         <field name="inherit_id" ref="records_management.view_batch_barcode_operations_wizard"/>
         <field name="arch" type="xml">
             
-            <!-- Update footer to include standard command buttons -->
-            <xpath expr="//footer" position="replace">
-                <footer>
-                    <!-- Primary Action -->
-                    <button name="action_process_batch" 
-                            type="object" 
-                            string="Process Batch" 
-                            class="btn-primary"/>
-                    
-                    <!-- Standard VALIDATE Button -->
-                    <button name="action_validate_barcode_operation" 
-                            type="object" 
-                            string="✓ Validate" 
-                            class="btn-success"
-                            help="Barcode: O-BTN.validate"/>
-                    
-                    <!-- Standard DISCARD Button -->
-                    <button name="action_discard_barcode_operation" 
-                            type="object" 
-                            string="✕ Discard" 
-                            class="btn-secondary"
-                            help="Barcode: O-BTN.discard"/>
-                    
-                    <!-- Close Button -->
-                    <button special="cancel" string="Close" class="btn-secondary"/>
-                </footer>
+            <!-- Add barcode command reference info -->
+            <xpath expr="//group[@string='Barcode Scanner']" position="after">
+                <group string="Standard Barcode Commands" invisible="not container_ids">
+                    <div class="alert alert-info" role="alert">
+                        <p><strong>Available Commands (scan after container barcode):</strong></p>
+                        <ul class="mb-0">
+                            <li><code>O-BTN.validate</code> - Validate pending transfer on container</li>
+                            <li><code>O-BTN.discard</code> - Cancel operation on container</li>
+                            <li><code>O-CMD.MAIN-MENU</code> - Return to barcode main menu</li>
+                        </ul>
+                    </div>
+                </group>
             </xpath>
             
         </field>
     </record>
 
-    <!-- ============================================================================ -->
-    <!-- CONTAINER INDEXING WIZARD - ADD VALIDATE/DISCARD BUTTONS -->
-    <!-- ============================================================================ -->
+    <!-- ============================================================================
+         CONTAINER INDEXING WIZARD - Add Command Reference
+         Note: Barcode commands work on containers, not the wizard itself
+         ============================================================================ -->
     
     <record id="view_container_indexing_wizard_commands" model="ir.ui.view">
         <field name="name">container.indexing.wizard.commands</field>
@@ -157,23 +145,15 @@
         <field name="inherit_id" ref="records_management.view_container_indexing_wizard"/>
         <field name="arch" type="xml">
             
-            <!-- Update footer buttons -->
-            <xpath expr="//footer/button[@name='action_complete_indexing']" position="after">
-                
-                <!-- Standard VALIDATE Button -->
-                <button name="action_validate_barcode_operation" 
-                        type="object" 
-                        string="✓ Validate &amp; Complete" 
-                        class="btn-success"
-                        help="Barcode: O-BTN.validate - Validate transfer and complete indexing"/>
-                
-                <!-- Standard DISCARD Button -->
-                <button name="action_discard_barcode_operation" 
-                        type="object" 
-                        string="✕ Discard Indexing" 
-                        class="btn-secondary"
-                        help="Barcode: O-BTN.discard - Cancel indexing operation"/>
-                
+            <!-- Add barcode command reference info -->
+            <xpath expr="//field[@name='container_id']" position="after">
+                <div class="alert alert-info mt-2" role="alert">
+                    <p><strong>Barcode Commands (scan after container):</strong></p>
+                    <ul class="mb-0">
+                        <li><code>O-BTN.validate</code> - Complete indexing on container</li>
+                        <li><code>O-BTN.discard</code> - Cancel indexing on container</li>
+                    </ul>
+                </div>
             </xpath>
             
         </field>
