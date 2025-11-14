@@ -141,7 +141,7 @@
     <record id="view_container_indexing_wizard_commands" model="ir.ui.view">
         <field name="name">container.indexing.wizard.commands</field>
         <field name="model">container.indexing.wizard</field>
-        <field name="inherit_id" ref="records_management.view_container_indexing_wizard"/>
+        <field name="inherit_id" ref="records_management.container_indexing_wizard_view_form"/>
         <field name="arch" type="xml">
             
             <!-- Add barcode command reference info -->
