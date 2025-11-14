@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================================
+         PORTAL BARCODE MAIN MENU
+         Central hub for all barcode operations with quick stats
+         ============================================================================ -->
+    
+    <template id="portal_barcode_main_menu" name="Portal Barcode Main Menu">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Barcode Operations</t>
+            </t>
+            
+            <div class="container mt-4">
+                <!-- Page Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h2 class="d-flex align-items-center">
+                            <i class="fa fa-qrcode me-2"></i>
+                            Barcode Main Menu
+                        </h2>
+                        <p class="text-muted">Select a barcode operation or scan O-CMD.MAIN-MENU to return here</p>
+                    </div>
+                </div>
+                
+                <!-- Container Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card border-primary">
+                            <div class="card-body text-center">
+                                <h3 class="text-primary mb-0">
+                                    <t t-esc="container_stats.get('total', 0)"/>
+                                </h3>
+                                <small class="text-muted">Total Containers</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card border-success">
+                            <div class="card-body text-center">
+                                <h3 class="text-success mb-0">
+                                    <t t-esc="container_stats.get('active', 0)"/>
+                                </h3>
+                                <small class="text-muted">Active</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card border-warning">
+                            <div class="card-body text-center">
+                                <h3 class="text-warning mb-0">
+                                    <t t-esc="container_stats.get('pending_pickup', 0)"/>
+                                </h3>
+                                <small class="text-muted">Pending Pickup</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card border-danger">
+                            <div class="card-body text-center">
+                                <h3 class="text-danger mb-0">
+                                    <t t-esc="container_stats.get('pending_destruction', 0)"/>
+                                </h3>
+                                <small class="text-muted">Pending Destruction</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Barcode Operations Grid -->
+                <div class="row">
+                    <t t-foreach="barcode_operations" t-as="operation">
+                        <div class="col-md-6 col-lg-3 mb-4">
+                            <a t-att-href="operation['route']" class="text-decoration-none">
+                                <div t-attf-class="card h-100 border-{{operation['color']}} hover-shadow">
+                                    <div class="card-body text-center">
+                                        <div t-attf-class="mb-3 text-{{operation['color']}}">
+                                            <i t-attf-class="fa {{operation['icon']}} fa-3x"></i>
+                                        </div>
+                                        <h5 class="card-title" t-esc="operation['name']"/>
+                                        <p class="card-text text-muted small" t-esc="operation['description']"/>
+                                    </div>
+                                    <div t-attf-class="card-footer bg-{{operation['color']}} text-white text-center">
+                                        <i class="fa fa-arrow-right"></i> Start Scanning
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </t>
+                </div>
+                
+                <!-- Standard Commands Reference -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-info-circle me-2"></i>
+                                    Standard Barcode Commands
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="text-primary">Navigation Commands</h6>
+                                        <ul class="list-unstyled">
+                                            <li><code>O-CMD.MAIN-MENU</code> - Return to this menu</li>
+                                            <li><code>O-BTN.discard</code> - Cancel current operation</li>
+                                            <li><code>O-BTN.cancel</code> - Cancel current operation</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="text-success">Action Commands</h6>
+                                        <ul class="list-unstyled">
+                                            <li><code>O-BTN.validate</code> - Validate pending transfer</li>
+                                            <li><code>O-CMD.PRINT</code> - Print movement slip</li>
+                                            <li><code>O-CMD.PACKING</code> - Print delivery slip</li>
+                                            <li><code>O-BTN.scrap</code> - Queue for shredding</li>
+                                            <li><code>O-CMD.RETURN</code> - Request retrieval</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    
+    <!-- ============================================================================
+         PORTAL BARCODE SCANNER INTERFACE
+         Universal scanner with auto-submit and command processing
+         ============================================================================ -->
+    
+    <template id="portal_barcode_scanner" name="Portal Barcode Scanner">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title" t-esc="scan_config['title']"/>
+            </t>
+            
+            <div class="container mt-4">
+                <!-- Scanner Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2 class="d-flex align-items-center mb-0">
+                                <i t-attf-class="fa {{scan_config['icon']}} me-2"></i>
+                                <span t-esc="scan_config['title']"/>
+                            </h2>
+                            <a href="/my/barcode/main" class="btn btn-outline-secondary">
+                                <i class="fa fa-arrow-left me-2"></i>Back to Menu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Scanner Input -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card border-primary shadow-lg">
+                            <div class="card-body p-4">
+                                <form id="barcode_scan_form" class="barcode-scanner-form">
+                                    <div class="form-group">
+                                        <label for="barcode_input" class="form-label h5">
+                                            <i class="fa fa-barcode me-2"></i>
+                                            Barcode Scanner
+                                        </label>
+                                        <div class="input-group input-group-lg">
+                                            <span class="input-group-text bg-primary text-white">
+                                                <i class="fa fa-qrcode"></i>
+                                            </span>
+                                            <input 
+                                                type="text" 
+                                                id="barcode_input" 
+                                                name="barcode" 
+                                                class="form-control form-control-lg" 
+                                                t-att-placeholder="scan_config['placeholder']"
+                                                autocomplete="off"
+                                                autofocus="autofocus"
+                                                required="required"
+                                            />
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search me-2"></i>Process
+                                            </button>
+                                        </div>
+                                        <small class="form-text text-muted mt-2">
+                                            <i class="fa fa-info-circle me-1"></i>
+                                            Focus this field and scan barcode, or type manually and press Enter
+                                        </small>
+                                    </div>
+                                    
+                                    <input type="hidden" name="operation" t-att-value="scan_type"/>
+                                    <input type="hidden" name="endpoint" t-att-value="scan_config['endpoint']"/>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Scan Results Area -->
+                <div class="row">
+                    <div class="col-12">
+                        <div id="scan_results" class="d-none">
+                            <!-- Results populated via JavaScript -->
+                        </div>
+                        <div id="scan_error" class="alert alert-danger d-none" role="alert">
+                            <!-- Errors populated via JavaScript -->
+                        </div>
+                        <div id="scan_info" class="alert alert-info d-none" role="alert">
+                            <!-- Info messages populated via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Scanned Items Queue (for multi-scan operations) -->
+                <div class="row mt-4" t-if="scan_type in ['pickup', 'retrieval']">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-list me-2"></i>
+                                    Scanned Items (<span id="scanned_count">0</span>)
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="scanned_items_list" class="list-group">
+                                    <div class="text-muted text-center py-4">
+                                        <i class="fa fa-qrcode fa-3x mb-3 opacity-25"></i>
+                                        <p>No items scanned yet. Start scanning containers...</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer" id="scanned_actions" style="display: none;">
+                                <button class="btn btn-primary" id="submit_scanned_items">
+                                    <i class="fa fa-check me-2"></i>
+                                    Submit Request
+                                </button>
+                                <button class="btn btn-outline-danger" id="clear_scanned_items">
+                                    <i class="fa fa-trash me-2"></i>
+                                    Clear All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Command Reference -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">
+                                    <i class="fa fa-keyboard me-2"></i>
+                                    Quick Commands
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <code>O-CMD.MAIN-MENU</code>
+                                        <small class="d-block text-muted">Return to main menu</small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <code>O-BTN.discard</code>
+                                        <small class="d-block text-muted">Cancel operation</small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <code>O-BTN.validate</code>
+                                        <small class="d-block text-muted">Validate transfer</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    
+    <!-- ============================================================================
+         JAVASCRIPT ASSETS FOR BARCODE PROCESSING
+         ============================================================================ -->
+    
+    <template id="barcode_scanner_assets" name="Barcode Scanner Assets" inherit_id="web.assets_frontend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/records_management/static/src/js/barcode_command_handler.js"/>
+            <link rel="stylesheet" type="text/css" href="/records_management/static/src/css/barcode_scanner.css"/>
+        </xpath>
+    </template>
+</odoo>

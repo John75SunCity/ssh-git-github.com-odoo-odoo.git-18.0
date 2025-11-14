@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================================
+         CONTAINER MOVEMENT SLIP REPORT
+         Prints when O-CMD.PRINT is scanned
+         ============================================================================ -->
+    
+    <record id="action_report_container_movement_slip" model="ir.actions.report">
+        <field name="name">Container Movement Slip</field>
+        <field name="model">records.container</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_container_movement_slip</field>
+        <field name="report_file">records_management.report_container_movement_slip</field>
+        <field name="print_report_name">'Movement Slip - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_records_container"/>
+        <field name="binding_type">report</field>
+    </record>
+    
+    <template id="report_container_movement_slip">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header -->
+                        <div class="row mb-4">
+                            <div class="col-8">
+                                <h2>Container Movement Slip</h2>
+                                <p class="text-muted">
+                                    Date: <span t-field="container.write_date" t-options="{'widget': 'date'}"/>
+                                </p>
+                            </div>
+                            <div class="col-4 text-end">
+                                <t t-if="container.barcode or container.temp_barcode">
+                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', container.barcode or container.temp_barcode, 600, 100)" 
+                                         style="width: 200px; height: 50px;"/>
+                                </t>
+                            </div>
+                        </div>
+                        
+                        <!-- Container Information -->
+                        <div class="row">
+                            <div class="col-6">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th style="width: 40%;">Container ID:</th>
+                                        <td><strong t-field="container.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Barcode:</th>
+                                        <td><span t-field="container.barcode"/></td>
+                                    </tr>
+                                    <tr t-if="container.temp_barcode">
+                                        <th>Temp Barcode:</th>
+                                        <td><span t-field="container.temp_barcode"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Container Type:</th>
+                                        <td><span t-field="container.container_type"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Status:</th>
+                                        <td>
+                                            <t t-if="container.state == 'draft'">
+                                                <span class="badge bg-secondary">Draft</span>
+                                            </t>
+                                            <t t-elif="container.state == 'active'">
+                                                <span class="badge bg-success">Active</span>
+                                            </t>
+                                            <t t-elif="container.state == 'pending_pickup'">
+                                                <span class="badge bg-warning">Pending Pickup</span>
+                                            </t>
+                                            <t t-elif="container.state == 'pending_destruction'">
+                                                <span class="badge bg-danger">Pending Destruction</span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="badge bg-info" t-field="container.state"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <div class="col-6">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th style="width: 40%;">Customer:</th>
+                                        <td><span t-field="container.partner_id.name"/></td>
+                                    </tr>
+                                    <tr t-if="container.location_id">
+                                        <th>Current Location:</th>
+                                        <td><span t-field="container.location_id.name"/></td>
+                                    </tr>
+                                    <tr t-if="container.department_id">
+                                        <th>Department:</th>
+                                        <td><span t-field="container.department_id.name"/></td>
+                                    </tr>
+                                    <tr t-if="container.destruction_date">
+                                        <th>Destruction Date:</th>
+                                        <td><span t-field="container.destruction_date" t-options="{'widget': 'date'}"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Pending Transfer Information -->
+                        <t t-if="container.pending_transfer_id">
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h4 class="border-bottom pb-2">Pending Transfer</h4>
+                                    <table class="table table-sm table-bordered">
+                                        <tr>
+                                            <th style="width: 30%;">Transfer Reference:</th>
+                                            <td><span t-field="container.pending_transfer_id.name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Source Location:</th>
+                                            <td><span t-field="container.pending_transfer_id.location_id.name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Destination Location:</th>
+                                            <td><span t-field="container.pending_transfer_id.location_dest_id.name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Scheduled Date:</th>
+                                            <td><span t-field="container.pending_transfer_id.scheduled_date" t-options="{'widget': 'datetime'}"/></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Status:</th>
+                                            <td><span t-field="container.pending_transfer_id.state"/></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+                        
+                        <!-- Last Barcode Operation -->
+                        <t t-if="container.last_barcode_operation">
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h4 class="border-bottom pb-2">Last Barcode Operation</h4>
+                                    <table class="table table-sm">
+                                        <tr>
+                                            <th style="width: 30%;">Operation:</th>
+                                            <td><span t-field="container.last_barcode_operation"/></td>
+                                        </tr>
+                                        <tr t-if="container.last_barcode_operation_date">
+                                            <th>Date/Time:</th>
+                                            <td><span t-field="container.last_barcode_operation_date" t-options="{'widget': 'datetime'}"/></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+                        
+                        <!-- Signature Area -->
+                        <div class="row mt-5">
+                            <div class="col-6">
+                                <div class="border-top pt-3">
+                                    <strong>Prepared By:</strong>
+                                    <p class="mt-4">________________________________</p>
+                                    <p class="text-muted small">Signature</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="border-top pt-3">
+                                    <strong>Received By:</strong>
+                                    <p class="mt-4">________________________________</p>
+                                    <p class="text-muted small">Signature</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Footer Notes -->
+                        <div class="row mt-5">
+                            <div class="col-12">
+                                <p class="text-muted small">
+                                    <strong>Notes:</strong> This movement slip documents the transfer of the above container. 
+                                    Please verify all information is correct before signing.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    
+    <!-- ============================================================================
+         RETRIEVAL DELIVERY SLIP REPORT
+         Prints when O-CMD.PACKING is scanned
+         ============================================================================ -->
+    
+    <record id="action_report_retrieval_delivery_slip" model="ir.actions.report">
+        <field name="name">Retrieval Delivery Slip</field>
+        <field name="model">records.container</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_retrieval_delivery_slip</field>
+        <field name="report_file">records_management.report_retrieval_delivery_slip</field>
+        <field name="print_report_name">'Delivery Slip - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_records_container"/>
+        <field name="binding_type">report</field>
+    </record>
+    
+    <template id="report_retrieval_delivery_slip">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header -->
+                        <div class="row mb-4">
+                            <div class="col-8">
+                                <h2>Retrieval Delivery Slip</h2>
+                                <p class="text-muted">
+                                    Date: <span t-field="container.write_date" t-options="{'widget': 'date'}"/>
+                                </p>
+                            </div>
+                            <div class="col-4 text-end">
+                                <t t-if="container.barcode or container.temp_barcode">
+                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', container.barcode or container.temp_barcode, 600, 100)" 
+                                         style="width: 200px; height: 50px;"/>
+                                </t>
+                            </div>
+                        </div>
+                        
+                        <!-- Delivery Information -->
+                        <div class="alert alert-info">
+                            <strong><i class="fa fa-info-circle me-2"/>Retrieval Request</strong>
+                            <p class="mb-0">This container has been requested for retrieval by the customer.</p>
+                        </div>
+                        
+                        <!-- Customer & Container Information -->
+                        <div class="row">
+                            <div class="col-6">
+                                <h4 class="border-bottom pb-2">Customer Information</h4>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th style="width: 40%;">Customer:</th>
+                                        <td><strong t-field="container.partner_id.name"/></td>
+                                    </tr>
+                                    <tr t-if="container.partner_id.street">
+                                        <th>Address:</th>
+                                        <td>
+                                            <div t-field="container.partner_id" 
+                                                 t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="container.partner_id.phone">
+                                        <th>Phone:</th>
+                                        <td><span t-field="container.partner_id.phone"/></td>
+                                    </tr>
+                                    <tr t-if="container.partner_id.email">
+                                        <th>Email:</th>
+                                        <td><span t-field="container.partner_id.email"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <div class="col-6">
+                                <h4 class="border-bottom pb-2">Container Information</h4>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th style="width: 40%;">Container ID:</th>
+                                        <td><strong t-field="container.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Barcode:</th>
+                                        <td><span t-field="container.barcode"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Container Type:</th>
+                                        <td><span t-field="container.container_type"/></td>
+                                    </tr>
+                                    <tr t-if="container.location_id">
+                                        <th>Storage Location:</th>
+                                        <td><span t-field="container.location_id.name"/></td>
+                                    </tr>
+                                    <tr t-if="container.department_id">
+                                        <th>Department:</th>
+                                        <td><span t-field="container.department_id.name"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Retrieval Instructions -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h4 class="border-bottom pb-2">Retrieval Instructions</h4>
+                                <div class="alert alert-warning">
+                                    <ol class="mb-0">
+                                        <li>Locate container at the storage location specified above</li>
+                                        <li>Verify container barcode matches this slip</li>
+                                        <li>Prepare container for pickup/delivery</li>
+                                        <li>Obtain customer signature upon delivery</li>
+                                        <li>Update system status after successful delivery</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Delivery Checklist -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h4 class="border-bottom pb-2">Delivery Checklist</h4>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width: 5%;">☐</td>
+                                            <td>Container located and verified</td>
+                                        </tr>
+                                        <tr>
+                                            <td>☐</td>
+                                            <td>Container condition checked (no damage)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>☐</td>
+                                            <td>Customer notified of pending delivery</td>
+                                        </tr>
+                                        <tr>
+                                            <td>☐</td>
+                                            <td>Container delivered to customer</td>
+                                        </tr>
+                                        <tr>
+                                            <td>☐</td>
+                                            <td>Customer signature obtained</td>
+                                        </tr>
+                                        <tr>
+                                            <td>☐</td>
+                                            <td>System updated with delivery status</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Signature Area -->
+                        <div class="row mt-5">
+                            <div class="col-6">
+                                <div class="border-top pt-3">
+                                    <strong>Delivered By:</strong>
+                                    <p class="mt-4">________________________________</p>
+                                    <p class="text-muted small">Driver Signature &amp; Date</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="border-top pt-3">
+                                    <strong>Received By:</strong>
+                                    <p class="mt-4">________________________________</p>
+                                    <p class="text-muted small">Customer Signature &amp; Date</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

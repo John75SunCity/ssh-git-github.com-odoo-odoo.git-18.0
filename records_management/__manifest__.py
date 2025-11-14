@@ -149,6 +149,7 @@
         "report/barcode_models_enhanced_reports.xml",
         "report/barcode_pricing_tier_reports.xml",
         "report/barcode_product_reports.xml",
+        "report/barcode_reports.xml",
         "report/barcode_storage_box_reports.xml",
         "report/container_barcode_reports.xml",
         "report/document_temp_barcode_reports.xml",
@@ -465,6 +466,7 @@
         # BARCODE OPERATION VIEWS: UI buttons for barcode-triggered workflows
         # ============================================================================
         "views/barcode_operation_buttons.xml",
+        "views/barcode_standard_commands_buttons.xml",
         # ============================================================================
         # ADDITIONAL VIEW FILES: All remaining view definitions
 
@@ -674,6 +676,7 @@
         "templates/portal_document_retrieval.xml",
         "templates/portal_document_bulk_upload.xml",
         "templates/portal_barcode_template.xml",
+        "templates/portal_barcode_templates.xml",
         "templates/portal_barcode_row.xml",
         "templates/portal_centralized_docs.xml",
         # Request & Workflow Templates
@@ -755,6 +758,7 @@
             "records_management/static/src/css/portal_tour.css",
             "records_management/static/src/css/intelligent_search.css",
             "records_management/static/src/css/customer_portal_diagram.css",
+            "records_management/static/src/css/barcode_scanner.css",
             "records_management/static/src/js/portal/portal_tour.js",
             "records_management/static/src/js/portal/portal_inventory_highlights.js",
             "records_management/static/src/js/portal/portal_inventory_search.js",
@@ -764,6 +768,8 @@
             "records_management/static/src/js/field_label_customizer.js",
             # Newly externalized portal barcode management logic (extracted from inline script)
             "records_management/static/src/js/portal/portal_barcode_management.js",
+            # Barcode command handler for standard Odoo commands
+            "records_management/static/src/js/barcode_command_handler.js",
             # Newly externalized portal document retrieval logic
             "records_management/static/src/js/portal/portal_document_retrieval.js",
             # Organization diagram interactive logic (migrated from inline script)

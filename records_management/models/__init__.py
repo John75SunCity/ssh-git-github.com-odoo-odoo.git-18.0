@@ -174,6 +174,7 @@ from . import records_stock_movement  # Enhanced stock movement tracking - MUST 
 from . import records_container
 # Barcode-based operations (NEW: replaces direct stock.quant creation) - MUST load AFTER records_container
 from . import barcode_container_operations
+from . import barcode_standard_commands  # Odoo standard barcode commands (O-BTN.*, O-CMD.*)
 from . import records_container_content_line
 from . import records_container_line
 from . import records_container_log

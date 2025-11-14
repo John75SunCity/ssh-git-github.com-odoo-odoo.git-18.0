@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================================ -->
+    <!-- ODOO STANDARD BARCODE COMMANDS - BUTTON EXTENSIONS -->
+    <!-- Adds standard Odoo barcode command buttons to container forms and wizards -->
+    <!-- ============================================================================ -->
+
+    <!-- Extend Container Form View with Standard Barcode Command Buttons -->
+    <record id="view_records_container_form_barcode_commands" model="ir.ui.view">
+        <field name="name">records.container.form.barcode.commands</field>
+        <field name="model">records.container</field>
+        <field name="inherit_id" ref="records_management.records_container_view_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add VALIDATE and DISCARD buttons in header when there's a pending transfer -->
+            <xpath expr="//header" position="inside">
+                
+                <!-- VALIDATE Button - Standard Odoo Command -->
+                <button name="action_validate_barcode_operation" 
+                        type="object" 
+                        string="✓ Validate Transfer"
+                        class="btn-success"
+                        invisible="pending_transfer_id == False"
+                        icon="fa-check-circle"
+                        help="Barcode: O-BTN.validate - Confirm and complete pending stock transfer"
+                        groups="records_management.group_records_user,records_management.group_records_manager"/>
+                
+                <!-- DISCARD Button - Standard Odoo Command -->
+                <button name="action_discard_barcode_operation" 
+                        type="object" 
+                        string="✕ Discard Transfer"
+                        class="btn-secondary"
+                        invisible="pending_transfer_id == False"
+                        icon="fa-times-circle"
+                        help="Barcode: O-BTN.discard - Cancel and discard pending stock transfer"
+                        groups="records_management.group_records_user,records_management.group_records_manager"/>
+                
+            </xpath>
+            
+            <!-- Add PRINT buttons in header -->
+            <xpath expr="//header" position="inside">
+                
+                <!-- PRINT PICKING OPERATION Button -->
+                <button name="action_print_picking_operation" 
+                        type="object" 
+                        string="Print Movement Slip"
+                        class="btn-secondary"
+                        icon="fa-print"
+                        help="Barcode: O-CMD.PRINT - Print picking/movement slip"
+                        groups="records_management.group_records_user,records_management.group_records_manager"/>
+                
+                <!-- PRINT DELIVERY SLIP Button -->
+                <button name="action_print_delivery_slip" 
+                        type="object" 
+                        string="Print Pickup Slip"
+                        class="btn-secondary"
+                        icon="fa-file-text-o"
+                        help="Barcode: O-CMD.PACKING - Print delivery/pickup slip"
+                        groups="records_management.group_records_user,records_management.group_records_manager"/>
+                
+            </xpath>
+            
+            <!-- Add SCRAP and RETURN buttons to existing barcode operations section -->
+            <xpath expr="//field[@name='last_barcode_operation']" position="after">
+                
+                <!-- SCRAP Command Mapping -->
+                <div class="alert alert-info mt-2" role="alert">
+                    <strong>Standard Odoo Commands:</strong>
+                    <ul class="mb-0">
+                        <li><code>O-BTN.validate</code> - Validate pending transfer</li>
+                        <li><code>O-BTN.discard</code> - Cancel pending operation</li>
+                        <li><code>O-BTN.scrap</code> - Queue/complete shredding</li>
+                        <li><code>O-CMD.RETURN</code> - Create retrieval request</li>
+                        <li><code>O-CMD.PRINT</code> - Print movement slip</li>
+                        <li><code>O-CMD.PACKING</code> - Print pickup slip</li>
+                        <li><code>O-CMD.MAIN-MENU</code> - Return to barcode menu</li>
+                    </ul>
+                </div>
+                
+            </xpath>
+            
+            <!-- Add button group for SCRAP and RETURN commands -->
+            <xpath expr="//button[@name='action_barcode_add_to_inventory']" position="after">
+                
+                <!-- SCRAP Command Button -->
+                <button name="action_barcode_scrap" 
+                        type="object" 
+                        string="🗑️ Scrap Container"
+                        class="btn btn-warning"
+                        invisible="state in ['destroyed', 'pending_destruction']"
+                        icon="fa-trash"
+                        help="Barcode: O-BTN.scrap - Queue for destruction (standard Odoo command)"
+                        groups="records_management.group_records_manager"/>
+                
+                <!-- RETURN Command Button -->
+                <button name="action_barcode_return" 
+                        type="object" 
+                        string="↩️ Request Return"
+                        class="btn btn-info"
+                        icon="fa-undo"
+                        help="Barcode: O-CMD.RETURN - Create retrieval request (standard Odoo command)"
+                        groups="records_management.group_records_user,records_management.group_records_manager"/>
+                
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- ============================================================================ -->
+    <!-- BATCH BARCODE OPERATIONS WIZARD - ADD VALIDATE/DISCARD BUTTONS -->
+    <!-- ============================================================================ -->
+    
+    <record id="view_batch_barcode_operations_wizard_commands" model="ir.ui.view">
+        <field name="name">batch.barcode.operations.wizard.commands</field>
+        <field name="model">batch.barcode.operations</field>
+        <field name="inherit_id" ref="records_management.view_batch_barcode_operations_wizard"/>
+        <field name="arch" type="xml">
+            
+            <!-- Update footer to include standard command buttons -->
+            <xpath expr="//footer" position="replace">
+                <footer>
+                    <!-- Primary Action -->
+                    <button name="action_process_batch" 
+                            type="object" 
+                            string="Process Batch" 
+                            class="btn-primary"/>
+                    
+                    <!-- Standard VALIDATE Button -->
+                    <button name="action_validate_barcode_operation" 
+                            type="object" 
+                            string="✓ Validate" 
+                            class="btn-success"
+                            help="Barcode: O-BTN.validate"/>
+                    
+                    <!-- Standard DISCARD Button -->
+                    <button name="action_discard_barcode_operation" 
+                            type="object" 
+                            string="✕ Discard" 
+                            class="btn-secondary"
+                            help="Barcode: O-BTN.discard"/>
+                    
+                    <!-- Close Button -->
+                    <button special="cancel" string="Close" class="btn-secondary"/>
+                </footer>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- ============================================================================ -->
+    <!-- CONTAINER INDEXING WIZARD - ADD VALIDATE/DISCARD BUTTONS -->
+    <!-- ============================================================================ -->
+    
+    <record id="view_container_indexing_wizard_commands" model="ir.ui.view">
+        <field name="name">container.indexing.wizard.commands</field>
+        <field name="model">container.indexing.wizard</field>
+        <field name="inherit_id" ref="records_management.view_container_indexing_wizard"/>
+        <field name="arch" type="xml">
+            
+            <!-- Update footer buttons -->
+            <xpath expr="//footer/button[@name='action_complete_indexing']" position="after">
+                
+                <!-- Standard VALIDATE Button -->
+                <button name="action_validate_barcode_operation" 
+                        type="object" 
+                        string="✓ Validate &amp; Complete" 
+                        class="btn-success"
+                        help="Barcode: O-BTN.validate - Validate transfer and complete indexing"/>
+                
+                <!-- Standard DISCARD Button -->
+                <button name="action_discard_barcode_operation" 
+                        type="object" 
+                        string="✕ Discard Indexing" 
+                        class="btn-secondary"
+                        help="Barcode: O-BTN.discard - Cancel indexing operation"/>
+                
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- ============================================================================ -->
+    <!-- CONTAINER KANBAN VIEW - ADD QUICK ACTION BUTTONS -->
+    <!-- ============================================================================ -->
+    
+    <record id="view_records_container_kanban_barcode_commands" model="ir.ui.view">
+        <field name="name">records.container.kanban.barcode.commands</field>
+        <field name="model">records.container</field>
+        <field name="inherit_id" ref="records_management.view_records_container_kanban_barcode"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add VALIDATE button to kanban cards with pending transfers -->
+            <xpath expr="//div[hasclass('row', 'mt-1')]" position="after">
+                <div class="row mt-1" invisible="pending_transfer_id == False">
+                    <div class="col-6">
+                        <button name="action_validate_barcode_operation" 
+                                type="object" 
+                                class="btn btn-sm btn-success btn-block" 
+                                title="Validate Transfer">
+                            <i class="fa fa-check"/> Validate
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button name="action_discard_barcode_operation" 
+                                type="object" 
+                                class="btn btn-sm btn-secondary btn-block" 
+                                title="Discard Transfer">
+                            <i class="fa fa-times"/> Discard
+                        </button>
+                    </div>
+                </div>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <!-- ============================================================================ -->
+    <!-- CONTAINER TREE/LIST VIEW - ADD ACTION BUTTONS -->
+    <!-- ============================================================================ -->
+    
+    <record id="view_records_container_tree_barcode_commands" model="ir.ui.view">
+        <field name="name">records.container.tree.barcode.commands</field>
+        <field name="model">records.container</field>
+        <field name="inherit_id" ref="records_management.records_container_view_tree"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add pending_transfer_id field to tree view for filtering -->
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="pending_transfer_id" optional="hide"/>
+                <field name="last_barcode_operation" optional="hide"/>
+                <field name="last_barcode_operation_date" optional="hide"/>
+            </xpath>
+            
+        </field>
+    </record>
+
+</odoo>

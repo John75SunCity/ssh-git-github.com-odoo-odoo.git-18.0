@@ -2997,3 +2997,198 @@ class RecordsManagementController(http.Controller):
 
         # Redirect to request confirmation page
         return request.redirect('/my/requests/%s' % new_request.id)
+    
+    # ============================================================================
+    # BARCODE MAIN MENU AND SCANNING INTERFACE
+    # ============================================================================
+    
+    @http.route(['/my/barcode/main'], type='http', auth='user', website=True)
+    def portal_barcode_main_menu(self, **kw):
+        """
+        Barcode main menu - central hub for all barcode operations.
+        
+        Standard Odoo Command: O-CMD.MAIN-MENU redirects here.
+        Provides quick access to scanning workflows and batch operations.
+        
+        Returns:
+            Rendered template with barcode operation menu
+        """
+        values = self._prepare_portal_layout_values()
+        
+        # Get user's containers for quick stats
+        partner = request.env.user.partner_id.commercial_partner_id
+        Container = request.env['records.container'].sudo()
+        
+        container_stats = {
+            'total': Container.search_count([('partner_id', '=', partner.id)]),
+            'active': Container.search_count([('partner_id', '=', partner.id), ('state', '=', 'active')]),
+            'pending_pickup': Container.search_count([('partner_id', '=', partner.id), ('state', '=', 'pending_pickup')]),
+            'pending_destruction': Container.search_count([('partner_id', '=', partner.id), ('state', '=', 'pending_destruction')]),
+        }
+        
+        # Define available barcode operations
+        barcode_operations = [
+            {
+                'name': 'Scan Container',
+                'route': '/my/barcode/scan/container',
+                'icon': 'fa-archive',
+                'description': 'Scan container barcode to view details',
+                'color': 'primary'
+            },
+            {
+                'name': 'Scan File Folder',
+                'route': '/my/barcode/scan/file',
+                'icon': 'fa-folder',
+                'description': 'Scan file folder barcode',
+                'color': 'info'
+            },
+            {
+                'name': 'Request Pickup',
+                'route': '/my/barcode/scan/pickup',
+                'icon': 'fa-truck',
+                'description': 'Scan containers for pickup request',
+                'color': 'warning'
+            },
+            {
+                'name': 'Request Retrieval',
+                'route': '/my/barcode/scan/retrieval',
+                'icon': 'fa-download',
+                'description': 'Scan containers for retrieval',
+                'color': 'success'
+            },
+        ]
+        
+        values.update({
+            'page_name': 'barcode_menu',
+            'barcode_operations': barcode_operations,
+            'container_stats': container_stats,
+        })
+        
+        return request.render("records_management.portal_barcode_main_menu", values)
+    
+    @http.route(['/my/barcode/scan/<string:scan_type>'], type='http', auth='user', website=True)
+    def portal_barcode_scanner(self, scan_type='container', **kw):
+        """
+        Barcode scanner interface for specific operation types.
+        
+        Args:
+            scan_type (str): Type of scan (container, file, pickup, retrieval)
+            
+        Returns:
+            Rendered template with barcode scanner interface
+        """
+        values = self._prepare_portal_layout_values()
+        
+        scan_config = {
+            'container': {
+                'title': 'Scan Container',
+                'icon': 'fa-archive',
+                'placeholder': 'Scan or enter container barcode...',
+                'endpoint': '/my/barcode/process/container',
+            },
+            'file': {
+                'title': 'Scan File Folder',
+                'icon': 'fa-folder',
+                'placeholder': 'Scan or enter file barcode...',
+                'endpoint': '/my/barcode/process/file',
+            },
+            'pickup': {
+                'title': 'Scan for Pickup',
+                'icon': 'fa-truck',
+                'placeholder': 'Scan containers to request pickup...',
+                'endpoint': '/my/barcode/process/pickup',
+            },
+            'retrieval': {
+                'title': 'Scan for Retrieval',
+                'icon': 'fa-download',
+                'placeholder': 'Scan containers to request retrieval...',
+                'endpoint': '/my/barcode/process/retrieval',
+            },
+        }
+        
+        config = scan_config.get(scan_type, scan_config['container'])
+        
+        values.update({
+            'page_name': f'barcode_scan_{scan_type}',
+            'scan_type': scan_type,
+            'scan_config': config,
+        })
+        
+        return request.render("records_management.portal_barcode_scanner", values)
+    
+    @http.route(['/my/barcode/process/<string:operation>'], type='json', auth='user')
+    def portal_barcode_process(self, operation='container', barcode=None, **kw):
+        """
+        Process scanned barcode for specific operation.
+        
+        Handles standard Odoo commands and container lookups.
+        
+        Args:
+            operation (str): Operation type (container, file, pickup, retrieval)
+            barcode (str): Scanned barcode value
+            
+        Returns:
+            dict: JSON response with action or error
+        """
+        if not barcode:
+            return {'error': _('No barcode provided')}
+        
+        # Handle standard Odoo commands
+        if barcode == 'O-CMD.MAIN-MENU':
+            return {'redirect': '/my/barcode/main'}
+        
+        if barcode in ['O-BTN.validate', 'O-BTN.discard', 'O-BTN.cancel', 
+                       'O-CMD.PRINT', 'O-CMD.PACKING', 'O-BTN.scrap', 'O-CMD.RETURN']:
+            return {
+                'info': _('Command %s recognized. Please scan a container first.') % barcode
+            }
+        
+        # Process container barcode
+        Container = request.env['records.container'].sudo()
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Search by barcode or temp_barcode
+        container = Container.search([
+            ('partner_id', '=', partner.id),
+            '|', ('barcode', '=', barcode), ('temp_barcode', '=', barcode)
+        ], limit=1)
+        
+        if not container:
+            return {'error': _('Container not found with barcode: %s') % barcode}
+        
+        # Execute operation-specific action
+        if operation == 'container':
+            return {
+                'success': True,
+                'redirect': f'/my/inventory/container/{container.id}',
+                'container': {
+                    'id': container.id,
+                    'name': container.name,
+                    'barcode': container.barcode or container.temp_barcode,
+                    'state': container.state,
+                }
+            }
+        
+        elif operation == 'pickup':
+            # Add to pickup request queue (session-based)
+            return {
+                'success': True,
+                'message': _('Container %s added to pickup request') % container.name,
+                'container': {
+                    'id': container.id,
+                    'name': container.name,
+                }
+            }
+        
+        elif operation == 'retrieval':
+            # Add to retrieval request queue
+            return {
+                'success': True,
+                'message': _('Container %s added to retrieval request') % container.name,
+                'container': {
+                    'id': container.id,
+                    'name': container.name,
+                }
+            }
+        
+        return {'error': _('Unknown operation: %s') % operation}

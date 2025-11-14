@@ -1,0 +1,210 @@
+/**
+ * Barcode Scanner Styles
+ * 
+ * Custom styling for portal barcode scanner interface
+ * Provides clean, modern UI with focus on usability
+ */
+
+/* ============================================================================
+   BARCODE SCANNER FORM
+   ============================================================================ */
+
+.barcode-scanner-form {
+    position: relative;
+}
+
+.barcode-scanner-form input#barcode_input {
+    font-family: 'Courier New', monospace;
+    font-size: 1.25rem;
+    letter-spacing: 0.05em;
+    border: 2px solid #0d6efd;
+    transition: all 0.3s ease;
+}
+
+.barcode-scanner-form input#barcode_input:focus {
+    border-color: #0a58ca;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    outline: none;
+}
+
+.barcode-scanner-form input#barcode_input:invalid {
+    border-color: #dc3545;
+}
+
+/* ============================================================================
+   OPERATION CARDS (Main Menu)
+   ============================================================================ */
+
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.hover-shadow .card-footer {
+    transition: all 0.3s ease;
+}
+
+.hover-shadow:hover .card-footer {
+    opacity: 0.9;
+}
+
+/* ============================================================================
+   SCANNED ITEMS LIST
+   ============================================================================ */
+
+#scanned_items_list .list-group-item {
+    border-left: 3px solid #0d6efd;
+    margin-bottom: 0.5rem;
+    border-radius: 0.25rem;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+#scanned_items_list .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* ============================================================================
+   ALERT MESSAGES
+   ============================================================================ */
+
+#scan_error,
+#scan_info,
+#scan_results {
+    animation: fadeInDown 0.3s ease;
+    margin-top: 1rem;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================================
+   STATISTICS CARDS
+   ============================================================================ */
+
+.card.border-primary,
+.card.border-success,
+.card.border-warning,
+.card.border-danger {
+    border-width: 2px;
+    transition: all 0.3s ease;
+}
+
+.card.border-primary:hover,
+.card.border-success:hover,
+.card.border-warning:hover,
+.card.border-danger:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================================================
+   COMMAND REFERENCE
+   ============================================================================ */
+
+code {
+    padding: 0.25rem 0.5rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .barcode-scanner-form input#barcode_input {
+        font-size: 1rem;
+    }
+    
+    .hover-shadow:hover {
+        transform: none;
+    }
+}
+
+/* ============================================================================
+   LOADING STATES
+   ============================================================================ */
+
+.barcode-scanner-form.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0d6efd;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+
+.barcode-scanner-form input#barcode_input:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .barcode-scanner-form input#barcode_input {
+        border-width: 3px;
+    }
+    
+    code {
+        border-width: 2px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .hover-shadow,
+    .card.border-primary,
+    .card.border-success,
+    .card.border-warning,
+    .card.border-danger,
+    #scanned_items_list .list-group-item,
+    #scan_error,
+    #scan_info,
+    #scan_results {
+        animation: none;
+        transition: none;
+    }
+    
+    .hover-shadow:hover {
+        transform: none;
+    }
+}
