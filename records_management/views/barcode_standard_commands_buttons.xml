@@ -117,18 +117,17 @@
         <field name="inherit_id" ref="records_management.view_batch_barcode_operations_wizard"/>
         <field name="arch" type="xml">
             
-            <!-- Add barcode command reference info -->
-            <xpath expr="//group[@string='Barcode Scanner']" position="after">
-                <group string="Standard Barcode Commands" invisible="not container_ids">
-                    <div class="alert alert-info" role="alert">
-                        <p><strong>Available Commands (scan after container barcode):</strong></p>
-                        <ul class="mb-0">
-                            <li><code>O-BTN.validate</code> - Validate pending transfer on container</li>
-                            <li><code>O-BTN.discard</code> - Cancel operation on container</li>
-                            <li><code>O-CMD.MAIN-MENU</code> - Return to barcode main menu</li>
-                        </ul>
-                    </div>
-                </group>
+            <!-- Add barcode command reference info after operation_type field -->
+            <xpath expr="//field[@name='operation_type']" position="after">
+                <separator string="Standard Barcode Commands" invisible="not container_ids"/>
+                <div class="alert alert-info" role="alert" invisible="not container_ids">
+                    <p><strong>Available Commands (scan after container barcode):</strong></p>
+                    <ul class="mb-0">
+                        <li><code>O-BTN.validate</code> - Validate pending transfer on container</li>
+                        <li><code>O-BTN.discard</code> - Cancel operation on container</li>
+                        <li><code>O-CMD.MAIN-MENU</code> - Return to barcode main menu</li>
+                    </ul>
+                </div>
             </xpath>
             
         </field>
