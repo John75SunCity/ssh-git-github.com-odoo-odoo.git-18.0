@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import http, _
+from odoo import http, fields, _
 from odoo.http import request
 from odoo.exceptions import AccessError
 from odoo.addons.web.controllers.home import Home
@@ -33,7 +33,7 @@ class PortalAccessController(http.Controller):
         # Mark token as used
         access_token.sudo().write({
             'used': True,
-            'used_date': http.request.env['ir.qweb.field.datetime'].now()
+            'used_date': fields.Datetime.now()
         })
         
         # Get target portal user
@@ -44,7 +44,7 @@ class PortalAccessController(http.Controller):
             'admin_user_id': request.env.user.id,
             'portal_user_id': portal_user.id,
             'partner_id': portal_user.partner_id.id,
-            'access_date': http.request.env['ir.qweb.field.datetime'].now(),
+            'access_date': fields.Datetime.now(),
             'ip_address': request.httprequest.remote_addr,
         })
         
