@@ -11,7 +11,7 @@
 
             <!-- Add Records Management Cards to Portal Home -->
             <xpath expr="//t[@t-call='portal.portal_layout']" position="inside">
-                
+
                 <div class="container mt-4">
                     <h3 class="mb-4">Records Management</h3>
                     <div class="row">
