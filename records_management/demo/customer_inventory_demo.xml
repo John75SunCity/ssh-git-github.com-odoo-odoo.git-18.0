@@ -153,7 +153,6 @@
             <field name="active">True</field>
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
-            <field name="security_level">1</field>
             <field name="max_capacity">5000</field>
 
         </record>        <record id="location_main_warehouse_b" model="records.location">
@@ -166,7 +165,6 @@
             <field name="active">True</field>
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
-            <field name="security_level">1</field>
             <field name="max_capacity">5000</field>
 
         </record>        <record id="location_secure_vault" model="records.location">
@@ -179,7 +177,6 @@
             <field name="active">True</field>
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
-            <field name="security_level">2</field>
             <field name="max_capacity">1000</field>
 
         </record>
@@ -240,7 +237,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2017-01-29</field>
             <field name="last_access_date">2019-03-14</field>
@@ -258,7 +254,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-11</field>
             <field name="last_access_date">2019-03-14</field>
@@ -276,7 +271,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2019-03-14</field>
@@ -294,7 +288,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -312,7 +305,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2011-08-10</field>
@@ -330,7 +322,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2011-08-10</field>
@@ -348,7 +339,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-07-09</field>
             <field name="last_access_date">2015-07-09</field>
@@ -366,7 +356,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-06-30</field>
             <field name="last_access_date">2015-06-30</field>
@@ -384,7 +373,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2011-08-10</field>
@@ -402,7 +390,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2021-09-20</field>
@@ -420,7 +407,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -438,7 +424,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2016-01-19</field>
             <field name="last_access_date">2016-01-19</field>
@@ -456,7 +441,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-12-30</field>
             <field name="last_access_date">2011-12-30</field>
@@ -474,7 +458,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2011-08-10</field>
@@ -492,7 +475,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2011-08-10</field>
@@ -510,7 +492,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2011-08-10</field>
@@ -528,7 +509,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -546,7 +526,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2021-12-06</field>
@@ -564,7 +543,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-17</field>
             <field name="last_access_date">2021-09-20</field>
@@ -582,7 +560,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -600,7 +577,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-17</field>
             <field name="last_access_date">2011-08-17</field>
@@ -618,7 +594,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-17</field>
             <field name="last_access_date">2011-08-17</field>
@@ -636,7 +611,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -654,7 +628,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -672,7 +645,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-12-29</field>
             <field name="last_access_date">2022-01-03</field>
@@ -690,7 +662,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2011-08-10</field>
@@ -708,7 +679,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2011-08-10</field>
@@ -726,7 +696,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2011-08-10</field>
@@ -744,7 +713,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2011-08-10</field>
@@ -762,7 +730,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -780,7 +747,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -798,7 +764,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -816,7 +781,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2018-09-11</field>
@@ -834,7 +798,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2018-09-11</field>
@@ -852,7 +815,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-10</field>
             <field name="last_access_date">2020-09-01</field>
@@ -870,7 +832,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-11</field>
             <field name="last_access_date">2011-08-11</field>
@@ -888,7 +849,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -906,7 +866,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-02-06</field>
             <field name="last_access_date">2015-02-06</field>
@@ -924,7 +883,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-18</field>
             <field name="last_access_date">2021-12-14</field>
@@ -942,7 +900,6 @@
             <field name="description">PICKUP/PULL LISTS 08-09 CALENDARS 98-09</field>
             <field name="content_description">PICKUP/PULL LISTS 08-09 CALENDARS 98-09</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -960,7 +917,6 @@
             <field name="description">WO'S</field>
             <field name="content_description">WO'S</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-10-13</field>
             <field name="last_access_date">2015-10-13</field>
@@ -978,7 +934,6 @@
             <field name="description">WO'S</field>
             <field name="content_description">WO'S</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-12</field>
             <field name="last_access_date">2011-08-12</field>
@@ -996,7 +951,6 @@
             <field name="description">INVOICES/CHECKS</field>
             <field name="content_description">INVOICES/CHECKS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-29</field>
             <field name="last_access_date">2022-11-17</field>
@@ -1014,7 +968,6 @@
             <field name="description">INVOICES/CHECKS</field>
             <field name="content_description">INVOICES/CHECKS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-29</field>
             <field name="last_access_date">2022-11-17</field>
@@ -1032,7 +985,6 @@
             <field name="description">RECEIPTS/PAYROLL CHECK STUBS</field>
             <field name="content_description">RECEIPTS/PAYROLL CHECK STUBS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-09-23</field>
             <field name="last_access_date">2011-09-23</field>
@@ -1050,7 +1002,6 @@
             <field name="description">RECEIPTS</field>
             <field name="content_description">RECEIPTS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2013-11-25</field>
             <field name="last_access_date">2013-11-25</field>
@@ -1068,7 +1019,6 @@
             <field name="description">WO</field>
             <field name="content_description">WO</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-18</field>
             <field name="last_access_date">2011-08-18</field>
@@ -1086,7 +1036,6 @@
             <field name="description">WO</field>
             <field name="content_description">WO</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-08-18</field>
             <field name="last_access_date">2011-08-18</field>
@@ -1104,7 +1053,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2012-05-24</field>
             <field name="last_access_date">2012-05-24</field>
@@ -1122,7 +1070,6 @@
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2012-05-24</field>
             <field name="last_access_date">2012-05-24</field>
@@ -1140,7 +1087,6 @@
             <field name="description">PAYROLL/RECEIPTS CHECK COPIES</field>
             <field name="content_description">PAYROLL/RECEIPTS CHECK COPIES</field>
             <field name="state">in_storage</field>
-            <field name="security_level">2</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2012-08-14</field>
             <field name="last_access_date">2012-08-14</field>
@@ -1158,7 +1104,6 @@
             <field name="description">RECEIPTS</field>
             <field name="content_description">RECEIPTS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2012-07-23</field>
             <field name="last_access_date">2012-07-23</field>
@@ -1176,7 +1121,6 @@
             <field name="description">INVOICES CHECKS RECEIPTS</field>
             <field name="content_description">INVOICES CHECKS RECEIPTS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2012-05-24</field>
             <field name="last_access_date">2022-11-17</field>
@@ -1194,7 +1138,6 @@
             <field name="description">CLOSING DOCS 9230 &amp; 9270 BTK</field>
             <field name="content_description">CLOSING DOCS 9230 &amp; 9270 BTK</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2012-06-08</field>
             <field name="last_access_date">2012-06-08</field>
@@ -1212,7 +1155,6 @@
             <field name="description">PAY STUBS ALL RECEIPTS 2007-2009</field>
             <field name="content_description">PAY STUBS ALL RECEIPTS 2007-2009</field>
             <field name="state">in_storage</field>
-            <field name="security_level">2</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2012-08-10</field>
             <field name="last_access_date">2012-08-10</field>
@@ -1230,7 +1172,6 @@
             <field name="description">INVOICES</field>
             <field name="content_description">INVOICES</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2011-12-30</field>
             <field name="last_access_date">2022-11-17</field>
@@ -1248,7 +1189,6 @@
             <field name="description">WO'S</field>
             <field name="content_description">WO'S</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2012-08-31</field>
             <field name="last_access_date">2012-08-31</field>
@@ -1266,7 +1206,6 @@
             <field name="description">WO'S</field>
             <field name="content_description">WO'S</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2012-08-31</field>
             <field name="last_access_date">2012-08-31</field>
@@ -1284,7 +1223,6 @@
             <field name="description">INVOICES 2010 RECEIPTS 2010 CHECKS 2010</field>
             <field name="content_description">INVOICES 2010 RECEIPTS 2010 CHECKS 2010</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2012-06-13</field>
             <field name="last_access_date">2022-11-17</field>
@@ -1302,7 +1240,6 @@
             <field name="description">W.O.</field>
             <field name="content_description">W.O.</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2014-01-17</field>
             <field name="last_access_date">2014-01-17</field>
@@ -1320,7 +1257,6 @@
             <field name="description">W.O.</field>
             <field name="content_description">W.O.</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2012-12-07</field>
             <field name="last_access_date">2014-03-20</field>
@@ -1338,7 +1274,6 @@
             <field name="description">WORK ORDERS</field>
             <field name="content_description">WORK ORDERS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2013-08-26</field>
             <field name="last_access_date">2013-08-26</field>
@@ -1356,7 +1291,6 @@
             <field name="description">EMPL II</field>
             <field name="content_description">EMPL II</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2016-04-06</field>
             <field name="last_access_date">2016-04-06</field>
@@ -1374,7 +1308,6 @@
             <field name="description">OFFICE</field>
             <field name="content_description">OFFICE</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2013-12-26</field>
             <field name="last_access_date">2013-12-26</field>
@@ -1392,7 +1325,6 @@
             <field name="description">OFFICE</field>
             <field name="content_description">OFFICE</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2013-12-26</field>
             <field name="last_access_date">2013-12-26</field>
@@ -1410,7 +1342,6 @@
             <field name="description">WO</field>
             <field name="content_description">WO</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2013-07-17</field>
             <field name="last_access_date">2013-07-17</field>
@@ -1428,7 +1359,6 @@
             <field name="description">WO</field>
             <field name="content_description">WO</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2013-08-15</field>
             <field name="last_access_date">2013-08-15</field>
@@ -1446,7 +1376,6 @@
             <field name="description">FAXES</field>
             <field name="content_description">FAXES</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2013-08-26</field>
             <field name="last_access_date">2013-08-26</field>
@@ -1464,7 +1393,6 @@
             <field name="description">FAXES PULL REQUEST</field>
             <field name="content_description">FAXES PULL REQUEST</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2013-12-20</field>
             <field name="last_access_date">2021-10-13</field>
@@ -1482,7 +1410,6 @@
             <field name="description">WORKORDERS</field>
             <field name="content_description">WORKORDERS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2014-03-04</field>
             <field name="last_access_date">2014-03-04</field>
@@ -1500,7 +1427,6 @@
             <field name="description">CALENDER 2013</field>
             <field name="content_description">CALENDER 2013</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2014-03-04</field>
             <field name="last_access_date">2021-07-29</field>
@@ -1518,7 +1444,6 @@
             <field name="description">WORKORDERS</field>
             <field name="content_description">WORKORDERS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2014-02-21</field>
             <field name="last_access_date">2021-12-21</field>
@@ -1536,7 +1461,6 @@
             <field name="description">PAYROLL SELECT STAFFING</field>
             <field name="content_description">PAYROLL SELECT STAFFING</field>
             <field name="state">in_storage</field>
-            <field name="security_level">2</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2014-02-24</field>
             <field name="last_access_date">2014-02-24</field>
@@ -1554,7 +1478,6 @@
             <field name="description">CREDIT CARDS PAID DEPOSITS</field>
             <field name="content_description">CREDIT CARDS PAID DEPOSITS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2014-02-24</field>
             <field name="last_access_date">2014-02-24</field>
@@ -1572,7 +1495,6 @@
             <field name="description">INVOICES</field>
             <field name="content_description">INVOICES</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-06-16</field>
             <field name="last_access_date">2022-11-17</field>
@@ -1590,7 +1512,6 @@
             <field name="description">TIME CARDS PAYROLL CHECK COPIES</field>
             <field name="content_description">TIME CARDS PAYROLL CHECK COPIES</field>
             <field name="state">in_storage</field>
-            <field name="security_level">2</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2014-02-18</field>
             <field name="last_access_date">2014-02-18</field>
@@ -1608,7 +1529,6 @@
             <field name="description">INVOICES</field>
             <field name="content_description">INVOICES</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-05-21</field>
             <field name="last_access_date">2022-11-17</field>
@@ -1626,7 +1546,6 @@
             <field name="description">INVOICES</field>
             <field name="content_description">INVOICES</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2017-09-29</field>
             <field name="last_access_date">2022-11-17</field>
@@ -1644,7 +1563,6 @@
             <field name="description">RECEIPTS</field>
             <field name="content_description">RECEIPTS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2014-02-21</field>
             <field name="last_access_date">2014-02-21</field>
@@ -1662,7 +1580,6 @@
             <field name="description">FAX/WO'S</field>
             <field name="content_description">FAX/WO'S</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2014-09-25</field>
             <field name="last_access_date">2014-09-25</field>
@@ -1680,7 +1597,6 @@
             <field name="description">FAX/WO'S</field>
             <field name="content_description">FAX/WO'S</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2014-09-26</field>
             <field name="last_access_date">2014-09-26</field>
@@ -1698,7 +1614,6 @@
             <field name="description">WO FAXES</field>
             <field name="content_description">WO FAXES</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2014-11-26</field>
             <field name="last_access_date">2014-11-26</field>
@@ -1716,7 +1631,6 @@
             <field name="description">DEPOSITS 2014</field>
             <field name="content_description">DEPOSITS 2014</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-03-18</field>
             <field name="last_access_date">2015-03-18</field>
@@ -1734,7 +1648,6 @@
             <field name="description">INVOICES 2014</field>
             <field name="content_description">INVOICES 2014</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-02-22</field>
             <field name="last_access_date">2016-02-09</field>
@@ -1752,7 +1665,6 @@
             <field name="description">INVOICES 2014</field>
             <field name="content_description">INVOICES 2014</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-02-22</field>
             <field name="last_access_date">2015-05-21</field>
@@ -1770,7 +1682,6 @@
             <field name="description">WO &amp; FAX</field>
             <field name="content_description">WO &amp; FAX</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-06-16</field>
             <field name="last_access_date">2015-06-16</field>
@@ -1788,7 +1699,6 @@
             <field name="description">JESUS</field>
             <field name="content_description">JESUS</field>
             <field name="state">destroyed</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-05-07</field>
             <field name="last_access_date">2015-05-07</field>
@@ -1807,7 +1717,6 @@
             <field name="description">DESTROY</field>
             <field name="content_description">DESTROY</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2017-04-11</field>
             <field name="last_access_date">2016-02-09</field>
@@ -1825,7 +1734,6 @@
             <field name="description">WO &amp; FAX</field>
             <field name="content_description">WO &amp; FAX</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2018-10-05</field>
             <field name="last_access_date">2016-04-28</field>
@@ -1843,7 +1751,6 @@
             <field name="description">WO &amp; FAX</field>
             <field name="content_description">WO &amp; FAX</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-10-16</field>
             <field name="last_access_date">2015-10-16</field>
@@ -1861,7 +1768,6 @@
             <field name="description">FAX &amp; WO</field>
             <field name="content_description">FAX &amp; WO</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2017-05-18</field>
             <field name="last_access_date">2021-08-26</field>
@@ -1879,7 +1785,6 @@
             <field name="description">W.O.'S</field>
             <field name="content_description">W.O.'S</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2017-07-25</field>
             <field name="last_access_date">2016-05-24</field>
@@ -1897,7 +1802,6 @@
             <field name="description">CALENDER</field>
             <field name="content_description">CALENDER</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2018-10-17</field>
             <field name="last_access_date">2019-03-12</field>
@@ -1915,7 +1819,6 @@
             <field name="description">DESTRUCTION LIST 2015</field>
             <field name="content_description">DESTRUCTION LIST 2015</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2017-10-10</field>
             <field name="last_access_date">2019-03-12</field>
@@ -1937,7 +1840,6 @@
             <field name="description">SPRAY PAINT CANS</field>
             <field name="content_description">SPRAY PAINT CANS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2023-05-19</field>
             <field name="last_access_date">2023-05-19</field>
@@ -1955,7 +1857,6 @@
             <field name="description">BALE LOG SHEETS</field>
             <field name="content_description">BALE LOG SHEETS</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2023-05-18</field>
             <field name="last_access_date">2023-05-18</field>
@@ -1973,7 +1874,6 @@
             <field name="description">WORK ORDERS - CITY OF EL PASO</field>
             <field name="content_description">WORK ORDERS - CITY OF EL PASO</field>
             <field name="state">in_storage</field>
-            <field name="security_level">1</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2023-05-20</field>
             <field name="last_access_date">2023-05-20</field>
@@ -1991,7 +1891,6 @@
             <field name="description">DEPOSITS-2024</field>
             <field name="content_description">DEPOSITS-2024</field>
             <field name="state">in_storage</field>
-            <field name="security_level">3</field>
             <field name="weight">25.0</field>
             <field name="storage_start_date">2025-04-03</field>
             <field name="last_access_date">2025-04-03</field>
