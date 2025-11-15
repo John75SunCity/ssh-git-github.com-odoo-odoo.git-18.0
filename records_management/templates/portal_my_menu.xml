@@ -9,8 +9,12 @@
         <!-- Add menu items using portal_my_home template extension -->
         <template id="portal_my_home_menu_records" name="Portal My Home Menu - Records Management" inherit_id="portal.portal_my_home" priority="20">
 
-            <!-- Add Physical Inventory Section -->
-            <xpath expr="//div[@class='o_portal_docs']" position="after">
+            <!-- Add Records Management Cards to Portal Home -->
+            <xpath expr="//t[@t-call='portal.portal_layout']" position="inside">
+                
+                <div class="container mt-4">
+                    <h3 class="mb-4">Records Management</h3>
+                    <div class="row">
                 <div class="col-lg-6 mb-3">
                     <div class="card h-100">
                         <div class="card-header bg-primary text-white">
