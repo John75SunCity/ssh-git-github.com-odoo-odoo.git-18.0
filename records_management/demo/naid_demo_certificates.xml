@@ -2,34 +2,64 @@
 <odoo>
     <data>
         <!-- Demo NAID Certificates for Testing -->
-        <!-- NOTE: Using naid.certificate model (not destruction.certificate) -->
+        
+        <!-- Certificate 1: Simple on-site destruction -->
         <record id="demo_naid_certificate_001" model="naid.certificate">
-            <!-- certificate_number omitted intentionally so sequence auto-generates on create -->
+            <field name="certificate_number">NAID-DEMO-001</field>
             <field name="partner_id" ref="base.res_partner_1"/>
-            <field name="certificate_date">2025-10-15</field>
-            <field name="destruction_type">on_site</field>
-            <!-- Leave in draft initially -->
-            <field name="state">draft</field>
+            <field name="destruction_date" eval="(DateTime.now() - timedelta(days=7)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="issue_date" eval="(DateTime.now() - timedelta(days=6)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="state">issued</field>
+            <field name="witness_name">John Demo Witness</field>
         </record>
 
-        <!-- NOTE: destruction.item requires records_destruction_id (naid.destruction.record)
-             Demo items commented out until proper naid.destruction.record demo data exists -->
-        <!-- <record id="demo_naid_certificate_item_001" model="destruction.item">
-            <field name="records_destruction_id" ref="demo_naid_destruction_record_001"/>
-            <field name="item_description">Confidential Paper Boxes</field>
-            <field name="weight" eval="25.0"/>
-            <field name="quantity" eval="3"/>
-        </record> -->
-
-        <!-- Function calls removed - methods only needed for legacy data migration, not demo data -->
-        <!-- If certificate issuance needed, add workflow action here instead of direct method calls -->
-
+        <!-- Certificate 2: Recent destruction, still in draft -->
         <record id="demo_naid_certificate_002" model="naid.certificate">
-            <!-- certificate_number omitted intentionally so sequence auto-generates on create -->
+            <field name="certificate_number">NAID-DEMO-002</field>
             <field name="partner_id" ref="base.res_partner_2"/>
-            <field name="certificate_date">2025-11-01</field>
-            <field name="destruction_type">off_site</field>
+            <field name="destruction_date" eval="(DateTime.now() - timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
             <field name="state">draft</field>
+            <field name="witness_name">Jane Demo Witness</field>
         </record>
+
+        <!-- Certificate 3: Older destruction, sent to customer -->
+        <record id="demo_naid_certificate_003" model="naid.certificate">
+            <field name="certificate_number">NAID-DEMO-003</field>
+            <field name="partner_id" ref="base.res_partner_1"/>
+            <field name="destruction_date" eval="(DateTime.now() - timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="issue_date" eval="(DateTime.now() - timedelta(days=29)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="state">sent</field>
+            <field name="witness_name">Bob Demo Witness</field>
+        </record>
+
+        <!-- Demo Certificate Items (destroyed materials) -->
+        <record id="demo_naid_cert_item_001" model="naid.certificate.item">
+            <field name="certificate_id" ref="demo_naid_certificate_001"/>
+            <field name="description">Confidential Paper Documents</field>
+            <field name="quantity" eval="50"/>
+            <field name="weight" eval="25.5"/>
+        </record>
+
+        <record id="demo_naid_cert_item_002" model="naid.certificate.item">
+            <field name="certificate_id" ref="demo_naid_certificate_001"/>
+            <field name="description">Storage Boxes with Files</field>
+            <field name="quantity" eval="10"/>
+            <field name="weight" eval="45.0"/>
+        </record>
+
+        <record id="demo_naid_cert_item_003" model="naid.certificate.item">
+            <field name="certificate_id" ref="demo_naid_certificate_002"/>
+            <field name="description">Medical Records (HIPAA Compliant Destruction)</field>
+            <field name="quantity" eval="100"/>
+            <field name="weight" eval="15.2"/>
+        </record>
+
+        <record id="demo_naid_cert_item_004" model="naid.certificate.item">
+            <field name="certificate_id" ref="demo_naid_certificate_003"/>
+            <field name="description">Financial Documents - 7 Year Retention Met</field>
+            <field name="quantity" eval="200"/>
+            <field name="weight" eval="85.7"/>
+        </record>
+
     </data>
 </odoo>
