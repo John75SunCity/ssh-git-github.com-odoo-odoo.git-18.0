@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <!-- Demo NAID Certificates for Testing -->
-        
+
         <!-- Certificate 1: Simple on-site destruction -->
         <record id="demo_naid_certificate_001" model="naid.certificate">
             <field name="certificate_number">NAID-DEMO-001</field>
