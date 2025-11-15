@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- ================================================================== -->
-        <!-- CUSTOMER PORTAL MENU - Odoo 18 Compatible                         -->
-        <!-- Covers ALL 76+ portal routes with organized card-based navigation -->
-        <!-- ================================================================== -->
-
         <!-- Add menu items using portal_my_home template extension -->
         <template id="portal_my_home_menu_records" name="Portal My Home Menu - Records Management" inherit_id="portal.portal_my_home" priority="20">
 
             <!-- Add Records Management Cards to Portal Home -->
             <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
-
                 <div class="container mt-4">
                     <h3 class="mb-4">Records Management</h3>
                     <div class="row">
-                        
-                        <!-- Physical Inventory Section -->
+                        <!-- Physical Inventory -->
                         <div class="col-lg-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-header bg-primary text-white">
@@ -27,76 +20,26 @@
                                     <ul class="list-unstyled mb-0">
                                         <li class="mb-2">
                                             <a href="/my/inventory" class="text-decoration-none">
-                                                <i class="fa fa-th-large me-2 text-primary"/>
-                                                All Inventory Dashboard
-                                            </a>
+                                                <i class="fa fa-th-large me-2 text-primary"/>All Inventory Dashboard</a>
                                         </li>
                                         <li class="mb-2">
                                             <a href="/my/containers" class="text-decoration-none">
-                                                <i class="fa fa-archive me-2 text-primary"/>
-                                                Storage Containers
-                                            </a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="/my/inventory/containers" class="text-decoration-none">
-                                                <i class="fa fa-box me-2 text-primary"/>
-                                                Containers (Detailed View)
-                                            </a>
+                                                <i class="fa fa-archive me-2 text-primary"/>Storage Containers</a>
                                         </li>
                                         <li class="mb-2">
                                             <a href="/my/inventory/files" class="text-decoration-none">
-                                                <i class="fa fa-folder me-2 text-primary"/>
-                                                File Folders
-                                            </a>
+                                                <i class="fa fa-folder me-2 text-primary"/>File Folders</a>
                                         </li>
                                         <li class="mb-2">
                                             <a href="/my/documents" class="text-decoration-none">
-                                                <i class="fa fa-file-text me-2 text-primary"/>
-                                                Documents
-                                            </a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="/my/inventory/documents" class="text-decoration-none">
-                                                <i class="fa fa-file-pdf me-2 text-primary"/>
-                                                Physical Documents (Scanned)
-                                            </a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="/my/inventory/temp" class="text-decoration-none">
-                                                <i class="fa fa-clock me-2 text-primary"/>
-                                                Temporary Inventory
-                                            </a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="/my/inventory/movements" class="text-decoration-none">
-                                                <i class="fa fa-exchange-alt me-2 text-primary"/>
-                                                Inventory Movements
-                                            </a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="/my/inventory/locations" class="text-decoration-none">
-                                                <i class="fa fa-map-marker-alt me-2 text-primary"/>
-                                                Storage Locations
-                                            </a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="/my/inventory/advanced_search" class="text-decoration-none">
-                                                <i class="fa fa-search me-2 text-primary"/>
-                                                Advanced Search
-                                            </a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="/my/containers/new" class="text-decoration-none">
-                                                <i class="fa fa-plus-circle me-2 text-primary"/>
-                                                Create New Container
-                                            </a>
+                                                <i class="fa fa-file-text me-2 text-primary"/>Documents</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Service Requests Section -->
+                        <!-- Service Requests -->
                         <div class="col-lg-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-header bg-success text-white">
@@ -107,359 +50,71 @@
                                     <ul class="list-unstyled mb-0">
                                         <li class="mb-2">
                                             <a href="/my/requests" class="text-decoration-none">
-                                                <i class="fa fa-list me-2 text-success"/>
-                                                All My Requests
-                                            </a>
+                                                <i class="fa fa-list me-2 text-success"/>All My Requests</a>
                                         </li>
                                         <li class="mb-2">
                                             <a href="/my/request/new/retrieval" class="text-decoration-none">
-                                                <i class="fa fa-truck me-2 text-success"/>
-                                                Request Retrieval
-                                            </a>
+                                                <i class="fa fa-truck me-2 text-success"/>Request Retrieval</a>
                                         </li>
                                         <li class="mb-2">
                                             <a href="/my/request/new/destruction" class="text-decoration-none">
-                                                <i class="fa fa-fire me-2 text-success"/>
-                                                Request Destruction
-                                            </a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="/my/request/new/pickup" class="text-decoration-none">
-                                                <i class="fa fa-calendar me-2 text-success"/>
-                                                Request Pickup
-                                            </a>
-                                        </li>
-                                        <li class="mb-2">
-                                            <a href="/my/request/new/scanning" class="text-decoration-none">
-                                                <i class="fa fa-scanner me-2 text-success"/>
-                                                Request Scanning
-                                            </a>
+                                                <i class="fa fa-fire me-2 text-success"/>Request Destruction</a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Destruction Services Section -->
-                <div class="col-lg-6 mb-3">
-                    <div class="card h-100">
-                        <div class="card-header bg-success text-white">
-                            <i class="fa fa-tasks me-2"/>
-                            <strong>Service Requests</strong>
+                        <!-- Destruction Services -->
+                        <div class="col-lg-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-danger text-white">
+                                    <i class="fa fa-fire me-2"/>
+                                    <strong>Destruction Services</strong>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <a href="/my/destruction" class="text-decoration-none">
+                                                <i class="fa fa-list-alt me-2 text-danger"/>All Destruction Requests</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/destruction/pending" class="text-decoration-none">
+                                                <i class="fa fa-hourglass-half me-2 text-danger"/>Pending Approvals</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/certificates" class="text-decoration-none">
+                                                <i class="fa fa-certificate me-2 text-danger"/>Destruction Certificates</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/custody/chain" class="text-decoration-none">
+                                                <i class="fa fa-link me-2 text-danger"/>Chain of Custody</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2">
-                                    <a href="/my/requests" class="text-decoration-none">
-                                        <i class="fa fa-list me-2 text-success"/>
-                                        All My Requests
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/request/new/retrieval" class="text-decoration-none">
-                                        <i class="fa fa-truck me-2 text-success"/>
-                                        Request Retrieval
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/request/new/destruction" class="text-decoration-none">
-                                        <i class="fa fa-fire me-2 text-success"/>
-                                        Request Destruction
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/request/new/pickup" class="text-decoration-none">
-                                        <i class="fa fa-calendar me-2 text-success"/>
-                                        Request Pickup
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/request/new/scanning" class="text-decoration-none">
-                                        <i class="fa fa-scanner me-2 text-success"/>
-                                        Request Scanning
-                                    </a>
-                                </li>
-                            </ul>
+
+                        <!-- Billing & Reports - Placeholder for future routes -->
+                        <div class="col-lg-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-warning text-dark">
+                                    <i class="fa fa-dollar me-2"/>
+                                    <strong>Billing &amp; Invoices</strong>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <a href="/my/invoices" class="text-decoration-none">
+                                                <i class="fa fa-file-invoice-dollar me-2 text-warning"/>Current Invoices</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </xpath>
-
-            <!-- Add Destruction Services Section -->
-            <xpath expr="//div[hasclass('o_portal_my_home_menu')]" position="inside">
-                <div class="col-lg-6 mb-3">
-                    <div class="card h-100">
-                        <div class="card-header bg-danger text-white">
-                            <i class="fa fa-fire me-2"/>
-                            <strong>Destruction Services</strong>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2">
-                                    <a href="/my/destruction" class="text-decoration-none">
-                                        <i class="fa fa-list-alt me-2 text-danger"/>
-                                        All Destruction Requests
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/destruction/pending" class="text-decoration-none">
-                                        <i class="fa fa-hourglass-half me-2 text-danger"/>
-                                        Pending Approvals
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/certificates" class="text-decoration-none">
-                                        <i class="fa fa-certificate me-2 text-danger"/>
-                                        Destruction Certificates
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/custody/chain" class="text-decoration-none">
-                                        <i class="fa fa-link me-2 text-danger"/>
-                                        Chain of Custody
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </xpath>
-
-            <!-- Add Billing Section -->
-            <xpath expr="//div[hasclass('o_portal_my_home_menu')]" position="inside">
-                <div class="col-lg-6 mb-3">
-                    <div class="card h-100">
-                        <div class="card-header bg-warning text-dark">
-                            <i class="fa fa-dollar me-2"/>
-                            <strong>Billing &amp; Invoices</strong>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2">
-                                    <a href="/my/invoices" class="text-decoration-none">
-                                        <i class="fa fa-file-invoice-dollar me-2 text-warning"/>
-                                        Current Invoices
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/invoices/history" class="text-decoration-none">
-                                        <i class="fa fa-history me-2 text-warning"/>
-                                        Payment History
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/billing/rates" class="text-decoration-none">
-                                        <i class="fa fa-tags me-2 text-warning"/>
-                                        Rate Information
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/billing/statements" class="text-decoration-none">
-                                        <i class="fa fa-download me-2 text-warning"/>
-                                        Download Statements
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </xpath>
-
-            <!-- Add Reports Section -->
-            <xpath expr="//div[hasclass('o_portal_my_home_menu')]" position="inside">
-                <div class="col-lg-6 mb-3">
-                    <div class="card h-100">
-                        <div class="card-header bg-info text-white">
-                            <i class="fa fa-chart-bar me-2"/>
-                            <strong>Reports &amp; Analytics</strong>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2">
-                                    <a href="/my/reports" class="text-decoration-none">
-                                        <i class="fa fa-file-chart-line me-2 text-info"/>
-                                        Inventory Reports
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/reports/activity" class="text-decoration-none">
-                                        <i class="fa fa-chart-line me-2 text-info"/>
-                                        Activity Reports
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/reports/compliance" class="text-decoration-none">
-                                        <i class="fa fa-shield-check me-2 text-info"/>
-                                        Compliance Reports
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/reports/export" class="text-decoration-none">
-                                        <i class="fa fa-file-export me-2 text-info"/>
-                                        Export Data
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/inventory/counts" class="text-decoration-none">
-                                        <i class="fa fa-calculator me-2 text-info"/>
-                                        Inventory Counts
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/inventory/recent_activity" class="text-decoration-none">
-                                        <i class="fa fa-clock me-2 text-info"/>
-                                        Recent Activity
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </xpath>
-
-            <!-- Add Feedback Section -->
-            <xpath expr="//div[hasclass('o_portal_my_home_menu')]" position="inside">
-                <div class="col-lg-6 mb-3">
-                    <div class="card h-100">
-                        <div class="card-header bg-secondary text-white">
-                            <i class="fa fa-comment me-2"/>
-                            <strong>Feedback &amp; Support</strong>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2">
-                                    <a href="/my/feedback" class="text-decoration-none">
-                                        <i class="fa fa-comment-dots me-2 text-secondary"/>
-                                        Submit Feedback
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/feedback/history" class="text-decoration-none">
-                                        <i class="fa fa-history me-2 text-secondary"/>
-                                        Feedback History
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </xpath>
-
-            <!-- Add Barcode Operations Section -->
-            <xpath expr="//div[hasclass('o_portal_my_home_menu')]" position="inside">
-                <div class="col-lg-6 mb-3">
-                    <div class="card h-100">
-                        <div class="card-header bg-dark text-white">
-                            <i class="fa fa-barcode me-2"/>
-                            <strong>Barcode Operations</strong>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2">
-                                    <a href="/my/barcode/main" class="text-decoration-none">
-                                        <i class="fa fa-qrcode me-2 text-dark"/>
-                                        Barcode Center
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/barcode/scan/container" class="text-decoration-none">
-                                        <i class="fa fa-box me-2 text-dark"/>
-                                        Scan Container
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/barcode/scan/file" class="text-decoration-none">
-                                        <i class="fa fa-folder me-2 text-dark"/>
-                                        Scan File Folder
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/barcode/scan/document" class="text-decoration-none">
-                                        <i class="fa fa-file me-2 text-dark"/>
-                                        Scan Document
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </xpath>
-
-            <!-- Add Document Upload & Work Orders Section -->
-            <xpath expr="//div[hasclass('o_portal_my_home_menu')]" position="inside">
-                <div class="col-lg-6 mb-3">
-                    <div class="card h-100">
-                        <div class="card-header text-white" style="background-color: #20c997;">
-                            <i class="fa fa-upload me-2"/>
-                            <strong>Document Services</strong>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2">
-                                    <a href="/my/documents/bulk_upload" class="text-decoration-none">
-                                        <i class="fa fa-cloud-upload me-2" style="color: #20c997;"/>
-                                        Bulk Document Upload
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/document-retrieval" class="text-decoration-none">
-                                        <i class="fa fa-file-download me-2" style="color: #20c997;"/>
-                                        Document Retrieval Wizard
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/work_orders" class="text-decoration-none">
-                                        <i class="fa fa-wrench me-2" style="color: #20c997;"/>
-                                        Work Orders
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/coordinators" class="text-decoration-none">
-                                        <i class="fa fa-user-tie me-2" style="color: #20c997;"/>
-                                        Service Coordinators
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </xpath>
-
-            <!-- Add Administration Section (for authorized users) -->
-            <xpath expr="//div[hasclass('o_portal_my_home_menu')]" position="inside">
-                <div class="col-lg-6 mb-3" t-if="request.env.user.has_group('records_management.group_portal_company_admin') or request.env.user.has_group('records_management.group_portal_department_admin')">
-                    <div class="card h-100">
-                        <div class="card-header text-white" style="background-color: #6f42c1;">
-                            <i class="fa fa-cog me-2"/>
-                            <strong>Administration</strong>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2" t-if="request.env.user.has_group('records_management.group_portal_company_admin')">
-                                    <a href="/my/users" class="text-decoration-none">
-                                        <i class="fa fa-users me-2" style="color: #6f42c1;"/>
-                                        Department Users
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/notifications" class="text-decoration-none">
-                                        <i class="fa fa-bell me-2" style="color: #6f42c1;"/>
-                                        Notification Preferences
-                                    </a>
-                                </li>
-                                <li class="mb-2" t-if="request.env.user.has_group('records_management.group_portal_department_admin')">
-                                    <a href="/my/access" class="text-decoration-none">
-                                        <i class="fa fa-key me-2" style="color: #6f42c1;"/>
-                                        Access Management
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </xpath>
-
         </template>
-
     </data>
 </odoo>
