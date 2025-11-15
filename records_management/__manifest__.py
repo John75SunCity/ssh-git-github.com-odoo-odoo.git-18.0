@@ -716,7 +716,7 @@
         "demo/model_records_demo.xml",
         "demo/field_label_demo_data.xml",
         "demo/intelligent_search_demo_data.xml",
-        "demo/naid_demo_certificates.xml",
+        # "demo/naid_demo_certificates.xml",  # Commented out - field mismatches causing module load errors
         "demo/records_config_mail_templates_data.xml"
     ],
     "pre_init_hook": "pre_init_hook",
