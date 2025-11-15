@@ -58,20 +58,29 @@ grok-indexed --rebuild
     }
   },
   "summary": {
-    "total_files": 626,
-    "total_chars": 4769490,
+    "total_files": 1092,
+    "total_chars": 8316144,
     "models": [...],
-    "demos": [...]
+    "demos": [...],
+    "views": [...],
+    "controllers": [...],
+    "wizards": [...],
+    "security": [...]
   }
 }
 ```
 
 ### Smart File Selection
 The indexed version prioritizes:
-1. **Core models**: records_container, records_location, etc.
-2. **Demo files**: All XML demo data
-3. **Key integrations**: portal_request, customer_feedback
-4. **Token limit**: Max 100K chars (~25K tokens) to stay within Grok's 131K limit
+1. **All Models**: Complete records_management + records_management_fsm models (313 files)
+2. **All Views**: Every XML view definition (310 files)
+3. **All Demos**: Complete demo data (10 files)
+4. **All Controllers**: Web controllers and routes (11 files)
+5. **All Wizards**: Wizard implementations (28 files)
+6. **All Security**: Access rules and permissions (16 files)
+7. **Everything else**: JS, SCSS, docs, etc. (404 files)
+8. **Token limit**: Max 450K chars (~112K tokens) to stay within Grok's 131K limit
+9. **Scope**: ONLY records_management and records_management_fsm (no other workspace files)
 
 ### Auto-Rebuild Triggers
 Index rebuilds automatically when:
@@ -81,11 +90,11 @@ Index rebuilds automatically when:
 
 ## 📊 Performance Comparison
 
-| Command | Load Time | Context Size | Use Case |
-|---------|-----------|--------------|----------|
-| `grok` | Instant | None | Simple questions |
-| `grok-full` | 5-10s | 148KB | Comprehensive (slow) |
-| `grok-indexed` | 1-2s | Smart (100KB) | **Best for most tasks** |
+| Command | Load Time | Files | Context Size | Use Case |
+|---------|-----------|-------|--------------|----------|
+| `grok` | Instant | 0 | None | Simple questions |
+| `grok-full` | 5-10s | 148KB | ~148KB | Comprehensive (deprecated) |
+| `grok-indexed` | 1-2s | 1092 | Smart 450KB | **Best for everything** ⭐ |
 
 ## 💡 Best Practices
 
@@ -173,12 +182,18 @@ grok-indexed --rebuild  # Force rebuild
 
 ## 📈 Stats
 
-- **Total Files Indexed**: 626
-- **Total Characters**: 4,769,490
+- **Total Files Indexed**: 1092 (ONLY records_management + records_management_fsm)
+- **Total Characters**: 8,316,144 (~2MB of Python/XML/JS code)
 - **Python Models**: 313
+- **XML Views**: 310
 - **XML Demo Files**: 10
-- **Index File Size**: ~5MB (JSON)
+- **Controllers**: 11
+- **Wizards**: 28
+- **Security Files**: 16
+- **Other Files**: 404 (JS, SCSS, docs, etc.)
+- **Index File Size**: ~8.5MB (JSON with full source code)
 - **Response Time**: 1-2 seconds (vs 5-10s for grok-full)
+- **Coverage**: 100% of records_management modules, 0% of other workspace files
 
 ---
 
