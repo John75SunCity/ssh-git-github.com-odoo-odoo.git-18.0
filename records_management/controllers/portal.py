@@ -3138,8 +3138,20 @@ class RecordsManagementController(http.Controller):
 
             return request.redirect(f'/my/requests/{req_record.id}?created=success')
 
+        except ValidationError as e:
+            _logger.warning(f"Request creation validation error: {str(e)}")
+            return request.render('records_management.portal_error', {
+                'error_title': _('Validation Error'),
+                'error_message': str(e),
+            })
+        except AccessError as e:
+            _logger.error(f"Request creation access error: {str(e)}")
+            return request.render('records_management.portal_error', {
+                'error_title': _('Access Denied'),
+                'error_message': _('You do not have permission to create this request.'),
+            })
         except Exception as e:
-            _logger.error(f\"Request creation failed: {str(e)}\")
+            _logger.error(f"Request creation failed: {str(e)}")
             return request.render('records_management.portal_error', {
                 'error_title': _('Request Creation Failed'),
                 'error_message': str(e),
@@ -3225,9 +3237,15 @@ class RecordsManagementController(http.Controller):
 
             return {'success': True, 'message': _('Request cancelled successfully')}
 
-        except Exception as e:
-            _logger.error(f\"Request cancel failed: {str(e)}\")
+        except ValidationError as e:
+            _logger.warning(f"Request cancel validation error: {str(e)}")
             return {'success': False, 'error': str(e)}
+        except AccessError as e:
+            _logger.error(f"Request cancel access error: {str(e)}")
+            return {'success': False, 'error': _('Access denied')}
+        except Exception as e:
+            _logger.error(f"Request cancel failed: {str(e)}")
+            return {'success': False, 'error': _('Request cancellation failed')}
 
     @http.route(['/my/requests/<int:request_id>/submit'], type='json', auth='user', methods=['POST'])
     def portal_request_submit(self, request_id, **kw):
@@ -3258,9 +3276,15 @@ class RecordsManagementController(http.Controller):
 
             return {'success': True, 'message': _('Request submitted successfully')}
 
-        except Exception as e:
-            _logger.error(f\"Request submit failed: {str(e)}\")
+        except ValidationError as e:
+            _logger.warning(f"Request submit validation error: {str(e)}")
             return {'success': False, 'error': str(e)}
+        except AccessError as e:
+            _logger.error(f"Request submit access error: {str(e)}")
+            return {'success': False, 'error': _('Access denied')}
+        except Exception as e:
+            _logger.error(f"Request submit failed: {str(e)}")
+            return {'success': False, 'error': _('Request submission failed')}
 
     # ============================================================================
     # DESTRUCTION & CUSTODY WORKFLOW ROUTES (5 routes)
@@ -3563,9 +3587,15 @@ class RecordsManagementController(http.Controller):
 
             return {'success': True, 'message': _('Destruction request approved successfully')}
 
-        except Exception as e:
-            _logger.error(f\"Destruction approval failed: {str(e)}\")
+        except ValidationError as e:
+            _logger.warning(f"Destruction approval validation error: {str(e)}")
             return {'success': False, 'error': str(e)}
+        except AccessError as e:
+            _logger.error(f"Destruction approval access error: {str(e)}")
+            return {'success': False, 'error': _('Access denied')}
+        except Exception as e:
+            _logger.error(f"Destruction approval failed: {str(e)}")
+            return {'success': False, 'error': _('Destruction approval operation failed')}
 
     # ============================================================================
     # BILLING & REPORTS ROUTES (12 routes)
