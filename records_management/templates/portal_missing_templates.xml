@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ================================================================== -->
+        <!-- SERVICE REQUEST TEMPLATES                                          -->
+        <!-- ================================================================== -->
+        
+        <template id="portal_request_form" name="Service Request Form">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'request_create'"/>
+                
+                <div class="container my-5">
+                    <div class="row">
+                        <div class="col-lg-8 mx-auto">
+                            <div class="card shadow">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="mb-0">
+                                        <i t-att-class="'fa ' + config['icon'] + ' me-2'"/>
+                                        <t t-esc="config['title']"/>
+                                    </h3>
+                                    <p class="mb-0 mt-2 text-white-50">
+                                        <t t-esc="config['description']"/>
+                                    </p>
+                                </div>
+                                <div class="card-body">
+                                    <form method="POST" t-attf-action="/my/request/submit/#{request_type}">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        
+                                        <!-- Container Selection -->
+                                        <div class="mb-3" t-if="'container_ids' in config['form_fields']">
+                                            <label class="form-label fw-bold">Select Containers</label>
+                                            <select name="container_ids" class="form-select" multiple="multiple">
+                                                <t t-foreach="containers" t-as="container">
+                                                    <option t-att-value="container.id">
+                                                        <t t-esc="container.name"/> - <t t-esc="container.location_id.name"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        
+                                        <!-- Special Instructions -->
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Special Instructions</label>
+                                            <textarea name="special_instructions" class="form-control" rows="4" 
+                                                      placeholder="Add any special instructions or requirements..."/>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-between">
+                                            <a href="/my/requests" class="btn btn-secondary">
+                                                <i class="fa fa-arrow-left me-2"/>Cancel
+                                            </a>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-check me-2"/>Submit Request
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <!-- ================================================================== -->
+        <!-- DESTRUCTION MANAGEMENT TEMPLATES                                   -->
+        <!-- ================================================================== -->
+        
+        <template id="portal_destruction_list" name="Destruction Requests List">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'destruction'"/>
+                
+                <div class="container my-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fa fa-fire me-2"/>Destruction Requests</h2>
+                        <a href="/my/request/new/destruction" class="btn btn-primary">
+                            <i class="fa fa-plus me-2"/>New Request
+                        </a>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Request #</th>
+                                    <th>Date</th>
+                                    <th>Items</th>
+                                    <th>Status</th>
+                                    <th>Certificate</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="requests" t-as="req">
+                                    <tr>
+                                        <td><t t-esc="req.name"/></td>
+                                        <td><t t-esc="req.create_date" t-options="{'widget': 'date'}"/></td>
+                                        <td><t t-esc="len(req.container_ids)"/> containers</td>
+                                        <td>
+                                            <span t-att-class="'badge bg-' + ('success' if req.state == 'done' else 'warning')">
+                                                <t t-esc="req.state"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a t-if="req.certificate_id" 
+                                               t-attf-href="/my/certificate/#{req.certificate_id.id}/download"
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fa fa-download"/>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a t-attf-href="/my/requests/#{req.id}" class="btn btn-sm btn-info">
+                                                View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_destruction_pending" name="Pending Destruction Approvals">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'destruction'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-clock-o me-2"/>Pending Approvals</h2>
+                    
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle me-2"/>
+                        These requests require approval before destruction can proceed.
+                    </div>
+                    
+                    <div class="row">
+                        <t t-foreach="requests" t-as="req">
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-header bg-warning text-dark">
+                                        <strong><t t-esc="req.name"/></strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <p><strong>Submitted:</strong> <t t-esc="req.create_date" t-options="{'widget': 'date'}"/></p>
+                                        <p><strong>Containers:</strong> <t t-esc="len(req.container_ids)"/></p>
+                                        <a t-attf-href="/my/requests/#{req.id}" class="btn btn-primary btn-sm">
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_chain_of_custody" name="Chain of Custody">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'custody'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-link me-2"/>Chain of Custody Tracking</h2>
+                    
+                    <div class="timeline">
+                        <t t-foreach="custody_records" t-as="record">
+                            <div class="timeline-item mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h5><t t-esc="record.container_id.name"/></h5>
+                                                <p class="mb-0">
+                                                    <strong>From:</strong> <t t-esc="record.from_custodian_id.name"/> →
+                                                    <strong>To:</strong> <t t-esc="record.to_custodian_id.name"/>
+                                                </p>
+                                            </div>
+                                            <div class="text-end">
+                                                <small class="text-muted">
+                                                    <t t-esc="record.transfer_date" t-options="{'widget': 'datetime'}"/>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <!-- ================================================================== -->
+        <!-- BILLING TEMPLATES                                                  -->
+        <!-- ================================================================== -->
+        
+        <template id="portal_invoice_history" name="Invoice Payment History">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'invoices'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-history me-2"/>Payment History</h2>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Paid Date</th>
+                                    <th>Download</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="invoices" t-as="invoice">
+                                    <tr>
+                                        <td><t t-esc="invoice.name"/></td>
+                                        <td><t t-esc="invoice.invoice_date" t-options="{'widget': 'date'}"/></td>
+                                        <td><t t-esc="invoice.amount_total" t-options="{'widget': 'monetary', 'display_currency': invoice.currency_id}"/></td>
+                                        <td><t t-esc="invoice.invoice_date_due" t-options="{'widget': 'date'}"/></td>
+                                        <td>
+                                            <a t-attf-href="/my/invoices/#{invoice.id}/download" class="btn btn-sm btn-primary">
+                                                <i class="fa fa-download"/>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_billing_rates" name="Billing Rates">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'billing'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-tags me-2"/>Current Billing Rates</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h4 class="mb-0">Your Pricing Plan</h4>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Storage Rate (per box/month)</strong></td>
+                                                <td class="text-end">$<t t-esc="'0.75' if not billing_info else billing_info.storage_rate"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Retrieval Fee (per box)</strong></td>
+                                                <td class="text-end">$<t t-esc="'25.00'"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Destruction Fee (per box)</strong></td>
+                                                <td class="text-end">$<t t-esc="'15.00'"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_billing_statements" name="Billing Statements">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'billing'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-download me-2"/>Download Statements</h2>
+                    
+                    <div class="list-group">
+                        <t t-foreach="statements" t-as="statement">
+                            <a t-attf-href="/my/invoices/#{statement.id}/download" 
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1"><t t-esc="statement.name"/></h5>
+                                    <small><t t-esc="statement.invoice_date" t-options="{'widget': 'date'}"/></small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">
+                                    <t t-esc="statement.amount_total" t-options="{'widget': 'monetary', 'display_currency': statement.currency_id}"/>
+                                </span>
+                            </a>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <!-- ================================================================== -->
+        <!-- REPORTS TEMPLATES                                                  -->
+        <!-- ================================================================== -->
+        
+        <template id="portal_reports_inventory" name="Inventory Reports">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'reports'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-chart-bar me-2"/>Inventory Reports</h2>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3><t t-esc="summary['total_containers']"/></h3>
+                                    <p class="text-muted">Total Containers</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3><t t-esc="summary['in_storage']"/></h3>
+                                    <p class="text-muted">In Storage</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3><t t-esc="summary['active_containers']"/></h3>
+                                    <p class="text-muted">Active</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h3><t t-esc="summary['total_files']"/></h3>
+                                    <p class="text-muted">Total Files</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="/my/reports/export" class="btn btn-primary">
+                        <i class="fa fa-download me-2"/>Export Full Report
+                    </a>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_reports_activity" name="Activity Reports">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'reports'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-activity me-2"/>Activity Reports</h2>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header"><strong>Recent Requests</strong></div>
+                        <div class="list-group list-group-flush">
+                            <t t-foreach="requests[:10]" t-as="req">
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <span><t t-esc="req.name"/> - <t t-esc="req.request_type"/></span>
+                                        <span class="text-muted"><t t-esc="req.create_date" t-options="{'widget': 'date'}"/></span>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_reports_compliance" name="Compliance Reports">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'reports'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-shield-check me-2"/>NAID Compliance Reports</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-success text-white">
+                                    <h4 class="mb-0">Destruction Certificates</h4>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong><t t-esc="len(certificates)"/></strong> certificates issued</p>
+                                    <a href="/my/certificates" class="btn btn-primary">View All</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h4 class="mb-0">Audit Logs</h4>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong><t t-esc="len(audit_logs)"/></strong> audit entries</p>
+                                    <a href="/my/custody/chain" class="btn btn-primary">View Chain</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_reports_export" name="Export Reports">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'reports'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-file-export me-2"/>Export Data</h2>
+                    
+                    <div class="row">
+                        <t t-foreach="export_options" t-as="option">
+                            <div class="col-md-4 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i t-att-class="'fa ' + option['icon'] + ' fa-3x mb-3 text-primary'"/>
+                                        <h5><t t-esc="option['label']"/></h5>
+                                        <button class="btn btn-primary mt-2">Download</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <!-- ================================================================== -->
+        <!-- FEEDBACK & SUPPORT TEMPLATES                                       -->
+        <!-- ================================================================== -->
+        
+        <template id="portal_feedback_form" name="Feedback Form">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'feedback'"/>
+                
+                <div class="container my-5">
+                    <div class="row">
+                        <div class="col-lg-8 mx-auto">
+                            <div class="card shadow">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="mb-0"><i class="fa fa-comment-dots me-2"/>Submit Feedback</h3>
+                                </div>
+                                <div class="card-body">
+                                    <form method="POST" action="/my/feedback/submit">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Rating</label>
+                                            <select name="rating" class="form-select" required="required">
+                                                <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                                                <option value="4">⭐⭐⭐⭐ Good</option>
+                                                <option value="3">⭐⭐⭐ Average</option>
+                                                <option value="2">⭐⭐ Poor</option>
+                                                <option value="1">⭐ Very Poor</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Your Feedback</label>
+                                            <textarea name="comments" class="form-control" rows="6" required="required"
+                                                      placeholder="Tell us about your experience..."/>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa fa-paper-plane me-2"/>Submit Feedback
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_feedback_history" name="Feedback History">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'feedback'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-history me-2"/>Your Feedback History</h2>
+                    
+                    <div class="list-group">
+                        <t t-foreach="feedback_records" t-as="feedback">
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h5>Rating: <t t-esc="'⭐' * int(feedback.rating)"/></h5>
+                                        <p><t t-esc="feedback.comments"/></p>
+                                        <small class="text-muted">
+                                            Submitted: <t t-esc="feedback.create_date" t-options="{'widget': 'datetime'}"/>
+                                        </small>
+                                    </div>
+                                    <span t-if="feedback.sentiment_category" 
+                                          t-att-class="'badge bg-' + ('success' if feedback.sentiment_category == 'positive' else 'warning')">
+                                        <t t-esc="feedback.sentiment_category"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_help_center" name="Help Center">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'support'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-question-circle me-2"/>Help Center</h2>
+                    
+                    <div class="row">
+                        <t t-foreach="help_topics" t-as="topic">
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <h4>
+                                            <i t-att-class="'fa ' + topic['icon'] + ' me-2'"/>
+                                            <t t-esc="topic['title']"/>
+                                        </h4>
+                                    </div>
+                                    <div class="list-group list-group-flush">
+                                        <t t-foreach="topic['articles']" t-as="article">
+                                            <a t-att-href="article['url']" class="list-group-item list-group-item-action">
+                                                <i class="fa fa-file-alt me-2"/><t t-esc="article['title']"/>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <!-- ================================================================== -->
+        <!-- SETTINGS TEMPLATES                                                 -->
+        <!-- ================================================================== -->
+        
+        <template id="portal_department_users" name="Department Users">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'settings'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-users me-2"/>Department Users</h2>
+                    
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Last Login</th>
+                                    <th>Active</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="users" t-as="user">
+                                    <tr>
+                                        <td><t t-esc="user.name"/></td>
+                                        <td><t t-esc="user.login"/></td>
+                                        <td><t t-esc="user.login_date" t-options="{'widget': 'datetime'}"/></td>
+                                        <td>
+                                            <span t-att-class="'badge bg-' + ('success' if user.active else 'secondary')">
+                                                <t t-esc="'Active' if user.active else 'Inactive'"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_notifications" name="Notification Settings">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'settings'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-bell me-2"/>Notification Preferences</h2>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="POST" action="/my/notifications/update">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                
+                                <t t-foreach="notification_channels" t-as="channel">
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" 
+                                               t-att-id="'notif_' + channel['type']"
+                                               t-att-name="'notif_' + channel['type']"
+                                               t-att-checked="'checked' if channel['enabled'] else None"/>
+                                        <label class="form-check-label" t-att-for="'notif_' + channel['type']">
+                                            <t t-esc="channel['label']"/>
+                                        </label>
+                                    </div>
+                                </t>
+                                
+                                <button type="submit" class="btn btn-primary mt-3">
+                                    <i class="fa fa-save me-2"/>Save Preferences
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_access_management" name="Access Management">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'settings'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-key me-2"/>Access Management</h2>
+                    
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle me-2"/>
+                        Manage which users have access to specific containers and features.
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <p>Access management interface - Configure user permissions and container access rights.</p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+        <template id="portal_advanced_search" name="Advanced Search">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'inventory'"/>
+                
+                <div class="container my-4">
+                    <h2 class="mb-4"><i class="fa fa-search me-2"/>Advanced Search</h2>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="GET" action="/my/inventory/search_results">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Search Category</label>
+                                        <select name="category" class="form-select">
+                                            <t t-foreach="search_categories" t-as="cat">
+                                                <option t-att-value="cat['id']">
+                                                    <t t-esc="cat['label']"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Search Term</label>
+                                        <input type="text" name="search" class="form-control" 
+                                               placeholder="Enter search term..."/>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-search me-2"/>Search
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+    </data>
+</odoo>

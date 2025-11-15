@@ -3192,3 +3192,401 @@ class RecordsManagementController(http.Controller):
             }
         
         return {'error': _('Unknown operation: %s') % operation}
+    
+    # ================================================================
+    # SERVICE REQUEST CREATION ROUTES
+    # ================================================================
+    
+    @http.route(['/my/request/new/<string:request_type>'], type='http', auth='user', website=True)
+    def portal_request_new(self, request_type='retrieval', **kw):
+        """Service request creation form for different request types."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Define request type configurations
+        request_configs = {
+            'retrieval': {
+                'title': _('Request Document Retrieval'),
+                'icon': 'fa-truck',
+                'description': _('Request physical documents to be retrieved from storage'),
+                'form_fields': ['container_ids', 'delivery_date', 'special_instructions'],
+            },
+            'destruction': {
+                'title': _('Request Destruction Service'),
+                'icon': 'fa-fire',
+                'description': _('Request secure destruction of physical documents (NAID compliant)'),
+                'form_fields': ['container_ids', 'destruction_method', 'witness_required'],
+            },
+            'pickup': {
+                'title': _('Schedule Pickup'),
+                'icon': 'fa-calendar',
+                'description': _('Schedule pickup of documents for storage'),
+                'form_fields': ['pickup_date', 'pickup_address', 'estimated_boxes'],
+            },
+            'scanning': {
+                'title': _('Request Document Scanning'),
+                'icon': 'fa-scanner',
+                'description': _('Request documents to be scanned and digitized'),
+                'form_fields': ['document_ids', 'scan_resolution', 'file_format'],
+            },
+        }
+        
+        config = request_configs.get(request_type, request_configs['retrieval'])
+        
+        # Get available containers for selection
+        containers = request.env['records.container'].search([
+            ('partner_id', '=', partner.id),
+            ('state', 'in', ['storage', 'active'])
+        ])
+        
+        values = {
+            'page_name': f'request_{request_type}',
+            'request_type': request_type,
+            'config': config,
+            'containers': containers,
+            'partner': partner,
+        }
+        
+        return request.render("records_management.portal_request_form", values)
+    
+    # ================================================================
+    # DESTRUCTION MANAGEMENT ROUTES
+    # ================================================================
+    
+    @http.route(['/my/destruction'], type='http', auth='user', website=True)
+    def portal_destruction_requests(self, **kw):
+        """List all destruction requests for the customer."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        destruction_requests = request.env['portal.request'].search([
+            ('partner_id', '=', partner.id),
+            ('request_type', '=', 'destruction')
+        ], order='create_date desc')
+        
+        values = {
+            'page_name': 'destruction',
+            'requests': destruction_requests,
+        }
+        
+        return request.render("records_management.portal_destruction_list", values)
+    
+    @http.route(['/my/destruction/pending'], type='http', auth='user', website=True)
+    def portal_destruction_pending(self, **kw):
+        """Destruction requests pending approval."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        pending_requests = request.env['portal.request'].search([
+            ('partner_id', '=', partner.id),
+            ('request_type', '=', 'destruction'),
+            ('state', 'in', ['draft', 'pending_approval'])
+        ])
+        
+        values = {
+            'page_name': 'destruction',
+            'requests': pending_requests,
+        }
+        
+        return request.render("records_management.portal_destruction_pending", values)
+    
+    @http.route(['/my/custody/chain'], type='http', auth='user', website=True)
+    def portal_chain_of_custody(self, **kw):
+        """Chain of custody tracking for all containers."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        custody_records = request.env['chain.of.custody'].search([
+            ('partner_id', '=', partner.id)
+        ], order='transfer_date desc', limit=100)
+        
+        values = {
+            'page_name': 'custody',
+            'custody_records': custody_records,
+        }
+        
+        return request.render("records_management.portal_chain_of_custody", values)
+    
+    # ================================================================
+    # BILLING & INVOICES ROUTES
+    # ================================================================
+    
+    @http.route(['/my/invoices/history'], type='http', auth='user', website=True)
+    def portal_invoice_history(self, **kw):
+        """Payment history and archived invoices."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get paid invoices
+        invoices = request.env['account.move'].search([
+            ('partner_id', '=', partner.id),
+            ('move_type', '=', 'out_invoice'),
+            ('state', '=', 'posted'),
+            ('payment_state', 'in', ['paid', 'in_payment'])
+        ], order='invoice_date desc')
+        
+        values = {
+            'page_name': 'invoices',
+            'invoices': invoices,
+            'payment_history': True,
+        }
+        
+        return request.render("records_management.portal_invoice_history", values)
+    
+    @http.route(['/my/billing/rates'], type='http', auth='user', website=True)
+    def portal_billing_rates(self, **kw):
+        """Display current billing rates and pricing information."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get customer's billing configuration
+        billing_info = request.env['records.billing'].search([
+            ('partner_id', '=', partner.id)
+        ], limit=1)
+        
+        # Get product pricing
+        products = request.env['product.product'].search([
+            ('categ_id.name', 'ilike', 'records management')
+        ])
+        
+        values = {
+            'page_name': 'billing',
+            'billing_info': billing_info,
+            'products': products,
+        }
+        
+        return request.render("records_management.portal_billing_rates", values)
+    
+    @http.route(['/my/billing/statements'], type='http', auth='user', website=True)
+    def portal_billing_statements(self, **kw):
+        """Download billing statements."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get recent invoices for statements
+        statements = request.env['account.move'].search([
+            ('partner_id', '=', partner.id),
+            ('move_type', '=', 'out_invoice'),
+            ('state', '=', 'posted')
+        ], order='invoice_date desc', limit=12)
+        
+        values = {
+            'page_name': 'billing',
+            'statements': statements,
+        }
+        
+        return request.render("records_management.portal_billing_statements", values)
+    
+    # ================================================================
+    # REPORTS & ANALYTICS ROUTES
+    # ================================================================
+    
+    @http.route(['/my/reports'], type='http', auth='user', website=True)
+    def portal_reports_inventory(self, **kw):
+        """Inventory reports and summaries."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Generate inventory summary
+        containers = request.env['records.container'].search([
+            ('partner_id', '=', partner.id)
+        ])
+        
+        summary = {
+            'total_containers': len(containers),
+            'active_containers': len(containers.filtered(lambda c: c.state == 'active')),
+            'in_storage': len(containers.filtered(lambda c: c.state == 'storage')),
+            'total_files': sum(containers.mapped('file_count')),
+        }
+        
+        values = {
+            'page_name': 'reports',
+            'summary': summary,
+            'containers': containers,
+        }
+        
+        return request.render("records_management.portal_reports_inventory", values)
+    
+    @http.route(['/my/reports/activity'], type='http', auth='user', website=True)
+    def portal_reports_activity(self, **kw):
+        """Activity reports showing movements and requests."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get recent activity
+        requests = request.env['portal.request'].search([
+            ('partner_id', '=', partner.id)
+        ], order='create_date desc', limit=50)
+        
+        movements = request.env['stock.move'].search([
+            ('partner_id', '=', partner.id)
+        ], order='date desc', limit=50)
+        
+        values = {
+            'page_name': 'reports',
+            'requests': requests,
+            'movements': movements,
+        }
+        
+        return request.render("records_management.portal_reports_activity", values)
+    
+    @http.route(['/my/reports/compliance'], type='http', auth='user', website=True)
+    def portal_reports_compliance(self, **kw):
+        """NAID compliance and audit reports."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get compliance data
+        certificates = request.env['naid.certificate'].search([
+            ('partner_id', '=', partner.id)
+        ])
+        
+        audit_logs = request.env['naid.audit.log'].search([
+            ('partner_id', '=', partner.id)
+        ], order='timestamp desc', limit=100)
+        
+        values = {
+            'page_name': 'reports',
+            'certificates': certificates,
+            'audit_logs': audit_logs,
+        }
+        
+        return request.render("records_management.portal_reports_compliance", values)
+    
+    @http.route(['/my/reports/export'], type='http', auth='user', website=True)
+    def portal_reports_export(self, **kw):
+        """Export data in various formats."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        values = {
+            'page_name': 'reports',
+            'export_options': [
+                {'format': 'csv', 'icon': 'fa-file-csv', 'label': _('CSV Export')},
+                {'format': 'xlsx', 'icon': 'fa-file-excel', 'label': _('Excel Export')},
+                {'format': 'pdf', 'icon': 'fa-file-pdf', 'label': _('PDF Report')},
+            ],
+        }
+        
+        return request.render("records_management.portal_reports_export", values)
+    
+    # ================================================================
+    # FEEDBACK & SUPPORT ROUTES
+    # ================================================================
+    
+    @http.route(['/my/feedback'], type='http', auth='user', website=True)
+    def portal_feedback_submit(self, **kw):
+        """Submit feedback form."""
+        values = {
+            'page_name': 'feedback',
+        }
+        
+        return request.render("records_management.portal_feedback_form", values)
+    
+    @http.route(['/my/feedback/history'], type='http', auth='user', website=True)
+    def portal_feedback_history(self, **kw):
+        """Feedback submission history."""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        feedback_records = request.env['customer.feedback'].search([
+            ('partner_id', '=', partner.id)
+        ], order='create_date desc')
+        
+        values = {
+            'page_name': 'feedback',
+            'feedback_records': feedback_records,
+        }
+        
+        return request.render("records_management.portal_feedback_history", values)
+    
+    @http.route(['/help'], type='http', auth='user', website=True)
+    def portal_help_center(self, **kw):
+        """Help center with documentation."""
+        values = {
+            'page_name': 'support',
+            'help_topics': [
+                {
+                    'title': _('Getting Started'),
+                    'icon': 'fa-rocket',
+                    'articles': [
+                        {'title': _('Portal Overview'), 'url': '/help/overview'},
+                        {'title': _('Managing Inventory'), 'url': '/help/inventory'},
+                    ]
+                },
+                {
+                    'title': _('Service Requests'),
+                    'icon': 'fa-tasks',
+                    'articles': [
+                        {'title': _('How to Request Retrieval'), 'url': '/help/retrieval'},
+                        {'title': _('Destruction Process'), 'url': '/help/destruction'},
+                    ]
+                },
+            ],
+        }
+        
+        return request.render("records_management.portal_help_center", values)
+    
+    # ================================================================
+    # SETTINGS & USER MANAGEMENT ROUTES
+    # ================================================================
+    
+    @http.route(['/my/users'], type='http', auth='user', website=True)
+    def portal_department_users(self, **kw):
+        """Manage department users (for company admins)."""
+        if not request.env.user.has_group('records_management.group_portal_company_admin'):
+            return request.redirect('/my/home')
+        
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get all portal users for this company
+        users = request.env['res.users'].search([
+            ('partner_id.parent_id', '=', partner.id),
+            ('groups_id', 'in', [request.env.ref('base.group_portal').id])
+        ])
+        
+        values = {
+            'page_name': 'settings',
+            'users': users,
+        }
+        
+        return request.render("records_management.portal_department_users", values)
+    
+    @http.route(['/my/notifications'], type='http', auth='user', website=True)
+    def portal_notifications_settings(self, **kw):
+        """Notification preferences."""
+        user = request.env.user
+        
+        values = {
+            'page_name': 'settings',
+            'user': user,
+            'notification_channels': [
+                {'type': 'email', 'label': _('Email Notifications'), 'enabled': True},
+                {'type': 'sms', 'label': _('SMS Alerts'), 'enabled': False},
+                {'type': 'portal', 'label': _('Portal Messages'), 'enabled': True},
+            ],
+        }
+        
+        return request.render("records_management.portal_notifications", values)
+    
+    @http.route(['/my/access'], type='http', auth='user', website=True)
+    def portal_access_management(self, **kw):
+        """Access management (for department admins)."""
+        if not request.env.user.has_group('records_management.group_portal_department_admin'):
+            return request.redirect('/my/home')
+        
+        partner = request.env.user.partner_id
+        
+        # Get access permissions
+        access_records = request.env['portal.user.access'].search([
+            ('partner_id', '=', partner.id)
+        ])
+        
+        values = {
+            'page_name': 'settings',
+            'access_records': access_records,
+        }
+        
+        return request.render("records_management.portal_access_management", values)
+    
+    @http.route(['/my/inventory/advanced_search'], type='http', auth='user', website=True)
+    def portal_advanced_search(self, **kw):
+        """Advanced search interface for inventory."""
+        values = {
+            'page_name': 'inventory',
+            'search_categories': [
+                {'id': 'containers', 'label': _('Containers'), 'icon': 'fa-archive'},
+                {'id': 'files', 'label': _('Files'), 'icon': 'fa-folder'},
+                {'id': 'documents', 'label': _('Documents'), 'icon': 'fa-file-text'},
+            ],
+        }
+        
+        return request.render("records_management.portal_advanced_search", values)

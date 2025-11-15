@@ -1,0 +1,715 @@
+2025-11-15 08:05:23,014 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: Loading module records_management (303/325)
+2025-11-15 08:05:23,973 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ================================================================================
+2025-11-15 08:05:23,973 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: 🚀 RUNNING PRE-INIT HOOK FOR RECORDS MANAGEMENT MODULE
+2025-11-15 08:05:23,973 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ================================================================================
+2025-11-15 08:05:23,973 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks:
+📋 PART 1: Checking res_partner columns...
+2025-11-15 08:05:23,975 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ➕ Adding missing column: res_partner.transitory_field_config_id (INTEGER)
+2025-11-15 08:05:23,976 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ✅ Column res_partner.transitory_field_config_id added successfully
+2025-11-15 08:05:23,977 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ➕ Adding missing column: res_partner.field_label_config_id (INTEGER)
+2025-11-15 08:05:23,978 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ✅ Column res_partner.field_label_config_id added successfully
+2025-11-15 08:05:23,979 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ➕ Adding missing column: res_partner.allow_transitory_items (BOOLEAN)
+2025-11-15 08:05:23,980 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ✅ Column res_partner.allow_transitory_items added successfully
+2025-11-15 08:05:23,980 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: 🔧 Setting default value True for res_partner.allow_transitory_items
+2025-11-15 08:05:23,986 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ✅ Default value set for res_partner.allow_transitory_items
+2025-11-15 08:05:23,988 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ➕ Adding missing column: res_partner.max_transitory_items (INTEGER)
+2025-11-15 08:05:23,988 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ✅ Column res_partner.max_transitory_items added successfully
+2025-11-15 08:05:23,988 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: 🔧 Setting default value 100 for res_partner.max_transitory_items
+2025-11-15 08:05:23,997 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ✅ Default value set for res_partner.max_transitory_items
+2025-11-15 08:05:23,997 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks:
+📋 PART 2: Checking records.storage.department.user columns...
+2025-11-15 08:05:23,997 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ⏭️  Table records_storage_department_user does not exist yet
+2025-11-15 08:05:23,998 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks:    → Will be created by Odoo ORM during model initialization
+2025-11-15 08:05:23,998 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks:    → Fields will be created automatically with model definition
+2025-11-15 08:05:23,998 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks:
+================================================================================
+2025-11-15 08:05:23,998 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ✅ PRE-INIT HOOK COMPLETED SUCCESSFULLY
+2025-11-15 08:05:23,998 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.pre_init_hooks: ================================================================================
+2025-11-15 08:05:24,386 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.registry: module records_management: creating or updating database tables
+2025-11-15 08:05:24,411 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of account.move.has_destruction_services
+2025-11-15 08:05:24,447 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of account.move.line.document_count
+2025-11-15 08:05:24,447 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of account.move.line.container_types
+2025-11-15 08:05:24,447 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of account.move.line.shredding_weight_kg
+2025-11-15 08:05:24,859 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of maintenance.equipment.next_calibration_date
+2025-11-15 08:05:24,859 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of maintenance.equipment.total_maintenance_cost
+2025-11-15 08:05:24,859 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of maintenance.equipment.is_under_warranty
+2025-11-15 08:05:24,932 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of hr.employee.certification_status
+2025-11-15 08:05:24,933 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of hr.employee.naid_certified
+2025-11-15 08:05:25,015 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of maintenance.request.cost
+2025-11-15 08:05:25,022 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of maintenance.team.average_response_time
+2025-11-15 08:05:25,022 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of maintenance.team.average_resolution_time
+2025-11-15 08:05:25,468 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of project.task.container_count
+2025-11-15 08:05:25,468 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of project.task.certificate_required
+2025-11-15 08:05:25,468 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of project.task.total_weight
+2025-11-15 08:05:26,088 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of res.partner.department_count
+2025-11-15 08:05:26,088 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of res.partner.negotiated_rates_count
+2025-11-15 08:05:26,088 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of res.partner.active_bin_key_count
+2025-11-15 08:05:26,088 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of res.partner.total_bin_keys_issued
+2025-11-15 08:05:26,088 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of res.partner.unlock_service_count
+2025-11-15 08:05:26,088 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of res.partner.key_issue_date
+2025-11-15 08:05:26,088 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of res.partner.total_unlock_charges
+2025-11-15 08:05:26,088 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of res.partner.has_bin_key
+2025-11-15 08:05:26,088 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of res.partner.recently_restricted
+2025-11-15 08:05:26,326 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of stock.lot.document_count
+2025-11-15 08:05:26,359 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of stock.quant.customer_id
+2025-11-15 08:05:26,359 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of stock.quant.document_count
+2025-11-15 08:05:26,359 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of stock.quant.is_due_for_destruction
+2025-11-15 08:05:26,374 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of stock.location.current_usage
+2025-11-15 08:05:26,374 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of stock.location.available_spaces
+2025-11-15 08:05:26,374 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of stock.location.full_coordinates
+2025-11-15 08:05:26,374 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of stock.location.is_at_capacity
+2025-11-15 08:05:26,374 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of stock.location.utilization_percentage
+2025-11-15 08:05:26,388 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models: Prepare computation of stock.picking.is_records_management
+2025-11-15 08:05:35,808 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/records_management_security.xml
+2025-11-15 08:05:36,152 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/additional_models_security.xml
+2025-11-15 08:05:36,180 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/admin_portal_access.xml
+2025-11-15 08:05:36,181 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/destruction_certificate_security.xml
+2025-11-15 08:05:36,186 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/intelligent_search_security.xml
+2025-11-15 08:05:36,226 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/naid_security.xml
+2025-11-15 08:05:36,252 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/portal_request_security.xml
+2025-11-15 08:05:36,323 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/work_order_portal_rules.xml
+2025-11-15 08:05:36,341 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/portal_container_rules.xml
+2025-11-15 08:05:36,352 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/portal_document_rules.xml
+2025-11-15 08:05:36,357 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/portal_financial_rules.xml
+2025-11-15 08:05:36,362 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/portal_certificate_rules.xml
+2025-11-15 08:05:36,367 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/portal_temp_inventory_rules.xml
+2025-11-15 08:05:36,375 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/security/ir.model.access.csv
+2025-11-15 08:05:36,604 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/ir_sequence_data.xml
+2025-11-15 08:05:36,636 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/sequence_data.xml
+2025-11-15 08:05:36,661 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/missing_sequences_data.xml
+2025-11-15 08:05:36,751 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/portal_barcode_sequence.xml
+2025-11-15 08:05:36,753 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/records_retrieval_order_sequences_data.xml
+2025-11-15 08:05:36,758 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/core_records_data.xml
+2025-11-15 08:05:36,797 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/load_data.xml
+2025-11-15 08:05:36,913 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/container_types_base_rates.xml
+2025-11-15 08:05:36,962 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/naid_certificate_data.xml
+2025-11-15 08:05:36,981 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/paper_products_data.xml
+2025-11-15 08:05:37,086 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/website_portal_menus.xml
+2025-11-15 08:05:37,122 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/website_pages.xml
+2025-11-15 08:05:37,139 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/core_configurator_data.xml
+2025-11-15 08:05:37,192 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/paper_shred_configurator_data.xml
+2025-11-15 08:05:37,211 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/naid_configurator_data.xml
+2025-11-15 08:05:37,218 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/document_retrieval_rates_data.xml
+2025-11-15 08:05:37,238 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/products_data.xml
+2025-11-15 08:05:37,633 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/storage_fee_data.xml
+2025-11-15 08:05:37,663 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/base_rates_container_access_data.xml
+2025-11-15 08:05:37,678 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/billing_data.xml
+2025-11-15 08:05:37,694 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/field_label_customization_batch_data.xml
+2025-11-15 08:05:37,733 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/field_label_customization_batch4_data.xml
+2025-11-15 08:05:37,734 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/field_label_customization_batch4.xml
+2025-11-15 08:05:37,735 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/fsm_data.xml
+2025-11-15 08:05:37,745 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/fsm_mail_templates_data.xml
+2025-11-15 08:05:37,765 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/mail_activity_data_todo.xml
+2025-11-15 08:05:37,772 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/naid_compliance_data.xml
+2025-11-15 08:05:37,883 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/naid_training_demo_data.xml
+2025-11-15 08:05:38,051 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/portal_configurator_data.xml
+2025-11-15 08:05:38,067 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/portal_mail_templates_data.xml
+2025-11-15 08:05:38,078 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/records_retrieval_order_cron_data.xml
+2025-11-15 08:05:38,083 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/records_retrieval_order_cron.xml
+2025-11-15 08:05:38,084 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/records_retrieval_order_sequences.xml
+2025-11-15 08:05:38,087 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/required_document_cron.xml
+2025-11-15 08:05:38,091 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/scheduled_actions_data.xml
+2025-11-15 08:05:38,115 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/temp_inventory_configurator_data.xml
+2025-11-15 08:05:38,141 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/training_courses_customer_setup.xml
+2025-11-15 08:05:38,321 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/training_courses_data.xml
+2025-11-15 08:05:38,350 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/training_courses_hipaa_privacy.xml
+2025-11-15 08:05:38,556 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/training_courses_naid_content.xml
+2025-11-15 08:05:38,704 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/training_courses_billing_flowchart.xml
+2025-11-15 08:05:38,900 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/training_courses_billing_models.xml
+2025-11-15 08:05:39,097 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/training_courses_complete_user_guide.xml
+2025-11-15 08:05:39,298 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/account_move_line_reports.xml
+2025-11-15 08:05:39,309 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/advanced_billing_line_reports.xml
+2025-11-15 08:05:39,315 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/advanced_billing_reports.xml
+2025-11-15 08:05:39,322 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/barcode_generation_history_reports.xml
+2025-11-15 08:05:39,328 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/barcode_models_enhanced_reports.xml
+2025-11-15 08:05:39,335 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/barcode_pricing_tier_reports.xml
+2025-11-15 08:05:39,341 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/barcode_product_reports.xml
+2025-11-15 08:05:39,348 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/barcode_reports.xml
+2025-11-15 08:05:39,362 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/barcode_storage_box_reports.xml
+2025-11-15 08:05:39,369 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/container_barcode_reports.xml
+2025-11-15 08:05:39,376 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/document_temp_barcode_reports.xml
+2025-11-15 08:05:39,381 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/base_rate_reports.xml
+2025-11-15 08:05:39,388 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/billing_period_reports.xml
+2025-11-15 08:05:39,394 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/bin_key_history_reports.xml
+2025-11-15 08:05:39,401 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/bin_key_management_reports.xml
+2025-11-15 08:05:39,407 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/bin_key_reports.xml
+2025-11-15 08:05:39,414 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/bin_key_unlock_service_reports.xml
+2025-11-15 08:05:39,420 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/container_access_work_order_reports.xml
+2025-11-15 08:05:39,427 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/container_content_reports.xml
+2025-11-15 08:05:39,433 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/container_destruction_work_order_reports.xml
+2025-11-15 08:05:39,439 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/container_retrieval_reports.xml
+2025-11-15 08:05:39,446 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/container_retrieval_work_order_reports.xml
+2025-11-15 08:05:39,447 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/certificate_template_data_reports.xml
+2025-11-15 08:05:39,453 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_audit_log_reports.xml
+2025-11-15 08:05:39,460 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_certificate_item_reports.xml
+2025-11-15 08:05:39,466 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_certificate_reports.xml
+2025-11-15 08:05:39,476 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_compliance_action_plan_reports.xml
+2025-11-15 08:05:39,482 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_compliance_alert_reports.xml
+2025-11-15 08:05:39,489 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_compliance_checklist_item_reports.xml
+2025-11-15 08:05:39,495 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_compliance_checklist_reports.xml
+2025-11-15 08:05:39,502 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_compliance_policy_reports.xml
+2025-11-15 08:05:39,508 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_compliance_reports.xml
+2025-11-15 08:05:39,515 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_custody_event_reports.xml
+2025-11-15 08:05:39,522 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_custody_reports.xml
+2025-11-15 08:05:39,528 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_destruction_record_reports.xml
+2025-11-15 08:05:39,535 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_operator_certification_reports.xml
+2025-11-15 08:05:39,541 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_performance_history_reports.xml
+2025-11-15 08:05:39,548 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/naid_risk_assessment_reports.xml
+2025-11-15 08:05:39,555 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/chain_of_custody_reports.xml
+2025-11-15 08:05:39,563 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/custody_transfer_event_reports.xml
+2025-11-15 08:05:39,570 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/customer_category_reports.xml
+2025-11-15 08:05:39,576 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/customer_feedback_reports.xml
+2025-11-15 08:05:39,583 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/customer_inventory_line_reports.xml
+2025-11-15 08:05:39,590 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/customer_inventory_report_line_reports.xml
+2025-11-15 08:05:39,596 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/customer_inventory_report_reports.xml
+2025-11-15 08:05:39,603 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/customer_inventory_reports.xml
+2025-11-15 08:05:39,619 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/customer_negotiated_rate_reports.xml
+2025-11-15 08:05:39,626 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/customer_portal_diagram_reports.xml
+2025-11-15 08:05:39,632 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/document_retrieval_item_reports.xml
+2025-11-15 08:05:39,639 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/required_document_reports.xml
+2025-11-15 08:05:39,645 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/destruction_event_reports.xml
+2025-11-15 08:05:39,652 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/destruction_item_reports.xml
+2025-11-15 08:05:39,658 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/file_retrieval_item_reports.xml
+2025-11-15 08:05:39,664 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_digital_scan_reports.xml
+2025-11-15 08:05:39,671 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/scan_digital_asset_reports.xml
+2025-11-15 08:05:39,677 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/scan_retrieval_item_reports.xml
+2025-11-15 08:05:39,684 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/scan_retrieval_reports.xml
+2025-11-15 08:05:39,691 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/scan_retrieval_work_order_reports.xml
+2025-11-15 08:05:39,691 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/inventory_adjustment_reason_reports.xml
+2025-11-15 08:05:39,698 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/inventory_item_destruction_line_reports.xml
+2025-11-15 08:05:39,705 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/inventory_item_destruction_reports.xml
+2025-11-15 08:05:39,711 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/inventory_item_location_transfer_reports.xml
+2025-11-15 08:05:39,718 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/inventory_item_profile_reports.xml
+2025-11-15 08:05:39,724 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/inventory_item_retrieval_line_reports.xml
+2025-11-15 08:05:39,731 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/inventory_item_retrieval_reports.xml
+2025-11-15 08:05:39,737 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/inventory_item_type_reports.xml
+2025-11-15 08:05:39,744 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/inventory_item_reports.xml
+2025-11-15 08:05:39,750 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/key_inventory_reports.xml
+2025-11-15 08:05:39,757 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/temp_inventory_reports.xml
+2025-11-15 08:05:39,763 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/load_reports.xml
+2025-11-15 08:05:39,769 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/paper_bale_inspection_reports.xml
+2025-11-15 08:05:39,776 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/paper_bale_line_reports.xml
+2025-11-15 08:05:39,782 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/paper_bale_movement_reports.xml
+2025-11-15 08:05:39,789 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/paper_bale_recycling_reports.xml
+2025-11-15 08:05:39,795 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/paper_bale_reports.xml
+2025-11-15 08:05:39,802 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/paper_load_shipment_reports.xml
+2025-11-15 08:05:39,808 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/location_group_reports.xml
+2025-11-15 08:05:39,815 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/pickup_location_reports.xml
+2025-11-15 08:05:39,821 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_center_location_reports.xml
+2025-11-15 08:05:39,828 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_location_inspection_line_reports.xml
+2025-11-15 08:05:39,834 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_location_inspection_reports.xml
+2025-11-15 08:05:39,841 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_location_reports.xml
+2025-11-15 08:05:39,847 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/maintenance_equipment_reports.xml
+2025-11-15 08:05:39,854 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/media_type_reports.xml
+2025-11-15 08:05:39,860 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/mobile_dashboard_widget_reports.xml
+2025-11-15 08:05:39,867 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/mobile_photo_reports.xml
+2025-11-15 08:05:39,874 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/pickup_request_item_reports.xml
+2025-11-15 08:05:39,880 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/pickup_request_line_reports.xml
+2025-11-15 08:05:39,886 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/pickup_request_reports.xml
+2025-11-15 08:05:39,893 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/pickup_route_reports.xml
+2025-11-15 08:05:39,900 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/pickup_route_stop_reports.xml
+2025-11-15 08:05:39,906 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/portal_feedback_action_reports.xml
+2025-11-15 08:05:39,912 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/portal_feedback_analytic_reports.xml
+2025-11-15 08:05:39,919 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/portal_feedback_communication_reports.xml
+2025-11-15 08:05:39,925 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/portal_feedback_escalation_reports.xml
+2025-11-15 08:05:39,932 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/portal_feedback_reports.xml
+2025-11-15 08:05:39,938 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/portal_feedback_resolution_reports.xml
+2025-11-15 08:05:39,945 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/portal_request_line_reports.xml
+2025-11-15 08:05:39,951 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/portal_request_reports.xml
+2025-11-15 08:05:39,958 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/processing_log_reports.xml
+2025-11-15 08:05:39,964 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/product_container_type_reports.xml
+2025-11-15 08:05:39,971 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/product_product_reports.xml
+2025-11-15 08:05:39,977 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/additional_reports.xml
+2025-11-15 08:05:39,999 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/approval_history_reports.xml
+2025-11-15 08:05:40,006 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/description_reports.xml
+2025-11-15 08:05:40,012 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_access_log_reports.xml
+2025-11-15 08:05:40,019 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_approval_step_reports.xml
+2025-11-15 08:05:40,025 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_approval_workflow_line_reports.xml
+2025-11-15 08:05:40,031 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_approval_workflow_reports.xml
+2025-11-15 08:05:40,038 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_audit_log_reports.xml
+2025-11-15 08:05:40,044 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_billing_config_reports.xml
+2025-11-15 08:05:40,051 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_billing_rate_reports.xml
+2025-11-15 08:05:40,057 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_billing_reports.xml
+2025-11-15 08:05:40,064 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_category_reports.xml
+2025-11-15 08:05:40,071 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_container_content_line_reports.xml
+2025-11-15 08:05:40,077 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_container_line_reports.xml
+2025-11-15 08:05:40,084 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_container_log_reports.xml
+2025-11-15 08:05:40,090 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_container_movement_reports.xml
+2025-11-15 08:05:40,097 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_container_reports.xml
+2025-11-15 08:05:40,103 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_container_transfer_line_reports.xml
+2025-11-15 08:05:40,110 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_container_transfer_reports.xml
+2025-11-15 08:05:40,116 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_container_type_reports.xml
+2025-11-15 08:05:40,123 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_deletion_request_reports.xml
+2025-11-15 08:05:40,129 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_department_billing_approval_reports.xml
+2025-11-15 08:05:40,136 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_department_billing_contact_reports.xml
+2025-11-15 08:05:40,142 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_department_reports.xml
+2025-11-15 08:05:40,149 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_destruction_job_reports.xml
+2025-11-15 08:05:40,155 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_destruction_line_reports.xml
+2025-11-15 08:05:40,162 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_destruction_reports.xml
+2025-11-15 08:05:40,168 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_document_reports.xml
+2025-11-15 08:05:40,175 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_document_type_reports.xml
+2025-11-15 08:05:40,181 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_policy_version_reports.xml
+2025-11-15 08:05:40,188 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_promotional_discount_reports.xml
+2025-11-15 08:05:40,195 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_request_line_reports.xml
+2025-11-15 08:05:40,201 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_request_reports.xml
+2025-11-15 08:05:40,208 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_request_type_reports.xml
+2025-11-15 08:05:40,214 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_retention_policy_reports.xml
+2025-11-15 08:05:40,221 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_retention_policy_version_reports.xml
+2025-11-15 08:05:40,227 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_retention_rule_reports.xml
+2025-11-15 08:05:40,234 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_retrieval_order_reports.xml
+2025-11-15 08:05:40,241 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_retrieval_work_order_reports.xml
+2025-11-15 08:05:40,247 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_security_audit_reports.xml
+2025-11-15 08:05:40,254 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_series_reports.xml
+2025-11-15 08:05:40,260 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_service_type_reports.xml
+2025-11-15 08:05:40,267 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_storage_box_reports.xml
+2025-11-15 08:05:40,273 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_tag_category_reports.xml
+2025-11-15 08:05:40,280 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_tag_reports.xml
+2025-11-15 08:05:40,286 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/records_usage_tracking_reports.xml
+2025-11-15 08:05:40,293 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/revenue_analytic_reports.xml
+2025-11-15 08:05:40,299 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/revenue_forecast_line_reports.xml
+2025-11-15 08:05:40,306 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/revenue_forecast_reports.xml
+2025-11-15 08:05:40,313 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/revenue_forecaster_reports.xml
+2025-11-15 08:05:40,319 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/shred_bin_reports.xml
+2025-11-15 08:05:40,326 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/shredding_bin_reports.xml
+2025-11-15 08:05:40,333 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/shredding_certificate_reports.xml
+2025-11-15 08:05:40,339 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/shredding_inventory_batch_reports.xml
+2025-11-15 08:05:40,346 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/shredding_rate_reports.xml
+2025-11-15 08:05:40,352 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/shredding_service_bin_reports.xml
+2025-11-15 08:05:40,359 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/shredding_service_event_reports.xml
+2025-11-15 08:05:40,365 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/shredding_service_log_reports.xml
+2025-11-15 08:05:40,372 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/shredding_service_photo_reports.xml
+2025-11-15 08:05:40,378 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/shredding_service_reports.xml
+2025-11-15 08:05:40,385 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/shredding_team_reports.xml
+2025-11-15 08:05:40,391 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/survey_feedback_theme_reports.xml
+2025-11-15 08:05:40,398 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/survey_improvement_action_reports.xml
+2025-11-15 08:05:40,404 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/system_diagram_data_reports.xml
+2025-11-15 08:05:40,411 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/visitor_reports.xml
+2025-11-15 08:05:40,422 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/work_order_coordinator_reports.xml
+2025-11-15 08:05:40,429 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/work_order_retrieval_reports.xml
+2025-11-15 08:05:40,435 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/work_order_shredding_reports.xml
+2025-11-15 08:05:40,447 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/report/report_records_management_report_customer_inventory_report.xml
+2025-11-15 08:05:40,453 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/feedback_survey_data.xml
+2025-11-15 08:05:40,570 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/intelligent_search_indexes_data.xml
+2025-11-15 08:05:40,580 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/data/tag_data.xml
+2025-11-15 08:05:40,607 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/field_label_helper_wizard_views.xml
+2025-11-15 08:05:40,624 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_quick_add_wizard_views.xml
+2025-11-15 08:05:40,633 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_assign_barcode_wizard_views.xml
+2025-11-15 08:05:40,641 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_indexing_wizard_views.xml
+2025-11-15 08:05:40,655 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/report_window_actions_views.xml
+2025-11-15 08:05:40,686 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/customer_inventory_report_wizard_views.xml
+2025-11-15 08:05:40,694 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/hard_drive_scan_wizard_views.xml
+2025-11-15 08:05:40,704 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/location_report_wizard_views.xml
+2025-11-15 08:05:40,718 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/paper_bale_inspection_wizard_views.xml
+2025-11-15 08:05:40,732 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/paper_bale_weigh_wizard_views.xml
+2025-11-15 08:05:40,740 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/permanent_flag_wizard_views.xml
+2025-11-15 08:05:40,750 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/pickup_schedule_wizard_views.xml
+2025-11-15 08:05:40,764 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/processing_log_resolution_wizard_views.xml
+2025-11-15 08:05:40,778 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/rate_change_confirmation_wizard_views.xml
+2025-11-15 08:05:40,792 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_type_converter_wizard_views.xml
+2025-11-15 08:05:40,806 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_document_flag_permanent_wizard_views.xml
+2025-11-15 08:05:40,813 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_document_bulk_upload_wizard_views.xml
+2025-11-15 08:05:40,826 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/document_upload_wizard_views.xml
+2025-11-15 08:05:40,835 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_location_report_wizard_views.xml
+2025-11-15 08:05:40,849 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_permanent_flag_wizard_views.xml
+2025-11-15 08:05:40,866 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_user_invitation_wizard_views.xml
+2025-11-15 08:05:40,873 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_bin_barcode_wizard_views.xml
+2025-11-15 08:05:40,889 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/temp_inventory_reject_wizard_views.xml
+2025-11-15 08:05:40,902 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/visitor_pos_wizard_views.xml
+2025-11-15 08:05:40,927 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/work_order_bin_assignment_wizard_views.xml
+2025-11-15 08:05:40,941 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_digital_scan_views.xml
+2025-11-15 08:05:40,956 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/pickup_request_views.xml
+2025-11-15 08:05:40,961 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_audit_log_views.xml
+2025-11-15 08:05:40,983 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_audit_verification_wizard_views.xml
+2025-11-15 08:05:40,989 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_compliance_checklist_item_views.xml
+2025-11-15 08:05:41,002 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_compliance_checklist_views.xml
+2025-11-15 08:05:41,018 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_compliance_policy_views.xml
+2025-11-15 08:05:41,031 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_custody_views.xml
+2025-11-15 08:05:41,051 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_compliance_views.xml
+2025-11-15 08:05:41,086 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/bin_unlock_service_views.xml
+2025-11-15 08:05:41,153 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/approval_history_views.xml
+2025-11-15 08:05:41,166 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/advanced_billing_line_form_views.xml
+2025-11-15 08:05:41,176 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/advanced_billing_line_search_views.xml
+2025-11-15 08:05:41,180 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/advanced_billing_line_tree_views.xml
+2025-11-15 08:05:41,187 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/barcode_generation_history_views.xml
+2025-11-15 08:05:41,201 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/barcode_models_enhanced_views.xml
+2025-11-15 08:05:41,215 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/barcode_pricing_tier_views.xml
+2025-11-15 08:05:41,229 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/barcode_product_views.xml
+2025-11-15 08:05:41,260 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/barcode_seasonal_pricing_views.xml
+2025-11-15 08:05:41,271 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/barcode_storage_box_views.xml
+2025-11-15 08:05:41,286 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/customer_negotiated_rate_views.xml
+2025-11-15 08:05:41,298 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/base_rate_views.xml
+2025-11-15 08:05:41,343 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/billing_period_views.xml
+2025-11-15 08:05:41,355 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/chain_of_custody_views.xml
+2025-11-15 08:05:41,379 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_retrieval_views.xml
+2025-11-15 08:05:41,391 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/customer_feedback_views.xml
+2025-11-15 08:05:41,408 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/customer_inventory_report_views.xml
+2025-11-15 08:05:41,428 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/destruction_event_views.xml
+2025-11-15 08:05:41,444 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/destruction_certificate_views.xml
+2025-11-15 08:05:41,469 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/inventory_item_destruction_views.xml
+2025-11-15 08:05:41,483 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/location_group_views.xml
+2025-11-15 08:05:41,496 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/maintenance_request_views.xml
+2025-11-15 08:05:41,518 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_certificate_views.xml
+2025-11-15 08:05:41,536 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/paper_bale_inspection_views.xml
+2025-11-15 08:05:41,551 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/paper_bale_line_views.xml
+2025-11-15 08:05:41,566 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/paper_bale_movement_views.xml
+2025-11-15 08:05:41,580 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/paper_bale_recycling_views.xml
+2025-11-15 08:05:41,601 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/paper_bale_views.xml
+2025-11-15 08:05:41,626 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/paper_model_bale_views.xml
+2025-11-15 08:05:41,644 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/payment_split_views.xml
+2025-11-15 08:05:41,657 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/payment_split_line_views.xml
+2025-11-15 08:05:41,672 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/pickup_route_views.xml
+2025-11-15 08:05:41,700 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/portal_feedback_views.xml
+2025-11-15 08:05:41,720 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/portal_request_line_views.xml
+2025-11-15 08:05:41,734 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/product_template_views.xml
+2025-11-15 08:05:41,765 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_approval_workflow_views.xml
+2025-11-15 08:05:41,778 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_audit_log_views.xml
+2025-11-15 08:05:41,794 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_center_location_views.xml
+2025-11-15 08:05:41,809 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_content_views.xml
+2025-11-15 08:05:41,822 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_line_views.xml
+2025-11-15 08:05:41,837 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_log_views.xml
+2025-11-15 08:05:41,850 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_movement_views.xml
+2025-11-15 08:05:41,870 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_transfer_views.xml
+2025-11-15 08:05:41,883 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_customer_billing_profile_views.xml
+2025-11-15 08:05:41,896 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_deletion_request_enhanced_views.xml
+2025-11-15 08:05:41,913 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_department_billing_contact_views.xml
+2025-11-15 08:05:41,944 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_department_views.xml
+2025-11-15 08:05:41,973 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_destruction_job_views.xml
+2025-11-15 08:05:41,986 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_destruction_line_views.xml
+2025-11-15 08:05:41,999 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_destruction_views.xml
+2025-11-15 08:05:42,014 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_document_type_views.xml
+2025-11-15 08:05:42,042 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_document_views.xml
+2025-11-15 08:05:42,075 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_document_bulk_upload_views.xml
+2025-11-15 08:05:42,094 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_document_field_label_helper_views.xml
+2025-11-15 08:05:42,102 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_installer_views.xml
+2025-11-15 08:05:42,115 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_inventory_dashboard_views.xml
+2025-11-15 08:05:42,129 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_location_inspection_line_views.xml
+2025-11-15 08:05:42,142 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_location_inspection_views.xml
+2025-11-15 08:05:42,155 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_location_views.xml
+2025-11-15 08:05:42,185 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_management_bale_views.xml
+2025-11-15 08:05:42,198 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_policy_version_views.xml
+2025-11-15 08:05:42,212 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_promotional_discount_views.xml
+2025-11-15 08:05:42,225 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_retention_rule_views.xml
+2025-11-15 08:05:42,238 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_service_type_views.xml
+2025-11-15 08:05:42,252 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_tag_category_views.xml
+2025-11-15 08:05:42,265 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_tag_views.xml
+2025-11-15 08:05:42,278 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_service_photo_views.xml
+2025-11-15 08:05:42,293 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/document_retrieval_metrics_views.xml
+2025-11-15 08:05:42,308 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/revenue_forecast_line_views.xml
+2025-11-15 08:05:42,332 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/revenue_forecast_views.xml
+2025-11-15 08:05:42,345 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/revenue_forecaster_views.xml
+2025-11-15 08:05:42,360 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shred_model_bin_views.xml
+2025-11-15 08:05:42,378 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_certificate_views.xml
+2025-11-15 08:05:42,392 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_hard_drive_views.xml
+2025-11-15 08:05:42,430 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_inventory_batch_views.xml
+2025-11-15 08:05:42,444 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_service_bin_views.xml
+2025-11-15 08:05:42,470 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_service_event_views.xml
+2025-11-15 08:05:42,485 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_service_views.xml
+2025-11-15 08:05:42,507 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_team_views.xml
+2025-11-15 08:05:42,522 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/stock_lot_views.xml
+2025-11-15 08:05:42,547 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/survey_feedback_theme_views.xml
+2025-11-15 08:05:42,561 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/survey_improvement_action_views.xml
+2025-11-15 08:05:42,577 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/work_order_coordinator_views.xml
+2025-11-15 08:05:42,609 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/workflow_visualization_manager_views.xml
+2025-11-15 08:05:42,624 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_views.xml
+2025-11-15 08:05:42,671 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_field_label_helper_views.xml
+2025-11-15 08:05:42,678 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_billing_config_views.xml
+2025-11-15 08:05:42,727 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/portal_request_views.xml
+2025-11-15 08:05:42,752 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/bin_key_views.xml
+2025-11-15 08:05:42,773 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/portal_feedback_analytic_views.xml
+2025-11-15 08:05:42,789 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/res_partner_key_restriction_views.xml
+2025-11-15 08:05:42,808 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/res_users_records_profile_views.xml
+2025-11-15 08:05:42,827 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_retrieval_work_order_views.xml
+2025-11-15 08:05:42,849 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/barcode_operation_buttons.xml
+2025-11-15 08:05:42,882 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/barcode_standard_commands_buttons.xml
+2025-11-15 08:05:42,923 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/account_move_line_views.xml
+2025-11-15 08:05:43,052 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/bin_key_history_views.xml
+2025-11-15 08:05:43,070 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/certificate_template_data_views.xml
+2025-11-15 08:05:43,081 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_access_work_order_views.xml
+2025-11-15 08:05:43,096 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_content_views.xml
+2025-11-15 08:05:43,109 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_destruction_work_order_views.xml
+2025-11-15 08:05:43,125 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_retrieval_item_views.xml
+2025-11-15 08:05:43,126 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_retrieval_work_order_views.xml
+2025-11-15 08:05:43,126 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/customer_category_views.xml
+2025-11-15 08:05:43,139 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/customer_inventory_line_views.xml
+2025-11-15 08:05:43,149 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/customer_inventory_report_line_views.xml
+2025-11-15 08:05:43,160 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/customer_inventory_views.xml
+2025-11-15 08:05:43,176 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/customer_negotiated_rates_views.xml
+2025-11-15 08:05:43,177 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/description_views.xml
+2025-11-15 08:05:43,187 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/destruction_item_views.xml
+2025-11-15 08:05:43,197 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/discount_rule_views.xml
+2025-11-15 08:05:43,209 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/display_name_views.xml
+2025-11-15 08:05:43,221 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/document_retrieval_item_views.xml
+2025-11-15 08:05:43,240 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/document_retrieval_team_views.xml
+2025-11-15 08:05:43,264 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/feedback_improvement_area_views.xml
+2025-11-15 08:05:43,278 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/file_retrieval_item_views.xml
+2025-11-15 08:05:43,291 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/google_maps_assets.xml
+2025-11-15 08:05:43,295 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/hr_employee_views.xml
+2025-11-15 08:05:43,342 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/inventory_item_destruction_line_views.xml
+2025-11-15 08:05:43,357 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/inventory_item_retrieval_views.xml
+2025-11-15 08:05:43,372 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/invoice_generation_log_views.xml
+2025-11-15 08:05:43,386 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/key_inventory_views.xml
+2025-11-15 08:05:43,401 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/load_views.xml
+2025-11-15 08:05:43,436 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/maintenance_equipment_views.xml
+2025-11-15 08:05:43,460 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/maintenance_team_views.xml
+2025-11-15 08:05:43,461 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/media_type_views.xml
+2025-11-15 08:05:43,473 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/mobile_dashboard_widget_views.xml
+2025-11-15 08:05:43,486 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/mobile_photo_views.xml
+2025-11-15 08:05:43,501 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_certificate_item_views.xml
+2025-11-15 08:05:43,513 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_compliance_action_plan_views.xml
+2025-11-15 08:05:43,525 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_compliance_alert_views.xml
+2025-11-15 08:05:43,537 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_custody_event_views.xml
+2025-11-15 08:05:43,549 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_destruction_record_views.xml
+2025-11-15 08:05:43,561 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_operator_certification_views.xml
+2025-11-15 08:05:43,575 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_performance_history_views.xml
+2025-11-15 08:05:43,588 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_risk_assessment_views.xml
+2025-11-15 08:05:43,600 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/partner_bin_key_views.xml
+2025-11-15 08:05:43,612 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/partner_rate_management_extension.xml
+2025-11-15 08:05:43,631 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/photo_views.xml
+2025-11-15 08:05:43,643 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/pickup_location_views.xml
+2025-11-15 08:05:43,657 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/pickup_request_item_views.xml
+2025-11-15 08:05:43,669 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/pickup_request_line_views.xml
+2025-11-15 08:05:43,681 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/pickup_route_stop_views.xml
+2025-11-15 08:05:43,703 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/portal_feedback_action_views.xml
+2025-11-15 08:05:43,716 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/portal_feedback_communication_views.xml
+2025-11-15 08:05:43,728 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/portal_feedback_escalation_views.xml
+2025-11-15 08:05:43,740 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/portal_feedback_resolution_views.xml
+2025-11-15 08:05:43,752 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/portal_technician_certifications.xml
+2025-11-15 08:05:43,756 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/pos_config_views.xml
+2025-11-15 08:05:43,767 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/processing_log_views.xml
+2025-11-15 08:05:43,779 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/product_container_type_views.xml
+2025-11-15 08:05:43,791 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/product_product_views.xml
+2025-11-15 08:05:43,791 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/product_product_views_fixed.xml
+2025-11-15 08:05:43,792 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/project_task_views.xml
+2025-11-15 08:05:43,793 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_access_log_views.xml
+2025-11-15 08:05:43,806 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_approval_step_views.xml
+2025-11-15 08:05:43,818 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_approval_workflow_line_views.xml
+2025-11-15 08:05:43,830 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_billing_line_views.xml
+2025-11-15 08:05:43,842 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_billing_rate_views.xml
+2025-11-15 08:05:43,856 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_content_line_views.xml
+2025-11-15 08:05:43,869 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_transfer_line_views.xml
+2025-11-15 08:05:43,881 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_type_views.xml
+2025-11-15 08:05:43,894 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_deletion_request_views.xml
+2025-11-15 08:05:43,907 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_security_audit_views.xml
+2025-11-15 08:05:43,919 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_survey_user_input_views.xml
+2025-11-15 08:05:43,934 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_usage_tracking_views.xml
+2025-11-15 08:05:43,946 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/required_document_views.xml
+2025-11-15 08:05:43,958 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/res_config_settings_views.xml
+2025-11-15 08:05:43,959 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/res_partner_views.xml
+2025-11-15 08:05:43,960 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/retrieval_item_base_views.xml
+2025-11-15 08:05:43,972 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/retrieval_metric_views.xml
+2025-11-15 08:05:43,984 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/revenue_analytic_views.xml
+2025-11-15 08:05:43,996 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/route_optimizer_views.xml
+2025-11-15 08:05:44,009 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/scan_digital_asset_views.xml
+2025-11-15 08:05:44,021 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/scan_retrieval_item_views.xml
+2025-11-15 08:05:44,032 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/scan_retrieval_views.xml
+2025-11-15 08:05:44,044 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/scan_retrieval_work_order_views.xml
+2025-11-15 08:05:44,045 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/service_item_views.xml
+2025-11-15 08:05:44,097 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_bin_views.xml
+2025-11-15 08:05:44,109 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_rate_views.xml
+2025-11-15 08:05:44,121 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_service_log_views.xml
+2025-11-15 08:05:44,133 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/signed_document_audit_views.xml
+2025-11-15 08:05:44,145 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/signed_document_views.xml
+2025-11-15 08:05:44,158 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/stock_lot_attribute_option_views.xml
+2025-11-15 08:05:44,170 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/stock_lot_attribute_value_views.xml
+2025-11-15 08:05:44,183 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/stock_lot_attribute_views.xml
+2025-11-15 08:05:44,195 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/stock_picking_records_extension_views.xml
+2025-11-15 08:05:44,207 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/transitory_item_views.xml
+2025-11-15 08:05:44,219 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/unlock_service_history_views.xml
+2025-11-15 08:05:44,220 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/unlock_service_part_views.xml
+2025-11-15 08:05:44,232 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/visitor_views.xml
+2025-11-15 08:05:44,244 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/wizard_template_views.xml
+2025-11-15 08:05:44,256 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/work_order_dashboard_views.xml
+2025-11-15 08:05:44,284 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/work_order_retrieval_views.xml
+2025-11-15 08:05:44,317 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/work_order_shredding_views.xml
+2025-11-15 08:05:44,355 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_management_root_menus.xml
+2025-11-15 08:05:44,442 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/advanced_billing_contact_views.xml
+2025-11-15 08:05:44,459 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/advanced_billing_line_actions_menus.xml
+2025-11-15 08:05:44,472 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/advanced_billing_profile_views.xml
+2025-11-15 08:05:44,494 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/barcode_menus.xml
+2025-11-15 08:05:44,500 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/base_rates_views.xml
+2025-11-15 08:05:44,521 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/bin_barcode_inventory_views.xml
+2025-11-15 08:05:44,569 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/bin_issue_report_wizard_views.xml
+2025-11-15 08:05:44,605 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/bin_key_unlock_service_views.xml
+2025-11-15 08:05:44,627 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/chain_of_custody_event_views.xml
+2025-11-15 08:05:44,651 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_access_activity_views.xml
+2025-11-15 08:05:44,664 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_access_document_views.xml
+2025-11-15 08:05:44,684 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_access_photo_views.xml
+2025-11-15 08:05:44,703 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_access_report_views.xml
+2025-11-15 08:05:44,720 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/container_access_visitor_views.xml
+2025-11-15 08:05:44,733 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/custody_transfer_event_views.xml
+2025-11-15 08:05:44,750 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/custom_box_volume_calculator_views.xml
+2025-11-15 08:05:44,769 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/customer_portal_diagram_views.xml
+2025-11-15 08:05:44,797 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/departmental_billing_menus.xml
+2025-11-15 08:05:44,801 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/document_search_attempt_views.xml
+2025-11-15 08:05:44,815 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/enhanced_features_menus.xml
+2025-11-15 08:05:44,844 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/file_retrieval_views.xml
+2025-11-15 08:05:44,859 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/full_customization_name_view_form.xml
+2025-11-15 08:05:44,873 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/full_customization_name_views.xml
+2025-11-15 08:05:44,892 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/hard_drive_scan_wizard_line_views.xml
+2025-11-15 08:05:44,904 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/inventory_adjustment_reason_views.xml
+2025-11-15 08:05:44,920 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/inventory_item_location_transfer_views.xml
+2025-11-15 08:05:44,933 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/inventory_item_profile_views.xml
+2025-11-15 08:05:44,950 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/inventory_item_retrieval_line_views.xml
+2025-11-15 08:05:44,968 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/inventory_item_type_views.xml
+2025-11-15 08:05:44,984 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/inventory_item_views.xml
+2025-11-15 08:05:45,002 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/ir_model_views.xml
+2025-11-15 08:05:45,015 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/ir_ui_view_views.xml
+2025-11-15 08:05:45,027 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/key_restriction_checker_views.xml
+2025-11-15 08:05:45,039 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/mobile_bin_key_wizard_views.xml
+2025-11-15 08:05:45,054 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_audit_requirement_views.xml
+2025-11-15 08:05:45,087 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/naid_certification_views.xml
+2025-11-15 08:05:45,120 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/paper_load_shipment_views.xml
+2025-11-15 08:05:45,153 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/photo_menus.xml
+2025-11-15 08:05:45,159 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/pickup_location_view_forms.xml
+2025-11-15 08:05:45,177 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/portal_access_views.xml
+2025-11-15 08:05:45,222 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/portal_feedback_menus.xml
+2025-11-15 08:05:45,229 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_billing_views.xml
+2025-11-15 08:05:45,248 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_bulk_user_import_views.xml
+2025-11-15 08:05:45,265 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_category_views.xml
+2025-11-15 08:05:45,284 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_container_type_converter_views.xml
+2025-11-15 08:05:45,294 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_department_billing_approval_views.xml
+2025-11-15 08:05:45,321 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_management_dashboard_views.xml
+2025-11-15 08:05:45,338 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_request_line_views.xml
+2025-11-15 08:05:45,355 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_request_type_views.xml
+2025-11-15 08:05:45,368 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_request_views.xml
+2025-11-15 08:05:45,387 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_retention_policy_version_views.xml
+2025-11-15 08:05:45,409 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_retention_policy_views.xml
+2025-11-15 08:05:45,438 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_retrieval_order_views.xml
+2025-11-15 08:05:45,462 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_saved_search_views.xml
+2025-11-15 08:05:45,479 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_series_views.xml
+2025-11-15 08:05:45,495 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_storage_box_views.xml
+2025-11-15 08:05:45,513 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_storage_department_user_views.xml
+2025-11-15 08:05:45,534 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_work_vehicle_views.xml
+2025-11-15 08:05:45,569 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/rm_module_configurator_views.xml
+2025-11-15 08:05:45,600 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shred_bin_views.xml
+2025-11-15 08:05:45,637 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/shredding_inventory_views.xml
+2025-11-15 08:05:45,667 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/stock_move_sms_validation_views.xml
+2025-11-15 08:05:45,684 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/system_diagram_data_views.xml
+2025-11-15 08:05:45,754 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/system_flowchart_wizard_views.xml
+2025-11-15 08:05:45,767 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/temp_inventory_views.xml
+2025-11-15 08:05:45,808 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/transitory_field_config_views.xml
+2025-11-15 08:05:45,889 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_management_menus.xml
+2025-11-15 08:05:46,083 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/service_item_menus.xml
+2025-11-15 08:05:46,150 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/document_retrieval_menus.xml
+2025-11-15 08:05:46,156 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/views/records_retrieval_work_order_menus.xml
+2025-11-15 08:05:46,160 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_overview.xml
+2025-11-15 08:05:46,169 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_dashboards.xml
+2025-11-15 08:05:46,174 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_home_preconfigured.xml
+2025-11-15 08:05:46,193 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_access_templates.xml
+2025-11-15 08:05:46,206 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_errors.xml
+2025-11-15 08:05:46,213 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/my_portal_inventory.xml
+2025-11-15 08:05:46,242 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_inventory_tabs.xml
+2025-11-15 08:05:46,259 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_inventory_detail.xml
+2025-11-15 08:05:46,273 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_inventory_template.xml
+2025-11-15 08:05:46,288 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/advanced_search_templates.xml
+2025-11-15 08:05:46,298 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_containers.xml
+2025-11-15 08:05:46,306 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_containers_list.xml
+2025-11-15 08:05:46,320 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_container_create.xml
+2025-11-15 08:05:46,329 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_documents.xml
+2025-11-15 08:05:46,342 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_document_retrieval.xml
+2025-11-15 08:05:46,363 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_document_bulk_upload.xml
+2025-11-15 08:05:46,369 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_barcode_template.xml
+2025-11-15 08:05:46,373 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_barcode_templates.xml
+2025-11-15 08:05:46,382 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_barcode_row.xml
+2025-11-15 08:05:46,386 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_centralized_docs.xml
+2025-11-15 08:05:46,402 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_requests_template.xml
+2025-11-15 08:05:46,413 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_pickup_request_create.xml
+2025-11-15 08:05:46,419 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_destruction_request_create.xml
+2025-11-15 08:05:46,425 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_work_order_templates.xml
+2025-11-15 08:05:46,457 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_workflow_template.xml
+2025-11-15 08:05:46,465 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_billing_template.xml
+2025-11-15 08:05:46,473 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_quote_template.xml
+2025-11-15 08:05:46,484 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_invoice_template.xml
+2025-11-15 08:05:46,491 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_certifications.xml
+2025-11-15 08:05:46,500 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_certificates.xml
+2025-11-15 08:05:46,508 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_certificate_templates.xml
+2025-11-15 08:05:46,515 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_reports.xml
+2025-11-15 08:05:46,520 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_locations.xml
+2025-11-15 08:05:46,527 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_organization_diagram.xml
+2025-11-15 08:05:46,544 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_feedback.xml
+2025-11-15 08:05:46,549 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_feedback_template.xml
+2025-11-15 08:05:46,558 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_mobile_template.xml
+2025-11-15 08:05:46,564 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_mobile_inventory_template.xml
+2025-11-15 08:05:46,570 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_mobile_export.xml
+2025-11-15 08:05:46,576 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_mobile_settings.xml
+2025-11-15 08:05:46,583 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/templates/portal_template_aliases.xml
+2025-11-15 08:05:46,601 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: Module records_management: loading demo
+2025-11-15 08:05:46,601 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/demo/customer_inventory_demo.xml
+2025-11-15 08:05:47,342 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/demo/model_records_demo.xml
+2025-11-15 08:05:47,537 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.models.shredding_service: Created shredding service: Standard Document Shredding
+2025-11-15 08:05:47,542 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.models.shredding_service: Created shredding service: Offsite Document Shredding
+2025-11-15 08:05:47,602 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/demo/field_label_demo_data.xml
+2025-11-15 08:05:47,622 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/demo/intelligent_search_demo_data.xml
+2025-11-15 08:05:47,785 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: loading records_management/demo/records_config_mail_templates_data.xml
+2025-11-15 08:05:47,793 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.post_init_hooks: Running Records Management post-init hook for Odoo 19...
+2025-11-15 08:05:47,793 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.post_init_hooks: 🔧 Assigning admin users to Settings groups...
+2025-11-15 08:05:47,796 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.models.res_users: 🔧 Found 2 admin users to process: ['demo', 'admin']
+2025-11-15 08:05:47,796 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.models.res_users:   Adding demo to Records Admin group
+2025-11-15 08:05:48,077 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.models.res_users: ✅ Successfully assigned groups to demo
+2025-11-15 08:05:48,077 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.models.res_users:   Adding admin to Records Admin group
+2025-11-15 08:05:48,103 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.models.res_users: ✅ Successfully assigned groups to admin
+2025-11-15 08:05:48,103 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.post_init_hooks: ✅ Admin users assigned to Settings groups
+2025-11-15 08:05:48,127 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.post_init_hooks: ✅ Added admin user to NAID compliance officer group
+2025-11-15 08:05:48,127 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.post_init_hooks: ✅ Model records.container loaded successfully
+2025-11-15 08:05:48,127 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.post_init_hooks: ✅ Model records.document loaded successfully
+2025-11-15 08:05:48,127 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.post_init_hooks: ✅ Model naid.audit.log loaded successfully
+2025-11-15 08:05:48,127 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.post_init_hooks: ✅ Model chain.of.custody loaded successfully
+2025-11-15 08:05:48,127 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.post_init_hooks: Records Management post-init hook completed successfully
+2025-11-15 08:05:48,378 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: Module records_management loaded in 25.36s, 28953 queries (+28967 other)
+2025-11-15 08:05:48,378 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: 325 modules loaded in 25.36s, 28953 queries (+28967 extra)
+2025-11-15 08:05:49,910 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models.unlink: User #1 deleted ir.model.data records with IDs: [679760]
+2025-11-15 08:05:49,910 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.models.unlink: User #1 deleted ir.model.data records with IDs: [679759]
+2025-11-15 08:05:51,145 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.loading: Modules loaded.
+2025-11-15 08:05:51,167 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.registry: Registry changed, signaling through the database
+2025-11-15 08:05:51,168 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.modules.registry: Registry loaded in 29.297s
+2025-11-15 08:05:51,168 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_module: getting next ir.actions.todo()
+2025-11-15 08:05:51,174 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:05:51] "POST /web/dataset/call_button/ir.module.module/button_immediate_install HTTP/1.0" 200 - 35465 15.702 13.669
+2025-11-15 08:05:51,268 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_http: Generating routing map for key 1
+2025-11-15 08:05:51,780 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:05:51] "GET /odoo HTTP/1.0" 200 - 141 0.051 0.462
+2025-11-15 08:05:51,922 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:05:51] "POST /websocket/on_closed HTTP/1.1" 200 - 13 0.012 0.029
+2025-11-15 08:05:53,088 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/2e87bdf/web.assets_web.css.map (id:3570)
+2025-11-15 08:05:53,089 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Deleting attachments [3541] (matching /web/assets/1/_______/web.assets_web.css.map) because it was replaced with /web/assets/1/2e87bdf/web.assets_web.css.map
+2025-11-15 08:05:53,119 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Cleanup Old Audit Logs' (347) starting
+2025-11-15 08:05:53,139 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.models.records_access_log: Starting cleanup of old access logs older than 365 days
+2025-11-15 08:05:53,141 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Cleanup Old Audit Logs' (347) done in 0.018s
+2025-11-15 08:05:53,144 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Cleanup Old Audit Logs' (347) processed 0 records, 0 records remaining
+2025-11-15 08:05:53,155 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Cleanup Old Audit Logs' (347) completed
+2025-11-15 08:05:53,165 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Equipment Calibration Check' (349) starting
+2025-11-15 08:05:53,169 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/2e87bdf/web.assets_web.css (id:3571)
+2025-11-15 08:05:53,170 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.records_management.models.maintenance_equipment: Found 0 equipment items requiring calibration
+2025-11-15 08:05:53,170 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Deleting attachments [3542] (matching /web/assets/1/_______/web.assets_web.css) because it was replaced with /web/assets/1/2e87bdf/web.assets_web.css
+2025-11-15 08:05:53,170 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Equipment Calibration Check' (349) done in 0.005s
+2025-11-15 08:05:53,201 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Equipment Calibration Check' (349) processed 0 records, 0 records remaining
+2025-11-15 08:05:53,208 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Equipment Calibration Check' (349) completed
+2025-11-15 08:05:53,226 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Required Documents: Expiration Check' (353) starting
+2025-11-15 08:05:53,229 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Required Documents: Expiration Check' (353) done in 0.003s
+2025-11-15 08:05:53,232 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Required Documents: Expiration Check' (353) processed 0 records, 0 records remaining
+2025-11-15 08:05:53,237 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.ir_cron: Job 'Required Documents: Expiration Check' (353) completed
+2025-11-15 08:05:53,276 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:05:53] "GET /web/assets/1/debug/web.assets_web.css HTTP/1.0" 200 - 41 0.114 1.281
+2025-11-15 08:05:53,322 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:05:53] "GET /web/webclient/load_menus/662887c015a80257fe849dd68deb4267de4804711e27f575bf0f91b7fda8c0c8 HTTP/1.0" 200 - 646 1.251 0.177
+2025-11-15 08:05:53,545 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/607836b/web.assets_web.js.map (id:3572)
+2025-11-15 08:05:53,545 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Deleting attachments [3543] (matching /web/assets/1/_______/web.assets_web.js.map) because it was replaced with /web/assets/1/607836b/web.assets_web.js.map
+2025-11-15 08:05:54,451 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/c5dee47/web.assets_tests.js.map (id:3573)
+2025-11-15 08:05:54,452 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Deleting attachments [3544] (matching /web/assets/1/_______/web.assets_tests.js.map) because it was replaced with /web/assets/1/c5dee47/web.assets_tests.js.map
+2025-11-15 08:05:55,260 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/c5dee47/web.assets_tests.js (id:3574)
+2025-11-15 08:05:55,261 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Deleting attachments [3545] (matching /web/assets/1/_______/web.assets_tests.js) because it was replaced with /web/assets/1/c5dee47/web.assets_tests.js
+2025-11-15 08:05:55,398 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:05:55] "GET /web/assets/1/debug/web.assets_tests.js HTTP/1.0" 200 - 26 0.089 0.913
+2025-11-15 08:05:55,792 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/607836b/web.assets_web.js (id:3575)
+2025-11-15 08:05:55,793 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Deleting attachments [3546] (matching /web/assets/1/_______/web.assets_web.js) because it was replaced with /web/assets/1/607836b/web.assets_web.js
+2025-11-15 08:05:56,326 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:05:56] "GET /web/assets/1/debug/web.assets_web.js HTTP/1.0" 200 - 29 0.337 4.084
+2025-11-15 08:05:58,195 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/78b9471/web.assets_web_print.css.map (id:3576)
+2025-11-15 08:05:58,196 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Deleting attachments [3547] (matching /web/assets/1/_______/web.assets_web_print.css.map) because it was replaced with /web/assets/1/78b9471/web.assets_web_print.css.map
+2025-11-15 08:05:58,246 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/78b9471/web.assets_web_print.css (id:3577)
+2025-11-15 08:05:58,247 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 odoo.addons.base.models.assetsbundle: Deleting attachments [3548] (matching /web/assets/1/_______/web.assets_web_print.css) because it was replaced with /web/assets/1/78b9471/web.assets_web_print.css
+2025-11-15 08:05:58,321 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:05:58] "GET /web/assets/1/debug/web.assets_web_print.css HTTP/1.0" 200 - 35 0.064 1.094
+2025-11-15 08:06:04,493 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:06:04] "GET /bus/websocket_worker_bundle?v=18.0-7 HTTP/1.0" 304 - 9 0.003 0.005
+2025-11-15 08:06:04,502 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:06:04] "POST /web/dataset/call_kw/res.users/has_group HTTP/1.0" 200 - 3 0.001 0.002
+2025-11-15 08:06:04,514 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:06:04] "POST /web/dataset/call_kw/res.users/has_group HTTP/1.0" 200 - 3 0.001 0.002
+2025-11-15 08:06:04,527 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:06:04] "POST /web/dataset/call_kw/res.users/has_group HTTP/1.0" 200 - 3 0.001 0.002
+2025-11-15 08:06:04,542 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:06:04] "GET /web/manifest.webmanifest HTTP/1.0" 200 - 9 0.002 0.004
+2025-11-15 08:06:04,578 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:06:04] "POST /mail/data HTTP/1.0" 200 - 41 0.012 0.017
+2025-11-15 08:06:05,082 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:06:05] "POST /websocket/peek_notifications HTTP/1.1" 200 - 12 0.003 0.006
+2025-11-15 08:06:06,105 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:06:06] "POST /websocket/update_bus_presence HTTP/1.1" 200 - 11 0.004 0.015
+2025-11-15 08:06:06,129 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:06:06] "POST /websocket/peek_notifications HTTP/1.1" 200 - 17 0.006 0.017
+2025-11-15 08:06:06,135 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:06:06] "POST /websocket/update_bus_presence HTTP/1.1" 200 - 5 0.001 0.003
+2025-11-15 08:06:06,546 4 INFO john75suncity-ssh-git-github-com-odoo-odoo-git-18-0-25589225 werkzeug: 162.197.186.111 - - [15/Nov/2025 08:06:06] "GET /web/service-worker.js HTTP/1.0" 200 - 2 0.001 0.002

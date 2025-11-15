@@ -662,6 +662,7 @@
         "templates/portal_overview.xml",
         "templates/portal_dashboards.xml",
         "templates/portal_home_preconfigured.xml",
+        "templates/portal_consolidated_menu.xml",  # Consolidated menu structure
         "templates/portal_access_templates.xml",
         "templates/portal_errors.xml",
         # Inventory & Container Templates
@@ -702,6 +703,8 @@
         # Feedback Templates
         "templates/portal_feedback.xml",
         "templates/portal_feedback_template.xml",
+        # Missing Portal Routes Templates (added for menu consolidation)
+        "templates/portal_missing_templates.xml",
         # Mobile Templates
         "templates/portal_mobile_template.xml",
         "templates/portal_mobile_inventory_template.xml",
