@@ -779,6 +779,8 @@
             "records_management/static/src/js/portal/portal_document_retrieval.js",
             # Organization diagram interactive logic (migrated from inline script)
             "records_management/static/src/js/portal/portal_organization_diagram.js",
+            # Grok-Enhanced Portal Interactive Features (AJAX, filtering, mobile optimization)
+            "records_management/static/src/js/portal/portal_interactive.js",
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
             "records_management/static/src/js/portal/customer_portal_diagram.js",

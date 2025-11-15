@@ -2,7 +2,607 @@
 <odoo>
     <data>
         <!-- ================================================================== -->
-        <!-- SERVICE REQUEST TEMPLATES                                          -->
+        <!-- CRITICAL PRIORITY TEMPLATES (Grok-Enhanced UI/UX)                 -->
+        <!-- ================================================================== -->
+        
+        <!-- 1. INVENTORY CONTAINERS LIST -->
+        <template id="portal_inventory_containers_list" name="Portal - Inventory Containers">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'inventory_containers'"/>
+                
+                <div class="container mt-4 o_portal_inventory">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h1><i class="fa fa-box"></i> Inventory - Containers</h1>
+                        <div class="actions">
+                            <a href="/my/request/new/retrieval" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> New Request
+                            </a>
+                            <button class="btn btn-secondary btn-export" data-format="xlsx">
+                                <i class="fa fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter Bar -->
+                    <div class="filter-bar">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <input type="text" name="search" class="form-control search-input" 
+                                           placeholder="Search..." t-att-value="search or ''"/>
+                                </div>
+                                <div class="col-md-3">
+                                    <select name="status" class="form-select">
+                                        <option value="">All Status</option>
+                                        <option value="stored">Stored</option>
+                                        <option value="retrieved">Retrieved</option>
+                                        <option value="pending">Pending</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="date" name="date_from" class="form-control"/>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="date" name="date_to" class="form-control"/>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-purple w-100">
+                                        <i class="fa fa-filter"></i> Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Table -->
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Container ID</th>
+                                    <th>Status</th>
+                                    <th>Location</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="containers">
+                                    <t t-foreach="containers" t-as="container">
+                                        <tr>
+                                            <td><strong t-esc="container.name"/></td>
+                                            <td>
+                                                <span t-att-class="'badge bg-' + ('success' if container.state == 'stored' else 'warning')">
+                                                    <t t-esc="container.state"/>
+                                                </span>
+                                            </td>
+                                            <td t-esc="container.location_id.name if container.location_id else '-'"/>
+                                            <td t-field="container.create_date" t-options="{'widget': 'date'}"/>
+                                            <td>
+                                                <a t-attf-href="/my/inventory/container/{{container.id}}" 
+                                                   class="btn btn-sm btn-info">
+                                                    <i class="fa fa-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">
+                                            <i class="fa fa-inbox fa-3x mb-3"></i>
+                                            <p>No containers found</p>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <t t-if="pager">
+                        <t t-call="portal.pager"/>
+                    </t>
+                    
+                    <div class="spinner-border text-purple d-none" id="loading"></div>
+                </div>
+            </t>
+        </template>
+
+        <!-- 2. INVENTORY FILES LIST -->
+        <template id="portal_inventory_files_list" name="Portal - Inventory Files">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'inventory_files'"/>
+                
+                <div class="container mt-4 o_portal_inventory">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h1><i class="fa fa-folder"></i> Inventory - File Folders</h1>
+                        <div class="actions">
+                            <button class="btn btn-secondary btn-export">
+                                <i class="fa fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Search Bar -->
+                    <div class="filter-bar">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <input type="text" name="search" class="form-control search-input" 
+                                           placeholder="Search file folders..." t-att-value="search or ''"/>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-purple w-100">
+                                        <i class="fa fa-search"></i> Search
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>File ID</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Container</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="files">
+                                    <t t-foreach="files" t-as="file">
+                                        <tr>
+                                            <td t-esc="file.name"/>
+                                            <td t-esc="file.description or '-'"/>
+                                            <td t-esc="file.file_type_id.name if file.file_type_id else '-'"/>
+                                            <td t-esc="file.container_id.name if file.container_id else '-'"/>
+                                            <td>
+                                                <a t-attf-href="/my/inventory/file/{{file.id}}" class="btn btn-sm btn-info">
+                                                    <i class="fa fa-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">
+                                            <i class="fa fa-folder-open fa-3x mb-3"></i>
+                                            <p>No files found</p>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <t t-if="pager">
+                        <t t-call="portal.pager"/>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+        <!-- 3. INVENTORY DOCUMENTS LIST -->
+        <template id="portal_inventory_documents_list" name="Portal - Inventory Documents">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'inventory_documents'"/>
+                
+                <div class="container mt-4 o_portal_inventory">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h1><i class="fa fa-file-alt"></i> Inventory - Physical Documents</h1>
+                        <div class="actions">
+                            <button class="btn btn-secondary btn-export">
+                                <i class="fa fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter Bar with Type Filter -->
+                    <div class="filter-bar">
+                        <form method="get">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" name="search" class="form-control search-input" 
+                                           placeholder="Search documents..."/>
+                                </div>
+                                <div class="col-md-4">
+                                    <select name="doc_type" class="form-select">
+                                        <option value="">All Types</option>
+                                        <t t-if="document_types">
+                                            <t t-foreach="document_types" t-as="dtype">
+                                                <option t-att-value="dtype.id" t-esc="dtype.name"/>
+                                            </t>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-purple w-100">
+                                        <i class="fa fa-filter"></i> Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Document ID</th>
+                                    <th>Type</th>
+                                    <th>Container</th>
+                                    <th>Date Added</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="documents">
+                                    <t t-foreach="documents" t-as="doc">
+                                        <tr>
+                                            <td t-esc="doc.name"/>
+                                            <td t-esc="doc.document_type_id.name if doc.document_type_id else '-'"/>
+                                            <td t-esc="doc.container_id.name if doc.container_id else '-'"/>
+                                            <td t-field="doc.create_date" t-options="{'widget': 'date'}"/>
+                                            <td>
+                                                <a t-attf-href="/my/inventory/document/{{doc.id}}" 
+                                                   class="btn btn-sm btn-info">
+                                                    <i class="fa fa-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">
+                                            <i class="fa fa-file fa-3x mb-3"></i>
+                                            <p>No documents found</p>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <t t-if="pager">
+                        <t t-call="portal.pager"/>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+        <!-- 4. INVENTORY LOCATIONS BROWSER -->
+        <template id="portal_inventory_locations_list" name="Portal - Storage Locations">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'inventory_locations'"/>
+                
+                <div class="container mt-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h1><i class="fa fa-map-marker-alt"></i> Storage Locations</h1>
+                    </div>
+                    
+                    <div class="row">
+                        <t t-if="locations">
+                            <t t-foreach="locations" t-as="location">
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-header bg-primary text-white">
+                                            <h5 class="mb-0">
+                                                <i class="fa fa-warehouse"></i>
+                                                <t t-esc="location.name"/>
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="mb-3">
+                                                <strong>Capacity:</strong>
+                                                <div class="progress mt-2">
+                                                    <div class="progress-bar" role="progressbar" 
+                                                         t-att-style="'width: ' + str(location.capacity_percentage or 0) + '%'"
+                                                         t-att-aria-valuenow="location.capacity_percentage or 0">
+                                                        <t t-esc="location.capacity_percentage or 0"/>%
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p class="mb-2">
+                                                <strong>Containers:</strong> 
+                                                <t t-esc="location.container_count or 0"/>
+                                            </p>
+                                            <p class="mb-0">
+                                                <strong>Type:</strong> 
+                                                <t t-esc="location.location_type or 'Standard'"/>
+                                            </p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a t-attf-href="/my/inventory/location/{{location.id}}" 
+                                               class="btn btn-sm btn-primary w-100">
+                                                <i class="fa fa-eye"></i> View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <div class="col-12">
+                                <div class="alert alert-info text-center">
+                                    <i class="fa fa-info-circle fa-3x mb-3"></i>
+                                    <p>No locations available</p>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- 5. INVENTORY MOVEMENTS TIMELINE -->
+        <template id="portal_inventory_movements_list" name="Portal - Inventory Movements">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'inventory_movements'"/>
+                
+                <div class="container mt-4">
+                    <div class="page-header">
+                        <h1><i class="fa fa-exchange-alt"></i> Inventory Movements History</h1>
+                    </div>
+                    
+                    <!-- Timeline View -->
+                    <div class="timeline">
+                        <t t-if="movements">
+                            <t t-foreach="movements" t-as="movement">
+                                <div class="timeline-item mb-4">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h5 class="card-title">
+                                                        <i class="fa fa-arrow-right text-primary"></i>
+                                                        <t t-esc="movement.name"/>
+                                                    </h5>
+                                                    <p class="mb-1">
+                                                        <strong>From:</strong> <t t-esc="movement.location_id.name if movement.location_id else 'N/A'"/>
+                                                        <i class="fa fa-long-arrow-alt-right mx-2"></i>
+                                                        <strong>To:</strong> <t t-esc="movement.location_dest_id.name if movement.location_dest_id else 'N/A'"/>
+                                                    </p>
+                                                    <p class="mb-0 text-muted">
+                                                        <small>
+                                                            <i class="fa fa-clock"></i>
+                                                            <t t-field="movement.create_date" t-options="{'widget': 'datetime'}"/>
+                                                        </small>
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <span t-att-class="'badge bg-' + ('success' if movement.state == 'done' else 'warning')">
+                                                        <t t-esc="movement.state"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <div class="alert alert-info text-center">
+                                <i class="fa fa-history fa-3x mb-3"></i>
+                                <p>No movement history found</p>
+                            </div>
+                        </t>
+                    </div>
+                    
+                    <t t-if="pager">
+                        <t t-call="portal.pager"/>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+        <!-- 6. DESTRUCTION REQUESTS WITH APPROVAL WORKFLOW -->
+        <template id="portal_destruction_requests" name="Portal - Destruction Requests">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'destruction'"/>
+                
+                <div class="container mt-4">
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h1><i class="fa fa-fire"></i> Destruction Requests</h1>
+                        <div class="actions">
+                            <a href="/my/request/new/destruction" class="btn btn-danger">
+                                <i class="fa fa-plus"></i> New Destruction Request
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Request #</th>
+                                    <th>Date Requested</th>
+                                    <th>Items</th>
+                                    <th>Status</th>
+                                    <th>Certificate</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="destruction_requests">
+                                    <t t-foreach="destruction_requests" t-as="req">
+                                        <tr>
+                                            <td><strong t-esc="req.name"/></td>
+                                            <td t-field="req.create_date" t-options="{'widget': 'date'}"/>
+                                            <td>
+                                                <t t-if="req.container_ids">
+                                                    <t t-esc="len(req.container_ids)"/> container(s)
+                                                </t>
+                                                <t t-else="">0 items</t>
+                                            </td>
+                                            <td>
+                                                <span t-att-class="'badge bg-' + ('success' if req.state == 'done' else 'warning' if req.state == 'pending' else 'secondary')">
+                                                    <t t-esc="req.state"/>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <t t-if="req.certificate_id">
+                                                    <a t-attf-href="/my/certificate/{{req.certificate_id.id}}" 
+                                                       class="btn btn-sm btn-success">
+                                                        <i class="fa fa-certificate"></i> View
+                                                    </a>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="text-muted">Pending</span>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <a t-attf-href="/my/destruction/{{req.id}}" class="btn btn-sm btn-info">
+                                                    <i class="fa fa-eye"></i> Details
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            <i class="fa fa-inbox fa-3x mb-3"></i>
+                                            <p>No destruction requests</p>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- 7. BILLING RATES DISPLAY -->
+        <template id="portal_billing_rates" name="Portal - Service Rates">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'billing_rates'"/>
+                
+                <div class="container mt-4">
+                    <div class="page-header">
+                        <h1><i class="fa fa-dollar-sign"></i> Service Rates &amp; Pricing</h1>
+                    </div>
+                    
+                    <div class="row">
+                        <t t-if="rate_cards">
+                            <t t-foreach="rate_cards" t-as="rate">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-header bg-primary text-white">
+                                            <h5 class="mb-0" t-esc="rate.service_name"/>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="text-primary mb-3">
+                                                $<t t-esc="rate.price"/> <small class="text-muted">/ <t t-esc="rate.unit"/></small>
+                                            </h3>
+                                            <p t-esc="rate.description or 'Standard service rate'"/>
+                                            <ul class="list-unstyled">
+                                                <t t-if="rate.features">
+                                                    <t t-foreach="rate.features" t-as="feature">
+                                                        <li><i class="fa fa-check text-success"></i> <t t-esc="feature"/></li>
+                                                    </t>
+                                                </t>
+                                            </ul>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a href="/my/request/new/service" class="btn btn-primary w-100">
+                                                <i class="fa fa-shopping-cart"></i> Request Service
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <div class="col-12">
+                                <div class="alert alert-info text-center">
+                                    <p>Contact us for current service rates</p>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- 8. REPORTS DASHBOARD -->
+        <template id="portal_reports_dashboard" name="Portal - Reports Dashboard">
+            <t t-call="portal.portal_layout">
+                <t t-set="page_name" t-value="'reports'"/>
+                
+                <div class="container mt-4">
+                    <div class="page-header">
+                        <h1><i class="fa fa-chart-bar"></i> Inventory Reports</h1>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Container Summary Report -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card dashboard-widget">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-box fa-3x text-primary mb-3"></i>
+                                    <h5>Container Summary</h5>
+                                    <p class="text-muted">Complete overview of all containers</p>
+                                    <a href="/records/reports/container-summary" class="btn btn-primary mt-2">
+                                        <i class="fa fa-file-pdf"></i> Generate Report
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Activity Report -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card dashboard-widget">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-chart-line fa-3x text-success mb-3"></i>
+                                    <h5>Activity Report</h5>
+                                    <p class="text-muted">Movement and retrieval history</p>
+                                    <a href="/my/reports/activity" class="btn btn-success mt-2">
+                                        <i class="fa fa-file-excel"></i> Generate Report
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Compliance Report -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card dashboard-widget">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-shield-alt fa-3x text-warning mb-3"></i>
+                                    <h5>Compliance Report</h5>
+                                    <p class="text-muted">NAID AAA certification status</p>
+                                    <a href="/my/reports/compliance" class="btn btn-warning mt-2">
+                                        <i class="fa fa-file-pdf"></i> Generate Report
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Data Export -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card dashboard-widget">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-download fa-3x text-info mb-3"></i>
+                                    <h5>Data Export</h5>
+                                    <p class="text-muted">Export inventory to Excel/CSV</p>
+                                    <a href="/my/reports/export" class="btn btn-info mt-2">
+                                        <i class="fa fa-download"></i> Export Data
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- ================================================================== -->
+        <!-- SERVICE REQUEST TEMPLATES (Original, keeping for compatibility)   -->
         <!-- ================================================================== -->
         
         <template id="portal_request_form" name="Service Request Form">

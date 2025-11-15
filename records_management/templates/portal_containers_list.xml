@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Container List View for Portal Users -->
+    <!-- Container List View for Portal Users - Enhanced with Grok UI/UX -->
     <template id="portal_my_containers" name="My Containers">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
@@ -9,46 +9,134 @@
                 <t t-set="title">My Containers</t>
             </t>
 
-            <div class="container mt-3">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header bg-primary text-white">
-                                <h3 class="mb-0">
-                                    <i class="fa fa-archive"></i> My Container Inventory
-                                    <span class="badge badge-light ml-2" t-esc="container_count"/>
-                                </h3>
+            <div class="container mt-4 o_portal_inventory">
+                <!-- Page Header with Actions (Grok Pattern) -->
+                <div class="page-header d-flex justify-content-between align-items-center">
+                    <h1>
+                        <i class="fa fa-box"></i> My Storage Containers
+                        <span class="badge bg-primary ms-2" t-esc="container_count"/>
+                    </h1>
+                    <div class="actions">
+                        <a href="/my/request/new/retrieval" class="btn btn-primary">
+                            <i class="fa fa-plus"></i> New Request
+                        </a>
+                        <button class="btn btn-secondary btn-export" data-format="xlsx">
+                            <i class="fa fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Bar (Grok Enhanced) -->
+                <div class="filter-bar">
+                    <form method="get">
+                        <div class="row">
+                            <!-- Search Input -->
+                            <div class="col-md-3 mb-2">
+                                <input type="text" 
+                                       name="search" 
+                                       class="form-control search-input" 
+                                       placeholder="Search containers..." 
+                                       t-att-value="search or ''"/>
                             </div>
-                            <div class="card-body">
-                                <!-- Search and Filter Bar -->
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <!-- Advanced Search Form -->
-                                        <form method="get" class="card p-3 bg-light">
-                                            <div class="row">
-                                                <!-- Search Input -->
-                                                <div class="col-md-4 mb-2">
-                                                    <label class="small text-muted">Search Containers</label>
-                                                    <div class="input-group">
-                                                        <input type="text" 
-                                                               name="search" 
-                                                               class="form-control" 
-                                                               placeholder="Name, barcode, department..." 
-                                                               t-att-value="search"/>
-                                                        <div class="input-group-append">
-                                                            <button type="submit" class="btn btn-primary">
-                                                                <i class="fa fa-search"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Status Filter -->
-                                                <div class="col-md-3 mb-2">
-                                                    <label class="small text-muted">Status</label>
-                                                    <select name="filterby" class="form-control" onchange="this.form.submit()">
-                                                        <t t-foreach="searchbar_filters.items()" t-as="filter_item">
-                                                            <t t-set="filter_key" t-value="filter_item[0]"/>
+                            
+                            <!-- Status Filter -->
+                            <div class="col-md-3 mb-2">
+                                <select name="filterby" class="form-select" onchange="this.form.submit()">
+                                    <option value="all">All Status</option>
+                                    <t t-foreach="searchbar_filters or {}" t-as="filter_item">
+                                        <t t-set="filter_key" t-value="filter_item[0]"/>
+                                        <t t-set="filter_label" t-value="filter_item[1].get('label', filter_key)"/>
+                                        <option t-att-value="filter_key" 
+                                                t-att-selected="'selected' if filterby == filter_key else None">
+                                            <t t-esc="filter_label"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            
+                            <!-- Date Range -->
+                            <div class="col-md-2 mb-2">
+                                <input type="date" name="date_from" class="form-control" placeholder="Date From"/>
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <input type="date" name="date_to" class="form-control" placeholder="Date To"/>
+                            </div>
+                            
+                            <div class="col-md-2 mb-2">
+                                <button type="submit" class="btn btn-purple w-100">
+                                    <i class="fa fa-filter"></i> Filter
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Container Table (Responsive) -->
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Container ID</th>
+                                <th>Status</th>
+                                <th>Location</th>
+                                <th>Department</th>
+                                <th>Date Stored</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="containers">
+                                <t t-foreach="containers" t-as="container">
+                                    <tr>
+                                        <td>
+                                            <strong t-esc="container.name"/>
+                                            <br/>
+                                            <small class="text-muted" t-if="container.barcode">
+                                                <i class="fa fa-barcode"></i> <t t-esc="container.barcode"/>
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span t-att-class="'badge bg-' + ('success' if container.state == 'stored' else 'warning')">
+                                                <t t-esc="container.state"/>
+                                            </span>
+                                        </td>
+                                        <td t-esc="container.location_id.name if container.location_id else 'Not Set'"/>
+                                        <td t-esc="container.department_id.name if container.department_id else '-'"/>
+                                        <td t-field="container.create_date" t-options="{'widget': 'date'}"/>
+                                        <td>
+                                            <a t-attf-href="/my/inventory/container/{{container.id}}" 
+                                               class="btn btn-sm btn-info">
+                                                <i class="fa fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        <i class="fa fa-inbox fa-3x mb-3"></i>
+                                        <p>No containers found</p>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <t t-if="pager">
+                    <t t-call="portal.pager"/>
+                </t>
+
+                <!-- Loading Spinner -->
+                <div class="spinner-border text-purple d-none" id="loading" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
                                                             <t t-set="filter_data" t-value="filter_item[1]"/>
                                                             <option t-att-value="filter_key" 
                                                                     t-att-selected="'selected' if filterby == filter_key else None">

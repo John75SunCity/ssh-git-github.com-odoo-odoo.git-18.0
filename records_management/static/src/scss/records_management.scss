@@ -90,3 +90,205 @@
         margin-left: 20px;
     }
 }
+
+// ============================================================================
+// PORTAL CUSTOM STYLES (Grok-Enhanced UI/UX)
+// ============================================================================
+
+// Color Variables
+$primary-purple: #875A7B;
+$light-gray: #f8f9fa;
+$dark-gray: #343a40;
+
+// Purple branding button
+.btn-purple {
+  background-color: $primary-purple;
+  color: white;
+  border: none;
+  
+  &:hover {
+    background-color: darken($primary-purple, 10%);
+    color: white;
+  }
+  
+  &:focus,
+  &:active {
+    background-color: darken($primary-purple, 15%);
+    color: white;
+    box-shadow: 0 0 0 0.2rem rgba($primary-purple, 0.25);
+  }
+}
+
+// Page headers with purple accent
+.page-header {
+  border-bottom: 2px solid lighten($primary-purple, 30%);
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  
+  h1, h2, h3 {
+    color: $primary-purple;
+    
+    i {
+      color: $primary-purple;
+      margin-right: 0.5rem;
+    }
+  }
+  
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+    
+    @media (max-width: 768px) {
+      flex-direction: column;
+      width: 100%;
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Enhanced tables
+.table {
+  th {
+    background-color: lighten($primary-purple, 40%);
+    color: $dark-gray;
+    font-weight: 600;
+    border-bottom: 2px solid $primary-purple;
+  }
+  
+  tbody tr {
+    &:hover {
+      background-color: lighten($primary-purple, 45%);
+    }
+  }
+  
+  // Mobile responsiveness
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+    
+    th, td {
+      padding: 0.5rem;
+    }
+  }
+}
+
+// Loading spinner with purple accent
+.spinner-border.text-purple {
+  color: $primary-purple;
+  width: 3rem;
+  height: 3rem;
+  margin: 2rem auto;
+  display: block;
+}
+
+// Filter bars
+.filter-bar {
+  background-color: $light-gray;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  
+  .form-control,
+  .form-select {
+    border-color: lighten($primary-purple, 20%);
+    
+    &:focus {
+      border-color: $primary-purple;
+      box-shadow: 0 0 0 0.2rem rgba($primary-purple, 0.15);
+    }
+  }
+  
+  // Mobile stacking
+  @media (max-width: 768px) {
+    .row {
+      flex-direction: column;
+      
+      > div {
+        margin-bottom: 0.75rem;
+      }
+    }
+  }
+}
+
+// Dashboard cards/widgets
+.dashboard-widget {
+  .card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-body {
+      text-align: center;
+      
+      h2 {
+        color: $primary-purple;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      p {
+        color: $dark-gray;
+        font-size: 0.95rem;
+        margin: 0;
+      }
+    }
+  }
+}
+
+// Mobile-responsive navigation
+@media (max-width: 768px) {
+  .o_portal_sidebar {
+    display: none;
+  }
+  
+  .o_portal_content {
+    padding: 1rem;
+  }
+  
+  // Touch-friendly targets
+  .btn,
+  .form-control,
+  .form-select,
+  a.btn {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+  
+  // Card layouts (replacing tables)
+  .mobile-card-view {
+    .card {
+      margin-bottom: 1rem;
+      
+      .card-header {
+        background-color: lighten($primary-purple, 40%);
+        font-weight: 600;
+      }
+      
+      .card-body {
+        padding: 1rem;
+        
+        .row {
+          margin-bottom: 0.5rem;
+          
+          &:last-child {
+            margin-bottom: 0;
+          }
+          
+          strong {
+            color: $dark-gray;
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+          }
+        }
+      }
+    }
+  }
+}
