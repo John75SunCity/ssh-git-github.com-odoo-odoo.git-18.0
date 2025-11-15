@@ -104,7 +104,7 @@
                 <field name="usage_count"/>
                 <field name="last_used"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click">
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
@@ -154,7 +154,7 @@
     <!-- Menu Items -->
     <menuitem id="menu_records_saved_search"
               name="Saved Searches"
-              parent="records_management.menu_records_main"
+              parent="records_management.menu_records_operations"
               action="action_records_saved_search"
               sequence="105"/>
 </odoo>
