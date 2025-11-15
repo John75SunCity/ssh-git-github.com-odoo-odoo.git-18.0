@@ -3568,6 +3568,435 @@ class RecordsManagementController(http.Controller):
             return {'success': False, 'error': str(e)}
 
     # ============================================================================
+    # BILLING & REPORTS ROUTES (12 routes)
+    # ============================================================================
+
+    @http.route(['/my/invoices'], type='http', auth='user', website=True)
+    def portal_invoices(self, page=1, date_begin=None, date_end=None, sortby=None, **kw):
+        """List all billing invoices for the portal user."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        domain = [('partner_id', 'child_of', partner.commercial_partner_id.id), ('move_type', 'in', ('out_invoice', 'out_refund'))]
+        
+        # Pagination
+        invoice_count = request.env['account.move'].search_count(domain)
+        pager = request.website.pager(
+            url="/my/invoices",
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby},
+            total=invoice_count,
+            page=page,
+            step=20,
+        )
+        
+        invoices = request.env['account.move'].search(domain, order='invoice_date desc', limit=20, offset=pager['offset'])
+        
+        values.update({
+            'invoices': invoices,
+            'page_name': 'invoices',
+            'pager': pager,
+            'invoice_count': invoice_count,
+        })
+        return request.render('records_management.portal_invoices', values)
+
+    @http.route(['/my/invoices/history'], type='http', auth='user', website=True)
+    def portal_invoices_history(self, page=1, **kw):
+        """View payment history."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        domain = [('partner_id', '=', partner.commercial_partner_id.id)]
+        payment_count = request.env['account.payment'].search_count(domain)
+        
+        pager = request.website.pager(
+            url="/my/invoices/history",
+            total=payment_count,
+            page=page,
+            step=20,
+        )
+        
+        payments = request.env['account.payment'].search(domain, order='date desc', limit=20, offset=pager['offset'])
+        
+        values.update({
+            'payments': payments,
+            'page_name': 'payment_history',
+            'pager': pager,
+        })
+        return request.render('records_management.portal_payment_history', values)
+
+    @http.route(['/my/billing/rates'], type='http', auth='user', website=True)
+    def portal_billing_rates(self, **kw):
+        """View billing rate information."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        # Get rate information for this partner
+        rates = request.env['records.billing.rate'].search([
+            '|',
+            ('partner_id', '=', partner.commercial_partner_id.id),
+            ('partner_id', '=', False)  # General rates
+        ])
+        
+        values.update({
+            'rates': rates,
+            'page_name': 'billing_rates',
+        })
+        return request.render('records_management.portal_billing_rates', values)
+
+    @http.route(['/my/billing/statements'], type='http', auth='user', website=True)
+    def portal_billing_statements(self, page=1, **kw):
+        """Download billing statements."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        statements = request.env['records.billing.statement'].search([
+            ('partner_id', '=', partner.commercial_partner_id.id)
+        ], order='date desc', limit=20)
+        
+        values.update({
+            'statements': statements,
+            'page_name': 'billing_statements',
+        })
+        return request.render('records_management.portal_billing_statements', values)
+
+    @http.route(['/my/reports'], type='http', auth='user', website=True)
+    def portal_reports(self, page=1, **kw):
+        """Inventory reports dashboard."""
+        values = self._prepare_portal_layout_values()
+        user = request.env.user
+        partner = user.partner_id
+        
+        # Department filtering
+        if not user.has_group('records_management.group_portal_company_admin'):
+            accessible_departments = user.accessible_department_ids.ids
+        else:
+            accessible_departments = False
+        
+        values.update({
+            'page_name': 'reports',
+            'accessible_departments': accessible_departments,
+        })
+        return request.render('records_management.portal_reports', values)
+
+    @http.route(['/my/reports/activity'], type='http', auth='user', website=True)
+    def portal_reports_activity(self, page=1, date_begin=None, date_end=None, **kw):
+        """Activity reports."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        domain = [('partner_id', '=', partner.commercial_partner_id.id)]
+        if date_begin:
+            domain.append(('create_date', '>=', date_begin))
+        if date_end:
+            domain.append(('create_date', '<=', date_end))
+        
+        activities = request.env['naid.audit.log'].search(domain, order='timestamp desc', limit=100)
+        
+        values.update({
+            'activities': activities,
+            'page_name': 'reports_activity',
+        })
+        return request.render('records_management.portal_reports_activity', values)
+
+    @http.route(['/my/reports/compliance'], type='http', auth='user', website=True)
+    def portal_reports_compliance(self, **kw):
+        """Compliance reports for NAID."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        # Get compliance status
+        compliance_data = {
+            'naid_certified': partner.naid_certified,
+            'certification_date': partner.naid_certification_date,
+            'audit_logs_count': request.env['naid.audit.log'].search_count([('partner_id', '=', partner.id)]),
+        }
+        
+        values.update({
+            'compliance_data': compliance_data,
+            'page_name': 'reports_compliance',
+        })
+        return request.render('records_management.portal_reports_compliance', values)
+
+    @http.route(['/my/reports/export'], type='http', auth='user', website=True)
+    def portal_reports_export(self, **kw):
+        """Export data options."""
+        values = self._prepare_portal_layout_values()
+        values.update({'page_name': 'reports_export'})
+        return request.render('records_management.portal_reports_export', values)
+
+    @http.route(['/my/inventory/counts'], type='http', auth='user', website=True)
+    def portal_inventory_counts(self, **kw):
+        """Inventory count summary."""
+        values = self._prepare_portal_layout_values()
+        user = request.env.user
+        partner = user.partner_id
+        
+        # Department filtering
+        domain = [('partner_id', '=', partner.commercial_partner_id.id)]
+        if not user.has_group('records_management.group_portal_company_admin'):
+            accessible_departments = user.accessible_department_ids.ids
+            if accessible_departments:
+                domain.append(('department_id', 'in', accessible_departments))
+        
+        counts = {
+            'containers': request.env['records.container'].search_count(domain),
+            'files': request.env['records.file'].search_count(domain),
+            'documents': request.env['records.document'].search_count(domain),
+        }
+        
+        values.update({
+            'counts': counts,
+            'page_name': 'inventory_counts',
+        })
+        return request.render('records_management.portal_inventory_counts', values)
+
+    @http.route(['/my/inventory/recent_activity'], type='http', auth='user', website=True)
+    def portal_inventory_recent_activity(self, page=1, **kw):
+        """Recent inventory activity."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        domain = [('partner_id', '=', partner.commercial_partner_id.id)]
+        activity_count = request.env['naid.audit.log'].search_count(domain)
+        
+        pager = request.website.pager(
+            url="/my/inventory/recent_activity",
+            total=activity_count,
+            page=page,
+            step=20,
+        )
+        
+        activities = request.env['naid.audit.log'].search(
+            domain,
+            order='timestamp desc',
+            limit=20,
+            offset=pager['offset']
+        )
+        
+        values.update({
+            'activities': activities,
+            'page_name': 'recent_activity',
+            'pager': pager,
+        })
+        return request.render('records_management.portal_recent_activity', values)
+
+    @http.route(['/my/billing/summary'], type='http', auth='user', website=True)
+    def portal_billing_summary(self, **kw):
+        """Billing summary dashboard."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        summary = {
+            'total_invoiced': sum(request.env['account.move'].search([
+                ('partner_id', '=', partner.commercial_partner_id.id),
+                ('move_type', '=', 'out_invoice'),
+                ('state', '=', 'posted')
+            ]).mapped('amount_total')),
+            'total_paid': sum(request.env['account.payment'].search([
+                ('partner_id', '=', partner.commercial_partner_id.id)
+            ]).mapped('amount')),
+        }
+        
+        values.update({
+            'summary': summary,
+            'page_name': 'billing_summary',
+        })
+        return request.render('records_management.portal_billing_summary', values)
+
+    @http.route(['/my/reports/audit'], type='http', auth='user', website=True)
+    def portal_reports_audit(self, page=1, **kw):
+        """Audit reports for compliance."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        domain = [('partner_id', '=', partner.commercial_partner_id.id)]
+        audit_count = request.env['naid.audit.log'].search_count(domain)
+        
+        pager = request.website.pager(
+            url="/my/reports/audit",
+            total=audit_count,
+            page=page,
+            step=20,
+        )
+        
+        audits = request.env['naid.audit.log'].search(
+            domain,
+            order='timestamp desc',
+            limit=20,
+            offset=pager['offset']
+        )
+        
+        values.update({
+            'audits': audits,
+            'page_name': 'audit_reports',
+            'pager': pager,
+        })
+        return request.render('records_management.portal_audit_reports', values)
+
+    # ============================================================================
+    # BARCODE ROUTES (3 routes)
+    # ============================================================================
+
+    @http.route(['/my/barcode/main'], type='http', auth='user', website=True)
+    def portal_barcode_main(self, **kw):
+        """Barcode scanning center."""
+        values = self._prepare_portal_layout_values()
+        values.update({'page_name': 'barcode_main'})
+        return request.render('records_management.portal_barcode_main', values)
+
+    @http.route(['/my/barcode/scan/container'], type='http', auth='user', website=True, methods=['GET', 'POST'], csrf=True)
+    def portal_barcode_scan_container(self, barcode_data=None, **post):
+        """Scan container barcode."""
+        values = self._prepare_portal_layout_values()
+        
+        if request.httprequest.method == 'POST' and barcode_data:
+            container = request.env['records.container'].search([
+                ('barcode', '=', barcode_data),
+                ('partner_id', '=', request.env.user.partner_id.commercial_partner_id.id)
+            ], limit=1)
+            
+            if container:
+                # Log scan in audit
+                request.env['naid.audit.log'].create({
+                    'action_type': 'barcode_scan',
+                    'user_id': request.env.user.id,
+                    'description': _('Container %s scanned via barcode') % container.name,
+                    'timestamp': datetime.now(),
+                })
+                return request.redirect('/my/inventory/container/%s?scanned=success' % container.id)
+            else:
+                values.update({'error': _('Container not found')})
+        
+        values.update({'page_name': 'barcode_scan_container'})
+        return request.render('records_management.portal_barcode_scan', values)
+
+    @http.route(['/my/barcode/scan/file'], type='http', auth='user', website=True, methods=['GET', 'POST'], csrf=True)
+    def portal_barcode_scan_file(self, barcode_data=None, **post):
+        """Scan file barcode."""
+        values = self._prepare_portal_layout_values()
+        
+        if request.httprequest.method == 'POST' and barcode_data:
+            file = request.env['records.file'].search([
+                ('barcode', '=', barcode_data),
+                ('partner_id', '=', request.env.user.partner_id.commercial_partner_id.id)
+            ], limit=1)
+            
+            if file:
+                # Log scan in audit
+                request.env['naid.audit.log'].create({
+                    'action_type': 'barcode_scan',
+                    'user_id': request.env.user.id,
+                    'description': _('File %s scanned via barcode') % file.name,
+                    'timestamp': datetime.now(),
+                })
+                return request.redirect('/my/inventory/file/%s?scanned=success' % file.id)
+            else:
+                values.update({'error': _('File not found')})
+        
+        values.update({'page_name': 'barcode_scan_file'})
+        return request.render('records_management.portal_barcode_scan', values)
+
+    # ============================================================================
+    # FEEDBACK & SETTINGS ROUTES (5 routes)
+    # ============================================================================
+
+    @http.route(['/my/feedback'], type='http', auth='user', website=True, methods=['GET', 'POST'], csrf=True)
+    def portal_feedback(self, **post):
+        """Submit feedback."""
+        values = self._prepare_portal_layout_values()
+        
+        if request.httprequest.method == 'POST':
+            feedback = request.env['customer.feedback'].create({
+                'partner_id': request.env.user.partner_id.id,
+                'name': post.get('subject', 'Portal Feedback'),
+                'comments': post.get('feedback'),
+                'rating': post.get('rating', '3'),
+            })
+            return request.redirect('/my/feedback/history?submitted=success')
+        
+        values.update({'page_name': 'feedback'})
+        return request.render('records_management.portal_feedback', values)
+
+    @http.route(['/my/feedback/history'], type='http', auth='user', website=True)
+    def portal_feedback_history(self, page=1, **kw):
+        """View submitted feedback history."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+        
+        domain = [('partner_id', '=', partner.id)]
+        feedback_count = request.env['customer.feedback'].search_count(domain)
+        
+        pager = request.website.pager(
+            url="/my/feedback/history",
+            total=feedback_count,
+            page=page,
+            step=20,
+        )
+        
+        feedbacks = request.env['customer.feedback'].search(
+            domain,
+            order='create_date desc',
+            limit=20,
+            offset=pager['offset']
+        )
+        
+        values.update({
+            'feedbacks': feedbacks,
+            'page_name': 'feedback_history',
+            'pager': pager,
+        })
+        return request.render('records_management.portal_feedback_history', values)
+
+    @http.route(['/my/notifications'], type='http', auth='user', website=True)
+    def portal_notifications(self, **kw):
+        """Notification preferences."""
+        values = self._prepare_portal_layout_values()
+        user = request.env.user
+        
+        values.update({
+            'user': user,
+            'page_name': 'notifications',
+        })
+        return request.render('records_management.portal_notifications', values)
+
+    @http.route(['/my/notifications/update'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_notifications_update(self, **post):
+        """Update notification preferences."""
+        user = request.env.user
+        
+        # Update notification settings
+        user.write({
+            'notification_type': post.get('notification_type', 'email'),
+        })
+        
+        return request.redirect('/my/notifications?updated=success')
+
+    @http.route(['/my/access'], type='http', auth='user', website=True)
+    def portal_access(self, **kw):
+        """Access management (Department Admin+)."""
+        values = self._prepare_portal_layout_values()
+        user = request.env.user
+        
+        # Require department admin+ permissions
+        if not user.has_group('records_management.group_portal_department_admin'):
+            return request.render('records_management.portal_errors', {
+                'error_title': _('Access Denied'),
+                'error_message': _('You do not have permission to manage access.'),
+            })
+        
+        # Get department users
+        accessible_departments = user.accessible_department_ids
+        department_users = request.env['records.department.user'].search([
+            ('department_id', 'in', accessible_departments.ids)
+        ])
+        
+        values.update({
+            'department_users': department_users,
+            'page_name': 'access_management',
+        })
+        return request.render('records_management.portal_access', values)
+
+    # ============================================================================
     # TEMPORARY INVENTORY & OTHER ROUTES
     # ============================================================================
 
