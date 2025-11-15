@@ -19,6 +19,7 @@ class RecordsSavedSearch(models.Model):
 
     _name = 'records.saved.search'
     _description = 'Saved Inventory Search Preset'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
     # ============================================================================
@@ -120,17 +121,18 @@ class RecordsSavedSearch(models.Model):
             'target': 'self',
         }
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Ensure only one default search per user"""
-        if vals.get('is_default'):
-            # Unset other default searches for this user
-            self.search([
-                ('user_id', '=', vals.get('user_id', self.env.user.id)),
-                ('is_default', '=', True)
-            ]).write({'is_default': False})
+        for vals in vals_list:
+            if vals.get('is_default'):
+                # Unset other default searches for this user
+                self.search([
+                    ('user_id', '=', vals.get('user_id', self.env.user.id)),
+                    ('is_default', '=', True)
+                ]).write({'is_default': False})
 
-        return super().create(vals)
+        return super().create(vals_list)
 
     def write(self, vals):
         """Ensure only one default search per user"""
