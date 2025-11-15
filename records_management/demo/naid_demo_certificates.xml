@@ -12,13 +12,14 @@
             <field name="state">draft</field>
         </record>
 
-        <!-- Ensure issued certificate has at least one destroyed item -->
-        <record id="demo_naid_certificate_item_001" model="destruction.item">
-            <field name="records_destruction_id" ref="demo_naid_certificate_001"/>
+        <!-- NOTE: destruction.item requires records_destruction_id (naid.destruction.record), not destruction.certificate
+             Commented out until proper naid.destruction.record demo data exists -->
+        <!-- <record id="demo_naid_certificate_item_001" model="destruction.item">
+            <field name="records_destruction_id" ref="demo_naid_destruction_record_001"/>
             <field name="item_description">Confidential Paper Boxes</field>
             <field name="weight" eval="25.0"/>
             <field name="quantity" eval="3"/>
-        </record>
+        </record> -->
 
     <!-- Issue the certificate after items exist to satisfy constraints -->
     <!-- Pre-sanitize NAID reports to avoid legacy list-type corruption errors -->

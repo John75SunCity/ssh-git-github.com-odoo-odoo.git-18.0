@@ -104,10 +104,9 @@ class DestructionItem(models.Model):
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to handle sequence generation."""
-        for vals in vals_list:
-            if 'sequence' not in vals or vals['sequence'] == 0:
-                vals['sequence'] = self.env['ir.sequence'].next_by_code('destruction.item') or 10
+        """Override create - sequence field is auto-incrementing integer."""
+        # Note: sequence field is Integer type for ordering, not a string reference
+        # If string references needed, add a separate 'name' or 'reference' Char field
         return super().create(vals_list)
 
     # ============================================================================
@@ -130,4 +129,3 @@ class DestructionItem(models.Model):
                 raise ValidationError(_("An item cannot be verified before it has been destroyed."))
             if record.date_verified and record.date_destroyed > record.date_verified:
                 raise ValidationError(_("Verification date cannot be earlier than the destruction date."))
-
