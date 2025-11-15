@@ -10,7 +10,7 @@
         <template id="portal_my_home_menu_records" name="Portal My Home Menu - Records Management" inherit_id="portal.portal_my_home" priority="20">
 
             <!-- Add Physical Inventory Section -->
-            <xpath expr="//div[hasclass('o_portal_my_home_menu')]" position="inside">
+            <xpath expr="//div[@class='o_portal_docs']" position="after">
                 <div class="col-lg-6 mb-3">
                     <div class="card h-100">
                         <div class="card-header bg-primary text-white">
