@@ -171,8 +171,12 @@ class BarcodeScannerHandler {
                 break;
 
             case 'O-BTN.validate':
-                this.showInfo('VALIDATE command recognized. This will validate the current operation.');
-                // TODO: Implement validate logic based on current context
+                if (this.scannedItems.length === 0) {
+                    this.showError('No items to validate. Please scan containers first.');
+                } else {
+                    // Trigger batch submission for current operation
+                    await this.submitBatchRequest();
+                }
                 break;
 
             case 'O-BTN.discard':
@@ -296,16 +300,43 @@ class BarcodeScannerHandler {
         }
 
         const operation = document.querySelector('input[name="operation"]').value;
+        const containerIds = this.scannedItems.map(item => item.id);
 
-        // TODO: Implement actual batch submission
-        // For now, redirect to appropriate request page
-        if (operation === 'pickup') {
-            // Redirect to pickup request page with container IDs
-            const containerIds = this.scannedItems.map(item => item.id).join(',');
-            window.location.href = `/my/requests/new/pickup?containers=${containerIds}`;
-        } else if (operation === 'retrieval') {
-            const containerIds = this.scannedItems.map(item => item.id).join(',');
-            window.location.href = `/my/requests/new/retrieval?containers=${containerIds}`;
+        this.showInfo(`Processing ${this.scannedItems.length} containers...`);
+
+        try {
+            // Submit batch request via JSON-RPC
+            const result = await jsonrpc('/my/barcode/batch_request', {
+                operation: operation,
+                container_ids: containerIds,
+            });
+
+            if (result.error) {
+                this.showError(result.error);
+            } else if (result.success) {
+                // Show success message
+                this.showInfo(result.message || `Successfully created ${operation} request for ${containerIds.length} containers`);
+                
+                // Clear scanned items
+                this.clearScannedItems();
+                
+                // Redirect to request details if provided
+                if (result.redirect) {
+                    setTimeout(() => {
+                        window.location.href = result.redirect;
+                    }, 1500);
+                } else if (result.request_id) {
+                    // Default redirect to request view
+                    setTimeout(() => {
+                        window.location.href = `/my/requests/${result.request_id}`;
+                    }, 1500);
+                }
+            } else {
+                this.showError('Unexpected response from server. Please try again.');
+            }
+        } catch (error) {
+            console.error('Batch submission error:', error);
+            this.showError('Error creating request. Please try again or contact support.');
         }
     }
 
