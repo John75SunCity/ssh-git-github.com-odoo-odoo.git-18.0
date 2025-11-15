@@ -31,12 +31,12 @@
                             </div>
                         </button>
                     </div>
-                    
+
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1><field name="name" placeholder="Search Preset Name"/></h1>
                     </div>
-                    
+
                     <group>
                         <group>
                             <field name="user_id" readonly="1"/>
@@ -48,7 +48,7 @@
                             <field name="create_date" readonly="1"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
                         <page string="Search Criteria" name="filters">
                             <group>
@@ -78,11 +78,11 @@
                 <filter string="Active" name="active" domain="[('active', '=', True)]"/>
                 <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
                 <separator/>
-                <filter string="Recently Used" name="recently_used" 
-                        domain="[]" 
+                <filter string="Recently Used" name="recently_used"
+                        domain="[]"
                         context="{'order': 'last_used desc'}"/>
-                <filter string="Most Used" name="most_used" 
-                        domain="[]" 
+                <filter string="Most Used" name="most_used"
+                        domain="[]"
                         context="{'order': 'usage_count desc'}"/>
                 <group expand="0" string="Group By">
                     <filter string="User" name="group_by_user" context="{'group_by': 'user_id'}"/>
@@ -151,10 +151,4 @@
         </field>
     </record>
 
-    <!-- Menu Items -->
-    <menuitem id="menu_records_saved_search"
-              name="Saved Searches"
-              parent="records_management.menu_records_operations"
-              action="action_records_saved_search"
-              sequence="105"/>
 </odoo>
