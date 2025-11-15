@@ -1,10 +1,10 @@
-#!/opt/homebrew/bin/python3.12
+#!/usr/bin/env python3
 """
 Grok-4 Helper for Odoo Development
-Uses xAI API directly with Grok-4-0709 model
+Uses xAI API with OpenAI-compatible client
 
 Setup:
-1. Install: pip install xai-sdk
+1. Install: pip install openai
 2. Set API key: export XAI_API_KEY="your-key-here"
 3. Run: python .github/agents/grok-helper.py "your question"
 
@@ -14,8 +14,7 @@ Example:
 
 import os
 import sys
-from xai_sdk import Client
-from xai_sdk.chat import user, system
+from openai import OpenAI
 
 # Odoo-specific system prompt
 ODOO_EXPERT_PROMPT = """You are a PhD-level Odoo 18.0 development expert specializing in:
@@ -45,36 +44,52 @@ def ask_grok(question: str, api_key: str = None) -> str:
         return "Error: XAI_API_KEY not set. Export it or pass as parameter."
     
     try:
-        # Initialize client
-        client = Client(api_key=api_key)
-        
-        # Create chat with Grok-4-0709 model
-        chat = client.chat.create(
-            model="grok-4-0709",
-            temperature=0.7  # Balanced creativity/accuracy
+        # Initialize OpenAI client with xAI endpoint
+        client = OpenAI(
+            api_key=api_key,
+            base_url="https://api.x.ai/v1"
         )
         
-        # Add system context and user question
-        chat.append(system(ODOO_EXPERT_PROMPT))
-        chat.append(user(question))
+        # Create chat completion with Grok model
+        completion = client.chat.completions.create(
+            model="grok-4-0709",
+            messages=[
+                {"role": "system", "content": ODOO_EXPERT_PROMPT},
+                {"role": "user", "content": question}
+            ],
+            temperature=0.7
+        )
         
-        # Get response
-        response = chat.sample()
-        return response.content
+        return completion.choices[0].message.content
         
     except Exception as e:
         return f"Error calling Grok API: {str(e)}"
 
 def main():
-    if len(sys.argv) < 2:
-        print(__doc__)
-        sys.exit(1)
+    # Check for piped input
+    import select
+    has_stdin = select.select([sys.stdin], [], [], 0.0)[0]
     
-    question = " ".join(sys.argv[1:])
+    if has_stdin:
+        # Read from stdin (piped content)
+        file_content = sys.stdin.read()
+        if len(sys.argv) < 2:
+            print("Usage: cat file.xml | grok 'your question about this file'")
+            sys.exit(1)
+        question = " ".join(sys.argv[1:])
+        full_question = f"{question}\n\n--- FILE CONTENT ---\n{file_content}"
+    else:
+        # Normal command-line arguments
+        if len(sys.argv) < 2:
+            print(__doc__)
+            sys.exit(1)
+        question = " ".join(sys.argv[1:])
+        full_question = question
+    
     print(f"\n🤖 Asking Grok-4: {question}\n")
     print("=" * 80)
     
-    answer = ask_grok(question)
+    answer = ask_grok(full_question)
     print(answer)
     print("\n" + "=" * 80)
 
