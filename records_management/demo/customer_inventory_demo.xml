@@ -1702,7 +1702,6 @@
             <field name="weight">25.0</field>
             <field name="storage_start_date">2015-05-07</field>
             <field name="last_access_date">2015-05-07</field>
-            <field name="destruction_date">2015-05-07</field>
             <field name="active">False</field>
         </record>
 
