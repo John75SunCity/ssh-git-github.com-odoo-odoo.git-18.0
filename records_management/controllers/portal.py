@@ -2396,6 +2396,119 @@ class RecordsManagementController(http.Controller):
             _logger.error(f"File delete failed: {str(e)}")
             return {'success': False, 'error': str(e)}
 
+    @http.route(['/my/inventory/file/<int:file_id>/add-document'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_file_add_document(self, file_id, **post):
+        """Add document to file (department user+)."""
+        if not request.env.user.has_group('records_management.group_portal_department_user'):
+            return request.redirect('/my/home?error=unauthorized')
+        
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            file_record = request.env['records.file'].sudo().browse(file_id)
+            
+            if file_record.partner_id.id != partner.id:
+                return request.redirect('/my/inventory/files?error=unauthorized')
+            
+            # Department access check
+            is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
+            if not is_company_admin:
+                accessible_depts = request.env.user.accessible_department_ids.ids
+                if file_record.department_id.id not in accessible_depts:
+                    return request.redirect('/my/inventory/files?error=unauthorized_dept')
+            
+            document_id = post.get('document_id')
+            if document_id:
+                # Link existing document to file
+                doc = request.env['records.document'].sudo().browse(int(document_id))
+                if doc.partner_id.id == partner.id:
+                    doc.sudo().write({'file_id': file_id})
+                    
+                    request.env['naid.audit.log'].create({
+                        'action_type': 'document_added_to_file',
+                        'user_id': request.env.user.id,
+                        'description': _('Document %s added to file %s via portal by %s') % (
+                            doc.name, file_record.name, request.env.user.name
+                        ),
+                        'timestamp': datetime.now(),
+                    })
+            else:
+                # Create new document in file
+                doc_name = post.get('document_name')
+                if doc_name:
+                    doc_vals = {
+                        'name': doc_name,
+                        'partner_id': partner.id,
+                        'department_id': file_record.department_id.id,
+                        'file_id': file_id,
+                        'created_via_portal': True,
+                    }
+                    if post.get('document_description'):
+                        doc_vals['description'] = post.get('document_description')
+                    
+                    doc = request.env['records.document'].create(doc_vals)
+                    
+                    request.env['naid.audit.log'].create({
+                        'action_type': 'document_created_in_file',
+                        'user_id': request.env.user.id,
+                        'description': _('Document %s created in file %s via portal by %s') % (
+                            doc.name, file_record.name, request.env.user.name
+                        ),
+                        'timestamp': datetime.now(),
+                    })
+            
+            return request.redirect(f'/my/inventory/file/{file_id}?document_added=success')
+        
+        except Exception as e:
+            _logger.error(f"Add document to file failed: {str(e)}")
+            return request.redirect(f'/my/inventory/file/{file_id}?error=add_document_failed')
+
+    @http.route(['/my/inventory/file/<int:file_id>/move-container'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_file_move_container(self, file_id, **post):
+        """Move file to different container (department user+)."""
+        if not request.env.user.has_group('records_management.group_portal_department_user'):
+            return request.redirect('/my/home?error=unauthorized')
+        
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            file_record = request.env['records.file'].sudo().browse(file_id)
+            
+            if file_record.partner_id.id != partner.id:
+                return request.redirect('/my/inventory/files?error=unauthorized')
+            
+            # Department access check
+            is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
+            if not is_company_admin:
+                accessible_depts = request.env.user.accessible_department_ids.ids
+                if file_record.department_id.id not in accessible_depts:
+                    return request.redirect('/my/inventory/files?error=unauthorized_dept')
+            
+            new_container_id = post.get('container_id')
+            if not new_container_id:
+                return request.redirect(f'/my/inventory/file/{file_id}?error=no_container')
+            
+            # Verify new container ownership
+            new_container = request.env['records.container'].sudo().browse(int(new_container_id))
+            if new_container.partner_id.id != partner.id:
+                return request.redirect(f'/my/inventory/file/{file_id}?error=invalid_container')
+            
+            old_container_name = file_record.container_id.name if file_record.container_id else 'None'
+            file_record.sudo().write({'container_id': int(new_container_id)})
+            
+            request.env['naid.audit.log'].create({
+                'action_type': 'file_moved_container',
+                'user_id': request.env.user.id,
+                'description': _('File %s moved from container %s to %s via portal by %s') % (
+                    file_record.name, old_container_name, new_container.name, request.env.user.name
+                ),
+                'timestamp': datetime.now(),
+            })
+            
+            return request.redirect(f'/my/inventory/file/{file_id}?moved=success')
+        
+        except Exception as e:
+            _logger.error(f"Move file to container failed: {str(e)}")
+            return request.redirect(f'/my/inventory/file/{file_id}?error=move_failed')
+
     # ============================================================================
     # DOCUMENTS CRUD OPERATIONS (Full Create, Read, Update, Delete)
     # ============================================================================
@@ -2790,6 +2903,364 @@ class RecordsManagementController(http.Controller):
                 'error_title': _('Bulk Upload Failed'),
                 'error_message': str(e),
             })
+
+    @http.route(['/my/inventory/document/<int:doc_id>/request-scan'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_document_request_scan(self, doc_id, **post):
+        """Request scanning service for document (department user+)."""
+        if not request.env.user.has_group('records_management.group_portal_department_user'):
+            return request.redirect('/my/home?error=unauthorized')
+        
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            doc_record = request.env['records.document'].sudo().browse(doc_id)
+            
+            if doc_record.partner_id.id != partner.id:
+                return request.redirect('/my/inventory/documents?error=unauthorized')
+            
+            # Department access check
+            is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
+            if not is_company_admin:
+                accessible_depts = request.env.user.accessible_department_ids.ids
+                if doc_record.department_id.id not in accessible_depts:
+                    return request.redirect('/my/inventory/documents?error=unauthorized_dept')
+            
+            # Create scan service request
+            request_vals = {
+                'name': _('Scan Request for %s') % doc_record.name,
+                'partner_id': partner.id,
+                'department_id': doc_record.department_id.id,
+                'request_type': 'scanning',
+                'state': 'draft',
+                'created_via_portal': True,
+            }
+            
+            if post.get('notes'):
+                request_vals['notes'] = post.get('notes')
+            
+            scan_request = request.env['portal.request'].create(request_vals)
+            
+            # Link document to request
+            doc_record.sudo().write({
+                'scan_request_id': scan_request.id,
+                'scan_requested_date': datetime.now(),
+            })
+            
+            request.env['naid.audit.log'].create({
+                'action_type': 'scan_requested',
+                'user_id': request.env.user.id,
+                'description': _('Scan requested for document %s via portal by %s') % (
+                    doc_record.name, request.env.user.name
+                ),
+                'timestamp': datetime.now(),
+            })
+            
+            return request.redirect(f'/my/inventory/document/{doc_id}?scan_requested=success')
+        
+        except Exception as e:
+            _logger.error(f"Request scan failed: {str(e)}")
+            return request.redirect(f'/my/inventory/document/{doc_id}?error=scan_request_failed')
+
+    @http.route(['/my/document/<int:doc_id>'], type='http', auth="user", website=True)
+    def portal_document_detail_alt(self, doc_id, **kw):
+        """Alternative document detail route (redirects to main route)."""
+        return request.redirect(f'/my/inventory/document/{doc_id}')
+
+    # ============================================================================
+    # SERVICE REQUESTS CRUD OPERATIONS (Full workflow management)
+    # ============================================================================
+
+    @http.route(['/my/requests'], type='http', auth='user', website=True)
+    def portal_requests_list(self, page=1, sortby=None, filterby=None, search=None, **kw):
+        """List all service requests (all users - read own department)."""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        Request = request.env['portal.request']
+        domain = [('partner_id', '=', partner.id)]
+
+        # Department filtering for non-company admins
+        if not request.env.user.has_group('records_management.group_portal_company_admin'):
+            accessible_depts = request.env.user.accessible_department_ids.ids
+            if accessible_depts:
+                domain += [('department_id', 'in', accessible_depts)]
+
+        if filterby:
+            if filterby == 'retrieval':
+                domain += [('request_type', '=', 'retrieval')]
+            elif filterby == 'destruction':
+                domain += [('request_type', '=', 'destruction')]
+            elif filterby == 'pickup':
+                domain += [('request_type', '=', 'pickup')]
+            elif filterby == 'scanning':
+                domain += [('request_type', '=', 'scanning')]
+            elif filterby == 'pending':
+                domain += [('state', 'in', ['draft', 'submitted'])]
+            elif filterby == 'approved':
+                domain += [('state', '=', 'approved')]
+
+        if search:
+            domain += ['|', ('name', 'ilike', search), ('description', 'ilike', search)]
+
+        request_count = Request.search_count(domain)
+        pager = request.website.pager(
+            url="/my/requests",
+            url_args={'sortby': sortby, 'filterby': filterby, 'search': search},
+            total=request_count,
+            page=page,
+            step=20,
+        )
+
+        requests = Request.search(domain, order='create_date desc', limit=20, offset=pager['offset'])
+
+        values.update({
+            'requests': requests,
+            'page_name': 'requests',
+            'pager': pager,
+            'search': search or '',
+            'filterby': filterby,
+            'request_count': request_count,
+        })
+
+        return request.render("records_management.portal_requests_template", values)
+
+    @http.route(['/my/requests/<int:request_id>'], type='http', auth='user', website=True)
+    def portal_request_detail(self, request_id, **kw):
+        \"\"\"Service request detail view with edit/cancel capability.\"\"\"
+        partner = request.env.user.partner_id.commercial_partner_id
+        req_record = request.env['portal.request'].sudo().browse(request_id)
+
+        if req_record.partner_id.id != partner.id:
+            return request.redirect('/my/home?error=unauthorized')
+
+        # Department access check
+        if not request.env.user.has_group('records_management.group_portal_company_admin'):
+            accessible_depts = request.env.user.accessible_department_ids.ids
+            if req_record.department_id and req_record.department_id.id not in accessible_depts:
+                return request.redirect('/my/home?error=unauthorized_dept')
+
+        # Permission flags
+        can_edit = request.env.user.has_group('records_management.group_portal_department_user') and req_record.state in ['draft', 'submitted']
+        can_cancel = request.env.user.has_group('records_management.group_portal_department_user') and req_record.state not in ['cancelled', 'completed']
+
+        values = {
+            'request': req_record,
+            'can_edit': can_edit,
+            'can_cancel': can_cancel,
+            'page_name': 'request_detail',
+        }
+
+        return request.render("records_management.portal_request_detail", values)
+
+    @http.route(['/my/request/new/<string:request_type>'], type='http', auth='user', website=True, methods=['GET', 'POST'], csrf=True)
+    def portal_request_create(self, request_type, **post):
+        \"\"\"Create new service request (department user+).\"\"\"
+        if not request.env.user.has_group('records_management.group_portal_department_user'):
+            if request.httprequest.method == 'GET':
+                return request.redirect('/my/home?error=unauthorized')
+            return request.render('records_management.portal_error', {
+                'error_title': _('Unauthorized'),
+                'error_message': _('You do not have permission to create requests.'),
+            })
+
+        partner = request.env.user.partner_id.commercial_partner_id
+
+        if request_type not in ['retrieval', 'destruction', 'pickup', 'scanning']:
+            return request.redirect('/my/requests?error=invalid_type')
+
+        if request.httprequest.method == 'GET':
+            departments = request.env['records.department'].search([('company_id', '=', partner.id)])
+            containers = request.env['records.container'].search([('partner_id', '=', partner.id)])
+            files = request.env['records.file'].search([('partner_id', '=', partner.id)])
+
+            values = {
+                'request_type': request_type,
+                'departments': departments,
+                'containers': containers,
+                'files': files,
+                'page_name': f'request_create_{request_type}',
+            }
+
+            # Route to specific template based on type
+            if request_type == 'destruction':
+                return request.render("records_management.portal_destruction_request_create", values)
+            elif request_type == 'pickup':
+                return request.render("records_management.portal_pickup_request_create", values)
+            else:
+                return request.render("records_management.portal_request_create", values)
+
+        try:
+            department_id = post.get('department_id')
+            if not department_id:
+                return request.render('records_management.portal_error', {
+                    'error_title': _('Missing Required Fields'),
+                    'error_message': _('Please select a department.'),
+                })
+
+            # Department access check
+            if not request.env.user.has_group('records_management.group_portal_company_admin'):
+                accessible_depts = request.env.user.accessible_department_ids.ids
+                if int(department_id) not in accessible_depts:
+                    return request.render('records_management.portal_error', {
+                        'error_title': _('Unauthorized Department'),
+                        'error_message': _('You do not have access to this department.'),
+                    })
+
+            request_vals = {
+                'name': post.get('name') or _('New %s Request') % request_type.capitalize(),
+                'partner_id': partner.id,
+                'department_id': int(department_id),
+                'request_type': request_type,
+                'state': 'draft',
+                'created_via_portal': True,
+            }
+
+            if post.get('description'):
+                request_vals['description'] = post.get('description')
+            if post.get('priority'):
+                request_vals['priority'] = post.get('priority')
+            if post.get('scheduled_date'):
+                request_vals['scheduled_date'] = post.get('scheduled_date')
+
+            req_record = request.env['portal.request'].create(request_vals)
+
+            request.env['naid.audit.log'].create({
+                'action_type': f'{request_type}_request_created',
+                'user_id': request.env.user.id,
+                'description': _('%s request %s created via portal by %s') % (
+                    request_type.capitalize(), req_record.name, request.env.user.name
+                ),
+                'timestamp': datetime.now(),
+            })
+
+            # Auto-submit if requested
+            if post.get('auto_submit') == 'true':
+                req_record.sudo().write({'state': 'submitted'})
+
+            return request.redirect(f'/my/requests/{req_record.id}?created=success')
+
+        except Exception as e:
+            _logger.error(f\"Request creation failed: {str(e)}\")
+            return request.render('records_management.portal_error', {
+                'error_title': _('Request Creation Failed'),
+                'error_message': str(e),
+            })
+
+    @http.route(['/my/requests/<int:request_id>/edit'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_request_edit(self, request_id, **post):
+        \"\"\"Edit service request (department user+ for draft/submitted only).\"\"\"
+        if not request.env.user.has_group('records_management.group_portal_department_user'):
+            return request.redirect('/my/home?error=unauthorized')
+
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            req_record = request.env['portal.request'].sudo().browse(request_id)
+
+            if req_record.partner_id.id != partner.id:
+                return request.redirect('/my/requests?error=unauthorized')
+
+            if req_record.state not in ['draft', 'submitted']:
+                return request.redirect(f'/my/requests/{request_id}?error=cannot_edit')
+
+            # Department access check
+            is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
+            if not is_company_admin:
+                accessible_depts = request.env.user.accessible_department_ids.ids
+                if req_record.department_id.id not in accessible_depts:
+                    return request.redirect('/my/requests?error=unauthorized_dept')
+
+            update_vals = {}
+            if post.get('description'):
+                update_vals['description'] = post.get('description')
+            if post.get('priority'):
+                update_vals['priority'] = post.get('priority')
+            if post.get('scheduled_date'):
+                update_vals['scheduled_date'] = post.get('scheduled_date')
+
+            if update_vals:
+                req_record.sudo().write(update_vals)
+                request.env['naid.audit.log'].create({
+                    'action_type': 'request_updated',
+                    'user_id': request.env.user.id,
+                    'description': _('Request %s updated via portal by %s') % (req_record.name, request.env.user.name),
+                    'timestamp': datetime.now(),
+                })
+
+            return request.redirect(f'/my/requests/{request_id}?updated=success')
+
+        except Exception as e:
+            _logger.error(f\"Request edit failed: {str(e)}\")
+            return request.redirect(f'/my/requests/{request_id}?error=update_failed')
+
+    @http.route(['/my/requests/<int:request_id>/cancel'], type='json', auth='user', methods=['POST'])
+    def portal_request_cancel(self, request_id, **kw):
+        \"\"\"Cancel service request (department user+).\"\"\"
+        if not request.env.user.has_group('records_management.group_portal_department_user'):
+            return {'success': False, 'error': _('Unauthorized')}
+
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            req_record = request.env['portal.request'].sudo().browse(request_id)
+
+            if req_record.partner_id.id != partner.id:
+                return {'success': False, 'error': _('Unauthorized')}
+
+            if req_record.state in ['cancelled', 'completed']:
+                return {'success': False, 'error': _('Cannot cancel completed or cancelled requests')}
+
+            # Department access check
+            is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
+            if not is_company_admin:
+                accessible_depts = request.env.user.accessible_department_ids.ids
+                if req_record.department_id.id not in accessible_depts:
+                    return {'success': False, 'error': _('Unauthorized - no access to this department')}
+
+            req_record.sudo().write({'state': 'cancelled'})
+
+            request.env['naid.audit.log'].create({
+                'action_type': 'request_cancelled',
+                'user_id': request.env.user.id,
+                'description': _('Request %s cancelled via portal by %s') % (req_record.name, request.env.user.name),
+                'timestamp': datetime.now(),
+            })
+
+            return {'success': True, 'message': _('Request cancelled successfully')}
+
+        except Exception as e:
+            _logger.error(f\"Request cancel failed: {str(e)}\")
+            return {'success': False, 'error': str(e)}
+
+    @http.route(['/my/requests/<int:request_id>/submit'], type='json', auth='user', methods=['POST'])
+    def portal_request_submit(self, request_id, **kw):
+        \"\"\"Submit request for approval (department user+).\"\"\"
+        if not request.env.user.has_group('records_management.group_portal_department_user'):
+            return {'success': False, 'error': _('Unauthorized')}
+
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            req_record = request.env['portal.request'].sudo().browse(request_id)
+
+            if req_record.partner_id.id != partner.id:
+                return {'success': False, 'error': _('Unauthorized')}
+
+            if req_record.state != 'draft':
+                return {'success': False, 'error': _('Only draft requests can be submitted')}
+
+            req_record.sudo().write({'state': 'submitted'})
+
+            request.env['naid.audit.log'].create({
+                'action_type': 'request_submitted',
+                'user_id': request.env.user.id,
+                'description': _('Request %s submitted for approval via portal by %s') % (
+                    req_record.name, request.env.user.name
+                ),
+                'timestamp': datetime.now(),
+            })
+
+            return {'success': True, 'message': _('Request submitted successfully')}
+
+        except Exception as e:
+            _logger.error(f\"Request submit failed: {str(e)}\")
+            return {'success': False, 'error': str(e)}
 
     @http.route(['/my/inventory/temp'], type='http', auth="user", website=True)
     def portal_inventory_temp(self, page=1, sortby=None, filterby=None, search=None, **kw):
