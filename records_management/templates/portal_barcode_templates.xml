@@ -282,14 +282,4 @@
         </t>
     </template>
     
-    <!-- ============================================================================
-         JAVASCRIPT ASSETS FOR BARCODE PROCESSING
-         ============================================================================ -->
-    
-    <template id="barcode_scanner_assets" name="Barcode Scanner Assets" inherit_id="web.assets_frontend">
-        <xpath expr="." position="inside">
-            <script type="text/javascript" src="/records_management/static/src/js/barcode_command_handler.js"/>
-            <link rel="stylesheet" type="text/css" href="/records_management/static/src/css/barcode_scanner.css"/>
-        </xpath>
-    </template>
 </odoo>
