@@ -34,9 +34,9 @@ publicWidget.registry.PortalInventory = publicWidget.Widget.extend({
         ev.preventDefault();
         const $form = $(ev.currentTarget);
         const formData = $form.serialize();
-        
+
         this._showLoading();
-        
+
         $.ajax({
             url: window.location.pathname,
             type: 'GET',
@@ -59,11 +59,11 @@ publicWidget.registry.PortalInventory = publicWidget.Widget.extend({
         ev.preventDefault();
         const $link = $(ev.currentTarget);
         const url = $link.attr('href');
-        
+
         if (!url || url === '#') return;
-        
+
         this._showLoading();
-        
+
         $.get(url, (data) => {
             this._updateTableContent(data);
             this._hideLoading();
@@ -76,13 +76,13 @@ publicWidget.registry.PortalInventory = publicWidget.Widget.extend({
      */
     _onSearchInput: _.debounce(function (ev) {
         const searchTerm = $(ev.currentTarget).val();
-        
+
         if (searchTerm.length < 3 && searchTerm.length > 0) {
             return; // Wait for at least 3 characters
         }
-        
+
         this._showLoading();
-        
+
         $.ajax({
             url: window.location.pathname,
             type: 'GET',
@@ -100,10 +100,10 @@ publicWidget.registry.PortalInventory = publicWidget.Widget.extend({
     _onExportClick: function (ev) {
         ev.preventDefault();
         const format = $(ev.currentTarget).data('format') || 'xlsx';
-        
+
         // Show download notification
         this._showNotification('Preparing download...', 'info');
-        
+
         // Trigger download
         window.location.href = `${window.location.pathname}/export?format=${format}`;
     },
@@ -130,11 +130,11 @@ publicWidget.registry.PortalInventory = publicWidget.Widget.extend({
     _updateTableContent: function (data) {
         const $container = $('.table-responsive');
         const $newContent = $(data).find('.table-responsive');
-        
+
         if ($newContent.length) {
             $container.html($newContent.html());
         }
-        
+
         // Update pagination
         const $pagination = $('.pagination');
         const $newPagination = $(data).find('.pagination');
@@ -150,7 +150,7 @@ publicWidget.registry.PortalInventory = publicWidget.Widget.extend({
         if (window.innerWidth <= 768) {
             this._convertTableToCards();
         }
-        
+
         // Handle window resize
         $(window).on('resize', _.debounce(() => {
             if (window.innerWidth <= 768) {
@@ -202,11 +202,11 @@ publicWidget.registry.PortalInventory = publicWidget.Widget.extend({
                 </div>
             </div>
         `;
-        
+
         $('body').append(toast);
         const $toast = $('.toast').last();
         new bootstrap.Toast($toast[0]).show();
-        
+
         setTimeout(() => $toast.remove(), 5000);
     },
 
@@ -240,7 +240,7 @@ publicWidget.registry.PortalDocumentRetrieval = publicWidget.Widget.extend({
 
     _onNextStep: function (ev) {
         ev.preventDefault();
-        
+
         if (this._validateCurrentStep()) {
             this.currentStep++;
             this._showStep(this.currentStep);
@@ -277,7 +277,7 @@ publicWidget.registry.PortalDocumentRetrieval = publicWidget.Widget.extend({
         const $currentStep = $(`.wizard-step[data-step="${this.currentStep}"]`);
         const $requiredInputs = $currentStep.find('[required]');
         let isValid = true;
-        
+
         $requiredInputs.each(function () {
             if (!$(this).val()) {
                 $(this).addClass('is-invalid');
@@ -286,7 +286,7 @@ publicWidget.registry.PortalDocumentRetrieval = publicWidget.Widget.extend({
                 $(this).removeClass('is-invalid');
             }
         });
-        
+
         return isValid;
     },
 
@@ -300,7 +300,7 @@ publicWidget.registry.PortalDocumentRetrieval = publicWidget.Widget.extend({
             $('.price-display').html('$0.00');
             return;
         }
-        
+
         $.ajax({
             url: '/my/document-retrieval/calculate-price',
             type: 'POST',
@@ -338,7 +338,7 @@ publicWidget.registry.PortalBarcodeScanner = publicWidget.Widget.extend({
 
     _onBarcodeInput: _.debounce(function (ev) {
         const barcode = $(ev.currentTarget).val();
-        
+
         if (barcode.length >= 8) {
             this._processBarcode(barcode);
         }
@@ -346,7 +346,7 @@ publicWidget.registry.PortalBarcodeScanner = publicWidget.Widget.extend({
 
     _processBarcode: function (barcode) {
         const scanType = $('.barcode-scanner').data('scan-type') || 'container';
-        
+
         $.ajax({
             url: `/my/barcode/process/${scanType}`,
             type: 'POST',
