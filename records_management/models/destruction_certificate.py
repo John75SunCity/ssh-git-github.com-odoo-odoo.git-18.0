@@ -48,6 +48,7 @@ class DestructionCertificate(models.Model):
         ],
         string="Destruction Type",
         required=True,
+        default="on_site",
         tracking=True,
     )
 
