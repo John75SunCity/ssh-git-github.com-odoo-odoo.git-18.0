@@ -37,19 +37,27 @@ def should_rebuild_index():
     
     index_mtime = get_file_mtime(INDEX_FILE)
     
-    # Check if any Python or XML files were modified after index
-    for pattern in ["**/*.py", "**/*.xml"]:
-        for filepath in WORKSPACE_ROOT.glob(pattern):
-            if "/__pycache__/" in str(filepath) or "/.git/" in str(filepath):
-                continue
-            if get_file_mtime(filepath) > index_mtime:
-                return True
+    # ONLY check records_management and records_management_fsm directories
+    target_dirs = [
+        WORKSPACE_ROOT / "records_management",
+        WORKSPACE_ROOT / "records_management_fsm"
+    ]
+    
+    for target_dir in target_dirs:
+        if not target_dir.exists():
+            continue
+        for pattern in ["**/*.py", "**/*.xml", "**/*.csv"]:
+            for filepath in target_dir.glob(pattern):
+                if "/__pycache__/" in str(filepath) or "/.git/" in str(filepath):
+                    continue
+                if get_file_mtime(filepath) > index_mtime:
+                    return True
     
     return False
 
 def build_index():
-    """Build/rebuild the codebase index"""
-    print("📚 Building codebase index... (this may take a moment)")
+    """Build/rebuild the codebase index - ONLY records_management and records_management_fsm"""
+    print("📚 Building codebase index (records_management + records_management_fsm only)...")
     
     index = {
         "built_at": datetime.now().isoformat(),
@@ -58,53 +66,71 @@ def build_index():
             "total_files": 0,
             "total_chars": 0,
             "models": [],
-            "demos": []
+            "demos": [],
+            "views": [],
+            "controllers": [],
+            "wizards": [],
+            "security": []
         }
     }
     
-    # Priority: models and demo files
-    priority_patterns = [
-        "records_management/models/*.py",
-        "records_management/demo/*.xml",
-        "records_management_fsm/models/*.py",
-    ]
+    # Index ALL files from both target directories
+    target_dirs = ["records_management", "records_management_fsm"]
     
-    # Additional context
-    additional_patterns = [
-        "records_management/views/*.xml",
-        "records_management/security/*.csv",
-        "records_management/__manifest__.py",
-    ]
-    
-    all_patterns = priority_patterns + additional_patterns
-    
-    for pattern in all_patterns:
-        for filepath in WORKSPACE_ROOT.glob(pattern):
-            if "/__pycache__/" in str(filepath) or "/.git/" in str(filepath):
-                continue
-            
-            try:
-                with open(filepath, 'r', encoding='utf-8') as f:
-                    content = f.read()
+    for target_dir in target_dirs:
+        dir_path = WORKSPACE_ROOT / target_dir
+        if not dir_path.exists():
+            print(f"⚠️  Directory not found: {target_dir}")
+            continue
+        
+        # Index all relevant file types
+        patterns = [
+            "**/*.py",      # All Python files
+            "**/*.xml",     # All XML files  
+            "**/*.csv",     # Security files
+            "**/*.js",      # JavaScript files
+            "**/*.scss",    # Stylesheets
+            "**/*.md",      # Documentation
+            "__manifest__.py",  # Manifest
+        ]
+        
+        for pattern in patterns:
+            for filepath in dir_path.glob(pattern):
+                # Skip pycache, git, and other non-source files
+                path_str = str(filepath)
+                if any(skip in path_str for skip in ["/__pycache__/", "/.git/", ".pyc", ".pyo"]):
+                    continue
                 
-                rel_path = str(filepath.relative_to(WORKSPACE_ROOT))
-                index["files"][rel_path] = {
-                    "content": content,
-                    "size": len(content),
-                    "mtime": get_file_mtime(filepath)
-                }
-                
-                index["summary"]["total_files"] += 1
-                index["summary"]["total_chars"] += len(content)
-                
-                # Track model and demo files
-                if "/models/" in rel_path and rel_path.endswith(".py"):
-                    index["summary"]["models"].append(rel_path)
-                elif "/demo/" in rel_path and rel_path.endswith(".xml"):
-                    index["summary"]["demos"].append(rel_path)
+                try:
+                    with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                        content = f.read()
                     
-            except Exception as e:
-                print(f"⚠️  Skipping {filepath}: {e}")
+                    rel_path = str(filepath.relative_to(WORKSPACE_ROOT))
+                    index["files"][rel_path] = {
+                        "content": content,
+                        "size": len(content),
+                        "mtime": get_file_mtime(filepath)
+                    }
+                    
+                    index["summary"]["total_files"] += 1
+                    index["summary"]["total_chars"] += len(content)
+                    
+                    # Categorize files
+                    if "/models/" in rel_path and rel_path.endswith(".py"):
+                        index["summary"]["models"].append(rel_path)
+                    elif "/demo/" in rel_path and rel_path.endswith(".xml"):
+                        index["summary"]["demos"].append(rel_path)
+                    elif "/views/" in rel_path and rel_path.endswith(".xml"):
+                        index["summary"]["views"].append(rel_path)
+                    elif "/controllers/" in rel_path and rel_path.endswith(".py"):
+                        index["summary"]["controllers"].append(rel_path)
+                    elif "/wizards/" in rel_path:
+                        index["summary"]["wizards"].append(rel_path)
+                    elif "/security/" in rel_path:
+                        index["summary"]["security"].append(rel_path)
+                        
+                except Exception as e:
+                    print(f"⚠️  Skipping {filepath}: {e}")
     
     # Save index
     INDEX_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -113,7 +139,11 @@ def build_index():
     
     print(f"✓ Index built: {index['summary']['total_files']} files, {index['summary']['total_chars']:,} chars")
     print(f"  - Models: {len(index['summary']['models'])}")
+    print(f"  - Views: {len(index['summary']['views'])}")
     print(f"  - Demos: {len(index['summary']['demos'])}")
+    print(f"  - Controllers: {len(index['summary']['controllers'])}")
+    print(f"  - Wizards: {len(index['summary']['wizards'])}")
+    print(f"  - Security: {len(index['summary']['security'])}")
     
     return index
 
@@ -141,23 +171,29 @@ def build_context(index, focus_files=None):
                 lines.append(f"\n{'='*80}\nFile: {rel_path}\n{'='*80}\n")
                 lines.append(file_data["content"])
     else:
-        # Smart selection: prioritize key model files only (avoid token limit)
-        # Focus on core models, not all 313 files
-        key_models = [f for f in index["summary"]["models"] 
-                      if any(keyword in f for keyword in [
-                          'records_container.py',
-                          'records_location.py', 
-                          'records_department.py',
-                          'records_document_type.py',
-                          'records_retention_policy.py',
-                          'destruction_certificate.py',
-                          'portal_request.py',
-                          'customer_feedback.py'
-                      ])]
+        # Smart selection: include ALL files but prioritize core ones
+        # Priority order: models, demos, views, controllers, wizards, security
+        priority_order = [
+            index["summary"]["models"],
+            index["summary"]["demos"],
+            index["summary"]["views"],
+            index["summary"]["controllers"],
+            index["summary"]["wizards"],
+            index["summary"]["security"],
+        ]
         
-        # Add all demo files (usually small)
-        priority_files = key_models + index["summary"]["demos"]
+        # Flatten priority list
+        priority_files = []
+        for file_list in priority_order:
+            priority_files.extend(file_list)
         
+        # Add any remaining files not in categories
+        all_files = sorted(index["files"].keys())
+        for rel_path in all_files:
+            if rel_path not in priority_files:
+                priority_files.append(rel_path)
+        
+        # Build context from all files
         for rel_path in priority_files:
             if rel_path in index["files"]:
                 file_data = index["files"][rel_path]
@@ -166,9 +202,10 @@ def build_context(index, focus_files=None):
     
     context = "\n".join(lines)
     
-    # Safety check: if still too large, truncate
-    max_chars = 100000  # ~25k tokens (safe for 131k limit with room for response)
+    # Safety check: if still too large, truncate (keep priority files)
+    max_chars = 450000  # ~112k tokens (safe for 131k limit with room for response)
     if len(context) > max_chars:
+        print(f"⚠️  Context too large ({len(context):,} chars), truncating to {max_chars:,} chars")
         context = context[:max_chars] + f"\n\n... [Truncated: total {len(context):,} chars, showing first {max_chars:,}]"
     
     return context
