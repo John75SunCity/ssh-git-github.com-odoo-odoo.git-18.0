@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portal File Create Form -->
+        <template id="portal_file_create" name="Create New File">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Create New File</t>
+                
+                <div class="container my-4">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card shadow">
+                                <div class="card-header bg-success text-white">
+                                    <h3 class="mb-0">
+                                        <i class="fa fa-folder-open"></i> Create New File Folder
+                                    </h3>
+                                </div>
+                                
+                                <div class="card-body">
+                                    <form action="/my/inventory/files/create" method="POST">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        
+                                        <div class="form-group">
+                                            <label for="name">File Name *</label>
+                                            <input type="text" class="form-control" id="name" name="name" required="required" 
+                                                   placeholder="Enter file folder name"/>
+                                            <small class="form-text text-muted">
+                                                Enter a descriptive name for this file folder
+                                            </small>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="barcode">Barcode</label>
+                                            <input type="text" class="form-control" id="barcode" name="barcode" 
+                                                   placeholder="Scan or enter barcode (optional)"/>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="container_id">Container *</label>
+                                            <select class="form-control" id="container_id" name="container_id" required="required">
+                                                <option value="">-- Select Container --</option>
+                                                <t t-foreach="containers" t-as="container">
+                                                    <option t-att-value="container.id">
+                                                        <t t-esc="container.name or container.container_number"/>
+                                                        <t t-if="container.location_id"> - <t t-esc="container.location_id.name"/></t>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                            <small class="form-text text-muted">
+                                                Select the container where this file will be stored
+                                            </small>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="department_id">Department *</label>
+                                            <select class="form-control" id="department_id" name="department_id" required="required">
+                                                <option value="">-- Select Department --</option>
+                                                <t t-foreach="departments" t-as="dept">
+                                                    <option t-att-value="dept.id"><t t-esc="dept.name"/></option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="description">Description</label>
+                                            <textarea class="form-control" id="description" name="description" rows="3" 
+                                                      placeholder="Optional: Describe the contents of this file"></textarea>
+                                        </div>
+                                        
+                                        <div class="form-group mt-4">
+                                            <button type="submit" class="btn btn-success btn-lg">
+                                                <i class="fa fa-plus-circle"></i> Create File
+                                            </button>
+                                            <a href="/my/inventory/files" class="btn btn-secondary btn-lg ml-2">
+                                                <i class="fa fa-times"></i> Cancel
+                                            </a>
+                                        </div>
+                                    </form>
+                                    
+                                    <!-- Help Section -->
+                                    <div class="mt-4 pt-3 border-top">
+                                        <h6 class="text-muted">
+                                            <i class="fa fa-question-circle"></i> Quick Help
+                                        </h6>
+                                        <ul class="small text-muted">
+                                            <li><strong>File Name:</strong> Enter a descriptive name for easy identification</li>
+                                            <li><strong>Barcode:</strong> Scan or manually enter barcode if available</li>
+                                            <li><strong>Container:</strong> Select the physical container this file belongs to</li>
+                                            <li><strong>Department:</strong> Assign to appropriate department</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -675,8 +675,15 @@
         "templates/portal_containers.xml",
         "templates/portal_containers_list.xml",
         "templates/portal_container_create.xml",
+        "templates/portal_container_detail.xml",  # NEW: Container detail with edit/delete
+        "templates/portal_container_movements.xml",  # NEW: Movement history timeline
+        # File Templates
+        "templates/portal_file_detail.xml",  # NEW: File detail with document list
+        "templates/portal_file_create.xml",  # NEW: File creation form
         # Document & Barcode Templates
         "templates/portal_documents.xml",
+        "templates/portal_document_detail.xml",  # NEW: Document detail with attachments
+        "templates/portal_document_create.xml",  # NEW: Document creation form
         "templates/portal_document_retrieval.xml",
         "templates/portal_document_bulk_upload.xml",
         "templates/portal_barcode_template.xml",

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portal File Detail View -->
+        <template id="portal_file_detail" name="File Detail">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">File Details</t>
+                
+                <div class="container my-4">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- Success/Error Messages -->
+                            <t t-if="request.params.get('created')">
+                                <div class="alert alert-success alert-dismissible fade show">
+                                    <i class="fa fa-check-circle"></i> File created successfully!
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                </div>
+                            </t>
+                            <t t-if="request.params.get('updated')">
+                                <div class="alert alert-success alert-dismissible fade show">
+                                    <i class="fa fa-check-circle"></i> File updated successfully!
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                </div>
+                            </t>
+                            
+                            <!-- File Header Card -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-success text-white">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <h3 class="mb-0">
+                                                <i class="fa fa-folder-open"></i> <t t-esc="file.name"/>
+                                            </h3>
+                                        </div>
+                                        <div class="col-md-4 text-right">
+                                            <t t-if="can_edit">
+                                                <button class="btn btn-light btn-sm" data-toggle="modal" data-target="#editFileModal">
+                                                    <i class="fa fa-edit"></i> Edit
+                                                </button>
+                                            </t>
+                                            <t t-if="can_delete">
+                                                <button class="btn btn-danger btn-sm" onclick="deleteFile()">
+                                                    <i class="fa fa-trash"></i> Delete
+                                                </button>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h5 class="text-muted mb-3">File Information</h5>
+                                            <table class="table table-sm">
+                                                <tr>
+                                                    <th style="width: 40%;">File Name:</th>
+                                                    <td><strong><t t-esc="file.name"/></strong></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Barcode:</th>
+                                                    <td><t t-esc="file.barcode or 'Not assigned'"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Department:</th>
+                                                    <td><t t-esc="file.department_id.name or 'Not assigned'"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Container:</th>
+                                                    <td>
+                                                        <a t-attf-href="/my/inventory/container/#{file.container_id.id}" t-if="file.container_id">
+                                                            <t t-esc="file.container_id.name or file.container_id.container_number"/>
+                                                        </a>
+                                                        <span t-else="">Not assigned</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Description:</th>
+                                                    <td><t t-esc="file.description or 'None'"/></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <h5 class="text-muted mb-3">Statistics</h5>
+                                            <table class="table table-sm">
+                                                <tr>
+                                                    <th style="width: 40%;">Documents:</th>
+                                                    <td><strong><t t-esc="len(documents or [])"/></strong> documents</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Created Date:</th>
+                                                    <td><t t-esc="file.create_date.strftime('%Y-%m-%d') if file.create_date else 'Unknown'"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last Updated:</th>
+                                                    <td><t t-esc="file.write_date.strftime('%Y-%m-%d') if file.write_date else 'Unknown'"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Status:</th>
+                                                    <td>
+                                                        <span t-att-class="'badge badge-' + ('success' if file.active else 'secondary')">
+                                                            <t t-if="file.active">Active</t>
+                                                            <t t-else="">Archived</t>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Documents in File -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-file-text"></i> Documents (<t t-esc="len(documents or [])"/>)
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <t t-if="documents">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Document Name</th>
+                                                        <th>Type</th>
+                                                        <th>Created</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="documents" t-as="doc">
+                                                        <tr>
+                                                            <td><strong><t t-esc="doc.name"/></strong></td>
+                                                            <td><t t-esc="doc.document_type_id.name or 'N/A'"/></td>
+                                                            <td><t t-esc="doc.create_date.strftime('%Y-%m-%d') if doc.create_date else 'Unknown'"/></td>
+                                                            <td>
+                                                                <a t-attf-href="/my/inventory/document/#{doc.id}" class="btn btn-sm btn-primary">
+                                                                    <i class="fa fa-eye"></i> View
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="alert alert-info">
+                                            <i class="fa fa-info-circle"></i> No documents in this file yet.
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Actions -->
+                            <div class="card shadow-sm">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fa fa-bolt"></i> Quick Actions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <a href="/my/inventory/files" class="btn btn-secondary">
+                                        <i class="fa fa-arrow-left"></i> Back to Files
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Edit File Modal -->
+                <t t-if="can_edit">
+                    <div class="modal fade" id="editFileModal" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit File</h5>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <form t-attf-action="/my/inventory/file/#{file.id}/edit" method="POST">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label>File Name *</label>
+                                            <input type="text" class="form-control" name="name" t-att-value="file.name" required="required"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Barcode</label>
+                                            <input type="text" class="form-control" name="barcode" t-att-value="file.barcode"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Description</label>
+                                            <textarea class="form-control" name="description" rows="3"><t t-esc="file.description"/></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Container</label>
+                                            <select class="form-control" name="container_id">
+                                                <option value="">-- Select Container --</option>
+                                                <t t-foreach="containers" t-as="cont">
+                                                    <option t-att-value="cont.id" t-att-selected="'selected' if cont.id == file.container_id.id else None">
+                                                        <t t-esc="cont.name or cont.container_number"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Department</label>
+                                            <select class="form-control" name="department_id">
+                                                <option value="">-- Select Department --</option>
+                                                <t t-foreach="departments" t-as="dept">
+                                                    <option t-att-value="dept.id" t-att-selected="'selected' if dept.id == file.department_id.id else None">
+                                                        <t t-esc="dept.name"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                
+                <!-- Delete JavaScript -->
+                <script type="text/javascript">
+                    function deleteFile() {
+                        if (confirm('Are you sure you want to archive this file? This action can be reversed by an administrator.')) {
+                            $.ajax({
+                                url: '/my/inventory/file/<t t-esc="file.id"/>/delete',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify({}),
+                                success: function(result) {
+                                    if (result.success) {
+                                        window.location.href = '/my/inventory/files?deleted=success';
+                                    } else {
+                                        alert('Error: ' + result.error);
+                                    }
+                                },
+                                error: function(xhr) {
+                                    alert('Error deleting file: ' + xhr.responseText);
+                                }
+                            });
+                        }
+                    }
+                </script>
+            </t>
+        </template>
+    </data>
+</odoo>

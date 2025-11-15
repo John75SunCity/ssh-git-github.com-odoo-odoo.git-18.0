@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portal Container Movement History -->
+        <template id="portal_container_movements" name="Container Movement History">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Movement History</t>
+                
+                <div class="container my-4">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- Header Card -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-info text-white">
+                                    <h3 class="mb-0">
+                                        <i class="fa fa-history"></i> Movement History: <t t-esc="container.name or container.container_number"/>
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Container Number:</strong> <t t-esc="container.container_number"/></p>
+                                            <p><strong>Current Location:</strong> <t t-esc="container.location_id.name or 'Unknown'"/></p>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                            <a t-attf-href="/my/inventory/container/#{container.id}" class="btn btn-primary">
+                                                <i class="fa fa-arrow-left"></i> Back to Container
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Movement Timeline -->
+                            <div class="card shadow-sm">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-truck"></i> Movement Timeline 
+                                        <span class="badge badge-secondary"><t t-esc="len(movements or [])"/> movements</span>
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <t t-if="movements">
+                                        <div class="timeline">
+                                            <t t-foreach="movements" t-as="move">
+                                                <div class="timeline-item mb-4">
+                                                    <div class="row">
+                                                        <div class="col-md-2 text-right">
+                                                            <small class="text-muted">
+                                                                <t t-esc="move.move_date.strftime('%Y-%m-%d %H:%M') if move.move_date else 'Unknown'"/>
+                                                            </small>
+                                                        </div>
+                                                        <div class="col-md-1 text-center">
+                                                            <div class="timeline-badge bg-info">
+                                                                <i class="fa fa-map-marker"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <h6 class="card-title">
+                                                                        <strong>From:</strong> <t t-esc="move.from_location_id.name or 'Unknown'"/>
+                                                                        → <strong>To:</strong> <t t-esc="move.to_location_id.name or 'Unknown'"/>
+                                                                    </h6>
+                                                                    <p class="card-text">
+                                                                        <strong>Moved By:</strong> <t t-esc="move.moved_by_id.name or 'Unknown'"/><br/>
+                                                                        <t t-if="move.reason">
+                                                                            <strong>Reason:</strong> <t t-esc="move.reason"/>
+                                                                        </t>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="alert alert-info">
+                                            <i class="fa fa-info-circle"></i> No movement history available for this container.
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <style>
+                    .timeline-badge {
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                    }
+                </style>
+            </t>
+        </template>
+    </data>
+</odoo>
