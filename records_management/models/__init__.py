@@ -214,6 +214,7 @@ from . import records_retention_rule
 from . import records_retrieval_order
 from . import records_retrieval_order_line
 from . import records_retrieval_work_order
+from . import records_saved_search  # Advanced inventory search presets
 from . import records_security_audit
 from . import records_series
 from . import records_service_type

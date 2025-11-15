@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Saved Search Tree View -->
+    <record id="view_records_saved_search_tree" model="ir.ui.view">
+        <field name="name">records.saved.search.tree</field>
+        <field name="model">records.saved.search</field>
+        <field name="arch" type="xml">
+            <tree string="Saved Inventory Searches">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="is_default" widget="boolean_toggle"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="last_used"/>
+                <field name="usage_count"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Saved Search Form View -->
+    <record id="view_records_saved_search_form" model="ir.ui.view">
+        <field name="name">records.saved.search.form</field>
+        <field name="model">records.saved.search</field>
+        <field name="arch" type="xml">
+            <form string="Saved Search">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="execute_search" type="object" class="oe_stat_button" icon="fa-search">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="usage_count"/></span>
+                                <span class="o_stat_text">Times Used</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Search Preset Name"/></h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="user_id" readonly="1"/>
+                            <field name="is_default"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="last_used" readonly="1"/>
+                            <field name="create_date" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Search Criteria" name="filters">
+                            <group>
+                                <field name="filters" widget="ace" options="{'mode': 'json'}" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Saved Search Search View -->
+    <record id="view_records_saved_search_search" model="ir.ui.view">
+        <field name="name">records.saved.search.search</field>
+        <field name="model">records.saved.search</field>
+        <field name="arch" type="xml">
+            <search string="Search Saved Searches">
+                <field name="name" string="Search Name"/>
+                <field name="user_id"/>
+                <filter string="My Searches" name="my_searches" domain="[('user_id', '=', uid)]"/>
+                <filter string="Default Searches" name="default_searches" domain="[('is_default', '=', True)]"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter string="Recently Used" name="recently_used" 
+                        domain="[]" 
+                        context="{'order': 'last_used desc'}"/>
+                <filter string="Most Used" name="most_used" 
+                        domain="[]" 
+                        context="{'order': 'usage_count desc'}"/>
+                <group expand="0" string="Group By">
+                    <filter string="User" name="group_by_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Default" name="group_by_default" context="{'group_by': 'is_default'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Saved Search Kanban View -->
+    <record id="view_records_saved_search_kanban" model="ir.ui.view">
+        <field name="name">records.saved.search.kanban</field>
+        <field name="model">records.saved.search</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="is_default"/>
+                <field name="usage_count"/>
+                <field name="last_used"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                        <span t-if="record.is_default.raw_value" class="badge badge-success ms-2">
+                                            <i class="fa fa-star"/> Default
+                                        </span>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="user_id"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <span>Used <field name="usage_count"/> times</span>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="last_used" widget="date"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Saved Search Action -->
+    <record id="action_records_saved_search" model="ir.actions.act_window">
+        <field name="name">Saved Inventory Searches</field>
+        <field name="res_model">records.saved.search</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'search_default_my_searches': 1, 'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first saved search preset!
+            </p>
+            <p>
+                Saved searches allow you to quickly access commonly used search criteria.<br/>
+                Use the Advanced Inventory Search to create and save your search presets.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_records_saved_search"
+              name="Saved Searches"
+              parent="records_management.menu_records_main"
+              action="action_records_saved_search"
+              sequence="105"/>
+</odoo>

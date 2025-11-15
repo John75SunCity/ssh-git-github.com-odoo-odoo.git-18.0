@@ -39,31 +39,31 @@ date_ranges = [
 def add_fields_to_container(match):
     """Add location_id and content dates to a container record"""
     container_block = match.group(0)
-    
+
     # Check if fields already exist
     if 'name="location_id"' in container_block:
         return container_block
-    
+
     # Find the state field line (insert after it)
     state_match = re.search(r'(<field name="state">.*?</field>)', container_block)
     if not state_match:
         return container_block
-    
+
     state_line = state_match.group(1)
-    
+
     # Choose random location and date range
     location = random.choice(locations)
     date_from, date_to = random.choice(date_ranges)
-    
+
     # Create new fields
     new_fields = f'''{state_line}
             <field name="location_id" ref="{location}"/>
             <field name="content_date_from">{date_from}</field>
             <field name="content_date_to">{date_to}</field>'''
-    
+
     # Replace the state line with state + new fields
     updated_block = container_block.replace(state_line, new_fields)
-    
+
     return updated_block
 
 # Find all container records and add fields
