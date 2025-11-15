@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Demo Destruction Certificates for Testing -->
-        <record id="demo_naid_certificate_001" model="destruction.certificate">
+        <!-- Demo NAID Certificates for Testing -->
+        <!-- NOTE: Using naid.certificate model (not destruction.certificate) -->
+        <record id="demo_naid_certificate_001" model="naid.certificate">
             <!-- certificate_number omitted intentionally so sequence auto-generates on create -->
             <field name="partner_id" ref="base.res_partner_1"/>
             <field name="certificate_date">2025-10-15</field>
-            <field name="witness_id" ref="base.res_partner_1"/>
             <field name="destruction_type">on_site</field>
-            <!-- Leave in draft initially; we will issue after adding items -->
+            <!-- Leave in draft initially -->
             <field name="state">draft</field>
         </record>
 
-        <!-- NOTE: destruction.item requires records_destruction_id (naid.destruction.record), not destruction.certificate
-             Commented out until proper naid.destruction.record demo data exists -->
+        <!-- NOTE: destruction.item requires records_destruction_id (naid.destruction.record)
+             Demo items commented out until proper naid.destruction.record demo data exists -->
         <!-- <record id="demo_naid_certificate_item_001" model="destruction.item">
             <field name="records_destruction_id" ref="demo_naid_destruction_record_001"/>
             <field name="item_description">Confidential Paper Boxes</field>
@@ -21,12 +21,10 @@
             <field name="quantity" eval="3"/>
         </record> -->
 
-    <!-- Issue the certificate after items exist to satisfy constraints -->
-    <!-- Pre-sanitize NAID reports to avoid legacy list-type corruption errors -->
-    <function model="destruction.certificate" name="xml_sanitize_naid_reports"/>
-    <function model="destruction.certificate" name="xml_issue_certificate" eval="(ref('demo_naid_certificate_001'),)"/>
+        <!-- Function calls removed - methods only needed for legacy data migration, not demo data -->
+        <!-- If certificate issuance needed, add workflow action here instead of direct method calls -->
 
-        <record id="demo_naid_certificate_002" model="destruction.certificate">
+        <record id="demo_naid_certificate_002" model="naid.certificate">
             <!-- certificate_number omitted intentionally so sequence auto-generates on create -->
             <field name="partner_id" ref="base.res_partner_2"/>
             <field name="certificate_date">2025-11-01</field>
