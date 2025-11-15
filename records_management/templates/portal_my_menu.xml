@@ -10,95 +10,137 @@
         <template id="portal_my_home_menu_records" name="Portal My Home Menu - Records Management" inherit_id="portal.portal_my_home" priority="20">
 
             <!-- Add Records Management Cards to Portal Home -->
-            <xpath expr="//t[@t-call='portal.portal_layout']" position="inside">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
 
                 <div class="container mt-4">
                     <h3 class="mb-4">Records Management</h3>
                     <div class="row">
-                <div class="col-lg-6 mb-3">
-                    <div class="card h-100">
-                        <div class="card-header bg-primary text-white">
-                            <i class="fa fa-box me-2"/>
-                            <strong>Physical Inventory</strong>
+                        
+                        <!-- Physical Inventory Section -->
+                        <div class="col-lg-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-primary text-white">
+                                    <i class="fa fa-box me-2"/>
+                                    <strong>Physical Inventory</strong>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <a href="/my/inventory" class="text-decoration-none">
+                                                <i class="fa fa-th-large me-2 text-primary"/>
+                                                All Inventory Dashboard
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/containers" class="text-decoration-none">
+                                                <i class="fa fa-archive me-2 text-primary"/>
+                                                Storage Containers
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/containers" class="text-decoration-none">
+                                                <i class="fa fa-box me-2 text-primary"/>
+                                                Containers (Detailed View)
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/files" class="text-decoration-none">
+                                                <i class="fa fa-folder me-2 text-primary"/>
+                                                File Folders
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/documents" class="text-decoration-none">
+                                                <i class="fa fa-file-text me-2 text-primary"/>
+                                                Documents
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/documents" class="text-decoration-none">
+                                                <i class="fa fa-file-pdf me-2 text-primary"/>
+                                                Physical Documents (Scanned)
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/temp" class="text-decoration-none">
+                                                <i class="fa fa-clock me-2 text-primary"/>
+                                                Temporary Inventory
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/movements" class="text-decoration-none">
+                                                <i class="fa fa-exchange-alt me-2 text-primary"/>
+                                                Inventory Movements
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/locations" class="text-decoration-none">
+                                                <i class="fa fa-map-marker-alt me-2 text-primary"/>
+                                                Storage Locations
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/advanced_search" class="text-decoration-none">
+                                                <i class="fa fa-search me-2 text-primary"/>
+                                                Advanced Search
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/containers/new" class="text-decoration-none">
+                                                <i class="fa fa-plus-circle me-2 text-primary"/>
+                                                Create New Container
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0">
-                                <li class="mb-2">
-                                    <a href="/my/inventory" class="text-decoration-none">
-                                        <i class="fa fa-th-large me-2 text-primary"/>
-                                        All Inventory Dashboard
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/containers" class="text-decoration-none">
-                                        <i class="fa fa-archive me-2 text-primary"/>
-                                        Storage Containers
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/inventory/containers" class="text-decoration-none">
-                                        <i class="fa fa-box me-2 text-primary"/>
-                                        Containers (Detailed View)
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/inventory/files" class="text-decoration-none">
-                                        <i class="fa fa-folder me-2 text-primary"/>
-                                        File Folders
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/documents" class="text-decoration-none">
-                                        <i class="fa fa-file-text me-2 text-primary"/>
-                                        Documents
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/inventory/documents" class="text-decoration-none">
-                                        <i class="fa fa-file-pdf me-2 text-primary"/>
-                                        Physical Documents (Scanned)
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/inventory/temp" class="text-decoration-none">
-                                        <i class="fa fa-clock me-2 text-primary"/>
-                                        Temporary Inventory
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/inventory/movements" class="text-decoration-none">
-                                        <i class="fa fa-exchange-alt me-2 text-primary"/>
-                                        Inventory Movements
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/inventory/locations" class="text-decoration-none">
-                                        <i class="fa fa-map-marker-alt me-2 text-primary"/>
-                                        Storage Locations
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/inventory/advanced_search" class="text-decoration-none">
-                                        <i class="fa fa-search me-2 text-primary"/>
-                                        Advanced Search
-                                    </a>
-                                </li>
-                                <li class="mb-2">
-                                    <a href="/my/containers/new" class="text-decoration-none">
-                                        <i class="fa fa-plus-circle me-2 text-primary"/>
-                                        Create New Container
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                    </div>
-                </div>
-            </xpath>
 
-            <!-- Add Service Requests Section -->
-            <xpath expr="//div[hasclass('o_portal_my_home_menu')]" position="inside">
+                        <!-- Service Requests Section -->
+                        <div class="col-lg-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-success text-white">
+                                    <i class="fa fa-tasks me-2"/>
+                                    <strong>Service Requests</strong>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <a href="/my/requests" class="text-decoration-none">
+                                                <i class="fa fa-list me-2 text-success"/>
+                                                All My Requests
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/request/new/retrieval" class="text-decoration-none">
+                                                <i class="fa fa-truck me-2 text-success"/>
+                                                Request Retrieval
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/request/new/destruction" class="text-decoration-none">
+                                                <i class="fa fa-fire me-2 text-success"/>
+                                                Request Destruction
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/request/new/pickup" class="text-decoration-none">
+                                                <i class="fa fa-calendar me-2 text-success"/>
+                                                Request Pickup
+                                            </a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/request/new/scanning" class="text-decoration-none">
+                                                <i class="fa fa-scanner me-2 text-success"/>
+                                                Request Scanning
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Destruction Services Section -->
                 <div class="col-lg-6 mb-3">
                     <div class="card h-100">
                         <div class="card-header bg-success text-white">
