@@ -3262,6 +3262,315 @@ class RecordsManagementController(http.Controller):
             _logger.error(f\"Request submit failed: {str(e)}\")
             return {'success': False, 'error': str(e)}
 
+    # ============================================================================
+    # DESTRUCTION & CUSTODY WORKFLOW ROUTES (5 routes)
+    # ============================================================================
+
+    @http.route(['/my/destruction'], type='http', auth='user', website=True)
+    def portal_destruction_list(self, page=1, filterby=None, search=None, **kw):
+        """
+        List all destruction requests with filtering
+        Accessible to: All portal users (own department)
+        Security: Department filtering for non-company admins
+        """
+        values = self._prepare_portal_layout_values()
+        user = request.env.user
+        partner = user.partner_id
+
+        DestructionRequest = request.env['portal.request']
+        domain = [
+            ('partner_id', '=', partner.id),
+            ('request_type', '=', 'destruction')
+        ]
+
+        # Department filtering for non-company admins
+        if not user.has_group('records_management.group_portal_company_admin'):
+            accessible_departments = user.accessible_department_ids.ids
+            if accessible_departments:
+                domain.append(('department_id', 'in', accessible_departments))
+
+        # Filter by state
+        if filterby == 'pending':
+            domain.append(('state', 'in', ['draft', 'submitted']))
+        elif filterby == 'approved':
+            domain.append(('state', '=', 'approved'))
+        elif filterby == 'completed':
+            domain.append(('state', '=', 'completed'))
+
+        # Search
+        if search:
+            domain += ['|', ('name', 'ilike', search), ('description', 'ilike', search)]
+
+        # Pagination
+        request_count = DestructionRequest.search_count(domain)
+        pager = request.website.pager(
+            url="/my/destruction",
+            url_args={'filterby': filterby, 'search': search},
+            total=request_count,
+            page=page,
+            step=20,
+        )
+
+        requests = DestructionRequest.search(
+            domain,
+            order='create_date desc',
+            limit=20,
+            offset=pager['offset']
+        )
+
+        values.update({
+            'requests': requests,
+            'page_name': 'destruction',
+            'pager': pager,
+            'filterby': filterby or 'all',
+            'search': search or '',
+            'request_count': request_count,
+        })
+
+        return request.render("records_management.portal_destruction_list", values)
+
+    @http.route(['/my/destruction/pending'], type='http', auth='user', website=True)
+    def portal_destruction_pending(self, page=1, search=None, **kw):
+        """
+        Show pending destruction requests needing approval
+        Accessible to: Department Admin+
+        Security: Department access validation
+        """
+        values = self._prepare_portal_layout_values()
+        user = request.env.user
+        partner = user.partner_id
+
+        # Require department admin+ permissions
+        if not user.has_group('records_management.group_portal_department_admin'):
+            return request.render('records_management.portal_errors', {
+                'error_title': _('Access Denied'),
+                'error_message': _('You do not have permission to view pending destruction approvals.'),
+            })
+
+        DestructionRequest = request.env['portal.request']
+        domain = [
+            ('partner_id', '=', partner.id),
+            ('request_type', '=', 'destruction'),
+            ('state', '=', 'submitted')  # Only show submitted requests awaiting approval
+        ]
+
+        # Department filtering for non-company admins
+        if not user.has_group('records_management.group_portal_company_admin'):
+            accessible_departments = user.accessible_department_ids.ids
+            if accessible_departments:
+                domain.append(('department_id', 'in', accessible_departments))
+
+        # Search
+        if search:
+            domain += ['|', ('name', 'ilike', search), ('description', 'ilike', search)]
+
+        # Pagination
+        request_count = DestructionRequest.search_count(domain)
+        pager = request.website.pager(
+            url="/my/destruction/pending",
+            url_args={'search': search},
+            total=request_count,
+            page=page,
+            step=20,
+        )
+
+        pending_requests = DestructionRequest.search(
+            domain,
+            order='create_date asc',  # Oldest first for approval queue
+            limit=20,
+            offset=pager['offset']
+        )
+
+        values.update({
+            'pending_requests': pending_requests,
+            'page_name': 'destruction_pending',
+            'pager': pager,
+            'search': search or '',
+            'request_count': request_count,
+        })
+
+        return request.render("records_management.portal_destruction_pending", values)
+
+    @http.route(['/my/certificates'], type='http', auth='user', website=True)
+    def portal_certificates(self, page=1, search=None, **kw):
+        """
+        List destruction certificates with download capability
+        Accessible to: All portal users (own department)
+        Security: Department filtering
+        """
+        values = self._prepare_portal_layout_values()
+        user = request.env.user
+        partner = user.partner_id
+
+        Certificate = request.env['destruction.certificate']
+        domain = [('partner_id', '=', partner.id)]
+
+        # Department filtering for non-company admins
+        if not user.has_group('records_management.group_portal_company_admin'):
+            accessible_departments = user.accessible_department_ids.ids
+            if accessible_departments:
+                domain.append(('department_id', 'in', accessible_departments))
+
+        # Search
+        if search:
+            domain += ['|', ('name', 'ilike', search), ('certificate_number', 'ilike', search)]
+
+        # Pagination
+        cert_count = Certificate.search_count(domain)
+        pager = request.website.pager(
+            url="/my/certificates",
+            url_args={'search': search},
+            total=cert_count,
+            page=page,
+            step=20,
+        )
+
+        certificates = Certificate.search(
+            domain,
+            order='destruction_date desc',
+            limit=20,
+            offset=pager['offset']
+        )
+
+        values.update({
+            'certificates': certificates,
+            'page_name': 'certificates',
+            'pager': pager,
+            'search': search or '',
+            'cert_count': cert_count,
+        })
+
+        return request.render("records_management.portal_certificates", values)
+
+    @http.route(['/my/custody/chain'], type='http', auth='user', website=True)
+    def portal_custody_chain(self, page=1, filterby=None, search=None, **kw):
+        """
+        Chain of custody tracking for compliance
+        Accessible to: All portal users (own department)
+        Security: Department filtering
+        """
+        values = self._prepare_portal_layout_values()
+        user = request.env.user
+        partner = user.partner_id
+
+        CustodyLog = request.env['naid.custody']
+        domain = [('partner_id', '=', partner.id)]
+
+        # Department filtering for non-company admins
+        if not user.has_group('records_management.group_portal_company_admin'):
+            accessible_departments = user.accessible_department_ids.ids
+            if accessible_departments:
+                domain.append(('department_id', 'in', accessible_departments))
+
+        # Filter by custody type
+        if filterby == 'transfer':
+            domain.append(('custody_type', '=', 'transfer'))
+        elif filterby == 'destruction':
+            domain.append(('custody_type', '=', 'destruction'))
+        elif filterby == 'retrieval':
+            domain.append(('custody_type', '=', 'retrieval'))
+
+        # Search
+        if search:
+            domain += [
+                '|', '|',
+                ('container_id.name', 'ilike', search),
+                ('from_custodian_id.name', 'ilike', search),
+                ('to_custodian_id.name', 'ilike', search)
+            ]
+
+        # Pagination
+        custody_count = CustodyLog.search_count(domain)
+        pager = request.website.pager(
+            url="/my/custody/chain",
+            url_args={'filterby': filterby, 'search': search},
+            total=custody_count,
+            page=page,
+            step=20,
+        )
+
+        custody_logs = CustodyLog.search(
+            domain,
+            order='transfer_date desc',
+            limit=20,
+            offset=pager['offset']
+        )
+
+        values.update({
+            'custody_logs': custody_logs,
+            'page_name': 'custody_chain',
+            'pager': pager,
+            'filterby': filterby or 'all',
+            'search': search or '',
+            'custody_count': custody_count,
+        })
+
+        return request.render("records_management.portal_custody_chain", values)
+
+    @http.route(['/my/destruction/<int:request_id>/approve'], type='json', auth='user', methods=['POST'])
+    def portal_destruction_approve(self, request_id, **kw):
+        """
+        Approve destruction request (Department Admin+)
+        Accessible to: Department Admin+
+        Security: Department access + state validation
+        """
+        try:
+            user = request.env.user
+            partner = user.partner_id
+
+            # Require department admin+ permissions
+            if not user.has_group('records_management.group_portal_department_admin'):
+                return {'success': False, 'error': _('Insufficient permissions to approve destruction requests')}
+
+            # Get destruction request
+            dest_request = request.env['portal.request'].sudo().browse(request_id)
+            if not dest_request.exists():
+                return {'success': False, 'error': _('Destruction request not found')}
+
+            # Verify ownership
+            if dest_request.partner_id.id != partner.id:
+                return {'success': False, 'error': _('Unauthorized access to destruction request')}
+
+            # Department access validation
+            if not user.has_group('records_management.group_portal_company_admin'):
+                accessible_departments = user.accessible_department_ids.ids
+                if dest_request.department_id.id not in accessible_departments:
+                    return {'success': False, 'error': _('Access denied to this department')}
+
+            # Verify request type and state
+            if dest_request.request_type != 'destruction':
+                return {'success': False, 'error': _('This is not a destruction request')}
+
+            if dest_request.state != 'submitted':
+                return {'success': False, 'error': _('Only submitted requests can be approved')}
+
+            # Approve the request
+            dest_request.write({
+                'state': 'approved',
+                'approved_by_id': user.id,
+                'approved_date': datetime.now(),
+            })
+
+            # Create audit log
+            request.env['naid.audit.log'].create({
+                'action_type': 'destruction_approved',
+                'user_id': user.id,
+                'description': _('Destruction request %s approved via portal by %s') % (
+                    dest_request.name, user.name
+                ),
+                'timestamp': datetime.now(),
+            })
+
+            return {'success': True, 'message': _('Destruction request approved successfully')}
+
+        except Exception as e:
+            _logger.error(f\"Destruction approval failed: {str(e)}\")
+            return {'success': False, 'error': str(e)}
+
+    # ============================================================================
+    # TEMPORARY INVENTORY & OTHER ROUTES
+    # ============================================================================
+
     @http.route(['/my/inventory/temp'], type='http', auth="user", website=True)
     def portal_inventory_temp(self, page=1, sortby=None, filterby=None, search=None, **kw):
         """Temp inventory tab - backend-style list view"""
