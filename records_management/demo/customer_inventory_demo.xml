@@ -240,6 +240,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2019-01-01</field>
             <field name="content_date_to">2019-12-31</field>
+            <field name="weight">45.1</field>
+            <field name="storage_start_date">2018-11-04</field>
+            <field name="last_access_date">2020-09-20</field>
             <field name="active">True</field>
         </record>
 
@@ -257,6 +260,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">23.0</field>
+            <field name="storage_start_date">2022-11-15</field>
+            <field name="last_access_date">2024-04-20</field>
             <field name="active">True</field>
         </record>
 
@@ -274,6 +280,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
+            <field name="weight">25.8</field>
+            <field name="storage_start_date">2022-11-17</field>
+            <field name="last_access_date">2024-06-03</field>
             <field name="active">True</field>
         </record>
 
@@ -291,6 +300,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
+            <field name="weight">47.4</field>
+            <field name="storage_start_date">2023-11-29</field>
+            <field name="last_access_date">2024-02-02</field>
             <field name="active">True</field>
         </record>
 
@@ -308,6 +320,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
+            <field name="weight">43.7</field>
+            <field name="storage_start_date">2022-11-20</field>
+            <field name="last_access_date">2023-05-09</field>
             <field name="active">True</field>
         </record>
 
@@ -325,6 +340,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
+            <field name="weight">36.9</field>
+            <field name="storage_start_date">2021-11-05</field>
+            <field name="last_access_date">2022-01-13</field>
             <field name="active">True</field>
         </record>
 
@@ -342,6 +360,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">43.2</field>
+            <field name="storage_start_date">2019-11-12</field>
+            <field name="last_access_date">2021-07-25</field>
             <field name="active">True</field>
         </record>
 
@@ -359,6 +380,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">16.6</field>
+            <field name="storage_start_date">2022-11-21</field>
+            <field name="last_access_date">2024-10-22</field>
             <field name="active">True</field>
         </record>
 
@@ -376,6 +400,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">37.1</field>
+            <field name="storage_start_date">2019-11-20</field>
+            <field name="last_access_date">2021-01-26</field>
             <field name="active">True</field>
         </record>
 
@@ -393,6 +420,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">21.1</field>
+            <field name="storage_start_date">2022-11-28</field>
+            <field name="last_access_date">2023-04-18</field>
             <field name="active">True</field>
         </record>
 
@@ -410,6 +440,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
+            <field name="weight">19.7</field>
+            <field name="storage_start_date">2022-11-18</field>
+            <field name="last_access_date">2024-03-31</field>
             <field name="active">True</field>
         </record>
 
@@ -427,6 +460,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
+            <field name="weight">39.4</field>
+            <field name="storage_start_date">2023-02-11</field>
+            <field name="last_access_date">2023-03-09</field>
             <field name="active">True</field>
         </record>
 
@@ -444,6 +480,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
+            <field name="weight">42.5</field>
+            <field name="storage_start_date">2023-11-09</field>
+            <field name="last_access_date">2024-12-08</field>
             <field name="active">True</field>
         </record>
 
@@ -461,6 +500,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
+            <field name="weight">22.9</field>
+            <field name="storage_start_date">2023-03-01</field>
+            <field name="last_access_date">2025-02-27</field>
             <field name="active">True</field>
         </record>
 
@@ -478,6 +520,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">45.4</field>
+            <field name="storage_start_date">2019-11-27</field>
+            <field name="last_access_date">2020-01-15</field>
             <field name="active">True</field>
         </record>
 
@@ -495,6 +540,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
+            <field name="weight">15.1</field>
+            <field name="storage_start_date">2023-11-02</field>
+            <field name="last_access_date">2024-09-23</field>
             <field name="active">True</field>
         </record>
 
@@ -512,6 +560,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">20.4</field>
+            <field name="storage_start_date">2020-11-13</field>
+            <field name="last_access_date">2020-11-22</field>
             <field name="active">True</field>
         </record>
 
@@ -529,6 +580,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">19.5</field>
+            <field name="storage_start_date">2019-11-02</field>
+            <field name="last_access_date">2020-12-31</field>
             <field name="active">True</field>
         </record>
 
@@ -546,6 +600,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
+            <field name="weight">39.4</field>
+            <field name="storage_start_date">2023-11-14</field>
+            <field name="last_access_date">2023-12-29</field>
             <field name="active">True</field>
         </record>
 
@@ -563,6 +620,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2019-01-01</field>
             <field name="content_date_to">2019-12-31</field>
+            <field name="weight">37.2</field>
+            <field name="storage_start_date">2018-11-11</field>
+            <field name="last_access_date">2020-04-13</field>
             <field name="active">True</field>
         </record>
 
@@ -580,6 +640,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">47.4</field>
+            <field name="storage_start_date">2022-11-19</field>
+            <field name="last_access_date">2023-10-30</field>
             <field name="active">True</field>
         </record>
 
@@ -597,6 +660,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
+            <field name="weight">39.3</field>
+            <field name="storage_start_date">2023-02-24</field>
+            <field name="last_access_date">2024-07-05</field>
             <field name="active">True</field>
         </record>
 
@@ -614,6 +680,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
+            <field name="weight">15.6</field>
+            <field name="storage_start_date">2021-11-06</field>
+            <field name="last_access_date">2023-06-01</field>
             <field name="active">True</field>
         </record>
 
@@ -631,6 +700,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
+            <field name="weight">43.3</field>
+            <field name="storage_start_date">2021-11-26</field>
+            <field name="last_access_date">2022-07-26</field>
             <field name="active">True</field>
         </record>
 
@@ -648,6 +720,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
+            <field name="weight">22.7</field>
+            <field name="storage_start_date">2023-11-04</field>
+            <field name="last_access_date">2024-09-07</field>
             <field name="active">True</field>
         </record>
 
@@ -665,6 +740,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2019-01-01</field>
             <field name="content_date_to">2019-12-31</field>
+            <field name="weight">47.3</field>
+            <field name="storage_start_date">2018-11-22</field>
+            <field name="last_access_date">2019-04-14</field>
             <field name="active">True</field>
         </record>
 
@@ -682,6 +760,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">46.7</field>
+            <field name="storage_start_date">2019-11-06</field>
+            <field name="last_access_date">2020-09-11</field>
             <field name="active">True</field>
         </record>
 
@@ -699,6 +780,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">32.1</field>
+            <field name="storage_start_date">2022-11-12</field>
+            <field name="last_access_date">2023-07-25</field>
             <field name="active">True</field>
         </record>
 
@@ -716,6 +800,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">38.4</field>
+            <field name="storage_start_date">2019-12-01</field>
+            <field name="last_access_date">2021-08-22</field>
             <field name="active">True</field>
         </record>
 
@@ -733,6 +820,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">49.1</field>
+            <field name="storage_start_date">2019-11-22</field>
+            <field name="last_access_date">2020-05-27</field>
             <field name="active">True</field>
         </record>
 
@@ -750,6 +840,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
+            <field name="weight">40.4</field>
+            <field name="storage_start_date">2021-12-01</field>
+            <field name="last_access_date">2023-10-03</field>
             <field name="active">True</field>
         </record>
 
@@ -767,6 +860,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">25.4</field>
+            <field name="storage_start_date">2020-11-12</field>
+            <field name="last_access_date">2022-06-23</field>
             <field name="active">True</field>
         </record>
 
@@ -784,6 +880,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-10-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">40.1</field>
+            <field name="storage_start_date">2023-08-07</field>
+            <field name="last_access_date">2024-02-01</field>
             <field name="active">True</field>
         </record>
 
@@ -801,6 +900,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
+            <field name="weight">43.7</field>
+            <field name="storage_start_date">2023-05-28</field>
+            <field name="last_access_date">2023-11-23</field>
             <field name="active">True</field>
         </record>
 
@@ -818,6 +920,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">18.9</field>
+            <field name="storage_start_date">2019-11-15</field>
+            <field name="last_access_date">2020-07-22</field>
             <field name="active">True</field>
         </record>
 
@@ -835,6 +940,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">28.4</field>
+            <field name="storage_start_date">2022-11-22</field>
+            <field name="last_access_date">2024-04-29</field>
             <field name="active">True</field>
         </record>
 
@@ -852,6 +960,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
+            <field name="weight">30.8</field>
+            <field name="storage_start_date">2022-11-30</field>
+            <field name="last_access_date">2023-08-10</field>
             <field name="active">True</field>
         </record>
 
@@ -869,6 +980,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">21.2</field>
+            <field name="storage_start_date">2022-11-17</field>
+            <field name="last_access_date">2023-11-05</field>
             <field name="active">True</field>
         </record>
 
@@ -886,6 +1000,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-10-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">27.4</field>
+            <field name="storage_start_date">2023-08-16</field>
+            <field name="last_access_date">2024-03-25</field>
             <field name="active">True</field>
         </record>
 
@@ -903,6 +1020,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">49.8</field>
+            <field name="storage_start_date">2022-11-03</field>
+            <field name="last_access_date">2022-12-14</field>
             <field name="active">True</field>
         </record>
 
@@ -920,6 +1040,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
+            <field name="weight">49.0</field>
+            <field name="storage_start_date">2023-02-12</field>
+            <field name="last_access_date">2023-11-04</field>
             <field name="active">True</field>
         </record>
 
@@ -937,6 +1060,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
+            <field name="weight">25.1</field>
+            <field name="storage_start_date">2022-11-15</field>
+            <field name="last_access_date">2023-11-30</field>
             <field name="active">True</field>
         </record>
 
@@ -954,6 +1080,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
+            <field name="weight">36.5</field>
+            <field name="storage_start_date">2023-11-29</field>
+            <field name="last_access_date">2025-09-23</field>
             <field name="active">True</field>
         </record>
 
@@ -971,6 +1100,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-10-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">20.1</field>
+            <field name="storage_start_date">2023-08-11</field>
+            <field name="last_access_date">2024-01-29</field>
             <field name="active">True</field>
         </record>
 
@@ -988,6 +1120,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
+            <field name="weight">45.0</field>
+            <field name="storage_start_date">2023-02-20</field>
+            <field name="last_access_date">2023-08-06</field>
             <field name="active">True</field>
         </record>
 
@@ -1005,6 +1140,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
+            <field name="weight">47.6</field>
+            <field name="storage_start_date">2023-05-26</field>
+            <field name="last_access_date">2025-02-07</field>
             <field name="active">True</field>
         </record>
 
@@ -1022,6 +1160,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">36.8</field>
+            <field name="storage_start_date">2019-11-12</field>
+            <field name="last_access_date">2020-04-01</field>
             <field name="active">True</field>
         </record>
 
@@ -1039,6 +1180,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-10-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">20.1</field>
+            <field name="storage_start_date">2023-08-23</field>
+            <field name="last_access_date">2024-01-28</field>
             <field name="active">True</field>
         </record>
 
@@ -1056,6 +1200,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
+            <field name="weight">44.3</field>
+            <field name="storage_start_date">2023-05-14</field>
+            <field name="last_access_date">2024-11-26</field>
             <field name="active">True</field>
         </record>
 
@@ -1073,6 +1220,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">37.3</field>
+            <field name="storage_start_date">2020-11-04</field>
+            <field name="last_access_date">2022-10-06</field>
             <field name="active">True</field>
         </record>
 
@@ -1090,6 +1240,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2018-01-01</field>
             <field name="content_date_to">2018-12-31</field>
+            <field name="weight">24.6</field>
+            <field name="storage_start_date">2017-11-04</field>
+            <field name="last_access_date">2018-05-16</field>
             <field name="active">True</field>
         </record>
 
@@ -1107,6 +1260,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
+            <field name="weight">21.6</field>
+            <field name="storage_start_date">2022-11-06</field>
+            <field name="last_access_date">2023-06-10</field>
             <field name="active">True</field>
         </record>
 
@@ -1124,6 +1280,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">28.2</field>
+            <field name="storage_start_date">2022-11-23</field>
+            <field name="last_access_date">2023-03-29</field>
             <field name="active">True</field>
         </record>
 
@@ -1141,6 +1300,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
+            <field name="weight">37.7</field>
+            <field name="storage_start_date">2021-11-09</field>
+            <field name="last_access_date">2023-06-30</field>
             <field name="active">True</field>
         </record>
 
@@ -1158,6 +1320,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">15.8</field>
+            <field name="storage_start_date">2020-12-02</field>
+            <field name="last_access_date">2021-12-02</field>
             <field name="active">True</field>
         </record>
 
@@ -1175,6 +1340,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">26.0</field>
+            <field name="storage_start_date">2020-11-17</field>
+            <field name="last_access_date">2022-07-12</field>
             <field name="active">True</field>
         </record>
 
@@ -1192,6 +1360,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">21.8</field>
+            <field name="storage_start_date">2019-11-05</field>
+            <field name="last_access_date">2021-08-06</field>
             <field name="active">True</field>
         </record>
 
@@ -1209,6 +1380,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">41.9</field>
+            <field name="storage_start_date">2019-11-21</field>
+            <field name="last_access_date">2020-01-06</field>
             <field name="active">True</field>
         </record>
 
@@ -1226,6 +1400,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">31.3</field>
+            <field name="storage_start_date">2022-11-02</field>
+            <field name="last_access_date">2024-04-25</field>
             <field name="active">True</field>
         </record>
 
@@ -1243,6 +1420,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-10-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">18.3</field>
+            <field name="storage_start_date">2023-08-02</field>
+            <field name="last_access_date">2024-10-02</field>
             <field name="active">True</field>
         </record>
 
@@ -1260,6 +1440,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">19.9</field>
+            <field name="storage_start_date">2019-11-30</field>
+            <field name="last_access_date">2021-06-25</field>
             <field name="active">True</field>
         </record>
 
@@ -1277,6 +1460,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
+            <field name="weight">37.7</field>
+            <field name="storage_start_date">2022-11-19</field>
+            <field name="last_access_date">2023-08-25</field>
             <field name="active">True</field>
         </record>
 
@@ -1294,6 +1480,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2018-01-01</field>
             <field name="content_date_to">2018-12-31</field>
+            <field name="weight">40.3</field>
+            <field name="storage_start_date">2017-11-06</field>
+            <field name="last_access_date">2018-06-26</field>
             <field name="active">True</field>
         </record>
 
@@ -1311,6 +1500,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2018-01-01</field>
             <field name="content_date_to">2018-12-31</field>
+            <field name="weight">49.5</field>
+            <field name="storage_start_date">2017-11-21</field>
+            <field name="last_access_date">2019-09-13</field>
             <field name="active">True</field>
         </record>
 
@@ -1328,6 +1520,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">19.3</field>
+            <field name="storage_start_date">2020-11-23</field>
+            <field name="last_access_date">2021-10-15</field>
             <field name="active">True</field>
         </record>
 
@@ -1345,6 +1540,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
+            <field name="weight">42.5</field>
+            <field name="storage_start_date">2023-11-11</field>
+            <field name="last_access_date">2025-07-21</field>
             <field name="active">True</field>
         </record>
 
@@ -1362,6 +1560,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">48.0</field>
+            <field name="storage_start_date">2022-11-21</field>
+            <field name="last_access_date">2023-06-25</field>
             <field name="active">True</field>
         </record>
 
@@ -1379,6 +1580,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
+            <field name="weight">42.9</field>
+            <field name="storage_start_date">2023-11-26</field>
+            <field name="last_access_date">2025-09-07</field>
             <field name="active">True</field>
         </record>
 
@@ -1396,6 +1600,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">37.3</field>
+            <field name="storage_start_date">2020-11-22</field>
+            <field name="last_access_date">2021-09-04</field>
             <field name="active">True</field>
         </record>
 
@@ -1413,6 +1620,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">40.9</field>
+            <field name="storage_start_date">2019-11-11</field>
+            <field name="last_access_date">2021-02-28</field>
             <field name="active">True</field>
         </record>
 
@@ -1430,6 +1640,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
+            <field name="weight">29.7</field>
+            <field name="storage_start_date">2023-02-13</field>
+            <field name="last_access_date">2023-08-04</field>
             <field name="active">True</field>
         </record>
 
@@ -1447,6 +1660,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">19.6</field>
+            <field name="storage_start_date">2019-11-13</field>
+            <field name="last_access_date">2020-09-04</field>
             <field name="active">True</field>
         </record>
 
@@ -1464,6 +1680,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2019-01-01</field>
             <field name="content_date_to">2019-12-31</field>
+            <field name="weight">25.2</field>
+            <field name="storage_start_date">2018-11-21</field>
+            <field name="last_access_date">2020-01-11</field>
             <field name="active">True</field>
         </record>
 
@@ -1481,6 +1700,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">26.9</field>
+            <field name="storage_start_date">2019-11-14</field>
+            <field name="last_access_date">2020-11-28</field>
             <field name="active">True</field>
         </record>
 
@@ -1498,6 +1720,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
+            <field name="weight">17.2</field>
+            <field name="storage_start_date">2021-11-14</field>
+            <field name="last_access_date">2023-09-02</field>
             <field name="active">True</field>
         </record>
 
@@ -1515,6 +1740,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
+            <field name="weight">25.5</field>
+            <field name="storage_start_date">2021-11-24</field>
+            <field name="last_access_date">2021-12-11</field>
             <field name="active">True</field>
         </record>
 
@@ -1532,6 +1760,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
+            <field name="weight">24.7</field>
+            <field name="storage_start_date">2023-02-06</field>
+            <field name="last_access_date">2023-12-14</field>
             <field name="active">True</field>
         </record>
 
@@ -1549,6 +1780,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
+            <field name="weight">42.4</field>
+            <field name="storage_start_date">2021-11-24</field>
+            <field name="last_access_date">2023-10-07</field>
             <field name="active">True</field>
         </record>
 
@@ -1566,6 +1800,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">24.2</field>
+            <field name="storage_start_date">2020-11-27</field>
+            <field name="last_access_date">2021-06-11</field>
             <field name="active">True</field>
         </record>
 
@@ -1583,6 +1820,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">45.7</field>
+            <field name="storage_start_date">2019-11-07</field>
+            <field name="last_access_date">2020-04-29</field>
             <field name="active">True</field>
         </record>
 
@@ -1600,6 +1840,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">21.3</field>
+            <field name="storage_start_date">2020-11-13</field>
+            <field name="last_access_date">2021-12-04</field>
             <field name="active">True</field>
         </record>
 
@@ -1617,6 +1860,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2018-01-01</field>
             <field name="content_date_to">2018-12-31</field>
+            <field name="weight">16.6</field>
+            <field name="storage_start_date">2017-11-16</field>
+            <field name="last_access_date">2018-06-17</field>
             <field name="active">True</field>
         </record>
 
@@ -1634,6 +1880,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">15.3</field>
+            <field name="storage_start_date">2020-11-27</field>
+            <field name="last_access_date">2022-06-29</field>
             <field name="active">True</field>
         </record>
 
@@ -1651,6 +1900,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
+            <field name="weight">40.4</field>
+            <field name="storage_start_date">2023-05-12</field>
+            <field name="last_access_date">2024-04-19</field>
             <field name="active">True</field>
         </record>
 
@@ -1668,6 +1920,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">30.0</field>
+            <field name="storage_start_date">2020-11-12</field>
+            <field name="last_access_date">2020-12-29</field>
             <field name="active">True</field>
         </record>
 
@@ -1685,6 +1940,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
+            <field name="weight">23.4</field>
+            <field name="storage_start_date">2019-11-29</field>
+            <field name="last_access_date">2020-01-28</field>
             <field name="active">True</field>
         </record>
 
@@ -1702,6 +1960,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
+            <field name="weight">37.5</field>
+            <field name="storage_start_date">2023-05-25</field>
+            <field name="last_access_date">2024-11-26</field>
             <field name="active">False</field>
         </record>
 
@@ -1719,6 +1980,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
+            <field name="weight">43.2</field>
+            <field name="storage_start_date">2023-05-15</field>
+            <field name="last_access_date">2025-01-14</field>
             <field name="active">True</field>
         </record>
 
@@ -1736,6 +2000,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
+            <field name="weight">32.4</field>
+            <field name="storage_start_date">2021-11-29</field>
+            <field name="last_access_date">2022-10-05</field>
             <field name="active">True</field>
         </record>
 
@@ -1753,6 +2020,9 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">48.3</field>
+            <field name="storage_start_date">2022-11-30</field>
+            <field name="last_access_date">2024-10-18</field>
             <field name="active">True</field>
         </record>
 
@@ -1770,6 +2040,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
+            <field name="weight">43.3</field>
+            <field name="storage_start_date">2022-11-04</field>
+            <field name="last_access_date">2023-10-28</field>
             <field name="active">True</field>
         </record>
 
@@ -1787,6 +2060,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
+            <field name="weight">22.8</field>
+            <field name="storage_start_date">2020-11-09</field>
+            <field name="last_access_date">2021-06-03</field>
             <field name="active">True</field>
         </record>
 
@@ -1804,6 +2080,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
+            <field name="weight">21.4</field>
+            <field name="storage_start_date">2022-11-05</field>
+            <field name="last_access_date">2023-09-13</field>
             <field name="active">True</field>
         </record>
 
@@ -1821,6 +2100,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
+            <field name="weight">34.2</field>
+            <field name="storage_start_date">2022-11-29</field>
+            <field name="last_access_date">2024-10-31</field>
             <field name="active">True</field>
         </record>
 
@@ -1842,6 +2124,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
+            <field name="weight">18.8</field>
+            <field name="storage_start_date">2023-02-10</field>
+            <field name="last_access_date">2023-04-12</field>
             <field name="active">True</field>
         </record>
 
@@ -1859,6 +2144,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
+            <field name="weight">25.4</field>
+            <field name="storage_start_date">2023-05-25</field>
+            <field name="last_access_date">2023-08-31</field>
             <field name="active">True</field>
         </record>
 
@@ -1876,6 +2164,9 @@
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
+            <field name="weight">28.7</field>
+            <field name="storage_start_date">2023-05-04</field>
+            <field name="last_access_date">2024-10-05</field>
             <field name="active">True</field>
         </record>
 
@@ -1893,6 +2184,9 @@
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
+            <field name="weight">35.1</field>
+            <field name="storage_start_date">2023-12-02</field>
+            <field name="last_access_date">2024-02-06</field>
             <field name="active">True</field>
         </record>
 
