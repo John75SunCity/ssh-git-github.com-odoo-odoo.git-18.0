@@ -7,6 +7,7 @@
             <field name="partner_id" ref="base.res_partner_1"/>
             <field name="certificate_date">2025-10-15</field>
             <field name="witness_id" ref="base.res_partner_1"/>
+            <field name="destruction_type">on_site</field>
             <!-- Leave in draft initially; we will issue after adding items -->
             <field name="state">draft</field>
         </record>
@@ -29,6 +30,7 @@
             <!-- certificate_number omitted intentionally so sequence auto-generates on create -->
             <field name="partner_id" ref="base.res_partner_2"/>
             <field name="certificate_date">2025-11-01</field>
+            <field name="destruction_type">off_site</field>
             <field name="state">draft</field>
         </record>
     </data>
