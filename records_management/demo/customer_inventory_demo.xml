@@ -141,12 +141,15 @@
         <!-- ===================================================== -->
         <!-- STORAGE LOCATIONS -->
         <!-- ===================================================== -->
-
+        <!-- These locations are children of Odoo's stock.location_stock (WH/Stock) -->
+        <!-- This ensures proper integration with Inventory module -->
+        
         <!-- Main Warehouse Locations -->
         <record id="location_main_warehouse_a" model="records.location">
-            <field name="name">Main Warehouse - Section A</field>
+            <field name="name">Records Section A</field>
             <field name="code">MAIN-WH-A</field>
             <field name="description">Primary storage warehouse section A</field>
+            <field name="location_id" ref="stock.stock_location_stock"/>  <!-- Parent: WH/Stock -->
             <field name="usage">internal</field>
             <field name="building">Main Warehouse</field>
             <field name="zone">Section A</field>
@@ -154,11 +157,13 @@
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
             <field name="max_capacity">5000</field>
-
-        </record>        <record id="location_main_warehouse_b" model="records.location">
-            <field name="name">Main Warehouse - Section B</field>
+        </record>
+        
+        <record id="location_main_warehouse_b" model="records.location">
+            <field name="name">Records Section B</field>
             <field name="code">MAIN-WH-B</field>
             <field name="description">Primary storage warehouse section B</field>
+            <field name="location_id" ref="stock.stock_location_stock"/>  <!-- Parent: WH/Stock -->
             <field name="usage">internal</field>
             <field name="building">Main Warehouse</field>
             <field name="zone">Section B</field>
@@ -166,11 +171,13 @@
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
             <field name="max_capacity">5000</field>
-
-        </record>        <record id="location_secure_vault" model="records.location">
+        </record>
+        
+        <record id="location_secure_vault" model="records.location">
             <field name="name">Secure Records Vault</field>
             <field name="code">SECURE-VAULT</field>
             <field name="description">High-security vault for confidential documents</field>
+            <field name="location_id" ref="stock.stock_location_stock"/>  <!-- Parent: WH/Stock -->
             <field name="usage">internal</field>
             <field name="building">Main Building</field>
             <field name="zone">Vault Zone</field>
@@ -178,7 +185,6 @@
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
             <field name="max_capacity">1000</field>
-
         </record>
 
         <!-- ===================================================== -->

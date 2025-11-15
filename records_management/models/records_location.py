@@ -272,7 +272,7 @@ class RecordsLocation(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Containers'),
             'res_model': 'records.container',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',  # Odoo 18: 'list' not 'tree'
             'domain': [('location_id', '=', self.id)],
             'context': {'default_location_id': self.id}
         }
@@ -283,7 +283,7 @@ class RecordsLocation(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Child Locations'),
             'res_model': 'records.location',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',  # Odoo 18: 'list' not 'tree'
             'domain': [('location_id', '=', self.id)],  # parent field in stock.location
             'context': {'default_location_id': self.id}  # parent field in stock.location
         }
