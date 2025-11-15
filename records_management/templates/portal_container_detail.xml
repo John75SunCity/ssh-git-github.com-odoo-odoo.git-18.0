@@ -5,7 +5,7 @@
         <template id="portal_container_detail" name="Container Detail">
             <t t-call="portal.portal_layout">
                 <t t-set="title">Container Details</t>
-                
+
                 <div class="container my-4">
                     <div class="row">
                         <div class="col-lg-12">
@@ -28,7 +28,7 @@
                                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 </div>
                             </t>
-                            
+
                             <!-- Container Header Card -->
                             <div class="card shadow-sm mb-4">
                                 <div class="card-header bg-primary text-white">
@@ -52,7 +52,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -85,7 +85,7 @@
                                                 </tr>
                                             </table>
                                         </div>
-                                        
+
                                         <div class="col-md-6">
                                             <h5 class="text-muted mb-3">Contents &amp; Retention</h5>
                                             <table class="table table-sm">
@@ -114,7 +114,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Files in Container -->
                             <div class="card shadow-sm mb-4">
                                 <div class="card-header">
@@ -158,7 +158,7 @@
                                     </t>
                                 </div>
                             </div>
-                            
+
                             <!-- Quick Actions -->
                             <div class="card shadow-sm">
                                 <div class="card-header">
@@ -181,7 +181,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Edit Modal -->
                 <t t-if="can_edit">
                     <div class="modal fade" id="editModal" tabindex="-1">
@@ -223,7 +223,7 @@
                         </div>
                     </div>
                 </t>
-                
+
                 <!-- Request Move Modal -->
                 <t t-if="can_edit">
                     <div class="modal fade" id="requestMoveModal" tabindex="-1">
@@ -259,7 +259,7 @@
                         </div>
                     </div>
                 </t>
-                
+
                 <!-- Delete JavaScript -->
                 <script type="text/javascript">
                     function deleteContainer() {
