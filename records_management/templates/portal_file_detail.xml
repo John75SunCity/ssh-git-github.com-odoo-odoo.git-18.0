@@ -13,13 +13,13 @@
                             <t t-if="request.params.get('created')">
                                 <div class="alert alert-success alert-dismissible fade show">
                                     <i class="fa fa-check-circle"></i> File created successfully!
-                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <button type="button" class="close" data-dismiss="alert">&#215;</button>
                                 </div>
                             </t>
                             <t t-if="request.params.get('updated')">
                                 <div class="alert alert-success alert-dismissible fade show">
                                     <i class="fa fa-check-circle"></i> File updated successfully!
-                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <button type="button" class="close" data-dismiss="alert">&#215;</button>
                                 </div>
                             </t>
 
@@ -176,7 +176,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Edit File</h5>
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <button type="button" class="close" data-dismiss="modal">&#215;</button>
                                 </div>
                                 <form t-attf-action="/my/inventory/file/#{file.id}/edit" method="POST">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
