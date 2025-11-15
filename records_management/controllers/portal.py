@@ -3533,12 +3533,156 @@ class RecordsManagementController(http.Controller):
             ('groups_id', 'in', [request.env.ref('base.group_portal').id])
         ])
         
+        # Get departments for the dropdown
+        departments = request.env['records.department'].search([
+            ('company_id', '=', partner.id)
+        ])
+        
         values = {
             'page_name': 'settings',
             'users': users,
+            'departments': departments,
+            'company': partner,
         }
         
         return request.render("records_management.portal_department_users", values)
+    
+    @http.route(['/my/users/create'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_create_department_user(self, **post):
+        """Create new portal user for a department (company admin only)."""
+        if not request.env.user.has_group('records_management.group_portal_company_admin'):
+            return request.redirect('/my/home')
+        
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            
+            # Validate required fields
+            name = post.get('name')
+            email = post.get('email')
+            department_id = int(post.get('department_id', 0))
+            
+            if not all([name, email, department_id]):
+                return request.render('records_management.portal_error', {
+                    'error_title': 'Missing Required Fields',
+                    'error_message': 'Please provide name, email, and department.',
+                })
+            
+            # Check if user already exists
+            existing_user = request.env['res.users'].sudo().search([
+                ('login', '=', email)
+            ], limit=1)
+            
+            if existing_user:
+                return request.render('records_management.portal_error', {
+                    'error_title': 'User Already Exists',
+                    'error_message': f'A user with email {email} already exists.',
+                })
+            
+            # Get the department
+            department = request.env['records.department'].sudo().browse(department_id)
+            if not department or department.company_id.id != partner.id:
+                return request.render('records_management.portal_error', {
+                    'error_title': 'Invalid Department',
+                    'error_message': 'The selected department is invalid.',
+                })
+            
+            # Create partner for the user
+            new_partner = request.env['res.partner'].sudo().create({
+                'name': name,
+                'email': email,
+                'parent_id': partner.id,
+                'type': 'contact',
+                'department_id': department_id,
+            })
+            
+            # Create portal user
+            portal_group = request.env.ref('base.group_portal')
+            new_user = request.env['res.users'].sudo().create({
+                'name': name,
+                'login': email,
+                'email': email,
+                'partner_id': new_partner.id,
+                'groups_id': [(6, 0, [portal_group.id])],
+                'active': True,
+            })
+            
+            # Send invitation email
+            new_user.sudo().action_reset_password()
+            
+            # Log the creation
+            request.env['naid.audit.log'].sudo().create({
+                'action_type': 'portal_user_created',
+                'user_id': request.env.user.id,
+                'description': _('Portal user %s created for department %s by company admin') % (name, department.name),
+                'timestamp': fields.Datetime.now(),
+            })
+            
+            return request.redirect('/my/users?created=success')
+            
+        except Exception as e:
+            return request.render('records_management.portal_error', {
+                'error_title': 'User Creation Failed',
+                'error_message': str(e),
+            })
+    
+    @http.route(['/my/users/<int:user_id>/edit'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_edit_department_user(self, user_id, **post):
+        """Edit portal user (company admin only)."""
+        if not request.env.user.has_group('records_management.group_portal_company_admin'):
+            return request.redirect('/my/home')
+        
+        try:
+            user = request.env['res.users'].sudo().browse(user_id)
+            partner = request.env.user.partner_id.commercial_partner_id
+            
+            # Verify user belongs to this company
+            if user.partner_id.parent_id.id != partner.id:
+                return request.redirect('/my/users?error=unauthorized')
+            
+            # Update user info
+            if post.get('name'):
+                user.sudo().write({'name': post['name']})
+                user.partner_id.sudo().write({'name': post['name']})
+            
+            if post.get('department_id'):
+                user.partner_id.sudo().write({'department_id': int(post['department_id'])})
+            
+            if 'active' in post:
+                user.sudo().write({'active': post['active'] == 'true'})
+            
+            return request.redirect('/my/users?updated=success')
+            
+        except Exception as e:
+            return request.redirect('/my/users?error=update_failed')
+    
+    @http.route(['/my/users/<int:user_id>/deactivate'], type='json', auth='user', methods=['POST'])
+    def portal_deactivate_user(self, user_id, **kw):
+        """Deactivate a portal user (company admin only)."""
+        if not request.env.user.has_group('records_management.group_portal_company_admin'):
+            return {'success': False, 'error': 'Unauthorized'}
+        
+        try:
+            user = request.env['res.users'].sudo().browse(user_id)
+            partner = request.env.user.partner_id.commercial_partner_id
+            
+            # Verify user belongs to this company
+            if user.partner_id.parent_id.id != partner.id:
+                return {'success': False, 'error': 'Unauthorized'}
+            
+            user.sudo().write({'active': False})
+            
+            # Log the action
+            request.env['naid.audit.log'].sudo().create({
+                'action_type': 'portal_user_deactivated',
+                'user_id': request.env.user.id,
+                'description': _('Portal user %s deactivated by company admin') % user.name,
+                'timestamp': fields.Datetime.now(),
+            })
+            
+            return {'success': True, 'message': 'User deactivated successfully'}
+            
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
     
     @http.route(['/my/notifications'], type='http', auth='user', website=True)
     def portal_notifications_settings(self, **kw):

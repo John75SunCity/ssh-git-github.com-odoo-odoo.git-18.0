@@ -1152,35 +1152,245 @@
                 <t t-set="page_name" t-value="'settings'"/>
                 
                 <div class="container my-4">
-                    <h2 class="mb-4"><i class="fa fa-users me-2"/>Department Users</h2>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fa fa-users me-2"/>Department Users</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                            <i class="fa fa-plus me-2"/>Add New User
+                        </button>
+                    </div>
                     
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Last Login</th>
-                                    <th>Active</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="users" t-as="user">
-                                    <tr>
-                                        <td><t t-esc="user.name"/></td>
-                                        <td><t t-esc="user.login"/></td>
-                                        <td><t t-esc="user.login_date" t-options="{'widget': 'datetime'}"/></td>
-                                        <td>
-                                            <span t-att-class="'badge bg-' + ('success' if user.active else 'secondary')">
-                                                <t t-esc="'Active' if user.active else 'Inactive'"/>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </t>
-                            </tbody>
-                        </table>
+                    <!-- Success/Error Messages -->
+                    <t t-if="request.params.get('created') == 'success'">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fa fa-check-circle me-2"/>User created successfully! An invitation email has been sent.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </t>
+                    <t t-if="request.params.get('updated') == 'success'">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fa fa-check-circle me-2"/>User updated successfully!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </t>
+                    
+                    <!-- Users Table -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Department</th>
+                                            <th>Last Login</th>
+                                            <th>Status</th>
+                                            <th class="text-end">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-if="not users">
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted py-4">
+                                                    <i class="fa fa-info-circle fa-2x mb-2 d-block"/>
+                                                    No department users found. Click "Add New User" to create one.
+                                                </td>
+                                            </tr>
+                                        </t>
+                                        <t t-foreach="users" t-as="user">
+                                            <tr>
+                                                <td>
+                                                    <strong t-esc="user.name"/>
+                                                    <t t-if="not user.active">
+                                                        <span class="badge bg-secondary ms-2">Deactivated</span>
+                                                    </t>
+                                                </td>
+                                                <td><t t-esc="user.login"/></td>
+                                                <td>
+                                                    <t t-if="user.partner_id.department_id">
+                                                        <t t-esc="user.partner_id.department_id.name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted">No department</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="user.login_date">
+                                                        <t t-esc="user.login_date" t-options="{'widget': 'datetime'}"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted">Never</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <span t-att-class="'badge bg-' + ('success' if user.active else 'secondary')">
+                                                        <t t-esc="'Active' if user.active else 'Inactive'"/>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button class="btn btn-outline-primary" 
+                                                                data-bs-toggle="modal" 
+                                                                t-att-data-bs-target="'#editUserModal' + str(user.id)"
+                                                                title="Edit User">
+                                                            <i class="fa fa-edit"/>
+                                                        </button>
+                                                        <button class="btn btn-outline-danger" 
+                                                                t-att-onclick="'deactivateUser(' + str(user.id) + ')'"
+                                                                t-if="user.active"
+                                                                title="Deactivate User">
+                                                            <i class="fa fa-ban"/>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            
+                                            <!-- Edit User Modal -->
+                                            <div class="modal fade" t-att-id="'editUserModal' + str(user.id)" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <form t-attf-action="/my/users/{{user.id}}/edit" method="POST">
+                                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Edit User</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Name</label>
+                                                                    <input type="text" class="form-control" name="name" 
+                                                                           t-att-value="user.name" required="required"/>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Email (cannot be changed)</label>
+                                                                    <input type="email" class="form-control" 
+                                                                           t-att-value="user.login" disabled="disabled"/>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Department</label>
+                                                                    <select class="form-select" name="department_id" required="required">
+                                                                        <option value="">Select Department</option>
+                                                                        <t t-foreach="departments" t-as="dept">
+                                                                            <option t-att-value="dept.id" 
+                                                                                    t-att-selected="'selected' if user.partner_id.department_id.id == dept.id else None">
+                                                                                <t t-esc="dept.name"/>
+                                                                            </option>
+                                                                        </t>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-check form-switch">
+                                                                    <input class="form-check-input" type="checkbox" 
+                                                                           name="active" value="true" id="activeSwitch"
+                                                                           t-att-checked="'checked' if user.active else None"/>
+                                                                    <label class="form-check-label" for="activeSwitch">
+                                                                        Active User
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-primary">
+                                                                    <i class="fa fa-save me-2"/>Save Changes
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
+                <!-- Add User Modal -->
+                <div class="modal fade" id="addUserModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="/my/users/create" method="POST">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        <i class="fa fa-user-plus me-2"/>Add New Department User
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="alert alert-info">
+                                        <i class="fa fa-info-circle me-2"/>
+                                        The new user will receive an invitation email to set their password.
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="userName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="userName" name="name" 
+                                               placeholder="John Doe" required="required"/>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="userEmail" class="form-label">Email Address <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" id="userEmail" name="email" 
+                                               placeholder="john.doe@example.com" required="required"/>
+                                        <small class="form-text text-muted">This will be used as the login username</small>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="userDepartment" class="form-label">Department <span class="text-danger">*</span></label>
+                                        <select class="form-select" id="userDepartment" name="department_id" required="required">
+                                            <option value="">Select a department</option>
+                                            <t t-foreach="departments" t-as="dept">
+                                                <option t-att-value="dept.id">
+                                                    <t t-esc="dept.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                        <t t-if="not departments">
+                                            <small class="form-text text-danger">
+                                                No departments found. Please create a department first.
+                                            </small>
+                                        </t>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" t-att-disabled="'disabled' if not departments else None">
+                                        <i class="fa fa-save me-2"/>Create User &amp; Send Invitation
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- JavaScript -->
+                <script>
+                    function deactivateUser(userId) {
+                        if (!confirm('Are you sure you want to deactivate this user? They will no longer be able to access the portal.')) {
+                            return;
+                        }
+                        
+                        fetch('/my/users/' + userId + '/deactivate', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({})
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            alert('An error occurred: ' + error);
+                        });
+                    }
+                </script>
             </t>
         </template>
         
