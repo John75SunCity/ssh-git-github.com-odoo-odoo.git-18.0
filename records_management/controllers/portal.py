@@ -16,6 +16,7 @@ Key Features:
 """
 
 # Python stdlib imports
+import base64
 import csv
 import io
 import json
@@ -23,8 +24,9 @@ import logging
 from datetime import datetime, timedelta
 
 # Odoo core imports
-from odoo import http, _
+from odoo import http, _, fields
 from odoo.http import request
+from dateutil.relativedelta import relativedelta
 
 _logger = logging.getLogger(__name__)
 
@@ -2960,10 +2962,7 @@ class RecordsManagementController(http.Controller):
             _logger.error(f"Request scan failed: {str(e)}")
             return request.redirect(f'/my/inventory/document/{doc_id}?error=scan_request_failed')
 
-    @http.route(['/my/document/<int:doc_id>'], type='http', auth="user", website=True)
-    def portal_document_detail_alt(self, doc_id, **kw):
-        """Alternative document detail route (redirects to main route)."""
-        return request.redirect(f'/my/inventory/document/{doc_id}')
+
 
     # ============================================================================
     # SERVICE REQUESTS CRUD OPERATIONS (Full workflow management)
@@ -3200,7 +3199,7 @@ class RecordsManagementController(http.Controller):
             return request.redirect(f'/my/requests/{request_id}?updated=success')
 
         except Exception as e:
-            _logger.error(f\"Request edit failed: {str(e)}\")
+            _logger.error("Request edit failed: %s", str(e))
             return request.redirect(f'/my/requests/{request_id}?error=update_failed')
 
     @http.route(['/my/requests/<int:request_id>/cancel'], type='json', auth='user', methods=['POST'])
@@ -4320,26 +4319,7 @@ class RecordsManagementController(http.Controller):
         except Exception as e:
             return {'success': False, 'error': f'Server error: {str(e)}'}
 
-    # ============================================================================
-    # OVERVIEW TAB DATA ROUTES
-    # ============================================================================
 
-    @http.route(['/my/inventory/counts'], type='http', auth='user', website=True)
-    def portal_inventory_counts(self, **kw):
-        """Get inventory counts for overview dashboard"""
-        partner = request.env.user.partner_id.commercial_partner_id
-
-        counts = {
-            'containers': request.env['records.container'].sudo().search_count([('partner_id', '=', partner.id)]),
-            'files': request.env['records.file'].search_count([('partner_id', '=', partner.id)]),
-            'documents': request.env['records.document'].search_count([('partner_id', '=', partner.id)]),
-            'temp': request.env['temp.inventory'].search_count([('partner_id', '=', request.env.user.partner_id.id)]),
-        }
-
-        return request.make_response(
-            json.dumps(counts),
-            headers=[('Content-Type', 'application/json')]
-        )
 
     @http.route(['/my/inventory/recent_activity'], type='http', auth='user', website=True)
     def portal_recent_activity(self, **kw):
@@ -4538,7 +4518,7 @@ class RecordsManagementController(http.Controller):
             temp_inventory = request.env['temp.inventory'].create({
                 'name': description,
                 'description': description,
-                'partner_id': user.partner_id.id,
+                'partner_id': request.env.user.partner_id.id,
                 'state': 'draft',
             })
 
@@ -4592,7 +4572,7 @@ class RecordsManagementController(http.Controller):
 
             # Get the temp inventory item
             temp_item = request.env['temp.inventory'].browse(int(item_id))
-            if not temp_item.exists() or temp_item.partner_id.id != user.partner_id.id:
+            if not temp_item.exists() or temp_item.partner_id.id != request.env.user.partner_id.id:
                 return {
                     'success': False,
                     'error': 'Item not found or access denied.'
@@ -4600,14 +4580,14 @@ class RecordsManagementController(http.Controller):
 
             # Create or find existing pickup request
             pickup_request = request.env['portal.request'].search([
-                ('partner_id', '=', user.partner_id.id),
+                ('partner_id', '=', request.env.user.partner_id.id),
                 ('request_type', '=', 'pickup'),
                 ('state', 'in', ['draft', 'submitted'])
             ], limit=1)
 
             if not pickup_request:
                 pickup_request = request.env['portal.request'].create({
-                    'partner_id': user.partner_id.id,
+                    'partner_id': request.env.user.partner_id.id,
                     'request_type': 'pickup',
                     'state': 'draft',
                     'description': f'Pickup request for temp inventory items',
@@ -4670,7 +4650,7 @@ class RecordsManagementController(http.Controller):
             temp_items = request.env['temp.inventory'].browse(item_ids)
             # Verify ownership
             for item in temp_items:
-                if not item.exists() or item.partner_id.id != user.partner_id.id:
+                if not item.exists() or item.partner_id.id != request.env.user.partner_id.id:
                     return {
                         'success': False,
                         'error': 'Access denied for one or more selected items.'
@@ -4687,7 +4667,7 @@ class RecordsManagementController(http.Controller):
                 })
 
             destruction_request = request.env['portal.request'].create({
-                'partner_id': user.partner_id.id,
+                'partner_id': request.env.user.partner_id.id,
                 'request_type': 'destruction',
                 'state': 'draft',
                 'description': f'Destruction request for {len(temp_items)} items',
