@@ -17,29 +17,72 @@
                 <t t-foreach="docs" t-as="doc">
                     <t t-call="web.external_layout">
                         <div class="page">
-                            <h2>Naid Operator Certification Report</h2>
+                            <h2>NAID Operator Certification Report</h2>
                             <div class="row">
                                 <div class="col-12">
                                     <table class="table table-sm">
                                         <tbody>
-                                            <tr>
-                                                <td><strong>ID:</strong></td>
-                                                <td><span t-esc="doc.id"/></td>
+                                            <tr t-if="doc.name">
+                                                <td><strong>Certification Name:</strong></td>
+                                                <td><span t-field="doc.name"/></td>
                                             </tr>
-                                            <t t-if="hasattr(doc, 'name')">
-                                            <tr>
-                                                <td><strong>Name:</strong></td>
-                                                <td><span t-esc="doc.name"/></td>
+                                            <tr t-if="doc.certification_number">
+                                                <td><strong>Certification Number:</strong></td>
+                                                <td><span t-field="doc.certification_number"/></td>
                                             </tr>
-                                            </t>
-                                            <t t-if="hasattr(doc, 'create_date')">
-                                            <tr>
-                                                <td><strong>Created:</strong></td>
-                                                <td><span t-esc="doc.create_date"/></td>
+                                            <tr t-if="doc.certification_date">
+                                                <td><strong>Certification Date:</strong></td>
+                                                <td><span t-field="doc.certification_date"/></td>
                                             </tr>
-                                            </t>
+                                            <tr t-if="doc.expiry_date">
+                                                <td><strong>Expiry Date:</strong></td>
+                                                <td><span t-field="doc.expiry_date"/></td>
+                                            </tr>
+                                            <tr t-if="doc.status">
+                                                <td><strong>Status:</strong></td>
+                                                <td><span t-field="doc.status"/></td>
+                                            </tr>
+                                            <tr t-if="doc.verified_by_id">
+                                                <td><strong>Verified By:</strong></td>
+                                                <td><span t-field="doc.verified_by_id"/></td>
+                                            </tr>
+                                            <tr t-if="doc.verification_date">
+                                                <td><strong>Verification Date:</strong></td>
+                                                <td><span t-field="doc.verification_date"/></td>
+                                            </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Training Progress Section -->
+                            <div class="row mt-4" t-if="doc.required_trainings_ids or doc.completed_trainings_ids">
+                                <div class="col-12">
+                                    <h3>Training Information</h3>
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr t-if="doc.training_progress">
+                                                <td><strong>Training Progress:</strong></td>
+                                                <td><span t-esc="'%.1f%%' % doc.training_progress"/></td>
+                                            </tr>
+                                            <tr t-if="doc.training_verified">
+                                                <td><strong>Training Verified:</strong></td>
+                                                <td><i class="fa fa-check text-success"/> Yes</td>
+                                            </tr>
+                                            <tr t-if="doc.refresher_training_required">
+                                                <td><strong>Next Refresher Date:</strong></td>
+                                                <td><span t-field="doc.next_refresher_date"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Notes Section -->
+                            <div class="row mt-4" t-if="doc.notes">
+                                <div class="col-12">
+                                    <h3>Notes</h3>
+                                    <p t-field="doc.notes"/>
                                 </div>
                             </div>
                         </div>
