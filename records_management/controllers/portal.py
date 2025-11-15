@@ -3576,9 +3576,9 @@ class RecordsManagementController(http.Controller):
         """List all billing invoices for the portal user."""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         domain = [('partner_id', 'child_of', partner.commercial_partner_id.id), ('move_type', 'in', ('out_invoice', 'out_refund'))]
-        
+
         # Pagination
         invoice_count = request.env['account.move'].search_count(domain)
         pager = request.website.pager(
@@ -3588,9 +3588,9 @@ class RecordsManagementController(http.Controller):
             page=page,
             step=20,
         )
-        
+
         invoices = request.env['account.move'].search(domain, order='invoice_date desc', limit=20, offset=pager['offset'])
-        
+
         values.update({
             'invoices': invoices,
             'page_name': 'invoices',
@@ -3604,19 +3604,19 @@ class RecordsManagementController(http.Controller):
         """View payment history."""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         domain = [('partner_id', '=', partner.commercial_partner_id.id)]
         payment_count = request.env['account.payment'].search_count(domain)
-        
+
         pager = request.website.pager(
             url="/my/invoices/history",
             total=payment_count,
             page=page,
             step=20,
         )
-        
+
         payments = request.env['account.payment'].search(domain, order='date desc', limit=20, offset=pager['offset'])
-        
+
         values.update({
             'payments': payments,
             'page_name': 'payment_history',
@@ -3629,14 +3629,14 @@ class RecordsManagementController(http.Controller):
         """View billing rate information."""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         # Get rate information for this partner
         rates = request.env['records.billing.rate'].search([
             '|',
             ('partner_id', '=', partner.commercial_partner_id.id),
             ('partner_id', '=', False)  # General rates
         ])
-        
+
         values.update({
             'rates': rates,
             'page_name': 'billing_rates',
@@ -3648,11 +3648,11 @@ class RecordsManagementController(http.Controller):
         """Download billing statements."""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         statements = request.env['records.billing.statement'].search([
             ('partner_id', '=', partner.commercial_partner_id.id)
         ], order='date desc', limit=20)
-        
+
         values.update({
             'statements': statements,
             'page_name': 'billing_statements',
@@ -3665,13 +3665,13 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         user = request.env.user
         partner = user.partner_id
-        
+
         # Department filtering
         if not user.has_group('records_management.group_portal_company_admin'):
             accessible_departments = user.accessible_department_ids.ids
         else:
             accessible_departments = False
-        
+
         values.update({
             'page_name': 'reports',
             'accessible_departments': accessible_departments,
@@ -3683,15 +3683,15 @@ class RecordsManagementController(http.Controller):
         """Activity reports."""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         domain = [('partner_id', '=', partner.commercial_partner_id.id)]
         if date_begin:
             domain.append(('create_date', '>=', date_begin))
         if date_end:
             domain.append(('create_date', '<=', date_end))
-        
+
         activities = request.env['naid.audit.log'].search(domain, order='timestamp desc', limit=100)
-        
+
         values.update({
             'activities': activities,
             'page_name': 'reports_activity',
@@ -3703,14 +3703,14 @@ class RecordsManagementController(http.Controller):
         """Compliance reports for NAID."""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         # Get compliance status
         compliance_data = {
             'naid_certified': partner.naid_certified,
             'certification_date': partner.naid_certification_date,
             'audit_logs_count': request.env['naid.audit.log'].search_count([('partner_id', '=', partner.id)]),
         }
-        
+
         values.update({
             'compliance_data': compliance_data,
             'page_name': 'reports_compliance',
@@ -3730,20 +3730,20 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         user = request.env.user
         partner = user.partner_id
-        
+
         # Department filtering
         domain = [('partner_id', '=', partner.commercial_partner_id.id)]
         if not user.has_group('records_management.group_portal_company_admin'):
             accessible_departments = user.accessible_department_ids.ids
             if accessible_departments:
                 domain.append(('department_id', 'in', accessible_departments))
-        
+
         counts = {
             'containers': request.env['records.container'].search_count(domain),
             'files': request.env['records.file'].search_count(domain),
             'documents': request.env['records.document'].search_count(domain),
         }
-        
+
         values.update({
             'counts': counts,
             'page_name': 'inventory_counts',
@@ -3755,24 +3755,24 @@ class RecordsManagementController(http.Controller):
         """Recent inventory activity."""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         domain = [('partner_id', '=', partner.commercial_partner_id.id)]
         activity_count = request.env['naid.audit.log'].search_count(domain)
-        
+
         pager = request.website.pager(
             url="/my/inventory/recent_activity",
             total=activity_count,
             page=page,
             step=20,
         )
-        
+
         activities = request.env['naid.audit.log'].search(
             domain,
             order='timestamp desc',
             limit=20,
             offset=pager['offset']
         )
-        
+
         values.update({
             'activities': activities,
             'page_name': 'recent_activity',
@@ -3785,7 +3785,7 @@ class RecordsManagementController(http.Controller):
         """Billing summary dashboard."""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         summary = {
             'total_invoiced': sum(request.env['account.move'].search([
                 ('partner_id', '=', partner.commercial_partner_id.id),
@@ -3796,7 +3796,7 @@ class RecordsManagementController(http.Controller):
                 ('partner_id', '=', partner.commercial_partner_id.id)
             ]).mapped('amount')),
         }
-        
+
         values.update({
             'summary': summary,
             'page_name': 'billing_summary',
@@ -3808,24 +3808,24 @@ class RecordsManagementController(http.Controller):
         """Audit reports for compliance."""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         domain = [('partner_id', '=', partner.commercial_partner_id.id)]
         audit_count = request.env['naid.audit.log'].search_count(domain)
-        
+
         pager = request.website.pager(
             url="/my/reports/audit",
             total=audit_count,
             page=page,
             step=20,
         )
-        
+
         audits = request.env['naid.audit.log'].search(
             domain,
             order='timestamp desc',
             limit=20,
             offset=pager['offset']
         )
-        
+
         values.update({
             'audits': audits,
             'page_name': 'audit_reports',
@@ -3848,13 +3848,13 @@ class RecordsManagementController(http.Controller):
     def portal_barcode_scan_container(self, barcode_data=None, **post):
         """Scan container barcode."""
         values = self._prepare_portal_layout_values()
-        
+
         if request.httprequest.method == 'POST' and barcode_data:
             container = request.env['records.container'].search([
                 ('barcode', '=', barcode_data),
                 ('partner_id', '=', request.env.user.partner_id.commercial_partner_id.id)
             ], limit=1)
-            
+
             if container:
                 # Log scan in audit
                 request.env['naid.audit.log'].create({
@@ -3866,7 +3866,7 @@ class RecordsManagementController(http.Controller):
                 return request.redirect('/my/inventory/container/%s?scanned=success' % container.id)
             else:
                 values.update({'error': _('Container not found')})
-        
+
         values.update({'page_name': 'barcode_scan_container'})
         return request.render('records_management.portal_barcode_scan', values)
 
@@ -3874,13 +3874,13 @@ class RecordsManagementController(http.Controller):
     def portal_barcode_scan_file(self, barcode_data=None, **post):
         """Scan file barcode."""
         values = self._prepare_portal_layout_values()
-        
+
         if request.httprequest.method == 'POST' and barcode_data:
             file = request.env['records.file'].search([
                 ('barcode', '=', barcode_data),
                 ('partner_id', '=', request.env.user.partner_id.commercial_partner_id.id)
             ], limit=1)
-            
+
             if file:
                 # Log scan in audit
                 request.env['naid.audit.log'].create({
@@ -3892,7 +3892,7 @@ class RecordsManagementController(http.Controller):
                 return request.redirect('/my/inventory/file/%s?scanned=success' % file.id)
             else:
                 values.update({'error': _('File not found')})
-        
+
         values.update({'page_name': 'barcode_scan_file'})
         return request.render('records_management.portal_barcode_scan', values)
 
@@ -3904,7 +3904,7 @@ class RecordsManagementController(http.Controller):
     def portal_feedback(self, **post):
         """Submit feedback."""
         values = self._prepare_portal_layout_values()
-        
+
         if request.httprequest.method == 'POST':
             feedback = request.env['customer.feedback'].create({
                 'partner_id': request.env.user.partner_id.id,
@@ -3913,7 +3913,7 @@ class RecordsManagementController(http.Controller):
                 'rating': post.get('rating', '3'),
             })
             return request.redirect('/my/feedback/history?submitted=success')
-        
+
         values.update({'page_name': 'feedback'})
         return request.render('records_management.portal_feedback', values)
 
@@ -3922,24 +3922,24 @@ class RecordsManagementController(http.Controller):
         """View submitted feedback history."""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         domain = [('partner_id', '=', partner.id)]
         feedback_count = request.env['customer.feedback'].search_count(domain)
-        
+
         pager = request.website.pager(
             url="/my/feedback/history",
             total=feedback_count,
             page=page,
             step=20,
         )
-        
+
         feedbacks = request.env['customer.feedback'].search(
             domain,
             order='create_date desc',
             limit=20,
             offset=pager['offset']
         )
-        
+
         values.update({
             'feedbacks': feedbacks,
             'page_name': 'feedback_history',
@@ -3952,7 +3952,7 @@ class RecordsManagementController(http.Controller):
         """Notification preferences."""
         values = self._prepare_portal_layout_values()
         user = request.env.user
-        
+
         values.update({
             'user': user,
             'page_name': 'notifications',
@@ -3963,12 +3963,12 @@ class RecordsManagementController(http.Controller):
     def portal_notifications_update(self, **post):
         """Update notification preferences."""
         user = request.env.user
-        
+
         # Update notification settings
         user.write({
             'notification_type': post.get('notification_type', 'email'),
         })
-        
+
         return request.redirect('/my/notifications?updated=success')
 
     @http.route(['/my/access'], type='http', auth='user', website=True)
@@ -3976,20 +3976,20 @@ class RecordsManagementController(http.Controller):
         """Access management (Department Admin+)."""
         values = self._prepare_portal_layout_values()
         user = request.env.user
-        
+
         # Require department admin+ permissions
         if not user.has_group('records_management.group_portal_department_admin'):
             return request.render('records_management.portal_errors', {
                 'error_title': _('Access Denied'),
                 'error_message': _('You do not have permission to manage access.'),
             })
-        
+
         # Get department users
         accessible_departments = user.accessible_department_ids
         department_users = request.env['records.department.user'].search([
             ('department_id', 'in', accessible_departments.ids)
         ])
-        
+
         values.update({
             'department_users': department_users,
             'page_name': 'access_management',
