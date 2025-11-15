@@ -1,13 +1,13 @@
 /** @odoo-module **/
 /**
  * Barcode Command Handler - Portal Barcode Scanner
- * 
+ *
  * Handles barcode scanning with:
  * - Auto-submit after scan delay
  * - Standard Odoo command processing (O-CMD.*, O-BTN.*)
  * - Multi-scan queuing for batch operations
  * - Real-time feedback and notifications
- * 
+ *
  * @author Records Management Module
  * @version 18.0.1.0.4
  */
@@ -68,12 +68,12 @@ class BarcodeScannerHandler {
         // Auto-submit after scan delay
         input.addEventListener('keyup', (e) => {
             clearTimeout(this.scanTimeout);
-            
+
             // Ignore if Enter key (form will submit)
             if (e.key === 'Enter') {
                 return;
             }
-            
+
             // Auto-submit after delay (simulates barcode scanner behavior)
             this.scanTimeout = setTimeout(() => {
                 if (input.value.trim()) {
@@ -296,7 +296,7 @@ class BarcodeScannerHandler {
         }
 
         const operation = document.querySelector('input[name="operation"]').value;
-        
+
         // TODO: Implement actual batch submission
         // For now, redirect to appropriate request page
         if (operation === 'pickup') {
