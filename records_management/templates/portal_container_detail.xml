@@ -13,19 +13,19 @@
                             <t t-if="request.params.get('created')">
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                     <i class="fa fa-check-circle"></i> Container created successfully!
-                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <button type="button" class="close" data-dismiss="alert">&#215;</button>
                                 </div>
                             </t>
                             <t t-if="request.params.get('updated')">
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                     <i class="fa fa-check-circle"></i> Container updated successfully!
-                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <button type="button" class="close" data-dismiss="alert">&#215;</button>
                                 </div>
                             </t>
                             <t t-if="request.params.get('error')">
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                     <i class="fa fa-exclamation-triangle"></i> <t t-esc="request.params.get('error')"/>
-                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <button type="button" class="close" data-dismiss="alert">&#215;</button>
                                 </div>
                             </t>
 
@@ -189,7 +189,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Edit Container</h5>
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <button type="button" class="close" data-dismiss="modal">&#215;</button>
                                 </div>
                                 <form t-attf-action="/my/inventory/container/#{container.id}/edit" method="POST">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -231,7 +231,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Request Container Move</h5>
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <button type="button" class="close" data-dismiss="modal">&#215;</button>
                                 </div>
                                 <form t-attf-action="/my/inventory/container/#{container.id}/request-move" method="POST">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
