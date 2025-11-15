@@ -13,12 +13,11 @@
         </record>
 
         <!-- Ensure issued certificate has at least one destroyed item -->
-        <record id="demo_naid_certificate_item_001" model="destruction.certificate.item">
-            <field name="certificate_id" ref="records_management.demo_naid_certificate_001"/>
-            <field name="name">Confidential Paper Boxes</field>
+        <record id="demo_naid_certificate_item_001" model="destruction.item">
+            <field name="records_destruction_id" ref="records_management.demo_naid_certificate_001"/>
+            <field name="item_description">Confidential Paper Boxes</field>
             <field name="weight">25.0</field>
             <field name="quantity">3</field>
-            <field name="material_type">Paper</field>
         </record>
 
     <!-- Issue the certificate after items exist to satisfy constraints -->
