@@ -2107,19 +2107,19 @@ class RecordsManagementController(http.Controller):
         try:
             file_ids = post.get('file_ids', [])
             container_id = post.get('container_id')
-            
+
             # Validate inputs
             if not file_ids or not container_id:
                 return {'success': False, 'error': 'Missing file IDs or container ID'}
-            
+
             # Convert to integers if they're strings
             if isinstance(file_ids, str):
                 file_ids = [int(file_ids)]
             elif isinstance(file_ids, list):
                 file_ids = [int(f_id) for f_id in file_ids if str(f_id).isdigit()]
-            
+
             container_id = int(container_id) if container_id else None
-            
+
             if not file_ids or not container_id:
                 return {'success': False, 'error': 'Invalid file IDs or container ID'}
 
@@ -2128,11 +2128,11 @@ class RecordsManagementController(http.Controller):
 
             # Security check
             partner = request.env.user.partner_id.commercial_partner_id
-            
+
             # Check container access
             if not container.exists() or container.partner_id != partner:
                 return {'success': False, 'error': 'Container access denied'}
-            
+
             # Check file access
             for file_rec in files:
                 if not file_rec.exists():
@@ -2997,11 +2997,11 @@ class RecordsManagementController(http.Controller):
 
         # Redirect to request confirmation page
         return request.redirect('/my/requests/%s' % new_request.id)
-    
+
     # ============================================================================
     # BARCODE MAIN MENU AND SCANNING INTERFACE
     # ============================================================================
-    
+
     @http.route(['/my/barcode/main'], type='http', auth='user', website=True)
     def portal_barcode_main_menu(self, **kw):
         """
@@ -3014,18 +3014,18 @@ class RecordsManagementController(http.Controller):
             Rendered template with barcode operation menu
         """
         values = self._prepare_portal_layout_values()
-        
+
         # Get user's containers for quick stats
         partner = request.env.user.partner_id.commercial_partner_id
         Container = request.env['records.container'].sudo()
-        
+
         container_stats = {
             'total': Container.search_count([('partner_id', '=', partner.id)]),
             'active': Container.search_count([('partner_id', '=', partner.id), ('state', '=', 'active')]),
             'pending_pickup': Container.search_count([('partner_id', '=', partner.id), ('state', '=', 'pending_pickup')]),
             'pending_destruction': Container.search_count([('partner_id', '=', partner.id), ('state', '=', 'pending_destruction')]),
         }
-        
+
         # Define available barcode operations
         barcode_operations = [
             {
@@ -3057,15 +3057,15 @@ class RecordsManagementController(http.Controller):
                 'color': 'success'
             },
         ]
-        
+
         values.update({
             'page_name': 'barcode_menu',
             'barcode_operations': barcode_operations,
             'container_stats': container_stats,
         })
-        
+
         return request.render("records_management.portal_barcode_main_menu", values)
-    
+
     @http.route(['/my/barcode/scan/<string:scan_type>'], type='http', auth='user', website=True)
     def portal_barcode_scanner(self, scan_type='container', **kw):
         """
@@ -3078,7 +3078,7 @@ class RecordsManagementController(http.Controller):
             Rendered template with barcode scanner interface
         """
         values = self._prepare_portal_layout_values()
-        
+
         scan_config = {
             'container': {
                 'title': 'Scan Container',
@@ -3105,17 +3105,17 @@ class RecordsManagementController(http.Controller):
                 'endpoint': '/my/barcode/process/retrieval',
             },
         }
-        
+
         config = scan_config.get(scan_type, scan_config['container'])
-        
+
         values.update({
             'page_name': f'barcode_scan_{scan_type}',
             'scan_type': scan_type,
             'scan_config': config,
         })
-        
+
         return request.render("records_management.portal_barcode_scanner", values)
-    
+
     @http.route(['/my/barcode/process/<string:operation>'], type='json', auth='user')
     def portal_barcode_process(self, operation='container', barcode=None, **kw):
         """
@@ -3132,30 +3132,30 @@ class RecordsManagementController(http.Controller):
         """
         if not barcode:
             return {'error': _('No barcode provided')}
-        
+
         # Handle standard Odoo commands
         if barcode == 'O-CMD.MAIN-MENU':
             return {'redirect': '/my/barcode/main'}
-        
-        if barcode in ['O-BTN.validate', 'O-BTN.discard', 'O-BTN.cancel', 
+
+        if barcode in ['O-BTN.validate', 'O-BTN.discard', 'O-BTN.cancel',
                        'O-CMD.PRINT', 'O-CMD.PACKING', 'O-BTN.scrap', 'O-CMD.RETURN']:
             return {
                 'info': _('Command %s recognized. Please scan a container first.') % barcode
             }
-        
+
         # Process container barcode
         Container = request.env['records.container'].sudo()
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Search by barcode or temp_barcode
         container = Container.search([
             ('partner_id', '=', partner.id),
             '|', ('barcode', '=', barcode), ('temp_barcode', '=', barcode)
         ], limit=1)
-        
+
         if not container:
             return {'error': _('Container not found with barcode: %s') % barcode}
-        
+
         # Execute operation-specific action
         if operation == 'container':
             return {
@@ -3168,7 +3168,7 @@ class RecordsManagementController(http.Controller):
                     'state': container.state,
                 }
             }
-        
+
         elif operation == 'pickup':
             # Add to pickup request queue (session-based)
             return {
@@ -3179,7 +3179,7 @@ class RecordsManagementController(http.Controller):
                     'name': container.name,
                 }
             }
-        
+
         elif operation == 'retrieval':
             # Add to retrieval request queue
             return {
@@ -3190,18 +3190,18 @@ class RecordsManagementController(http.Controller):
                     'name': container.name,
                 }
             }
-        
+
         return {'error': _('Unknown operation: %s') % operation}
-    
+
     # ================================================================
     # SERVICE REQUEST CREATION ROUTES
     # ================================================================
-    
+
     @http.route(['/my/request/new/<string:request_type>'], type='http', auth='user', website=True)
     def portal_request_new(self, request_type='retrieval', **kw):
         """Service request creation form for different request types."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Define request type configurations
         request_configs = {
             'retrieval': {
@@ -3229,15 +3229,15 @@ class RecordsManagementController(http.Controller):
                 'form_fields': ['document_ids', 'scan_resolution', 'file_format'],
             },
         }
-        
+
         config = request_configs.get(request_type, request_configs['retrieval'])
-        
+
         # Get available containers for selection
         containers = request.env['records.container'].search([
             ('partner_id', '=', partner.id),
             ('state', 'in', ['storage', 'active'])
         ])
-        
+
         values = {
             'page_name': f'request_{request_type}',
             'request_type': request_type,
@@ -3245,73 +3245,73 @@ class RecordsManagementController(http.Controller):
             'containers': containers,
             'partner': partner,
         }
-        
+
         return request.render("records_management.portal_request_form", values)
-    
+
     # ================================================================
     # DESTRUCTION MANAGEMENT ROUTES
     # ================================================================
-    
+
     @http.route(['/my/destruction'], type='http', auth='user', website=True)
     def portal_destruction_requests(self, **kw):
         """List all destruction requests for the customer."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         destruction_requests = request.env['portal.request'].search([
             ('partner_id', '=', partner.id),
             ('request_type', '=', 'destruction')
         ], order='create_date desc')
-        
+
         values = {
             'page_name': 'destruction',
             'requests': destruction_requests,
         }
-        
+
         return request.render("records_management.portal_destruction_list", values)
-    
+
     @http.route(['/my/destruction/pending'], type='http', auth='user', website=True)
     def portal_destruction_pending(self, **kw):
         """Destruction requests pending approval."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         pending_requests = request.env['portal.request'].search([
             ('partner_id', '=', partner.id),
             ('request_type', '=', 'destruction'),
             ('state', 'in', ['draft', 'pending_approval'])
         ])
-        
+
         values = {
             'page_name': 'destruction',
             'requests': pending_requests,
         }
-        
+
         return request.render("records_management.portal_destruction_pending", values)
-    
+
     @http.route(['/my/custody/chain'], type='http', auth='user', website=True)
     def portal_chain_of_custody(self, **kw):
         """Chain of custody tracking for all containers."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         custody_records = request.env['chain.of.custody'].search([
             ('partner_id', '=', partner.id)
         ], order='transfer_date desc', limit=100)
-        
+
         values = {
             'page_name': 'custody',
             'custody_records': custody_records,
         }
-        
+
         return request.render("records_management.portal_chain_of_custody", values)
-    
+
     # ================================================================
     # BILLING & INVOICES ROUTES
     # ================================================================
-    
+
     @http.route(['/my/invoices/history'], type='http', auth='user', website=True)
     def portal_invoice_history(self, **kw):
         """Payment history and archived invoices."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Get paid invoices
         invoices = request.env['account.move'].search([
             ('partner_id', '=', partner.id),
@@ -3319,135 +3319,135 @@ class RecordsManagementController(http.Controller):
             ('state', '=', 'posted'),
             ('payment_state', 'in', ['paid', 'in_payment'])
         ], order='invoice_date desc')
-        
+
         values = {
             'page_name': 'invoices',
             'invoices': invoices,
             'payment_history': True,
         }
-        
+
         return request.render("records_management.portal_invoice_history", values)
-    
+
     @http.route(['/my/billing/rates'], type='http', auth='user', website=True)
     def portal_billing_rates(self, **kw):
         """Display current billing rates and pricing information."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Get customer's billing configuration
         billing_info = request.env['records.billing'].search([
             ('partner_id', '=', partner.id)
         ], limit=1)
-        
+
         # Get product pricing
         products = request.env['product.product'].search([
             ('categ_id.name', 'ilike', 'records management')
         ])
-        
+
         values = {
             'page_name': 'billing',
             'billing_info': billing_info,
             'products': products,
         }
-        
+
         return request.render("records_management.portal_billing_rates", values)
-    
+
     @http.route(['/my/billing/statements'], type='http', auth='user', website=True)
     def portal_billing_statements(self, **kw):
         """Download billing statements."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Get recent invoices for statements
         statements = request.env['account.move'].search([
             ('partner_id', '=', partner.id),
             ('move_type', '=', 'out_invoice'),
             ('state', '=', 'posted')
         ], order='invoice_date desc', limit=12)
-        
+
         values = {
             'page_name': 'billing',
             'statements': statements,
         }
-        
+
         return request.render("records_management.portal_billing_statements", values)
-    
+
     # ================================================================
     # REPORTS & ANALYTICS ROUTES
     # ================================================================
-    
+
     @http.route(['/my/reports'], type='http', auth='user', website=True)
     def portal_reports_inventory(self, **kw):
         """Inventory reports and summaries."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Generate inventory summary
         containers = request.env['records.container'].search([
             ('partner_id', '=', partner.id)
         ])
-        
+
         summary = {
             'total_containers': len(containers),
             'active_containers': len(containers.filtered(lambda c: c.state == 'active')),
             'in_storage': len(containers.filtered(lambda c: c.state == 'storage')),
             'total_files': sum(containers.mapped('file_count')),
         }
-        
+
         values = {
             'page_name': 'reports',
             'summary': summary,
             'containers': containers,
         }
-        
+
         return request.render("records_management.portal_reports_inventory", values)
-    
+
     @http.route(['/my/reports/activity'], type='http', auth='user', website=True)
     def portal_reports_activity(self, **kw):
         """Activity reports showing movements and requests."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Get recent activity
         requests = request.env['portal.request'].search([
             ('partner_id', '=', partner.id)
         ], order='create_date desc', limit=50)
-        
+
         movements = request.env['stock.move'].search([
             ('partner_id', '=', partner.id)
         ], order='date desc', limit=50)
-        
+
         values = {
             'page_name': 'reports',
             'requests': requests,
             'movements': movements,
         }
-        
+
         return request.render("records_management.portal_reports_activity", values)
-    
+
     @http.route(['/my/reports/compliance'], type='http', auth='user', website=True)
     def portal_reports_compliance(self, **kw):
         """NAID compliance and audit reports."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Get compliance data
         certificates = request.env['naid.certificate'].search([
             ('partner_id', '=', partner.id)
         ])
-        
+
         audit_logs = request.env['naid.audit.log'].search([
             ('partner_id', '=', partner.id)
         ], order='timestamp desc', limit=100)
-        
+
         values = {
             'page_name': 'reports',
             'certificates': certificates,
             'audit_logs': audit_logs,
         }
-        
+
         return request.render("records_management.portal_reports_compliance", values)
-    
+
     @http.route(['/my/reports/export'], type='http', auth='user', website=True)
     def portal_reports_export(self, **kw):
         """Export data in various formats."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         values = {
             'page_name': 'reports',
             'export_options': [
@@ -3456,38 +3456,38 @@ class RecordsManagementController(http.Controller):
                 {'format': 'pdf', 'icon': 'fa-file-pdf', 'label': _('PDF Report')},
             ],
         }
-        
+
         return request.render("records_management.portal_reports_export", values)
-    
+
     # ================================================================
     # FEEDBACK & SUPPORT ROUTES
     # ================================================================
-    
+
     @http.route(['/my/feedback'], type='http', auth='user', website=True)
     def portal_feedback_submit(self, **kw):
         """Submit feedback form."""
         values = {
             'page_name': 'feedback',
         }
-        
+
         return request.render("records_management.portal_feedback_form", values)
-    
+
     @http.route(['/my/feedback/history'], type='http', auth='user', website=True)
     def portal_feedback_history(self, **kw):
         """Feedback submission history."""
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         feedback_records = request.env['customer.feedback'].search([
             ('partner_id', '=', partner.id)
         ], order='create_date desc')
-        
+
         values = {
             'page_name': 'feedback',
             'feedback_records': feedback_records,
         }
-        
+
         return request.render("records_management.portal_feedback_history", values)
-    
+
     @http.route(['/help'], type='http', auth='user', website=True)
     def portal_help_center(self, **kw):
         """Help center with documentation."""
@@ -3512,72 +3512,72 @@ class RecordsManagementController(http.Controller):
                 },
             ],
         }
-        
+
         return request.render("records_management.portal_help_center", values)
-    
+
     # ================================================================
     # SETTINGS & USER MANAGEMENT ROUTES
     # ================================================================
-    
+
     @http.route(['/my/users'], type='http', auth='user', website=True)
     def portal_department_users(self, **kw):
         """Manage department users (for company admins)."""
         if not request.env.user.has_group('records_management.group_portal_company_admin'):
             return request.redirect('/my/home')
-        
+
         partner = request.env.user.partner_id.commercial_partner_id
-        
+
         # Get all portal users for this company
         users = request.env['res.users'].search([
             ('partner_id.parent_id', '=', partner.id),
             ('groups_id', 'in', [request.env.ref('base.group_portal').id])
         ])
-        
+
         # Get departments for the dropdown
         departments = request.env['records.department'].search([
             ('company_id', '=', partner.id)
         ])
-        
+
         values = {
             'page_name': 'settings',
             'users': users,
             'departments': departments,
             'company': partner,
         }
-        
+
         return request.render("records_management.portal_department_users", values)
-    
+
     @http.route(['/my/users/create'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
     def portal_create_department_user(self, **post):
         """Create new portal user for a department (company admin only)."""
         if not request.env.user.has_group('records_management.group_portal_company_admin'):
             return request.redirect('/my/home')
-        
+
         try:
             partner = request.env.user.partner_id.commercial_partner_id
-            
+
             # Validate required fields
             name = post.get('name')
             email = post.get('email')
             department_id = int(post.get('department_id', 0))
-            
+
             if not all([name, email, department_id]):
                 return request.render('records_management.portal_error', {
                     'error_title': 'Missing Required Fields',
                     'error_message': 'Please provide name, email, and department.',
                 })
-            
+
             # Check if user already exists
             existing_user = request.env['res.users'].sudo().search([
                 ('login', '=', email)
             ], limit=1)
-            
+
             if existing_user:
                 return request.render('records_management.portal_error', {
                     'error_title': 'User Already Exists',
                     'error_message': f'A user with email {email} already exists.',
                 })
-            
+
             # Get the department
             department = request.env['records.department'].sudo().browse(department_id)
             if not department or department.company_id.id != partner.id:
@@ -3585,7 +3585,7 @@ class RecordsManagementController(http.Controller):
                     'error_title': 'Invalid Department',
                     'error_message': 'The selected department is invalid.',
                 })
-            
+
             # Create partner for the user
             new_partner = request.env['res.partner'].sudo().create({
                 'name': name,
@@ -3594,7 +3594,7 @@ class RecordsManagementController(http.Controller):
                 'type': 'contact',
                 'department_id': department_id,
             })
-            
+
             # Create portal user
             portal_group = request.env.ref('base.group_portal')
             new_user = request.env['res.users'].sudo().create({
@@ -3605,10 +3605,10 @@ class RecordsManagementController(http.Controller):
                 'groups_id': [(6, 0, [portal_group.id])],
                 'active': True,
             })
-            
+
             # Send invitation email
             new_user.sudo().action_reset_password()
-            
+
             # Log the creation
             request.env['naid.audit.log'].sudo().create({
                 'action_type': 'portal_user_created',
@@ -3616,61 +3616,61 @@ class RecordsManagementController(http.Controller):
                 'description': _('Portal user %s created for department %s by company admin') % (name, department.name),
                 'timestamp': fields.Datetime.now(),
             })
-            
+
             return request.redirect('/my/users?created=success')
-            
+
         except Exception as e:
             return request.render('records_management.portal_error', {
                 'error_title': 'User Creation Failed',
                 'error_message': str(e),
             })
-    
+
     @http.route(['/my/users/<int:user_id>/edit'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
     def portal_edit_department_user(self, user_id, **post):
         """Edit portal user (company admin only)."""
         if not request.env.user.has_group('records_management.group_portal_company_admin'):
             return request.redirect('/my/home')
-        
+
         try:
             user = request.env['res.users'].sudo().browse(user_id)
             partner = request.env.user.partner_id.commercial_partner_id
-            
+
             # Verify user belongs to this company
             if user.partner_id.parent_id.id != partner.id:
                 return request.redirect('/my/users?error=unauthorized')
-            
+
             # Update user info
             if post.get('name'):
                 user.sudo().write({'name': post['name']})
                 user.partner_id.sudo().write({'name': post['name']})
-            
+
             if post.get('department_id'):
                 user.partner_id.sudo().write({'department_id': int(post['department_id'])})
-            
+
             if 'active' in post:
                 user.sudo().write({'active': post['active'] == 'true'})
-            
+
             return request.redirect('/my/users?updated=success')
-            
+
         except Exception as e:
             return request.redirect('/my/users?error=update_failed')
-    
+
     @http.route(['/my/users/<int:user_id>/deactivate'], type='json', auth='user', methods=['POST'])
     def portal_deactivate_user(self, user_id, **kw):
         """Deactivate a portal user (company admin only)."""
         if not request.env.user.has_group('records_management.group_portal_company_admin'):
             return {'success': False, 'error': 'Unauthorized'}
-        
+
         try:
             user = request.env['res.users'].sudo().browse(user_id)
             partner = request.env.user.partner_id.commercial_partner_id
-            
+
             # Verify user belongs to this company
             if user.partner_id.parent_id.id != partner.id:
                 return {'success': False, 'error': 'Unauthorized'}
-            
+
             user.sudo().write({'active': False})
-            
+
             # Log the action
             request.env['naid.audit.log'].sudo().create({
                 'action_type': 'portal_user_deactivated',
@@ -3678,17 +3678,17 @@ class RecordsManagementController(http.Controller):
                 'description': _('Portal user %s deactivated by company admin') % user.name,
                 'timestamp': fields.Datetime.now(),
             })
-            
+
             return {'success': True, 'message': 'User deactivated successfully'}
-            
+
         except Exception as e:
             return {'success': False, 'error': str(e)}
-    
+
     @http.route(['/my/notifications'], type='http', auth='user', website=True)
     def portal_notifications_settings(self, **kw):
         """Notification preferences."""
         user = request.env.user
-        
+
         values = {
             'page_name': 'settings',
             'user': user,
@@ -3698,29 +3698,29 @@ class RecordsManagementController(http.Controller):
                 {'type': 'portal', 'label': _('Portal Messages'), 'enabled': True},
             ],
         }
-        
+
         return request.render("records_management.portal_notifications", values)
-    
+
     @http.route(['/my/access'], type='http', auth='user', website=True)
     def portal_access_management(self, **kw):
         """Access management (for department admins)."""
         if not request.env.user.has_group('records_management.group_portal_department_admin'):
             return request.redirect('/my/home')
-        
+
         partner = request.env.user.partner_id
-        
+
         # Get access permissions
         access_records = request.env['portal.user.access'].search([
             ('partner_id', '=', partner.id)
         ])
-        
+
         values = {
             'page_name': 'settings',
             'access_records': access_records,
         }
-        
+
         return request.render("records_management.portal_access_management", values)
-    
+
     @http.route(['/my/inventory/advanced_search'], type='http', auth='user', website=True)
     def portal_advanced_search(self, **kw):
         """Advanced search interface for inventory."""
@@ -3732,5 +3732,5 @@ class RecordsManagementController(http.Controller):
                 {'id': 'documents', 'label': _('Documents'), 'icon': 'fa-file-text'},
             ],
         }
-        
+
         return request.render("records_management.portal_advanced_search", values)
