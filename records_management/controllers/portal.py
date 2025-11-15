@@ -2401,28 +2401,28 @@ class RecordsManagementController(http.Controller):
         """Add document to file (department user+)."""
         if not request.env.user.has_group('records_management.group_portal_department_user'):
             return request.redirect('/my/home?error=unauthorized')
-        
+
         try:
             partner = request.env.user.partner_id.commercial_partner_id
             file_record = request.env['records.file'].sudo().browse(file_id)
-            
+
             if file_record.partner_id.id != partner.id:
                 return request.redirect('/my/inventory/files?error=unauthorized')
-            
+
             # Department access check
             is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
             if not is_company_admin:
                 accessible_depts = request.env.user.accessible_department_ids.ids
                 if file_record.department_id.id not in accessible_depts:
                     return request.redirect('/my/inventory/files?error=unauthorized_dept')
-            
+
             document_id = post.get('document_id')
             if document_id:
                 # Link existing document to file
                 doc = request.env['records.document'].sudo().browse(int(document_id))
                 if doc.partner_id.id == partner.id:
                     doc.sudo().write({'file_id': file_id})
-                    
+
                     request.env['naid.audit.log'].create({
                         'action_type': 'document_added_to_file',
                         'user_id': request.env.user.id,
@@ -2444,9 +2444,9 @@ class RecordsManagementController(http.Controller):
                     }
                     if post.get('document_description'):
                         doc_vals['description'] = post.get('document_description')
-                    
+
                     doc = request.env['records.document'].create(doc_vals)
-                    
+
                     request.env['naid.audit.log'].create({
                         'action_type': 'document_created_in_file',
                         'user_id': request.env.user.id,
@@ -2455,9 +2455,9 @@ class RecordsManagementController(http.Controller):
                         ),
                         'timestamp': datetime.now(),
                     })
-            
+
             return request.redirect(f'/my/inventory/file/{file_id}?document_added=success')
-        
+
         except Exception as e:
             _logger.error(f"Add document to file failed: {str(e)}")
             return request.redirect(f'/my/inventory/file/{file_id}?error=add_document_failed')
@@ -2467,33 +2467,33 @@ class RecordsManagementController(http.Controller):
         """Move file to different container (department user+)."""
         if not request.env.user.has_group('records_management.group_portal_department_user'):
             return request.redirect('/my/home?error=unauthorized')
-        
+
         try:
             partner = request.env.user.partner_id.commercial_partner_id
             file_record = request.env['records.file'].sudo().browse(file_id)
-            
+
             if file_record.partner_id.id != partner.id:
                 return request.redirect('/my/inventory/files?error=unauthorized')
-            
+
             # Department access check
             is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
             if not is_company_admin:
                 accessible_depts = request.env.user.accessible_department_ids.ids
                 if file_record.department_id.id not in accessible_depts:
                     return request.redirect('/my/inventory/files?error=unauthorized_dept')
-            
+
             new_container_id = post.get('container_id')
             if not new_container_id:
                 return request.redirect(f'/my/inventory/file/{file_id}?error=no_container')
-            
+
             # Verify new container ownership
             new_container = request.env['records.container'].sudo().browse(int(new_container_id))
             if new_container.partner_id.id != partner.id:
                 return request.redirect(f'/my/inventory/file/{file_id}?error=invalid_container')
-            
+
             old_container_name = file_record.container_id.name if file_record.container_id else 'None'
             file_record.sudo().write({'container_id': int(new_container_id)})
-            
+
             request.env['naid.audit.log'].create({
                 'action_type': 'file_moved_container',
                 'user_id': request.env.user.id,
@@ -2502,9 +2502,9 @@ class RecordsManagementController(http.Controller):
                 ),
                 'timestamp': datetime.now(),
             })
-            
+
             return request.redirect(f'/my/inventory/file/{file_id}?moved=success')
-        
+
         except Exception as e:
             _logger.error(f"Move file to container failed: {str(e)}")
             return request.redirect(f'/my/inventory/file/{file_id}?error=move_failed')
@@ -2909,21 +2909,21 @@ class RecordsManagementController(http.Controller):
         """Request scanning service for document (department user+)."""
         if not request.env.user.has_group('records_management.group_portal_department_user'):
             return request.redirect('/my/home?error=unauthorized')
-        
+
         try:
             partner = request.env.user.partner_id.commercial_partner_id
             doc_record = request.env['records.document'].sudo().browse(doc_id)
-            
+
             if doc_record.partner_id.id != partner.id:
                 return request.redirect('/my/inventory/documents?error=unauthorized')
-            
+
             # Department access check
             is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
             if not is_company_admin:
                 accessible_depts = request.env.user.accessible_department_ids.ids
                 if doc_record.department_id.id not in accessible_depts:
                     return request.redirect('/my/inventory/documents?error=unauthorized_dept')
-            
+
             # Create scan service request
             request_vals = {
                 'name': _('Scan Request for %s') % doc_record.name,
@@ -2933,18 +2933,18 @@ class RecordsManagementController(http.Controller):
                 'state': 'draft',
                 'created_via_portal': True,
             }
-            
+
             if post.get('notes'):
                 request_vals['notes'] = post.get('notes')
-            
+
             scan_request = request.env['portal.request'].create(request_vals)
-            
+
             # Link document to request
             doc_record.sudo().write({
                 'scan_request_id': scan_request.id,
                 'scan_requested_date': datetime.now(),
             })
-            
+
             request.env['naid.audit.log'].create({
                 'action_type': 'scan_requested',
                 'user_id': request.env.user.id,
@@ -2953,9 +2953,9 @@ class RecordsManagementController(http.Controller):
                 ),
                 'timestamp': datetime.now(),
             })
-            
+
             return request.redirect(f'/my/inventory/document/{doc_id}?scan_requested=success')
-        
+
         except Exception as e:
             _logger.error(f"Request scan failed: {str(e)}")
             return request.redirect(f'/my/inventory/document/{doc_id}?error=scan_request_failed')
@@ -3025,7 +3025,7 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/requests/<int:request_id>'], type='http', auth='user', website=True)
     def portal_request_detail(self, request_id, **kw):
-        \"\"\"Service request detail view with edit/cancel capability.\"\"\"
+        """Service request detail view with edit/cancel capability."""
         partner = request.env.user.partner_id.commercial_partner_id
         req_record = request.env['portal.request'].sudo().browse(request_id)
 
@@ -3053,7 +3053,7 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/request/new/<string:request_type>'], type='http', auth='user', website=True, methods=['GET', 'POST'], csrf=True)
     def portal_request_create(self, request_type, **post):
-        \"\"\"Create new service request (department user+).\"\"\"
+        """Create new service request (department user+)."""
         if not request.env.user.has_group('records_management.group_portal_department_user'):
             if request.httprequest.method == 'GET':
                 return request.redirect('/my/home?error=unauthorized')
@@ -3147,7 +3147,7 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/requests/<int:request_id>/edit'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
     def portal_request_edit(self, request_id, **post):
-        \"\"\"Edit service request (department user+ for draft/submitted only).\"\"\"
+        """Edit service request (department user+ for draft/submitted only)."""
         if not request.env.user.has_group('records_management.group_portal_department_user'):
             return request.redirect('/my/home?error=unauthorized')
 
@@ -3193,7 +3193,7 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/requests/<int:request_id>/cancel'], type='json', auth='user', methods=['POST'])
     def portal_request_cancel(self, request_id, **kw):
-        \"\"\"Cancel service request (department user+).\"\"\"
+        """Cancel service request (department user+)."""
         if not request.env.user.has_group('records_management.group_portal_department_user'):
             return {'success': False, 'error': _('Unauthorized')}
 
@@ -3231,7 +3231,7 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/requests/<int:request_id>/submit'], type='json', auth='user', methods=['POST'])
     def portal_request_submit(self, request_id, **kw):
-        \"\"\"Submit request for approval (department user+).\"\"\"
+        """Submit request for approval (department user+)."""
         if not request.env.user.has_group('records_management.group_portal_department_user'):
             return {'success': False, 'error': _('Unauthorized')}
 
