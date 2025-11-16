@@ -3463,7 +3463,7 @@ class RecordsManagementController(http.Controller):
             'cert_count': cert_count,
         })
 
-        return request.render("records_management.portal_certificates", values)
+        return request.render("records_management.portal_my_certificates", values)
 
     @http.route(['/my/custody/chain'], type='http', auth='user', website=True)
     def portal_custody_chain(self, page=1, filterby=None, search=None, **kw):

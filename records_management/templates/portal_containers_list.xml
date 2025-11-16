@@ -32,13 +32,13 @@
                         <div class="row">
                             <!-- Search Input -->
                             <div class="col-md-3 mb-2">
-                                <input type="text" 
-                                       name="search" 
-                                       class="form-control search-input" 
-                                       placeholder="Search containers..." 
+                                <input type="text"
+                                       name="search"
+                                       class="form-control search-input"
+                                       placeholder="Search containers..."
                                        t-att-value="search or ''"/>
                             </div>
-                            
+
                             <!-- Status Filter -->
                             <div class="col-md-3 mb-2">
                                 <select name="filterby" class="form-select" onchange="this.form.submit()">
@@ -46,14 +46,14 @@
                                     <t t-foreach="searchbar_filters or {}" t-as="filter_item">
                                         <t t-set="filter_key" t-value="filter_item[0]"/>
                                         <t t-set="filter_label" t-value="filter_item[1].get('label', filter_key)"/>
-                                        <option t-att-value="filter_key" 
+                                        <option t-att-value="filter_key"
                                                 t-att-selected="'selected' if filterby == filter_key else None">
                                             <t t-esc="filter_label"/>
                                         </option>
                                     </t>
                                 </select>
                             </div>
-                            
+
                             <!-- Date Range -->
                             <div class="col-md-2 mb-2">
                                 <input type="date" name="date_from" class="form-control" placeholder="Date From"/>
@@ -61,7 +61,7 @@
                             <div class="col-md-2 mb-2">
                                 <input type="date" name="date_to" class="form-control" placeholder="Date To"/>
                             </div>
-                            
+
                             <div class="col-md-2 mb-2">
                                 <button type="submit" class="btn btn-purple w-100">
                                     <i class="fa fa-filter"></i> Filter
@@ -102,7 +102,7 @@
                                         </td>
                                         <td t-esc="container.location_id.name if container.location_id else 'Not Set'"/>
                                         <td t-esc="container.department_id.name if container.department_id else '-'"/>
-                                        <td><span t-field="container.create_date" t-options="{'widget': 'date'}"/></td>
+                                        <td t-esc="container.create_date"/>
                                         <td>
                                             <a t-attf-href="/my/inventory/container/{{container.id}}" 
                                                class="btn btn-sm btn-info">
