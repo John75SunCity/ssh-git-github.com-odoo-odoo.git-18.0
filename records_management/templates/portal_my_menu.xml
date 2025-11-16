@@ -208,6 +208,118 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Advanced Inventory Features -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header" style="background-color: #6f42c1; color: white;">
+                                    <i class="fa fa-search-plus me-2"/>
+                                    <strong>Advanced Inventory</strong>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/advanced_search" class="text-decoration-none" style="color: #6f42c1;">
+                                                <i class="fa fa-search me-2"/>Advanced Search</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/counts" class="text-decoration-none" style="color: #6f42c1;">
+                                                <i class="fa fa-calculator me-2"/>Inventory Counts</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/recent_activity" class="text-decoration-none" style="color: #6f42c1;">
+                                                <i class="fa fa-history me-2"/>Recent Activity</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/temp" class="text-decoration-none" style="color: #6f42c1;">
+                                                <i class="fa fa-thermometer-half me-2"/>Temp Storage</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/files/available" class="text-decoration-none" style="color: #6f42c1;">
+                                                <i class="fa fa-folder-open me-2"/>Available Files</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Barcode Operations -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header" style="background-color: #20c997; color: white;">
+                                    <i class="fa fa-qrcode me-2"/>
+                                    <strong>Barcode Operations</strong>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <a href="/my/barcode/main" class="text-decoration-none" style="color: #20c997;">
+                                                <i class="fa fa-barcode me-2"/>Main Scanner</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/barcode/scan/container" class="text-decoration-none" style="color: #20c997;">
+                                                <i class="fa fa-archive me-2"/>Scan Container</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/barcode/scan/file" class="text-decoration-none" style="color: #20c997;">
+                                                <i class="fa fa-folder me-2"/>Scan File</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/barcode/scan/document" class="text-decoration-none" style="color: #20c997;">
+                                                <i class="fa fa-file me-2"/>Scan Document</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Management -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header" style="background-color: #e83e8c; color: white;">
+                                    <i class="fa fa-users me-2"/>
+                                    <strong>User Management</strong>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <a href="/my/users" class="text-decoration-none" style="color: #e83e8c;">
+                                                <i class="fa fa-users-cog me-2"/>Manage Users</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/users/create" class="text-decoration-none" style="color: #e83e8c;">
+                                                <i class="fa fa-user-plus me-2"/>Add New User</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feedback & Communication -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header" style="background-color: #fd7e14; color: white;">
+                                    <i class="fa fa-comments me-2"/>
+                                    <strong>Feedback &amp; Communication</strong>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <a href="/my/feedback" class="text-decoration-none" style="color: #fd7e14;">
+                                                <i class="fa fa-comment-dots me-2"/>Submit Feedback</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/feedback/history" class="text-decoration-none" style="color: #fd7e14;">
+                                                <i class="fa fa-history me-2"/>Feedback History</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/notifications" class="text-decoration-none" style="color: #fd7e14;">
+                                                <i class="fa fa-bell me-2"/>Notifications</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </xpath>

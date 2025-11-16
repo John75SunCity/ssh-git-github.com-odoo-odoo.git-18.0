@@ -662,9 +662,7 @@
         "templates/portal_overview.xml",
         "templates/portal_dashboards.xml",
         "templates/portal_home_preconfigured.xml",
-        # "templates/portal_consolidated_menu.xml",  # DISABLED: XPath issues in Odoo 18, reorganize menu later
-        "templates/portal_my_menu.xml",  # ✅ WORKING: Card-based menu on /my/home page (Odoo 18 compatible)
-        # "templates/portal_sidebar_menu.xml",  # DISABLED: portal.portal_my_sidebar doesn't exist in Odoo 18+
+        "templates/portal_my_menu.xml",  # ✅ Card-based home menu with 10 sections & 50+ routes (Odoo 18 compatible)
         "templates/portal_access_templates.xml",
         "templates/portal_errors.xml",
         # Inventory & Container Templates
