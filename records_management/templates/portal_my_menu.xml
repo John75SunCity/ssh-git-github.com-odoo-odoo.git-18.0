@@ -189,6 +189,10 @@
                                                 <i class="fa fa-barcode me-2 text-secondary"/>Barcode Scanner</a>
                                         </li>
                                         <li class="mb-2">
+                                            <a href="/my/organization" class="text-decoration-none">
+                                                <i class="fa fa-sitemap me-2 text-secondary"/>Organization Diagram</a>
+                                        </li>
+                                        <li class="mb-2">
                                             <a href="/my/feedback" class="text-decoration-none">
                                                 <i class="fa fa-comment me-2 text-secondary"/>Feedback</a>
                                         </li>
