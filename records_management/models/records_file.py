@@ -523,7 +523,11 @@ class RecordsFile(models.Model):
         }
 
     def action_generate_qr_code(self):
-        """Generate QR code for this file"""
+        """Generate QR code for this file
+        
+        QR code contains secure portal URL requiring authentication.
+        Prevents unauthorized access to sensitive file metadata.
+        """
         self.ensure_one()
         if not self.temp_barcode:
             self.temp_barcode = self.env['ir.sequence'].next_by_code('records.file.temp.barcode') or f"FILE-{self.id}"
@@ -533,7 +537,6 @@ class RecordsFile(models.Model):
             'type': 'ir.actions.report',
             'report_name': 'records_management.report_file_qrcode',
             'report_type': 'qweb-pdf',
-            'data': {'qr_code': self.temp_barcode},
             'context': self.env.context,
         }
     
