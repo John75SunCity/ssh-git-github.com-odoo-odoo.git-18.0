@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Add sidebar menu items for portal users -->
+        <template id="portal_sidebar_menu_records" name="Portal Sidebar - Records Management" inherit_id="portal.portal_my_sidebar" priority="10">
+
+            <!-- Inventory Section -->
+            <xpath expr="//ul[hasclass('list-group')]" position="inside">
+                <!-- Main Inventory -->
+                <li class="list-group-item list-group-item-action" t-att-class="'active' if page_name == 'inventory' else ''">
+                    <a href="/my/inventory" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-th-large fa-fw me-2 text-primary"/>
+                        <span>My Inventory</span>
+                    </a>
+                </li>
+
+                <!-- Containers -->
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'containers' else ''">
+                    <a href="/my/containers" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-archive fa-fw me-2 text-primary"/>
+                        <span>Storage Containers</span>
+                        <span class="badge bg-primary ms-auto" t-if="container_count" t-esc="container_count"/>
+                    </a>
+                </li>
+
+                <!-- Files -->
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'files' else ''">
+                    <a href="/my/inventory/files" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-folder fa-fw me-2 text-primary"/>
+                        <span>File Folders</span>
+                        <span class="badge bg-primary ms-auto" t-if="file_count" t-esc="file_count"/>
+                    </a>
+                </li>
+
+                <!-- Documents -->
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'documents' else ''">
+                    <a href="/my/documents" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-file-text fa-fw me-2 text-primary"/>
+                        <span>Documents</span>
+                        <span class="badge bg-primary ms-auto" t-if="document_count" t-esc="document_count"/>
+                    </a>
+                </li>
+
+                <!-- Locations -->
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'locations' else ''">
+                    <a href="/my/inventory/locations" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-map-marker fa-fw me-2 text-primary"/>
+                        <span>Locations</span>
+                    </a>
+                </li>
+
+                <!-- Movements -->
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'movements' else ''">
+                    <a href="/my/inventory/movements" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-exchange fa-fw me-2 text-primary"/>
+                        <span>Movements</span>
+                    </a>
+                </li>
+            </xpath>
+
+            <!-- Service Requests Section -->
+            <xpath expr="//ul[hasclass('list-group')]" position="inside">
+                <li class="list-group-item list-group-item-light">
+                    <strong class="text-muted">Service Requests</strong>
+                </li>
+
+                <li class="list-group-item list-group-item-action" t-att-class="'active' if page_name == 'requests' else ''">
+                    <a href="/my/requests" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-tasks fa-fw me-2 text-success"/>
+                        <span>All Requests</span>
+                        <span class="badge bg-success ms-auto" t-if="request_count" t-esc="request_count"/>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'request_retrieval' else ''">
+                    <a href="/my/request/new/retrieval" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-truck fa-fw me-2 text-success"/>
+                        <span>Request Retrieval</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'request_destruction' else ''">
+                    <a href="/my/request/new/destruction" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-fire fa-fw me-2 text-success"/>
+                        <span>Request Destruction</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'document_retrieval' else ''">
+                    <a href="/my/document-retrieval" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-download fa-fw me-2 text-success"/>
+                        <span>Document Retrieval</span>
+                    </a>
+                </li>
+            </xpath>
+
+            <!-- Destruction & Compliance Section -->
+            <xpath expr="//ul[hasclass('list-group')]" position="inside">
+                <li class="list-group-item list-group-item-light">
+                    <strong class="text-muted">Destruction &amp; Compliance</strong>
+                </li>
+
+                <li class="list-group-item list-group-item-action" t-att-class="'active' if page_name == 'destruction' else ''">
+                    <a href="/my/destruction" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-fire fa-fw me-2 text-danger"/>
+                        <span>Destruction Requests</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'destruction_pending' else ''">
+                    <a href="/my/destruction/pending" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-hourglass-half fa-fw me-2 text-danger"/>
+                        <span>Pending Approvals</span>
+                        <span class="badge bg-warning ms-auto" t-if="pending_count" t-esc="pending_count"/>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'certificates' else ''">
+                    <a href="/my/certificates" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-certificate fa-fw me-2 text-danger"/>
+                        <span>Certificates</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'custody_chain' else ''">
+                    <a href="/my/custody/chain" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-link fa-fw me-2 text-danger"/>
+                        <span>Chain of Custody</span>
+                    </a>
+                </li>
+            </xpath>
+
+            <!-- Billing & Invoices Section -->
+            <xpath expr="//ul[hasclass('list-group')]" position="inside">
+                <li class="list-group-item list-group-item-light">
+                    <strong class="text-muted">Billing &amp; Invoices</strong>
+                </li>
+
+                <li class="list-group-item list-group-item-action" t-att-class="'active' if page_name == 'invoices' else ''">
+                    <a href="/my/invoices" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-file-invoice-dollar fa-fw me-2 text-warning"/>
+                        <span>Current Invoices</span>
+                        <span class="badge bg-warning ms-auto" t-if="invoice_count" t-esc="invoice_count"/>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'invoices_history' else ''">
+                    <a href="/my/invoices/history" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-history fa-fw me-2 text-warning"/>
+                        <span>Invoice History</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'billing_rates' else ''">
+                    <a href="/my/billing/rates" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-dollar-sign fa-fw me-2 text-warning"/>
+                        <span>Billing Rates</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'billing_statements' else ''">
+                    <a href="/my/billing/statements" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-file-alt fa-fw me-2 text-warning"/>
+                        <span>Statements</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'billing_summary' else ''">
+                    <a href="/my/billing/summary" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-chart-pie fa-fw me-2 text-warning"/>
+                        <span>Billing Summary</span>
+                    </a>
+                </li>
+            </xpath>
+
+            <!-- Reports & Analytics Section -->
+            <xpath expr="//ul[hasclass('list-group')]" position="inside">
+                <li class="list-group-item list-group-item-light">
+                    <strong class="text-muted">Reports &amp; Analytics</strong>
+                </li>
+
+                <li class="list-group-item list-group-item-action" t-att-class="'active' if page_name == 'reports' else ''">
+                    <a href="/my/reports" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-chart-bar fa-fw me-2 text-info"/>
+                        <span>All Reports</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'reports_activity' else ''">
+                    <a href="/my/reports/activity" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-clock fa-fw me-2 text-info"/>
+                        <span>Activity Reports</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'reports_compliance' else ''">
+                    <a href="/my/reports/compliance" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-shield-alt fa-fw me-2 text-info"/>
+                        <span>Compliance Reports</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'reports_audit' else ''">
+                    <a href="/my/reports/audit" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-clipboard-check fa-fw me-2 text-info"/>
+                        <span>Audit Logs</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action ps-4" t-att-class="'active' if page_name == 'reports_export' else ''">
+                    <a href="/my/reports/export" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-download fa-fw me-2 text-info"/>
+                        <span>Export Data</span>
+                    </a>
+                </li>
+            </xpath>
+
+            <!-- Tools & Utilities Section -->
+            <xpath expr="//ul[hasclass('list-group')]" position="inside">
+                <li class="list-group-item list-group-item-light">
+                    <strong class="text-muted">Tools &amp; Utilities</strong>
+                </li>
+
+                <li class="list-group-item list-group-item-action" t-att-class="'active' if page_name == 'barcode' else ''">
+                    <a href="/my/barcode/main" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-barcode fa-fw me-2 text-secondary"/>
+                        <span>Barcode Scanner</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action" t-att-class="'active' if page_name == 'feedback' else ''">
+                    <a href="/my/feedback" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-comment fa-fw me-2 text-secondary"/>
+                        <span>Feedback</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action" t-att-class="'active' if page_name == 'notifications' else ''">
+                    <a href="/my/notifications" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-bell fa-fw me-2 text-secondary"/>
+                        <span>Notifications</span>
+                        <span class="badge bg-danger ms-auto" t-if="notification_count" t-esc="notification_count"/>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action" t-att-class="'active' if page_name == 'certifications' else ''">
+                    <a href="/my/certifications" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-graduation-cap fa-fw me-2 text-secondary"/>
+                        <span>Training &amp; Certs</span>
+                    </a>
+                </li>
+
+                <li class="list-group-item list-group-item-action" t-att-class="'active' if page_name == 'access' else ''">
+                    <a href="/my/access" class="d-flex align-items-center text-decoration-none">
+                        <i class="fa fa-key fa-fw me-2 text-secondary"/>
+                        <span>Access Requests</span>
+                    </a>
+                </li>
+            </xpath>
+        </template>
+    </data>
+</odoo>
