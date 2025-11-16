@@ -47,14 +47,14 @@
                             <p><strong>Created:</strong> <t t-esc="record.create_date"/></p>
                         </div>
                     </div>
-                    
+
                     <h4>Chain of Custody (NAID AAA Compliant)</h4>
                     <div class="card">
                         <div class="card-body">
                             <ul class="list-unstyled">
                                 <t t-foreach="chain_entries" t-as="entry">
                                     <li class="mb-3">
-                                        <strong><t t-esc="entry.action_type"/>:</strong> 
+                                        <strong><t t-esc="entry.action_type"/>:</strong>
                                         <t t-esc="entry.date"/> by <t t-esc="entry.user_id.name"/>
                                         <br/>
                                         <small class="text-muted">Notes: <t t-esc="entry.notes"/></small>
