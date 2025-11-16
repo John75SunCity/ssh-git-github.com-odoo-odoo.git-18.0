@@ -115,6 +115,15 @@ class RecordsFile(models.Model):
         help="Customer who owns this file (inherited from container or owner)"
     )
     
+    department_id = fields.Many2one(
+        'records.department',
+        string="Department",
+        compute='_compute_department_id',
+        store=True,
+        tracking=True,
+        help="Department this file belongs to (inherited from container)"
+    )
+    
     stock_owner_id = fields.Many2one(
         "res.partner",
         string="Stock Owner",
@@ -205,6 +214,15 @@ class RecordsFile(models.Model):
                 file.partner_id = file.container_id.partner_id.id
             else:
                 file.partner_id = False
+
+    @api.depends('container_id.department_id')
+    def _compute_department_id(self):
+        """Compute department from container"""
+        for file in self:
+            if file.container_id and file.container_id.department_id:
+                file.department_id = file.container_id.department_id.id
+            else:
+                file.department_id = False
 
     @api.depends('container_id.stock_owner_id', 'partner_id')
     def _compute_stock_owner_id(self):
