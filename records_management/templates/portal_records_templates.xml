@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- My Records List Template -->
+        <template id="portal_my_records" name="Portal My Records">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <div class="container mt-4">
+                    <h3>My Records</h3>
+                    <p>View your records managed under NAID AAA compliance.</p>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Record ID</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="records" t-as="record">
+                                <tr>
+                                    <td><t t-esc="record.name"/></td>
+                                    <td><t t-esc="record.description"/></td>
+                                    <td><span t-attf-class="badge badge-{{record.state}}"><t t-esc="record.state"/></span></td>
+                                    <td>
+                                        <a t-attf-href="/my/records/{{record.id}}" class="btn btn-sm btn-primary">View Details</a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <t t-call="portal.pager"/>
+                </div>
+            </t>
+        </template>
+
+        <!-- Record Detail Template -->
+        <template id="portal_record_detail" name="Portal Record Detail">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>Record Details: <t t-esc="record.name"/></h3>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <p><strong>Description:</strong> <t t-esc="record.description"/></p>
+                            <p><strong>Status:</strong> <span t-attf-class="badge badge-{{record.state}}"><t t-esc="record.state"/></span></p>
+                            <p><strong>Created:</strong> <t t-esc="record.create_date"/></p>
+                        </div>
+                    </div>
+                    
+                    <h4>Chain of Custody (NAID AAA Compliant)</h4>
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <t t-foreach="chain_entries" t-as="entry">
+                                    <li class="mb-3">
+                                        <strong><t t-esc="entry.action_type"/>:</strong> 
+                                        <t t-esc="entry.date"/> by <t t-esc="entry.user_id.name"/>
+                                        <br/>
+                                        <small class="text-muted">Notes: <t t-esc="entry.notes"/></small>
+                                    </li>
+                                </t>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Chain of Custody Log Template -->
+        <template id="portal_custody_log" name="Portal Custody Log">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>Chain of Custody Log</h3>
+                    <div class="alert alert-info">
+                        <i class="fa fa-shield-alt"/> NAID AAA Compliant Tracking
+                    </div>
+                    <div class="timeline">
+                        <t t-foreach="logs" t-as="log">
+                            <div class="timeline-item mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5><t t-esc="log.action_type"/></h5>
+                                        <p><strong>Date:</strong> <t t-esc="log.date"/></p>
+                                        <p><strong>User:</strong> <t t-esc="log.user_id.name"/></p>
+                                        <p><strong>Notes:</strong> <t t-esc="log.notes"/></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

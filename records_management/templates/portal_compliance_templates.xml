@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Compliance Status -->
+        <template id="portal_compliance_status" name="Portal Compliance Status">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>NAID Compliance Status</h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <div t-attf-class="alert alert-{{status.compliant and 'success' or 'warning'}}">
+                                <h4>
+                                    <i t-attf-class="fa fa-{{status.compliant and 'check-circle' or 'exclamation-triangle'}}"/>
+                                    <t t-if="status.compliant">Compliant</t>
+                                    <t t-else="">Non-Compliant</t>
+                                </h4>
+                                <p><t t-esc="status.message"/></p>
+                            </div>
+                            <h5>Compliance Checklist</h5>
+                            <ul>
+                                <t t-foreach="status.checklist" t-as="item">
+                                    <li>
+                                        <i t-attf-class="fa fa-{{item.passed and 'check text-success' or 'times text-danger'}}"/>
+                                        <t t-esc="item.name"/>
+                                    </li>
+                                </t>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Audit Logs -->
+        <template id="portal_audit_logs" name="Portal Audit Logs">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>Audit Logs</h3>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Action</th>
+                                <th>User</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="logs" t-as="log">
+                                <tr>
+                                    <td><t t-esc="log.create_date"/></td>
+                                    <td><t t-esc="log.name"/></td>
+                                    <td><t t-esc="log.user_id.name"/></td>
+                                    <td><t t-esc="log.message"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

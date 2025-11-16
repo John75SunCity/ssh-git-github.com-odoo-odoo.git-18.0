@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- User Profile -->
+        <template id="portal_profile" name="Portal Profile">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>My Profile</h3>
+                    <form method="post" action="/my/profile/update">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" class="form-control" name="name" t-att-value="partner.name"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" name="email" t-att-value="partner.email"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <input type="tel" class="form-control" name="phone" t-att-value="partner.phone"/>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Update Profile</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </t>
+        </template>
+
+        <!-- Portal Settings -->
+        <template id="portal_settings" name="Portal Settings">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>Portal Settings</h3>
+                    <form method="post" action="/my/settings/update">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Notification Preferences</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Notification Type</label>
+                                    <select name="notification_type" class="form-control">
+                                        <option value="email" t-att-selected="user.notification_type == 'email' and 'selected' or None">Email</option>
+                                        <option value="sms" t-att-selected="user.notification_type == 'sms' and 'selected' or None">SMS</option>
+                                        <option value="both" t-att-selected="user.notification_type == 'both' and 'selected' or None">Both</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Settings</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </t>
+        </template>
+
+        <!-- Notifications -->
+        <template id="portal_notifications" name="Portal Notifications">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>Notifications</h3>
+                    <div class="list-group">
+                        <t t-foreach="notifications" t-as="notif">
+                            <div class="list-group-item">
+                                <h5><t t-esc="notif.subject"/></h5>
+                                <p><t t-esc="notif.body"/></p>
+                                <small class="text-muted"><t t-esc="notif.date"/></small>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Search Results -->
+        <template id="portal_search_results" name="Portal Search Results">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>Search Results</h3>
+                    <t t-if="results">
+                        <p>Found <t t-esc="len(results)"/> results</p>
+                        <div class="list-group">
+                            <t t-foreach="results" t-as="result">
+                                <a t-attf-href="/my/records/{{result.id}}" class="list-group-item list-group-item-action">
+                                    <h5><t t-esc="result.name"/></h5>
+                                    <p><t t-esc="result.description"/></p>
+                                </a>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="alert alert-warning">No results found</div>
+                    </t>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

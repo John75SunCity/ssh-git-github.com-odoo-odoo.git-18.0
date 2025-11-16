@@ -708,6 +708,12 @@
         "templates/portal_reports.xml",
         "templates/portal_locations.xml",
         "templates/portal_organization_diagram.xml",
+        # NEW PORTAL TEMPLATES (Grok's routes - separate files)
+        "templates/portal_records_templates.xml",
+        "templates/portal_elearning_templates.xml",
+        "templates/portal_profile_templates.xml",
+        "templates/portal_support_templates.xml",
+        "templates/portal_compliance_templates.xml",
         # Feedback Templates
         "templates/portal_feedback.xml",
         "templates/portal_feedback_template.xml",

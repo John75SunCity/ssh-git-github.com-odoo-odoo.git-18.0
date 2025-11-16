@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- eLearning Courses List -->
+        <template id="portal_elearning_courses" name="Portal eLearning Courses">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>eLearning Training Courses</h3>
+                    <p>Access compliance training for records management.</p>
+                    <div class="row">
+                        <t t-foreach="courses" t-as="course">
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><t t-esc="course.name"/></h5>
+                                        <p class="card-text"><t t-esc="course.description"/></p>
+                                        <a t-attf-href="/my/elearning/course/{{course.id}}" class="btn btn-primary">Start Course</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- eLearning Course Detail -->
+        <template id="portal_elearning_course" name="Portal eLearning Course">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3><t t-esc="course.name"/></h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <p><t t-esc="course.description"/></p>
+                            <div class="course-content">
+                                <t t-raw="course.content"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- eLearning Progress -->
+        <template id="portal_elearning_progress" name="Portal eLearning Progress">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>My Learning Progress</h3>
+                    <t t-foreach="progress" t-as="prog">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5><t t-esc="prog.course_id.name"/></h5>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" t-attf-style="width: {{prog.completion_percentage}}%">
+                                        <t t-esc="prog.completion_percentage"/>%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+        <!-- Training Certificates -->
+        <template id="portal_training_certificates" name="Portal Training Certificates">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>My Training Certificates</h3>
+                    <div class="row">
+                        <t t-foreach="certs" t-as="cert">
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5><t t-esc="cert.course_id.name"/></h5>
+                                        <p>Completed: <t t-esc="cert.completion_date"/></p>
+                                        <a t-attf-href="/my/training/certificates/download/{{cert.id}}" class="btn btn-primary">
+                                            <i class="fa fa-download"/> Download
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

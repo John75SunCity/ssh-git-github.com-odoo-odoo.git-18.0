@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Support Tickets List -->
+        <template id="portal_support_tickets" name="Portal Support Tickets">
+            <t t-call="portal.portal_layout">
+                <div class="container mt-4">
+                    <h3>Support Tickets</h3>
+                    <a href="/my/support/ticket/create" class="btn btn-primary mb-3">Create New Ticket</a>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Ticket #</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="tickets" t-as="ticket">
+                                <tr>
+                                    <td><t t-esc="ticket.id"/></td>
+                                    <td><t t-esc="ticket.name"/></td>
+                                    <td><t t-esc="ticket.stage_id.name"/></td>
+                                    <td><t t-esc="ticket.create_date"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
