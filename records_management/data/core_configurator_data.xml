@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- CRITICAL: Delete old record first to avoid type conflict during upgrade -->
-    <delete model="rm.module.configurator" id="config_rm_core_singleton"/>
-    
     <data noupdate="0">
         <!-- Core singleton to guarantee direct boolean fields exist on at least one record -->
         <record id="config_rm_core_singleton" model="rm.module.configurator">

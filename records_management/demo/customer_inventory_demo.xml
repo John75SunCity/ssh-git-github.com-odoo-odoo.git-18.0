@@ -149,7 +149,7 @@
             <field name="name">Records Section A</field>
             <field name="code">MAIN-WH-A</field>
             <field name="description">Primary storage warehouse section A</field>
-            <field name="location_id" ref="stock.stock_location_stock"/>  <!-- Parent: WH/Stock -->
+            <!-- location_id removed - causes recursive validation errors since records.location inherits stock.location -->
             <field name="usage">internal</field>
             <field name="building">Main Warehouse</field>
             <field name="zone">Section A</field>
@@ -163,7 +163,7 @@
             <field name="name">Records Section B</field>
             <field name="code">MAIN-WH-B</field>
             <field name="description">Primary storage warehouse section B</field>
-            <field name="location_id" ref="stock.stock_location_stock"/>  <!-- Parent: WH/Stock -->
+            <!-- location_id removed - causes recursive validation errors since records.location inherits stock.location -->
             <field name="usage">internal</field>
             <field name="building">Main Warehouse</field>
             <field name="zone">Section B</field>
@@ -177,7 +177,7 @@
             <field name="name">Secure Records Vault</field>
             <field name="code">SECURE-VAULT</field>
             <field name="description">High-security vault for confidential documents</field>
-            <field name="location_id" ref="stock.stock_location_stock"/>  <!-- Parent: WH/Stock -->
+            <!-- location_id removed - causes recursive validation errors since records.location inherits stock.location -->
             <field name="usage">internal</field>
             <field name="building">Main Building</field>
             <field name="zone">Vault Zone</field>
