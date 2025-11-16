@@ -661,8 +661,8 @@
         # Core Portal Templates
         "templates/portal_overview.xml",
         "templates/portal_dashboards.xml",
-        "templates/portal_home_preconfigured.xml",
-        "templates/portal_my_menu.xml",  # ✅ Card-based home menu with 10 sections & 50+ routes (Odoo 18 compatible)
+        # "templates/portal_home_preconfigured.xml",  # DISABLED: Duplicate portal home - using portal_my_menu.xml instead
+        "templates/portal_my_menu.xml",  # ✅ ACTIVE: Unified portal home with 10 sections & 50+ routes (Odoo 18 compatible)
         "templates/portal_access_templates.xml",
         "templates/portal_errors.xml",
         # Inventory & Container Templates
