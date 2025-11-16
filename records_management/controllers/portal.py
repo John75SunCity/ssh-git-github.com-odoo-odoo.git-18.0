@@ -5881,3 +5881,105 @@ class RecordsManagementController(http.Controller):
         }
 
         return request.render("records_management.portal_advanced_search", values)
+
+    @http.route(['/my/organization'], type='http', auth='user', website=True)
+    def portal_organization_chart(self, **kw):
+        """
+        Portal Organization Chart - Shows customer's company structure
+        Uses res.partner hierarchy to build organization diagram similar to hr_org_chart
+        """
+        partner = request.env.user.partner_id
+        company = partner.commercial_partner_id  # Get the main company
+
+        # Build organization structure from contacts
+        nodes = []
+        edges = []
+        partner_ids = set()
+
+        def add_partner_node(p, parent_id=None):
+            """Recursively add partner and children to nodes/edges"""
+            if p.id in partner_ids:
+                return  # Avoid duplicates
+            
+            partner_ids.add(p.id)
+            
+            # Determine node type and color
+            if p.is_company:
+                node_type = 'company'
+                color = '#f39c12'  # Gold for companies
+            elif p.parent_id and p.parent_id.is_company:
+                node_type = 'department'
+                color = '#27ae60'  # Green for departments
+            else:
+                node_type = 'person'
+                # Red for current user, blue for internal, pink for portal
+                if p.id == partner.id:
+                    color = '#e74c3c'  # Red - you are here
+                elif p.user_ids and not p.user_ids[0].share:
+                    color = '#3498db'  # Blue - internal user
+                else:
+                    color = '#e91e63'  # Pink - portal user
+            
+            # Create node
+            node = {
+                'id': p.id,
+                'name': p.name,
+                'type': node_type,
+                'color': color,
+                'email': p.email or '',
+                'phone': p.phone or '',
+                'job_title': p.function or '',
+                'image': f'/web/image/res.partner/{p.id}/avatar_128' if p.id else '',
+                'is_current_user': p.id == partner.id,
+            }
+            nodes.append(node)
+            
+            # Create edge to parent
+            if parent_id:
+                edges.append({
+                    'from': parent_id,
+                    'to': p.id,
+                    'color': '#27ae60'  # Green connections
+                })
+            
+            # Add child partners
+            children = request.env['res.partner'].search([
+                ('parent_id', '=', p.id),
+                ('active', '=', True)
+            ])
+            for child in children:
+                add_partner_node(child, p.id)
+
+        # Start with the main company and build tree
+        add_partner_node(company)
+        
+        # If current user is not in tree yet, add them under their parent
+        if partner.id not in partner_ids:
+            add_partner_node(partner, partner.parent_id.id if partner.parent_id else company.id)
+
+        # Calculate statistics
+        stats = {
+            'companies': len([n for n in nodes if n['type'] == 'company']),
+            'departments': len([n for n in nodes if n['type'] == 'department']),
+            'users': len([n for n in nodes if n['type'] == 'person']),
+            'connections': len(edges),
+        }
+
+        # Prepare context for template
+        values = {
+            'page_name': 'organization',
+            'diagram': {
+                'id': company.id,
+                'node_data': json.dumps(nodes),
+                'edge_data': json.dumps(edges),
+                'diagram_stats': json.dumps(stats),
+                'show_messaging': True,
+                'show_access_rights': False,
+                'layout_type': 'hierarchical',
+                'search_query': '',
+            },
+            'user': request.env.user,
+            'partner': partner,
+        }
+
+        return request.render("records_management.portal_organization_diagram", values)
