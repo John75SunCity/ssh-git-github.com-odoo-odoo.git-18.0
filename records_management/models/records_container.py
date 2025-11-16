@@ -817,17 +817,28 @@ class RecordsContainer(models.Model):
         }
 
     def action_remove_files(self):
-        """Remove files from this container"""
+        """Check out files from container - creates retrieval order workflow
+        
+        Business Flow:
+        1. User selects files to retrieve from container
+        2. System creates retrieval order
+        3. Warehouse staff locates container and files
+        4. Files are barcoded and prepared for delivery
+        5. Customer receives files
+        
+        Note: This is NOT deletion - files remain tracked for return
+        """
         self.ensure_one()
         return {
-            "name": _("Remove Files from Container %s", self.name),
+            "name": _("Check Out Files from %s", self.name),
             "type": "ir.actions.act_window",
             "res_model": "records.file",
             "view_mode": "tree",
             "domain": [("container_id", "=", self.id)],
             "context": {
-                "container_remove_mode": True,
+                "container_checkout_mode": True,
                 "active_container_id": self.id,
+                "default_partner_id": self.partner_id.id,
             },
             "target": "new",
         }
