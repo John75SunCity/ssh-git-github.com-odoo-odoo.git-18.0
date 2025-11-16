@@ -10,7 +10,7 @@
                     <h3 class="mb-4">Records Management</h3>
                     <div class="row">
                         <!-- Physical Inventory -->
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-header bg-primary text-white">
                                     <i class="fa fa-box me-2"/>
@@ -34,13 +34,21 @@
                                             <a href="/my/documents" class="text-decoration-none">
                                                 <i class="fa fa-file-text me-2 text-primary"/>Documents</a>
                                         </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/locations" class="text-decoration-none">
+                                                <i class="fa fa-map-marker me-2 text-primary"/>Locations</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/inventory/movements" class="text-decoration-none">
+                                                <i class="fa fa-exchange me-2 text-primary"/>Movements</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Service Requests -->
-                        <div class="col-lg-6 mb-3">
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-header bg-success text-white">
                                     <i class="fa fa-tasks me-2"/>
@@ -60,23 +68,27 @@
                                             <a href="/my/request/new/destruction" class="text-decoration-none">
                                                 <i class="fa fa-fire me-2 text-success"/>Request Destruction</a>
                                         </li>
+                                        <li class="mb-2">
+                                            <a href="/my/document-retrieval" class="text-decoration-none">
+                                                <i class="fa fa-download me-2 text-success"/>Document Retrieval</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Destruction Services -->
-                        <div class="col-lg-6 mb-3">
+                        <!-- Destruction & Compliance -->
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-header bg-danger text-white">
                                     <i class="fa fa-fire me-2"/>
-                                    <strong>Destruction Services</strong>
+                                    <strong>Destruction &amp; Compliance</strong>
                                 </div>
                                 <div class="card-body">
                                     <ul class="list-unstyled mb-0">
                                         <li class="mb-2">
                                             <a href="/my/destruction" class="text-decoration-none">
-                                                <i class="fa fa-list-alt me-2 text-danger"/>All Destruction Requests</a>
+                                                <i class="fa fa-list-alt me-2 text-danger"/>Destruction Requests</a>
                                         </li>
                                         <li class="mb-2">
                                             <a href="/my/destruction/pending" class="text-decoration-none">
@@ -84,7 +96,7 @@
                                         </li>
                                         <li class="mb-2">
                                             <a href="/my/certificates" class="text-decoration-none">
-                                                <i class="fa fa-certificate me-2 text-danger"/>Destruction Certificates</a>
+                                                <i class="fa fa-certificate me-2 text-danger"/>Certificates</a>
                                         </li>
                                         <li class="mb-2">
                                             <a href="/my/custody/chain" class="text-decoration-none">
@@ -95,8 +107,8 @@
                             </div>
                         </div>
 
-                        <!-- Billing & Reports - Placeholder for future routes -->
-                        <div class="col-lg-6 mb-3">
+                        <!-- Billing & Invoices -->
+                        <div class="col-lg-4 col-md-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-header bg-warning text-dark">
                                     <i class="fa fa-dollar me-2"/>
@@ -107,6 +119,90 @@
                                         <li class="mb-2">
                                             <a href="/my/invoices" class="text-decoration-none">
                                                 <i class="fa fa-file-invoice-dollar me-2 text-warning"/>Current Invoices</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/invoices/history" class="text-decoration-none">
+                                                <i class="fa fa-history me-2 text-warning"/>Invoice History</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/billing/rates" class="text-decoration-none">
+                                                <i class="fa fa-dollar-sign me-2 text-warning"/>Billing Rates</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/billing/statements" class="text-decoration-none">
+                                                <i class="fa fa-file-alt me-2 text-warning"/>Statements</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/billing/summary" class="text-decoration-none">
+                                                <i class="fa fa-chart-pie me-2 text-warning"/>Billing Summary</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reports & Analytics -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-info text-white">
+                                    <i class="fa fa-chart-bar me-2"/>
+                                    <strong>Reports &amp; Analytics</strong>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <a href="/my/reports" class="text-decoration-none">
+                                                <i class="fa fa-chart-bar me-2 text-info"/>All Reports</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/reports/activity" class="text-decoration-none">
+                                                <i class="fa fa-clock me-2 text-info"/>Activity Reports</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/reports/compliance" class="text-decoration-none">
+                                                <i class="fa fa-shield-alt me-2 text-info"/>Compliance Reports</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/reports/audit" class="text-decoration-none">
+                                                <i class="fa fa-clipboard-check me-2 text-info"/>Audit Logs</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/reports/export" class="text-decoration-none">
+                                                <i class="fa fa-download me-2 text-info"/>Export Data</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tools & Utilities -->
+                        <div class="col-lg-4 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-secondary text-white">
+                                    <i class="fa fa-tools me-2"/>
+                                    <strong>Tools &amp; Utilities</strong>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">
+                                        <li class="mb-2">
+                                            <a href="/my/barcode/main" class="text-decoration-none">
+                                                <i class="fa fa-barcode me-2 text-secondary"/>Barcode Scanner</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/feedback" class="text-decoration-none">
+                                                <i class="fa fa-comment me-2 text-secondary"/>Feedback</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/notifications" class="text-decoration-none">
+                                                <i class="fa fa-bell me-2 text-secondary"/>Notifications</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/certifications" class="text-decoration-none">
+                                                <i class="fa fa-graduation-cap me-2 text-secondary"/>Training &amp; Certs</a>
+                                        </li>
+                                        <li class="mb-2">
+                                            <a href="/my/access" class="text-decoration-none">
+                                                <i class="fa fa-key me-2 text-secondary"/>Access Requests</a>
                                         </li>
                                     </ul>
                                 </div>
