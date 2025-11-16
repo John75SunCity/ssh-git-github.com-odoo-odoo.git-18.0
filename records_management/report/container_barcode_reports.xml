@@ -48,5 +48,36 @@
         </t>
       </t>
     </template>
+
+    <!-- Container QR Code Report Template (Secure Portal URL) -->
+    <template id="report_container_qrcode_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <div style="display:inline-block;width:200px;height:200px;border:1px solid #000;margin:4px;padding:8px;text-align:center;vertical-align:top;">
+                    <div style="font-weight:bold;font-size:12px;margin-bottom:5px;">Container QR Code</div>
+                    <div style="font-size:10px;color:#666;margin-bottom:5px;">Scan to view details (login required)</div>
+                    <div style="margin:8px 0;">
+                        <t t-set="portal_url" t-value="'%s/my/inventory/container/%s' % (doc.get_base_url(), doc.id)"/>
+                        <img t-att-src="'/report/qr/?value=%s&amp;width=150&amp;height=150' % portal_url" style="width:150px;height:150px;"/>
+                    </div>
+                    <div style="font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5px;">[[ doc.name ]]</div>
+                    <div style="font-size:8px;color:#999;">[[ doc.barcode or doc.temp_barcode or 'ID: %s' % doc.id ]]</div>
+                </div>
+                <t t-if="(doc_index + 1) % 9 == 0"><div style="page-break-after:always;"></div></t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Container QR Code Report Action -->
+    <record id="report_container_qrcode" model="ir.actions.report">
+        <field name="name">Container QR Code Labels</field>
+        <field name="model">records.container</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_container_qrcode_template</field>
+        <field name="report_file">records_management.report_container_qrcode</field>
+        <field name="print_report_name">'container_qrcode_%s' % object.barcode or object.temp_barcode or object.id</field>
+        <field name="binding_model_id" ref="model_records_container"/>
+        <field name="binding_type">report</field>
+    </record>
   </data>
 </odoo>

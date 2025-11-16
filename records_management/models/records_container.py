@@ -1073,30 +1073,19 @@ class RecordsContainer(models.Model):
         }
 
     def action_generate_qr_code(self):
-        """Generate QR code for the container and return download action."""
+        """Generate secure QR code for the container
+        
+        QR code contains secure portal URL requiring authentication.
+        Prevents unauthorized access to sensitive container metadata.
+        """
         self.ensure_one()
-        if qrcode is None:
-            raise UserError(_("QR code library not installed. Please install python package 'qrcode'."))
-        # Generate QR code data (e.g., container ID or barcode)
-        qr_data = f"Container ID: {self.id}\nBarcode: {self.barcode or 'N/A'}"
-
-        # Create QR code image
-        qr = qrcode.QRCode(version=1, box_size=10, border=5)
-        qr.add_data(qr_data)
-        qr.make(fit=True)
-        img = qr.make_image(fill="black", back_color="white")
-
-        # Convert to base64 for download
-        buffer = BytesIO()
-        img.save(buffer, "PNG")  # Changed: Use positional argument for format to avoid keyword error
-        img_str = base64.b64encode(buffer.getvalue()).decode()
-
-        # Return action to download the QR code
+        
+        # Return QR code generation action with secure portal URL
         return {
-            "type": "ir.actions.act_url",
-            "url": f"data:image/png;base64,{img_str}",
-            "target": "new",
-            "name": f"QR Code - {self.name}",
+            'type': 'ir.actions.report',
+            'report_name': 'records_management.report_container_qrcode',
+            'report_type': 'qweb-pdf',
+            'context': self.env.context,
         }
 
     # ============================================================================
