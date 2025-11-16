@@ -800,21 +800,28 @@ class RecordsContainer(models.Model):
         }
 
     def action_add_files(self):
-        """Add individual files to this container (on-the-fly during retrieval)"""
+        """Add new file folders to this container during indexing/scanning
+        
+        Used when:
+        - Indexing container contents (scanning physical files in box)
+        - Adding newly discovered files to existing container
+        - Container receiving workflow
+        
+        Opens form to CREATE new file folder records that will belong to this container
+        """
         self.ensure_one()
-        list_view_id = self.env.ref('records_management.records_file_view_list').id
         form_view_id = self.env.ref('records_management.records_file_view_form').id
         return {
             "name": _("Add Files to Container %s", self.name),
             "type": "ir.actions.act_window",
             "res_model": "records.file",
-            "view_mode": "list,form",
-            "views": [(list_view_id, 'list'), (form_view_id, 'form')],
-            "domain": [("container_id", "=", False), ("partner_id", "=", self.partner_id.id)],
+            "view_mode": "form",
+            "views": [(form_view_id, 'form')],
             "context": {
                 "default_container_id": self.id,
                 "default_partner_id": self.partner_id.id,
-                "search_default_available": 1,
+                "default_stock_owner_id": self.stock_owner_id.id if self.stock_owner_id else False,
+                "default_location_id": self.location_id.id if self.location_id else False,
             },
             "target": "new",
         }
