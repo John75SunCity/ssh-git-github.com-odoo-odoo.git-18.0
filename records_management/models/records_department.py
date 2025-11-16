@@ -143,11 +143,14 @@ class RecordsDepartment(models.Model):
     def action_view_files(self):
         """View all file folders belonging to this department"""
         self.ensure_one()
+        list_view_id = self.env.ref('records_management.records_file_view_list').id
+        form_view_id = self.env.ref('records_management.records_file_view_form').id
         return {
             'name': _('File Folders - %s', self.name),
             'type': 'ir.actions.act_window',
             'res_model': 'records.file',
             'view_mode': 'list,form',
+            'views': [(list_view_id, 'list'), (form_view_id, 'form')],
             'domain': [('department_id', '=', self.id)],
             'context': {'default_department_id': self.id, 'default_partner_id': self.partner_id.id}
         }

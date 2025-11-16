@@ -222,9 +222,10 @@ Destroy Container</a>
                 <button name="action_add_files" type="object" string="Add Individual Files" class="btn-success" 
                         invisible="state in ['destroyed', 'pending_destruction']"
                         help="Add individual file records (for retrieval requests or additional files found in container)"/>
-                <button name="action_remove_files" type="object" string="Remove Files" class="btn-warning"
+                <button name="action_remove_files" type="object" string="Check Out Files" class="btn-warning"
                         invisible="state in ['destroyed', 'pending_destruction'] or file_count == 0"
-                        help="Remove file folders from this container"/>
+                        groups="records_management.group_records_manager"
+                        help="Remove file folders from container for customer delivery (Manager Only - requires highest security clearance)"/>
                 <!-- Modernized visibility: use barcode_assigned compute field instead of deprecated attrs expression -->
                 <button name="%(action_records_container_assign_barcode_wizard)d" type="action" string="Assign Physical Barcode" class="btn-secondary" invisible="barcode_assigned"/>
         <field name="state" widget="statusbar" statusbar_visible="draft,active,pending_pickup,in_storage,in_transit,retrieved,pending_destruction,destroyed"/>
