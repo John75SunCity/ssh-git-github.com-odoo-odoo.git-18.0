@@ -5965,19 +5965,22 @@ class RecordsManagementController(http.Controller):
             'connections': len(edges),
         }
 
+        # Create a simple namespace object for template attribute access
+        class DiagramData:
+            def __init__(self):
+                self.id = company.id
+                self.node_data = json.dumps(nodes)
+                self.edge_data = json.dumps(edges)
+                self.diagram_stats = json.dumps(stats)
+                self.show_messaging = True
+                self.show_access_rights = False
+                self.layout_type = 'hierarchical'
+                self.search_query = ''
+        
         # Prepare context for template
         values = {
             'page_name': 'organization',
-            'diagram': {
-                'id': company.id,
-                'node_data': json.dumps(nodes),
-                'edge_data': json.dumps(edges),
-                'diagram_stats': json.dumps(stats),
-                'show_messaging': True,
-                'show_access_rights': False,
-                'layout_type': 'hierarchical',
-                'search_query': '',
-            },
+            'diagram': DiagramData(),
             'user': request.env.user,
             'partner': partner,
         }
