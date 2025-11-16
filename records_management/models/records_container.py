@@ -778,11 +778,14 @@ class RecordsContainer(models.Model):
     def action_view_documents(self):
         """View all documents in this container"""
         self.ensure_one()
+        list_view_id = self.env.ref('records_management.records_document_view_list').id
+        form_view_id = self.env.ref('records_management.records_document_view_form').id
         return {
             "name": _("Documents in Container %s", self.name),
             "type": "ir.actions.act_window",
             "res_model": "records.document",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
+            "views": [(list_view_id, 'list'), (form_view_id, 'form')],
             "domain": [("container_id", "=", self.id)],
             "context": {"default_container_id": self.id},
         }
@@ -790,11 +793,14 @@ class RecordsContainer(models.Model):
     def action_view_files(self):
         """View all file folders in this container"""
         self.ensure_one()
+        list_view_id = self.env.ref('records_management.records_file_view_list').id
+        form_view_id = self.env.ref('records_management.records_file_view_form').id
         return {
             "name": _("File Folders in Container %s", self.name),
             "type": "ir.actions.act_window",
             "res_model": "records.file",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
+            "views": [(list_view_id, 'list'), (form_view_id, 'form')],
             "domain": [("container_id", "=", self.id)],
             "context": {"default_container_id": self.id},
         }

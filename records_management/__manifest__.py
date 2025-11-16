@@ -419,6 +419,7 @@
         "views/records_destruction_job_views.xml",
         "views/records_destruction_line_views.xml",
         "views/records_destruction_views.xml",
+        "views/records_file_views.xml",
         "views/records_document_type_views.xml",
         "views/records_document_views.xml",
         "views/records_document_bulk_upload_views.xml",
