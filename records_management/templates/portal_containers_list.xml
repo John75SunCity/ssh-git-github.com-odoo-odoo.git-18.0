@@ -102,7 +102,7 @@
                                         </td>
                                         <td t-esc="container.location_id.name if container.location_id else 'Not Set'"/>
                                         <td t-esc="container.department_id.name if container.department_id else '-'"/>
-                                        <td t-field="container.create_date" t-options="{'widget': 'date'}"/>
+                                        <td><span t-field="container.create_date" t-options="{'widget': 'date'}"/></td>
                                         <td>
                                             <a t-attf-href="/my/inventory/container/{{container.id}}" 
                                                class="btn btn-sm btn-info">
