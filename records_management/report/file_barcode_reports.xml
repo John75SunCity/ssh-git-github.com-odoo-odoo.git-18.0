@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    <template id="report_file_barcode_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <div style="display:inline-block;width:200px;height:110px;border:1px solid #000;margin:4px;padding:4px;font-size:11px;vertical-align:top;">
+                    <div style="font-weight:bold;">File Folder Barcode</div>
+                    <div t-if="doc.barcode or doc.temp_barcode" style="font-size:14px;">[[ doc.barcode or doc.temp_barcode ]]</div>
+                    <div t-if="not doc.barcode and not doc.temp_barcode" style="color:red;">NO BARCODE</div>
+                    <div style="margin-top:4px;">
+                        <img t-if="doc.barcode or doc.temp_barcode" t-att-src="'/report/barcode/Code128/%s?width=250&amp;height=50' % (doc.barcode or doc.temp_barcode)" style="max-width:100%;height:50px;"/>
+                    </div>
+                    <div style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">[[ doc.name ]]</div>
+                    <div style="font-size:9px;">Container: [[ doc.container_id.name or 'N/A' ]]</div>
+                    <div style="font-size:9px;">[[ doc.partner_id.name or '' ]]</div>
+                </div>
+                <t t-if="(doc_index + 1) % 15 == 0"><div style="page-break-after:always;"></div></t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Report action using proper ir.actions.report structure -->
+    <record id="report_file_barcode" model="ir.actions.report">
+        <field name="name">File Folder Barcode Labels</field>
+        <field name="model">records.file</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_file_barcode_template</field>
+        <field name="report_file">records_management.report_file_barcode</field>
+        <field name="print_report_name">'file_barcode_%s' % object.barcode or object.temp_barcode or object.id</field>
+        <field name="binding_model_id" ref="model_records_file"/>
+        <field name="binding_type">report</field>
+    </record>
+    </data>
+</odoo>

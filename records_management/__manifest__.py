@@ -153,6 +153,7 @@
         "report/barcode_storage_box_reports.xml",
         "report/container_barcode_reports.xml",
         "report/document_temp_barcode_reports.xml",
+        "report/file_barcode_reports.xml",
         # Base & Rate Reports
         "report/base_rate_reports.xml",
         "report/billing_period_reports.xml",
