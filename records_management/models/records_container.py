@@ -802,11 +802,14 @@ class RecordsContainer(models.Model):
     def action_add_files(self):
         """Add individual files to this container (on-the-fly during retrieval)"""
         self.ensure_one()
+        list_view_id = self.env.ref('records_management.records_file_view_list').id
+        form_view_id = self.env.ref('records_management.records_file_view_form').id
         return {
-            "name": _("Add Individual Files to Container %s", self.name),
+            "name": _("Add Files to Container %s", self.name),
             "type": "ir.actions.act_window",
             "res_model": "records.file",
             "view_mode": "list,form",
+            "views": [(list_view_id, 'list'), (form_view_id, 'form')],
             "domain": [("container_id", "=", False), ("partner_id", "=", self.partner_id.id)],
             "context": {
                 "default_container_id": self.id,
@@ -829,11 +832,14 @@ class RecordsContainer(models.Model):
         Note: This is NOT deletion - files remain tracked for return
         """
         self.ensure_one()
+        list_view_id = self.env.ref('records_management.records_file_view_list').id
+        form_view_id = self.env.ref('records_management.records_file_view_form').id
         return {
             "name": _("Check Out Files from %s", self.name),
             "type": "ir.actions.act_window",
             "res_model": "records.file",
-            "view_mode": "tree",
+            "view_mode": "list,form",
+            "views": [(list_view_id, 'list'), (form_view_id, 'form')],
             "domain": [("container_id", "=", self.id)],
             "context": {
                 "container_checkout_mode": True,

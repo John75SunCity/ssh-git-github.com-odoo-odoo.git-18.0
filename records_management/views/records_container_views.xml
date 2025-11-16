@@ -219,9 +219,9 @@ Destroy Container</a>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
                 <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
                 <!-- File Management Buttons -->
-                <button name="action_add_files" type="object" string="Add Individual Files" class="btn-success" 
+                <button name="action_add_files" type="object" string="Add Files" class="btn-success" 
                         invisible="state in ['destroyed', 'pending_destruction']"
-                        help="Add individual file records (for retrieval requests or additional files found in container)"/>
+                        help="Add file folders to this container (for newly discovered files or retrieval returns)"/>
                 <button name="action_remove_files" type="object" string="Check Out Files" class="btn-warning"
                         invisible="state in ['destroyed', 'pending_destruction'] or file_count == 0"
                         help="Create retrieval order to check out file folders for customer delivery"/>
