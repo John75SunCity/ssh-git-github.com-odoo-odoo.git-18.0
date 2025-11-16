@@ -380,24 +380,6 @@ Destroy Container</a>
                 </group>
 
                 <notebook>
-                    <page string="Documents" name="documents">
-        <field name="document_ids" mode="list,form" context="{'default_container_id': id}">
-                            <list string="Documents">
-        <field name="name"/>
-        <field name="document_type_id"/>
-        <field name="state"/>
-        <field name="create_date"/>
-                            </list>
-                            <form string="Document">
-                                <group>
-        <field name="name"/>
-        <field name="document_type_id"/>
-        <field name="state"/>
-        <field name="description"/>
-                                </group>
-                            </form>
-                        </field>
-                    </page>
                     <page string="File Folders" name="files">
         <field name="file_ids" mode="list,form" context="{'default_container_id': id}">
                             <list string="File Folders">

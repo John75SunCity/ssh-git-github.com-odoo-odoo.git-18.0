@@ -31,6 +31,7 @@ class RecordsDepartment(models.Model):
     partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", required=True, ondelete='cascade', tracking=True)
     billing_contact_ids = fields.One2many('records.department.billing.contact', 'department_id', string="Billing Contacts")
     container_ids = fields.One2many('records.container', 'department_id', string="Containers")
+    file_ids = fields.One2many('records.file', 'department_id', string="File Folders")
     document_ids = fields.One2many('records.document', 'department_id', string="Documents")
     user_ids = fields.Many2many(
         'res.users',
@@ -71,6 +72,7 @@ class RecordsDepartment(models.Model):
     # ANALYTICS
     # ============================================================================
     container_count = fields.Integer(compute='_compute_counts', string="Container Count", store=True)
+    file_count = fields.Integer(compute='_compute_counts', string="File Folder Count", store=True)
     document_count = fields.Integer(compute='_compute_counts', string="Document Count", store=True)
     child_count = fields.Integer(compute='_compute_child_count', string='Child Dept. Count', store=True)
 
@@ -95,10 +97,11 @@ class RecordsDepartment(models.Model):
             else:
                 record.display_name = record.name
 
-    @api.depends('container_ids', 'document_ids')
+    @api.depends('container_ids', 'file_ids', 'document_ids')
     def _compute_counts(self):
         for record in self:
             record.container_count = len(record.container_ids)
+            record.file_count = len(record.file_ids)
             record.document_count = len(record.document_ids)
 
     @api.depends('child_department_ids')
@@ -133,6 +136,18 @@ class RecordsDepartment(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'records.container',
             'view_mode': 'list,form,kanban',
+            'domain': [('department_id', '=', self.id)],
+            'context': {'default_department_id': self.id, 'default_partner_id': self.partner_id.id}
+        }
+
+    def action_view_files(self):
+        """View all file folders belonging to this department"""
+        self.ensure_one()
+        return {
+            'name': _('File Folders - %s', self.name),
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.file',
+            'view_mode': 'list,form',
             'domain': [('department_id', '=', self.id)],
             'context': {'default_department_id': self.id, 'default_partner_id': self.partner_id.id}
         }
