@@ -43,12 +43,12 @@
                             <div class="col-md-3 mb-2">
                                 <select name="filterby" class="form-select" onchange="this.form.submit()">
                                     <option value="all">All Status</option>
-                                    <t t-foreach="searchbar_filters or {}" t-as="filter_item">
+                                    <t t-foreach="(searchbar_filters or {}).items()" t-as="filter_item">
                                         <t t-set="filter_key" t-value="filter_item[0]"/>
-                                        <t t-set="filter_label" t-value="filter_item[1].get('label', filter_key)"/>
+                                        <t t-set="filter_data" t-value="filter_item[1]"/>
                                         <option t-att-value="filter_key"
                                                 t-att-selected="'selected' if filterby == filter_key else None">
-                                            <t t-esc="filter_label"/>
+                                            <t t-esc="filter_data.get('label', filter_key)"/>
                                         </option>
                                     </t>
                                 </select>
