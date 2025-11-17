@@ -2012,58 +2012,23 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/inventory/container/<int:container_id>/delete'], type='json', auth='user', methods=['POST'])
     def portal_container_delete(self, container_id, **kw):
-        """Delete/archive container (department admin+ for own dept, company admin for all)."""
-
-        # Access check - must be department admin or higher
-        if not request.env.user.has_group('records_management.group_portal_department_admin'):
-            return {'success': False, 'error': _('Unauthorized - requires department admin access')}
-
-        try:
-            partner = request.env.user.partner_id.commercial_partner_id
-            container = request.env['records.container'].sudo().browse(container_id)
-
-            # Verify ownership
-            if container.partner_id.id != partner.id:
-                return {'success': False, 'error': _('Unauthorized - container does not belong to your company')}
-
-            # Check department access
-            is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
-            if not is_company_admin:
-                accessible_depts = request.env.user.accessible_department_ids.ids
-                if container.department_id.id not in accessible_depts:
-                    return {'success': False, 'error': _('Unauthorized - no access to this department')}
-
-            # Check if container has active files/documents
-            has_contents = (
-                request.env['records.file'].search_count([('container_id', '=', container_id)]) > 0 or
-                request.env['records.document'].search_count([('container_id', '=', container_id)]) > 0
-            )
-
-            if has_contents and not is_company_admin:
-                return {'success': False, 'error': _('Cannot delete container with contents - requires company admin')}
-
-            # Archive instead of hard delete (for audit trail)
-            container.sudo().write({
-                'active': False,
-                'status': 'archived',
-                'archived_date': datetime.now(),
-                'archived_by_id': request.env.user.id,
-            })
-
-            # Audit log
-            request.env['naid.audit.log'].sudo().create({
-                'action_type': 'container_deleted',
-                'user_id': request.env.user.id,
-                'container_id': container.id,
-                'description': _('Container %s archived via portal by %s') % (container.name, request.env.user.name),
-                'timestamp': datetime.now(),
-            })
-
-            return {'success': True, 'message': _('Container archived successfully')}
-
-        except Exception as e:
-            _logger.error(f"Container delete failed: {str(e)}")
-            return {'success': False, 'error': str(e)}
+        """
+        DISABLED: Portal users cannot delete physical inventory directly.
+        
+        To stop storage charges, customers must submit a destruction request:
+        1. Submit destruction request via portal (/my/request/new/destruction)
+        2. Request gets approved by admin
+        3. Admin schedules destruction work order
+        4. Admin marks containers as destroyed (changes state to 'destroyed')
+        5. Customer is billed per-container destruction fee
+        6. Storage charges stop for destroyed containers
+        
+        This ensures proper NAID compliance and audit trail.
+        """
+        return {
+            'success': False, 
+            'error': _('❌ Physical inventory cannot be deleted directly. To stop storage charges, please submit a Destruction Request from the portal. Once approved and processed, containers will be marked as destroyed and billing will be updated.')
+        }
 
     @http.route(['/my/inventory/container/<int:container_id>/movements'], type='http', auth="user", website=True)
     def portal_container_movements(self, container_id, **kw):
@@ -2361,42 +2326,16 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/inventory/file/<int:file_id>/delete'], type='json', auth='user', methods=['POST'])
     def portal_file_delete(self, file_id, **kw):
-        """Delete/archive file (department admin+)."""
-        if not request.env.user.has_group('records_management.group_portal_department_admin'):
-            return {'success': False, 'error': _('Unauthorized - requires department admin access')}
-
-        try:
-            partner = request.env.user.partner_id.commercial_partner_id
-            file_record = request.env['records.file'].sudo().browse(file_id)
-
-            if file_record.partner_id.id != partner.id:
-                return {'success': False, 'error': _('Unauthorized')}
-
-            is_company_admin = request.env.user.has_group('records_management.group_portal_company_admin')
-            if not is_company_admin:
-                accessible_depts = request.env.user.accessible_department_ids.ids
-                if file_record.department_id.id not in accessible_depts:
-                    return {'success': False, 'error': _('Unauthorized - no access to this department')}
-
-            # Check for documents
-            has_documents = request.env['records.document'].search_count([('file_id', '=', file_id)]) > 0
-            if has_documents and not is_company_admin:
-                return {'success': False, 'error': _('Cannot delete file with documents - requires company admin')}
-
-            file_record.sudo().write({'active': False})
-
-            request.env['naid.audit.log'].sudo().create({
-                'action_type': 'file_deleted',
-                'user_id': request.env.user.id,
-                'description': _('File %s archived via portal by %s') % (file_record.name, request.env.user.name),
-                'timestamp': datetime.now(),
-            })
-
-            return {'success': True, 'message': _('File archived successfully')}
-
-        except Exception as e:
-            _logger.error(f"File delete failed: {str(e)}")
-            return {'success': False, 'error': str(e)}
+        """
+        DISABLED: Portal users cannot delete physical inventory directly.
+        
+        To stop storage charges, customers must submit a destruction request.
+        Physical files must be destroyed through proper NAID workflow.
+        """
+        return {
+            'success': False, 
+            'error': _('❌ Physical files cannot be deleted directly. To stop storage charges, please submit a Destruction Request from the portal.')
+        }
 
     @http.route(['/my/inventory/file/<int:file_id>/add-document'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
     def portal_file_add_document(self, file_id, **post):
@@ -2736,7 +2675,10 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/inventory/document/<int:doc_id>/delete'], type='json', auth='user', methods=['POST'])
     def portal_document_delete(self, doc_id, **kw):
-        """Delete/archive document (department admin+)."""
+        """
+        Digital documents CAN be deleted by portal users (they're just metadata/attachments).
+        Physical inventory deletion is disabled - use destruction requests instead.
+        """
         if not request.env.user.has_group('records_management.group_portal_department_admin'):
             return {'success': False, 'error': _('Unauthorized - requires department admin access')}
 

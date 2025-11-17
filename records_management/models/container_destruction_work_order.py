@@ -254,6 +254,71 @@ class ContainerDestructionWorkOrder(models.Model):
         self.container_ids.write({'state': 'destroyed'})
         self.message_post(body=_("Destruction process completed."))
 
+    def action_mark_all_destroyed(self):
+        """
+        Mark all containers as destroyed by simulating barcode scan to destruction location.
+        
+        This action:
+        1. Changes container state from 'in_storage' to 'destroyed'
+        2. Updates destruction date for billing purposes
+        3. Creates audit trail entries
+        4. Marks containers for billing (destruction charges apply)
+        
+        Returns:
+            bool: True on success
+        """
+        self.ensure_one()
+        
+        if self.state not in ['in_progress', 'scheduled']:
+            raise UserError(_("Can only mark containers as destroyed when work order is scheduled or in progress."))
+        
+        if not self.container_ids:
+            raise UserError(_("No containers selected for destruction."))
+        
+        destruction_date = fields.Datetime.now()
+        destroyed_count = 0
+        
+        for container in self.container_ids:
+            # Skip already destroyed containers
+            if container.state == 'destroyed':
+                continue
+            
+            # Update container state and destruction metadata
+            container.sudo().write({
+                'state': 'destroyed',
+                'destruction_date': destruction_date.date(),
+            })
+            
+            # Create audit log entry (simulates barcode scan)
+            self.env['naid.audit.log'].sudo().create({
+                'action_type': 'container_destroyed',
+                'container_id': container.id,
+                'user_id': self.env.user.id,
+                'work_order_id': self.id if hasattr(self.env['naid.audit.log'], 'work_order_id') else False,
+                'description': _('Container %s marked as destroyed via work order %s (simulated destruction location scan)') % (
+                    container.name, self.name
+                ),
+                'timestamp': destruction_date,
+            })
+            
+            destroyed_count += 1
+        
+        # Update work order state
+        if destroyed_count > 0:
+            self.write({
+                'state': 'destroyed',
+                'actual_destruction_date': destruction_date.date(),
+                'destruction_end_time': destruction_date,
+            })
+            
+            self.message_post(
+                body=_("✅ Marked %d container(s) as destroyed. Containers are now billable for destruction charges.") % destroyed_count
+            )
+        else:
+            raise UserError(_("All selected containers are already destroyed."))
+        
+        return True
+
     def action_generate_certificate(self):
         self.ensure_one()
         if self.state != 'destroyed':

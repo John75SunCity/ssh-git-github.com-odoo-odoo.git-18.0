@@ -16,17 +16,87 @@
             <field name="model">container.destruction.work.order</field>
             <field name="arch" type="xml">
                 <form string="Container Destruction Work Order">
+                    <header>
+                        <button name="action_confirm" string="Confirm" type="object" 
+                                invisible="state != 'draft'" class="oe_highlight"/>
+                        <button name="action_authorize" string="Authorize" type="object" 
+                                invisible="state != 'confirmed'" class="oe_highlight"/>
+                        <button name="action_schedule" string="Schedule" type="object" 
+                                invisible="state != 'authorized'" class="oe_highlight"/>
+                        <button name="action_start_destruction" string="Start Destruction" type="object" 
+                                invisible="state not in ['scheduled']" class="oe_highlight"/>
+                        <button name="action_mark_all_destroyed" string="📦 Mark All as Destroyed" type="object" 
+                                invisible="state not in ['in_progress', 'scheduled']" 
+                                class="btn-danger"
+                                confirm="This will mark ALL containers as destroyed and make them billable. Continue?"/>
+                        <button name="action_generate_certificate" string="Generate Certificate" type="object" 
+                                invisible="state != 'destroyed'" class="oe_highlight"/>
+                        <button name="action_cancel" string="Cancel" type="object" 
+                                invisible="state in ['completed', 'cancelled']"/>
+                        <field name="state" widget="statusbar" 
+                               statusbar_visible="draft,confirmed,authorized,scheduled,in_progress,destroyed,certified,completed"/>
+                    </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="%(action_container_destruction_work_order)d" 
+                                    type="action" 
+                                    class="oe_stat_button" 
+                                    icon="fa-file-text-o">
+                                <field name="container_count" widget="statinfo" string="Containers"/>
+                            </button>
+                        </div>
                         <div class="oe_title">
-                            <label for="name" />
+                            <label for="name"/>
                             <h1>
-                                <field name="name" placeholder="Name..." />
+                                <field name="name" placeholder="Work Order Reference..."/>
                             </h1>
                         </div>
-                        <group string="Portal">
-                            <field name="portal_visible"/>
+                        <group>
+                            <group string="Customer Information">
+                                <field name="partner_id"/>
+                                <field name="portal_request_id"/>
+                                <field name="user_id"/>
+                            </group>
+                            <group string="Status &amp; Visibility">
+                                <field name="portal_visible" widget="boolean_toggle"/>
+                                <field name="priority" widget="priority"/>
+                                <field name="active" invisible="1"/>
+                            </group>
                         </group>
+                        <group string="Destruction Details">
+                            <group>
+                                <field name="scheduled_destruction_date"/>
+                                <field name="actual_destruction_date"/>
+                                <field name="destruction_method"/>
+                            </group>
+                            <group>
+                                <field name="customer_authorized"/>
+                                <field name="customer_authorization_date"/>
+                                <field name="authorized_by"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Containers" name="containers">
+                                <field name="container_ids" widget="many2many_tags"/>
+                            </page>
+                            <page string="Authorization" name="authorization">
+                                <group>
+                                    <field name="destruction_reason"/>
+                                    <field name="authorization_document" filename="authorization_filename"/>
+                                </group>
+                            </page>
+                            <page string="Certificate" name="certificate" invisible="state not in ['certified', 'completed']">
+                                <group>
+                                    <field name="certificate_id"/>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
