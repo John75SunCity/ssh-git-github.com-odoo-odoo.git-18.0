@@ -556,9 +556,9 @@ class RecordsManagementController(http.Controller):
     def _get_dashboard_data(self):
         """Get comprehensive dashboard data with performance optimization."""
         # Use efficient batch queries to minimize database hits
-        Container = request.env["records.container"]
-        PickupRequest = request.env["pickup.request"]
-        ShredService = request.env["shredding.service"]
+        Container = request.env["records.container"].sudo()
+        PickupRequest = request.env["pickup.request"].sudo()
+        ShredService = request.env["shredding.service"].sudo()
 
         # Determine if user is a portal user (not internal user) - exclude sensitive data like location capacity
         user = request.env.user
@@ -661,7 +661,7 @@ class RecordsManagementController(http.Controller):
         pickup_domain = partner_domain + [
             ("create_date", ">=", (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d"))
         ]
-        recent_pickups = request.env["pickup.request"].search(pickup_domain, order="create_date desc", limit=5)
+        recent_pickups = request.env["pickup.request"].sudo().search(pickup_domain, order="create_date desc", limit=5)
 
         for pickup in recent_pickups:
             activities.append({
@@ -689,20 +689,20 @@ class RecordsManagementController(http.Controller):
 
         # Container growth metrics (filtered by partner)
         container_month_domain = partner_domain + [("create_date", ">=", last_month.strftime("%Y-%m-%d"))]
-        containers_this_month = request.env["records.container"].search_count(container_month_domain)
+        containers_this_month = request.env["records.container"].sudo().search_count(container_month_domain)
 
         container_week_domain = partner_domain + [("create_date", ">=", last_week.strftime("%Y-%m-%d"))]
-        containers_last_week = request.env["records.container"].search_count(container_week_domain)
+        containers_last_week = request.env["records.container"].sudo().search_count(container_week_domain)
 
         # Pickup efficiency (filtered by partner)
         pickup_completed_domain = partner_domain + [
             ("state", "=", "completed"),
             ("completion_date", ">=", last_month.strftime("%Y-%m-%d")),
         ]
-        completed_pickups = request.env["pickup.request"].search_count(pickup_completed_domain)
+        completed_pickups = request.env["pickup.request"].sudo().search_count(pickup_completed_domain)
 
         pickup_total_domain = partner_domain + [("create_date", ">=", last_month.strftime("%Y-%m-%d"))]
-        total_pickups = request.env["pickup.request"].search_count(pickup_total_domain)
+        total_pickups = request.env["pickup.request"].sudo().search_count(pickup_total_domain)
 
         pickup_completion_rate = (completed_pickups / total_pickups * 100) if total_pickups else 0
 
@@ -719,7 +719,7 @@ class RecordsManagementController(http.Controller):
         alerts = []
 
         # Check for overdue pickups
-        overdue_pickups = request.env["pickup.request"].search_count(
+        overdue_pickups = request.env["pickup.request"].sudo().search_count(
             [
                 ("state", "in", ["confirmed", "in_progress"]),
                 ("scheduled_date", "<", datetime.now().strftime("%Y-%m-%d")),
@@ -1261,7 +1261,7 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
 
-        Document = request.env['records.document']
+        Document = request.env['records.document'].sudo()
 
         domain = [
             ('partner_id', 'child_of', partner.commercial_partner_id.id),
@@ -1329,7 +1329,7 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/document/<int:document_id>'], type='http', auth="user", website=True)
     def portal_my_document(self, document_id=None, **kw):
         """Display individual document details"""
-        document = request.env['records.document'].browse(document_id)
+        document = request.env['records.document'].sudo().browse(document_id)
 
         # Security check
         if not document.exists() or document.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
@@ -1345,7 +1345,7 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/document/<int:document_id>/download'], type='http', auth="user")
     def portal_document_download(self, document_id=None, **kw):
         """Download document attachment"""
-        document = request.env['records.document'].browse(document_id)
+        document = request.env['records.document'].sudo().browse(document_id)
 
         # Security check
         if not document.exists() or document.partner_id.commercial_partner_id != request.env.user.partner_id.commercial_partner_id:
