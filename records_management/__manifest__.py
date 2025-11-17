@@ -121,6 +121,7 @@
         "data/fsm_mail_templates_data.xml",
         "data/mail_activity_data_todo.xml",
         "data/naid_compliance_data.xml",
+        "data/training_courses_data.xml",  # Must load BEFORE naid_training_demo_data.xml (which references slide channels)
         "data/naid_training_demo_data.xml",
         "data/portal_configurator_data.xml",
         "data/portal_mail_templates_data.xml",
@@ -131,7 +132,6 @@
         "data/scheduled_actions_data.xml",
         "data/temp_inventory_configurator_data.xml",
         "data/training_courses_customer_setup.xml",
-        "data/training_courses_data.xml",
         "data/training_courses_hipaa_privacy.xml",
         "data/training_courses_naid_content.xml",
         "data/training_courses_billing_flowchart.xml",
