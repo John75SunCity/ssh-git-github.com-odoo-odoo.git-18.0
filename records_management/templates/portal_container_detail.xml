@@ -35,7 +35,7 @@
                                     <div class="row align-items-center">
                                         <div class="col-md-8">
                                             <h3 class="mb-0">
-                                                <i class="fa fa-box"></i> <t t-esc="container.name or container.container_number"/>
+                                                <i class="fa fa-box"></i> <t t-esc="container.name"/>
                                             </h3>
                                         </div>
                                         <div class="col-md-4 text-right">
@@ -60,7 +60,7 @@
                                             <table class="table table-sm">
                                                 <tr>
                                                     <th style="width: 40%;">Container Number:</th>
-                                                    <td><strong><t t-esc="container.container_number"/></strong></td>
+                                                    <td><strong><t t-esc="container.name"/></strong></td>
                                                 </tr>
                                                 <tr>
                                                     <th>Barcode:</th>
@@ -196,7 +196,7 @@
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <label>Container Number</label>
-                                            <input type="text" class="form-control" name="container_number" t-att-value="container.container_number"/>
+                                            <input type="text" class="form-control" name="name" t-att-value="container.name"/>
                                         </div>
                                         <div class="form-group">
                                             <label>Description</label>

@@ -2026,7 +2026,7 @@ class RecordsManagementController(http.Controller):
         This ensures proper NAID compliance and audit trail.
         """
         return {
-            'success': False, 
+            'success': False,
             'error': _('❌ Physical inventory cannot be deleted directly. To stop storage charges, please submit a Destruction Request from the portal. Once approved and processed, containers will be marked as destroyed and billing will be updated.')
         }
 
@@ -2333,7 +2333,7 @@ class RecordsManagementController(http.Controller):
         Physical files must be destroyed through proper NAID workflow.
         """
         return {
-            'success': False, 
+            'success': False,
             'error': _('❌ Physical files cannot be deleted directly. To stop storage charges, please submit a Destruction Request from the portal.')
         }
 
