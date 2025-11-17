@@ -256,6 +256,10 @@ class RecordsFile(models.Model):
         files = super().create(vals_list)
         
         for file in files:
+            # Auto-generate temp_barcode if not provided
+            if not file.temp_barcode and not file.barcode:
+                file.temp_barcode = self.env['ir.sequence'].next_by_code('records.file.temp.barcode') or f"FILE-{file.id}"
+            
             # If container specified and file needs inventory tracking
             if file.container_id and file.container_id.quant_id and file.barcode:
                 # Create stock.quant for this file (only if barcode assigned)

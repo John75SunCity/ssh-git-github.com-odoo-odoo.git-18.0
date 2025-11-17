@@ -180,8 +180,8 @@
                     <group string="Barcode Tracking">
                         <field name="temp_barcode"
                                string="Temporary Barcode"
-                               readonly="1"
-                               help="System-generated temporary barcode (auto-assigned)"
+                               help="System-generated temporary barcode (auto-assigned on creation)"
+                               placeholder="Auto-generated when saved"
                                invisible="barcode"/>
                         <field name="barcode"
                                string="Physical Barcode"
