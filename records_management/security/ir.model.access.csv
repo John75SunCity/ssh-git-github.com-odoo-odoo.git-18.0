@@ -738,3 +738,8 @@ access_slide_channel_admin,slide.channel.admin,website_slides.model_slide_channe
 access_slide_slide_user,slide.slide.user,website_slides.model_slide_slide,records_management.group_records_user,1,1,1,0
 access_slide_slide_manager,slide.slide.manager,website_slides.model_slide_slide,records_management.group_records_manager,1,1,1,1
 access_slide_slide_admin,slide.slide.admin,website_slides.model_slide_slide,records_management.group_records_admin,1,1,1,1
+access_ir_ui_view_portal,ir.ui.view portal,base.model_ir_ui_view,base.group_portal,1,0,0,0
+access_ir_ui_view_company_admin,ir.ui.view company admin,base.model_ir_ui_view,records_management.group_portal_company_admin,1,0,0,0
+access_ir_ui_view_dept_admin,ir.ui.view dept admin,base.model_ir_ui_view,records_management.group_portal_department_admin,1,0,0,0
+access_ir_ui_view_dept_user,ir.ui.view dept user,base.model_ir_ui_view,records_management.group_portal_department_user,1,0,0,0
+access_ir_ui_view_readonly,ir.ui.view readonly,base.model_ir_ui_view,records_management.group_portal_readonly_employee,1,0,0,0
