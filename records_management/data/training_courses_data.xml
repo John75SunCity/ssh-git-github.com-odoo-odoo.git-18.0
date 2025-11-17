@@ -21,6 +21,7 @@
         </record>
 
         <!-- NAID AAA Compliance Training Course -->
+        <!-- Slides are added in training_courses_naid_content.xml -->
         <record id="slide_channel_naid_aaa_training" model="slide.channel">
             <field name="name">NAID AAA Compliance Training</field>
             <field name="description">Comprehensive training on NAID AAA standards for records management professionals</field>
@@ -33,20 +34,8 @@
             <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_role_training')])]"/>
         </record>
 
-        <!-- Customer Records System Setup Course -->
-        <record id="slide_channel_customer_records_setup" model="slide.channel">
-            <field name="name">Setting Up Your Records Management System</field>
-            <field name="description">Essential guide for customers implementing effective records management practices</field>
-            <field name="channel_type">training</field>
-            <field name="enroll">public</field>
-            <field name="visibility">public</field>
-            <field name="is_published">true</field>
-            <field name="website_published">true</field>
-            <field name="allow_comment">true</field>
-            <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_other')])]"/>
-        </record>
-
-        <!-- HIPAA &amp; Data Privacy Course -->
+        <!-- HIPAA & Data Privacy Course -->
+        <!-- Slides are added in training_courses_hipaa_privacy.xml -->
         <record id="slide_channel_hipaa_privacy_training" model="slide.channel">
             <field name="name">HIPAA Compliance &amp; Data Privacy for Physical Records</field>
             <field name="description">Protecting sensitive information in physical document storage and handling</field>
@@ -58,5 +47,23 @@
             <field name="allow_comment">true</field>
             <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_role_training')])]"/>
         </record>
+
+        <!-- NOTE: slide_channel_customer_records_setup is DUPLICATED here!
+             It's already defined WITH slides in training_courses_customer_setup.xml
+             This duplicate causes "0 steps" to show. Commented out below. -->
+        
+        <!--
+        <record id="slide_channel_customer_records_setup" model="slide.channel">
+            <field name="name">Setting Up Your Records Management System</field>
+            <field name="description">Essential guide for customers implementing effective records management practices</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="allow_comment">true</field>
+            <field name="tag_ids" eval="[(6, 0, [ref('slide_channel_tag_other')])]"/>
+        </record>
+        -->
     </data>
 </odoo>
