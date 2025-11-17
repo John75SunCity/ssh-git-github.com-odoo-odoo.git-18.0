@@ -1614,7 +1614,7 @@ class RecordsManagementController(http.Controller):
 
             for document in documents:
                 # Check if document has PDF attachments/scans
-                attachments = request.env['ir.attachment'].search([
+                attachments = request.env['ir.attachment'].sudo().search([
                     ('res_model', '=', 'records.document'),
                     ('res_id', '=', document.id),
                     ('mimetype', 'like', 'pdf')
@@ -1811,7 +1811,7 @@ class RecordsManagementController(http.Controller):
                 return request.redirect('/my/home?error=unauthorized_dept')
 
         # Get available departments for editing
-        departments = request.env['records.department'].search([
+        departments = request.env['records.department'].sudo().search([
             ('company_id', '=', partner.id)
         ])
 
@@ -1862,13 +1862,13 @@ class RecordsManagementController(http.Controller):
 
         # GET request - show form
         if request.httprequest.method == 'GET':
-            departments = request.env['records.department'].search([
+            departments = request.env['records.department'].sudo().search([
                 ('company_id', '=', partner.id)
             ])
-            locations = request.env['records.location'].search([
+            locations = request.env['records.location'].sudo().search([
                 '|', ('partner_id', '=', partner.id), ('partner_id', '=', False)
             ])
-            container_types = request.env['records.container.type'].search([])
+            container_types = request.env['records.container.type'].sudo().search([])
 
             values = {
                 'departments': departments,
@@ -1892,7 +1892,7 @@ class RecordsManagementController(http.Controller):
                 })
 
             # Department validation
-            department = request.env['records.department'].browse(int(department_id))
+            department = request.env['records.department'].sudo().browse(int(department_id))
             if not department or department.company_id.id != partner.id:
                 return request.render('records_management.portal_error', {
                     'error_title': _('Invalid Department'),
@@ -1926,10 +1926,10 @@ class RecordsManagementController(http.Controller):
             if post.get('barcode'):
                 container_vals['barcode'] = post.get('barcode')
 
-            container = request.env['records.container'].create(container_vals)
+            container = request.env['records.container'].sudo().create(container_vals)
 
             # Audit log
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'container_created',
                 'user_id': request.env.user.id,
                 'container_id': container.id,
@@ -1984,7 +1984,7 @@ class RecordsManagementController(http.Controller):
             # Department change - only company admin
             if post.get('department_id') and is_company_admin:
                 new_dept_id = int(post.get('department_id'))
-                new_dept = request.env['records.department'].browse(new_dept_id)
+                new_dept = request.env['records.department'].sudo().browse(new_dept_id)
                 if new_dept.company_id.id == partner.id:
                     update_vals['department_id'] = new_dept_id
 
@@ -1996,7 +1996,7 @@ class RecordsManagementController(http.Controller):
                 container.sudo().write(update_vals)
 
                 # Audit log
-                request.env['naid.audit.log'].create({
+                request.env['naid.audit.log'].sudo().create({
                     'action_type': 'container_updated',
                     'user_id': request.env.user.id,
                     'container_id': container.id,
@@ -2051,7 +2051,7 @@ class RecordsManagementController(http.Controller):
             })
 
             # Audit log
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'container_deleted',
                 'user_id': request.env.user.id,
                 'container_id': container.id,
@@ -2133,7 +2133,7 @@ class RecordsManagementController(http.Controller):
             move_request.action_submit()
 
             # Audit log
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'container_move_requested',
                 'user_id': request.env.user.id,
                 'container_id': container.id,
@@ -2206,9 +2206,9 @@ class RecordsManagementController(http.Controller):
                 return request.redirect('/my/home?error=unauthorized_dept')
 
         # Get related data
-        departments = request.env['records.department'].search([('company_id', '=', partner.id)])
-        containers = request.env['records.container'].search([('partner_id', '=', partner.id)])
-        documents = request.env['records.document'].search([('file_id', '=', file_id)])
+        departments = request.env['records.department'].sudo().search([('company_id', '=', partner.id)])
+        containers = request.env['records.container'].sudo().search([('partner_id', '=', partner.id)])
+        documents = request.env['records.document'].sudo().search([('file_id', '=', file_id)])
 
         # Permission flags
         can_edit = request.env.user.has_group('records_management.group_portal_department_user')
@@ -2240,8 +2240,8 @@ class RecordsManagementController(http.Controller):
         partner = request.env.user.partner_id.commercial_partner_id
 
         if request.httprequest.method == 'GET':
-            departments = request.env['records.department'].search([('company_id', '=', partner.id)])
-            containers = request.env['records.container'].search([('partner_id', '=', partner.id)])
+            departments = request.env['records.department'].sudo().search([('company_id', '=', partner.id)])
+            containers = request.env['records.container'].sudo().search([('partner_id', '=', partner.id)])
 
             values = {
                 'departments': departments,
@@ -2262,7 +2262,7 @@ class RecordsManagementController(http.Controller):
                 })
 
             # Department validation
-            department = request.env['records.department'].browse(int(department_id))
+            department = request.env['records.department'].sudo().browse(int(department_id))
             if department.company_id.id != partner.id:
                 return request.render('records_management.portal_error', {
                     'error_title': _('Invalid Department'),
@@ -2291,9 +2291,9 @@ class RecordsManagementController(http.Controller):
             if post.get('barcode'):
                 file_vals['barcode'] = post.get('barcode')
 
-            file_record = request.env['records.file'].create(file_vals)
+            file_record = request.env['records.file'].sudo().create(file_vals)
 
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'file_created',
                 'user_id': request.env.user.id,
                 'description': _('File %s created via portal by %s') % (file_record.name, request.env.user.name),
@@ -2340,13 +2340,13 @@ class RecordsManagementController(http.Controller):
 
             if post.get('department_id') and is_company_admin:
                 new_dept_id = int(post.get('department_id'))
-                new_dept = request.env['records.department'].browse(new_dept_id)
+                new_dept = request.env['records.department'].sudo().browse(new_dept_id)
                 if new_dept.company_id.id == partner.id:
                     update_vals['department_id'] = new_dept_id
 
             if update_vals:
                 file_record.sudo().write(update_vals)
-                request.env['naid.audit.log'].create({
+                request.env['naid.audit.log'].sudo().create({
                     'action_type': 'file_updated',
                     'user_id': request.env.user.id,
                     'description': _('File %s updated via portal by %s') % (file_record.name, request.env.user.name),
@@ -2385,7 +2385,7 @@ class RecordsManagementController(http.Controller):
 
             file_record.sudo().write({'active': False})
 
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'file_deleted',
                 'user_id': request.env.user.id,
                 'description': _('File %s archived via portal by %s') % (file_record.name, request.env.user.name),
@@ -2425,7 +2425,7 @@ class RecordsManagementController(http.Controller):
                 if doc.partner_id.id == partner.id:
                     doc.sudo().write({'file_id': file_id})
 
-                    request.env['naid.audit.log'].create({
+                    request.env['naid.audit.log'].sudo().create({
                         'action_type': 'document_added_to_file',
                         'user_id': request.env.user.id,
                         'description': _('Document %s added to file %s via portal by %s') % (
@@ -2447,9 +2447,9 @@ class RecordsManagementController(http.Controller):
                     if post.get('document_description'):
                         doc_vals['description'] = post.get('document_description')
 
-                    doc = request.env['records.document'].create(doc_vals)
+                    doc = request.env['records.document'].sudo().create(doc_vals)
 
-                    request.env['naid.audit.log'].create({
+                    request.env['naid.audit.log'].sudo().create({
                         'action_type': 'document_created_in_file',
                         'user_id': request.env.user.id,
                         'description': _('Document %s created in file %s via portal by %s') % (
@@ -2496,7 +2496,7 @@ class RecordsManagementController(http.Controller):
             old_container_name = file_record.container_id.name if file_record.container_id else 'None'
             file_record.sudo().write({'container_id': int(new_container_id)})
 
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'file_moved_container',
                 'user_id': request.env.user.id,
                 'description': _('File %s moved from container %s to %s via portal by %s') % (
@@ -2541,7 +2541,7 @@ class RecordsManagementController(http.Controller):
 
         # Get PDF scan info for each document
         for doc in documents:
-            doc.pdf_scans = request.env['ir.attachment'].search([
+            doc.pdf_scans = request.env['ir.attachment'].sudo().search([
                 ('res_model', '=', 'records.document'),
                 ('res_id', '=', doc.id),
                 ('mimetype', 'like', 'pdf')
@@ -2574,12 +2574,12 @@ class RecordsManagementController(http.Controller):
                 return request.redirect('/my/home?error=unauthorized_dept')
 
         # Get related data
-        departments = request.env['records.department'].search([('company_id', '=', partner.id)])
-        files = request.env['records.file'].search([('partner_id', '=', partner.id)])
-        containers = request.env['records.container'].search([('partner_id', '=', partner.id)])
+        departments = request.env['records.department'].sudo().search([('company_id', '=', partner.id)])
+        files = request.env['records.file'].sudo().search([('partner_id', '=', partner.id)])
+        containers = request.env['records.container'].sudo().search([('partner_id', '=', partner.id)])
 
         # Get attachments
-        attachments = request.env['ir.attachment'].search([
+        attachments = request.env['ir.attachment'].sudo().search([
             ('res_model', '=', 'records.document'),
             ('res_id', '=', doc_id)
         ])
@@ -2615,9 +2615,9 @@ class RecordsManagementController(http.Controller):
         partner = request.env.user.partner_id.commercial_partner_id
 
         if request.httprequest.method == 'GET':
-            departments = request.env['records.department'].search([('company_id', '=', partner.id)])
-            files = request.env['records.file'].search([('partner_id', '=', partner.id)])
-            containers = request.env['records.container'].search([('partner_id', '=', partner.id)])
+            departments = request.env['records.department'].sudo().search([('company_id', '=', partner.id)])
+            files = request.env['records.file'].sudo().search([('partner_id', '=', partner.id)])
+            containers = request.env['records.container'].sudo().search([('partner_id', '=', partner.id)])
 
             values = {
                 'departments': departments,
@@ -2639,7 +2639,7 @@ class RecordsManagementController(http.Controller):
                 })
 
             # Department validation
-            department = request.env['records.department'].browse(int(department_id))
+            department = request.env['records.department'].sudo().browse(int(department_id))
             if department.company_id.id != partner.id:
                 return request.render('records_management.portal_error', {
                     'error_title': _('Invalid Department'),
@@ -2668,9 +2668,9 @@ class RecordsManagementController(http.Controller):
             if post.get('document_type_id'):
                 doc_vals['document_type_id'] = int(post.get('document_type_id'))
 
-            doc_record = request.env['records.document'].create(doc_vals)
+            doc_record = request.env['records.document'].sudo().create(doc_vals)
 
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'document_created',
                 'user_id': request.env.user.id,
                 'description': _('Document %s created via portal by %s') % (doc_record.name, request.env.user.name),
@@ -2715,13 +2715,13 @@ class RecordsManagementController(http.Controller):
 
             if post.get('department_id') and is_company_admin:
                 new_dept_id = int(post.get('department_id'))
-                new_dept = request.env['records.department'].browse(new_dept_id)
+                new_dept = request.env['records.department'].sudo().browse(new_dept_id)
                 if new_dept.company_id.id == partner.id:
                     update_vals['department_id'] = new_dept_id
 
             if update_vals:
                 doc_record.sudo().write(update_vals)
-                request.env['naid.audit.log'].create({
+                request.env['naid.audit.log'].sudo().create({
                     'action_type': 'document_updated',
                     'user_id': request.env.user.id,
                     'description': _('Document %s updated via portal by %s') % (doc_record.name, request.env.user.name),
@@ -2755,7 +2755,7 @@ class RecordsManagementController(http.Controller):
 
             doc_record.sudo().write({'active': False})
 
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'document_deleted',
                 'user_id': request.env.user.id,
                 'description': _('Document %s archived via portal by %s') % (doc_record.name, request.env.user.name),
@@ -2788,7 +2788,7 @@ class RecordsManagementController(http.Controller):
             if not uploaded_file.filename:
                 return request.redirect(f'/my/inventory/document/{doc_id}?error=no_file')
 
-            attachment = request.env['ir.attachment'].create({
+            attachment = request.env['ir.attachment'].sudo().create({
                 'name': uploaded_file.filename,
                 'type': 'binary',
                 'datas': base64.b64encode(uploaded_file.read()),
@@ -2797,7 +2797,7 @@ class RecordsManagementController(http.Controller):
                 'mimetype': uploaded_file.content_type or 'application/octet-stream',
             })
 
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'document_file_uploaded',
                 'user_id': request.env.user.id,
                 'description': _('File %s uploaded to document %s via portal by %s') % (
@@ -2826,8 +2826,8 @@ class RecordsManagementController(http.Controller):
         partner = request.env.user.partner_id.commercial_partner_id
 
         if request.httprequest.method == 'GET':
-            departments = request.env['records.department'].search([('company_id', '=', partner.id)])
-            files = request.env['records.file'].search([('partner_id', '=', partner.id)])
+            departments = request.env['records.department'].sudo().search([('company_id', '=', partner.id)])
+            files = request.env['records.file'].sudo().search([('partner_id', '=', partner.id)])
 
             values = {
                 'departments': departments,
@@ -2875,10 +2875,10 @@ class RecordsManagementController(http.Controller):
                     'created_via_portal': True,
                 }
 
-                doc_record = request.env['records.document'].create(doc_vals)
+                doc_record = request.env['records.document'].sudo().create(doc_vals)
                 created_docs.append(doc_record)
 
-                attachment = request.env['ir.attachment'].create({
+                attachment = request.env['ir.attachment'].sudo().create({
                     'name': uploaded_file.filename,
                     'type': 'binary',
                     'datas': base64.b64encode(uploaded_file.read()),
@@ -2888,7 +2888,7 @@ class RecordsManagementController(http.Controller):
                 })
 
             if created_docs:
-                request.env['naid.audit.log'].create({
+                request.env['naid.audit.log'].sudo().create({
                     'action_type': 'documents_bulk_uploaded',
                     'user_id': request.env.user.id,
                     'description': _('%d documents uploaded via portal by %s') % (
@@ -2947,7 +2947,7 @@ class RecordsManagementController(http.Controller):
                 'scan_requested_date': datetime.now(),
             })
 
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'scan_requested',
                 'user_id': request.env.user.id,
                 'description': _('Scan requested for document %s via portal by %s') % (
@@ -3067,9 +3067,9 @@ class RecordsManagementController(http.Controller):
             return request.redirect('/my/requests?error=invalid_type')
 
         if request.httprequest.method == 'GET':
-            departments = request.env['records.department'].search([('company_id', '=', partner.id)])
-            containers = request.env['records.container'].search([('partner_id', '=', partner.id)])
-            files = request.env['records.file'].search([('partner_id', '=', partner.id)])
+            departments = request.env['records.department'].sudo().search([('company_id', '=', partner.id)])
+            containers = request.env['records.container'].sudo().search([('partner_id', '=', partner.id)])
+            files = request.env['records.file'].sudo().search([('partner_id', '=', partner.id)])
 
             values = {
                 'request_type': request_type,
@@ -3122,7 +3122,7 @@ class RecordsManagementController(http.Controller):
 
             req_record = request.env['portal.request'].create(request_vals)
 
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': f'{request_type}_request_created',
                 'user_id': request.env.user.id,
                 'description': _('%s request %s created via portal by %s') % (
@@ -3189,7 +3189,7 @@ class RecordsManagementController(http.Controller):
 
             if update_vals:
                 req_record.sudo().write(update_vals)
-                request.env['naid.audit.log'].create({
+                request.env['naid.audit.log'].sudo().create({
                     'action_type': 'request_updated',
                     'user_id': request.env.user.id,
                     'description': _('Request %s updated via portal by %s') % (req_record.name, request.env.user.name),
@@ -3227,7 +3227,7 @@ class RecordsManagementController(http.Controller):
 
             req_record.sudo().write({'state': 'cancelled'})
 
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'request_cancelled',
                 'user_id': request.env.user.id,
                 'description': _('Request %s cancelled via portal by %s') % (req_record.name, request.env.user.name),
@@ -3264,7 +3264,7 @@ class RecordsManagementController(http.Controller):
 
             req_record.sudo().write({'state': 'submitted'})
 
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'request_submitted',
                 'user_id': request.env.user.id,
                 'description': _('Request %s submitted for approval via portal by %s') % (
@@ -3575,7 +3575,7 @@ class RecordsManagementController(http.Controller):
             })
 
             # Create audit log
-            request.env['naid.audit.log'].create({
+            request.env['naid.audit.log'].sudo().create({
                 'action_type': 'destruction_approved',
                 'user_id': user.id,
                 'description': _('Destruction request %s approved via portal by %s') % (
@@ -3879,14 +3879,14 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
 
         if request.httprequest.method == 'POST' and barcode_data:
-            container = request.env['records.container'].search([
+            container = request.env['records.container'].sudo().search([
                 ('barcode', '=', barcode_data),
                 ('partner_id', '=', request.env.user.partner_id.commercial_partner_id.id)
             ], limit=1)
 
             if container:
                 # Log scan in audit
-                request.env['naid.audit.log'].create({
+                request.env['naid.audit.log'].sudo().create({
                     'action_type': 'barcode_scan',
                     'user_id': request.env.user.id,
                     'description': _('Container %s scanned via barcode') % container.name,
@@ -3905,14 +3905,14 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
 
         if request.httprequest.method == 'POST' and barcode_data:
-            file = request.env['records.file'].search([
+            file = request.env['records.file'].sudo().search([
                 ('barcode', '=', barcode_data),
                 ('partner_id', '=', request.env.user.partner_id.commercial_partner_id.id)
             ], limit=1)
 
             if file:
                 # Log scan in audit
-                request.env['naid.audit.log'].create({
+                request.env['naid.audit.log'].sudo().create({
                     'action_type': 'barcode_scan',
                     'user_id': request.env.user.id,
                     'description': _('File %s scanned via barcode') % file.name,
@@ -4123,7 +4123,7 @@ class RecordsManagementController(http.Controller):
             return request.not_found()
 
         # Get PDF scans
-        pdf_scans = request.env['ir.attachment'].search([
+        pdf_scans = request.env['ir.attachment'].sudo().search([
             ('res_model', '=', 'records.document'),
             ('res_id', '=', document_id),
             ('mimetype', 'like', 'pdf')
@@ -4373,7 +4373,7 @@ class RecordsManagementController(http.Controller):
         """Get files not assigned to any container"""
         partner = request.env.user.partner_id.commercial_partner_id
 
-        available_files = request.env['records.file'].search([
+        available_files = request.env['records.file'].sudo().search([
             ('partner_id', '=', partner.id),
             ('container_id', '=', False)  # Not in any container
         ])
@@ -5380,7 +5380,7 @@ class RecordsManagementController(http.Controller):
         config = request_configs.get(request_type, request_configs['retrieval'])
 
         # Get available containers for selection
-        containers = request.env['records.container'].search([
+        containers = request.env['records.container'].sudo().search([
             ('partner_id', '=', partner.id),
             ('state', 'in', ['storage', 'active'])
         ])
@@ -5527,7 +5527,7 @@ class RecordsManagementController(http.Controller):
         partner = request.env.user.partner_id.commercial_partner_id
 
         # Generate inventory summary
-        containers = request.env['records.container'].search([
+        containers = request.env['records.container'].sudo().search([
             ('partner_id', '=', partner.id)
         ])
 
@@ -5681,7 +5681,7 @@ class RecordsManagementController(http.Controller):
         ])
 
         # Get departments for the dropdown
-        departments = request.env['records.department'].search([
+        departments = request.env['records.department'].sudo().search([
             ('company_id', '=', partner.id)
         ])
 
@@ -5900,9 +5900,9 @@ class RecordsManagementController(http.Controller):
             """Recursively add partner and children to nodes/edges"""
             if p.id in partner_ids:
                 return  # Avoid duplicates
-            
+
             partner_ids.add(p.id)
-            
+
             # Determine node type and color
             if p.is_company:
                 node_type = 'company'
@@ -5919,7 +5919,7 @@ class RecordsManagementController(http.Controller):
                     color = '#3498db'  # Blue - internal user
                 else:
                     color = '#e91e63'  # Pink - portal user
-            
+
             # Create node
             node = {
                 'id': p.id,
@@ -5933,7 +5933,7 @@ class RecordsManagementController(http.Controller):
                 'is_current_user': p.id == partner.id,
             }
             nodes.append(node)
-            
+
             # Create edge to parent
             if parent_id:
                 edges.append({
@@ -5941,7 +5941,7 @@ class RecordsManagementController(http.Controller):
                     'to': p.id,
                     'color': '#27ae60'  # Green connections
                 })
-            
+
             # Add child partners
             children = request.env['res.partner'].search([
                 ('parent_id', '=', p.id),
@@ -5952,7 +5952,7 @@ class RecordsManagementController(http.Controller):
 
         # Start with the main company and build tree
         add_partner_node(company)
-        
+
         # If current user is not in tree yet, add them under their parent
         if partner.id not in partner_ids:
             add_partner_node(partner, partner.parent_id.id if partner.parent_id else company.id)
@@ -5976,7 +5976,7 @@ class RecordsManagementController(http.Controller):
                 self.show_access_rights = False
                 self.layout_type = 'hierarchical'
                 self.search_query = ''
-        
+
         # Prepare context for template
         values = {
             'page_name': 'organization',
