@@ -22,6 +22,7 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
         <record id="group_records_admin" model="res.groups">
             <field name="name">Records Admin</field>
             <field name="implied_ids" eval="[(4, ref('records_management.group_records_manager')), (4, ref('base.group_system'))]"/>
+            <field name="view_access" eval="[(5,)]"/>  <!-- Clear all view access assignments -->
             <field name="comment">Records administrators with full system access and all administrative rights</field>
         </record>
 
