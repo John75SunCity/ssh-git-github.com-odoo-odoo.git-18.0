@@ -5,11 +5,9 @@
             <field name="name">res.partner.view.form.inherit.key_restrictions</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form" />
-            <!-- Clear any legacy groups that may still be attached to this inherited view record.
-                 Inherited views cannot define groups at the record level in Odoo 19; restriction
-                 should instead be applied via 'groups' attributes inside the arch (already done
-                 on specific pages/buttons). Using command 5 to flush existing M2M links. -->
-            <field name="groups_id" eval="[(5,)]"/>
+            <!-- Inherited views cannot define groups_id at the record level in Odoo 18+.
+                 Group restrictions are applied via 'groups' attributes inside the arch (already done
+                 on specific pages/buttons below). -->
             <field name="arch" type="xml">
                 <xpath expr="//page[@name='internal_notes']" position="after">
                     <page name="key_restrictions" string="Key Restrictions" groups="records_management.group_records_manager">
