@@ -4077,7 +4077,7 @@ class RecordsManagementController(http.Controller):
             return request.not_found()
 
         # Get files in this container
-        files_in_container = request.env['records.file'].search([
+        files_in_container = request.env['records.file'].sudo().search([
             ('container_id', '=', container_id),
             ('partner_id', '=', container.partner_id.id)
         ])
@@ -4093,14 +4093,14 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/inventory/file/<int:file_id>'], type='http', auth="user", website=True)
     def portal_file_detail(self, file_id, **kw):
         """Individual file folder detail view"""
-        file_folder = request.env['records.file'].browse(file_id)
+        file_folder = request.env['records.file'].sudo().browse(file_id)
 
         # Security check
         if file_folder.partner_id != request.env.user.partner_id.commercial_partner_id:
             return request.not_found()
 
         # Get documents in this file folder
-        documents_in_file = request.env['records.document'].search([
+        documents_in_file = request.env['records.document'].sudo().search([
             ('file_folder_id', '=', file_id),
             ('partner_id', '=', file_folder.partner_id.id)
         ])
@@ -4116,7 +4116,7 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/inventory/document/<int:document_id>'], type='http', auth="user", website=True)
     def portal_document_detail(self, document_id, **kw):
         """Individual document detail view with PDF scans"""
-        document = request.env['records.document'].browse(document_id)
+        document = request.env['records.document'].sudo().browse(document_id)
 
         # Security check
         if document.partner_id != request.env.user.partner_id.commercial_partner_id:
