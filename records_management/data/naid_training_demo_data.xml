@@ -2,6 +2,15 @@
 <odoo noupdate="1">
     <data>
         <!-- NAID Training Courses Demo Data -->
+        <!-- NOTE: These empty course definitions are commented out because
+             the actual courses with content are defined in:
+             - training_courses_data.xml (creates slide_channel_naid_aaa_training)
+             - training_courses_naid_content.xml (adds slides/content to that channel)
+             
+             Keeping these here would create duplicate empty courses showing "0 steps"
+        -->
+        
+        <!--
         <record id="naid_training_course_basic" model="slide.channel">
             <field name="name">NAID AAA Basic Certification Training</field>
             <field name="description">Fundamental training for NAID AAA certification covering basic records management principles, security protocols, and compliance requirements.</field>
@@ -46,6 +55,7 @@
             <field name="visibility">public</field>
             <field name="is_published">true</field>
         </record>
+        -->
 
         <!-- Demo Employees for NAID Training -->
         <record id="employee_john_smith" model="hr.employee">
@@ -69,8 +79,9 @@
             <field name="refresher_interval_months">12</field>
             <field name="portal_visible">true</field>
             <field name="operator_id" ref="employee_john_smith"/>
-            <field name="required_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_security'))]"/>
-            <field name="completed_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_security'))]"/>
+            <!-- Use the actual course with content from training_courses_data.xml -->
+            <field name="required_trainings_ids" eval="[(4, ref('slide_channel_naid_aaa_training'))]"/>
+            <field name="completed_trainings_ids" eval="[(4, ref('slide_channel_naid_aaa_training'))]"/>
         </record>
 
         <record id="naid_advanced_certification" model="naid.operator.certification">
@@ -81,8 +92,9 @@
             <field name="refresher_interval_months">12</field>
             <field name="portal_visible">true</field>
             <field name="operator_id" ref="employee_sarah_johnson"/>
-            <field name="required_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_advanced')), (4, ref('naid_training_course_security')), (4, ref('naid_training_course_equipment'))]"/>
-            <field name="completed_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_advanced')), (4, ref('naid_training_course_security')), (4, ref('naid_training_course_equipment'))]"/>
+            <!-- Use the actual course with content from training_courses_data.xml -->
+            <field name="required_trainings_ids" eval="[(4, ref('slide_channel_naid_aaa_training'))]"/>
+            <field name="completed_trainings_ids" eval="[(4, ref('slide_channel_naid_aaa_training'))]"/>
         </record>
     </data>
 </odoo>
