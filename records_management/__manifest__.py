@@ -15,6 +15,8 @@
         "product",
         "stock",
         "account",
+        "account_accountant",
+        "knowledge",
         "sale",
         "portal",
         "website",
@@ -49,19 +51,16 @@
         "mass_mailing",
         "website_slides",
         "quality",
-        # Additional development/utility apps (only available apps from screenshots)
-        # "hr_attendance",  # Comment out if not available
-        # "iot",  # Comment out if not available
-        # "hr_payroll",  # Comment out if not available
-        # "knowledge",  # Comment out if not available
-        # "subscription",  # Comment out if not available
-        # "planning",  # Comment out if not available
-        # "rental",  # Comment out if not available
-        # "appointment",  # Comment out if not available
-        # "account_accountant",  # Comment out if not available
-        # "sale_ecommerce",  # Not available in your system
-        # "hr_expense",  # Comment out if not available
-        # "frontdesk",  # Comment out if not available
+        "hr_attendance",
+        "iot",
+        "hr_payroll",
+        "subscription",
+        "planning",
+        "rental",
+        "appointment",
+        "sale_ecommerce",
+        "hr_expense",
+        "frontdesk",
     ],
     "data": [
         # ============================================================================
@@ -137,6 +136,14 @@
         "data/training_courses_billing_flowchart.xml",
         "data/training_courses_billing_models.xml",
         "data/training_courses_complete_user_guide.xml",
+        # ============================================================================
+        # TEMPORARY: Demo data moved to regular data section to force load
+        # ============================================================================
+        "demo/customer_inventory_demo.xml",
+        "demo/model_records_demo.xml",
+        "demo/field_label_demo_data.xml",
+        "demo/intelligent_search_demo_data.xml",
+        "demo/records_config_mail_templates_data.xml",
         # ============================================================================
         # REPORTS: All report templates and actions (174 files)
         # ============================================================================
