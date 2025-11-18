@@ -178,7 +178,70 @@
                 </search>
             </field>
         </record>
+        
+        <!-- NEW: Stock Location Action for Records Management -->
+        <record id="action_stock_location_records" model="ir.actions.act_window">
+            <field name="name">Storage Locations (Inventory Integration)</field>
+            <field name="res_model">stock.location</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_records_location', '=', True)]</field>
+            <field name="context">{
+                'default_is_records_location': True,
+                'default_usage': 'internal'
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No Records Management locations configured yet!
+                </p>
+                <p>
+                    <b>✅ Unified Inventory System:</b> Records Management now uses Odoo's native stock locations.
+                </p>
+                <p>
+                    <b>📋 To create a records storage location:</b>
+                </p>
+                <ol>
+                    <li>Go to <b>Inventory → Configuration → Locations</b></li>
+                    <li>Create or edit a location</li>
+                    <li>Check the box: <b>"Is Records Location"</b></li>
+                    <li>The location will appear here automatically</li>
+                </ol>
+                <p>
+                    <b>💡 Benefits:</b>
+                </p>
+                <ul>
+                    <li>✅ No data duplication</li>
+                    <li>✅ Barcode scanning integration</li>
+                    <li>✅ Stock transfer automation</li>
+                    <li>✅ Warehouse hierarchy support</li>
+                </ul>
+            </field>
+        </record>
+        
         <record id="action_records_location" model="ir.actions.act_window">
+            <!-- LEGACY ACTION: Kept for backward compatibility -->
+            <field name="name">Storage Locations (Legacy)</field>
+            <field name="res_model">records.location</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="records_location_view_search" />
+            <field name="context">{
+                'search_default_active': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-exclamation-triangle"/> Legacy location model
+                </p>
+                <p>
+                    <b>⚠️ DEPRECATED:</b> Use the <b>Stock Location Integration</b> menu instead.
+                </p>
+                <p>
+                    This legacy model is being phased out. Please use:
+                    <br/><b>Records Management → Storage Locations (Inventory Integration)</b>
+                </p>
+            </field>
+        </record>
+        
+        <!-- Keep original action for existing records -->
+        <record id="action_records_location_legacy" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model records.location has state field - consider using default search filters -->
             <field name="name">Storage Locations</field>
             <field name="res_model">records.location</field>

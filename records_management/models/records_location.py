@@ -2,102 +2,104 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
 
-class RecordsLocation(models.Model):
+class StockLocationRecordsExtension(models.Model):
     """
-    Represents a physical or logical storage location for records containers.
-
-    This model manages hierarchical locations, such as buildings, floors, and shelves,
-    and tracks their capacity, utilization, and compliance with security and environmental
-    standards. It also provides tools for managing child locations and associated containers.
-
-    Key Features:
-    - Hierarchical structure with parent/child relationships.
-    - Capacity management and utilization tracking.
-    - Full address and coordinate-based identification.
-    - Security and compliance features (e.g., security level, inspection dates).
-    - Lifecycle management with states (Draft, Active, Maintenance, etc.).
-    - Integration with records containers for storage and tracking.
-
-    Fields:
-    - Core Fields: `name`, `display_name`, `code`, `active`, `company_id`, `user_id`, `sequence`.
-    - Hierarchy: `parent_location_id`, `child_location_ids`, `child_count`.
-    - Address: `street`, `city`, `state_id`, `zip`, `country_id`, `full_address`.
-    - Coordinates: `building`, `floor`, `zone`, `aisle`, `rack`, `shelf`, `position`, `full_coordinates`.
-    - Capacity: `max_capacity`, `utilization_percentage`, `available_spaces`, `is_at_capacity`.
-    - Status: `state`.
-    - Security: `security_level`, `temperature_controlled`, `humidity_controlled`, `fire_suppression_system`.
-
-    Constraints:
-    - Prevents recursive location hierarchies.
-    - Ensures `max_capacity` is non-negative.
-
-    Methods:
-    - Compute Methods: `_compute_display_name`, `_compute_full_address`, `_compute_full_coordinates`, etc.
-    - Action Methods: `action_view_containers`, `action_view_child_locations`, `action_activate`, `action_deactivate`.
-    - Overrides: `create`, `unlink`.
-
+    Extends stock.location with Records Management fields.
+    
+    This adds records-specific functionality to Odoo's standard stock locations
+    without creating a separate location model. All inventory locations are now
+    automatically available in Records Management.
+    
     Usage:
-    - Use this model to define and manage storage locations for records containers.
-    - Supports hierarchical organization and compliance tracking.
+    1. In Inventory → Configuration → Locations: Check "Is Records Location"
+    2. Those locations will appear in Records Management → Storage Locations
+    3. No data duplication - one unified location system
     """
-
-    _name = 'records.location'
-    _inherit = ['stock.location', 'mail.thread', 'mail.activity.mixin']  # Multiple inheritance
-    _description = 'Records Storage Location'
-    _order = 'complete_name'  # Use stock.location's hierarchical name
-
-    # ============================================================================
-    # RECORDS-SPECIFIC FIELDS (Everything else inherited from stock.location)
-    # ============================================================================
-    # Note: name, active, company_id, location_id (parent), child_ids inherited from stock.location
-
-    # Records-specific location code (supplements stock.location.barcode)
-    code = fields.Char(
-        string="Location Code",
-        copy=False,
-        readonly=True,
-        default=lambda self: "New",
+    
+    _inherit = 'stock.location'
+    
+    # Flag to identify records management locations
+    is_records_location = fields.Boolean(
+        string="Is Records Location",
+        default=False,
         tracking=True,
-        help="Records-specific location code (supplements Odoo barcode)"
+        help="Check this box to use this location in Records Management"
     )
-
-    # Responsible user for this location
-    user_id = fields.Many2one(
-        comodel_name='res.users',
-        string="Responsible",
-        default=lambda self: self.env.user,
-        tracking=True
+    
+    # Records Management description (separate from stock comment)
+    records_description = fields.Text(
+        string="Records Management Notes",
+        help="Special instructions for records handling, access, or compliance"
     )
-
-    # Records Management description (separate from stock.location.comment)
-    description = fields.Text(
-        string="Description",
-        tracking=True,
-        help="Location description and special instructions for records management. "
-             "Use this for access notes, handling instructions, or compliance details."
-    )
-
-    # Container relationship (records-specific)
+    
+    # Container relationship
     container_ids = fields.One2many(
         'records.container',
         'location_id',
-        string="Containers"
+        string="Containers",
+        domain=[('state', '!=', 'destroyed')]
     )
+    
     container_count = fields.Integer(
         string="Container Count",
         compute='_compute_container_count',
         store=True
     )
+    
+    @api.depends('container_ids')
+    def _compute_container_count(self):
+        for record in self:
+            record.container_count = len(record.container_ids)
+    
+    def action_view_containers(self):
+        """View containers at this location"""
+        self.ensure_one()
+        return {
+            'name': _('Containers at %s') % self.display_name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.container',
+            'view_mode': 'tree,form,kanban',
+            'domain': [('location_id', '=', self.id)],
+            'context': {'default_location_id': self.id}
+        }
 
-    # Location grouping for records management
-    group_id = fields.Many2one(
-        comodel_name='location.group',
-        string='Location Group'
+
+class RecordsLocation(models.Model):
+    """
+    DEPRECATED: Legacy records.location model
+    
+    This model is being phased out in favor of stock.location extension.
+    For new implementations, use stock.location with is_records_location=True
+    
+    Keeping this model temporarily for backward compatibility with existing
+    records that reference 'records.location'. Will be fully migrated to
+    stock.location in future version.
+    """
+
+    _name = 'records.location'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _description = 'Records Storage Location (Legacy - Use stock.location instead)'
+    _rec_name = 'name'
+    _order = 'name'
+    
+    name = fields.Char(string="Location Name", required=True, tracking=True)
+    active = fields.Boolean(default=True)
+    
+    # Link to actual stock.location
+    stock_location_id = fields.Many2one(
+        'stock.location',
+        string="Linked Stock Location",
+        domain=[('is_records_location', '=', True)],
+        help="Link this legacy location to a stock.location"
     )
-
-    # Note: We use stock.location's native 'usage' field instead of creating our own
-    # 'location_type' to avoid duplication and leverage Odoo's standard location types
-    # (internal, view, customer, vendor, inventory, production, transit)
+    
+    # Minimal fields for backward compatibility
+    code = fields.Char(string="Code")
+    description = fields.Text(string="Description")
+    
+    # Legacy parent/child relationship (will cause issues - use stock.location instead)
+    parent_location_id = fields.Many2one('records.location', string='Parent Location')
+    child_location_ids = fields.One2many('records.location', 'parent_location_id', string='Child Locations')
 
     # Storage capacity tracking (Records Management specific)
     storage_capacity = fields.Integer(
