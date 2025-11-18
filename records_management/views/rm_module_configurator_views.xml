@@ -13,12 +13,12 @@
     <field name="config_key" string="Key" optional="hide"/>
     <field name="description" string="Description"/>
     <!-- Show toggle for feature_toggle type -->
-    <field name="value_boolean" widget="boolean_toggle" string="Enabled" 
+    <field name="value_boolean" widget="boolean_toggle" string="Enabled"
            invisible="config_type != 'feature_toggle'" optional="show"/>
     <!-- Show number for parameters -->
-    <field name="value_number" string="Value" 
+    <field name="value_number" string="Value"
            invisible="config_type != 'parameter'" optional="show"/>
-    <field name="value_text" string="Text Value" 
+    <field name="value_text" string="Text Value"
            invisible="config_type not in ['parameter', 'field_visibility']" optional="hide"/>
     <field name="sequence" optional="hide"/>
     <field name="active" widget="boolean_toggle"/>
@@ -54,7 +54,7 @@
             </p>
         </div>
         <div class="col-md-4 text-end">
-            <field name="master_features_enabled" widget="boolean_toggle" 
+            <field name="master_features_enabled" widget="boolean_toggle"
                    options="{'terminology': {'string_true': 'All Enabled', 'string_false': 'Some Disabled'}}"
                    class="oe_inline"/>
         </div>
