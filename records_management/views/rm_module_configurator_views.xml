@@ -6,16 +6,21 @@
         <field name="name">rm.module.configurator.view.tree</field>
         <field name="model">rm.module.configurator</field>
         <field name="arch" type="xml">
-<list decoration-info="active == True" decoration-muted="active == False" decoration-success="value_boolean == True" decoration-danger="value_boolean == False">
+<list decoration-info="active == True" decoration-muted="active == False" decoration-success="value_boolean == True and config_type == 'feature_toggle'" decoration-danger="value_boolean == False and config_type == 'feature_toggle'">
+    <field name="category" column_invisible="1"/>
+    <field name="config_type" widget="badge" decoration-success="config_type == 'feature_toggle'" decoration-info="config_type == 'parameter'"/>
     <field name="name" string="Configuration Name"/>
-    <field name="config_type" column_invisible="1"/>
-    <field name="category" widget="badge"/>
-    <field name="config_key" string="Key"/>
+    <field name="config_key" string="Key" optional="hide"/>
     <field name="description" string="Description"/>
-    <field name="value_boolean" widget="boolean_toggle" string="Enabled" optional="hide"/>
-    <field name="value_number" string="Value" optional="hide"/>
-    <field name="value_text" string="Text Value" optional="hide"/>
-    <field name="sequence"/>
+    <!-- Show toggle for feature_toggle type -->
+    <field name="value_boolean" widget="boolean_toggle" string="Enabled" 
+           invisible="config_type != 'feature_toggle'" optional="show"/>
+    <!-- Show number for parameters -->
+    <field name="value_number" string="Value" 
+           invisible="config_type != 'parameter'" optional="show"/>
+    <field name="value_text" string="Text Value" 
+           invisible="config_type not in ['parameter', 'field_visibility']" optional="hide"/>
+    <field name="sequence" optional="hide"/>
     <field name="active" widget="boolean_toggle"/>
     <field name="company_id" groups="base.group_multi_company" optional="hide"/>
     <field name="modified_by_id" widget="many2one_avatar_user" string="Owner" optional="hide"/>
@@ -36,6 +41,26 @@
                 <field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Inactive'}}"/>
             </header>
 <sheet>
+<!-- MASTER TOGGLE - Quick Enable/Disable All Features -->
+<div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
+    <div class="row">
+        <div class="col-md-8">
+            <h4 class="alert-heading">
+                <i class="fa fa-toggle-on"/> Master Feature Control
+            </h4>
+            <p class="mb-0">
+                Use this master switch to enable or disable <strong>all feature toggles</strong> at once.
+                Individual features can still be toggled separately below.
+            </p>
+        </div>
+        <div class="col-md-4 text-end">
+            <field name="master_features_enabled" widget="boolean_toggle" 
+                   options="{'terminology': {'string_true': 'All Enabled', 'string_false': 'Some Disabled'}}"
+                   class="oe_inline"/>
+        </div>
+    </div>
+</div>
+
 <div class="oe_button_box" name="button_box">
     <button class="oe_stat_button" type="object" name="action_view_related_configurations" icon="fa-cogs">
         <field name="modification_count" widget="statinfo" string="Changes"/>

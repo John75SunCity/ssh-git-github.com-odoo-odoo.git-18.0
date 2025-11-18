@@ -99,6 +99,14 @@ class RmModuleConfigurator(models.Model):
     modification_count = fields.Integer(readonly=True, default=0)
     notes = fields.Text()
 
+    # Master toggle for quick enable/disable all features
+    master_features_enabled = fields.Boolean(
+        string="Enable All Features",
+        compute="_compute_master_toggle",
+        inverse="_inverse_master_toggle",
+        help="Master switch to enable/disable all feature toggles at once"
+    )
+
     # Virtual recency flags (avoid Python date expressions in XML domains)
     recently_created_30d = fields.Boolean(
         compute='_compute_recency_flags',
@@ -190,6 +198,28 @@ class RmModuleConfigurator(models.Model):
                 rec.display_name = rec.name + f" - {status}"
             else:
                 rec.display_name = rec.name
+
+    @api.depends('value_boolean')
+    def _compute_master_toggle(self):
+        """Master toggle is ON if ALL feature toggles are enabled"""
+        for rec in self:
+            feature_toggles = self.search([
+                ('config_type', '=', 'feature_toggle'),
+                ('company_id', '=', rec.company_id.id)
+            ])
+            if feature_toggles:
+                rec.master_features_enabled = all(toggle.value_boolean for toggle in feature_toggles)
+            else:
+                rec.master_features_enabled = False
+
+    def _inverse_master_toggle(self):
+        """When master toggle changes, update ALL feature toggles"""
+        for rec in self:
+            feature_toggles = self.search([
+                ('config_type', '=', 'feature_toggle'),
+                ('company_id', '=', rec.company_id.id)
+            ])
+            feature_toggles.write({'value_boolean': rec.master_features_enabled})
 
     # ------------------------------------------------------------------
     # RECENCY COMPUTES & SEARCH HELPERS
