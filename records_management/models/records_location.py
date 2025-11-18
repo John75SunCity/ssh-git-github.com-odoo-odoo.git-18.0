@@ -97,6 +97,20 @@ class RecordsLocation(models.Model):
     code = fields.Char(string="Code")
     description = fields.Text(string="Description")
     
+    # Container relationship (for backward compatibility)
+    container_ids = fields.One2many(
+        'records.container',
+        'legacy_location_id',
+        string="Containers (Legacy)",
+        help="Containers stored at this location"
+    )
+    
+    container_count = fields.Integer(
+        string="Container Count",
+        compute='_compute_container_count',
+        store=True
+    )
+    
     # Legacy parent/child relationship (will cause issues - use stock.location instead)
     parent_location_id = fields.Many2one('records.location', string='Parent Location')
     child_location_ids = fields.One2many('records.location', 'parent_location_id', string='Child Locations')
