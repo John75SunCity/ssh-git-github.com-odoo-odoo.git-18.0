@@ -69,11 +69,11 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- Location Search Rules (All Users Can See Locations) -->
+        <!-- Location Search Rules (All Users Can See Stock Locations) -->
         <record id="records_location_search_rule" model="ir.rule">
-            <field name="name">Location Search Access Rule</field>
-            <field name="model_id" ref="records_management.model_records_location"/>
-            <!-- Allow all records to be visible (no restriction) -->
+            <field name="name">Stock Location Search Access Rule</field>
+            <field name="model_id" ref="stock.model_stock_location"/>
+            <!-- Allow all stock locations to be visible (no restriction) -->
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('base.group_portal'))]"/>
             <field name="perm_read" eval="True"/>

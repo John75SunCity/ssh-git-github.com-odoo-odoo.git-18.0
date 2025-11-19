@@ -145,7 +145,7 @@
         <!-- This ensures proper integration with Inventory module -->
         
         <!-- Main Warehouse Locations -->
-        <record id="location_main_warehouse_a" model="records.location">
+        <record id="location_main_warehouse_a" model="stock.location">
             <field name="name">Records Section A</field>
             <field name="code">MAIN-WH-A</field>
             <field name="description">Primary storage warehouse section A</field>
@@ -159,7 +159,7 @@
             <field name="max_capacity">5000</field>
         </record>
         
-        <record id="location_main_warehouse_b" model="records.location">
+        <record id="location_main_warehouse_b" model="stock.location">
             <field name="name">Records Section B</field>
             <field name="code">MAIN-WH-B</field>
             <field name="description">Primary storage warehouse section B</field>
@@ -173,7 +173,7 @@
             <field name="max_capacity">5000</field>
         </record>
         
-        <record id="location_secure_vault" model="records.location">
+        <record id="location_secure_vault" model="stock.location">
             <field name="name">Secure Records Vault</field>
             <field name="code">SECURE-VAULT</field>
             <field name="description">High-security vault for confidential documents</field>

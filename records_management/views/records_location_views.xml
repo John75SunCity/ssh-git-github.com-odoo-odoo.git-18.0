@@ -3,7 +3,7 @@
     <data>
         <record id="records_location_view_kanban" model="ir.ui.view">
             <field name="name">records.location.view.kanban</field>
-            <field name="model">records.location</field>
+            <field name="model">stock.location</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="usage" class="o_kanban_location_dashboard">
                     <field name="name" />
@@ -79,7 +79,7 @@
         </record>
         <record id="records_location_view_tree" model="ir.ui.view">
             <field name="name">records.location.view.tree</field>
-            <field name="model">records.location</field>
+            <field name="model">stock.location</field>
             <field name="arch" type="xml">
                 <list>
                     <field name="name" string="Location Name" />
@@ -94,7 +94,7 @@
         <!-- Hierarchy View for Locations -->
         <record id="records_location_view_hierarchy" model="ir.ui.view">
             <field name="name">records.location.view.hierarchy</field>
-            <field name="model">records.location</field>
+            <field name="model">stock.location</field>
             <field name="arch" type="xml">
                 <!-- parent_field: location_id (inherited from stock.location) -->
                 <!-- child_field: child_ids (inherited from stock.location) -->
@@ -108,7 +108,7 @@
         </record>
         <record id="records_location_view_form" model="ir.ui.view">
             <field name="name">records.location.view.form</field>
-            <field name="model">records.location</field>
+            <field name="model">stock.location</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
@@ -163,7 +163,7 @@
         </record>
         <record id="records_location_view_search" model="ir.ui.view">
             <field name="name">records.location.view.search</field>
-            <field name="model">records.location</field>
+            <field name="model">stock.location</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', '%s'), ('description', 'ilike', '%s')]" />
@@ -220,7 +220,7 @@
         <record id="action_records_location" model="ir.actions.act_window">
             <!-- LEGACY ACTION: Kept for backward compatibility -->
             <field name="name">Storage Locations (Legacy)</field>
-            <field name="res_model">records.location</field>
+            <field name="res_model">stock.location</field>
             <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="records_location_view_search" />
             <field name="context">{
@@ -244,7 +244,7 @@
         <record id="action_records_location_legacy" model="ir.actions.act_window">
             <!-- OPTIMIZATION: Model records.location has state field - consider using default search filters -->
             <field name="name">Storage Locations</field>
-            <field name="res_model">records.location</field>
+            <field name="res_model">stock.location</field>
             <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="records_location_view_search" />
             <field name="context">{
@@ -306,7 +306,7 @@
         <!-- Technical tree view to satisfy default tree view resolution in x2many and tests -->
         <record id="records_location_view_tree_technical" model="ir.ui.view">
             <field name="name">records.location.view.tree.technical</field>
-            <field name="model">records.location</field>
+            <field name="model">stock.location</field>
             <field name="priority" eval="0"/>
             <field name="arch" type="xml">
                 <list string="Locations (Technical)">

@@ -63,12 +63,12 @@
     </template>
 
     <record id="action_report_location" model="ir.actions.report">
-        <field name="name">Location Report</field>
-        <field name="model">records.location</field>
+        <field name="name">Stock Location Report</field>
+        <field name="model">stock.location</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">records_management.report_location</field>
         <field name="report_file">records_management.report_location</field>
-        <field name="binding_model_id" ref="records_management.model_records_location"/>
+        <field name="binding_model_id" ref="stock.model_stock_location"/>
         <field name="binding_type">report</field>
     </record>
     </data>

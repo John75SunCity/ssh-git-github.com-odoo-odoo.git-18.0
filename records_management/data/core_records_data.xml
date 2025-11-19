@@ -14,12 +14,6 @@
             <field name="info">Records Document Management</field>
         </record>
 
-        <record id="model_records_location" model="ir.model">
-            <field name="model">records.location</field>
-            <field name="name">Records Location</field>
-            <field name="info">Records Location Management</field>
-        </record>
-
         <!-- Shredding Service Models -->
         <record id="model_shredding_service" model="ir.model">
             <field name="model">shredding.service</field>

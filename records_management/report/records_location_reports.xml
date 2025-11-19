@@ -2,13 +2,13 @@
 <odoo>
     <data>
 <record id="report_records_location" model="ir.actions.report">
-        <field name="name">Records Location</field>
-        <field name="model">records.location</field>
+        <field name="name">Stock Location (Records)</field>
+        <field name="model">stock.location</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_records_location_view</field>
         <field name="report_file">records_management.report_records_location</field>
-        <field name="print_report_name">"(Records Location Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="records_management.model_records_location"/>
+        <field name="print_report_name">"(Stock Location Report) %s" % (object.name or 'N/A')</field>
+        <field name="binding_model_id" ref="stock.model_stock_location"/>
         <field name="binding_type">report</field>
     </record>
 
