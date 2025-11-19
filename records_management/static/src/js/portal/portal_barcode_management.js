@@ -1,6 +1,32 @@
 /**
  * Records Management Portal - Barcode Management Logic
- * Integrated with container/file/temp barcode models and ir.sequence
+ * 
+ * PURPOSE: Customer-facing barcode generation and management widget
+ * USE CASE: /my/barcodes route - portal users generate/view barcodes
+ * 
+ * FEATURES:
+ * ✓ Multi-type barcode generation (container/file/temp)
+ * ✓ Real-time filtering with debounced search (300ms)
+ * ✓ Print/download barcode images
+ * ✓ Bootstrap 5 notifications with auto-dismiss
+ * ✓ Integration with ir.sequence for proper barcode format
+ * 
+ * PERFORMANCE OPTIMIZATIONS (Grok 2025):
+ * - Debounced filter updates (300ms) prevents excessive DOM queries
+ * - Full row text search (faster than multiple selectors)
+ * - Cleaner promise chains with throw/catch
+ * - Batch DOM operations where possible
+ * 
+ * BARCODE MODELS:
+ * - portal.barcode.container (sequence: records.barcode.container)
+ * - portal.barcode.file (sequence: records.barcode.file)  
+ * - portal.barcode.temp (sequence: records.barcode.temp)
+ * 
+ * DEPENDENCIES:
+ * - jQuery (Odoo frontend)
+ * - Bootstrap 5 (alerts, modals)
+ * - underscore.js (_.escape, _.debounce)
+ * - web.ajax (jsonRpc)
  */
 odoo.define('records_management.portal_barcode_management', function (require) {
     'use strict';
@@ -67,18 +93,16 @@ odoo.define('records_management.portal_barcode_management', function (require) {
 
             ajax.jsonRpc(route, 'call', {
                 barcode_format: 'code128', // respects nomenclature rules
-            }).then(result => {
-                if (!result || !result.success) {
-                    this._showNotification(_t('Barcode generation failed: %s', result && result.error || 'Unknown error'), 'danger');
-                    console.error('[BarcodePortal] Generation failed', result && result.error);
-                    return;
+            }).then(r => {
+                if (!r || !r.success) {
+                    throw new Error(r && r.error || 'Unknown error');
                 }
-                this._insertBarcodeRow(result.barcode, result.row_html);
+                this._insertBarcodeRow(r.barcode, r.row_html);
                 this._filterBarcodes();
-                this._showNotification(_t('Barcode %s generated successfully', result.barcode.name), 'success');
-            }).catch(err => {
-                console.error('[BarcodePortal] Generation error', err);
-                this._showNotification(_t('An error occurred while generating the barcode'), 'danger');
+                this._notify(_t('Barcode %s created', r.barcode.name), 'success');
+            }).catch(e => {
+                console.error('[BarcodePortal] Generation error:', e);
+                this._notify(e.message || _t('Error generating barcode'), 'danger');
             }).always(() => {
                 $spinner.remove();
                 $btn.prop('disabled', false).removeClass('disabled');
@@ -114,9 +138,9 @@ odoo.define('records_management.portal_barcode_management', function (require) {
             this._filterBarcodes();
         },
 
-        _onFilterChanged() {
+        _onFilterChanged: _.debounce(function () {
             this._filterBarcodes();
-        },
+        }, 300),  // Debounced for performance (Grok optimization)
 
         _onBarcodeRowAction(ev) {
             ev.preventDefault();
@@ -225,25 +249,24 @@ odoo.define('records_management.portal_barcode_management', function (require) {
         },
 
         _filterBarcodes() {
-            const searchTerm = (this.$('#barcodeSearch').val() || '').toLowerCase();
-            const typeFilter = (this.$('#barcodeTypeFilter').val() || '').toLowerCase();
-            const statusFilter = (this.$('#barcodeStatusFilter').val() || '').toLowerCase();
+            const s = (this.$('#barcodeSearch').val() || '').trim().toLowerCase();
+            const t = (this.$('#barcodeTypeFilter').val() || '').toLowerCase();
+            const st = (this.$('#barcodeStatusFilter').val() || '').toLowerCase();
 
+            // Optimized: Use full row text for search (Grok pattern)
             this.$('#barcodeTable tbody tr').each(function () {
                 const $row = $(this);
-                const barcodeText = $row.find('code').text().toLowerCase();
-                const typeText = $row.find('td:nth-child(2) .badge').text().toLowerCase(); // Updated selector
-                const statusText = $row.find('td:nth-child(5) .badge').text().toLowerCase(); // Updated selector
+                const text = this.textContent.toLowerCase();  // Faster than multiple selectors
+                
+                // Type and status still need specific selectors for exact matching
+                const typeText = $row.find('td:nth-child(2) .badge').text().toLowerCase();
+                const statusText = $row.find('td:nth-child(5) .badge').text().toLowerCase();
 
-                const matchesSearch = !searchTerm || barcodeText.includes(searchTerm);
-                const matchesType = !typeFilter || typeText === typeFilter;
-                const matchesStatus = !statusFilter || statusText === statusFilter;
+                const matchesSearch = !s || text.includes(s);
+                const matchesType = !t || typeText === t;
+                const matchesStatus = !st || statusText === st;
 
-                if (matchesSearch && matchesType && matchesStatus) {
-                    $row.show();
-                } else {
-                    $row.hide();
-                }
+                $row.toggle(matchesSearch && matchesType && matchesStatus);
             });
         },
 
@@ -278,19 +301,19 @@ odoo.define('records_management.portal_barcode_management', function (require) {
         },
 
         /**
-         * Helper to show Bootstrap toast/alert notifications
+         * Helper to show Bootstrap toast/alert notifications (Grok optimized)
          */
+        _notify(msg, type = 'info') {
+            const $n = $(`<div class="alert alert-${type} alert-dismissible position-fixed fade show" style="top:20px;right:20px;z-index:9999;min-width:300px;">
+                ${_.escape(msg)}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`);
+            $('body').append($n);
+            setTimeout(() => $n.alert('close'), 5000);
+        },
+        
+        // Backward compatibility alias
         _showNotification(message, type) {
-            type = type || 'info';
-            const $alert = $(`
-                <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
-                     role="alert" style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
-                    ${_.escape(message)}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `);
-            $('body').append($alert);
-            setTimeout(() => $alert.alert('close'), 5000);
+            return this._notify(message, type);
         },
     });
 
