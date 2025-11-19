@@ -3,8 +3,8 @@ odoo.define('records_management.portal_user_import', function (require) {
 
     // Frontend-compatible implementation
     var _t = function(str) { return str; };
-    var ajax = { 
-        jsonRpc: function(url, method, params) { 
+    var ajax = {
+        jsonRpc: function(url, method, params) {
             return fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -115,7 +115,7 @@ odoo.define('records_management.portal_user_import', function (require) {
 
         parseCSV: function(csvText) {
             var self = this;
-            
+
             try {
                 // Parse CSV with proper handling of quotes and commas
                 var lines = csvText.split('\n');
@@ -125,7 +125,7 @@ odoo.define('records_management.portal_user_import', function (require) {
                 // Validate headers
                 var requiredHeaders = ['name', 'email', 'phone'];
                 var missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
-                
+
                 if (missingHeaders.length > 0) {
                     self.showError(_t('Missing required columns: ') + missingHeaders.join(', '));
                     self.hideLoadingState();
@@ -148,10 +148,10 @@ odoo.define('records_management.portal_user_import', function (require) {
 
                 self.csvData = data;
                 self.totalRows = data.length;
-                
+
                 // Validate data
                 self.validateData();
-                
+
                 // Show preview
                 self.showPreview(headers, data);
                 self.hideLoadingState();
@@ -166,10 +166,10 @@ odoo.define('records_management.portal_user_import', function (require) {
             var result = [];
             var current = '';
             var inQuotes = false;
-            
+
             for (var i = 0; i < line.length; i++) {
                 var char = line[i];
-                
+
                 if (char === '"') {
                     inQuotes = !inQuotes;
                 } else if (char === ',' && !inQuotes) {
@@ -179,7 +179,7 @@ odoo.define('records_management.portal_user_import', function (require) {
                     current += char;
                 }
             }
-            
+
             result.push(current.trim());
             return result;
         },
@@ -231,7 +231,7 @@ odoo.define('records_management.portal_user_import', function (require) {
         showPreview: function(headers, data) {
             var self = this;
             var previewContainer = $('#csv_preview_container');
-            
+
             var html = `
                 <div class="card mt-4">
                     <div class="card-header bg-info text-white">
@@ -256,21 +256,21 @@ odoo.define('records_management.portal_user_import', function (require) {
             data.slice(0, 50).forEach(function(row, index) {
                 var hasError = self.validationErrors.some(e => e.row === index + 2);
                 var rowClass = hasError ? 'table-danger' : 'table-success';
-                
+
                 html += `<tr class="${rowClass}">`;
                 html += `<td>${index + 1}</td>`;
-                
+
                 headers.forEach(function(header) {
                     html += `<td>${self.escapeHtml(row[header] || '')}</td>`;
                 });
-                
+
                 if (hasError) {
                     var errors = self.validationErrors.find(e => e.row === index + 2).errors;
                     html += `<td><span class="badge badge-danger" title="${errors.join(', ')}">Error</span></td>`;
                 } else {
                     html += `<td><span class="badge badge-success">Valid</span></td>`;
                 }
-                
+
                 html += '</tr>';
             });
 
@@ -300,15 +300,15 @@ odoo.define('records_management.portal_user_import', function (require) {
                         <p>${self.validationErrors.length} rows have validation errors. Please fix these issues before importing:</p>
                         <ul class="mb-0">
                 `;
-                
+
                 self.validationErrors.slice(0, 10).forEach(function(error) {
                     html += `<li>Row ${error.row}: ${error.errors.join(', ')}</li>`;
                 });
-                
+
                 if (self.validationErrors.length > 10) {
                     html += `<li>... and ${self.validationErrors.length - 10} more errors</li>`;
                 }
-                
+
                 html += `
                         </ul>
                     </div>
@@ -388,7 +388,7 @@ odoo.define('records_management.portal_user_import', function (require) {
 
         importComplete: function(result) {
             var self = this;
-            
+
             $('#import_progress_modal .modal-body').html(`
                 <div class="text-center">
                     <i class="fa fa-check-circle text-success" style="font-size: 3rem;"></i>
@@ -489,7 +489,7 @@ odoo.define('records_management.portal_user_import', function (require) {
         showLoadingState: function() {
             $('#csv_file_input').prop('disabled', true);
             $('#csv_drop_zone').addClass('loading');
-            
+
             if ($('#loading_spinner').length === 0) {
                 $('#csv_drop_zone').append(`
                     <div id="loading_spinner" class="text-center mt-3">
@@ -515,7 +515,7 @@ odoo.define('records_management.portal_user_import', function (require) {
                     </button>
                 </div>
             `;
-            
+
             $('#error_container').html(alertHtml);
         },
 

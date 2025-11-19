@@ -1,25 +1,25 @@
 /** @odoo-module **/
 /**
  * Customer Portal Diagram View - Backend View Registration (Odoo 18)
- * 
+ *
  * PURPOSE: Registers custom view type for Odoo backend (form/tree/kanban-like)
  * USE CASE: When viewing customer.portal.diagram model records in backend
- * 
+ *
  * ARCHITECTURE (3-File System):
  * 1. THIS FILE (customer_portal_diagram_view.js) - Backend view registration
  * 2. customer_portal_diagram.js - Simplified Odoo 19 component placeholder
  * 3. portal_organization_diagram.js - Frontend portal widget (actual portal usage)
- * 
+ *
  * DEPENDENCIES:
  * - vis.js library (loaded via asset bundle)
  * - AbstractView, AbstractController, AbstractRenderer (Odoo 18 patterns)
- * 
+ *
  * PERFORMANCE OPTIMIZATIONS:
  * - Batch DOM updates for statistics
  * - Optimized canvas export with cleanup
  * - Graceful fallbacks for missing data/libraries
  * - Better error handling with detailed logging
- * 
+ *
  * NOTE: Uses legacy .extend() pattern for Odoo 18 compatibility
  * (OWL Component conversion blocked due to vis.js global dependency)
  */
@@ -121,7 +121,7 @@ const viewRegistry = registry.category("views");
           var edgesStr = record.edge_data.value || "[]";
           var nodes = JSON.parse(nodesStr);
           var edges = JSON.parse(edgesStr);
-          
+
           if (!Array.isArray(nodes) || !Array.isArray(edges)) {
             throw new Error("Invalid data format: expected arrays");
           }
@@ -228,7 +228,7 @@ const viewRegistry = registry.category("views");
           console.warn("[DiagramView] Cannot export: network not initialized");
           return;
         }
-        
+
         try {
           var canvas = this.network.canvas.getContext("2d").canvas;
           var dataURL = canvas.toDataURL("image/png");
