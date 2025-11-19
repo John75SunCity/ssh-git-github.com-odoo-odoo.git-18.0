@@ -54,7 +54,6 @@
         "hr_attendance",
         "iot",
         "hr_payroll",
-        "subscription",
         "planning",
         "rental",
         "appointment",
