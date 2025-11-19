@@ -24,8 +24,30 @@ class KeyRestrictionChecker(models.TransientModel):
     # ==========================================
 
     customer_name = fields.Char(string='Customer Name', help='Start typing customer name')
-    customer_id = fields.Many2one(comodel_name='res.partner', string='Customer',
-                                domain=[('is_company', '=', True)])
+    customer_id = fields.Many2one(
+        comodel_name='res.partner', 
+        string='Customer',
+        domain=[('is_company', '=', True)]
+    )
+    
+    @api.onchange('customer_name')
+    def _onchange_customer_name(self):
+        """Optimized customer search using search_read for lighter queries"""
+        if self.customer_name and len(self.customer_name) >= 3:
+            # Use search_read instead of search for better performance
+            domain = [('is_company', '=', True), ('name', 'ilike', self.customer_name)]
+            customers = self.env['res.partner'].search_read(
+                domain, 
+                ['id', 'name'], 
+                limit=10
+            )
+            if customers:
+                return {
+                    'domain': {
+                        'customer_id': [('id', 'in', [c['id'] for c in customers])]
+                    }
+                }
+        return {}
     bin_identifier = fields.Char(string='Bin Identifier', help='Bin number or identifier')
 
     # ==========================================

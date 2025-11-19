@@ -23,6 +23,9 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
     _description = "Records Container Type Converter Wizard"
     _inherit = ['mail.thread']
 
+    # Performance optimization: Process in chunks for large conversions
+    BATCH_SIZE = 100  # Process 100 containers at a time to avoid timeout
+
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================

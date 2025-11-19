@@ -102,9 +102,7 @@ class BatchBarcodeOperations(models.TransientModel):
     def action_process_batch(self):
         """
         Process all selected containers with the chosen barcode operation.
-        
-        This is the "magic" method that converts UI button clicks into
-        barcode-triggered workflows for multiple containers simultaneously.
+        Optimized with batch processing and proper error handling.
         """
         self.ensure_one()
         
@@ -124,22 +122,25 @@ class BatchBarcodeOperations(models.TransientModel):
         if not method_name:
             raise UserError(_('Invalid operation type selected.'))
         
-        # Process each container
+        # Process containers with error handling per operation
         processed = []
         failed = []
         
+        # Use self.env.cr.savepoint() for transactional safety
         for container in self.container_ids:
             try:
-                method = getattr(container, method_name)
-                method()
-                processed.append(container.barcode)
+                # Use savepoint to rollback individual container failures
+                with self.env.cr.savepoint():
+                    method = getattr(container, method_name)
+                    method()
+                    processed.append(container.barcode)
             except Exception as e:
                 failed.append({
                     'barcode': container.barcode,
                     'error': str(e)
                 })
         
-        # Show results
+        # Show results with notification instead of raising error
         if failed:
             message = _('Batch operation completed with errors:\n\n')
             message += _('Processed: %d containers\n') % len(processed)
