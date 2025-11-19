@@ -39,10 +39,10 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
 
         // Batch action for destruction requests
         window.batchAction = function(action) {
-            var selected = $('.multi-select-table tbody input:checked').map(function() { 
-                return parseInt($(this).val()); 
+            var selected = $('.multi-select-table tbody input:checked').map(function() {
+                return parseInt($(this).val());
             }).get();
-            
+
             if (selected.length === 0) {
                 alert('Please select items first');
                 return;
@@ -96,7 +96,7 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
         window.addTempInventory = function() {
             var type = prompt('Type (box/document/file):');
             if (!type) return;
-            
+
             var desc = prompt('Description:');
             if (!desc) return;
 
@@ -122,10 +122,10 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
 
         // Batch to pickup
         window.batchToPickup = function() {
-            var selected = $('.multi-select-table tbody input:checked').map(function() { 
-                return parseInt($(this).val()); 
+            var selected = $('.multi-select-table tbody input:checked').map(function() {
+                return parseInt($(this).val());
             }).get();
-            
+
             if (selected.length === 0) {
                 alert('Please select items first');
                 return;
@@ -173,12 +173,12 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
         // Checkbox change handler
         $('.multi-select-table tbody input[type="checkbox"]').change(function() {
             updateBatchButtons();
-            
+
             // Update header checkbox state
             var totalCheckboxes = $('.multi-select-table tbody input[type="checkbox"]').length;
             var checkedCheckboxes = $('.multi-select-table tbody input:checked').length;
             var headerCheckbox = $('th input[type="checkbox"]')[0];
-            
+
             if (checkedCheckboxes === 0) {
                 headerCheckbox.indeterminate = false;
                 headerCheckbox.checked = false;
@@ -192,10 +192,10 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
 
         // Initialize batch button states
         updateBatchButtons();
-        
+
         // Setup mobile responsive tables (Grok optimization)
         setupMobileView();
-        
+
         // Initialize Bootstrap tooltips for better UX
         initializeTooltips();
 
@@ -203,7 +203,7 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
         $('.table tr').each(function() {
             var $row = $(this);
             var originalBg = $row.css('background-color');
-            
+
             $row.on('click', 'input[type="checkbox"]', function() {
                 if ($(this).is(':checked')) {
                     $row.addClass('selected-row');
@@ -217,7 +217,7 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
         $('.badge').each(function() {
             var status = $(this).text().toLowerCase();
             $(this).removeClass('badge-secondary');
-            
+
             switch(status) {
                 case 'active':
                     $(this).addClass('badge-success');
@@ -232,7 +232,7 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
                     $(this).addClass('badge-info');
             }
         });
-        
+
         /**
          * Mobile Responsive Tables (from Grok suggestion)
          * Converts tables to card view on mobile devices
@@ -245,9 +245,9 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
                     $('.table').removeClass('mobile-card-view');
                 }
             };
-            
+
             convertTables();
-            
+
             // Debounced resize handler (300ms - Grok pattern)
             let resizeTimeout;
             $(window).on('resize', function() {
@@ -255,7 +255,7 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
                 resizeTimeout = setTimeout(convertTables, 300);
             });
         }
-        
+
         /**
          * Initialize Bootstrap 5 tooltips (from Grok suggestion)
          */
@@ -264,14 +264,14 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
             const tooltipTriggerList = [].slice.call(
                 document.querySelectorAll('[data-bs-toggle="tooltip"]')
             );
-            
+
             if (window.bootstrap && bootstrap.Tooltip) {
                 tooltipTriggerList.map(function (tooltipTriggerEl) {
                     return new bootstrap.Tooltip(tooltipTriggerEl);
                 });
             }
         }
-        
+
         /**
          * Export functionality (from Grok suggestion)
          * Allows exporting inventory data to Excel/CSV
@@ -279,25 +279,25 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
         window.exportInventory = function(format) {
             format = format || 'xlsx';
             const validFormats = ['xlsx', 'csv', 'pdf'];
-            
+
             if (!validFormats.includes(format)) {
                 alert('Invalid export format. Use: xlsx, csv, or pdf');
                 return;
             }
-            
+
             // Build export URL with current filters
             const searchParam = $('#barcodeSearch').val() || '';
             const typeParam = $('#barcodeTypeFilter').val() || '';
             const statusParam = $('#barcodeStatusFilter').val() || '';
-            
+
             const params = new URLSearchParams();
             if (searchParam) params.append('search', searchParam);
             if (typeParam) params.append('type', typeParam);
             if (statusParam) params.append('status', statusParam);
             params.append('format', format);
-            
+
             const exportUrl = window.location.pathname + '/export?' + params.toString();
-            
+
             // Trigger download
             window.location.href = exportUrl;
         };
