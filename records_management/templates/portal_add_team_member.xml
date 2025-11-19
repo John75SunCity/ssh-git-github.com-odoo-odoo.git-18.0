@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Add Team Member Form Template -->
+        <template id="portal_add_team_member_form" name="Add Team Member">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Add Team Member</t>
+
+                <div class="container py-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <!-- Success Message -->
+                            <t t-if="success">
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="fa fa-check-circle"></i>
+                                    <strong>Success!</strong> Team member added and invitation sent.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            </t>
+
+                            <!-- Header -->
+                            <div class="card shadow-lg mb-4">
+                                <div class="card-header bg-gradient-primary text-white">
+                                    <h2 class="mb-0">
+                                        <i class="fa fa-user-plus"></i> Add Team Member
+                                    </h2>
+                                    <p class="mb-0 mt-2 opacity-75">Invite a new team member to access your records management portal</p>
+                                </div>
+
+                                <div class="card-body">
+                                    <!-- Info Banner -->
+                                    <div class="alert alert-info mb-4">
+                                        <i class="fa fa-info-circle"></i>
+                                        <strong>Note:</strong> The new user will receive an email invitation to create their portal account.
+                                        They will have access based on the permission level you assign.
+                                    </div>
+
+                                    <!-- Add Team Member Form -->
+                                    <form action="/my/organization/add-user" method="POST" class="needs-validation" novalidate="true">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                        <!-- Contact Information Section -->
+                                        <h5 class="border-bottom pb-2 mb-3">
+                                            <i class="fa fa-id-card"></i> Contact Information
+                                        </h5>
+
+                                        <div class="row g-3 mb-4">
+                                            <div class="col-md-6">
+                                                <label for="name" class="form-label">
+                                                    Full Name <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" 
+                                                       class="form-control" 
+                                                       id="name" 
+                                                       name="name" 
+                                                       required="required"
+                                                       placeholder="e.g., John Smith"/>
+                                                <div class="invalid-feedback">
+                                                    Please provide the person's full name.
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="email" class="form-label">
+                                                    Email Address <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="email" 
+                                                       class="form-control" 
+                                                       id="email" 
+                                                       name="email" 
+                                                       required="required"
+                                                       placeholder="john.smith@example.com"/>
+                                                <div class="invalid-feedback">
+                                                    Please provide a valid email address.
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="phone" class="form-label">
+                                                    Phone Number
+                                                </label>
+                                                <input type="tel" 
+                                                       class="form-control" 
+                                                       id="phone" 
+                                                       name="phone"
+                                                       placeholder="(555) 123-4567"/>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="job_title" class="form-label">
+                                                    Job Title / Position
+                                                </label>
+                                                <input type="text" 
+                                                       class="form-control" 
+                                                       id="job_title" 
+                                                       name="job_title"
+                                                       placeholder="e.g., Department Manager"/>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="department_id" class="form-label">
+                                                    Department (Optional)
+                                                </label>
+                                                <select class="form-select" id="department_id" name="department_id">
+                                                    <option value="">No Department</option>
+                                                    <t t-foreach="departments" t-as="dept">
+                                                        <option t-att-value="dept.id" t-esc="dept.name"/>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Access Level Section -->
+                                        <h5 class="border-bottom pb-2 mb-3">
+                                            <i class="fa fa-shield-alt"></i> Portal Access Level
+                                        </h5>
+
+                                        <div class="row g-3 mb-4">
+                                            <div class="col-12">
+                                                <label for="portal_access_level" class="form-label">
+                                                    Permission Level <span class="text-danger">*</span>
+                                                </label>
+                                                <select class="form-select" 
+                                                        id="portal_access_level" 
+                                                        name="portal_access_level" 
+                                                        required="required">
+                                                    <option value="company_admin">
+                                                        🔑 Company Administrator - Full access, can manage users and all company data
+                                                    </option>
+                                                    <option value="department_admin">
+                                                        📊 Department Administrator - Manage department records and users
+                                                    </option>
+                                                    <option value="department_user" selected="selected">
+                                                        👤 Department User - Create and manage own records, request services
+                                                    </option>
+                                                    <option value="readonly">
+                                                        👁️ Read-Only Employee - View company records only
+                                                    </option>
+                                                </select>
+
+                                                <!-- Permission Level Descriptions -->
+                                                <div class="mt-3">
+                                                    <div class="card bg-light border-0">
+                                                        <div class="card-body p-3">
+                                                            <h6 class="card-subtitle mb-2 text-muted">
+                                                                <i class="fa fa-question-circle"></i> What can each level do?
+                                                            </h6>
+                                                            <ul class="small mb-0">
+                                                                <li><strong>Company Admin:</strong> Full control - add users, create/edit containers, request all services, view all reports</li>
+                                                                <li><strong>Department Admin:</strong> Manage department data, add department users, approve requests</li>
+                                                                <li><strong>Department User:</strong> Add containers/files/documents, submit service requests, view own data</li>
+                                                                <li><strong>Read-Only:</strong> View company inventory and documents, no create/edit permissions</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action Buttons -->
+                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
+                                            <a href="/my/organization" class="btn btn-lg btn-outline-secondary">
+                                                <i class="fa fa-times"></i> Cancel
+                                            </a>
+                                            <button type="submit" class="btn btn-lg btn-success">
+                                                <i class="fa fa-paper-plane"></i> Send Invitation
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Help Section -->
+                            <div class="card border-info">
+                                <div class="card-header bg-info bg-opacity-10 border-info">
+                                    <h6 class="mb-0">
+                                        <i class="fa fa-question-circle"></i> Need Help?
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-2"><strong>What happens after I send the invitation?</strong></p>
+                                    <ol class="small mb-0">
+                                        <li>The new user will receive an email with a link to create their portal account</li>
+                                        <li>They'll set their own password and complete their profile</li>
+                                        <li>Once activated, they can log in with the permissions you assigned</li>
+                                        <li>You'll see them in your organization chart immediately</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Validation Script -->
+                <script type="text/javascript">
+                    (function() {
+                        'use strict';
+                        // Bootstrap form validation
+                        var forms = document.querySelectorAll('.needs-validation');
+                        Array.prototype.slice.call(forms).forEach(function(form) {
+                            form.addEventListener('submit', function(event) {
+                                if (!form.checkValidity()) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                }
+                                form.classList.add('was-validated');
+                            }, false);
+                        });
+                    })();
+                </script>
+
+                <!-- Custom Styling -->
+                <style>
+                    .bg-gradient-primary {
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    }
+                    .form-label {
+                        font-weight: 500;
+                        margin-bottom: 0.5rem;
+                    }
+                    .text-danger {
+                        color: #dc3545;
+                    }
+                </style>
+            </t>
+        </template>
+
+    </data>
+</odoo>

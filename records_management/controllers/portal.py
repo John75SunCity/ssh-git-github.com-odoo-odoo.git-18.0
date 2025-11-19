@@ -5925,6 +5925,136 @@ class RecordsManagementController(http.Controller):
             'diagram': DiagramData(),
             'user': request.env.user,
             'partner': partner,
+            'can_add_users': request.env.user.has_group('records_management.group_portal_company_admin'),
         }
 
         return request.render("records_management.portal_organization_diagram", values)
+
+    @http.route(['/my/organization/add-user'], type='http', auth='user', website=True, methods=['GET', 'POST'], csrf=True)
+    def portal_add_team_member(self, **post):
+        """
+        Add Team Member - Company Admin can add new contacts and assign portal access
+        Allows portal company admins to invite sub-users with different access levels
+        """
+        # Security: Only Company Admins can add users
+        if not request.env.user.has_group('records_management.group_portal_company_admin'):
+            return request.render('records_management.portal_error', {
+                'error_title': _('Unauthorized'),
+                'error_message': _('Only company administrators can add team members.'),
+            })
+
+        partner = request.env.user.partner_id
+        company = partner.commercial_partner_id
+
+        # GET request - show form
+        if request.httprequest.method == 'GET':
+            # Get departments for dropdown
+            departments = request.env['records.department'].sudo().search([
+                ('company_id', '=', company.id)
+            ])
+
+            values = {
+                'page_name': 'add_team_member',
+                'partner': partner,
+                'company': company,
+                'departments': departments,
+                'success': post.get('success'),
+            }
+            return request.render("records_management.portal_add_team_member_form", values)
+
+        # POST request - create contact and send portal invitation
+        try:
+            # Validate required fields
+            name = post.get('name', '').strip()
+            email = post.get('email', '').strip()
+            portal_access_level = post.get('portal_access_level', 'readonly')
+
+            if not name or not email:
+                return request.render('records_management.portal_error', {
+                    'error_title': _('Missing Required Fields'),
+                    'error_message': _('Please provide at least name and email address.'),
+                })
+
+            # Check if email already exists
+            existing_partner = request.env['res.partner'].sudo().search([
+                ('email', '=ilike', email)
+            ], limit=1)
+
+            if existing_partner:
+                return request.render('records_management.portal_error', {
+                    'error_title': _('Email Already Exists'),
+                    'error_message': _('A contact with this email address already exists: %s') % existing_partner.name,
+                })
+
+            # Create contact under the company
+            contact_vals = {
+                'name': name,
+                'email': email,
+                'phone': post.get('phone', '').strip(),
+                'function': post.get('job_title', '').strip(),
+                'parent_id': company.id,  # Link to company
+                'type': 'contact',
+                'company_type': 'person',
+                'is_company': False,
+            }
+
+            # Optional department assignment
+            department_id = post.get('department_id')
+            if department_id:
+                dept = request.env['records.department'].sudo().browse(int(department_id))
+                if dept.company_id.id == company.id:
+                    contact_vals['department_id'] = int(department_id)
+
+            # Create the contact
+            new_contact = request.env['res.partner'].sudo().create(contact_vals)
+
+            # Create portal user with appropriate access level
+            portal_wizard = request.env['portal.wizard'].sudo().create({
+                'partner_ids': [(4, new_contact.id)]
+            })
+
+            # Map portal access level to groups
+            group_mapping = {
+                'company_admin': request.env.ref('records_management.group_portal_company_admin').id,
+                'department_admin': request.env.ref('records_management.group_portal_department_admin').id,
+                'department_user': request.env.ref('records_management.group_portal_department_user').id,
+                'readonly': request.env.ref('records_management.group_portal_readonly_employee').id,
+            }
+
+            # Get the group ID for the selected access level
+            group_id = group_mapping.get(portal_access_level)
+
+            # Grant portal access
+            wizard_user = portal_wizard.user_ids.filtered(lambda u: u.partner_id.id == new_contact.id)
+            if wizard_user:
+                wizard_user.action_grant_access()
+
+                # Assign specific records management group
+                if group_id and wizard_user.partner_id.user_ids:
+                    user = wizard_user.partner_id.user_ids[0]
+                    user.sudo().write({
+                        'groups_id': [(4, group_id)]
+                    })
+
+            # Audit log
+            request.env['naid.audit.log'].sudo().create({
+                'action_type': 'user_invited',
+                'user_id': request.env.user.id,
+                'description': _('Team member %s invited via portal by %s with access level: %s') % (
+                    new_contact.name,
+                    request.env.user.name,
+                    portal_access_level
+                ),
+                'timestamp': datetime.now(),
+            })
+
+            _logger.info(f"Portal user invitation sent: {new_contact.name} ({email}) by {request.env.user.name}")
+
+            return request.redirect('/my/organization?success=user_added&user_name=%s' % new_contact.name)
+
+        except Exception as e:
+            _logger.error(f"Team member invitation failed: {str(e)}", exc_info=True)
+            return request.render('records_management.portal_error', {
+                'error_title': _('Invitation Failed'),
+                'error_message': _('Failed to add team member: %s') % str(e),
+            })

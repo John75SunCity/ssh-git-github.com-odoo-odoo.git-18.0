@@ -16,6 +16,13 @@
                                 Organization Diagram
                             </h1>
                             <div class="btn-toolbar">
+                                <t t-if="can_add_users">
+                                    <div class="btn-group mr-2">
+                                        <a href="/my/organization/add-user" class="btn btn-success">
+                                            <i class="fa fa-user-plus"/> Add Team Member
+                                        </a>
+                                    </div>
+                                </t>
                                 <div class="btn-group mr-2">
                                     <button class="btn btn-outline-primary" id="refresh-diagram">
                                         <i class="fa fa-refresh"/> Refresh
