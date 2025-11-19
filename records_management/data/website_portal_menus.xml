@@ -6,39 +6,39 @@
         <!-- Simplified menu structure to avoid Odoo menu hierarchy conflicts -->
         <!-- ================================================================== -->
 
-        <!-- Main Portal Menu Items (Top Level for Maximum Visibility) -->
+        <!-- Main Portal Menu Items (Under Portal Menu) -->
         <record id="portal_menu_records_inventory" model="website.menu">
             <field name="name">My Inventory</field>
             <field name="url">/my/containers</field>
-            <field name="parent_id" ref="website.main_menu"/>
+            <field name="parent_id" ref="portal.portal_client_menu"/>
             <field name="sequence">10</field>
         </record>
 
         <record id="portal_menu_requests" model="website.menu">
             <field name="name">Service Requests</field>
             <field name="url">/my/requests</field>
-            <field name="parent_id" ref="website.main_menu"/>
+            <field name="parent_id" ref="portal.portal_client_menu"/>
             <field name="sequence">20</field>
         </record>
 
         <record id="portal_menu_documents" model="website.menu">
             <field name="name">My Documents</field>
             <field name="url">/my/documents</field>
-            <field name="parent_id" ref="website.main_menu"/>
+            <field name="parent_id" ref="portal.portal_client_menu"/>
             <field name="sequence">30</field>
         </record>
 
         <record id="portal_menu_invoices" model="website.menu">
             <field name="name">Billing</field>
             <field name="url">/my/invoices</field>
-            <field name="parent_id" ref="website.main_menu"/>
+            <field name="parent_id" ref="portal.portal_client_menu"/>
             <field name="sequence">40</field>
         </record>
 
         <record id="portal_menu_certificates" model="website.menu">
             <field name="name">Certificates</field>
             <field name="url">/my/certificates</field>
-            <field name="parent_id" ref="website.main_menu"/>
+            <field name="parent_id" ref="portal.portal_client_menu"/>
             <field name="sequence">50</field>
         </record>
 
@@ -65,19 +65,19 @@
             <field name="sequence">10</field>
         </record>
 
-        <!-- Help & Support (Top Level) -->
+        <!-- Help & Support (Under Portal Menu) -->
         <record id="portal_menu_help" model="website.menu">
             <field name="name">Help &amp; Support</field>
             <field name="url">/my/feedback</field>
-            <field name="parent_id" ref="website.main_menu"/>
+            <field name="parent_id" ref="portal.portal_client_menu"/>
             <field name="sequence">90</field>
         </record>
 
-        <!-- Contact (Top Level) -->
+        <!-- Contact (Under Portal Menu) -->
         <record id="portal_menu_contact" model="website.menu">
             <field name="name">Contact Us</field>
             <field name="url">/contactus</field>
-            <field name="parent_id" ref="website.main_menu"/>
+            <field name="parent_id" ref="portal.portal_client_menu"/>
             <field name="sequence">80</field>
         </record>
 
