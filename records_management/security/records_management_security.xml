@@ -65,6 +65,19 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
             <field name="comment">Can enable/disable all rules for anyone below them. Full control over delegation and settings.</field>
         </record>
 
+        <!-- NEW: Single group that includes ALL portal tiers - used everywhere for cleaner code -->
+        <record id="group_portal_all_tiers" model="res.groups">
+            <field name="name">Records Management - All Portal Users (Technical)</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+            <field name="implied_ids" eval="[
+                (4, ref('records_management.group_portal_company_admin')),
+                (4, ref('records_management.group_portal_department_admin')),
+                (4, ref('records_management.group_portal_department_user')),
+                (4, ref('records_management.group_portal_readonly_employee'))
+            ]"/>
+            <field name="comment">Technical group that automatically includes all portal access tiers. Use this in rules instead of listing all 4 groups individually.</field>
+        </record>
+
         <!-- Internal Portal Configurator: internal-only helper group that can view portal-scoped data exactly as a company admin portal user would.
              Not assigned to actual portal users; used for support/impersonation & configuration validation.
              Positioned after portal tier groups so its implied_ids resolves (company admin defined above). -->
@@ -96,6 +109,44 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
         <record id="group_naid_destruction_operator" model="res.groups">
             <field name="name">NAID Destruction Operator</field>
             <field name="implied_ids" eval="[(4, ref('records_management.group_records_user'))]"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- INTERNAL USERS FULL ACCESS RULES (Priority Rules)            -->
+        <!-- Internal users see EVERYTHING - no restrictions               -->
+        <!-- ============================================================ -->
+
+        <record id="rule_internal_all_containers" model="ir.rule">
+            <field name="name">Containers: Internal Full Access</field>
+            <field name="model_id" ref="records_management.model_records_container"/>
+            <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_internal_all_documents" model="ir.rule">
+            <field name="name">Documents: Internal Full Access</field>
+            <field name="model_id" ref="records_management.model_records_document"/>
+            <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_internal_all_portal_requests" model="ir.rule">
+            <field name="name">Portal Requests: Internal Full Access</field>
+            <field name="model_id" ref="records_management.model_portal_request"/>
+            <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
         </record>
 
         <!-- Access rules for models (excerpt; add all from ir.model.access.csv) -->

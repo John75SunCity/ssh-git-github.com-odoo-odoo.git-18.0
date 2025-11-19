@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <!-- Portal Record Rules for Financial/Rate Models -->
+        <!-- Portal Record Rules for Financial/Rate Models (Optimized) -->
         <record id="customer_negotiated_rate_rule_portal" model="ir.rule">
-            <field name="name">Customer Negotiated Rate Portal Rule</field>
+            <field name="name">Customer Negotiated Rate - Portal</field>
             <field name="model_id" ref="model_customer_negotiated_rate"/>
-            <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin')), (4, ref('records_management.group_portal_department_admin')), (4, ref('records_management.group_portal_department_user')), (4, ref('records_management.group_portal_readonly_employee'))]"/>
-            <field name="domain_force">['|', ('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id), ('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_all_tiers'))]"/>
+            <field name="domain_force">[('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id)]</field>
         </record>
-
-        <!-- Removed Billing Config portal rule: model 'records.billing.config' is internal-only (menu restricted to records_management.group_records_manager). -->
     </data>
 </odoo>

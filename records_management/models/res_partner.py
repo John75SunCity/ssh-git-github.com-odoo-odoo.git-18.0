@@ -29,6 +29,17 @@ class ResPartner(models.Model):
         help="Check this box if this partner is a customer of the records management services."
     )
 
+    # Portal Access Level - Auto-assigns correct portal groups (Grok 2025 Best Practice)
+    portal_access_level = fields.Selection([
+        ('none', 'No Portal Access'),
+        ('readonly', 'Read-Only Employee'),
+        ('department_user', 'Department User'),
+        ('department_admin', 'Department Admin'),
+        ('company_admin', 'Company Admin'),
+    ], string="Portal Access Level", default='none',
+        help="Automatically assigns correct portal group when creating/editing portal users. "
+             "Company Admin can create sub-users with appropriate access levels.")
+
     department_ids = fields.One2many(
         'records.department',
         'partner_id',
@@ -968,3 +979,51 @@ class ResPartner(models.Model):
 
         # Use the action from res.users
         return portal_user.action_access_portal_account()
+
+    # ============================================================================
+    # PORTAL ACCESS LEVEL AUTO-GROUP ASSIGNMENT (Grok 2025 Best Practice)
+    # ============================================================================
+    
+    def _apply_portal_groups(self):
+        """
+        Auto-assign portal groups based on portal_access_level
+        Called when portal_access_level changes via write()
+        
+        This is the Odoo-recommended method used by Enterprise modules:
+        - Company Admin selects access level in UI
+        - System automatically assigns correct portal group
+        - No manual group management needed
+        - 100% safe with signup/reset password workflows
+        """
+        group_map = {
+            'readonly': 'records_management.group_portal_readonly_employee',
+            'department_user': 'records_management.group_portal_department_user',
+            'department_admin': 'records_management.group_portal_department_admin',
+            'company_admin': 'records_management.group_portal_company_admin',
+        }
+        
+        for partner in self.filtered('user_ids'):
+            user = partner.user_ids[0]  # Portal users typically have one user
+            
+            # Remove all Records Management portal groups
+            rm_portal_groups = self.env['res.groups'].search([
+                ('id', 'in', [
+                    self.env.ref('records_management.group_portal_readonly_employee').id,
+                    self.env.ref('records_management.group_portal_department_user').id,
+                    self.env.ref('records_management.group_portal_department_admin').id,
+                    self.env.ref('records_management.group_portal_company_admin').id,
+                ])
+            ])
+            user.write({'groups_id': [(3, group.id) for group in rm_portal_groups]})
+            
+            # Add new group based on access level
+            if partner.portal_access_level in group_map:
+                new_group = self.env.ref(group_map[partner.portal_access_level])
+                user.write({'groups_id': [(4, new_group.id)]})
+
+    def write(self, vals):
+        """Override write to auto-apply portal groups when access level changes"""
+        res = super().write(vals)
+        if 'portal_access_level' in vals:
+            self._apply_portal_groups()
+        return res

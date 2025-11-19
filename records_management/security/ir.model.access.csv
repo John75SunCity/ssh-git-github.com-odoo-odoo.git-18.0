@@ -724,22 +724,6 @@ access_destruction_item_dept_admin,destruction_item_dept_admin,model_destruction
 access_destruction_item_dept_user,destruction_item_dept_user,model_destruction_item,records_management.group_portal_department_user,1,1,1,0
 access_destruction_item_readonly,destruction_item_readonly,model_destruction_item,records_management.group_portal_readonly_employee,1,0,0,0
 access_ir_sequence_portal_user,ir.sequence portal user,base.model_ir_sequence,records_management.group_records_user,1,0,0,0
-access_slide_channel_portal,slide.channel.portal,website_slides.model_slide_channel,base.group_portal,1,0,0,0
-access_slide_channel_company_admin,slide.channel.company.admin,website_slides.model_slide_channel,records_management.group_portal_company_admin,1,0,0,0
-access_slide_channel_dept_admin,slide.channel.dept.admin,website_slides.model_slide_channel,records_management.group_portal_department_admin,1,0,0,0
-access_slide_channel_dept_user,slide.channel.dept.user,website_slides.model_slide_channel,records_management.group_portal_department_user,1,0,0,0
-access_slide_channel_readonly,slide.channel.readonly,website_slides.model_slide_channel,records_management.group_portal_readonly_employee,1,0,0,0
-access_slide_slide_portal,slide.slide.portal,website_slides.model_slide_slide,base.group_portal,1,0,0,0
-access_slide_slide_company_admin,slide.slide.company.admin,website_slides.model_slide_slide,records_management.group_portal_company_admin,1,0,0,0
-access_slide_slide_dept_admin,slide.slide.dept.admin,website_slides.model_slide_slide,records_management.group_portal_department_admin,1,0,0,0
-access_slide_slide_dept_user,slide.slide.dept.user,website_slides.model_slide_slide,records_management.group_portal_department_user,1,0,0,0
-access_slide_slide_readonly,slide.slide.readonly,website_slides.model_slide_slide,records_management.group_portal_readonly_employee,1,0,0,0
-access_slide_channel_user,slide.channel.user,website_slides.model_slide_channel,records_management.group_records_user,1,1,1,0
-access_slide_channel_manager,slide.channel.manager,website_slides.model_slide_channel,records_management.group_records_manager,1,1,1,1
-access_slide_channel_admin,slide.channel.admin,website_slides.model_slide_channel,records_management.group_records_admin,1,1,1,1
-access_slide_slide_user,slide.slide.user,website_slides.model_slide_slide,records_management.group_records_user,1,1,1,0
-access_slide_slide_manager,slide.slide.manager,website_slides.model_slide_slide,records_management.group_records_manager,1,1,1,1
-access_slide_slide_admin,slide.slide.admin,website_slides.model_slide_slide,records_management.group_records_admin,1,1,1,1
 access_ir_ui_view_portal,ir.ui.view portal,base.model_ir_ui_view,base.group_portal,1,0,0,0
 access_ir_ui_view_company_admin,ir.ui.view company admin,base.model_ir_ui_view,records_management.group_portal_company_admin,1,0,0,0
 access_ir_ui_view_dept_admin,ir.ui.view dept admin,base.model_ir_ui_view,records_management.group_portal_department_admin,1,0,0,0

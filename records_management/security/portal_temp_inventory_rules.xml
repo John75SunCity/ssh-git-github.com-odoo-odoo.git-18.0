@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <!-- Portal Record Rules for Temp Inventory Visibility
-             Ensures portal users only see temporary inventory locations belonging to their company.
-             This enables data isolation so customers can only see/manage their own temp locations,
-             not other customers' temp locations.
+        <!-- Portal Record Rules for Temp Inventory Visibility (Optimized)
+             Portal users only see temp inventory for their commercial partner.
         -->
         <record id="temp_inventory_rule_portal" model="ir.rule">
-            <field name="name">Temp Inventory Portal Rule</field>
+            <field name="name">Temp Inventory - Portal</field>
             <field name="model_id" ref="model_temp_inventory"/>
-            <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin')), (4, ref('records_management.group_portal_department_admin')), (4, ref('records_management.group_portal_department_user')), (4, ref('records_management.group_portal_readonly_employee'))]"/>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_all_tiers'))]"/>
             <field name="domain_force">[('partner_id.commercial_partner_id', '=', user.partner_id.commercial_partner_id.id)]</field>
         </record>
 
         <!-- Internal users see ALL temp inventory locations (no restriction) -->
-        <!-- This allows internal staff to create and manage temp locations for any customer -->
+        <!-- Note: This rule is redundant if rule_internal_all_containers exists in main security file -->
         <record id="temp_inventory_rule_internal" model="ir.rule">
-            <field name="name">Temp Inventory Internal Rule</field>
+            <field name="name">Temp Inventory - Internal Full Access</field>
             <field name="model_id" ref="model_temp_inventory"/>
-            <field name="groups" eval="[(4, ref('records_management.group_records_user')), (4, ref('records_management.group_records_manager'))]"/>
+            <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
             <field name="domain_force">[(1, '=', 1)]</field>
         </record>
     </data>
