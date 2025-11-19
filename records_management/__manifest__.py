@@ -463,6 +463,7 @@
         "views/work_order_coordinator_views.xml",
         "views/workflow_visualization_manager_views.xml",
         "views/records_container_views.xml",
+        "views/records_container_calendar_view.xml",
         "views/records_container_field_label_helper_views.xml",
         "views/records_billing_config_views.xml",
         "views/portal_request_views.xml",

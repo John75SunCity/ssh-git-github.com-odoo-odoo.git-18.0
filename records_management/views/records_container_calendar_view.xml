@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Calendar View for Destruction Dates - Visualization for Retention Management -->
+    <record id="view_records_container_calendar_destruction" model="ir.ui.view">
+        <field name="name">records.container.calendar.destruction</field>
+        <field name="model">records.container</field>
+        <field name="arch" type="xml">
+            <calendar string="Destruction Schedule" 
+                      date_start="destruction_scheduled_date" 
+                      color="partner_id"
+                      mode="month"
+                      event_open_popup="true"
+                      quick_create="false">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="barcode"/>
+                <field name="retention_policy_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Calendar View for Storage Start Dates -->
+    <record id="view_records_container_calendar_storage" model="ir.ui.view">
+        <field name="name">records.container.calendar.storage</field>
+        <field name="model">records.container</field>
+        <field name="arch" type="xml">
+            <calendar string="Storage Timeline" 
+                      date_start="storage_start_date" 
+                      color="state"
+                      mode="month"
+                      event_open_popup="true"
+                      quick_create="false">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="location_id"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Add calendar to action window modes -->
+    <record id="action_records_container_calendar" model="ir.actions.act_window">
+        <field name="name">Container Schedule</field>
+        <field name="res_model">records.container</field>
+        <field name="view_mode">calendar,tree,kanban,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No containers scheduled
+            </p>
+            <p>
+                View containers by their destruction schedule or storage timeline.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu item for Calendar View -->
+    <menuitem id="menu_records_container_calendar"
+              name="Container Calendar"
+              parent="menu_records_management_root"
+              action="action_records_container_calendar"
+              sequence="25"
+              groups="records_management.group_records_user"/>
+
+</odoo>
