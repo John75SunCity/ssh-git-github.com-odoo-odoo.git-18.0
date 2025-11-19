@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
+        <!-- Portal Feature Pack Toggle
+             Note: portal_feature_pack_enabled default is set in core_configurator_data.xml
+             to avoid conflicts. This record only manages portal-specific settings. -->
         <record id="config_portal_feature_pack" model="rm.module.configurator">
             <field name="name">Portal Feature Pack</field>
             <field name="config_key">portal.feature.pack</field>
@@ -8,7 +11,7 @@
             <field name="category">portal</field>
             <field name="sequence">5</field>
             <field name="description">Enable the complete Records Management customer portal experience, including dashboard, inventory, and service request menus.</field>
-            <field name="portal_feature_pack_enabled">True</field>
+            <!-- portal_feature_pack_enabled removed - controlled by core config -->
             <field name="work_orders_portal_enabled">True</field>
         </record>
 

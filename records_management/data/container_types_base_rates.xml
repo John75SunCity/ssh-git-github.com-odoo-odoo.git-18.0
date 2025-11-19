@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
+<!-- noupdate="0" - Container type rates should be updatable on module upgrade.
+     Allows pricing adjustments without requiring XML edits. -->
+<odoo noupdate="0">
     <data>
         <!-- ============================================ -->
         <!-- STANDARD CONTAINER TYPES - BASE RATES -->

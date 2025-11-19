@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
+<!-- noupdate="0" - Product pricing should be updatable on module upgrade.
+     Real pricing typically comes from pricelists; list_price="0.00" is intentional
+     for weight-based billing products. -->
+<odoo noupdate="0">
     <data>
         <!-- Paper baling and recycling products -->
         <!-- NOTE: These are default/seed prices - actual pricing should be configured via Product Management or Pricelists -->

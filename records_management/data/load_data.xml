@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
+<!-- noupdate="0" - Prices and rates should be updatable on module upgrade.
+     Admins can adjust pricing via UI without requiring XML edits. -->
+<odoo noupdate="0">
     <data>
         <!--
           Sequence for Load Number is non-updatable.
@@ -24,6 +26,10 @@
             These products are used when creating customer invoices for the loads.
             We use 'service' because we are not tracking stock of these items in the
             traditional sense; their quantity is determined by the weight on the load.
+            
+            PRICING NOTE: list_price values shown are examples.
+            Real pricing should be configured via pricelists or updated in UI.
+            Weight-based billing uses actual scale weights for invoice line quantities.
         -->
         <record id="product_paper_wht" model="product.product">
             <field name="name">WHT Paper Scrap</field>

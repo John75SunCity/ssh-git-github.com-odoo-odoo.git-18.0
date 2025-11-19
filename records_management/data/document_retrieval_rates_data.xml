@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
+<!-- noupdate="0" - Retrieval rates should be updatable on module upgrade
+     so admins can adjust pricing without XML edits. -->
+<odoo noupdate="0">
     <data>
         <!-- Document Retrieval Rates Data -->
         <!-- This file contains default rates for document retrieval services -->

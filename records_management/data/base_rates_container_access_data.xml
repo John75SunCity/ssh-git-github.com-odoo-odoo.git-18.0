@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
+<!-- noupdate="0" - Base rates for container access should be updatable
+     to allow admins to adjust pricing via upgrade or UI changes. -->
+<odoo noupdate="0">
     <data>
         <!-- Container Access/Search Fees -->
         <record id="base_rate_container_access" model="base.rates">

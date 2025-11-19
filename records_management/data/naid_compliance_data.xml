@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
+<!-- noupdate="0" - NAID compliance checklists and requirements should be updatable
+     to reflect evolving compliance standards and regulatory changes. -->
+<odoo noupdate="0">
     <data>
         <!-- NAID Chain of Custody Sequence -->
         <record id="seq_naid_chain_custody" model="ir.sequence">
