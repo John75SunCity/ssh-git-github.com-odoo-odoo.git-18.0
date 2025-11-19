@@ -565,7 +565,6 @@
         <!-- Master Data (folder) - MUST BE SEQUENCE 5 -->
         <!-- Storage Locations -->
         <menuitem id="menu_storage_location" name="Storage Locations" parent="menu_master_data" action="action_stock_location_records" sequence="10" groups="records_management.group_records_manager,records_management.group_records_admin" />
-        <menuitem id="menu_storage_location_legacy" name="Storage Locations (Legacy)" parent="menu_master_data" action="action_records_location" sequence="11" groups="records_management.group_records_manager,records_management.group_records_admin" />
         <menuitem id="menu_document_type" name="Document Types" parent="records_management.menu_master_data" action="action_records_document_type" sequence="20" groups="records_management.group_records_manager,records_management.group_records_admin" />
         <menuitem id="menu_records_tag" name="Tags" parent="records_management.menu_master_data" action="action_records_tag_simple" sequence="30" groups="records_management.group_records_manager,records_management.group_records_admin" />
         <menuitem id="menu_document_category" name="Document Categories" parent="records_management.menu_master_data" action="action_records_tag_category" sequence="40" groups="records_management.group_records_manager,records_management.group_records_admin" />
