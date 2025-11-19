@@ -1,8 +1,27 @@
 /** @odoo-module **/
 /**
- * Customer Portal Diagram View (ESM Conversion)
- * Converted from legacy AMD to modern ESM view registration.
- * NOTE: Still uses global vis.js (provided via asset bundle) until refactored.
+ * Customer Portal Diagram View - Backend View Registration (Odoo 18)
+ * 
+ * PURPOSE: Registers custom view type for Odoo backend (form/tree/kanban-like)
+ * USE CASE: When viewing customer.portal.diagram model records in backend
+ * 
+ * ARCHITECTURE (3-File System):
+ * 1. THIS FILE (customer_portal_diagram_view.js) - Backend view registration
+ * 2. customer_portal_diagram.js - Simplified Odoo 19 component placeholder
+ * 3. portal_organization_diagram.js - Frontend portal widget (actual portal usage)
+ * 
+ * DEPENDENCIES:
+ * - vis.js library (loaded via asset bundle)
+ * - AbstractView, AbstractController, AbstractRenderer (Odoo 18 patterns)
+ * 
+ * PERFORMANCE OPTIMIZATIONS:
+ * - Batch DOM updates for statistics
+ * - Optimized canvas export with cleanup
+ * - Graceful fallbacks for missing data/libraries
+ * - Better error handling with detailed logging
+ * 
+ * NOTE: Uses legacy .extend() pattern for Odoo 18 compatibility
+ * (OWL Component conversion blocked due to vis.js global dependency)
  */
 
 import { registry } from "@web/core/registry";
@@ -61,8 +80,10 @@ const viewRegistry = registry.category("views");
 
       _performSearch: function () {
         const searchInput = this.el.querySelector(".o_search_input");
-        this.searchQuery = searchInput ? searchInput.value : "";
-        this.renderer.updateSearch(this.searchQuery);
+        this.searchQuery = searchInput ? searchInput.value.trim() : "";
+        if (this.renderer && typeof this.renderer.updateSearch === 'function') {
+          this.renderer.updateSearch(this.searchQuery);
+        }
       },
     });
 
@@ -90,13 +111,20 @@ const viewRegistry = registry.category("views");
         // Get data from the model
         var record = this.state.data;
         if (!record || !record.node_data || !record.edge_data) {
-          console.error("No diagram data available");
+          console.warn("[DiagramView] No diagram data available - fields may not be loaded");
           return;
         }
 
         try {
-          var nodes = JSON.parse(record.node_data.value || "[]");
-          var edges = JSON.parse(record.edge_data.value || "[]");
+          // Parse JSON with validation
+          var nodesStr = record.node_data.value || "[]";
+          var edgesStr = record.edge_data.value || "[]";
+          var nodes = JSON.parse(nodesStr);
+          var edges = JSON.parse(edgesStr);
+          
+          if (!Array.isArray(nodes) || !Array.isArray(edges)) {
+            throw new Error("Invalid data format: expected arrays");
+          }
 
           var container = this.el.querySelector(".o_diagram_container");
           // Check if vis.js is available
@@ -196,13 +224,22 @@ const viewRegistry = registry.category("views");
       },
 
       exportDiagram: function () {
-        if (this.network) {
-          var canvas = this.network.getCanvas();
-          var dataURL = canvas.toDataURL();
+        if (!this.network) {
+          console.warn("[DiagramView] Cannot export: network not initialized");
+          return;
+        }
+        
+        try {
+          var canvas = this.network.canvas.getContext("2d").canvas;
+          var dataURL = canvas.toDataURL("image/png");
           var link = document.createElement("a");
-          link.download = "organization_diagram.png";
+          link.download = "organization_diagram_" + Date.now() + ".png";
           link.href = dataURL;
+          document.body.appendChild(link);
           link.click();
+          document.body.removeChild(link);
+        } catch (error) {
+          console.error("[DiagramView] Export failed:", error);
         }
       },
     });
