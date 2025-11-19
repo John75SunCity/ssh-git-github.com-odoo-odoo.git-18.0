@@ -5,7 +5,7 @@ class TestRecordsLocation(TransactionCase):
 
     def setUp(self):
         super(TestRecordsLocation, self).setUp()
-        self.location_model = self.env['records.location']
+        self.location_model = self.env['stock.location']
         self.parent_location = self.location_model.create({
             'name': 'Parent Location',
             'code': 'PARENT',
@@ -60,7 +60,7 @@ class TestRecordsLocation(TransactionCase):
     def test_action_view_child_locations(self):
         """Test action_view_child_locations method."""
         action = self.parent_location.action_view_child_locations()
-        self.assertEqual(action['res_model'], 'records.location')
+        self.assertEqual(action['res_model'], 'stock.location')
         self.assertEqual(action['domain'], [('parent_location_id', '=', self.parent_location.id)])
 
     def test_action_activate(self):

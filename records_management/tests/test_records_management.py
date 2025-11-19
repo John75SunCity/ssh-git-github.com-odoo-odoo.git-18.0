@@ -178,7 +178,7 @@ class TestRecordsManagement(TransactionCase):
 
     def setUp(self):
         super(TestRecordsManagement, self).setUp()
-        self.RecordsLocation = self.env['records.location']
+        self.RecordsLocation = self.env['stock.location']
         self.parent_location = self.RecordsLocation.create({
             'name': 'Parent Location',
             'max_capacity': 100,
