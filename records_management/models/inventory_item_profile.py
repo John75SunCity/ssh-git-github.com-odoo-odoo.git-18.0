@@ -32,7 +32,7 @@ class InventoryItemProfile(models.Model):
         ('equipment', 'Equipment'),
         ('other', 'Other')
     ], string='Item Type', default='document', required=True)
-    default_location_id = fields.Many2one(comodel_name='records.location', string='Default Location')
+    default_location_id = fields.Many2one(comodel_name='stock.location', string='Default Location')
     retention_period = fields.Integer(string='Retention Period (Days)', default=365)
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company.id, required=True)

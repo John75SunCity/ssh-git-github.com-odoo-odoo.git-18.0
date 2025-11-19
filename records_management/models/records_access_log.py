@@ -24,7 +24,7 @@ class RecordsAccessLog(models.Model):
     # RELATED OBJECTS
     # ============================================================================
     container_id = fields.Many2one(comodel_name='records.container', string="Container", readonly=True)
-    location_id = fields.Many2one(comodel_name='records.location', string="Location", related='container_id.location_id', store=True, readonly=True)
+    location_id = fields.Many2one(comodel_name='stock.location', string="Location", related='container_id.location_id', store=True, readonly=True)
 
     # ============================================================================
     # ACCESS DETAILS

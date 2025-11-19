@@ -99,7 +99,7 @@ class ContainerDestructionWorkOrder(models.Model):
     pickup_date = fields.Datetime(string='Pickup Date', readonly=True)
     actual_destruction_date = fields.Datetime(string='Actual Destruction Date', readonly=True)
     estimated_duration_hours = fields.Float(string='Estimated Duration (Hours)', compute='_compute_estimated_duration')
-    destruction_facility_id = fields.Many2one(comodel_name='records.location', string='Destruction Facility', domain="[('is_destruction_facility', '=', True)]")
+    destruction_facility_id = fields.Many2one(comodel_name='stock.location', string='Destruction Facility', domain="[('is_destruction_facility', '=', True)]")
     shredding_equipment_id = fields.Many2one(comodel_name='maintenance.equipment', string='Shredding Equipment')
     destruction_method = fields.Selection([
         ('shredding', 'Shredding'),

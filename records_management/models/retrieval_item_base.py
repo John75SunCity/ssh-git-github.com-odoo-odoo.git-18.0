@@ -57,7 +57,7 @@ class RetrievalItemBase(models.AbstractModel):
     # ============================================================================
     # LOCATION AND CONTAINER TRACKING
     # ============================================================================
-    location_id = fields.Many2one(comodel_name='records.location', string='Current Location')
+    location_id = fields.Many2one(comodel_name='stock.location', string='Current Location')
     container_id = fields.Many2one(comodel_name='records.container', string='Container')
     current_location = fields.Char(string='Current Location Description')
 

@@ -69,7 +69,7 @@ class ShreddingServiceBin(models.Model):
     )
 
     last_scan_location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string="Last Scan Location",
         tracking=True,
         help="Location where bin was last scanned/serviced"
@@ -215,7 +215,7 @@ class ShreddingServiceBin(models.Model):
     ], string="Status", default='available', tracking=True)
 
     location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string="Current Location",
         tracking=True,
         help="Current physical location of the bin"

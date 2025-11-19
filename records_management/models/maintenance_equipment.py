@@ -22,7 +22,7 @@ class MaintenanceEquipment(models.Model):
         ('p4', 'P-4'), ('p5', 'P-5'), ('p6', 'P-6'), ('p7', 'P-7')
     ], string='Security Level (DIN 66399)')
 
-    location_id = fields.Many2one(comodel_name='records.location', string='Physical Location')
+    location_id = fields.Many2one(comodel_name='stock.location', string='Physical Location')
 
     # NAID Compliance
     naid_certification_date = fields.Date(string='NAID Certification Date')

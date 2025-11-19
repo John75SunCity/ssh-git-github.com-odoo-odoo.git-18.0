@@ -19,7 +19,7 @@ class RecordsLocationInspection(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    location_id = fields.Many2one(comodel_name='records.location', string="Location", required=True, ondelete='cascade', tracking=True)
+    location_id = fields.Many2one(comodel_name='stock.location', string="Location", required=True, ondelete='cascade', tracking=True)
     inspector_id = fields.Many2one(comodel_name='hr.employee', string='Inspector', tracking=True)
     inspection_line_ids = fields.One2many('records.location.inspection.line', 'inspection_id', string="Inspection Checklist")
 

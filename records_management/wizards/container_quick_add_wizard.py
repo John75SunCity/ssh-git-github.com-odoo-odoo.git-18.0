@@ -102,7 +102,7 @@ class ContainerQuickAddWizard(models.TransientModel):
 
     # Location
     location_id = fields.Many2one(
-        'records.location',
+        'stock.location',
         string='Storage Location',
         help="Where will this container be stored?"
     )

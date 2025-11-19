@@ -239,7 +239,7 @@ class RecordsManagementController(http.Controller):
                 'location_id': int(location_id) if location_id else None,
             },
             'customers': request.env['res.partner'].search([('is_company', '=', True)]),
-            'locations': request.env['records.location'].search([]),
+            'locations': request.env['stock.location'].search([]),
         }
 
         # The context dictionary provides the following keys to the template:
@@ -1816,7 +1816,7 @@ class RecordsManagementController(http.Controller):
         ])
 
         # Get available locations
-        locations = request.env['records.location'].search([
+        locations = request.env['stock.location'].search([
             '|', ('partner_id', '=', partner.id), ('partner_id', '=', False)
         ])
 
@@ -1865,7 +1865,7 @@ class RecordsManagementController(http.Controller):
             departments = request.env['records.department'].sudo().search([
                 ('company_id', '=', partner.id)
             ])
-            locations = request.env['records.location'].sudo().search([
+            locations = request.env['stock.location'].sudo().search([
                 '|', ('partner_id', '=', partner.id), ('partner_id', '=', False)
             ])
             container_types = request.env['records.container.type'].sudo().search([])
@@ -2046,7 +2046,7 @@ class RecordsManagementController(http.Controller):
         ], order='timestamp desc')
 
         # Get available locations for move requests
-        locations = request.env['records.location'].search([
+        locations = request.env['stock.location'].search([
             '|', ('partner_id', '=', partner.id), ('partner_id', '=', False)
         ])
 
@@ -2081,7 +2081,7 @@ class RecordsManagementController(http.Controller):
 
             # Get target location
             new_location_id = int(post.get('new_location_id'))
-            new_location = request.env['records.location'].browse(new_location_id)
+            new_location = request.env['stock.location'].browse(new_location_id)
 
             # Create move request
             move_request = request.env['portal.request'].create({

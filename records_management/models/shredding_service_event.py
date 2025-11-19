@@ -55,7 +55,7 @@ class ShreddingServiceEvent(models.Model):
     )
 
     service_location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string="Service Location",
         help="Specific location where bin was serviced"
     )

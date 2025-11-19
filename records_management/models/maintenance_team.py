@@ -23,7 +23,7 @@ class MaintenanceTeam(models.Model):
     ], string='Priority', default='1')
 
     service_location_ids = fields.Many2many(
-        'records.location',
+        'stock.location',
         'maintenance_team_location_rel',
         'team_id',
         'location_id',

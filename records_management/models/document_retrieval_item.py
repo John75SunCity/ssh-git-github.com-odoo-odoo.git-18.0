@@ -29,7 +29,7 @@ class DocumentRetrievalItem(models.Model):
     ], string='Priority', default='1')
     document_id = fields.Many2one(comodel_name='records.document', string='Document')
     container_id = fields.Many2one(comodel_name='records.container', string='Container')
-    location_id = fields.Many2one(comodel_name='records.location', string='Location')
+    location_id = fields.Many2one(comodel_name='stock.location', string='Location')
     item_type = fields.Selection([
         ('document', 'Document'),
         ('container', 'Container'),
@@ -49,7 +49,7 @@ class DocumentRetrievalItem(models.Model):
         ('not_found', 'Not Found')
     ], string='Status', default='pending', tracking=True)
     current_location = fields.Char(string='Current Location')
-    storage_location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
+    storage_location_id = fields.Many2one(comodel_name='stock.location', string='Storage Location')
     searched_container_ids = fields.Many2many('records.container', 'document_retrieval_searched_container_rel', 'retrieval_item_id', 'container_id', string='Searched Containers')
     containers_accessed_count = fields.Integer(string='Containers Accessed', compute='_compute_containers_accessed_count')
     containers_not_found_count = fields.Integer(string='Containers Not Found', compute='_compute_containers_not_found_count')

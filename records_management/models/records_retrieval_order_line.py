@@ -32,7 +32,7 @@ class RecordsRetrievalOrderLine(models.Model):
         ('other', 'Other')
     ], string='Item Type', default='file')
     container_id = fields.Many2one(comodel_name='records.container', string='Container')
-    location_id = fields.Many2one(comodel_name='records.location', string='Location', related='container_id.location_id', store=True)
+    location_id = fields.Many2one(comodel_name='stock.location', string='Location', related='container_id.location_id', store=True)
     position_note = fields.Char(string='Position / Slot')
     barcode = fields.Char(string='Barcode')
     estimated_pages = fields.Integer(string='Est. Pages', default=0)

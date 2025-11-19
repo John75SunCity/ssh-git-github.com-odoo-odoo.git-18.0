@@ -13,7 +13,7 @@ class RecordsStorageBox(models.Model):
         ('medium', 'Medium'),
         ('large', 'Large'),
     ], string='Box Size', required=True, tracking=True)
-    location_id = fields.Many2one(comodel_name='records.location', string='Location', required=True, tracking=True)
+    location_id = fields.Many2one(comodel_name='stock.location', string='Location', required=True, tracking=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('in_use', 'In Use'),

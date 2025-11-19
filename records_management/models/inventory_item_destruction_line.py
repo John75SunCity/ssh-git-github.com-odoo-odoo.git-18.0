@@ -8,7 +8,7 @@ class InventoryItemDestructionLine(models.Model):
     destruction_id = fields.Many2one(comodel_name='inventory.item.destruction', string='Destruction', required=True, ondelete='cascade')
     item_id = fields.Many2one(comodel_name='inventory.item', string='Inventory Item', required=True)
     quantity = fields.Float(string='Quantity', default=1.0)
-    location_id = fields.Many2one(comodel_name='records.location', string='Location')
+    location_id = fields.Many2one(comodel_name='stock.location', string='Location')
     destruction_method = fields.Selection([
         ('shredding', 'Shredding'),
         ('incineration', 'Incineration'),

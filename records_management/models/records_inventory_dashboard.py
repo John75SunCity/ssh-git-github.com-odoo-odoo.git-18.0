@@ -20,7 +20,7 @@ class RecordsInventoryDashboard(models.Model):
     state = fields.Selection([('draft', 'Draft'), ('active', 'Active'), ('inactive', 'Inactive')], default='draft')
 
     # Filters
-    location_ids = fields.Many2many('records.location', 'records_inventory_dashboard_location_rel', 'dashboard_id', 'location_id', string="Locations")
+    location_ids = fields.Many2many('stock.location', 'records_inventory_dashboard_location_rel', 'dashboard_id', 'location_id', string="Locations")
     customer_ids = fields.Many2many('res.partner', 'records_inventory_dashboard_customer_rel', 'dashboard_id', 'partner_id', string="Customers", domain="[('is_company', '=', True)]")
     department_id = fields.Many2one(comodel_name='records.department', string="Department")
     date_range = fields.Selection([
@@ -95,7 +95,7 @@ class RecordsInventoryDashboard(models.Model):
             dashboard.total_customers = len(containers.mapped('partner_id'))
 
             # Location Metrics
-            locations = dashboard.location_ids or self.env['records.location'].search([('company_id', '=', dashboard.company_id.id)])
+            locations = dashboard.location_ids or self.env['stock.location'].search([('company_id', '=', dashboard.company_id.id)])
             dashboard.total_locations = len(locations)
             utilizations = locations.mapped('utilization_percentage')
             dashboard.average_utilization = sum(utilizations) / len(utilizations) if utilizations else 0.0
@@ -126,7 +126,7 @@ class RecordsInventoryDashboard(models.Model):
                 dashboard.total_billed_amount = 0.0
 
             # Alert Metrics
-            capacity_locations = self.env['records.location'].search([('company_id', '=', dashboard.company_id.id), ('utilization_percentage', '>=', 90)])
+            capacity_locations = self.env['stock.location'].search([('company_id', '=', dashboard.company_id.id), ('utilization_percentage', '>=', 90)])
             dashboard.capacity_warnings = len(capacity_locations)
             critical_count = len(capacity_locations.filtered(lambda l: l.utilization_percentage >= 95))
             dashboard.critical_alerts = critical_count

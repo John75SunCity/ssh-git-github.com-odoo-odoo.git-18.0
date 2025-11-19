@@ -85,7 +85,7 @@ class BarcodeStorageBox(models.Model):
         help="Unique barcode identifying this storage box."
     )
     location_id = fields.Many2one(
-        'records.location',
+        'stock.location',
         string='Current Location',
         tracking=True,
         help="The physical location where the box is stored."

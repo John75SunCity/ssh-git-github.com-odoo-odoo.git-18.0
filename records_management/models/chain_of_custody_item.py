@@ -119,12 +119,12 @@ class ChainOfCustodyItem(models.Model):
 
     # Location tracking
     from_location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='From Location',
         tracking=True,
     )
     to_location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='To Location',
         tracking=True,
     )

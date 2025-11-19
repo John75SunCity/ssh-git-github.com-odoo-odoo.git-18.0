@@ -18,8 +18,8 @@ class ContainerRetrieval(models.Model):
     # Container-specific fields
     container_id = fields.Many2one(comodel_name='records.container', string='Container', required=True)
     partner_id = fields.Many2one(comodel_name='res.partner', string='Customer', required=True)
-    location_id = fields.Many2one(comodel_name='records.location', string='Current Location')
-    storage_location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
+    location_id = fields.Many2one(comodel_name='stock.location', string='Current Location')
+    storage_location_id = fields.Many2one(comodel_name='stock.location', string='Storage Location')
 
     # Status and workflow
     status = fields.Selection([

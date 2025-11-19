@@ -37,7 +37,7 @@ class PaperBale(models.Model):
         ('occ', 'OCC (Cardboard)'),
     ], string="Paper Grade", tracking=True)
 
-    location_id = fields.Many2one(comodel_name='records.location', string="Current Location", tracking=True)
+    location_id = fields.Many2one(comodel_name='stock.location', string="Current Location", tracking=True)
     shipment_id = fields.Many2one(comodel_name='paper.load.shipment', string="Shipment", readonly=True)
     load_id = fields.Many2one(comodel_name='paper.bale.load', string="Load")
 

@@ -74,7 +74,7 @@ class ShreddingTeam(models.Model):
     )
     primary_equipment_id = fields.Many2one(comodel_name='maintenance.equipment', string="Primary Shredder")
     mobile_unit = fields.Boolean(string="Is Mobile Unit")
-    base_location_id = fields.Many2one(comodel_name='records.location', string="Base Location")
+    base_location_id = fields.Many2one(comodel_name='stock.location', string="Base Location")
     service_area_ids = fields.Many2many(
         'res.country.state',
         relation='shredding_team_service_area_rel',

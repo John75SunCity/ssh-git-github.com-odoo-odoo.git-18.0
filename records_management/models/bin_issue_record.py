@@ -63,7 +63,7 @@ class BinIssueRecord(models.Model):
     )
 
     location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string="Specific Location",
         readonly=True
     )

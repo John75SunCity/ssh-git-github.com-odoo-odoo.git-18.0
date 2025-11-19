@@ -64,7 +64,7 @@ class WorkOrderRetrieval(models.Model):
     ], string='Retrieval Type', default='document_retrieval')
 
     # Location and Access
-    service_location_id = fields.Many2one(comodel_name='records.location', string='Service Location')
+    service_location_id = fields.Many2one(comodel_name='stock.location', string='Service Location')
     customer_address = fields.Text(string='Customer Address')
     access_instructions = fields.Text(string='Access Instructions')
     access_restrictions = fields.Text(string='Access Restrictions')
@@ -107,7 +107,7 @@ class WorkOrderRetrieval(models.Model):
     # Retrieval-specific fields
     retrieval_date = fields.Date(string='Retrieval Date', tracking=True)
     assigned_technician_id = fields.Many2one(comodel_name='res.users', string='Assigned Technician')
-    location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
+    location_id = fields.Many2one(comodel_name='stock.location', string='Storage Location')
     pickup_address = fields.Text(string='Pickup Address')
     total_boxes = fields.Integer(string='Total Boxes', default=0)
     completed_boxes = fields.Integer(string='Completed Boxes', default=0)

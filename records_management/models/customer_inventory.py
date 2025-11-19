@@ -65,7 +65,7 @@ class CustomerInventory(models.Model):
 
     # Location and filter options
     location_ids = fields.Many2many(
-        'records.location',
+        'stock.location',
         relation='customer_inventory_location_rel',
         column1='inventory_id',
         column2='location_id',

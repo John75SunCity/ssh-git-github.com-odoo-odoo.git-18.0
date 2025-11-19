@@ -138,7 +138,7 @@ class RecordsRetentionPolicy(models.Model):
         column2='state_id',
         string='Applicable States'
     )
-    storage_location_id = fields.Many2one(comodel_name='records.location', string='Storage Location')
+    storage_location_id = fields.Many2one(comodel_name='stock.location', string='Storage Location')
 
     # === COMPUTED COUNTS & STATS ===
     rule_count = fields.Integer(string="Rule Count", compute='_compute_counts')

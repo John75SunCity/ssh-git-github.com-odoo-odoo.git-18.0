@@ -8,7 +8,7 @@ class InventoryItemRetrievalLine(models.Model):
     retrieval_id = fields.Many2one(comodel_name='inventory.item.retrieval', string='Retrieval', required=True, ondelete='cascade')
     item_id = fields.Many2one(comodel_name='inventory.item', string='Inventory Item', required=True)
     quantity = fields.Float(string='Quantity', default=1.0)
-    location_id = fields.Many2one(comodel_name='records.location', string='Location')
+    location_id = fields.Many2one(comodel_name='stock.location', string='Location')
     notes = fields.Text(string='Notes')
     sequence = fields.Integer(string='Sequence', default=10)
     state = fields.Selection([

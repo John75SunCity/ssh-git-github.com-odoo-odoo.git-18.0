@@ -313,7 +313,7 @@ class RecordsManagementController(http.Controller):
             location_id (int): Location record ID
         """
         try:
-            location = request.env['records.location'].browse(location_id)
+            location = request.env['stock.location'].browse(location_id)
 
             if not location.exists():
                 raise UserError(_('Location not found'))
@@ -411,11 +411,11 @@ class RecordsManagementController(http.Controller):
             data['documents_count'] = request.env['records.document'].search_count(domain)
 
         if show_locations and view_type in ['overview', 'locations']:
-            data['locations'] = request.env['records.location'].search(
+            data['locations'] = request.env['stock.location'].search(
                 domain + [('active', '=', True)],
                 order='name'
             )
-            data['locations_count'] = request.env['records.location'].search_count(domain)
+            data['locations_count'] = request.env['stock.location'].search_count(domain)
 
         return data
 
@@ -510,7 +510,7 @@ class RecordsManagementController(http.Controller):
 
     def _get_locations_near_capacity(self, threshold=90):
         """Get locations that are near capacity threshold"""
-        locations = request.env['records.location'].search([('active', '=', True)])
+        locations = request.env['stock.location'].search([('active', '=', True)])
         near_capacity = []
 
         for location in locations:
@@ -542,7 +542,7 @@ class RecordsManagementController(http.Controller):
 
     def _calculate_capacity_utilization(self, domain):
         """Calculate overall capacity utilization across all locations"""
-        locations = request.env['records.location'].search(domain + [('active', '=', True)])
+        locations = request.env['stock.location'].search(domain + [('active', '=', True)])
 
         total_capacity = sum(locations.mapped('max_capacity'))
         if total_capacity <= 0:

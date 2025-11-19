@@ -10,6 +10,6 @@ class LocationGroup(models.Model):
     code = fields.Char(string='Group Code')
     description = fields.Text(string='Description')
     active = fields.Boolean(string='Active', default=True)
-    location_ids = fields.One2many('records.location', 'group_id', string='Locations')
+    location_ids = fields.One2many('stock.location', 'group_id', string='Locations')
     manager_id = fields.Many2one(comodel_name='res.users', string='Group Manager')
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True)

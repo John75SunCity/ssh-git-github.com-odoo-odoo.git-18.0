@@ -9,7 +9,7 @@ class CustomerInventoryLine(models.Model):
     # ...existing fields (moved from original file)...
     inventory_id = fields.Many2one(comodel_name='customer.inventory', string='Inventory', required=True, ondelete='cascade')
     container_id = fields.Many2one(comodel_name='records.container', string='Container', required=True)
-    location_id = fields.Many2one(comodel_name='records.location', string='Location', related='container_id.location_id', store=True)
+    location_id = fields.Many2one(comodel_name='stock.location', string='Location', related='container_id.location_id', store=True)
     file_count = fields.Integer(string='Actual Count')
     expected_file_count = fields.Integer(string='Expected Count')
     previous_file_count = fields.Integer(string='Previous Count')

@@ -249,7 +249,7 @@ class BarcodeProduct(models.Model):
     # ============================================================================
     # RELATED RECORDS
     # ============================================================================
-    location_id = fields.Many2one(comodel_name='records.location', string='Related Location', readonly=True)
+    location_id = fields.Many2one(comodel_name='stock.location', string='Related Location', readonly=True)
     container_id = fields.Many2one(comodel_name='records.container', string='Related Container', readonly=True)
     created_records_count = fields.Integer(
         string='Created Records',
@@ -258,7 +258,7 @@ class BarcodeProduct(models.Model):
     )
     # Customer location relationship (referenced in views)
     customer_location_id = fields.Many2one(
-        'records.location',
+        'stock.location',
         string='Customer Location',
         help='Location context used when generating or assigning barcodes to physical assets.'
     )

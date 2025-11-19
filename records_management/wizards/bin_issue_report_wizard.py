@@ -43,7 +43,7 @@ class BinIssueReportWizard(models.TransientModel):
     )
 
     location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string="Specific Location",
         help="Specific location where issue was discovered"
     )

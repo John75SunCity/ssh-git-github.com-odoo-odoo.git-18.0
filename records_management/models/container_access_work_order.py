@@ -148,7 +148,7 @@ class ContainerAccessWorkOrder(models.Model):
         store=True
     )
     access_location_id = fields.Many2one(
-        'records.location',
+        'stock.location',
         string='Access Location',
         required=True,
         help="The physical location where access will occur."

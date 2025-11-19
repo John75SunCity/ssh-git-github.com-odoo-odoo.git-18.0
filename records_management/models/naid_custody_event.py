@@ -36,8 +36,8 @@ class NAIDCustodyEvent(models.Model):
     # Polymorphic relationship to link to the primary custody chain document
     custody_id = fields.Many2one(comodel_name='naid.custody', string='Chain of Custody', ondelete='cascade', required=True)
 
-    from_location_id = fields.Many2one(comodel_name='records.location', string='From Location')
-    to_location_id = fields.Many2one(comodel_name='records.location', string='To Location')
+    from_location_id = fields.Many2one(comodel_name='stock.location', string='From Location')
+    to_location_id = fields.Many2one(comodel_name='stock.location', string='To Location')
 
     gps_latitude = fields.Float(string='GPS Latitude', digits=(10, 7))
     gps_longitude = fields.Float(string='GPS Longitude', digits=(10, 7))

@@ -49,17 +49,17 @@ class NAIDAuditLog(models.Model):
         help='Timestamp field (prefer event_date for new records).'
     )
     location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='Location',
         help='Single location reference.'
     )
     old_location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='Old Location',
         help='Previous location reference used in item/location change logs.'
     )
     new_location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='New Location',
         help='New location reference used in item/location change logs.'
     )
@@ -74,12 +74,12 @@ class NAIDAuditLog(models.Model):
         help='Linkage to a records container.'
     )
     from_location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='From Location',
         help='"From" location for transfer events.'
     )
     to_location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='To Location',
         help='"To" location for transfer events.'
     )

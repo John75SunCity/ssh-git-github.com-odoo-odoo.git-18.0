@@ -16,11 +16,11 @@ class LocationReport(models.AbstractModel):
         This method is called by the Odoo reporting engine to gather the data
         for the PDF report.
         """
-        locations = self.env['records.location'].browse(docids)
+        locations = self.env['stock.location'].browse(docids)
 
         return {
             'doc_ids': docids,
-            'doc_model': 'records.location',
+            'doc_model': 'stock.location',
             'docs': locations,
             'data': data,
         }
@@ -38,7 +38,7 @@ class LocationReportWizard(models.TransientModel):
     # WIZARD FIELDS
     # ============================================================================
     location_id = fields.Many2one(
-        'records.location',
+        'stock.location',
         string='Parent Location',
         help="Select a parent location to report on. Leave empty to report on all root locations."
     )
@@ -77,7 +77,7 @@ class LocationReportWizard(models.TransientModel):
                 # Only find the selected location
                 domain.append(('id', '=', self.location_id.id))
 
-        locations = self.env['records.location'].search(domain)
+        locations = self.env['stock.location'].search(domain)
 
         if not locations:
             raise UserError(_("No locations found for the selected criteria."))

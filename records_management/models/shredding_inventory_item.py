@@ -37,7 +37,7 @@ class ShreddingInventoryItem(models.Model):
     
     # Location tracking
     current_location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='Current Location',
         required=True,
         tracking=True

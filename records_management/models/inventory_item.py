@@ -36,7 +36,7 @@ class InventoryItem(models.Model):
     name = fields.Char(string='Item Reference', required=True, copy=False, readonly=True, default='New')
     product_id = fields.Many2one(comodel_name='product.product', string='Product', required=True)
     serial_number = fields.Char(string='Serial Number')
-    location_id = fields.Many2one(comodel_name='records.location', string='Location')
+    location_id = fields.Many2one(comodel_name='stock.location', string='Location')
     status = fields.Selection([
         ('available', 'Available'),
         ('in_use', 'In Use'),

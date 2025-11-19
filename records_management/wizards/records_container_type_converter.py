@@ -73,7 +73,7 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
     )
 
     location_id = fields.Many2one(
-        'records.location',
+        'stock.location',
         string="Location Filter",
         help="Filter containers by location (optional)"
     )
