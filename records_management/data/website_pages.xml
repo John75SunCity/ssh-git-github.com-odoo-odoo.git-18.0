@@ -126,11 +126,11 @@
             </field>
         </record>
 
-        <!-- Add to website menu -->
+        <!-- Add to website menu (no parent for top-level menu) -->
         <record id="portal_hub_menu" model="website.menu">
             <field name="name">Portal Hub</field>
             <field name="url">/portal-hub</field>
-            <field name="parent_id" ref="website.main_menu"/>
+            <field name="parent_id" eval="False"/>
             <field name="sequence">1</field>
         </record>
 
