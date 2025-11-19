@@ -192,6 +192,12 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
 
         // Initialize batch button states
         updateBatchButtons();
+        
+        // Setup mobile responsive tables (Grok optimization)
+        setupMobileView();
+        
+        // Initialize Bootstrap tooltips for better UX
+        initializeTooltips();
 
         // Add smooth animations for state changes
         $('.table tr').each(function() {
@@ -226,5 +232,74 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
                     $(this).addClass('badge-info');
             }
         });
+        
+        /**
+         * Mobile Responsive Tables (from Grok suggestion)
+         * Converts tables to card view on mobile devices
+         */
+        function setupMobileView() {
+            const convertTables = function() {
+                if (window.innerWidth <= 768) {
+                    $('.table').addClass('mobile-card-view');
+                } else {
+                    $('.table').removeClass('mobile-card-view');
+                }
+            };
+            
+            convertTables();
+            
+            // Debounced resize handler (300ms - Grok pattern)
+            let resizeTimeout;
+            $(window).on('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(convertTables, 300);
+            });
+        }
+        
+        /**
+         * Initialize Bootstrap 5 tooltips (from Grok suggestion)
+         */
+        function initializeTooltips() {
+            // Bootstrap 5 tooltip initialization
+            const tooltipTriggerList = [].slice.call(
+                document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            );
+            
+            if (window.bootstrap && bootstrap.Tooltip) {
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            }
+        }
+        
+        /**
+         * Export functionality (from Grok suggestion)
+         * Allows exporting inventory data to Excel/CSV
+         */
+        window.exportInventory = function(format) {
+            format = format || 'xlsx';
+            const validFormats = ['xlsx', 'csv', 'pdf'];
+            
+            if (!validFormats.includes(format)) {
+                alert('Invalid export format. Use: xlsx, csv, or pdf');
+                return;
+            }
+            
+            // Build export URL with current filters
+            const searchParam = $('#barcodeSearch').val() || '';
+            const typeParam = $('#barcodeTypeFilter').val() || '';
+            const statusParam = $('#barcodeStatusFilter').val() || '';
+            
+            const params = new URLSearchParams();
+            if (searchParam) params.append('search', searchParam);
+            if (typeParam) params.append('type', typeParam);
+            if (statusParam) params.append('status', statusParam);
+            params.append('format', format);
+            
+            const exportUrl = window.location.pathname + '/export?' + params.toString();
+            
+            // Trigger download
+            window.location.href = exportUrl;
+        };
     });
 });

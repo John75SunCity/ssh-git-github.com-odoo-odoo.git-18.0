@@ -34,6 +34,7 @@ class PortalInventorySearch {
         this.setupFilters();
         this.setupAutocomplete();
         this.setupAdvancedSearch();
+        this.setupAjaxPagination();  // From Grok suggestion
         this.loadSearchSuggestions();
 
         console.log('Portal Inventory Search initialized');
@@ -163,6 +164,106 @@ class PortalInventorySearch {
             advancedForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 this.performAdvancedSearch();
+            });
+        }
+    }
+
+    /**
+     * AJAX Pagination Setup (from Grok suggestion)
+     * Loads new page content without full page reload
+     */
+    setupAjaxPagination() {
+        document.addEventListener('click', (e) => {
+            // Check if clicked element is a pagination link
+            if (e.target.closest('.pagination a')) {
+                const link = e.target.closest('.pagination a');
+                const href = link.getAttribute('href');
+                
+                // Prevent default only for valid URLs
+                if (href && href !== '#' && !href.startsWith('javascript:')) {
+                    e.preventDefault();
+                    this.loadPageContent(href);
+                }
+            }
+        });
+    }
+
+    /**
+     * Load page content via AJAX (from Grok suggestion)
+     * @param {string} url - The URL to load
+     */
+    async loadPageContent(url) {
+        this.showLoadingState();
+        
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'  // Mark as AJAX request
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // Update table content
+            const newTableBody = doc.querySelector('#inventory_table tbody');
+            const currentTableBody = document.querySelector('#inventory_table tbody');
+            if (newTableBody && currentTableBody) {
+                currentTableBody.innerHTML = newTableBody.innerHTML;
+            }
+            
+            // Update pagination
+            const newPagination = doc.querySelector('.pagination');
+            const currentPagination = document.querySelector('.pagination');
+            if (newPagination && currentPagination) {
+                currentPagination.innerHTML = newPagination.innerHTML;
+            }
+            
+            // Update result count if present
+            const newResultCount = doc.querySelector('#result_count');
+            const currentResultCount = document.querySelector('#result_count');
+            if (newResultCount && currentResultCount) {
+                currentResultCount.innerHTML = newResultCount.innerHTML;
+            }
+            
+            this.hideLoadingState();
+            
+            // Scroll to top smoothly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Re-initialize tooltips for new content
+            this.reinitializeTooltips();
+            
+        } catch (error) {
+            console.error('Page load error:', error);
+            this.showErrorState('Failed to load page. Please try again.');
+            this.hideLoadingState();
+        }
+    }
+
+    /**
+     * Re-initialize tooltips after AJAX content update
+     */
+    reinitializeTooltips() {
+        const tooltipTriggerList = [].slice.call(
+            document.querySelectorAll('[data-bs-toggle=\"tooltip\"]')
+        );
+        
+        if (window.bootstrap && bootstrap.Tooltip) {
+            tooltipTriggerList.forEach(tooltipTriggerEl => {
+                // Dispose old tooltip if exists
+                const existingTooltip = bootstrap.Tooltip.getInstance(tooltipTriggerEl);
+                if (existingTooltip) {
+                    existingTooltip.dispose();
+                }
+                // Create new tooltip
+                new bootstrap.Tooltip(tooltipTriggerEl);
             });
         }
     }
