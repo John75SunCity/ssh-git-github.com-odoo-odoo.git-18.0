@@ -42,7 +42,7 @@ class ShredModelBin(models.Model):
         default="empty",
         tracking=True,
     )
-    location_id = fields.Many2one("records.location", string="Location", tracking=True)
+    location_id = fields.Many2one("stock.location", string="Location", tracking=True)
     last_emptied = fields.Date(string="Last Emptied", tracking=True)
     notes = fields.Text(string="Notes")
     company_id = fields.Many2one(

@@ -607,7 +607,7 @@ class RecordsManagementController(http.Controller):
                 location_id = container.get("location_id")
                 if location_id:
                     location_name = (
-                        request.env["records.location"].browse(location_id[0]).name if location_id else "Unknown"
+                        request.env["stock.location"].browse(location_id[0]).name if location_id else "Unknown"
                     )
                     if location_name not in location_utilization:
                         location_utilization[location_name] = {"volume": 0, "count": 0}

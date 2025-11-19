@@ -121,7 +121,7 @@ class ContainerAccessActivity(models.Model):
     )
 
     location_id = fields.Many2one(
-        "records.location",
+        "stock.location",
         string="Location",
         related="container_id.location_id",
         readonly=True,

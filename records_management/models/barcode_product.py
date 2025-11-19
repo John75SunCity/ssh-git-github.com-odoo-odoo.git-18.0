@@ -594,20 +594,20 @@ class BarcodeProduct(models.Model):
         }
 
     def _create_location_record(self):
-        """Private method to create a records.location from the barcode."""
+        """Private method to create a stock.location (records location) from the barcode."""
         self.ensure_one()
         location_vals = {
             "name": _("Location") + f" {self.barcode}",
             "location_code": self.barcode,
             "created_from_barcode_id": self.id,
         }
-        location = self.env["records.location"].create(location_vals)
+        location = self.env["stock.location"].create(location_vals)
         self.location_id = location.id
         self._increment_usage()
 
         return {
             "type": "ir.actions.act_window",
-            "res_model": "records.location",
+            "res_model": "stock.location",
             "res_id": location.id,
             "view_mode": "form",
             "target": "current",

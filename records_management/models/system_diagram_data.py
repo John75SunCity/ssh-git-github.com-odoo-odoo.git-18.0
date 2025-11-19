@@ -428,7 +428,7 @@ class SystemDiagramData(models.Model):
         core_models = [
             ("records.container", "Container", "#4CAF50"),
             ("records.document", "Document", "#2196F3"),
-            ("records.location", "Location", "#FF9800"),
+            ("stock.location", "Location", "#FF9800"),
             ("pickup.request", "Pickup Request", "#9C27B0"),
             ("shredding.service", "Shredding Service", "#F44336"),
             ("portal.request", "Portal Request", "#607D8B"),
@@ -686,7 +686,7 @@ class SystemDiagramData(models.Model):
         edges = []
         key_relationships = [
             ("records.container", "records.document", "Documents"),
-            ("records.document", "records.location", "Location"),
+            ("records.document", "stock.location", "Location"),
             ("pickup.request", "records.container", "Containers"),
             ("shredding.service", "records.container", "Shred Items"),
             ("portal.request", "res.partner", "Customer"),

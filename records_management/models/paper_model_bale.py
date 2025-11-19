@@ -27,7 +27,7 @@ class PaperModelBale(models.Model):
         help="Paper grade classification for recycling",
     )
     date_created = fields.Date(string="Date Created", default=fields.Date.today, tracking=True)
-    location_id = fields.Many2one("records.location", string="Location", tracking=True)
+    location_id = fields.Many2one("stock.location", string="Location", tracking=True)
     notes = fields.Text(string="Notes")
 
     # ============================================================================

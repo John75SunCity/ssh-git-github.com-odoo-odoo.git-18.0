@@ -119,7 +119,7 @@ class DestructionCertificate(models.Model):
         help="Customer department associated with this destruction.",
     )
     location_id = fields.Many2one(
-        comodel_name="records.location",
+        comodel_name="stock.location",
         string="Location",
         help="Storage location where items were retrieved from for destruction.",
     )

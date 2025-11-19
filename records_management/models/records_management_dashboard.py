@@ -48,7 +48,7 @@ class RecordsManagementDashboard(models.Model):
         Shredding = self.env["shredding.service"]
         Billing = self.env["records.billing"]
         PortalRequest = self.env["portal.request"]
-        Location = self.env["records.location"]
+        Location = self.env["stock.location"]
         for rec in self:
             company = rec.company_id
             c_domain = [("company_id", "=", company.id)]

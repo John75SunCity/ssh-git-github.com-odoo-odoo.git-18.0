@@ -159,15 +159,15 @@ class AccountMoveLine(models.Model):
     # LOCATION AND STORAGE TRACKING
     # ============================================================================
     storage_location_id = fields.Many2one(
-        "records.location", string="Storage Location", help="Primary storage location for records"
+        "stock.location", string="Storage Location", help="Primary storage location for records"
     )
 
     origin_location_id = fields.Many2one(
-        "records.location", string="Origin Location", help="Location where items were picked up from"
+        "stock.location", string="Origin Location", help="Location where items were picked up from"
     )
 
     destination_location_id = fields.Many2one(
-        "records.location", string="Destination Location", help="Location where items were delivered to"
+        "stock.location", string="Destination Location", help="Location where items were delivered to"
     )
 
     storage_period_months = fields.Integer(
