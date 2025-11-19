@@ -19,12 +19,17 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
     }
 
     $(document).ready(function () {
-        // Multi-select
-        window.selectAll = function() {
-            var headerCheckbox = $('th input[type="checkbox"]')[0];
-            $('.multi-select-table tbody input[type="checkbox"]').prop('checked', headerCheckbox.checked);
+        // Scoped table selector for better performance (Grok pattern)
+        const $table = $('.multi-select-table');
+        if (!$table.length) {
+            console.log('[portal_inventory_highlights] No multi-select table found');
+            return;
+        }
+        // Header checkbox - cleaner event binding (Grok pattern)
+        $table.find('th input[type="checkbox"]').on('change', function() {
+            $table.find('tbody input[type="checkbox"]').prop('checked', this.checked);
             updateBatchButtons();
-        };
+        });
 
         // Update batch button states based on selection
         function updateBatchButtons() {
@@ -37,39 +42,37 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
             }
         }
 
-        // Batch action for destruction requests
+        // Batch action for destruction requests - optimized (Grok pattern)
         window.batchAction = function(action) {
-            var selected = $('.multi-select-table tbody input:checked').map(function() {
+            const selected = $table.find('tbody input:checked').map(function() {
                 return parseInt($(this).val());
             }).get();
 
-            if (selected.length === 0) {
+            if (!selected.length) {
                 alert('Please select items first');
                 return;
             }
 
             if (action === 'destruction') {
-                // Confirm destruction request
-                if (!confirm('Are you sure you want to request destruction for ' + selected.length + ' selected items?')) {
+                // Cleaner confirmation message (Grok pattern)
+                if (!confirm(`Request destruction for ${selected.length} item${selected.length > 1 ? 's' : ''}?`)) {
                     return;
                 }
 
-                rpc.query({
-                    route: '/my/inventory/request_destruction',
-                    params: {
-                        item_ids: selected
-                    }
-                }).then(function(result) {
-                    if (result.success) {
-                        alert(result.message || 'Destruction request created successfully!');
-                        location.reload(); // Refresh the page to show updates
-                    } else {
-                        alert(result.error || 'Failed to create destruction request.');
-                    }
-                }).catch(function(error) {
-                    console.error('Destruction request error:', error);
-                    alert('An error occurred. Please try again.');
-                });
+                // Simplified POST request (Grok pattern)
+                $.post('/my/inventory/request_destruction', { item_ids: selected })
+                    .done(function(result) {
+                        if (result && result.success) {
+                            alert(result.message || 'Destruction request created successfully!');
+                            location.reload();
+                        } else {
+                            alert(result && result.error || 'Failed to create destruction request.');
+                        }
+                    })
+                    .fail(function(error) {
+                        console.error('Destruction request error:', error);
+                        alert('An error occurred. Please try again.');
+                    });
             } else {
                 // Generic batch action for other actions
                 rpc.query({
@@ -160,34 +163,29 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
             });
         };
 
-        // Row highlighting on hover
-        $('.multi-select-table tbody tr').hover(
-            function() {
-                $(this).addClass('table-hover-highlight');
-            },
-            function() {
-                $(this).removeClass('table-hover-highlight');
-            }
+        // Row hover highlighting - scoped selector (Grok pattern)
+        $table.find('tbody tr').hover(
+            function() { $(this).addClass('table-hover-highlight'); },
+            function() { $(this).removeClass('table-hover-highlight'); }
         );
 
-        // Checkbox change handler
-        $('.multi-select-table tbody input[type="checkbox"]').change(function() {
-            updateBatchButtons();
-
-            // Update header checkbox state
-            var totalCheckboxes = $('.multi-select-table tbody input[type="checkbox"]').length;
-            var checkedCheckboxes = $('.multi-select-table tbody input:checked').length;
-            var headerCheckbox = $('th input[type="checkbox"]')[0];
-
-            if (checkedCheckboxes === 0) {
-                headerCheckbox.indeterminate = false;
-                headerCheckbox.checked = false;
-            } else if (checkedCheckboxes === totalCheckboxes) {
-                headerCheckbox.indeterminate = false;
-                headerCheckbox.checked = true;
+        // Row checkbox change handler - optimized (Grok pattern)
+        $table.find('tbody input[type="checkbox"]').on('change', function() {
+            const total = $table.find('tbody input[type="checkbox"]').length;
+            const checked = $table.find('tbody input:checked').length;
+            const $headerCheckbox = $table.find('th input[type="checkbox"]')[0];
+            
+            if (checked === 0) {
+                $headerCheckbox.indeterminate = false;
+                $headerCheckbox.checked = false;
+            } else if (checked === total) {
+                $headerCheckbox.indeterminate = false;
+                $headerCheckbox.checked = true;
             } else {
-                headerCheckbox.indeterminate = true;
+                $headerCheckbox.indeterminate = true;
             }
+            
+            updateBatchButtons();
         });
 
         // Initialize batch button states
