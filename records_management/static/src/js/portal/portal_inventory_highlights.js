@@ -174,7 +174,7 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
             const total = $table.find('tbody input[type="checkbox"]').length;
             const checked = $table.find('tbody input:checked').length;
             const $headerCheckbox = $table.find('th input[type="checkbox"]')[0];
-            
+
             if (checked === 0) {
                 $headerCheckbox.indeterminate = false;
                 $headerCheckbox.checked = false;
@@ -184,7 +184,7 @@ odoo.define('records_management.portal_inventory_highlights', function (require)
             } else {
                 $headerCheckbox.indeterminate = true;
             }
-            
+
             updateBatchButtons();
         });
 
