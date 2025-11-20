@@ -289,4 +289,3 @@ class PortalBulkUpload(http.Controller):
                 ('Content-Disposition', f'attachment; filename="{filename}"'),
             ]
         )
-
