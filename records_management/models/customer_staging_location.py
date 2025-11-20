@@ -187,7 +187,7 @@ class CustomerStagingLocation(models.Model):
     @api.constrains('parent_id')
     def _check_parent_recursion(self):
         """Prevent circular parent relationships"""
-        if not self._check_recursion():
+        if self._has_cycle():
             raise ValidationError(_('You cannot create recursive location hierarchies.'))
 
     @api.constrains('partner_id', 'parent_id')

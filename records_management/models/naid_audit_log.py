@@ -27,6 +27,8 @@ class NAIDAuditLog(models.Model):
         ('security', 'Security Event'),
         ('report', 'Report Generation'),
         ('export', 'Data Export'),
+        ('user_invited', 'User Invited'),
+        ('department_created', 'Department Created'),
         ('other', 'Other'),
     ], string='Action Type', required=True, readonly=True)
 
