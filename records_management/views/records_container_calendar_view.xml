@@ -6,7 +6,7 @@
         <field name="model">records.container</field>
         <field name="arch" type="xml">
             <calendar string="Destruction Schedule" 
-                      date_start="destruction_scheduled_date" 
+                      date_start="destruction_due_date" 
                       color="partner_id"
                       mode="month"
                       event_open_popup="true"
