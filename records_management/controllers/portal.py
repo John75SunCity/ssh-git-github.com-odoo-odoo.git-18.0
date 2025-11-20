@@ -5905,22 +5905,37 @@ class RecordsManagementController(http.Controller):
 
     @http.route(['/my/reports/activity'], type='http', auth='user', website=True)
     def portal_reports_activity(self, **kw):
-        """Activity reports showing movements and requests."""
+        """Activity reports showing customer requests and container movements."""
         partner = request.env.user.partner_id.commercial_partner_id
 
-        # Get recent activity
-        requests = request.env['portal.request'].search([
+        # Get recent service requests
+        requests = request.env['portal.request'].sudo().search([
             ('partner_id', '=', partner.id)
         ], order='create_date desc', limit=50)
 
-        movements = request.env['stock.move'].search([
-            ('partner_id', '=', partner.id)
-        ], order='date desc', limit=50)
+        # Get recent container activity (location changes, status updates)
+        containers = request.env['records.container'].sudo().search([
+            ('partner_id', '=', partner.id),
+            ('write_date', '>=', fields.Datetime.now() - timedelta(days=90))
+        ], order='write_date desc', limit=50)
+
+        # Get recent file activity
+        files = request.env['records.file'].sudo().search([
+            ('partner_id', '=', partner.id),
+            ('write_date', '>=', fields.Datetime.now() - timedelta(days=90))
+        ], order='write_date desc', limit=50)
+
+        # Get chain of custody events (movements to/from storage)
+        custody_events = request.env['chain.of.custody.event'].sudo().search([
+            ('custody_id.partner_id', '=', partner.id)
+        ], order='event_date desc', limit=50)
 
         values = {
             'page_name': 'reports',
             'requests': requests,
-            'movements': movements,
+            'containers': containers,
+            'files': files,
+            'custody_events': custody_events,
         }
 
         return request.render("records_management.portal_reports_activity", values)
@@ -5930,12 +5945,12 @@ class RecordsManagementController(http.Controller):
         """NAID compliance and audit reports."""
         partner = request.env.user.partner_id.commercial_partner_id
 
-        # Get compliance data
-        certificates = request.env['naid.certificate'].search([
+        # Get compliance data - use sudo() with partner filter for portal security
+        certificates = request.env['naid.certificate'].sudo().search([
             ('partner_id', '=', partner.id)
         ])
 
-        audit_logs = request.env['naid.audit.log'].search([
+        audit_logs = request.env['naid.audit.log'].sudo().search([
             ('partner_id', '=', partner.id)
         ], order='timestamp desc', limit=100)
 
