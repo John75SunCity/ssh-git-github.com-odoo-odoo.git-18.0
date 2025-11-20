@@ -18,10 +18,59 @@
                                 <i class="fa fa-map-marker"></i> My Staging Locations
                                 <small class="text-muted">(<t t-esc="total_locations"/> locations)</small>
                             </h3>
-                            <a href="/my/inventory/location/create" class="btn btn-primary">
-                                <i class="fa fa-plus"></i> Create New Location
-                            </a>
+                            <div>
+                                <a href="/my/inventory/location/create" class="btn btn-primary">
+                                    <i class="fa fa-plus"></i> Create New Location
+                                </a>
+                            </div>
                         </div>
+
+                        <!-- Success Messages -->
+                        <t t-if="created">
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fa fa-check-circle"></i>
+                                <strong>Success!</strong> Location created successfully.
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        </t>
+                        <t t-if="updated">
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fa fa-check-circle"></i>
+                                <strong>Success!</strong> Location updated successfully.
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        </t>
+                        <t t-if="archived">
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <i class="fa fa-archive"></i>
+                                <strong>Archived!</strong> Location has been archived.
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        </t>
+                        <t t-if="unarchived">
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fa fa-undo"></i>
+                                <strong>Restored!</strong> Location has been restored.
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        </t>
+                        <t t-if="deleted">
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                <i class="fa fa-trash"></i>
+                                <strong>Deleted!</strong> Location "<t t-esc="deleted"/>" has been permanently deleted.
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        </t>
 
                         <!-- Info Card -->
                         <div class="alert alert-info">
@@ -62,14 +111,19 @@
     <!-- Recursive tree item for hierarchical display -->
     <template id="staging_location_tree_item" name="Staging Location Tree Item">
         <div class="location-tree-item mb-3">
-            <div class="d-flex justify-content-between align-items-center p-3 border rounded bg-light">
-                <div>
+            <div t-att-class="'d-flex justify-content-between align-items-center p-3 border rounded ' + ('bg-light' if location.active else 'bg-light-secondary text-muted')">
+                <div class="flex-grow-1">
                     <h5 class="mb-1">
                         <i t-att-class="'fa fa-%s' % ('building' if location.location_type == 'building' else 'map-marker')"></i>
                         <t t-esc="location.name"/>
                         <span t-if="location.location_type" class="badge badge-secondary ms-2">
                             <t t-esc="dict(location._fields['location_type'].selection).get(location.location_type, location.location_type)"/>
                         </span>
+                        <t t-if="not location.active">
+                            <span class="badge badge-warning ms-2">
+                                <i class="fa fa-archive"></i> Archived
+                            </span>
+                        </t>
                     </h5>
                     <small class="text-muted">
                         <i class="fa fa-box"></i> <t t-esc="location.container_count"/> containers
@@ -80,9 +134,16 @@
                         </t>
                     </small>
                 </div>
-                <div>
-                    <a t-attf-href="/my/inventory/location/#{location.id}" class="btn btn-sm btn-outline-primary">
+                <div class="btn-group">
+                    <a t-attf-href="/my/inventory/location/#{location.id}" 
+                       class="btn btn-sm btn-outline-primary"
+                       title="View Details">
                         <i class="fa fa-eye"></i> View
+                    </a>
+                    <a t-attf-href="/my/inventory/location/#{location.id}/edit" 
+                       class="btn btn-sm btn-outline-secondary"
+                       title="Edit Location">
+                        <i class="fa fa-edit"></i> Edit
                     </a>
                 </div>
             </div>

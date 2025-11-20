@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Edit Customer Staging Location Form -->
+    <template id="portal_staging_location_edit" name="Edit Staging Location">
+        <t t-call="portal.portal_layout">
+            <t t-set="additional_title">Edit Location</t>
+            
+            <div class="container mt-4 mb-5">
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <!-- Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3>
+                                <i class="fa fa-edit text-primary"></i>
+                                Edit Staging Location
+                            </h3>
+                            <a href="/my/inventory/locations" class="btn btn-secondary btn-sm">
+                                <i class="fa fa-arrow-left"></i> Back to Locations
+                            </a>
+                        </div>
+
+                        <!-- Current Location Info -->
+                        <div class="alert alert-info mb-4">
+                            <strong>Editing:</strong> <span t-esc="location.complete_name"/>
+                            <t t-if="location.container_count > 0">
+                                <br/>
+                                <small class="text-muted">
+                                    <i class="fa fa-box"></i>
+                                    <span t-esc="location.container_count"/> container(s) assigned to this location
+                                </small>
+                            </t>
+                        </div>
+
+                        <!-- Edit Form -->
+                        <form method="post" class="card">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            
+                            <div class="card-body">
+                                <!-- Location Name -->
+                                <div class="form-group">
+                                    <label for="name" class="font-weight-bold">
+                                        Location Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="name" 
+                                           name="name" 
+                                           t-att-value="location.name"
+                                           required="required"
+                                           placeholder="e.g., Room B-006, Basement, Records Department"/>
+                                    <small class="form-text text-muted">
+                                        Short descriptive name for this location level
+                                    </small>
+                                </div>
+
+                                <!-- Parent Location -->
+                                <div class="form-group">
+                                    <label for="parent_id" class="font-weight-bold">
+                                        Parent Location (Optional)
+                                    </label>
+                                    <select class="form-control" id="parent_id" name="parent_id">
+                                        <option value="">-- Top Level (No Parent) --</option>
+                                        <t t-foreach="parent_locations" t-as="parent">
+                                            <option t-att-value="parent.id" 
+                                                    t-att-selected="'selected' if parent.id == location.parent_id.id else None">
+                                                <t t-esc="parent.complete_name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                    <small class="form-text text-muted">
+                                        Create hierarchy: Company → Department → Floor → Room
+                                    </small>
+                                </div>
+
+                                <!-- Location Type -->
+                                <div class="form-group">
+                                    <label for="location_type" class="font-weight-bold">
+                                        Location Type
+                                    </label>
+                                    <select class="form-control" id="location_type" name="location_type">
+                                        <option value="building" t-att-selected="'selected' if location.location_type == 'building' else None">
+                                            Building/Facility
+                                        </option>
+                                        <option value="floor" t-att-selected="'selected' if location.location_type == 'floor' else None">
+                                            Floor/Level
+                                        </option>
+                                        <option value="room" t-att-selected="'selected' if location.location_type == 'room' else None">
+                                            Room/Office
+                                        </option>
+                                        <option value="area" t-att-selected="'selected' if location.location_type == 'area' else None">
+                                            Area/Section
+                                        </option>
+                                        <option value="other" t-att-selected="'selected' if location.location_type == 'other' else None">
+                                            Other
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <!-- Department -->
+                                <t t-if="departments">
+                                    <div class="form-group">
+                                        <label for="department_id" class="font-weight-bold">
+                                            Department (Optional)
+                                        </label>
+                                        <select class="form-control" id="department_id" name="department_id">
+                                            <option value="">-- Not Linked to Department --</option>
+                                            <t t-foreach="departments" t-as="dept">
+                                                <option t-att-value="dept.id"
+                                                        t-att-selected="'selected' if dept.id == location.department_id.id else None">
+                                                    <t t-esc="dept.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </t>
+
+                                <!-- Notes -->
+                                <div class="form-group">
+                                    <label for="notes" class="font-weight-bold">
+                                        Pickup Instructions / Notes
+                                    </label>
+                                    <textarea class="form-control" 
+                                              id="notes" 
+                                              name="notes" 
+                                              rows="4"
+                                              placeholder="e.g., Elevator access required, Contact security for access, etc."
+                                              t-raw="location.notes or ''"/>
+                                    <small class="form-text text-muted">
+                                        Instructions for technicians during pickup
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="card-footer d-flex justify-content-between">
+                                <a href="/my/inventory/locations" class="btn btn-light">
+                                    <i class="fa fa-times"></i> Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Danger Zone -->
+                        <div class="card border-warning mt-4">
+                            <div class="card-header bg-warning text-white">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-exclamation-triangle"></i>
+                                    Location Management
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Archive Button -->
+                                    <div class="col-md-6 mb-3">
+                                        <h6 class="font-weight-bold">
+                                            <t t-if="location.active">Archive Location</t>
+                                            <t t-else="">Restore Location</t>
+                                        </h6>
+                                        <p class="small text-muted">
+                                            <t t-if="location.active">
+                                                Hide this location from view. Archived locations can be restored later.
+                                            </t>
+                                            <t t-else="">
+                                                Restore this archived location to active use.
+                                            </t>
+                                        </p>
+                                        <form method="post" t-attf-action="/my/inventory/location/#{location.id}/archive" class="d-inline">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button type="submit" class="btn btn-warning btn-sm">
+                                                <i t-att-class="'fa fa-archive' if location.active else 'fa fa-undo'"></i>
+                                                <t t-if="location.active">Archive</t>
+                                                <t t-else="">Restore</t>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Delete Button -->
+                                    <div class="col-md-6 mb-3">
+                                        <h6 class="font-weight-bold">Delete Location</h6>
+                                        <p class="small text-muted">
+                                            Permanently delete this location. Only allowed if no containers are assigned.
+                                        </p>
+                                        <form method="post" 
+                                              t-attf-action="/my/inventory/location/#{location.id}/delete" 
+                                              class="d-inline"
+                                              onsubmit="return confirm('Are you sure you want to permanently delete this location? This cannot be undone.');">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button type="submit" 
+                                                    class="btn btn-danger btn-sm"
+                                                    t-att-disabled="'disabled' if location.container_count > 0 or location.child_ids else None">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </button>
+                                            <t t-if="location.container_count > 0">
+                                                <br/>
+                                                <small class="text-danger">
+                                                    Cannot delete: <span t-esc="location.container_count"/> container(s) assigned
+                                                </small>
+                                            </t>
+                                            <t t-if="location.child_ids">
+                                                <br/>
+                                                <small class="text-danger">
+                                                    Cannot delete: Has <span t-esc="len(location.child_ids)"/> sub-location(s)
+                                                </small>
+                                            </t>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

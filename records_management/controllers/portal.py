@@ -5089,11 +5089,15 @@ class RecordsManagementController(http.Controller):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id.commercial_partner_id
 
-        # Get customer's staging locations
+        # Get customer's staging locations (including archived if requested)
         StagingLocation = request.env['customer.staging.location']
-        staging_locations = StagingLocation.search([
-            ('partner_id', '=', partner.id)
-        ], order='complete_name asc')
+        domain = [('partner_id', '=', partner.id)]
+        
+        # Show archived locations if requested
+        if not kw.get('show_archived'):
+            domain.append(('active', '=', True))
+        
+        staging_locations = StagingLocation.search(domain, order='complete_name asc')
 
         # Get root-level locations (no parent)
         root_locations = staging_locations.filtered(lambda l: not l.parent_id)
@@ -5103,6 +5107,13 @@ class RecordsManagementController(http.Controller):
             'root_locations': root_locations,
             'page_name': 'staging_locations',
             'total_locations': len(staging_locations),
+            'show_archived': kw.get('show_archived'),
+            # Notification parameters
+            'created': kw.get('created'),
+            'updated': kw.get('updated'),
+            'archived': kw.get('archived'),
+            'unarchived': kw.get('unarchived'),
+            'deleted': kw.get('deleted'),
         })
 
         return request.render("records_management.portal_staging_locations", values)
@@ -5151,6 +5162,111 @@ class RecordsManagementController(http.Controller):
         
         return request.render("records_management.portal_staging_location_create", values)
     
+    @http.route(['/my/inventory/location/<int:location_id>/edit'], type='http', auth='user', website=True, methods=['GET', 'POST'])
+    def portal_staging_location_edit(self, location_id, **post):
+        """Edit/update customer staging location"""
+        location = request.env['customer.staging.location'].browse(location_id)
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Security check
+        if not location.exists() or location.partner_id.commercial_partner_id != partner:
+            return request.redirect('/my/inventory/locations?error=access_denied')
+        
+        if request.httprequest.method == 'POST':
+            # Update location
+            vals = {
+                'name': post.get('name'),
+                'parent_id': int(post.get('parent_id')) if post.get('parent_id') else False,
+                'location_type': post.get('location_type', 'other'),
+                'notes': post.get('notes', ''),
+            }
+            
+            # Only update department if provided
+            if post.get('department_id'):
+                vals['department_id'] = int(post.get('department_id'))
+            
+            try:
+                location.write(vals)
+                return request.redirect('/my/inventory/location/%s?updated=1' % location.id)
+            except Exception as e:
+                return request.render('records_management.portal_error', {
+                    'error_message': 'Failed to update location',
+                    'error_details': str(e)
+                })
+        
+        # GET - show edit form
+        values = self._prepare_portal_layout_values()
+        
+        # Get available parent locations (exclude self and children to prevent recursion)
+        StagingLocation = request.env['customer.staging.location']
+        all_locations = StagingLocation.search([('partner_id', '=', partner.id)])
+        
+        # Exclude current location and its descendants
+        child_locations = StagingLocation.search([('id', 'child_of', location.id)])
+        parent_locations = all_locations - child_locations
+        
+        # Get departments
+        departments = request.env['records.department'].search([('partner_id', '=', partner.id)])
+        
+        values.update({
+            'location': location,
+            'parent_locations': parent_locations,
+            'departments': departments,
+            'page_name': 'edit_staging_location',
+        })
+        
+        return request.render("records_management.portal_staging_location_edit", values)
+    
+    @http.route(['/my/inventory/location/<int:location_id>/archive'], type='http', auth='user', website=True, methods=['POST'])
+    def portal_staging_location_archive(self, location_id, **post):
+        """Archive/unarchive customer staging location"""
+        location = request.env['customer.staging.location'].browse(location_id)
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Security check
+        if not location.exists() or location.partner_id.commercial_partner_id != partner:
+            return request.redirect('/my/inventory/locations?error=access_denied')
+        
+        # Toggle active state
+        location.write({'active': not location.active})
+        
+        action = 'unarchived' if location.active else 'archived'
+        return request.redirect('/my/inventory/locations?%s=%s' % (action, location.id))
+    
+    @http.route(['/my/inventory/location/<int:location_id>/delete'], type='http', auth='user', website=True, methods=['POST'])
+    def portal_staging_location_delete(self, location_id, **post):
+        """Delete customer staging location (only if no containers assigned)"""
+        location = request.env['customer.staging.location'].browse(location_id)
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Security check
+        if not location.exists() or location.partner_id.commercial_partner_id != partner:
+            return request.redirect('/my/inventory/locations?error=access_denied')
+        
+        # Check if location has containers
+        if location.container_count > 0:
+            return request.render('records_management.portal_error', {
+                'error_message': 'Cannot delete location with containers',
+                'error_details': 'This location has %s container(s) assigned. Please move or remove them before deleting.' % location.container_count
+            })
+        
+        # Check if location has child locations
+        if location.child_ids:
+            return request.render('records_management.portal_error', {
+                'error_message': 'Cannot delete location with sub-locations',
+                'error_details': 'This location has %s sub-location(s). Please delete or move them first.' % len(location.child_ids)
+            })
+        
+        try:
+            location_name = location.complete_name
+            location.unlink()
+            return request.redirect('/my/inventory/locations?deleted=%s' % location_name)
+        except Exception as e:
+            return request.render('records_management.portal_error', {
+                'error_message': 'Failed to delete location',
+                'error_details': str(e)
+            })
+    
     @http.route(['/my/inventory/location/<int:location_id>'], type='http', auth='user', website=True)
     def portal_staging_location_detail(self, location_id, **kw):
         """View containers at a specific staging location"""
@@ -5177,6 +5293,7 @@ class RecordsManagementController(http.Controller):
             'child_locations': child_locations,
             'page_name': 'staging_location_detail',
             'container_count': len(containers),
+            'updated': kw.get('updated'),
         })
 
         return request.render("records_management.portal_staging_location_detail", values)

@@ -688,6 +688,7 @@
         # Customer Staging Locations (virtual locations before pickup)
         "templates/portal_staging_locations.xml",
         "templates/portal_staging_location_forms.xml",
+        "templates/portal_staging_location_edit.xml",  # NEW: Edit/Archive/Delete location
         # File Templates
         "templates/portal_file_detail.xml",  # NEW: File detail with document list
         "templates/portal_file_create.xml",  # NEW: File creation form
