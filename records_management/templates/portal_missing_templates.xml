@@ -370,7 +370,7 @@
                                                     <p class="mb-0 text-muted">
                                                         <small>
                                                             <i class="fa fa-clock"></i>
-                                                            <t t-field="movement.create_date" t-options="{'widget': 'datetime'}"/>
+                                                            <t t-esc="movement.create_date.strftime('%Y-%m-%d %H:%M') if movement.create_date else '-'"/>
                                                         </small>
                                                     </p>
                                                 </div>

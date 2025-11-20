@@ -435,7 +435,7 @@
                                                 </td>
                                                 <td>
                                                     <t t-if="visit.pos_order_id">
-                                                        <a t-attf-href="/my/orders/#{visit.pos_order_id.id}" t-field="visit.pos_order_id.name"/>
+                                                        <a t-attf-href="/my/orders/#{visit.pos_order_id.id}"><t t-esc="visit.pos_order_id.name"/></a>
                                                     </t>
                                                     <t t-else="">
                                                         <span class="text-muted">No Transaction</span>
