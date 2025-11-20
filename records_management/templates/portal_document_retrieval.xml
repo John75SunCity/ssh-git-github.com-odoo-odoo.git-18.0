@@ -28,7 +28,7 @@
                                     </div>
                                 </t>
                                 <!-- Pricing Calculator -->
-                                <div class="alert alert-info">
+                                <div class="alert alert-info" id="pricing-calculator">
                                     <h5>
                                         <i class="fa fa-calculator"></i> Pricing Calculator</h5>
                                     <div class="row">
@@ -44,19 +44,21 @@
                                             </select>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="calc_items">Number of Items:</label>
-                                            <input type="number" id="calc_items" class="form-control" value="1" min="1"/>
+                                            <label>Number of Items:</label>
+                                            <div class="form-control-plaintext">
+                                                <strong class="number-of-items">0 items</strong>
+                                                <br/>
+                                                <small class="text-muted">Add items below to update count</small>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="mt-3">
-                                        <div id="pricing-breakdown">
-                                            <!-- Pricing will be loaded here via JavaScript -->
-                                        </div>
+                                    <div class="mt-3" id="pricing-breakdown">
+                                        <p class="text-muted">Add items to see pricing estimate</p>
                                     </div>
                                 </div>
 
                                 <!-- Work Order Form -->
-                                <form method="post" action="/my/document-retrieval/create" id="retrieval-form" t-att-data-container-options="json.dumps([(container.id, container.name) for container in containers])" t-att-data-document-options="json.dumps([(doc.id, doc.name) for doc in documents])">
+                                <form method="post" action="/my/document-retrieval/create" id="document-retrieval-form" t-att-data-container-options="json.dumps([(container.id, container.name) for container in containers])" t-att-data-document-options="json.dumps([(doc.id, doc.name) for doc in documents])">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
                                     <div class="row">
@@ -221,6 +223,147 @@
             </div>
 
             <!-- Inline script removed: logic migrated to portal_document_retrieval.js -->
+            
+            <!-- Document Retrieval JavaScript -->
+            <script type="text/javascript">
+                odoo.define('records_management.portal_document_retrieval', function (require) {
+                    'use strict';
+                    
+                    var publicWidget = require('web.public.widget');
+                    
+                    publicWidget.registry.DocumentRetrievalForm = publicWidget.Widget.extend({
+                        selector: '#document-retrieval-form',
+                        events: {
+                            'click [data-action="add-item"]': '_onAddItem',
+                            'click .remove-item': '_onRemoveItem',
+                            'change .item-type': '_onItemTypeChange',
+                            'change .item-select': '_onItemChange',
+                        },
+                        
+                        start: function () {
+                            this.itemCounter = 0;
+                            this.items = [];
+                            this.containers = <t t-raw="json.dumps([{'id': c.id, 'name': c.name, 'barcode': c.barcode or ''} for c in containers])"/>;
+                            this.documents = <t t-raw="json.dumps([{'id': d.id, 'name': d.name, 'barcode': d.barcode or ''} for d in documents])"/>;
+                            return this._super.apply(this, arguments);
+                        },
+                        
+                        _onAddItem: function (ev) {
+                            ev.preventDefault();
+                            var self = this;
+                            var itemHtml = this._generateItemHtml();
+                            this.$('#items-container').append(itemHtml);
+                            this.itemCounter++;
+                            this._updatePricing();
+                        },
+                        
+                        _generateItemHtml: function () {
+                            var itemId = this.itemCounter;
+                            var containerOptions = this.containers.map(function(c) {
+                                return '<option value="container-' + c.id + '" data-barcode="' + c.barcode + '">' + c.name + ' (' + c.barcode + ')</option>';
+                            }).join('');
+                            var documentOptions = this.documents.map(function(d) {
+                                return '<option value="document-' + d.id + '" data-barcode="' + d.barcode + '">' + d.name + ' (' + d.barcode + ')</option>';
+                            }).join('');
+                            
+                            return `
+                                <div class="card mb-2 item-card" data-item-id="${itemId}">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label>Item Type</label>
+                                                <select class="form-control item-type" name="item_type_${itemId}">
+                                                    <option value="">Select Type</option>
+                                                    <option value="container">Container</option>
+                                                    <option value="document">Document</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Select Item</label>
+                                                <select class="form-control item-select" name="item_id_${itemId}" disabled="disabled">
+                                                    <option value="">Choose item type first</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <label>&amp;nbsp;</label>
+                                                <button type="button" class="btn btn-danger btn-sm remove-item d-block">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-md-12">
+                                                <label>Additional Notes (optional)</label>
+                                                <input type="text" class="form-control item-notes" name="item_notes_${itemId}" placeholder="Special instructions for this item..."/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        },
+                        
+                        _onItemTypeChange: function (ev) {
+                            var $card = $(ev.currentTarget).closest('.item-card');
+                            var $typeSelect = $(ev.currentTarget);
+                            var $itemSelect = $card.find('.item-select');
+                            
+                            if ($typeSelect.val() === 'container') {
+                                $itemSelect.html('<option value="">Select Container</option>' + 
+                                    this.containers.map(function(c) {
+                                        return '<option value="container-' + c.id + '" data-barcode="' + c.barcode + '">' + c.name + ' (' + c.barcode + ')</option>';
+                                    }).join(''));
+                                $itemSelect.prop('disabled', false);
+                            } else if ($typeSelect.val() === 'document') {
+                                $itemSelect.html('<option value="">Select Document</option>' + 
+                                    this.documents.map(function(d) {
+                                        return '<option value="document-' + d.id + '" data-barcode="' + d.barcode + '">' + d.name + ' (' + d.barcode + ')</option>';
+                                    }).join(''));
+                                $itemSelect.prop('disabled', false);
+                            } else {
+                                $itemSelect.html('<option value="">Choose item type first</option>');
+                                $itemSelect.prop('disabled', true);
+                            }
+                            
+                            this._updatePricing();
+                        },
+                        
+                        _onItemChange: function (ev) {
+                            this._updatePricing();
+                        },
+                        
+                        _onRemoveItem: function (ev) {
+                            ev.preventDefault();
+                            $(ev.currentTarget).closest('.item-card').remove();
+                            this._updatePricing();
+                        },
+                        
+                        _updatePricing: function () {
+                            var itemCount = this.$('.item-card').length;
+                            this.$('#pricing-calculator .number-of-items').text(itemCount + ' item' + (itemCount !== 1 ? 's' : ''));
+                            
+                            // Update items data for form submission
+                            var itemsData = [];
+                            this.$('.item-card').each(function() {
+                                var $card = $(this);
+                                var itemType = $card.find('.item-type').val();
+                                var itemId = $card.find('.item-select').val();
+                                var itemNotes = $card.find('.item-notes').val();
+                                
+                                if (itemType &amp;&amp; itemId) {
+                                    itemsData.push({
+                                        type: itemType,
+                                        id: itemId.split('-')[1],
+                                        notes: itemNotes
+                                    });
+                                }
+                            });
+                            this.$('#items-data').val(JSON.stringify(itemsData));
+                        },
+                    });
+                    
+                    return publicWidget.registry.DocumentRetrievalForm;
+                });
+            </script>
         </t>
     </template>
 
