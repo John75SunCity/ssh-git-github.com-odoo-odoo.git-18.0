@@ -20,51 +20,45 @@
         <!-- Demo Storage Locations -->
         <record id="demo_location_warehouse_a" model="stock.location">
             <field name="name">Warehouse A - Secure Storage</field>
-            <field name="code">WHA-SEC</field>
             <field name="building">Building A</field>
             <field name="zone">Zone 1</field>
-            <field name="storage_capacity">10000</field>
+            <field name="max_capacity">10000</field>
         </record>
 
         <record id="demo_location_warehouse_b" model="stock.location">
             <field name="name">Warehouse B - Bulk Storage</field>
-            <field name="code">WHB-BLK</field>
             <field name="building">Building B</field>
             <field name="zone">Zone 2</field>
-            <field name="storage_capacity">20000</field>
+            <field name="max_capacity">20000</field>
         </record>
 
         <!-- Additional Locations for Intelligent Search Demo -->
         <record id="demo_location_warehouse_c" model="stock.location">
             <field name="name">Warehouse C - Legal Archives</field>
-            <field name="code">WHC-LEGAL</field>
             <field name="building">Building C</field>
             <field name="zone">Zone 3</field>
-            <field name="storage_capacity">15000</field>
+            <field name="max_capacity">15000</field>
         </record>
 
         <record id="demo_location_warehouse_archive" model="stock.location">
             <field name="name">Archive Warehouse</field>
-            <field name="code">ARCHIVE-WH</field>
             <field name="building">Archive Building</field>
             <field name="zone">Archive Zone</field>
-            <field name="storage_capacity">50000</field>
+            <field name="max_capacity">50000</field>
         </record>
 
         <record id="demo_location_vault" model="stock.location">
             <field name="name">Secure Vault</field>
-            <field name="code">SECURE-VAULT</field>
             <field name="building">Main Building</field>
             <field name="zone">Vault Zone</field>
-            <field name="storage_capacity">5000</field>
+            <field name="max_capacity">5000</field>
         </record>
 
         <record id="demo_location_emergency_access" model="stock.location">
             <field name="name">Emergency Access Vault</field>
-            <field name="code">EMERGENCY-VAULT</field>
             <field name="building">Emergency Wing</field>
             <field name="zone">Emergency Zone</field>
-            <field name="storage_capacity">1000</field>
+            <field name="max_capacity">1000</field>
         </record>
 
         <!-- Demo Document Types -->
@@ -234,30 +228,24 @@
         <!-- Additional Demo Storage Locations -->
         <record id="demo_location_warehouse_d" model="stock.location">
             <field name="name">Warehouse D - Overflow Storage</field>
-            <field name="code">WHD-OVR</field>
-            <field name="description">Overflow storage for seasonal spikes</field>
             <field name="building">Building D</field>
             <field name="zone">Zone 4</field>
             <field name="active">True</field>
-            <field name="storage_capacity">12000</field>
+            <field name="max_capacity">12000</field>
         </record>
         <record id="demo_location_warehouse_archive_2" model="stock.location">
             <field name="name">Archive Warehouse 2</field>
-            <field name="code">ARCHIVE-WH-2</field>
-            <field name="description">Secondary long-term archive storage</field>
             <field name="building">Archive Annex</field>
             <field name="zone">Archive Zone B</field>
             <field name="active">True</field>
-            <field name="storage_capacity">35000</field>
+            <field name="max_capacity">35000</field>
         </record>
         <record id="demo_location_vault_2" model="stock.location">
             <field name="name">Secure Vault 2</field>
-            <field name="code">SECURE-VAULT-2</field>
-            <field name="description">Secondary high-security vault</field>
             <field name="building">Main Building</field>
             <field name="zone">Vault Zone 2</field>
             <field name="active">True</field>
-            <field name="storage_capacity">3000</field>
+            <field name="max_capacity">3000</field>
         </record>
 
         <!-- Demo Records Boxes (requires customer - will be created by demo customer data) -->
