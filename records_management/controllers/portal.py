@@ -3201,7 +3201,7 @@ class RecordsManagementController(http.Controller):
     
     @http.route(['/my/containers/search'], type='json', auth='user', methods=['POST'])
     def instant_container_search(self, query='', offset=0, limit=50, **kw):
-        \"\"\"
+        """
         Chunked instant search for containers with indexed fields.
         Handles large datasets (20,000+ containers) with pagination.
         
@@ -3209,7 +3209,7 @@ class RecordsManagementController(http.Controller):
             query: Search string
             offset: Starting record (for pagination)
             limit: Number of records per chunk (default 50)
-        \"\"\"
+        """
         try:
             partner = request.env.user.partner_id.commercial_partner_id
             
@@ -3268,7 +3268,7 @@ class RecordsManagementController(http.Controller):
             }
             
         except Exception as e:
-            _logger.error(f\"Instant container search failed: {str(e)}\")
+            _logger.error(f"Instant container search failed: {str(e)}")
             return {
                 'success': False,
                 'error': str(e),
@@ -3279,10 +3279,10 @@ class RecordsManagementController(http.Controller):
     
     @http.route(['/my/files/search'], type='json', auth='user', methods=['POST'])
     def instant_file_search(self, query='', offset=0, limit=50, **kw):
-        \"\"\"
+        """
         Chunked instant search for files with indexed fields.
         Handles large datasets with pagination.
-        \"\"\"
+        """
         try:
             partner = request.env.user.partner_id.commercial_partner_id
             
@@ -3328,7 +3328,7 @@ class RecordsManagementController(http.Controller):
             }
             
         except Exception as e:
-            _logger.error(f\"Instant file search failed: {str(e)}\")
+            _logger.error(f"Instant file search failed: {str(e)}")
             return {
                 'success': False,
                 'error': str(e),
