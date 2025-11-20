@@ -106,7 +106,25 @@
                                         </div>
                                         
                                         <div class="row">
-                                            <div class="col-md-12 mb-3">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="primary_content_type" class="form-label">Primary Content Type</label>
+                                                <select class="form-control" id="primary_content_type" name="primary_content_type">
+                                                    <option value="">-- Select Type --</option>
+                                                    <option value="documents">Documents</option>
+                                                    <option value="files">Files</option>
+                                                    <option value="records">Records</option>
+                                                    <option value="reports">Reports</option>
+                                                    <option value="contracts">Contracts</option>
+                                                    <option value="invoices">Invoices</option>
+                                                    <option value="personnel">Personnel Records</option>
+                                                    <option value="medical">Medical Records</option>
+                                                    <option value="legal">Legal Documents</option>
+                                                    <option value="financial">Financial Records</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
                                                 <label for="contents_type" class="form-label">How are files organized?</label>
                                                 <select class="form-control" id="contents_type" name="contents_type">
                                                     <option value="alphabetical">Alphabetical Range (A-Z)</option>
@@ -134,53 +152,88 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="row" id="custom_description" style="display:none;">
-                                            <div class="col-md-12 mb-3">
-                                                <label for="contents_description" class="form-label">Contents Description</label>
-                                                <textarea class="form-control" id="contents_description" 
-                                                          name="contents_description" rows="3"
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3" id="custom_description" style="display:none;">
+                                                <label for="content_description" class="form-label">Content Description</label>
+                                                <textarea class="form-control" id="content_description" 
+                                                          name="content_description" rows="3"
                                                           placeholder="Describe what's in this container..."></textarea>
                                             </div>
                                         </div>
                                         
-                                        <!-- Retention Policy -->
                                         <div class="row">
-                                            <div class="col-md-12">
-                                                <h5 class="border-bottom pb-2 mb-3 mt-3">Retention Policy</h5>
+                                            <div class="col-md-12 mb-3">
+                                                <label for="search_keywords" class="form-label">Search Keywords</label>
+                                                <input type="text" class="form-control" id="search_keywords" 
+                                                       name="search_keywords" 
+                                                       placeholder="Enter keywords for easy searching (comma separated)"/>
+                                                <small class="form-text text-muted">
+                                                    Add keywords to make this container easier to find in searches
+                                                </small>
                                             </div>
                                         </div>
                                         
                                         <div class="row">
                                             <div class="col-md-12 mb-3">
-                                                <label class="form-label">Retention Period *</label>
-                                                <div class="btn-group btn-group-toggle d-flex flex-wrap" data-toggle="buttons">
-                                                    <label class="btn btn-outline-secondary">
-                                                        <input type="radio" name="retention_period" value="3"/> 3 Years
-                                                    </label>
-                                                    <label class="btn btn-outline-secondary">
-                                                        <input type="radio" name="retention_period" value="5"/> 5 Years
-                                                    </label>
-                                                    <label class="btn btn-outline-secondary active">
-                                                        <input type="radio" name="retention_period" value="7" checked="checked"/> 7 Years
-                                                    </label>
-                                                    <label class="btn btn-outline-secondary">
-                                                        <input type="radio" name="retention_period" value="10"/> 10 Years
-                                                    </label>
-                                                    <label class="btn btn-outline-secondary">
-                                                        <input type="radio" name="retention_period" value="permanent"/> Permanent
-                                                    </label>
-                                                    <label class="btn btn-outline-secondary">
-                                                        <input type="radio" name="retention_period" value="custom"/> Custom
+                                                <label for="description" class="form-label">General Description</label>
+                                                <textarea class="form-control" id="description" 
+                                                          name="description" rows="2"
+                                                          placeholder="Additional notes or description..."></textarea>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Retention Policy & Dates -->
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h5 class="border-bottom pb-2 mb-3 mt-3">Retention Policy &amp; Important Dates</h5>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Retention Policy *</label>
+                                                <select class="form-control" id="retention_policy_id" name="retention_policy_id" required="required">
+                                                    <option value="">-- Select Retention Policy --</option>
+                                                    <t t-foreach="retention_policies" t-as="policy">
+                                                        <option t-att-value="policy.id">
+                                                            <t t-esc="policy.name"/> (<t t-esc="policy.retention_years"/> years)
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                                <small class="form-text text-muted">
+                                                    How long these records must be retained before destruction
+                                                </small>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="permanent_retention" class="form-label d-block">Permanent Retention?</label>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="permanent_retention" 
+                                                           name="permanent_retention" value="1"/>
+                                                    <label class="custom-control-label" for="permanent_retention">
+                                                        Check if these records must be kept permanently
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                         
-                                        <div class="row" id="custom_retention" style="display:none;">
+                                        <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label for="custom_retention_years" class="form-label">Custom Years</label>
-                                                <input type="number" class="form-control" id="custom_retention_years" 
-                                                       name="custom_retention_years" min="1" placeholder="Enter years"/>
+                                                <label for="storage_start_date" class="form-label">Storage Start Date</label>
+                                                <input type="date" class="form-control" id="storage_start_date" 
+                                                       name="storage_start_date"/>
+                                                <small class="form-text text-muted">
+                                                    When this container entered storage
+                                                </small>
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="destruction_due_date" class="form-label">Destruction Due Date</label>
+                                                <input type="date" class="form-control" id="destruction_due_date" 
+                                                       name="destruction_due_date"/>
+                                                <small class="form-text text-muted">
+                                                    When these records can be destroyed (auto-calculated if retention policy set)
+                                                </small>
                                             </div>
                                         </div>
                                         

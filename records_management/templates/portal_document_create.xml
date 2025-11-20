@@ -59,14 +59,96 @@
                                             <label for="document_type_id">Document Type</label>
                                             <select class="form-control" id="document_type_id" name="document_type_id">
                                                 <option value="">-- Select Type (Optional) --</option>
-                                                <!-- Document types will be populated from database -->
+                                                <t t-foreach="document_types" t-as="doctype">
+                                                    <option t-att-value="doctype.id"><t t-esc="doctype.name"/></option>
+                                                </t>
                                             </select>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="state">Document State</label>
+                                            <select class="form-control" id="state" name="state">
+                                                <option value="draft" selected="selected">Draft</option>
+                                                <option value="processed">Processed</option>
+                                                <option value="approved">Approved</option>
+                                                <option value="archived">Archived</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <!-- Digital Scan Fields (if applicable) -->
+                                        <div class="card mb-3">
+                                            <div class="card-header bg-light">
+                                                <h6 class="mb-0"><i class="fa fa-scanner"></i> Digital Scan Information (Optional)</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="scan_date">Scan Date</label>
+                                                            <input type="datetime-local" class="form-control" id="scan_date" name="scan_date"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="file_format">File Format</label>
+                                                            <select class="form-control" id="file_format" name="file_format">
+                                                                <option value="">-- Select Format --</option>
+                                                                <option value="pdf" selected="selected">PDF</option>
+                                                                <option value="jpg">JPEG</option>
+                                                                <option value="png">PNG</option>
+                                                                <option value="tiff">TIFF</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="resolution">Resolution (DPI)</label>
+                                                            <input type="number" class="form-control" id="resolution" name="resolution" 
+                                                                   placeholder="300" value="300" min="72" max="1200"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="file_size">File Size (MB)</label>
+                                                            <input type="number" class="form-control" id="file_size" name="file_size" 
+                                                                   placeholder="0.00" step="0.01" min="0"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="scan_quality">Scan Quality</label>
+                                                            <select class="form-control" id="scan_quality" name="scan_quality">
+                                                                <option value="">-- Select Quality --</option>
+                                                                <option value="low">Low</option>
+                                                                <option value="medium">Medium</option>
+                                                                <option value="high" selected="selected">High</option>
+                                                                <option value="premium">Premium</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="scanner_id">Scanner ID/Name</label>
+                                                    <input type="text" class="form-control" id="scanner_id" name="scanner_id" 
+                                                           placeholder="Scanner identifier (optional)"/>
+                                                </div>
+                                            </div>
                                         </div>
                                         
                                         <div class="form-group">
                                             <label for="description">Description</label>
                                             <textarea class="form-control" id="description" name="description" rows="3" 
                                                       placeholder="Optional: Describe this document"></textarea>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="notes">Internal Notes</label>
+                                            <textarea class="form-control" id="notes" name="notes" rows="2" 
+                                                      placeholder="Optional: Additional notes for internal use"></textarea>
                                         </div>
                                         
                                         <div class="form-group mt-4">

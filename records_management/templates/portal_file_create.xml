@@ -62,9 +62,62 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label for="file_category">File Category</label>
+                                            <select class="form-control" id="file_category" name="file_category">
+                                                <option value="">-- Select Category --</option>
+                                                <option value="permanent">Permanent</option>
+                                                <option value="temporary">Temporary</option>
+                                                <option value="archived">Archived</option>
+                                                <option value="active" selected="selected">Active</option>
+                                            </select>
+                                            <small class="form-text text-muted">
+                                                Categorize this file for organizational purposes
+                                            </small>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="state">File State</label>
+                                            <select class="form-control" id="state" name="state">
+                                                <option value="draft">Draft</option>
+                                                <option value="active" selected="selected">Active</option>
+                                                <option value="archived">Archived</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="date_created">Date Created</label>
+                                                    <input type="date" class="form-control" id="date_created" name="date_created"/>
+                                                    <small class="form-text text-muted">
+                                                        When this file was originally created
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="received_date">Date Received</label>
+                                                    <input type="date" class="form-control" id="received_date" name="received_date"/>
+                                                    <small class="form-text text-muted">
+                                                        When this file was received into custody
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label for="description">Description</label>
                                             <textarea class="form-control" id="description" name="description" rows="3"
                                                       placeholder="Optional: Describe the contents of this file"></textarea>
+                                        </div>
+                                        
+                                        <!-- Temporary Location Info (Customer fills this - we assign real stock location via scan) -->
+                                        <div class="alert alert-info mt-3">
+                                            <h6><i class="fa fa-info-circle"></i> Location Information</h6>
+                                            <p class="mb-0 small">
+                                                This file will be assigned a temporary location at your address/department. 
+                                                Our staff will assign the actual warehouse location when the file is scanned into inventory.
+                                            </p>
                                         </div>
 
                                         <div class="form-group mt-4">
