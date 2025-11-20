@@ -36,7 +36,7 @@ class CustomerStagingLocation(models.Model):
              "- 'Room B-006' (room level)\n"
              "- 'Records Department' (department level)"
     )
-    
+
     complete_name = fields.Char(
         string="Full Location Path",
         compute='_compute_complete_name',
@@ -45,12 +45,12 @@ class CustomerStagingLocation(models.Model):
         help="Complete hierarchical path. Auto-generated from parent chain.\n"
              "Example: 'City of EP/Records Department/Basement/Room B-006'"
     )
-    
+
     active = fields.Boolean(
         default=True,
         help="Inactive locations are hidden but not deleted"
     )
-    
+
     # ============================================================================
     # HIERARCHY
     # ============================================================================
@@ -62,18 +62,18 @@ class CustomerStagingLocation(models.Model):
         domain="[('partner_id', '=', partner_id)]",
         help="Parent location in hierarchy. Leave empty for top-level locations."
     )
-    
+
     parent_path = fields.Char(
         index=True,
         help="Technical field for hierarchical queries"
     )
-    
+
     child_ids = fields.One2many(
         comodel_name='customer.staging.location',
         inverse_name='parent_id',
         string='Child Locations'
     )
-    
+
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
@@ -86,7 +86,7 @@ class CustomerStagingLocation(models.Model):
         default=lambda self: self.env.user.partner_id if self.env.user.partner_id.is_records_customer else False,
         help="The customer company this location belongs to"
     )
-    
+
     department_id = fields.Many2one(
         comodel_name='records.department',
         string='Department',
@@ -94,14 +94,14 @@ class CustomerStagingLocation(models.Model):
         domain="[('partner_id', '=', partner_id)]",
         help="Department within customer organization"
     )
-    
+
     container_ids = fields.One2many(
         comodel_name='records.container',
         inverse_name='customer_staging_location_id',
         string='Containers at This Location',
         help="Containers currently assigned to this staging location"
     )
-    
+
     # ============================================================================
     # COUNTS & STATISTICS
     # ============================================================================
@@ -110,13 +110,13 @@ class CustomerStagingLocation(models.Model):
         compute='_compute_container_count',
         help="Number of containers at this location (including child locations)"
     )
-    
+
     pending_pickup_count = fields.Integer(
         string='Pending Pickup',
         compute='_compute_pending_pickup_count',
         help="Containers awaiting pickup at this location"
     )
-    
+
     # ============================================================================
     # LOCATION DETAILS
     # ============================================================================
@@ -132,7 +132,7 @@ class CustomerStagingLocation(models.Model):
         default='other',
         help="Type of location for better organization"
     )
-    
+
     notes = fields.Text(
         string='Access Notes',
         help="Special instructions for technicians:\n"
@@ -141,7 +141,7 @@ class CustomerStagingLocation(models.Model):
              "- Contact person\n"
              "- Special handling notes"
     )
-    
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
@@ -156,7 +156,7 @@ class CustomerStagingLocation(models.Model):
                 location.complete_name = '%s/%s' % (location.partner_id.name, location.name)
             else:
                 location.complete_name = location.name or ''
-    
+
     @api.depends('container_ids')
     def _compute_container_count(self):
         """Count containers at this location and all child locations"""
@@ -168,7 +168,7 @@ class CustomerStagingLocation(models.Model):
             location.container_count = self.env['records.container'].search_count([
                 ('customer_staging_location_id', 'in', child_locations.ids)
             ])
-    
+
     @api.depends('container_ids.state')
     def _compute_pending_pickup_count(self):
         """Count containers pending pickup"""
@@ -180,7 +180,7 @@ class CustomerStagingLocation(models.Model):
                 ('customer_staging_location_id', 'in', child_locations.ids),
                 ('state', '=', 'draft')  # Containers not yet picked up
             ])
-    
+
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================
@@ -189,7 +189,7 @@ class CustomerStagingLocation(models.Model):
         """Prevent circular parent relationships"""
         if not self._check_recursion():
             raise ValidationError(_('You cannot create recursive location hierarchies.'))
-    
+
     @api.constrains('partner_id', 'parent_id')
     def _check_partner_consistency(self):
         """Ensure parent and child belong to same customer"""
@@ -199,7 +199,7 @@ class CustomerStagingLocation(models.Model):
                     'Parent location must belong to the same customer.\n'
                     'Parent: %s\nThis location: %s'
                 ) % (location.parent_id.partner_id.name, location.partner_id.name))
-    
+
     # ============================================================================
     # ACTIONS
     # ============================================================================
@@ -207,7 +207,7 @@ class CustomerStagingLocation(models.Model):
         """View containers at this location"""
         self.ensure_one()
         child_locations = self.search([('id', 'child_of', self.id)])
-        
+
         return {
             'name': _('Containers at %s') % self.complete_name,
             'type': 'ir.actions.act_window',
@@ -216,7 +216,7 @@ class CustomerStagingLocation(models.Model):
             'domain': [('customer_staging_location_id', 'in', child_locations.ids)],
             'context': {'default_customer_staging_location_id': self.id}
         }
-    
+
     def name_get(self):
         """Display complete path"""
         return [(location.id, location.complete_name) for location in self]
