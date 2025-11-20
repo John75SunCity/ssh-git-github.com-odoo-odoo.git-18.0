@@ -173,7 +173,7 @@
         
         <record id="location_secure_vault" model="stock.location">
             <field name="name">Secure Records Vault</field>
-            <field name="barcode">SECURE-VAULT</field>
+            <field name="barcode">CUST-VAULT-01</field>
             <!-- location_id removed - causes recursive validation errors since records.location inherits stock.location -->
             <field name="usage">internal</field>
             <field name="building">Main Building</field>
