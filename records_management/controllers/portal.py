@@ -3005,7 +3005,7 @@ class RecordsManagementController(http.Controller):
 
         partner = request.env.user.partner_id.commercial_partner_id
 
-        if request_type not in ['retrieval', 'destruction', 'pickup', 'scanning']:
+        if request_type not in ['retrieval', 'destruction', 'pickup', 'scanning', 'file_search']:
             return request.redirect('/my/requests?error=invalid_type')
 
         if request.httprequest.method == 'GET':
@@ -3026,6 +3026,8 @@ class RecordsManagementController(http.Controller):
                 return request.render("records_management.portal_destruction_request_create", values)
             elif request_type == 'pickup':
                 return request.render("records_management.portal_pickup_request_create", values)
+            elif request_type == 'file_search':
+                return request.render("records_management.portal_file_search_create", values)
             else:
                 return request.render("records_management.portal_request_create", values)
 
@@ -3061,6 +3063,33 @@ class RecordsManagementController(http.Controller):
                 request_vals['priority'] = post.get('priority')
             if post.get('scheduled_date'):
                 request_vals['scheduled_date'] = post.get('scheduled_date')
+            if post.get('notes'):
+                request_vals['description'] = post.get('notes')
+                
+            # Handle container and file selections
+            container_ids = request.httprequest.form.getlist('container_ids')
+            if container_ids:
+                request_vals['container_ids'] = [(6, 0, [int(c) for c in container_ids if c])]
+                
+            file_ids = request.httprequest.form.getlist('file_ids')
+            if file_ids:
+                request_vals['file_ids'] = [(6, 0, [int(f) for f in file_ids if f])]
+            
+            # Handle file search fields
+            if request_type == 'file_search':
+                if post.get('search_file_name'):
+                    request_vals['search_file_name'] = post.get('search_file_name')
+                if post.get('search_date_from'):
+                    request_vals['search_date_from'] = post.get('search_date_from')
+                if post.get('search_date_to'):
+                    request_vals['search_date_to'] = post.get('search_date_to')
+                if post.get('search_alpha_range'):
+                    request_vals['search_alpha_range'] = post.get('search_alpha_range')
+                
+                # Get selected search containers
+                selected_containers = request.httprequest.form.getlist('selected_search_container_ids')
+                if selected_containers:
+                    request_vals['selected_search_container_ids'] = [(6, 0, [int(c) for c in selected_containers if c])]
 
             req_record = request.env['portal.request'].create(request_vals)
 
@@ -3097,6 +3126,70 @@ class RecordsManagementController(http.Controller):
                 'error_title': _('Request Creation Failed'),
                 'error_message': str(e),
             })
+    
+    @http.route(['/my/request/search_containers'], type='json', auth='user', methods=['POST'])
+    def search_matching_containers(self, file_name='', date_from=None, date_to=None, alpha_range='', **kw):
+        """AJAX endpoint to search for matching containers based on file search criteria."""
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            
+            # Convert date strings to date objects
+            date_from_obj = None
+            date_to_obj = None
+            if date_from:
+                try:
+                    from datetime import datetime
+                    date_from_obj = datetime.strptime(date_from, '%Y-%m-%d').date()
+                except:
+                    pass
+            if date_to:
+                try:
+                    from datetime import datetime
+                    date_to_obj = datetime.strptime(date_to, '%Y-%m-%d').date()
+                except:
+                    pass
+            
+            # Call intelligent search method
+            matching_containers = request.env['portal.request'].search_matching_containers(
+                file_name=file_name,
+                date_from=date_from_obj,
+                date_to=date_to_obj,
+                alpha_range=alpha_range,
+                partner_id=partner.id
+            )
+            
+            # Build results
+            results = []
+            for container in matching_containers:
+                results.append({
+                    'id': container.id,
+                    'name': container.name,
+                    'number': container.container_number or container.barcode or '',
+                    'location': container.location_id.name if container.location_id else '',
+                    'alpha_range': container.alpha_range or '',
+                    'date_range': '%s to %s' % (
+                        container.date_range_start.strftime('%m/%d/%Y') if container.date_range_start else 'N/A',
+                        container.date_range_end.strftime('%m/%d/%Y') if container.date_range_end else 'N/A'
+                    ),
+                    'contents': container.content_description or '',
+                    'score': getattr(container, 'matching_score', 0),
+                    'reasons': getattr(container, 'matching_reasons', ''),
+                })
+            
+            return {
+                'success': True,
+                'containers': results,
+                'count': len(results)
+            }
+            
+        except Exception as e:
+            _logger.error(f"Container search failed: {str(e)}")
+            return {
+                'success': False,
+                'error': str(e),
+                'containers': [],
+                'count': 0
+            }
 
     @http.route(['/my/requests/<int:request_id>/edit'], type='http', auth='user', website=True, methods=['POST'], csrf=True)
     def portal_request_edit(self, request_id, **post):

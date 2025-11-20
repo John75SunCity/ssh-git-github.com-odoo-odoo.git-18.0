@@ -33,6 +33,8 @@ class PortalRequest(models.Model):
         ('destruction', 'Destruction'),
         ('pickup', 'Pickup'),
         ('retrieval', 'File Retrieval'),
+        ('file_search', 'File Search'),
+        ('scanning', 'Document Scanning'),
         ('shredding', 'Shredding Service'),
         ('audit', 'Audit Request'),
         ('consultation', 'Consultation'),
@@ -99,6 +101,46 @@ class PortalRequest(models.Model):
     # ============================================================================
     work_order_id = fields.Many2one(comodel_name='project.task', string='Work Order', readonly=True)
     attachment_count = fields.Integer(compute='_compute_attachment_count', string='Attachments')
+    
+    # Container and File Relationships
+    container_ids = fields.Many2many(
+        comodel_name='records.container',
+        relation='portal_request_container_rel',
+        column1='request_id',
+        column2='container_id',
+        string='Containers',
+        help='Containers related to this request'
+    )
+    file_ids = fields.Many2many(
+        comodel_name='records.file',
+        relation='portal_request_file_rel',
+        column1='request_id',
+        column2='file_id',
+        string='Files',
+        help='Files related to this request'
+    )
+    
+    # File Search Fields
+    search_file_name = fields.Char(string='File Name to Search', help='Name of file customer is looking for')
+    search_date_from = fields.Date(string='File Date From', help='Earliest possible file date')
+    search_date_to = fields.Date(string='File Date To', help='Latest possible file date')
+    search_alpha_range = fields.Char(string='Alphabetical Range', help='E.g., A-D, Jane-Mary')
+    suggested_container_ids = fields.Many2many(
+        comodel_name='records.container',
+        relation='portal_request_suggested_container_rel',
+        column1='request_id',
+        column2='container_id',
+        string='Suggested Containers',
+        help='Containers that might contain the searched file (auto-populated)'
+    )
+    selected_search_container_ids = fields.Many2many(
+        comodel_name='records.container',
+        relation='portal_request_selected_search_container_rel',
+        column1='request_id',
+        column2='container_id',
+        string='Selected Search Containers',
+        help='Containers customer wants us to search through'
+    )
     shredding_service_id = fields.Many2one(
         'shredding.service',
         string='Shredding Service',
@@ -257,6 +299,131 @@ class PortalRequest(models.Model):
     # ============================================================================
     # BUSINESS LOGIC
     # ============================================================================
+    
+    @api.model
+    def search_matching_containers(self, file_name, date_from=None, date_to=None, alpha_range=None, partner_id=None):
+        """
+        Intelligent container matching for file search requests.
+        Returns containers likely to contain the searched file.
+        
+        Args:
+            file_name: Name of file being searched
+            date_from: Earliest possible file date
+            date_to: Latest possible file date
+            alpha_range: Alphabetical range (e.g., 'A-D' or 'Jane-Mary')
+            partner_id: Customer partner ID
+        
+        Returns:
+            recordset of records.container
+        """
+        domain = [('partner_id', '=', partner_id)] if partner_id else []
+        
+        # Start with all customer's containers
+        Container = self.env['records.container'].sudo()
+        matching_containers = Container.search(domain)
+        scored_containers = []
+        
+        for container in matching_containers:
+            score = 0
+            reasons = []
+            
+            # 1. Date range matching (highest priority)
+            if date_from or date_to:
+                container_date_from = container.date_range_start
+                container_date_to = container.date_range_end
+                
+                if container_date_from and container_date_to:
+                    # Check if date ranges overlap
+                    if date_from and date_to:
+                        if (container_date_from <= date_to and container_date_to >= date_from):
+                            score += 50
+                            reasons.append(_('Date range matches: %s to %s') % (
+                                container_date_from.strftime('%m/%d/%Y'),
+                                container_date_to.strftime('%m/%d/%Y')
+                            ))
+                    elif date_from and container_date_from <= date_from <= container_date_to:
+                        score += 40
+                        reasons.append(_('Contains date %s') % date_from.strftime('%m/%d/%Y'))
+                    elif date_to and container_date_from <= date_to <= container_date_to:
+                        score += 40
+                        reasons.append(_('Contains date %s') % date_to.strftime('%m/%d/%Y'))
+            
+            # 2. Alphabetical range matching
+            if alpha_range and container.alpha_range:
+                # Simple contains check (can be enhanced)
+                if alpha_range.upper() in container.alpha_range.upper():
+                    score += 30
+                    reasons.append(_('Alpha range matches: %s') % container.alpha_range)
+                # Check if file name falls within alpha range
+                elif file_name:
+                    file_first_letter = file_name[0].upper()
+                    container_range = container.alpha_range.upper()
+                    # Example: container has "A-D", file is "Jane" (J)
+                    if '-' in container_range:
+                        range_parts = container_range.split('-')
+                        if len(range_parts) == 2:
+                            start_letter = range_parts[0].strip()[0] if range_parts[0].strip() else 'A'
+                            end_letter = range_parts[1].strip()[0] if range_parts[1].strip() else 'Z'
+                            if start_letter <= file_first_letter <= end_letter:
+                                score += 25
+                                reasons.append(_('File name falls in alpha range %s') % container.alpha_range)
+            
+            # 3. Content type/description keyword matching
+            if file_name and container.content_description:
+                # Extract key terms from file name
+                file_terms = file_name.lower().split()
+                description_lower = container.content_description.lower()
+                
+                for term in file_terms:
+                    if len(term) > 3 and term in description_lower:
+                        score += 10
+                        reasons.append(_('Contains keyword: %s') % term)
+            
+            # 4. Container name/number matching
+            if file_name:
+                container_name_lower = (container.name or '').lower()
+                container_number_lower = (container.container_number or '').lower()
+                file_name_lower = file_name.lower()
+                
+                # Check for term files, HR files, etc.
+                if 'term' in file_name_lower and 'term' in container_name_lower:
+                    score += 20
+                    reasons.append(_('Container name suggests term files'))
+                
+                # Extract department/category from file name (e.g., "HR-1000")
+                if container.container_number and any(dept in file_name_lower for dept in ['hr', 'finance', 'legal', 'admin']):
+                    if any(dept in container_number_lower for dept in ['hr', 'finance', 'legal', 'admin']):
+                        score += 15
+                        reasons.append(_('Department/category match'))
+            
+            # 5. Contents type matching
+            if container.contents_type:
+                contents_lower = container.contents_type.lower()
+                if file_name:
+                    # Check if file name suggests same contents type
+                    if any(keyword in file_name.lower() for keyword in ['personnel', 'employee', 'hr']) and 'personnel' in contents_lower:
+                        score += 15
+                        reasons.append(_('Contents type match: %s') % container.contents_type)
+            
+            if score > 0:
+                scored_containers.append({
+                    'container': container,
+                    'score': score,
+                    'reasons': reasons
+                })
+        
+        # Sort by score descending
+        scored_containers.sort(key=lambda x: x['score'], reverse=True)
+        
+        # Return containers with scores > 0, attach matching info
+        result = Container.browse([c['container'].id for c in scored_containers])
+        
+        # Store matching reasons for display
+        for idx, container_data in enumerate(scored_containers):
+            container_data['container'].matching_score = container_data['score']
+            container_data['container'].matching_reasons = ', '.join(container_data['reasons'])
+        
+        return result
     def _create_work_order(self):
         """Create an FSM task for service-type requests."""
         self.ensure_one()

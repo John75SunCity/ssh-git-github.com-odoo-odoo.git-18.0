@@ -17,6 +17,9 @@
                         <span class="badge bg-primary ms-2" t-esc="container_count"/>
                     </h1>
                     <div class="actions">
+                        <a href="/my/request/new/file_search" class="btn btn-info">
+                            <i class="fa fa-search"></i> Find a File
+                        </a>
                         <a href="/my/request/new/retrieval" class="btn btn-primary">
                             <i class="fa fa-plus"></i> New Request
                         </a>

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portal File Search Request Create Form -->
+        <template id="portal_file_search_create" name="Create File Search Request">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">File Search Request</t>
+                
+                <div class="container my-4">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10">
+                            <div class="card shadow">
+                                <div class="card-header bg-info text-white">
+                                    <h3 class="mb-0">
+                                        <i class="fa fa-search"></i> File Search Request
+                                    </h3>
+                                    <p class="mb-0 small">Find a file when you're not sure which box it's in</p>
+                                </div>
+                                
+                                <div class="card-body">
+                                    <form action="/my/request/new/file_search" method="POST" id="fileSearchForm">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="request_type" value="file_search"/>
+                                        
+                                        <!-- Step 1: File Information -->
+                                        <div class="border-bottom pb-4 mb-4">
+                                            <h5 class="text-primary">
+                                                <i class="fa fa-file-alt"></i> Step 1: What are you looking for?
+                                            </h5>
+                                            
+                                            <div class="form-group mb-3">
+                                                <label for="name" class="form-label">Request Title *</label>
+                                                <input type="text" 
+                                                       class="form-control" 
+                                                       id="name" 
+                                                       name="name" 
+                                                       required="required"
+                                                       placeholder="e.g., Search for Jane Doe Term File"/>
+                                            </div>
+                                            
+                                            <div class="form-group mb-3">
+                                                <label for="department_id" class="form-label">Department *</label>
+                                                <select class="form-control" id="department_id" name="department_id" required="required">
+                                                    <option value="">-- Select Department --</option>
+                                                    <t t-foreach="departments" t-as="dept">
+                                                        <option t-att-value="dept.id"><t t-esc="dept.name"/></option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="form-group mb-3">
+                                                <label for="search_file_name" class="form-label">File Name You're Looking For *</label>
+                                                <input type="text" 
+                                                       class="form-control" 
+                                                       id="search_file_name" 
+                                                       name="search_file_name" 
+                                                       required="required"
+                                                       placeholder="e.g., Jane Doe-Term File-2011"/>
+                                                <small class="form-text text-muted">
+                                                    Enter the full or partial name of the file you're searching for
+                                                </small>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="search_date_from" class="form-label">Date From</label>
+                                                        <input type="date" 
+                                                               class="form-control" 
+                                                               id="search_date_from" 
+                                                               name="search_date_from"/>
+                                                        <small class="form-text text-muted">Earliest possible date</small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group mb-3">
+                                                        <label for="search_date_to" class="form-label">Date To</label>
+                                                        <input type="date" 
+                                                               class="form-control" 
+                                                               id="search_date_to" 
+                                                               name="search_date_to"/>
+                                                        <small class="form-text text-muted">Latest possible date</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group mb-3">
+                                                <label for="search_alpha_range" class="form-label">Alphabetical Range</label>
+                                                <input type="text" 
+                                                       class="form-control" 
+                                                       id="search_alpha_range" 
+                                                       name="search_alpha_range"
+                                                       placeholder="e.g., A-D or Jane-Mary"/>
+                                                <small class="form-text text-muted">
+                                                    Optional: alphabetical range if you know it
+                                                </small>
+                                            </div>
+                                            
+                                            <button type="button" class="btn btn-primary btn-lg" id="searchContainersBtn">
+                                                <i class="fa fa-search"></i> Find Matching Boxes
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Step 2: Matching Containers (populated via AJAX) -->
+                                        <div id="matchingContainersSection" style="display: none;">
+                                            <h5 class="text-primary">
+                                                <i class="fa fa-box"></i> Step 2: Select Boxes to Search
+                                            </h5>
+                                            <p class="text-muted">
+                                                Based on your search criteria, these boxes might contain the file:
+                                            </p>
+                                            
+                                            <div id="matchingContainersList" class="mb-3">
+                                                <!-- Populated via AJAX -->
+                                            </div>
+                                            
+                                            <div class="alert alert-info">
+                                                <i class="fa fa-info-circle"></i>
+                                                <strong>Tip:</strong> Select "All Matches" to search all suggested boxes, 
+                                                or pick specific boxes you think are most likely.
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Additional Notes -->
+                                        <div class="form-group mb-3">
+                                            <label for="notes" class="form-label">Additional Notes</label>
+                                            <textarea class="form-control" 
+                                                      id="notes" 
+                                                      name="notes" 
+                                                      rows="3"
+                                                      placeholder="Any additional information that might help locate the file"></textarea>
+                                        </div>
+                                        
+                                        <!-- Submit Buttons -->
+                                        <div class="form-group mt-4">
+                                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn" disabled="disabled">
+                                                <i class="fa fa-paper-plane"></i> Submit Search Request
+                                            </button>
+                                            <a href="/my/requests" class="btn btn-secondary btn-lg ml-2">
+                                                <i class="fa fa-times"></i> Cancel
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <!-- Example Section -->
+                            <div class="card mt-4 border-info">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-lightbulb"></i> Example</h6>
+                                </div>
+                                <div class="card-body small">
+                                    <p class="mb-2"><strong>Searching for:</strong> "Jane Doe-Term File-2011"</p>
+                                    <p class="mb-2"><strong>Date Range:</strong> 01/01/2011 to 12/31/2011</p>
+                                    <p class="mb-2"><strong>Your boxes that might match:</strong></p>
+                                    <ul class="mb-0">
+                                        <li><strong>HR-1000 Range A-D</strong> - alphabetical match (Jane = "J" falls outside A-D, but might still check)</li>
+                                        <li><strong>Box HR-0589 Term Files (2011)</strong> - date match + "Term" keyword match ✓</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- JavaScript for AJAX Search -->
+                <script type="text/javascript">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const searchBtn = document.getElementById('searchContainersBtn');
+                        const submitBtn = document.getElementById('submitBtn');
+                        const matchingSection = document.getElementById('matchingContainersSection');
+                        const matchingList = document.getElementById('matchingContainersList');
+                        
+                        searchBtn.addEventListener('click', function() {
+                            const fileName = document.getElementById('search_file_name').value;
+                            const dateFrom = document.getElementById('search_date_from').value;
+                            const dateTo = document.getElementById('search_date_to').value;
+                            const alphaRange = document.getElementById('search_alpha_range').value;
+                            
+                            if (!fileName) {
+                                alert('Please enter the file name you\'re looking for');
+                                return;
+                            }
+                            
+                            // Show loading
+                            searchBtn.disabled = true;
+                            searchBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Searching...';
+                            matchingList.innerHTML = '<p class="text-center"><i class="fa fa-spinner fa-spin fa-2x"></i></p>';
+                            matchingSection.style.display = 'block';
+                            
+                            // Make AJAX call
+                            fetch('/my/request/search_containers', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    jsonrpc: '2.0',
+                                    method: 'call',
+                                    params: {
+                                        file_name: fileName,
+                                        date_from: dateFrom,
+                                        date_to: dateTo,
+                                        alpha_range: alphaRange
+                                    }
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                searchBtn.disabled = false;
+                                searchBtn.innerHTML = '<i class="fa fa-search"></i> Find Matching Boxes';
+                                
+                                if (data.result && data.result.success) {
+                                    const containers = data.result.containers;
+                                    
+                                    if (containers.length === 0) {
+                                        matchingList.innerHTML = `
+                                            <div class="alert alert-warning">
+                                                <i class="fa fa-exclamation-triangle"></i>
+                                                No matching boxes found. We'll search through all your boxes.
+                                            </div>
+                                        `;
+                                        submitBtn.disabled = false;
+                                    } else {
+                                        let html = '<div class="list-group mb-3">';
+                                        html += `
+                                            <div class="list-group-item bg-light">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="selectAllContainers"/>
+                                                    <label class="form-check-label font-weight-bold" for="selectAllContainers">
+                                                        Select All ${containers.length} Match${containers.length > 1 ? 'es' : ''}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        `;
+                                        
+                                        containers.forEach(function(container) {
+                                            html += `
+                                                <div class="list-group-item">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" 
+                                                               class="form-check-input container-checkbox" 
+                                                               name="selected_search_container_ids" 
+                                                               value="${container.id}"
+                                                               id="container_${container.id}"/>
+                                                        <label class="form-check-label" for="container_${container.id}">
+                                                            <strong>${container.name}</strong> 
+                                                            ${container.number ? '(' + container.number + ')' : ''}
+                                                            <span class="badge badge-info ml-2">Score: ${container.score}</span>
+                                                        </label>
+                                                    </div>
+                                                    <small class="text-muted d-block mt-1 ml-4">
+                                                        ${container.alpha_range ? 'Range: ' + container.alpha_range + ' | ' : ''}
+                                                        ${container.date_range ? 'Dates: ' + container.date_range + ' | ' : ''}
+                                                        ${container.location ? 'Location: ' + container.location : ''}
+                                                    </small>
+                                                    ${container.reasons ? '<small class="text-success d-block ml-4"><i class="fa fa-check-circle"></i> ' + container.reasons + '</small>' : ''}
+                                                    ${container.contents ? '<small class="text-muted d-block ml-4">Contents: ' + container.contents + '</small>' : ''}
+                                                </div>
+                                            `;
+                                        });
+                                        html += '</div>';
+                                        
+                                        matchingList.innerHTML = html;
+                                        
+                                        // Enable submit when at least one is checked
+                                        const checkboxes = document.querySelectorAll('.container-checkbox');
+                                        const selectAll = document.getElementById('selectAllContainers');
+                                        
+                                        selectAll.addEventListener('change', function() {
+                                            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                                            updateSubmitButton();
+                                        });
+                                        
+                                        checkboxes.forEach(cb => {
+                                            cb.addEventListener('change', updateSubmitButton);
+                                        });
+                                        
+                                        function updateSubmitButton() {
+                                            const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                                            submitBtn.disabled = !anyChecked;
+                                        }
+                                    }
+                                } else {
+                                    matchingList.innerHTML = `
+                                        <div class="alert alert-danger">
+                                            <i class="fa fa-exclamation-circle"></i>
+                                            Search failed: ${data.result ? data.result.error : 'Unknown error'}
+                                        </div>
+                                    `;
+                                }
+                            })
+                            .catch(error => {
+                                searchBtn.disabled = false;
+                                searchBtn.innerHTML = '<i class="fa fa-search"></i> Find Matching Boxes';
+                                matchingList.innerHTML = `
+                                    <div class="alert alert-danger">
+                                        <i class="fa fa-exclamation-circle"></i>
+                                        Search failed: ${error.message}
+                                    </div>
+                                `;
+                            });
+                        });
+                    });
+                </script>
+            </t>
+        </template>
+    </data>
+</odoo>
