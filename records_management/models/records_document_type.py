@@ -231,7 +231,10 @@ class RecordsDocumentType(models.Model):
 
     def write(self, vals):
         if "state" in vals:
-            self._validate_state_transition(vals["state"])
+            for record in self:
+                # Only validate if state is actually changing
+                if record.state != vals["state"]:
+                    record._validate_state_transition(vals["state"])
         if vals.get("confidentiality_level") in ["restricted", "top_secret"]:
             vals["encryption_required"] = True
         res = super().write(vals)
