@@ -182,6 +182,34 @@ class RecordsDocument(models.Model):
     request_id = fields.Many2one(comodel_name="records.request", string="Request", tracking=True)
 
     # ============================================================================
+    # LEGAL CITATIONS & RECORD SERIES (Optional Compliance Features)
+    # ============================================================================
+    record_series_id = fields.Many2one(
+        comodel_name='record.series',
+        string='Record Series',
+        tracking=True,
+        help='Optional: Assign a record series for grouping and retention policy management. '
+             'Can be inherited from file/container or set independently.'
+    )
+    legal_citation_ids = fields.Many2many(
+        comodel_name='legal.citation',
+        relation='document_legal_citation_rel',
+        column1='document_id',
+        column2='citation_id',
+        string='Legal Citations',
+        tracking=True,
+        help='Optional: Legal citations that justify retention policy for this document. '
+             'Can be inherited from file/container/record series or set manually.'
+    )
+    disposition_id = fields.Many2one(
+        comodel_name='record.disposition',
+        string='Disposition Method',
+        tracking=True,
+        help='Optional: How this document should be handled at end of retention. '
+             'Can be inherited from file/container/record series or set manually.'
+    )
+
+    # ============================================================================
     # STATE & LIFECYCLE
     # ============================================================================
     state = fields.Selection([

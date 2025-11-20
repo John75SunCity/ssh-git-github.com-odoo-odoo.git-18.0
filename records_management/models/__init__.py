@@ -84,6 +84,8 @@ from . import inventory_item_retrieval_line
 from . import inventory_item_type
 from . import invoice_generation_log
 from . import key_inventory
+from . import legal_citation
+from . import legal_citation_type
 from . import location_group
 from . import location_report_wizard
 from . import maintenance_equipment
@@ -158,6 +160,8 @@ from . import product_template
 from . import product_template_actions
 from . import proj_task_ext
 from . import project_task
+from . import record_disposition
+from . import record_series
 from . import records_access_log
 from . import records_approval_step
 from . import records_approval_workflow

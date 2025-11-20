@@ -350,6 +350,27 @@ Destroy Container</a>
                     </group>
                 </group>
 
+                <!-- Legal Compliance & Record Series (Optional) -->
+                <group string="Legal Compliance &amp; Record Series (Optional)" name="legal_compliance" col="2">
+                    <group>
+                        <field name="record_series_id"
+                               string="Record Series"
+                               options="{'no_create': True}"
+                               help="Select a record series code to automatically apply legal citations and retention policies"/>
+                        <field name="disposition_id"
+                               string="Disposition Method"
+                               options="{'no_create': True}"
+                               help="How records should be handled at end of retention period (Shred, Archive, etc.)"/>
+                    </group>
+                    <group>
+                        <field name="legal_citation_ids"
+                               string="Legal Citations"
+                               widget="many2many_tags"
+                               options="{'no_create': True}"
+                               help="Legal requirements governing retention of these records (IRS, HIPAA, SOX, etc.)"/>
+                    </group>
+                </group>
+
                 <group>
                     <group string="Retention &amp; Security">
         <field name="retention_policy_id"/>

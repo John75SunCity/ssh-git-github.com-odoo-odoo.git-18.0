@@ -98,6 +98,7 @@
         "data/core_records_data.xml",
         "data/load_data.xml",
         "data/container_types_base_rates.xml",
+        "data/legal_citations_data.xml",  # Legal citations, record series, disposition methods
         "data/naid_certificate_data.xml",
         "data/paper_products_data.xml",
         "data/website_portal_menus.xml",
@@ -135,6 +136,7 @@
         "data/training_courses_billing_flowchart.xml",
         "data/training_courses_billing_models.xml",
         "data/training_courses_complete_user_guide.xml",
+        "data/training_courses_legal_citations.xml",  # Legal Citations & Records Retention training course
         # ============================================================================
         # TEMPORARY: Demo data moved to regular data section to force load
         # ============================================================================
@@ -396,6 +398,7 @@
         "views/destruction_event_views.xml",
         "views/destruction_certificate_views.xml",
         "views/inventory_item_destruction_views.xml",
+        "views/legal_citation_views.xml",
         "views/location_group_views.xml",
         "views/maintenance_request_views.xml",
         "views/naid_certificate_views.xml",

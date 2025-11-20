@@ -1,0 +1,1255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <data>
+        <!-- Training Channel for Legal Citations & Record Series -->
+        <record id="slide_channel_legal_citations" model="slide.channel">
+            <field name="name">Legal Citations &amp; Records Retention Compliance</field>
+            <field name="description">Comprehensive guide to managing legal citations, record series, and compliance requirements for document retention</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="allow_comment">true</field>
+        </record>
+
+        <!-- Lesson 1: Overview & Introduction -->
+        <record id="slide_legal_citations_intro" model="slide.slide">
+            <field name="name">Legal Citations &amp; Records Retention - Overview</field>
+            <field name="channel_id" ref="slide_channel_legal_citations"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">8</field>
+            <field name="sequence">1</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Legal Citations &amp; Records Retention System</h1>
+            <h2>Managing Compliance with Industry Standards</h2>
+
+            <div class="alert alert-success">
+                <strong>Purpose:</strong> This training will teach you how to use the Legal Citations system to ensure 
+                your organization remains compliant with federal, state, and industry-specific regulations.
+            </div>
+
+            <h3>Why Legal Citation Tracking Matters</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h4>⚖️ Legal Compliance</h4>
+                            <p>Avoid fines and penalties by meeting retention requirements</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h4>🛡️ Audit Protection</h4>
+                            <p>Demonstrate compliance during regulatory audits</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h4>🔍 Risk Management</h4>
+                            <p>Reduce liability through proper document handling</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>System Components</h3>
+            <p>The Legal Citations system consists of four integrated modules:</p>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Purpose</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Citation Types</strong></td>
+                            <td>Categories of legal requirements</td>
+                            <td>Federal, State, Industry</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Legal Citations</strong></td>
+                            <td>Specific laws and regulations</td>
+                            <td>IRS, HIPAA, SOX, OSHA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Record Series</strong></td>
+                            <td>Groups of related records</td>
+                            <td>Tax Records, Personnel Files</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Disposition Methods</strong></td>
+                            <td>End-of-retention handling</td>
+                            <td>Shred, Archive, Incinerate</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Key Benefits</h3>
+            <ul>
+                <li><strong>Automated Retention:</strong> System calculates destruction dates based on legal requirements</li>
+                <li><strong>Pre-loaded Standards:</strong> Common citations (IRS, HIPAA, SOX, etc.) ready to use</li>
+                <li><strong>Custom Series:</strong> Create department-specific record series codes</li>
+                <li><strong>Audit Trails:</strong> Complete tracking of citation assignments and changes</li>
+                <li><strong>NAID Compliance:</strong> Supports NAID AAA certification requirements</li>
+            </ul>
+
+            <div class="alert alert-info">
+                <strong>Next Steps:</strong> This course will guide you through each component, showing you how to 
+                apply legal citations to your containers, file folders, and documents.
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Lesson 2: Understanding Citation Types -->
+        <record id="slide_citation_types" model="slide.slide">
+            <field name="name">Understanding Legal Citation Types</field>
+            <field name="channel_id" ref="slide_channel_legal_citations"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">6</field>
+            <field name="sequence">2</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Legal Citation Types - Categories of Compliance</h2>
+
+            <h3>What Are Citation Types?</h3>
+            <p>Citation Types organize legal requirements by jurisdiction and scope. They help you quickly identify 
+            which laws apply to your specific documents.</p>
+
+            <h3>Six Standard Citation Types</h3>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <h5>Federal Regulations</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Scope:</strong> Nationwide requirements</p>
+                            <p><strong>Examples:</strong> IRS tax records, OSHA safety logs, FLSA payroll</p>
+                            <p><strong>When to Use:</strong> Documents governed by federal agencies</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-info text-white">
+                            <h5>State Laws</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Scope:</strong> State-specific requirements</p>
+                            <p><strong>Examples:</strong> California personnel records, state tax documents</p>
+                            <p><strong>When to Use:</strong> Multi-state operations with varying laws</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-success text-white">
+                            <h5>County Ordinances</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Scope:</strong> County-level regulations</p>
+                            <p><strong>Examples:</strong> Building permits, zoning records</p>
+                            <p><strong>When to Use:</strong> Local government compliance</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-warning text-white">
+                            <h5>City Codes</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Scope:</strong> Municipal requirements</p>
+                            <p><strong>Examples:</strong> Business licenses, health permits</p>
+                            <p><strong>When to Use:</strong> City-specific documentation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-danger text-white">
+                            <h5>Industry Standards</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Scope:</strong> Industry-specific regulations</p>
+                            <p><strong>Examples:</strong> HIPAA (healthcare), SOX (financial), FDA</p>
+                            <p><strong>When to Use:</strong> Vertical-specific compliance</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-secondary text-white">
+                            <h5>Corporate Policies</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Scope:</strong> Internal company requirements</p>
+                            <p><strong>Examples:</strong> HR policies, contract standards</p>
+                            <p><strong>When to Use:</strong> Beyond legal minimums</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>How Citation Types Work</h3>
+            <p>Each Legal Citation is assigned to one Citation Type. This creates a hierarchy:</p>
+
+            <pre class="bg-light p-3">
+Citation Type: Federal
+  ├─ IRS General Records (7 years)
+  ├─ FLSA Payroll Records (3 years)
+  └─ OSHA Medical Records (30 years)
+
+Citation Type: Industry
+  ├─ HIPAA Medical Records (6 years)
+  └─ SOX Audit Records (7 years)
+            </pre>
+
+            <div class="alert alert-success">
+                <strong>Pro Tip:</strong> Start with Federal and Industry citations - these cover most compliance needs.
+                Add State/County/City citations only if you have multi-jurisdiction operations.
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Lesson 3: Legal Citations & Retention Periods -->
+        <record id="slide_legal_citations_detail" model="slide.slide">
+            <field name="name">Legal Citations &amp; Retention Periods</field>
+            <field name="channel_id" ref="slide_channel_legal_citations"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">10</field>
+            <field name="sequence">3</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Legal Citations - Specific Requirements</h2>
+
+            <h3>Pre-Loaded Common Citations</h3>
+            <p>The system comes with six essential citations covering most business needs:</p>
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Code</th>
+                            <th>Citation Name</th>
+                            <th>Type</th>
+                            <th>Retention</th>
+                            <th>Common Records</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-primary">
+                            <td><strong>IRS-GEN</strong></td>
+                            <td>IRS General Records</td>
+                            <td>Federal</td>
+                            <td>7 years</td>
+                            <td>Tax returns, financial statements, receipts</td>
+                        </tr>
+                        <tr class="table-info">
+                            <td><strong>HIPAA-164</strong></td>
+                            <td>HIPAA Medical Records</td>
+                            <td>Industry</td>
+                            <td>6 years</td>
+                            <td>Patient records, health information</td>
+                        </tr>
+                        <tr class="table-success">
+                            <td><strong>SOX-802</strong></td>
+                            <td>Sarbanes-Oxley Audit</td>
+                            <td>Industry</td>
+                            <td>7 years</td>
+                            <td>Financial audits, corporate governance</td>
+                        </tr>
+                        <tr class="table-warning">
+                            <td><strong>OSHA-1910</strong></td>
+                            <td>OSHA Medical Records</td>
+                            <td>Federal</td>
+                            <td>30 years</td>
+                            <td>Employee exposure records, safety logs</td>
+                        </tr>
+                        <tr class="table-danger">
+                            <td><strong>FLSA-211</strong></td>
+                            <td>FLSA Payroll Records</td>
+                            <td>Federal</td>
+                            <td>3 years</td>
+                            <td>Payroll, time cards, wage records</td>
+                        </tr>
+                        <tr class="table-secondary">
+                            <td><strong>CA-1198</strong></td>
+                            <td>California Personnel</td>
+                            <td>State</td>
+                            <td>7 years</td>
+                            <td>Employee files (California only)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Understanding Retention Periods</h3>
+
+            <div class="alert alert-warning">
+                <strong>Important:</strong> When multiple citations apply, always use the LONGEST retention period 
+                to ensure compliance with all applicable laws.
+            </div>
+
+            <h4>Example: Payroll Records</h4>
+            <p>Consider payroll documents with multiple requirements:</p>
+
+            <ul>
+                <li><strong>FLSA:</strong> 3 years (federal minimum)</li>
+                <li><strong>IRS:</strong> 7 years (tax audit protection)</li>
+                <li><strong>State Law:</strong> May vary (e.g., California = 7 years)</li>
+            </ul>
+
+            <p><strong>Result:</strong> Retain for 7 years to satisfy all requirements.</p>
+
+            <h3>Adding Citations to Records</h3>
+
+            <h4>Method 1: Direct Citation Assignment</h4>
+            <pre class="bg-light p-3">
+1. Open Container/File/Document form
+2. Scroll to "Legal Compliance" section
+3. Click "Legal Citations" field
+4. Select applicable citations (e.g., IRS-GEN, FLSA-211)
+5. System automatically calculates longest retention
+            </pre>
+
+            <h4>Method 2: Via Record Series (Recommended)</h4>
+            <pre class="bg-light p-3">
+1. Select a Record Series (e.g., "Tax/Payroll Records")
+2. Citations automatically populate from series
+3. Retention period auto-calculated
+4. Disposition method pre-set
+            </pre>
+
+            <h3>Citation Details You Should Know</h3>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Each Citation Includes:</h5>
+                    <ul>
+                        <li><strong>Code:</strong> Short identifier (e.g., IRS-GEN)</li>
+                        <li><strong>Full Name:</strong> Official regulation title</li>
+                        <li><strong>Retention Years:</strong> Required holding period</li>
+                        <li><strong>Jurisdiction:</strong> Geographic/industry scope</li>
+                        <li><strong>URL:</strong> Link to official regulation text</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>System Benefits:</h5>
+                    <ul>
+                        <li>Auto-calculation of destruction dates</li>
+                        <li>Compliance reporting by citation</li>
+                        <li>Audit trail of citation changes</li>
+                        <li>Search/filter by legal requirement</li>
+                        <li>Bulk assignment to record groups</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>Next Lesson:</strong> Learn how Record Series simplify citation management by grouping 
+                related requirements together.
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Lesson 4: Record Series Codes -->
+        <record id="slide_record_series" model="slide.slide">
+            <field name="name">Record Series Codes - O'Neil Stratus Standard</field>
+            <field name="channel_id" ref="slide_channel_legal_citations"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">9</field>
+            <field name="sequence">4</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Record Series - Simplifying Compliance Management</h2>
+
+            <h3>What Is a Record Series?</h3>
+            <p>A Record Series groups related documents that share:</p>
+            <ul>
+                <li>Common legal citations</li>
+                <li>Same retention period</li>
+                <li>Identical disposition method</li>
+                <li>Similar business purpose</li>
+            </ul>
+
+            <div class="alert alert-success">
+                <strong>Key Benefit:</strong> Assign one Record Series instead of manually selecting multiple 
+                citations for each container - citations and retention auto-populate!
+            </div>
+
+            <h3>Pre-Loaded Record Series Examples</h3>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Series Code</th>
+                            <th>Series Name</th>
+                            <th>Citations</th>
+                            <th>Retention</th>
+                            <th>Disposition</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>AUDIT-RPT</strong></td>
+                            <td>Audit Reports</td>
+                            <td>SOX-802</td>
+                            <td>7 years</td>
+                            <td>Shred</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HR-PRSNL</strong></td>
+                            <td>Personnel Files</td>
+                            <td>FLSA-211, CA-1198</td>
+                            <td>7 years</td>
+                            <td>Shred</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TAX-PYRL</strong></td>
+                            <td>Tax/Payroll Records</td>
+                            <td>IRS-GEN, FLSA-211</td>
+                            <td>7 years</td>
+                            <td>Shred</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MED-PTNT</strong></td>
+                            <td>Medical Records</td>
+                            <td>HIPAA-164, OSHA-1910</td>
+                            <td>30 years</td>
+                            <td>Shred (NAID Cert)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LEGAL-CNTR</strong></td>
+                            <td>Legal Contracts</td>
+                            <td>Various</td>
+                            <td>Varies</td>
+                            <td>Review Required</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>O'Neil Stratus Naming Convention</h3>
+            <p>Record Series codes follow industry-standard O'Neil Stratus format:</p>
+
+            <pre class="bg-light p-3">
+Format: [CATEGORY]-[SUBCATEGORY] or [PREFIX]-[NUMBER]
+
+Examples:
+  HR-PRSNL    = Human Resources - Personnel
+  TAX-PYRL    = Tax - Payroll
+  GS3011-156  = General Schedule 3011, Item 156
+  LEGAL-CNTR  = Legal - Contracts
+            </pre>
+
+            <h3>Creating Custom Record Series</h3>
+
+            <h4>When to Create Custom Series:</h4>
+            <ul>
+                <li>Department has unique compliance needs</li>
+                <li>Industry-specific regulations not pre-loaded</li>
+                <li>Internal policies exceed legal minimums</li>
+                <li>Multi-jurisdiction operations</li>
+            </ul>
+
+            <h4>Step-by-Step Creation Process:</h4>
+            <ol>
+                <li><strong>Navigate:</strong> Configuration → Records Retention → Record Series</li>
+                <li><strong>Create New:</strong> Click "Create" button</li>
+                <li><strong>Enter Details:</strong>
+                    <ul>
+                        <li>Series Name (e.g., "Engineering Drawings")</li>
+                        <li>Series Code (e.g., "ENG-DWG")</li>
+                        <li>Category (e.g., "Technical")</li>
+                        <li>Description (purpose and scope)</li>
+                    </ul>
+                </li>
+                <li><strong>Add Citations:</strong> Select applicable legal citations</li>
+                <li><strong>Set Disposition:</strong> Choose destruction method</li>
+                <li><strong>Save:</strong> Series now available for assignment</li>
+            </ol>
+
+            <h3>Using Record Series in Practice</h3>
+
+            <div class="card bg-light mb-3">
+                <div class="card-body">
+                    <h5>Scenario: New HR Container</h5>
+                    <p>You're creating a container for employee personnel files from 2024.</p>
+                    
+                    <p><strong>Without Record Series:</strong></p>
+                    <ol>
+                        <li>Select FLSA-211 citation (3 years)</li>
+                        <li>Select CA-1198 citation (7 years)</li>
+                        <li>System calculates: 7 years retention</li>
+                        <li>Manually select "Shred" disposition</li>
+                    </ol>
+
+                    <p><strong>With Record Series:</strong></p>
+                    <ol>
+                        <li>Select "HR-PRSNL" series</li>
+                        <li>Done! Citations, retention, and disposition auto-populate</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h3>Advanced Features</h3>
+
+            <ul>
+                <li><strong>Category Grouping:</strong> Organize by Administrative, Financial, Legal, HR, etc.</li>
+                <li><strong>Computed Retention:</strong> System automatically uses longest citation period</li>
+                <li><strong>Kanban View:</strong> Drag-and-drop organization by category</li>
+                <li><strong>Search & Filter:</strong> Find series by code, name, or citation</li>
+                <li><strong>Usage Tracking:</strong> See which series are most commonly used</li>
+            </ul>
+
+            <div class="alert alert-warning">
+                <strong>Best Practice:</strong> Review and update Record Series annually to ensure citations 
+                remain current with changing regulations.
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Lesson 5: Disposition Methods -->
+        <record id="slide_disposition_methods" model="slide.slide">
+            <field name="name">Disposition Methods - End of Retention Handling</field>
+            <field name="channel_id" ref="slide_channel_legal_citations"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">7</field>
+            <field name="sequence">5</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Disposition Methods - Proper Document Destruction</h2>
+
+            <h3>What Is a Disposition Method?</h3>
+            <p>A Disposition Method defines how records are handled when they reach the end of their retention period.</p>
+
+            <div class="alert alert-danger">
+                <strong>Critical:</strong> Improper disposition can result in data breaches, regulatory violations, 
+                and loss of legal protection. Always follow approved methods.
+            </div>
+
+            <h3>Six Standard Disposition Methods</h3>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3 border-danger">
+                        <div class="card-header bg-danger text-white">
+                            <h5>🔒 Shred (NAID Certificate Required)</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Use For:</strong> Confidential documents, PII, financial records</p>
+                            <p><strong>Process:</strong> Cross-cut shredding with NAID AAA certification</p>
+                            <p><strong>Certificate:</strong> Yes - destruction certificate issued</p>
+                            <p><strong>Examples:</strong> Tax records, personnel files, medical records</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3 border-warning">
+                        <div class="card-header bg-warning text-white">
+                            <h5>🔥 Incinerate (NAID Certificate Required)</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Use For:</strong> Highly sensitive documents requiring complete destruction</p>
+                            <p><strong>Process:</strong> Industrial incineration with witness verification</p>
+                            <p><strong>Certificate:</strong> Yes - destruction certificate issued</p>
+                            <p><strong>Examples:</strong> Classified documents, proprietary information</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3 border-success">
+                        <div class="card-header bg-success text-white">
+                            <h5>♻️ Recycle (No Certificate)</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Use For:</strong> Non-confidential documents</p>
+                            <p><strong>Process:</strong> Standard paper recycling</p>
+                            <p><strong>Certificate:</strong> No</p>
+                            <p><strong>Examples:</strong> General correspondence, public notices</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3 border-info">
+                        <div class="card-header bg-info text-white">
+                            <h5>📤 Transfer Ownership</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Use For:</strong> Records transferred to another party</p>
+                            <p><strong>Process:</strong> Documented transfer with chain of custody</p>
+                            <p><strong>Certificate:</strong> No (transfer receipt instead)</p>
+                            <p><strong>Examples:</strong> Client files returned, archives donated</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3 border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h5>🏛️ Archive (Permanent)</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Use For:</strong> Permanent records with historical value</p>
+                            <p><strong>Process:</strong> Long-term storage with preservation measures</p>
+                            <p><strong>Certificate:</strong> No</p>
+                            <p><strong>Examples:</strong> Corporate charter, board minutes, patents</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3 border-secondary">
+                        <div class="card-header bg-secondary text-white">
+                            <h5>⏸️ Review Required</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Use For:</strong> Records requiring case-by-case evaluation</p>
+                            <p><strong>Process:</strong> Manual review before disposition decision</p>
+                            <p><strong>Certificate:</strong> Depends on final decision</p>
+                            <p><strong>Examples:</strong> Legal contracts, litigation holds</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>NAID AAA Certification</h3>
+
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5>What Is NAID AAA?</h5>
+                    <p>National Association for Information Destruction - AAA Certification is the gold standard 
+                    for secure document destruction.</p>
+
+                    <h6>Certification Requirements:</h6>
+                    <ul>
+                        <li>Annual on-site audits by independent inspectors</li>
+                        <li>Employee background checks and training</li>
+                        <li>Secure chain of custody procedures</li>
+                        <li>Witnessed destruction processes</li>
+                        <li>Tamper-evident containers</li>
+                        <li>Documented destruction certificates</li>
+                    </ul>
+
+                    <h6>Certificate of Destruction Includes:</h6>
+                    <ul>
+                        <li>Date and time of destruction</li>
+                        <li>Method used (shred/incinerate)</li>
+                        <li>Container/box identifiers</li>
+                        <li>Witness signatures</li>
+                        <li>NAID facility certification number</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Choosing the Right Disposition Method</h3>
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Document Sensitivity</th>
+                            <th>Recommended Method</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Contains PII (SSN, financial data)</td>
+                            <td>Shred with NAID cert</td>
+                            <td>Legal liability, HIPAA/GLBA compliance</td>
+                        </tr>
+                        <tr>
+                            <td>Classified/Trade secrets</td>
+                            <td>Incinerate with NAID cert</td>
+                            <td>Maximum security, complete destruction</td>
+                        </tr>
+                        <tr>
+                            <td>General business records</td>
+                            <td>Shred or Recycle</td>
+                            <td>Industry best practice</td>
+                        </tr>
+                        <tr>
+                            <td>Public information</td>
+                            <td>Recycle</td>
+                            <td>Environmentally responsible</td>
+                        </tr>
+                        <tr>
+                            <td>Historical significance</td>
+                            <td>Archive (Permanent)</td>
+                            <td>Organizational memory</td>
+                        </tr>
+                        <tr>
+                            <td>Ongoing litigation</td>
+                            <td>Review Required</td>
+                            <td>Legal hold requirements</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>Legal Requirement:</strong> When in doubt, always choose the more secure option. 
+                Over-protecting data is better than under-protecting it.
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Lesson 6: Workflow Examples -->
+        <record id="slide_workflow_examples" model="slide.slide">
+            <field name="name">Workflow Examples - Putting It All Together</field>
+            <field name="channel_id" ref="slide_channel_legal_citations"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">12</field>
+            <field name="sequence">6</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Real-World Workflow Examples</h2>
+
+            <h3>Example 1: Tax Records Container</h3>
+
+            <div class="card bg-light mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5>Scenario: Creating Container for 2024 Tax Documents</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Step-by-Step Process:</h6>
+                    <ol>
+                        <li><strong>Create Container:</strong>
+                            <ul>
+                                <li>Name: "TAX-2024-001"</li>
+                                <li>Container Type: Bankers Box</li>
+                                <li>Customer: ABC Corporation</li>
+                                <li>Department: Finance</li>
+                            </ul>
+                        </li>
+                        <li><strong>Assign Legal Compliance:</strong>
+                            <ul>
+                                <li>Record Series: "TAX-PYRL" (Tax/Payroll Records)</li>
+                                <li>Auto-populated Citations: IRS-GEN (7yr), FLSA-211 (3yr)</li>
+                                <li>Auto-calculated Retention: 7 years (longest period)</li>
+                                <li>Auto-set Disposition: Shred with NAID certificate</li>
+                            </ul>
+                        </li>
+                        <li><strong>System Auto-Calculates:</strong>
+                            <ul>
+                                <li>Creation Date: 2024-01-15</li>
+                                <li>Destruction Eligible: 2031-01-15</li>
+                                <li>Automated reminder: 30 days before destruction date</li>
+                            </ul>
+                        </li>
+                        <li><strong>Result:</strong> Fully compliant container with automatic retention tracking</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h3>Example 2: Medical Records (HIPAA Compliance)</h3>
+
+            <div class="card bg-light mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h5>Scenario: Patient Records from Healthcare Facility</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Compliance Requirements:</h6>
+                    <ul>
+                        <li>HIPAA 164: Minimum 6 years retention</li>
+                        <li>OSHA 1910: 30 years for exposure records</li>
+                        <li>Disposition: NAID AAA certified shredding only</li>
+                    </ul>
+
+                    <h6>Step-by-Step Process:</h6>
+                    <ol>
+                        <li><strong>Create Container:</strong>
+                            <ul>
+                                <li>Name: "MED-2024-001"</li>
+                                <li>Container Type: Secure Medical Box</li>
+                                <li>Customer: City Hospital</li>
+                                <li>Department: Medical Records</li>
+                            </ul>
+                        </li>
+                        <li><strong>Assign Legal Compliance:</strong>
+                            <ul>
+                                <li>Record Series: "MED-PTNT" (Medical - Patient)</li>
+                                <li>Auto-populated Citations: HIPAA-164 (6yr), OSHA-1910 (30yr)</li>
+                                <li>Auto-calculated Retention: 30 years (OSHA requirement)</li>
+                                <li>Auto-set Disposition: Shred with NAID certificate</li>
+                            </ul>
+                        </li>
+                        <li><strong>Special Handling:</strong>
+                            <ul>
+                                <li>Mark as "Contains PHI" (Protected Health Information)</li>
+                                <li>Restricted access to authorized personnel only</li>
+                                <li>Encrypted digital index if scanned</li>
+                                <li>Chain of custody tracking enabled</li>
+                            </ul>
+                        </li>
+                        <li><strong>Result:</strong> HIPAA-compliant storage with 30-year retention</li>
+                    </ol>
+                </div>
+            </div>
+
+            <h3>Example 3: Custom Department Series</h3>
+
+            <div class="card bg-light mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5>Scenario: Engineering Department Creates Custom Series</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Business Need:</h6>
+                    <p>Engineering drawings and specifications have unique retention requirements not covered by 
+                    pre-loaded series.</p>
+
+                    <h6>Creating Custom Series:</h6>
+                    <ol>
+                        <li><strong>Navigate:</strong> Configuration → Records Retention → Record Series</li>
+                        <li><strong>Create New Series:</strong>
+                            <ul>
+                                <li>Series Code: "ENG-DWG"</li>
+                                <li>Series Name: "Engineering Drawings & Specifications"</li>
+                                <li>Category: "Technical"</li>
+                                <li>Description: "Product designs, CAD files, manufacturing specs"</li>
+                            </ul>
+                        </li>
+                        <li><strong>Add Citations:</strong>
+                            <ul>
+                                <li>Corporate Policy: "Product Lifecycle + 10 years"</li>
+                                <li>Industry Standard: "ISO 9001 Quality Records"</li>
+                                <li>State Law: "California Product Liability" (10 years)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Set Disposition:</strong>
+                            <ul>
+                                <li>Method: "Archive (Permanent)" - Historical value</li>
+                                <li>Reason: Product evolution documentation</li>
+                            </ul>
+                        </li>
+                        <li><strong>Result:</strong> Custom series ready for Engineering containers</li>
+                    </ol>
+
+                    <h6>Using the New Series:</h6>
+                    <p>Engineering team can now:</p>
+                    <ul>
+                        <li>Create containers and select "ENG-DWG" series</li>
+                        <li>All citations auto-populate</li>
+                        <li>Retention calculated as "Permanent"</li>
+                        <li>Consistent handling across all engineering records</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Common Workflows Summary</h3>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Department</th>
+                            <th>Typical Series</th>
+                            <th>Common Citations</th>
+                            <th>Retention</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Finance</td>
+                            <td>TAX-PYRL</td>
+                            <td>IRS-GEN, FLSA-211</td>
+                            <td>7 years</td>
+                        </tr>
+                        <tr>
+                            <td>Human Resources</td>
+                            <td>HR-PRSNL</td>
+                            <td>FLSA-211, CA-1198</td>
+                            <td>7 years</td>
+                        </tr>
+                        <tr>
+                            <td>Legal</td>
+                            <td>LEGAL-CNTR</td>
+                            <td>Varies by contract</td>
+                            <td>Review Required</td>
+                        </tr>
+                        <tr>
+                            <td>Compliance</td>
+                            <td>AUDIT-RPT</td>
+                            <td>SOX-802</td>
+                            <td>7 years</td>
+                        </tr>
+                        <tr>
+                            <td>Medical</td>
+                            <td>MED-PTNT</td>
+                            <td>HIPAA-164, OSHA-1910</td>
+                            <td>30 years</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>Pro Tip:</strong> Standardize on Record Series for each department. This ensures 
+                consistency and simplifies training for new employees.
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+        <!-- Lesson 7: Configuration & Testing -->
+        <record id="slide_configuration_testing" model="slide.slide">
+            <field name="name">System Configuration &amp; Testing</field>
+            <field name="channel_id" ref="slide_channel_legal_citations"/>
+            <field name="slide_type">article</field>
+            <field name="is_published">true</field>
+            <field name="website_published">true</field>
+            <field name="completion_time">10</field>
+            <field name="sequence">7</field>
+            <field name="html_content"><![CDATA[
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Configuration &amp; Testing Your Legal Citations System</h2>
+
+            <h3>Initial Setup Checklist</h3>
+
+            <div class="card bg-light mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5>Step 1: Review Pre-Loaded Data</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Navigate to each configuration area:</h6>
+                    <ol>
+                        <li><strong>Citation Types:</strong> Configuration → Records Retention → Legal Citation Types
+                            <ul>
+                                <li>Verify 6 types loaded (Federal, State, County, City, Industry, Corporate)</li>
+                                <li>Add custom types if needed for your industry</li>
+                            </ul>
+                        </li>
+                        <li><strong>Legal Citations:</strong> Configuration → Records Retention → Legal Citations
+                            <ul>
+                                <li>Review 6 pre-loaded citations (IRS, HIPAA, SOX, OSHA, FLSA, CA)</li>
+                                <li>Verify retention periods match your understanding</li>
+                                <li>Add additional citations for your jurisdiction</li>
+                            </ul>
+                        </li>
+                        <li><strong>Dispositions:</strong> Configuration → Records Retention → Record Dispositions
+                            <ul>
+                                <li>Confirm 6 methods available</li>
+                                <li>Verify NAID certificate flag on Shred/Incinerate</li>
+                                <li>Customize descriptions if needed</li>
+                            </ul>
+                        </li>
+                        <li><strong>Record Series:</strong> Configuration → Records Retention → Record Series
+                            <ul>
+                                <li>Review 5 pre-loaded series</li>
+                                <li>Check that citations link correctly</li>
+                                <li>Verify retention calculations</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card bg-light mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5>Step 2: Create Department-Specific Series</h5>
+                </div>
+                <div class="card-body">
+                    <h6>For each major department, create custom series:</h6>
+
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Assess Needs</td>
+                                <td>Meet with department heads to understand unique requirements</td>
+                            </tr>
+                            <tr>
+                                <td>Research Citations</td>
+                                <td>Identify applicable federal, state, and industry regulations</td>
+                            </tr>
+                            <tr>
+                                <td>Create Series</td>
+                                <td>Use consistent naming (DEPT-TYPE format)</td>
+                            </tr>
+                            <tr>
+                                <td>Link Citations</td>
+                                <td>Attach all relevant legal requirements</td>
+                            </tr>
+                            <tr>
+                                <td>Set Disposition</td>
+                                <td>Choose appropriate destruction method</td>
+                            </tr>
+                            <tr>
+                                <td>Document</td>
+                                <td>Add clear descriptions for future reference</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h3>Testing Procedures</h3>
+
+            <div class="card bg-light mb-4">
+                <div class="card-header bg-warning text-white">
+                    <h5>Test Scenario 1: Container Creation</h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li>Create new container: "TEST-2024-001"</li>
+                        <li>Assign customer and department</li>
+                        <li>In "Legal Compliance" section:
+                            <ul>
+                                <li>Select Record Series: "TAX-PYRL"</li>
+                                <li>Verify citations auto-populate (IRS-GEN, FLSA-211)</li>
+                                <li>Confirm disposition shows "Shred"</li>
+                            </ul>
+                        </li>
+                        <li>Save container</li>
+                        <li>Check that destruction date calculated correctly (7 years)</li>
+                    </ol>
+                    <p><strong>Expected Result:</strong> All fields auto-populate based on series selection</p>
+                </div>
+            </div>
+
+            <div class="card bg-light mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5>Test Scenario 2: Manual Citation Assignment</h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li>Create new file folder: "TEST-FILE-001"</li>
+                        <li>Do NOT select a Record Series</li>
+                        <li>Manually select Legal Citations:
+                            <ul>
+                                <li>Add HIPAA-164 (6 years)</li>
+                                <li>Add OSHA-1910 (30 years)</li>
+                            </ul>
+                        </li>
+                        <li>Manually select Disposition: "Shred"</li>
+                        <li>Save file folder</li>
+                        <li>Verify retention calculated as 30 years (longest period)</li>
+                    </ol>
+                    <p><strong>Expected Result:</strong> System uses longest retention from multiple citations</p>
+                </div>
+            </div>
+
+            <div class="card bg-light mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h5>Test Scenario 3: Search & Reporting</h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li>Navigate to Containers list</li>
+                        <li>Use search filters:
+                            <ul>
+                                <li>Filter by Record Series: "TAX-PYRL"</li>
+                                <li>Filter by Legal Citation: "IRS-GEN"</li>
+                                <li>Filter by Disposition: "Shred"</li>
+                            </ul>
+                        </li>
+                        <li>Verify correct containers appear</li>
+                        <li>Export to Excel for compliance reporting</li>
+                        <li>Confirm all citation data exports correctly</li>
+                    </ol>
+                    <p><strong>Expected Result:</strong> Easy filtering and reporting by compliance criteria</p>
+                </div>
+            </div>
+
+            <h3>Validation Checklist</h3>
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Item</th>
+                            <th>Check</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>All citation types display correctly</td>
+                            <td>View Citation Types list</td>
+                            <td>☐</td>
+                        </tr>
+                        <tr>
+                            <td>Legal citations show retention years</td>
+                            <td>Open each citation detail</td>
+                            <td>☐</td>
+                        </tr>
+                        <tr>
+                            <td>Disposition methods available</td>
+                            <td>Create test container</td>
+                            <td>☐</td>
+                        </tr>
+                        <tr>
+                            <td>Record Series auto-populate citations</td>
+                            <td>Select series in container form</td>
+                            <td>☐</td>
+                        </tr>
+                        <tr>
+                            <td>Retention auto-calculates correctly</td>
+                            <td>Test with multiple citations</td>
+                            <td>☐</td>
+                        </tr>
+                        <tr>
+                            <td>Search/filter by citations works</td>
+                            <td>Use list view filters</td>
+                            <td>☐</td>
+                        </tr>
+                        <tr>
+                            <td>Portal users can view (if applicable)</td>
+                            <td>Login as portal user</td>
+                            <td>☐</td>
+                        </tr>
+                        <tr>
+                            <td>Reports include citation data</td>
+                            <td>Export to Excel/PDF</td>
+                            <td>☐</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Troubleshooting Common Issues</h3>
+
+            <div class="accordion" id="troubleshootingAccordion">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Issue: Citations don't auto-populate when selecting Record Series</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Cause:</strong> Record Series may not have citations linked</p>
+                        <p><strong>Solution:</strong></p>
+                        <ol>
+                            <li>Open Record Series form</li>
+                            <li>Check "Legal Citations" field</li>
+                            <li>Add missing citations</li>
+                            <li>Save and test again</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Issue: Retention period incorrect</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Cause:</strong> Multiple citations with different retention periods</p>
+                        <p><strong>Solution:</strong></p>
+                        <ol>
+                            <li>Check all linked citations</li>
+                            <li>Verify retention years for each</li>
+                            <li>System should use longest period - if not, report bug</li>
+                            <li>Can override manually if needed</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Issue: Can't create custom Record Series</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Cause:</strong> Insufficient permissions</p>
+                        <p><strong>Solution:</strong></p>
+                        <ol>
+                            <li>Verify you have "Records User" security group</li>
+                            <li>Only Users can create Record Series (not Citation Types)</li>
+                            <li>Contact administrator to grant access</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Ongoing Maintenance</h3>
+
+            <ul>
+                <li><strong>Quarterly Review:</strong> Check for new regulations affecting your industry</li>
+                <li><strong>Annual Audit:</strong> Verify all citations remain current</li>
+                <li><strong>Training Refresher:</strong> Review procedures with new employees</li>
+                <li><strong>Usage Analysis:</strong> Identify most-used series and optimize</li>
+                <li><strong>Compliance Updates:</strong> Subscribe to regulatory change notifications</li>
+            </ul>
+
+            <div class="alert alert-success">
+                <strong>Congratulations!</strong> You've completed the Legal Citations &amp; Records Retention 
+                training. You now understand how to ensure compliance with federal, state, and industry regulations 
+                through proper citation management.
+            </div>
+        </div>
+    </div>
+</div>
+            ]]></field>
+        </record>
+    </data>
+</odoo>

@@ -324,6 +324,34 @@ class RecordsContainer(models.Model):
         help="True when destruction_due_date is within the next ~6 months (180 days).")
 
     # ============================================================================
+    # LEGAL CITATIONS & RECORD SERIES (Optional Compliance Features)
+    # ============================================================================
+    record_series_id = fields.Many2one(
+        comodel_name='record.series',
+        string='Record Series',
+        tracking=True,
+        help='Optional: Assign a record series for grouping and retention policy management. '
+             'Record series can automatically set legal citations and disposition methods.'
+    )
+    legal_citation_ids = fields.Many2many(
+        comodel_name='legal.citation',
+        relation='container_legal_citation_rel',
+        column1='container_id',
+        column2='citation_id',
+        string='Legal Citations',
+        tracking=True,
+        help='Optional: Legal citations that justify retention policy for this container. '
+             'Can be inherited from record series or set manually.'
+    )
+    disposition_id = fields.Many2one(
+        comodel_name='record.disposition',
+        string='Disposition Method',
+        tracking=True,
+        help='Optional: How this container should be handled at end of retention (Shred, Archive, etc.). '
+             'Can be inherited from record series or set manually.'
+    )
+
+    # ============================================================================
     # MOVEMENT & SECURITY
     # ============================================================================
     movement_ids = fields.One2many("records.container.movement", "container_id", string="Movement History")
