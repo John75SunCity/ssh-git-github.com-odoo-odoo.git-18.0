@@ -1070,9 +1070,6 @@ class RecordsManagementController(http.Controller):
     @http.route("/my/certifications", type="http", auth="user", website=True)
     def portal_certifications(self):
         """
-        Portal page for customers to view technician certifications.
-        Shows NAID operator certifications with training status.
-        """
         Customer Certifications Portal:
         - Destruction Certificates (NAID AAA certificates from completed shredding jobs)
         - Training Courses & Materials (eLearning portal access)
@@ -6328,7 +6325,7 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/organization'], type='http', auth='user', website=True)
     def portal_organization_chart(self, **kw):
         """
-        Portal Organization Chart - Shows customer's company structure
+        Portal Organization Chart - Shows customer company structure
         Uses res.partner hierarchy to build organization diagram similar to hr_org_chart
         """
         partner = request.env.user.partner_id
