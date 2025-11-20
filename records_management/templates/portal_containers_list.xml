@@ -73,9 +73,12 @@
 
                 <!-- Container Table (Responsive) -->
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
+                    <table class="table table-striped table-hover" id="containersTable">
                         <thead>
                             <tr>
+                                <th style="width: 40px;">
+                                    <input type="checkbox" id="selectAll" class="form-check-input"/>
+                                </th>
                                 <th>Container ID</th>
                                 <th>Status</th>
                                 <th>Location</th>
@@ -88,6 +91,13 @@
                             <t t-if="containers">
                                 <t t-foreach="containers" t-as="container">
                                     <tr>
+                                        <td>
+                                            <input type="checkbox" 
+                                                   class="form-check-input container-checkbox" 
+                                                   t-att-value="container.id"
+                                                   t-att-data-name="container.name"
+                                                   t-att-data-number="container.container_number or container.barcode"/>
+                                        </td>
                                         <td>
                                             <strong t-esc="container.name"/>
                                             <br/>
@@ -114,7 +124,7 @@
                             </t>
                             <t t-else="">
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">
+                                    <td colspan="7" class="text-center text-muted py-4">
                                         <i class="fa fa-inbox fa-3x mb-3"></i>
                                         <p>No containers found</p>
                                     </td>
@@ -128,6 +138,62 @@
                 <t t-if="pager">
                     <t t-call="portal.pager"/>
                 </t>
+                
+                <!-- Bulk Actions and Export Script -->
+                <script type="text/javascript">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Select All functionality
+                        const selectAllCheckbox = document.getElementById('selectAll');
+                        const containerCheckboxes = document.querySelectorAll('.container-checkbox');
+                        
+                        if (selectAllCheckbox) {
+                            selectAllCheckbox.addEventListener('change', function() {
+                                containerCheckboxes.forEach(checkbox => {
+                                    checkbox.checked = selectAllCheckbox.checked;
+                                });
+                            });
+                        }
+                        
+                        // Export functionality
+                        const exportBtn = document.querySelector('.btn-export');
+                        if (exportBtn) {
+                            exportBtn.addEventListener('click', function() {
+                                const selectedContainers = [];
+                                containerCheckboxes.forEach(checkbox => {
+                                    if (checkbox.checked) {
+                                        selectedContainers.push({
+                                            id: checkbox.value,
+                                            name: checkbox.dataset.name,
+                                            number: checkbox.dataset.number
+                                        });
+                                    }
+                                });
+                                
+                                if (selectedContainers.length === 0) {
+                                    alert('Please select at least one container to export');
+                                    return;
+                                }
+                                
+                                // Create CSV content
+                                let csvContent = 'Container ID,Container Number,Name\n';
+                                selectedContainers.forEach(container => {
+                                    csvContent += `${container.id},"${container.number}","${container.name}"\n`;
+                                });
+                                
+                                // Download CSV file
+                                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                                const link = document.createElement('a');
+                                const url = URL.createObjectURL(blob);
+                                link.setAttribute('href', url);
+                                link.setAttribute('download', 'containers_export_' + new Date().toISOString().split('T')[0] + '.csv');
+                                link.style.visibility = 'hidden';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            });
+                        }
+                    });
+                </script>
 
                 <!-- Loading Spinner -->
                 <div class="spinner-border text-purple d-none" id="loading" role="status">

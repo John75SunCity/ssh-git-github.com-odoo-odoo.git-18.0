@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portal Generic Request Create Form -->
+        <template id="portal_request_create" name="Create Service Request">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">
+                    <t t-if="request_type == 'retrieval'">Request Container Retrieval</t>
+                    <t t-elif="request_type == 'scanning'">Request Document Scanning</t>
+                    <t t-else="">New Service Request</t>
+                </t>
+                
+                <div class="container my-4">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card shadow">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="mb-0">
+                                        <i class="fa fa-clipboard-list"></i>
+                                        <t t-if="request_type == 'retrieval'">Container Retrieval Request</t>
+                                        <t t-elif="request_type == 'scanning'">Document Scanning Request</t>
+                                        <t t-else="">Service Request</t>
+                                    </h3>
+                                </div>
+                                
+                                <div class="card-body">
+                                    <form t-attf-action="/my/request/new/#{request_type}" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="request_type" t-att-value="request_type"/>
+                                        
+                                        <!-- Request Name -->
+                                        <div class="form-group mb-3">
+                                            <label for="name" class="form-label">Request Title *</label>
+                                            <input type="text" 
+                                                   class="form-control" 
+                                                   id="name" 
+                                                   name="name" 
+                                                   required="required"
+                                                   t-att-placeholder="'Describe your ' + request_type + ' request'"/>
+                                        </div>
+                                        
+                                        <!-- Department Selection -->
+                                        <div class="form-group mb-3">
+                                            <label for="department_id" class="form-label">Department *</label>
+                                            <select class="form-control" id="department_id" name="department_id" required="required">
+                                                <option value="">-- Select Department --</option>
+                                                <t t-foreach="departments" t-as="dept">
+                                                    <option t-att-value="dept.id"><t t-esc="dept.name"/></option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        
+                                        <!-- Container/File Selection -->
+                                        <t t-if="request_type == 'retrieval'">
+                                            <div class="form-group mb-3">
+                                                <label for="container_ids" class="form-label">Select Containers *</label>
+                                                <select class="form-control" 
+                                                        id="container_ids" 
+                                                        name="container_ids" 
+                                                        multiple="multiple" 
+                                                        size="10"
+                                                        required="required">
+                                                    <t t-foreach="containers" t-as="container">
+                                                        <option t-att-value="container.id">
+                                                            <t t-esc="container.name"/> - <t t-esc="container.container_number"/>
+                                                            <t t-if="container.location_id"> (<t t-esc="container.location_id.name"/>)</t>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                                <small class="form-text text-muted">
+                                                    Hold Ctrl (Cmd on Mac) to select multiple containers
+                                                </small>
+                                            </div>
+                                        </t>
+                                        
+                                        <t t-if="request_type == 'scanning'">
+                                            <div class="form-group mb-3">
+                                                <label for="file_ids" class="form-label">Select Files to Scan *</label>
+                                                <select class="form-control" 
+                                                        id="file_ids" 
+                                                        name="file_ids" 
+                                                        multiple="multiple" 
+                                                        size="10"
+                                                        required="required">
+                                                    <t t-foreach="files" t-as="file">
+                                                        <option t-att-value="file.id">
+                                                            <t t-esc="file.name"/>
+                                                            <t t-if="file.container_id"> (Container: <t t-esc="file.container_id.name"/>)</t>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                                <small class="form-text text-muted">
+                                                    Hold Ctrl (Cmd on Mac) to select multiple files
+                                                </small>
+                                            </div>
+                                        </t>
+                                        
+                                        <!-- Requested Date -->
+                                        <div class="form-group mb-3">
+                                            <label for="requested_date" class="form-label">Needed By Date</label>
+                                            <input type="date" 
+                                                   class="form-control" 
+                                                   id="requested_date" 
+                                                   name="requested_date"/>
+                                        </div>
+                                        
+                                        <!-- Special Instructions -->
+                                        <div class="form-group mb-3">
+                                            <label for="notes" class="form-label">Special Instructions / Notes</label>
+                                            <textarea class="form-control" 
+                                                      id="notes" 
+                                                      name="notes" 
+                                                      rows="4"
+                                                      placeholder="Any special instructions or notes for this request"></textarea>
+                                        </div>
+                                        
+                                        <!-- Submit Buttons -->
+                                        <div class="form-group mt-4">
+                                            <button type="submit" class="btn btn-primary btn-lg">
+                                                <i class="fa fa-paper-plane"></i> Submit Request
+                                            </button>
+                                            <a href="/my/containers" class="btn btn-secondary btn-lg ml-2">
+                                                <i class="fa fa-times"></i> Cancel
+                                            </a>
+                                        </div>
+                                    </form>
+                                    
+                                    <!-- Help Section -->
+                                    <div class="mt-4 pt-3 border-top">
+                                        <h6 class="text-muted">
+                                            <i class="fa fa-question-circle"></i> Need Help?
+                                        </h6>
+                                        <ul class="small text-muted">
+                                            <li>Select one or more items using Ctrl+Click (Cmd+Click on Mac)</li>
+                                            <li>Provide a clear description of what you need</li>
+                                            <li>We'll respond to your request within 1 business day</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
