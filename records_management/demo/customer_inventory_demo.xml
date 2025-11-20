@@ -147,6 +147,7 @@
         <!-- Main Warehouse Locations -->
         <record id="location_main_warehouse_a" model="stock.location">
             <field name="name">Records Section A</field>
+            <field name="barcode">MAIN-WH-A</field>
             <!-- location_id removed - causes recursive validation errors since records.location inherits stock.location -->
             <field name="usage">internal</field>
             <field name="building">Main Warehouse</field>
@@ -159,6 +160,7 @@
         
         <record id="location_main_warehouse_b" model="stock.location">
             <field name="name">Records Section B</field>
+            <field name="barcode">MAIN-WH-B</field>
             <!-- location_id removed - causes recursive validation errors since records.location inherits stock.location -->
             <field name="usage">internal</field>
             <field name="building">Main Warehouse</field>
@@ -171,6 +173,7 @@
         
         <record id="location_secure_vault" model="stock.location">
             <field name="name">Secure Records Vault</field>
+            <field name="barcode">SECURE-VAULT</field>
             <!-- location_id removed - causes recursive validation errors since records.location inherits stock.location -->
             <field name="usage">internal</field>
             <field name="building">Main Building</field>

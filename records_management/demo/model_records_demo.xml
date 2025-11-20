@@ -20,6 +20,7 @@
         <!-- Demo Storage Locations -->
         <record id="demo_location_warehouse_a" model="stock.location">
             <field name="name">Warehouse A - Secure Storage</field>
+            <field name="barcode">WHA-SEC</field>
             <field name="building">Building A</field>
             <field name="zone">Zone 1</field>
             <field name="max_capacity">10000</field>
@@ -27,6 +28,7 @@
 
         <record id="demo_location_warehouse_b" model="stock.location">
             <field name="name">Warehouse B - Bulk Storage</field>
+            <field name="barcode">WHB-BLK</field>
             <field name="building">Building B</field>
             <field name="zone">Zone 2</field>
             <field name="max_capacity">20000</field>
@@ -35,6 +37,7 @@
         <!-- Additional Locations for Intelligent Search Demo -->
         <record id="demo_location_warehouse_c" model="stock.location">
             <field name="name">Warehouse C - Legal Archives</field>
+            <field name="barcode">WHC-LEGAL</field>
             <field name="building">Building C</field>
             <field name="zone">Zone 3</field>
             <field name="max_capacity">15000</field>
@@ -42,6 +45,7 @@
 
         <record id="demo_location_warehouse_archive" model="stock.location">
             <field name="name">Archive Warehouse</field>
+            <field name="barcode">ARCHIVE-WH</field>
             <field name="building">Archive Building</field>
             <field name="zone">Archive Zone</field>
             <field name="max_capacity">50000</field>
@@ -49,6 +53,7 @@
 
         <record id="demo_location_vault" model="stock.location">
             <field name="name">Secure Vault</field>
+            <field name="barcode">SECURE-VAULT</field>
             <field name="building">Main Building</field>
             <field name="zone">Vault Zone</field>
             <field name="max_capacity">5000</field>
@@ -56,6 +61,7 @@
 
         <record id="demo_location_emergency_access" model="stock.location">
             <field name="name">Emergency Access Vault</field>
+            <field name="barcode">EMERGENCY-VAULT</field>
             <field name="building">Emergency Wing</field>
             <field name="zone">Emergency Zone</field>
             <field name="max_capacity">1000</field>
@@ -228,6 +234,8 @@
         <!-- Additional Demo Storage Locations -->
         <record id="demo_location_warehouse_d" model="stock.location">
             <field name="name">Warehouse D - Overflow Storage</field>
+            <field name="barcode">WHD-OVR</field>
+            <field name="comment">Overflow storage for seasonal spikes</field>
             <field name="building">Building D</field>
             <field name="zone">Zone 4</field>
             <field name="active">True</field>
@@ -235,6 +243,8 @@
         </record>
         <record id="demo_location_warehouse_archive_2" model="stock.location">
             <field name="name">Archive Warehouse 2</field>
+            <field name="barcode">ARCHIVE-WH-2</field>
+            <field name="comment">Secondary long-term archive storage</field>
             <field name="building">Archive Annex</field>
             <field name="zone">Archive Zone B</field>
             <field name="active">True</field>
@@ -242,6 +252,8 @@
         </record>
         <record id="demo_location_vault_2" model="stock.location">
             <field name="name">Secure Vault 2</field>
+            <field name="barcode">SECURE-VAULT-2</field>
+            <field name="comment">Secondary high-security vault</field>
             <field name="building">Main Building</field>
             <field name="zone">Vault Zone 2</field>
             <field name="active">True</field>
