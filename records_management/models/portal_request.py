@@ -141,6 +141,30 @@ class PortalRequest(models.Model):
         string='Selected Search Containers',
         help='Containers customer wants us to search through'
     )
+    
+    # Notification Preferences
+    notify_on_file_located = fields.Boolean(
+        string='Notify When File Located',
+        default=True,
+        help='Send notification when technician scans and locates the file'
+    )
+    notify_on_ready_for_delivery = fields.Boolean(
+        string='Notify When Ready for Delivery',
+        default=True,
+        help='Send notification when order is prepped and ready for transit'
+    )
+    notification_method = fields.Selection([
+        ('email', 'Email Only'),
+        ('sms', 'SMS/Text Only'),
+        ('both', 'Email and SMS'),
+        ('none', 'No Notifications'),
+    ], string='Notification Method', default='email', required=True)
+    
+    # Tracking Fields
+    file_located_date = fields.Datetime(string='File Located Date', readonly=True)
+    file_located_by = fields.Many2one(comodel_name='res.users', string='Located By', readonly=True)
+    ready_for_delivery_date = fields.Datetime(string='Ready for Delivery Date', readonly=True)
+    ready_for_delivery_by = fields.Many2one(comodel_name='res.users', string='Prepared By', readonly=True)
     shredding_service_id = fields.Many2one(
         'shredding.service',
         string='Shredding Service',
@@ -299,6 +323,126 @@ class PortalRequest(models.Model):
     # ============================================================================
     # BUSINESS LOGIC
     # ============================================================================
+    
+    def notify_file_located(self, file_name, location):
+        """Send notification when file is physically located and scanned."""
+        self.ensure_one()
+        
+        if not self.notify_on_file_located or self.notification_method == 'none':
+            return
+        
+        # Update tracking fields
+        self.write({
+            'file_located_date': fields.Datetime.now(),
+            'file_located_by': self.env.user.id,
+        })
+        
+        subject = _('File Located: %s') % file_name
+        message = _(
+            "Good news! We've located your file.\n\n"
+            "File: %s\n"
+            "Location: %s\n"
+            "Request: %s\n"
+            "Located by: %s on %s\n\n"
+            "Your request is being processed and will be ready for delivery soon."
+        ) % (
+            file_name,
+            location,
+            self.name,
+            self.env.user.name,
+            fields.Datetime.now().strftime('%m/%d/%Y %I:%M %p')
+        )
+        
+        # Send email notification
+        if self.notification_method in ['email', 'both']:
+            self.message_post(
+                body=message,
+                subject=subject,
+                message_type='notification',
+                subtype_xmlid='mail.mt_comment',
+                partner_ids=self.partner_id.ids,
+            )
+            # Send email to partner
+            mail_values = {
+                'subject': subject,
+                'body_html': message.replace('\n', '<br/>'),
+                'email_to': self.partner_id.email,
+                'auto_delete': False,
+            }
+            self.env['mail.mail'].sudo().create(mail_values).send()
+        
+        # Send SMS notification
+        if self.notification_method in ['sms', 'both'] and self.partner_id.mobile:
+            sms_message = _(
+                "File Located: %s at %s. Request %s is being processed. - Records Management"
+            ) % (file_name, location, self.name)
+            self.env['sms.sms'].sudo().create({
+                'number': self.partner_id.mobile,
+                'body': sms_message,
+            }).send()
+    
+    def notify_ready_for_delivery(self):
+        """Send notification when order is prepped and ready for transit."""
+        self.ensure_one()
+        
+        if not self.notify_on_ready_for_delivery or self.notification_method == 'none':
+            return
+        
+        # Update tracking fields
+        self.write({
+            'ready_for_delivery_date': fields.Datetime.now(),
+            'ready_for_delivery_by': self.env.user.id,
+        })
+        
+        # Count items ready
+        container_count = len(self.container_ids)
+        file_count = len(self.file_ids)
+        
+        subject = _('Order Ready for Delivery: %s') % self.name
+        message = _(
+            "Your order has been prepared and is ready for delivery!\n\n"
+            "Request: %s\n"
+            "Items Ready:\n"
+            "  - Containers: %d\n"
+            "  - Files: %d\n"
+            "Prepared by: %s on %s\n\n"
+            "Estimated delivery: [See delivery schedule]\n\n"
+            "Track your order at: /my/requests/%s"
+        ) % (
+            self.name,
+            container_count,
+            file_count,
+            self.env.user.name,
+            fields.Datetime.now().strftime('%m/%d/%Y %I:%M %p'),
+            self.id
+        )
+        
+        # Send email notification
+        if self.notification_method in ['email', 'both']:
+            self.message_post(
+                body=message,
+                subject=subject,
+                message_type='notification',
+                subtype_xmlid='mail.mt_comment',
+                partner_ids=self.partner_id.ids,
+            )
+            mail_values = {
+                'subject': subject,
+                'body_html': message.replace('\n', '<br/>'),
+                'email_to': self.partner_id.email,
+                'auto_delete': False,
+            }
+            self.env['mail.mail'].sudo().create(mail_values).send()
+        
+        # Send SMS notification
+        if self.notification_method in ['sms', 'both'] and self.partner_id.mobile:
+            sms_message = _(
+                "Order %s ready for delivery! %d containers, %d files. Track at: [portal link] - Records Management"
+            ) % (self.name, container_count, file_count)
+            self.env['sms.sms'].sudo().create({
+                'number': self.partner_id.mobile,
+                'body': sms_message,
+            }).send()
     
     @api.model
     def search_matching_containers(self, file_name, date_from=None, date_to=None, alpha_range=None, partner_id=None):

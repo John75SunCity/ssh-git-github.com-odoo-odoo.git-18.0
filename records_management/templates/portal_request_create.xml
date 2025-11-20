@@ -53,6 +53,15 @@
                                         <!-- Container/File Selection -->
                                         <t t-if="request_type == 'retrieval'">
                                             <div class="form-group mb-3">
+                                                <label for="container_search" class="form-label">Search Containers</label>
+                                                <input type="text" 
+                                                       class="form-control mb-2" 
+                                                       id="container_search" 
+                                                       placeholder="Type to search containers instantly..."/>
+                                                <small class="text-muted mb-2 d-block" id="container_search_info">
+                                                    Start typing to see instant results
+                                                </small>
+                                                
                                                 <label for="container_ids" class="form-label">Select Containers *</label>
                                                 <select class="form-control" 
                                                         id="container_ids" 
@@ -60,21 +69,30 @@
                                                         multiple="multiple" 
                                                         size="10"
                                                         required="required">
-                                                    <t t-foreach="containers" t-as="container">
+                                                    <t t-foreach="containers[:50]" t-as="container">
                                                         <option t-att-value="container.id">
-                                                            <t t-esc="container.name"/> - <t t-esc="container.container_number"/>
+                                                            <t t-esc="container.name"/> - <t t-esc="container.container_number or container.barcode"/>
                                                             <t t-if="container.location_id"> (<t t-esc="container.location_id.name"/>)</t>
                                                         </option>
                                                     </t>
                                                 </select>
                                                 <small class="form-text text-muted">
-                                                    Hold Ctrl (Cmd on Mac) to select multiple containers
+                                                    Hold Ctrl (Cmd on Mac) to select multiple. Showing first 50 - use search to find more.
                                                 </small>
                                             </div>
                                         </t>
                                         
                                         <t t-if="request_type == 'scanning'">
                                             <div class="form-group mb-3">
+                                                <label for="file_search" class="form-label">Search Files</label>
+                                                <input type="text" 
+                                                       class="form-control mb-2" 
+                                                       id="file_search" 
+                                                       placeholder="Type to search files instantly..."/>
+                                                <small class="text-muted mb-2 d-block" id="file_search_info">
+                                                    Start typing to see instant results
+                                                </small>
+                                                
                                                 <label for="file_ids" class="form-label">Select Files to Scan *</label>
                                                 <select class="form-control" 
                                                         id="file_ids" 
@@ -82,7 +100,7 @@
                                                         multiple="multiple" 
                                                         size="10"
                                                         required="required">
-                                                    <t t-foreach="files" t-as="file">
+                                                    <t t-foreach="files[:50]" t-as="file">
                                                         <option t-att-value="file.id">
                                                             <t t-esc="file.name"/>
                                                             <t t-if="file.container_id"> (Container: <t t-esc="file.container_id.name"/>)</t>
@@ -90,7 +108,7 @@
                                                     </t>
                                                 </select>
                                                 <small class="form-text text-muted">
-                                                    Hold Ctrl (Cmd on Mac) to select multiple files
+                                                    Hold Ctrl (Cmd on Mac) to select multiple. Showing first 50 - use search to find more.
                                                 </small>
                                             </div>
                                         </t>
@@ -112,6 +130,39 @@
                                                       name="notes" 
                                                       rows="4"
                                                       placeholder="Any special instructions or notes for this request"></textarea>
+                                        </div>
+                                        
+                                        <!-- Notification Preferences -->
+                                        <div class="border rounded p-3 mb-3 bg-light">
+                                            <h6 class="text-primary mb-3">
+                                                <i class="fa fa-bell"></i> Notification Preferences
+                                            </h6>
+                                            
+                                            <div class="form-group mb-3">
+                                                <label for="notification_method" class="form-label">Notification Method</label>
+                                                <select class="form-control" id="notification_method" name="notification_method">
+                                                    <option value="email" selected="selected">Email Only</option>
+                                                    <option value="sms">SMS/Text Only</option>
+                                                    <option value="both">Email and SMS</option>
+                                                    <option value="none">No Notifications</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="form-check mb-2">
+                                                <input type="checkbox" 
+                                                       class="form-check-input" 
+                                                       id="notify_on_ready_for_delivery" 
+                                                       name="notify_on_ready_for_delivery"
+                                                       value="1"
+                                                       checked="checked"/>
+                                                <label class="form-check-label" for="notify_on_ready_for_delivery">
+                                                    <strong>Notify when ready for delivery</strong>
+                                                    <br/>
+                                                    <small class="text-muted">
+                                                        Get notified when your order is prepped and ready for transit
+                                                    </small>
+                                                </label>
+                                            </div>
                                         </div>
                                         
                                         <!-- Submit Buttons -->
@@ -141,6 +192,124 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Instant Search JavaScript -->
+                <script type="text/javascript">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        let containerSearchTimeout;
+                        let fileSearchTimeout;
+                        let containerOffset = 0;
+                        let fileOffset = 0;
+                        
+                        // Container instant search
+                        const containerSearch = document.getElementById('container_search');
+                        const containerSelect = document.getElementById('container_ids');
+                        const containerInfo = document.getElementById('container_search_info');
+                        
+                        if (containerSearch &amp;&amp; containerSelect) {
+                            containerSearch.addEventListener('input', function() {
+                                clearTimeout(containerSearchTimeout);
+                                const query = this.value;
+                                
+                                if (query.length &lt; 2) {
+                                    containerInfo.textContent = 'Type at least 2 characters to search';
+                                    return;
+                                }
+                                
+                                containerInfo.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Searching...';
+                                
+                                containerSearchTimeout = setTimeout(function() {
+                                    fetch('/my/containers/search', {
+                                        method: 'POST',
+                                        headers: {'Content-Type': 'application/json'},
+                                        body: JSON.stringify({
+                                            jsonrpc: '2.0',
+                                            method: 'call',
+                                            params: {query: query, offset: 0, limit: 50}
+                                        })
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.result &amp;&amp; data.result.success) {
+                                            const containers = data.result.containers;
+                                            containerSelect.innerHTML = '';
+                                            
+                                            containers.forEach(function(container) {
+                                                const option = document.createElement('option');
+                                                option.value = container.id;
+                                                option.text = container.name + ' - ' + container.number;
+                                                if (container.location) {
+                                                    option.text += ' (' + container.location + ')';
+                                                }
+                                                containerSelect.add(option);
+                                            });
+                                            
+                                            containerInfo.textContent = 'Found ' + data.result.total + ' containers' + 
+                                                (data.result.has_more ? ' (showing first 50)' : '');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        containerInfo.textContent = 'Search failed: ' + error.message;
+                                    });
+                                }, 300); // 300ms debounce
+                            });
+                        }
+                        
+                        // File instant search
+                        const fileSearch = document.getElementById('file_search');
+                        const fileSelect = document.getElementById('file_ids');
+                        const fileInfo = document.getElementById('file_search_info');
+                        
+                        if (fileSearch &amp;&amp; fileSelect) {
+                            fileSearch.addEventListener('input', function() {
+                                clearTimeout(fileSearchTimeout);
+                                const query = this.value;
+                                
+                                if (query.length &lt; 2) {
+                                    fileInfo.textContent = 'Type at least 2 characters to search';
+                                    return;
+                                }
+                                
+                                fileInfo.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Searching...';
+                                
+                                fileSearchTimeout = setTimeout(function() {
+                                    fetch('/my/files/search', {
+                                        method: 'POST',
+                                        headers: {'Content-Type': 'application/json'},
+                                        body: JSON.stringify({
+                                            jsonrpc: '2.0',
+                                            method: 'call',
+                                            params: {query: query, offset: 0, limit: 50}
+                                        })
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.result &amp;&amp; data.result.success) {
+                                            const files = data.result.files;
+                                            fileSelect.innerHTML = '';
+                                            
+                                            files.forEach(function(file) {
+                                                const option = document.createElement('option');
+                                                option.value = file.id;
+                                                option.text = file.name;
+                                                if (file.container) {
+                                                    option.text += ' (Container: ' + file.container + ')';
+                                                }
+                                                fileSelect.add(option);
+                                            });
+                                            
+                                            fileInfo.textContent = 'Found ' + data.result.total + ' files' + 
+                                                (data.result.has_more ? ' (showing first 50)' : '');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        fileInfo.textContent = 'Search failed: ' + error.message;
+                                    });
+                                }, 300); // 300ms debounce
+                            });
+                        }
+                    });
+                </script>
             </t>
         </template>
     </data>

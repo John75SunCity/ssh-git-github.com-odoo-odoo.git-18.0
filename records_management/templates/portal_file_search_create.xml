@@ -131,6 +131,55 @@
                                                       placeholder="Any additional information that might help locate the file"></textarea>
                                         </div>
                                         
+                                        <!-- Notification Preferences -->
+                                        <div class="border rounded p-3 mb-3 bg-light">
+                                            <h6 class="text-primary mb-3">
+                                                <i class="fa fa-bell"></i> Notification Preferences
+                                            </h6>
+                                            
+                                            <div class="form-group mb-3">
+                                                <label for="notification_method" class="form-label">How would you like to be notified?</label>
+                                                <select class="form-control" id="notification_method" name="notification_method">
+                                                    <option value="email" selected="selected">Email Only</option>
+                                                    <option value="sms">SMS/Text Only</option>
+                                                    <option value="both">Email and SMS</option>
+                                                    <option value="none">No Notifications</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="form-check mb-2">
+                                                <input type="checkbox" 
+                                                       class="form-check-input" 
+                                                       id="notify_on_file_located" 
+                                                       name="notify_on_file_located"
+                                                       value="1"
+                                                       checked="checked"/>
+                                                <label class="form-check-label" for="notify_on_file_located">
+                                                    <strong>Notify when file is located</strong>
+                                                    <br/>
+                                                    <small class="text-muted">
+                                                        When our technician physically finds and scans the file
+                                                    </small>
+                                                </label>
+                                            </div>
+                                            
+                                            <div class="form-check mb-2">
+                                                <input type="checkbox" 
+                                                       class="form-check-input" 
+                                                       id="notify_on_ready_for_delivery" 
+                                                       name="notify_on_ready_for_delivery"
+                                                       value="1"
+                                                       checked="checked"/>
+                                                <label class="form-check-label" for="notify_on_ready_for_delivery">
+                                                    <strong>Notify when ready for delivery</strong>
+                                                    <br/>
+                                                    <small class="text-muted">
+                                                        When your complete order is prepped and ready for transit
+                                                    </small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
                                         <!-- Submit Buttons -->
                                         <div class="form-group mt-4">
                                             <button type="submit" class="btn btn-success btn-lg" id="submitBtn" disabled="disabled">

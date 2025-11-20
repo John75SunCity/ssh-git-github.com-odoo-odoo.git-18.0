@@ -3075,6 +3075,14 @@ class RecordsManagementController(http.Controller):
             if file_ids:
                 request_vals['file_ids'] = [(6, 0, [int(f) for f in file_ids if f])]
             
+            # Handle notification preferences
+            if post.get('notification_method'):
+                request_vals['notification_method'] = post.get('notification_method')
+            if post.get('notify_on_file_located'):
+                request_vals['notify_on_file_located'] = True
+            if post.get('notify_on_ready_for_delivery'):
+                request_vals['notify_on_ready_for_delivery'] = True
+            
             # Handle file search fields
             if request_type == 'file_search':
                 if post.get('search_file_name'):
@@ -3189,6 +3197,144 @@ class RecordsManagementController(http.Controller):
                 'error': str(e),
                 'containers': [],
                 'count': 0
+            }
+    
+    @http.route(['/my/containers/search'], type='json', auth='user', methods=['POST'])
+    def instant_container_search(self, query='', offset=0, limit=50, **kw):
+        \"\"\"
+        Chunked instant search for containers with indexed fields.
+        Handles large datasets (20,000+ containers) with pagination.
+        
+        Args:
+            query: Search string
+            offset: Starting record (for pagination)
+            limit: Number of records per chunk (default 50)
+        \"\"\"
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            
+            # Build search domain with indexed fields
+            domain = [('partner_id', '=', partner.id)]
+            
+            if query:
+                query = query.strip()
+                # Search across indexed fields: name, barcode, container_number, 
+                # alpha_range, content_description
+                domain.append('|')
+                domain.append('|')
+                domain.append('|')
+                domain.append('|')
+                domain.append(('name', 'ilike', query))
+                domain.append(('barcode', 'ilike', query))
+                domain.append(('container_number', 'ilike', query))
+                domain.append(('alpha_range', 'ilike', query))
+                domain.append(('content_description', 'ilike', query))
+            
+            Container = request.env['records.container'].sudo()
+            
+            # Get total count
+            total_count = Container.search_count(domain)
+            
+            # Get paginated results
+            containers = Container.search(
+                domain,
+                offset=offset,
+                limit=limit,
+                order='name asc'
+            )
+            
+            results = []
+            for container in containers:
+                results.append({
+                    'id': container.id,
+                    'name': container.name,
+                    'number': container.container_number or container.barcode or '',
+                    'location': container.location_id.name if container.location_id else '',
+                    'alpha_range': container.alpha_range or '',
+                    'date_range': '%s to %s' % (
+                        container.content_date_from.strftime('%m/%d/%Y') if container.content_date_from else 'N/A',
+                        container.content_date_to.strftime('%m/%d/%Y') if container.content_date_to else 'N/A'
+                    ),
+                    'contents': (container.content_description or '')[:100],  # Truncate for performance
+                })
+            
+            return {
+                'success': True,
+                'containers': results,
+                'count': len(results),
+                'total': total_count,
+                'has_more': (offset + limit) < total_count,
+                'next_offset': offset + limit if (offset + limit) < total_count else None
+            }
+            
+        except Exception as e:
+            _logger.error(f\"Instant container search failed: {str(e)}\")
+            return {
+                'success': False,
+                'error': str(e),
+                'containers': [],
+                'count': 0,
+                'total': 0
+            }
+    
+    @http.route(['/my/files/search'], type='json', auth='user', methods=['POST'])
+    def instant_file_search(self, query='', offset=0, limit=50, **kw):
+        \"\"\"
+        Chunked instant search for files with indexed fields.
+        Handles large datasets with pagination.
+        \"\"\"
+        try:
+            partner = request.env.user.partner_id.commercial_partner_id
+            
+            domain = [('partner_id', '=', partner.id)]
+            
+            if query:
+                query = query.strip()
+                domain.append('|')
+                domain.append('|')
+                domain.append(('name', 'ilike', query))
+                domain.append(('file_number', 'ilike', query))
+                domain.append(('description', 'ilike', query))
+            
+            File = request.env['records.file'].sudo()
+            
+            total_count = File.search_count(domain)
+            
+            files = File.search(
+                domain,
+                offset=offset,
+                limit=limit,
+                order='name asc'
+            )
+            
+            results = []
+            for file_rec in files:
+                results.append({
+                    'id': file_rec.id,
+                    'name': file_rec.name,
+                    'number': file_rec.file_number or '',
+                    'container': file_rec.container_id.name if file_rec.container_id else '',
+                    'container_id': file_rec.container_id.id if file_rec.container_id else None,
+                    'description': (file_rec.description or '')[:100],
+                })
+            
+            return {
+                'success': True,
+                'files': results,
+                'count': len(results),
+                'total': total_count,
+                'has_more': (offset + limit) < total_count,
+                'next_offset': offset + limit if (offset + limit) < total_count else None
+            }
+            
+        except Exception as e:
+            _logger.error(f\"Instant file search failed: {str(e)}\")
+            return {
+                'success': False,
+                'error': str(e),
+                'files': [],
+                'count': 0,
+                'total': 0
             }
 
     @http.route(['/my/requests/<int:request_id>/edit'], type='http', auth='user', website=True, methods=['POST'], csrf=True)

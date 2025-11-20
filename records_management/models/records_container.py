@@ -194,13 +194,35 @@ class RecordsContainer(models.Model):
         store=True,
         help="Computed display of the alphabetical range (e.g., 'A - G').",
     )
+    alpha_range = fields.Char(
+        string="Alpha Range (Searchable)",
+        compute="_compute_alpha_range_display",
+        store=True,
+        index=True,
+        help="Indexed field for fast searching. Same as alpha_range_display."
+    )
     content_date_from = fields.Date(
         string="Content Date From",
+        index=True,
         help="Earliest relevant content date contained in this container.",
     )
     content_date_to = fields.Date(
         string="Content Date To",
+        index=True,
         help="Latest relevant content date contained in this container.",
+    )
+    # Alias fields for search compatibility
+    date_range_start = fields.Date(
+        string="Date Range Start",
+        related="content_date_from",
+        store=True,
+        readonly=True
+    )
+    date_range_end = fields.Date(
+        string="Date Range End", 
+        related="content_date_to",
+        store=True,
+        readonly=True
     )
     content_date_range_display = fields.Char(
         string="Content Date Range",
@@ -529,15 +551,18 @@ class RecordsContainer(models.Model):
             end = (rec.alpha_range_end or "").strip()
             if start and end:
                 if start.upper() == end.upper():
-                    rec.alpha_range_display = start.upper()
+                    display_value = start.upper()
                 else:
-                    rec.alpha_range_display = "%s - %s" % (start.upper(), end.upper())
+                    display_value = "%s - %s" % (start.upper(), end.upper())
             elif start:
-                rec.alpha_range_display = start.upper()
+                display_value = start.upper()
             elif end:
-                rec.alpha_range_display = end.upper()
+                display_value = end.upper()
             else:
-                rec.alpha_range_display = False
+                display_value = False
+            
+            rec.alpha_range_display = display_value
+            rec.alpha_range = display_value  # For indexed searching
 
     @api.depends("content_date_from", "content_date_to")
     def _compute_content_date_range_display(self):
