@@ -132,12 +132,8 @@
                         </div>
                     </div>
                 </div>
-                    </div>
-                </div>
             </t>
-        </template>
-
-        <!-- Portal Certification Detail Page -->
+        </template>        <!-- Portal Certification Detail Page -->
         <template id="portal_certification_detail" name="Portal Certification Detail">
             <t t-call="portal.portal_layout">
                 <t t-set="breadcrumbs_searchbar" t-value="True"/>
