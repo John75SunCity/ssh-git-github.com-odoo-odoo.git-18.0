@@ -434,6 +434,14 @@
               action="action_records_container"
               sequence="10"/>
 
+    <!-- Container Calendar View -->
+    <menuitem id="menu_records_container_calendar"
+              name="Container Calendar"
+              parent="records_management.menu_records_operations"
+              action="records_management.action_records_container_calendar"
+              sequence="11"
+              groups="records_management.group_records_user"/>
+
         <menuitem id="menu_container_field_label_helper" name="Container Field Labels" parent="records_management.menu_records_operations" action="action_field_label_helper_wizard" sequence="12" groups="records_management.group_records_manager,records_management.group_records_admin" />
 
         <menuitem id="menu_records_documents" name="Files" parent="records_management.menu_records_operations" action="action_records_document" sequence="15" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />

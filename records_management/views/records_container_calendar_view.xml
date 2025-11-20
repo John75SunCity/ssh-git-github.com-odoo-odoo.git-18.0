@@ -56,12 +56,6 @@
         </field>
     </record>
 
-    <!-- Menu item for Calendar View -->
-    <menuitem id="menu_records_container_calendar"
-              name="Container Calendar"
-              parent="menu_records_management_root"
-              action="action_records_container_calendar"
-              sequence="25"
-              groups="records_management.group_records_user"/>
+    <!-- Menu item moved to records_container_menus.xml to load after root menus -->
 
 </odoo>
