@@ -15,8 +15,11 @@
                                 Digital Documents
                             </h3>
                             <div class="btn-group" role="group">
-                                <a href="/my/documents/upload" class="btn btn-light btn-sm">
-                                    <i class="fa fa-upload"></i> Upload Document
+                                <a href="/my/inventory/documents/create" class="btn btn-light btn-sm">
+                                    <i class="fa fa-file-plus"></i> Add Document
+                                </a>
+                                <a href="/my/bulk-upload" class="btn btn-light btn-sm ml-2">
+                                    <i class="fa fa-upload"></i> Bulk Import
                                 </a>
                             </div>
                         </div>
@@ -26,8 +29,11 @@
                                     <i class="fa fa-file-alt fa-3x mb-3 text-muted"></i>
                                     <h4>No Documents Found</h4>
                                     <p class="mb-3">You don't have any digital documents yet.</p>
-                                    <a href="/my/documents/upload" class="btn btn-primary">
-                                        <i class="fa fa-upload"></i> Upload Your First Document
+                                    <a href="/my/inventory/documents/create" class="btn btn-primary">
+                                        <i class="fa fa-file-plus"></i> Create Your First Document
+                                    </a>
+                                    <a href="/my/bulk-upload" class="btn btn-outline-primary ml-2">
+                                        <i class="fa fa-upload"></i> Bulk Import from Spreadsheet
                                     </a>
                                 </div>
                             </t>
