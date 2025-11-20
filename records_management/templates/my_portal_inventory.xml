@@ -332,61 +332,51 @@
                                     </thead>
                                     <tbody>
                                         <t t-foreach="inventory_records" t-as="record">
-                                            <tr t-att-class="'inventory-row ' + ('bg-light-success' if record.state == 'active' else 'bg-light-warning' if record.state == 'archived' else 'bg-light-danger' if record.state == 'destroyed' else '')"
-                                                t-att-data-id="record.id" t-att-data-type="record._name" t-att-data-status="record.state">
+                                            <tr t-att-class="'inventory-row ' + ('bg-light-success' if record.get('state') == 'active' else 'bg-light-warning' if record.get('state') == 'archived' else 'bg-light-danger' if record.get('state') == 'destroyed' else '')"
+                                                t-att-data-id="record.get('id')" t-att-data-type="record.get('model')" t-att-data-status="record.get('state')">
                                                 <td>
                                                     <div class="custom-control custom-checkbox">
                                                         <input type="checkbox" class="custom-control-input item-checkbox" 
-                                                               t-att-id="'item_' + str(record.id)" 
-                                                               t-att-value="record.id" 
+                                                               t-att-id="'item_' + str(record.get('id'))" 
+                                                               t-att-value="record.get('id')" 
                                                                onchange="updateSelection()"/>
-                                                        <label class="custom-control-label" t-att-for="'item_' + str(record.id)"></label>
+                                                        <label class="custom-control-label" t-att-for="'item_' + str(record.get('id'))"></label>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <strong t-esc="record.name"/>
+                                                    <strong t-esc="record.get('name')"/>
                                                     <br/>
-                                                    <small class="text-muted" t-esc="record.reference or ''"/>
+                                                    <small class="text-muted" t-esc="record.get('barcode') or ''"/>
                                                 </td>
                                                 <td>
-                                                    <span class="badge badge-info" t-esc="record._description or record._name"/>
+                                                    <span class="badge badge-info" t-esc="record.get('description') or record.get('type', '').title()"/>
                                                 </td>
                                                 <td>
-                                                    <t t-if="hasattr(record, 'box_id') and record.box_id">
-                                                        <span t-esc="record.box_id.name"/>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <span class="text-muted">N/A</span>
-                                                    </t>
+                                                    <span class="text-muted">N/A</span>
                                                 </td>
                                                 <td>
-                                                    <t t-if="hasattr(record, 'location_id') and record.location_id">
-                                                        <span t-esc="record.location_id.complete_name"/>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <span class="text-muted">N/A</span>
-                                                    </t>
+                                                    <span t-esc="record.get('location') or 'N/A'"/>
                                                 </td>
                                                 <td>
-                                                    <span t-att-class="'badge badge-' + ('success' if record.state == 'active' else 'warning' if record.state == 'archived' else 'danger' if record.state == 'destroyed' else 'secondary')"
-                                                          t-esc="record.state.replace('_', ' ').title()"/>
+                                                    <span t-att-class="'badge badge-' + ('success' if record.get('state') == 'active' else 'warning' if record.get('state') == 'archived' else 'danger' if record.get('state') == 'destroyed' else 'secondary')"
+                                                          t-esc="(record.get('state') or 'active').replace('_', ' ').title()"/>
                                                 </td>
                                                 <td>
-                                                    <span t-esc="record.create_date" t-options="{'widget': 'datetime'}"/>
+                                                    <span t-esc="record.get('date')" t-options="{'widget': 'datetime'}"/>
                                                 </td>
                                                 <td>
                                                     <div class="btn-group btn-group-sm">
                                                         <button class="btn btn-outline-primary btn-sm" 
-                                                                t-att-onclick="'viewDetails(' + str(record.id) + ')'">
+                                                                t-att-onclick="'viewDetails(' + str(record.get('id')) + ')'">
                                                             <i class="fa fa-eye"></i>
                                                         </button>
                                                         <button class="btn btn-outline-warning btn-sm" 
-                                                                t-att-onclick="'requestPickup(' + str(record.id) + ')'">
+                                                                t-att-onclick="'requestPickup(' + str(record.get('id')) + ')'">
                                                             <i class="fa fa-truck"></i>
                                                         </button>
                                                         <button class="btn btn-outline-danger btn-sm" 
-                                                                t-att-onclick="'requestDestruction(' + str(record.id) + ')'"
-                                                                t-if="record.state != 'destroyed'">
+                                                                t-att-onclick="'requestDestruction(' + str(record.get('id')) + ')'"
+                                                                t-if="record.get('state') != 'destroyed'">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </div>
