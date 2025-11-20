@@ -424,7 +424,7 @@
                                     <tbody>
                                         <t t-foreach="request.env['frontdesk.visitor'].search([('partner_id', '=', request.env.user.partner_id.id)])" t-as="visit">
                                             <tr>
-                                                <td t-field="visit.check_in" t-options="{'widget': 'date'}"/>
+                                                <td><t t-esc="visit.check_in.strftime('%Y-%m-%d %H:%M') if visit.check_in else '-'"/></td>
                                                 <td>
                                                     <t t-if="visit.is_shred_customer">
                                                         <span class="badge badge-success">Shredding Service</span>

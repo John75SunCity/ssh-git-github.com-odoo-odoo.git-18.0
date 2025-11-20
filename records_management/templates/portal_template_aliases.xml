@@ -185,7 +185,7 @@
                                     <tbody>
                                         <t t-foreach="movements" t-as="move">
                                             <tr>
-                                                <td t-field="move.date"/>
+                                                <td><t t-esc="move.date.strftime('%Y-%m-%d %H:%M') if move.date else '-'"/></td>
                                                 <td t-esc="move.location_id.name if move.location_id else '-'"/>
                                                 <td t-esc="move.location_dest_id.name if move.location_dest_id else '-'"/>
                                                 <td t-esc="move.product_uom_qty"/>
