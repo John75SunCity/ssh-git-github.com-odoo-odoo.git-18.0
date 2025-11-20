@@ -260,6 +260,12 @@ class RecordsFile(models.Model):
             if not file.temp_barcode and not file.barcode:
                 file.temp_barcode = self.env['ir.sequence'].next_by_code('records.file.temp.barcode') or f"FILE-{file.id}"
             
+            # Auto-create draft staging location if file is in draft and has no container
+            if file.state == 'draft' and not file.container_id and file.partner_id:
+                draft_location = self._get_or_create_draft_staging_location(file.partner_id)
+                if draft_location and not file.staging_location_id:
+                    file.staging_location_id = draft_location.id
+            
             # If container specified and file needs inventory tracking
             if file.container_id and file.container_id.quant_id and file.barcode:
                 # Create stock.quant for this file (only if barcode assigned)
@@ -277,6 +283,38 @@ class RecordsFile(models.Model):
                     file.state = 'stored'
         
         return files
+    
+    def _get_or_create_draft_staging_location(self, partner):
+        """
+        Get or create a virtual staging location for draft files.
+        
+        Naming pattern: [Partner Name] / Draft Files
+        Example: "City of El Paso / Draft Files"
+        
+        This provides a default location for files in draft state before they're
+        assigned to physical containers.
+        """
+        if not partner:
+            return False
+        
+        # Search for existing draft location
+        draft_location = self.env['customer.staging.location'].search([
+            ('partner_id', '=', partner.id),
+            ('name', '=', 'Draft Files'),
+        ], limit=1)
+        
+        if draft_location:
+            return draft_location
+        
+        # Create new draft staging location
+        draft_location = self.env['customer.staging.location'].create({
+            'name': 'Draft Files',
+            'partner_id': partner.id,
+            'description': 'Auto-created virtual location for draft files awaiting container assignment',
+            'active': True,
+        })
+        
+        return draft_location
     
     def _get_default_product(self):
         """Get or create the default 'File Folder' product"""

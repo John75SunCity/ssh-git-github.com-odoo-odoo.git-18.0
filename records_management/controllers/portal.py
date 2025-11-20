@@ -1592,7 +1592,7 @@ class RecordsManagementController(http.Controller):
                     'name': file_folder.name,
                     'barcode': file_folder.barcode,
                     'description': f"File Folder - {file_folder.description or 'No description'}",
-                    'location': file_folder.current_location_id.name if file_folder.current_location_id else 'Unknown',
+                    'location': file_folder.location_id.name if file_folder.location_id else 'Unknown',
                     'date': file_folder.create_date,
                     'state': file_folder.state or 'active',
                     'model': 'records.file',

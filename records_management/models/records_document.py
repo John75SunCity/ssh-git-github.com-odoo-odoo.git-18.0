@@ -386,10 +386,10 @@ class RecordsDocument(models.Model):
             })
         if 'state' in vals:
             for record in self:
-                record.message_post_with_view(
-                    'mail.message_origin_link',
-                    values={'self': record, 'origin': record.state, 'edit': True},
-                    subtype_id=self.env.ref('mail.mt_note').id)
+                record.message_post(
+                    body=_("Document state changed to: %s") % dict(self._fields['state'].selection).get(record.state),
+                    subtype_id=self.env.ref('mail.mt_note').id
+                )
         return super().write(vals)
 
     def unlink(self):

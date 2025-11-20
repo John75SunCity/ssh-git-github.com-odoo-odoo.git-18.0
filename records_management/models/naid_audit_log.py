@@ -29,6 +29,14 @@ class NAIDAuditLog(models.Model):
         ('export', 'Data Export'),
         ('user_invited', 'User Invited'),
         ('department_created', 'Department Created'),
+        ('bulk_container_update', 'Bulk Container Update'),
+        ('container_created', 'Container Created'),
+        ('container_updated', 'Container Updated'),
+        ('container_move_requested', 'Container Move Requested'),
+        ('file_created', 'File Created'),
+        ('file_updated', 'File Updated'),
+        ('document_added_to_file', 'Document Added to File'),
+        ('document_created_in_file', 'Document Created in File'),
         ('other', 'Other'),
     ], string='Action Type', required=True, readonly=True)
 
