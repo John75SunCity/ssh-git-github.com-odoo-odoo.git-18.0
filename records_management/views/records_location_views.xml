@@ -8,7 +8,7 @@
                 <kanban default_group_by="usage" class="o_kanban_location_dashboard">
                     <field name="name" />
                     <field name="usage" />
-                    <field name="storage_capacity" />
+                    <field name="max_capacity" />
                     <field name="active" />
                     <templates>
                         <t t-name="card">
@@ -44,7 +44,7 @@
                                                 <div class="text-right">
                                                     <span class="badge badge-info">
                                                         Capacity:
-                                                        <field name="storage_capacity" />
+                                                        <field name="max_capacity" />
                                                     </span>
                                                 </div>
                                             </div>
@@ -85,7 +85,7 @@
                     <field name="name" string="Location Name" />
                     <field name="location_id" string="Parent Location" optional="show"/>
                     <field name="usage" string="Type" />
-                    <field name="storage_capacity" string="Capacity" />
+                    <field name="max_capacity" string="Capacity" />
                     <field name="active" string="Active" />
                     <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link" />
                 </list>
@@ -101,7 +101,7 @@
                 <hierarchy string="Location Hierarchy" parent_field="location_id" child_field="child_ids">
                     <field name="name"/>
                     <field name="usage"/>
-                    <field name="storage_capacity"/>
+                    <field name="max_capacity"/>
                     <field name="active"/>
                 </hierarchy>
             </field>
@@ -131,7 +131,7 @@
                                 <field name="location_id" string="Parent Location" />
                             </group>
                             <group string="Capacity">
-                                <field name="storage_capacity" />
+                                <field name="max_capacity" />
                             </group>
                         </group>
                         <notebook>
@@ -147,7 +147,7 @@
                             </page>
                             <page name="details" string="Details &amp; Notes">
                                 <group>
-                                    <field name="description" placeholder="Location description and special instructions..." />
+                                    <field name="comment" placeholder="Location description and special instructions..." />
                                     <field name="security_level" />
                                 </group>
                             </page>
@@ -166,7 +166,7 @@
             <field name="model">stock.location</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', '%s'), ('description', 'ilike', '%s')]" />
+                    <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', '%s'), ('comment', 'ilike', '%s')]" />
                     <field name="usage" />
                     <separator />
                     <filter name="active" string="Active Locations" domain="[('active', '=', True)]" />
