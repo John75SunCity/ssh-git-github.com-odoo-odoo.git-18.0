@@ -2693,7 +2693,7 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/inventory/document/<int:doc_id>/delete'], type='json', auth='user', methods=['POST'])
     def portal_document_delete(self, doc_id, **kw):
         """
-        Digital documents CAN be deleted by portal users (they're just metadata/attachments).
+        Digital documents CAN be deleted by portal users (they are just metadata/attachments).
         Physical inventory deletion is disabled - use destruction requests instead.
         """
         if not request.env.user.has_group('records_management.group_portal_department_admin'):
