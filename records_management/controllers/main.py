@@ -1128,7 +1128,7 @@ class RecordsManagementPortal(CustomerPortal):
         return partner.commercial_partner_id or partner
 
     def _get_retrieval_rates(self, partner):
-        base_rate = request.env['base.rate'].search([
+        base_rate = request.env['base.rate'].sudo().search([
             ('company_id', '=', request.env.company.id),
             ('active', '=', True)
         ], order='effective_date desc', limit=1)
@@ -1148,7 +1148,7 @@ class RecordsManagementPortal(CustomerPortal):
             custom_delivery_rate=0.0,
         )
 
-        negotiated_rate = request.env['customer.negotiated.rate'].search([
+        negotiated_rate = request.env['customer.negotiated.rate'].sudo().search([
             ('partner_id', '=', partner.id),
             ('active', '=', True),
             ('state', 'in', ['approved', 'active'])

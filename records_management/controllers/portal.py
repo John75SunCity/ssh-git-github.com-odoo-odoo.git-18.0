@@ -6382,8 +6382,8 @@ class RecordsManagementController(http.Controller):
                     'color': '#27ae60'  # Green connections
                 })
 
-            # Add child partners
-            children = request.env['res.partner'].search([
+            # Add child partners - use sudo() for portal user access
+            children = request.env['res.partner'].sudo().search([
                 ('parent_id', '=', p.id),
                 ('active', '=', True)
             ])
