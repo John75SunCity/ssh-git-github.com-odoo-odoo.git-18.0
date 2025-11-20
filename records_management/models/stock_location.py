@@ -163,6 +163,14 @@ class StockLocation(models.Model):
     # - location_id (parent location)
     # - child_ids (child locations)
     # - company_id
+    
+    # One2many reverse relationship for containers stored at this location
+    container_ids = fields.One2many(
+        comodel_name='records.container',
+        inverse_name='location_id',
+        string='Containers',
+        help='Containers currently stored at this location'
+    )
     # - usage (internal/customer/transit/etc.)
     
     quant_ids = fields.One2many(
