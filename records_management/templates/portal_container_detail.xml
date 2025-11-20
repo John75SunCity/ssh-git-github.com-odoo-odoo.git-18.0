@@ -91,15 +91,15 @@
                                             <table class="table table-sm">
                                                 <tr>
                                                     <th style="width: 40%;">Contents Type:</th>
-                                                    <td><t t-esc="container.contents_type or 'Not specified'"/></td>
+                                                    <td><t t-esc="container.primary_content_type or 'Not specified'"/></td>
                                                 </tr>
                                                 <tr>
                                                     <th>Description:</th>
                                                     <td><t t-esc="container.description or 'None'"/></td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Retention Period:</th>
-                                                    <td><t t-esc="container.retention_period or 'Not set'"/></td>
+                                                    <th>Retention Policy:</th>
+                                                    <td><t t-esc="container.retention_policy_id.name if container.retention_policy_id else 'Not set'"/></td>
                                                 </tr>
                                                 <tr>
                                                     <th>Files Count:</th>
