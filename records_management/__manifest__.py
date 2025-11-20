@@ -685,6 +685,9 @@
         "templates/portal_container_create.xml",
         "templates/portal_container_detail.xml",  # NEW: Container detail with edit/delete
         "templates/portal_container_movements.xml",  # NEW: Movement history timeline
+        # Customer Staging Locations (virtual locations before pickup)
+        "templates/portal_staging_locations.xml",
+        "templates/portal_staging_location_forms.xml",
         # File Templates
         "templates/portal_file_detail.xml",  # NEW: File detail with document list
         "templates/portal_file_create.xml",  # NEW: File creation form

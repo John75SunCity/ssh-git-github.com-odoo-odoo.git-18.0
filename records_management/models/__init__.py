@@ -57,6 +57,7 @@ from . import customer_inventory_report
 from . import customer_inventory_report_line
 from . import customer_inventory_report_model
 from . import customer_negotiated_rate
+from . import customer_staging_location
 from . import destruction_certificate
 # from . import destruction_certificate_report  # Removed - QWeb templates work without custom Python models
 from . import destruction_event

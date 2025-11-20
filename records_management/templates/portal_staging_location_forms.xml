@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Create Customer Staging Location -->
+    <template id="portal_staging_location_create" name="Create Staging Location">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Create Staging Location</t>
+            </t>
+
+            <div class="container mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">
+                                    <i class="fa fa-map-marker"></i> Create New Staging Location
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <form action="/my/inventory/location/create" method="POST">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    
+                                    <!-- Location Name -->
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Location Name *</label>
+                                        <input type="text" class="form-control" id="name" name="name" 
+                                               required="required"
+                                               placeholder="e.g., Basement, Room B-006, 3rd Floor"/>
+                                        <small class="form-text text-muted">
+                                            Short name for this location (e.g., floor, room number, area)
+                                        </small>
+                                    </div>
+
+                                    <!-- Parent Location (Optional) -->
+                                    <div class="mb-3">
+                                        <label for="parent_id" class="form-label">Parent Location (Optional)</label>
+                                        <select class="form-control" id="parent_id" name="parent_id">
+                                            <option value="">-- Top Level --</option>
+                                            <t t-foreach="parent_locations" t-as="parent">
+                                                <option t-att-value="parent.id">
+                                                    <t t-esc="parent.complete_name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                        <small class="form-text text-muted">
+                                            Create sub-locations by selecting a parent (e.g., "Basement" under "Main Building")
+                                        </small>
+                                    </div>
+
+                                    <!-- Location Type -->
+                                    <div class="mb-3">
+                                        <label for="location_type" class="form-label">Location Type</label>
+                                        <select class="form-control" id="location_type" name="location_type">
+                                            <option value="building">Building</option>
+                                            <option value="floor">Floor</option>
+                                            <option value="room">Room</option>
+                                            <option value="area">Area</option>
+                                            <option value="other" selected="selected">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Department (Optional) -->
+                                    <t t-if="departments">
+                                        <div class="mb-3">
+                                            <label for="department_id" class="form-label">Department (Optional)</label>
+                                            <select class="form-control" id="department_id" name="department_id">
+                                                <option value="">-- None --</option>
+                                                <t t-foreach="departments" t-as="dept">
+                                                    <option t-att-value="dept.id">
+                                                        <t t-esc="dept.name"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                    </t>
+
+                                    <!-- Access Notes -->
+                                    <div class="mb-3">
+                                        <label for="notes" class="form-label">Access Notes (Optional)</label>
+                                        <textarea class="form-control" id="notes" name="notes" rows="3"
+                                                  placeholder="Special instructions for technicians (access codes, parking, contact person, etc.)"></textarea>
+                                        <small class="form-text text-muted">
+                                            Help technicians locate this area during pickup
+                                        </small>
+                                    </div>
+
+                                    <!-- Submit Buttons -->
+                                    <div class="d-flex justify-content-between">
+                                        <a href="/my/inventory/locations" class="btn btn-secondary">
+                                            <i class="fa fa-arrow-left"></i> Cancel
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa fa-save"></i> Create Location
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Example Card -->
+                        <div class="card mt-3">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0"><i class="fa fa-lightbulb-o"></i> Example Hierarchy</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Organizing containers by floor and room:</strong></p>
+                                <ul>
+                                    <li><strong>Main Building</strong> (Top level)
+                                        <ul>
+                                            <li><strong>Basement</strong> (Floor)
+                                                <ul>
+                                                    <li><strong>Room B-006</strong> (Room) - 15 containers here</li>
+                                                    <li><strong>Room B-012</strong> (Room) - 8 containers here</li>
+                                                </ul>
+                                            </li>
+                                            <li><strong>3rd Floor</strong> (Floor)
+                                                <ul>
+                                                    <li><strong>Archives Room</strong> (Room) - 23 containers here</li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <p class="mb-0 text-muted">
+                                    <small>Technicians will see: "Main Building/Basement/Room B-006" on pickup orders</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Staging Location Detail -->
+    <template id="portal_staging_location_detail" name="Staging Location Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title"><t t-esc="location.complete_name"/></t>
+            </t>
+
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- Header -->
+                        <div class="mb-4">
+                            <a href="/my/inventory/locations" class="btn btn-sm btn-outline-secondary mb-2">
+                                <i class="fa fa-arrow-left"></i> Back to Locations
+                            </a>
+                            <h3>
+                                <i class="fa fa-map-marker"></i> <t t-esc="location.complete_name"/>
+                            </h3>
+                            <p class="text-muted">
+                                <t t-esc="dict(location._fields['location_type'].selection).get(location.location_type, location.location_type)"/>
+                                <t t-if="location.department_id"> | <t t-esc="location.department_id.name"/></t>
+                            </p>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <h2 class="text-primary"><t t-esc="container_count"/></h2>
+                                        <p class="mb-0">Total Containers</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <h2 class="text-warning"><t t-esc="location.pending_pickup_count"/></h2>
+                                        <p class="mb-0">Pending Pickup</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <h2 class="text-info"><t t-esc="len(child_locations) - 1"/></h2>
+                                        <p class="mb-0">Sub-Locations</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Access Notes -->
+                        <t t-if="location.notes">
+                            <div class="alert alert-info">
+                                <h5><i class="fa fa-info-circle"></i> Access Notes for Technicians</h5>
+                                <p class="mb-0" t-esc="location.notes"/>
+                            </div>
+                        </t>
+
+                        <!-- Containers List -->
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-box"></i> Containers at This Location
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <t t-if="containers">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Box Number</th>
+                                                    <th>Barcode</th>
+                                                    <th>Status</th>
+                                                    <th>Contents</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="containers" t-as="container">
+                                                    <tr>
+                                                        <td><strong t-esc="container.name"/></td>
+                                                        <td>
+                                                            <t t-if="container.barcode">
+                                                                <i class="fa fa-barcode"></i> <t t-esc="container.barcode"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span class="text-muted">Not assigned</span>
+                                                            </t>
+                                                        </td>
+                                                        <td>
+                                                            <span t-att-class="'badge bg-%s' % ('warning' if container.state == 'draft' else 'success')">
+                                                                <t t-esc="container.state"/>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <t t-if="container.content_description">
+                                                                <t t-esc="container.content_description[:50]"/>
+                                                                <t t-if="len(container.content_description) > 50">...</t>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span class="text-muted">No description</span>
+                                                            </t>
+                                                        </td>
+                                                        <td>
+                                                            <a t-attf-href="/my/container/#{container.id}" class="btn btn-sm btn-outline-primary">
+                                                                <i class="fa fa-eye"></i> View
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="alert alert-warning text-center">
+                                        <p class="mb-0">No containers at this location yet.</p>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

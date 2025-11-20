@@ -5073,88 +5073,113 @@ class RecordsManagementController(http.Controller):
         return stats
 
     # ============================================================================
-    # ENHANCED STOCK LOCATION MANAGEMENT (PHASE 2 PREVIEW)
+    # CUSTOMER STAGING LOCATIONS (Virtual locations before pickup)
     # ============================================================================
 
     @http.route(['/my/inventory/locations'], type='http', auth='user', website=True)
-    def portal_stock_locations(self, **kw):
+    def portal_staging_locations(self, **kw):
         """
-        Stock location overview for portal users.
-        Shows locations where customer containers are stored.
+        Customer Staging Locations - Virtual locations for organizing containers before pickup.
+        
+        Allows customers to:
+        - Create hierarchical locations (Company/Dept/Floor/Room)
+        - Assign containers to locations
+        - Provide pickup instructions to technicians
         """
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id.commercial_partner_id
 
-        # Get locations with customer containers (Security Layer Pattern)
-        Container = request.env['records.container'].sudo()
-        containers = Container.search([('partner_id', '=', partner.id), ('quant_id', '!=', False)])
+        # Get customer's staging locations
+        StagingLocation = request.env['customer.staging.location']
+        staging_locations = StagingLocation.search([
+            ('partner_id', '=', partner.id)
+        ], order='complete_name asc')
 
-        # Group by location
-        location_data = {}
-        for container in containers:
-            location = container.current_location_id
-            if location:
-                if location.id not in location_data:
-                    location_data[location.id] = {
-                        'location': location,
-                        'containers': [],
-                        'total_containers': 0,
-                        'last_activity': False,
-                    }
-                location_data[location.id]['containers'].append(container)
-                location_data[location.id]['total_containers'] += 1
-
-                # Update last activity
-                if container.last_movement_date:
-                    current_last = location_data[location.id]['last_activity']
-                    if not current_last or container.last_movement_date > current_last:
-                        location_data[location.id]['last_activity'] = container.last_movement_date
+        # Get root-level locations (no parent)
+        root_locations = staging_locations.filtered(lambda l: not l.parent_id)
 
         values.update({
-            'location_data': list(location_data.values()),
-            'page_name': 'stock_locations',
-            'total_locations': len(location_data),
+            'staging_locations': staging_locations,
+            'root_locations': root_locations,
+            'page_name': 'staging_locations',
+            'total_locations': len(staging_locations),
         })
 
-        return request.render("records_management.portal_stock_locations", values)
-
+        return request.render("records_management.portal_staging_locations", values)
+    
+    @http.route(['/my/inventory/location/create'], type='http', auth='user', website=True, methods=['GET', 'POST'])
+    def portal_staging_location_create(self, **post):
+        """Create new customer staging location"""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        if request.httprequest.method == 'POST':
+            # Create location
+            StagingLocation = request.env['customer.staging.location']
+            
+            vals = {
+                'name': post.get('name'),
+                'partner_id': partner.id,
+                'department_id': int(post.get('department_id')) if post.get('department_id') else False,
+                'parent_id': int(post.get('parent_id')) if post.get('parent_id') else False,
+                'location_type': post.get('location_type', 'other'),
+                'notes': post.get('notes', ''),
+            }
+            
+            location = StagingLocation.create(vals)
+            
+            return request.redirect('/my/inventory/locations?created=%s' % location.id)
+        
+        # GET - show form
+        values = self._prepare_portal_layout_values()
+        
+        # Get available parent locations
+        StagingLocation = request.env['customer.staging.location']
+        parent_locations = StagingLocation.search([
+            ('partner_id', '=', partner.id)
+        ], order='complete_name asc')
+        
+        # Get departments
+        departments = request.env['records.department'].search([
+            ('partner_id', '=', partner.id)
+        ])
+        
+        values.update({
+            'parent_locations': parent_locations,
+            'departments': departments,
+            'page_name': 'create_staging_location',
+        })
+        
+        return request.render("records_management.portal_staging_location_create", values)
+    
     @http.route(['/my/inventory/location/<int:location_id>'], type='http', auth='user', website=True)
-    def portal_location_detail(self, location_id, **kw):
-        """Detailed view of containers at a specific location"""
-        location = request.env['stock.location'].sudo().browse(location_id)
+    def portal_staging_location_detail(self, location_id, **kw):
+        """View containers at a specific staging location"""
+        location = request.env['customer.staging.location'].browse(location_id)
         partner = request.env.user.partner_id.commercial_partner_id
 
-        if not location.exists():
+        if not location.exists() or location.partner_id != partner:
             return request.not_found()
 
-        # Get customer containers at this location (Security Layer Pattern)
-        Container = request.env['records.container'].sudo()
-        containers = Container.search([
-            ('partner_id', '=', partner.id),
-            ('current_location_id', '=', location_id)
+        # Get containers at this location and child locations
+        child_locations = request.env['customer.staging.location'].search([
+            ('id', 'child_of', location.id)
         ])
+        
+        Container = request.env['records.container']
+        containers = Container.search([
+            ('customer_staging_location_id', 'in', child_locations.ids)
+        ], order='name asc')
 
-        # If no containers, redirect back
-        if not containers:
-            return request.redirect('/my/inventory/locations')
-
-        # Get recent movements for this location
-        Movement = request.env['records.stock.movement'].sudo()
-        recent_movements = Movement.search([
-            ('partner_id', '=', partner.id),
-            ('to_location_id', '=', location_id),
-            ('is_portal_visible', '=', True)
-        ], order='movement_date desc', limit=10)
-
-        values = {
+        values = self._prepare_portal_layout_values()
+        values.update({
             'location': location,
             'containers': containers,
-            'recent_movements': recent_movements,
-            'page_name': 'location_detail',
+            'child_locations': child_locations,
+            'page_name': 'staging_location_detail',
             'container_count': len(containers),
-        }
+        })
 
-        return request.render("records_management.portal_location_detail", values)
+        return request.render("records_management.portal_staging_location_detail", values)
 
     # ============================================================================
     # DOCUMENT RETRIEVAL PORTAL ROUTES

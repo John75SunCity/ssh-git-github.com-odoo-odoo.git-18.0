@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Customer Staging Locations - Virtual locations for organizing containers before pickup -->
+    <template id="portal_staging_locations" name="My Staging Locations">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Staging Locations</t>
+            </t>
+
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3>
+                                <i class="fa fa-map-marker"></i> My Staging Locations
+                                <small class="text-muted">(<t t-esc="total_locations"/> locations)</small>
+                            </h3>
+                            <a href="/my/inventory/location/create" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> Create New Location
+                            </a>
+                        </div>
+
+                        <!-- Info Card -->
+                        <div class="alert alert-info">
+                            <h5><i class="fa fa-info-circle"></i> About Staging Locations</h5>
+                            <p class="mb-0">
+                                Create virtual locations to organize your containers before pickup. 
+                                Examples: "Basement/Room B-006", "3rd Floor/Archives", etc.
+                                Technicians will use these locations to find your containers during scheduled pickups.
+                            </p>
+                        </div>
+
+                        <!-- Locations Tree -->
+                        <t t-if="root_locations">
+                            <div class="card">
+                                <div class="card-body">
+                                    <t t-foreach="root_locations" t-as="location">
+                                        <t t-call="records_management.staging_location_tree_item"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="alert alert-warning text-center">
+                                <h5>No staging locations yet</h5>
+                                <p>Create your first location to organize containers before pickup.</p>
+                                <a href="/my/inventory/location/create" class="btn btn-primary">
+                                    <i class="fa fa-plus"></i> Create First Location
+                                </a>
+                            </div>
+                        </t>
+
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Recursive tree item for hierarchical display -->
+    <template id="staging_location_tree_item" name="Staging Location Tree Item">
+        <div class="location-tree-item mb-3">
+            <div class="d-flex justify-content-between align-items-center p-3 border rounded bg-light">
+                <div>
+                    <h5 class="mb-1">
+                        <i t-att-class="'fa fa-%s' % ('building' if location.location_type == 'building' else 'map-marker')"></i>
+                        <t t-esc="location.name"/>
+                        <span t-if="location.location_type" class="badge badge-secondary ms-2">
+                            <t t-esc="dict(location._fields['location_type'].selection).get(location.location_type, location.location_type)"/>
+                        </span>
+                    </h5>
+                    <small class="text-muted">
+                        <i class="fa fa-box"></i> <t t-esc="location.container_count"/> containers
+                        <t t-if="location.pending_pickup_count > 0">
+                            | <span class="text-warning">
+                                <i class="fa fa-clock-o"></i> <t t-esc="location.pending_pickup_count"/> pending pickup
+                            </span>
+                        </t>
+                    </small>
+                </div>
+                <div>
+                    <a t-attf-href="/my/inventory/location/#{location.id}" class="btn btn-sm btn-outline-primary">
+                        <i class="fa fa-eye"></i> View
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Child locations -->
+            <t t-if="location.child_ids">
+                <div class="ms-4 mt-2">
+                    <t t-foreach="location.child_ids" t-as="location">
+                        <t t-call="records_management.staging_location_tree_item"/>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </template>
+</odoo>

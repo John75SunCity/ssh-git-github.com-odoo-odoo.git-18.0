@@ -9,7 +9,7 @@
                     <t t-elif="request_type == 'scanning'">Request Document Scanning</t>
                     <t t-else="">New Service Request</t>
                 </t>
-                
+
                 <div class="container my-4">
                     <div class="row justify-content-center">
                         <div class="col-lg-8">
@@ -22,23 +22,23 @@
                                         <t t-else="">Service Request</t>
                                     </h3>
                                 </div>
-                                
+
                                 <div class="card-body">
                                     <form t-attf-action="/my/request/new/#{request_type}" method="POST" enctype="multipart/form-data">
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                         <input type="hidden" name="request_type" t-att-value="request_type"/>
-                                        
+
                                         <!-- Request Name -->
                                         <div class="form-group mb-3">
                                             <label for="name" class="form-label">Request Title *</label>
-                                            <input type="text" 
-                                                   class="form-control" 
-                                                   id="name" 
-                                                   name="name" 
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="name"
+                                                   name="name"
                                                    required="required"
                                                    t-att-placeholder="'Describe your ' + request_type + ' request'"/>
                                         </div>
-                                        
+
                                         <!-- Department Selection -->
                                         <div class="form-group mb-3">
                                             <label for="department_id" class="form-label">Department *</label>
@@ -49,24 +49,24 @@
                                                 </t>
                                             </select>
                                         </div>
-                                        
+
                                         <!-- Container/File Selection -->
                                         <t t-if="request_type == 'retrieval'">
                                             <div class="form-group mb-3">
                                                 <label for="container_search" class="form-label">Search Containers</label>
-                                                <input type="text" 
-                                                       class="form-control mb-2" 
-                                                       id="container_search" 
+                                                <input type="text"
+                                                       class="form-control mb-2"
+                                                       id="container_search"
                                                        placeholder="Type to search containers instantly..."/>
                                                 <small class="text-muted mb-2 d-block" id="container_search_info">
                                                     Start typing to see instant results
                                                 </small>
-                                                
+
                                                 <label for="container_ids" class="form-label">Select Containers *</label>
-                                                <select class="form-control" 
-                                                        id="container_ids" 
-                                                        name="container_ids" 
-                                                        multiple="multiple" 
+                                                <select class="form-control"
+                                                        id="container_ids"
+                                                        name="container_ids"
+                                                        multiple="multiple"
                                                         size="10"
                                                         required="required">
                                                     <t t-foreach="containers[:50]" t-as="container">

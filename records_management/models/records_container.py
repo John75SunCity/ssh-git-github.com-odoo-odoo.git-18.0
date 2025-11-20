@@ -83,6 +83,17 @@ class RecordsContainer(models.Model):
         help="The customer company for whom this container is being managed. Internal users can select any customer; portal users are restricted to their own company.",
     )
     department_id = fields.Many2one("records.department", string="Department", tracking=True)
+    
+    # Customer Staging Location (before pickup)
+    customer_staging_location_id = fields.Many2one(
+        comodel_name='customer.staging.location',
+        string='Customer Staging Location',
+        tracking=True,
+        domain="[('partner_id', '=', partner_id)]",
+        help="Virtual location at customer site where container is staged before pickup.\n"
+             "Examples: 'City of EP/Records Dept/Basement/Room B-006'\n"
+             "Technicians use this to locate containers during pickup."
+    )
 
     # ============================================================================
     # LOCATION TRACKING - Native Odoo Stock Integration
