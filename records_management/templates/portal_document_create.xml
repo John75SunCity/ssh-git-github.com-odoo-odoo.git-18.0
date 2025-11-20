@@ -36,7 +36,7 @@
                                                 <t t-foreach="files" t-as="file">
                                                     <option t-att-value="file.id">
                                                         <t t-esc="file.name"/>
-                                                        <t t-if="file.container_id"> (Container: <t t-esc="file.container_id.name or file.container_id.container_number"/>)</t>
+                                                        <t t-if="file.container_id"> (Container: <t t-esc="file.container_id.name"/>)</t>
                                                     </option>
                                                 </t>
                                             </select>

@@ -103,7 +103,7 @@
                                                     <th>Container:</th>
                                                     <td>
                                                         <a t-attf-href="/my/inventory/container/#{file.container_id.id}" t-if="file.container_id">
-                                                            <t t-esc="file.container_id.name or file.container_id.container_number"/>
+                                                            <t t-esc="file.container_id.name"/>
                                                         </a>
                                                         <span t-else="">Not assigned</span>
                                                     </td>
@@ -268,7 +268,7 @@
                                                 <option value="">-- Select Container --</option>
                                                 <t t-foreach="containers" t-as="cont">
                                                     <option t-att-value="cont.id" t-att-selected="'selected' if cont.id == file.container_id.id else None">
-                                                        <t t-esc="cont.name or cont.container_number"/>
+                                                        <t t-esc="cont.name"/>
                                                     </option>
                                                 </t>
                                             </select>

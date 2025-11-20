@@ -41,7 +41,7 @@
                                                 <option value="">-- Select Container --</option>
                                                 <t t-foreach="containers" t-as="container">
                                                     <option t-att-value="container.id">
-                                                        <t t-esc="container.name or container.container_number"/>
+                                                        <t t-esc="container.name"/>
                                                         <t t-if="container.location_id"> - <t t-esc="container.location_id.name"/></t>
                                                     </option>
                                                 </t>

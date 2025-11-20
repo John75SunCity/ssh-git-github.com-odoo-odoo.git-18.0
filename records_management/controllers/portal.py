@@ -3172,7 +3172,8 @@ class RecordsManagementController(http.Controller):
                 results.append({
                     'id': container.id,
                     'name': container.name,
-                    'number': container.container_number or container.barcode or '',
+                    'barcode': container.barcode or '',
+                    'temp_barcode': container.temp_barcode or '',
                     'location': container.location_id.name if container.location_id else '',
                     'alpha_range': container.alpha_range or '',
                     'date_range': '%s to %s' % (
@@ -3218,15 +3219,15 @@ class RecordsManagementController(http.Controller):
             
             if query:
                 query = query.strip()
-                # Search across indexed fields: name, barcode, container_number, 
-                # alpha_range, content_description
+                # Search across indexed fields: name (Box Number), barcode, temp_barcode,
+                # alpha_range, content_description for comprehensive instant search
                 domain.append('|')
                 domain.append('|')
                 domain.append('|')
                 domain.append('|')
                 domain.append(('name', 'ilike', query))
                 domain.append(('barcode', 'ilike', query))
-                domain.append(('container_number', 'ilike', query))
+                domain.append(('temp_barcode', 'ilike', query))
                 domain.append(('alpha_range', 'ilike', query))
                 domain.append(('content_description', 'ilike', query))
             
@@ -3248,7 +3249,8 @@ class RecordsManagementController(http.Controller):
                 results.append({
                     'id': container.id,
                     'name': container.name,
-                    'number': container.container_number or container.barcode or '',
+                    'barcode': container.barcode or '',
+                    'temp_barcode': container.temp_barcode or '',
                     'location': container.location_id.name if container.location_id else '',
                     'alpha_range': container.alpha_range or '',
                     'date_range': '%s to %s' % (

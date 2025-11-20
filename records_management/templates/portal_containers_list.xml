@@ -99,7 +99,7 @@
                                                    class="form-check-input container-checkbox" 
                                                    t-att-value="container.id"
                                                    t-att-data-name="container.name"
-                                                   t-att-data-number="container.container_number or container.barcode"/>
+                                                   t-att-data-barcode="container.barcode"/>
                                         </td>
                                         <td>
                                             <strong t-esc="container.name"/>

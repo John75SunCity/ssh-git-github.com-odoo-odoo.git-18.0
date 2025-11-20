@@ -98,7 +98,7 @@
                                                     <td>
                                                         <t t-if="document.file_id and document.file_id.container_id">
                                                             <a t-attf-href="/my/inventory/container/#{document.file_id.container_id.id}">
-                                                                <t t-esc="document.file_id.container_id.name or document.file_id.container_id.container_number"/>
+                                                                <t t-esc="document.file_id.container_id.name"/>
                                                             </a>
                                                         </t>
                                                         <span t-else="">Not assigned</span>

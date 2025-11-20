@@ -71,8 +71,8 @@
                                                         required="required">
                                                     <t t-foreach="containers[:50]" t-as="container">
                                                         <option t-att-value="container.id">
-                                                            <t t-esc="container.name"/> - <t t-esc="container.container_number or container.barcode"/>
-                                                            <t t-if="container.location_id"> (<t t-esc="container.location_id.name"/>)</t>
+                                                            <t t-esc="container.name"/><t t-if="container.barcode"> (Barcode: <t t-esc="container.barcode"/>)</t>
+                                                            <t t-if="container.location_id"> - <t t-esc="container.location_id.name"/></t>
                                                         </option>
                                                     </t>
                                                 </select>
