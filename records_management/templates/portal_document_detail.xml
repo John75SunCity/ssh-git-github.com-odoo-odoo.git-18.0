@@ -67,6 +67,20 @@
                                                     <td><t t-esc="document.document_type_id.name or 'Not specified'"/></td>
                                                 </tr>
                                                 <tr>
+                                                    <th>State:</th>
+                                                    <td>
+                                                        <t t-if="hasattr(document, 'state') and document.state">
+                                                            <t t-set="state_dict" t-value="dict([('draft', 'Draft'), ('processed', 'Processed'), ('approved', 'Approved'), ('archived', 'Archived')])"/>
+                                                            <span t-att-class="'badge badge-' + ('success' if document.state == 'approved' else 'warning' if document.state == 'draft' else 'info')">
+                                                                <t t-esc="state_dict.get(document.state, document.state)"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not set</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
                                                     <th>Department:</th>
                                                     <td><t t-esc="document.department_id.name or 'Not assigned'"/></td>
                                                 </tr>
@@ -90,30 +104,80 @@
                                                         <span t-else="">Not assigned</span>
                                                     </td>
                                                 </tr>
+                                                <tr>
+                                                    <th>Description:</th>
+                                                    <td><t t-esc="document.description or 'None'"/></td>
+                                                </tr>
+                                                <tr t-if="hasattr(document, 'notes') and document.notes">
+                                                    <th>Notes:</th>
+                                                    <td><t t-esc="document.notes"/></td>
+                                                </tr>
                                             </table>
                                         </div>
                                         
                                         <div class="col-md-6">
-                                            <h5 class="text-muted mb-3">Metadata</h5>
+                                            <h5 class="text-muted mb-3">Digital Scan Details</h5>
                                             <table class="table table-sm">
-                                                <tr>
-                                                    <th style="width: 40%;">Description:</th>
-                                                    <td><t t-esc="document.description or 'None'"/></td>
+                                                <tr t-if="hasattr(document, 'scan_date') and document.scan_date">
+                                                    <th style="width: 40%;">Scan Date:</th>
+                                                    <td>
+                                                        <span class="badge badge-info">
+                                                            <t t-esc="document.scan_date.strftime('%Y-%m-%d %H:%M') if document.scan_date else 'Not set'"/>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr t-if="hasattr(document, 'scanned_by_id') and document.scanned_by_id">
+                                                    <th>Scanned By:</th>
+                                                    <td><t t-esc="document.scanned_by_id.name"/></td>
+                                                </tr>
+                                                <tr t-if="hasattr(document, 'file_format') and document.file_format">
+                                                    <th>File Format:</th>
+                                                    <td>
+                                                        <t t-set="format_dict" t-value="dict([('pdf', 'PDF'), ('jpg', 'JPEG'), ('png', 'PNG'), ('tiff', 'TIFF')])"/>
+                                                        <span class="badge badge-secondary">
+                                                            <t t-esc="format_dict.get(document.file_format, document.file_format.upper())"/>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr t-if="hasattr(document, 'resolution') and document.resolution">
+                                                    <th>Resolution:</th>
+                                                    <td><t t-esc="document.resolution"/> DPI</td>
+                                                </tr>
+                                                <tr t-if="hasattr(document, 'file_size') and document.file_size">
+                                                    <th>File Size:</th>
+                                                    <td><t t-esc="'%.2f MB' % document.file_size"/></td>
+                                                </tr>
+                                                <tr t-if="hasattr(document, 'scan_quality') and document.scan_quality">
+                                                    <th>Scan Quality:</th>
+                                                    <td>
+                                                        <t t-set="quality_dict" t-value="dict([('low', 'Low'), ('medium', 'Medium'), ('high', 'High'), ('premium', 'Premium')])"/>
+                                                        <span t-att-class="'badge badge-' + ('success' if document.scan_quality in ['high', 'premium'] else 'warning')">
+                                                            <t t-esc="quality_dict.get(document.scan_quality, document.scan_quality)"/>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr t-if="hasattr(document, 'scanner_id') and document.scanner_id">
+                                                    <th>Scanner ID:</th>
+                                                    <td><t t-esc="document.scanner_id"/></td>
+                                                </tr>
+                                                <tr t-if="hasattr(document, 'storage_location_id') and document.storage_location_id">
+                                                    <th>Storage Location:</th>
+                                                    <td><t t-esc="document.storage_location_id.name"/></td>
                                                 </tr>
                                                 <tr>
                                                     <th>Attachments:</th>
                                                     <td><strong><t t-esc="len(attachments or [])"/></strong> files</td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Created Date:</th>
-                                                    <td><t t-esc="document.create_date.strftime('%Y-%m-%d') if document.create_date else 'Unknown'"/></td>
+                                                    <th>Created:</th>
+                                                    <td><t t-esc="document.create_date.strftime('%Y-%m-%d %H:%M') if document.create_date else 'Unknown'"/></td>
                                                 </tr>
                                                 <tr>
                                                     <th>Last Updated:</th>
-                                                    <td><t t-esc="document.write_date.strftime('%Y-%m-%d') if document.write_date else 'Unknown'"/></td>
+                                                    <td><t t-esc="document.write_date.strftime('%Y-%m-%d %H:%M') if document.write_date else 'Unknown'"/></td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Status:</th>
+                                                    <th>Active Status:</th>
                                                     <td>
                                                         <span t-att-class="'badge badge-' + ('success' if document.active else 'secondary')">
                                                             <t t-if="document.active">Active</t>

@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portal Shredding Bin List View -->
+        <template id="portal_my_shredding_bins" name="My Shredding Bins">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-set="title">My Shredding Bins</t>
+
+                <div class="o_portal_my_shredding_bins">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">
+                                <i class="fa fa-trash-alt"></i>
+                                Shredding Bins
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <t t-if="not bins">
+                                <div class="alert alert-info text-center py-5">
+                                    <i class="fa fa-trash-alt fa-3x mb-3 text-muted"></i>
+                                    <h4>No Shredding Bins Found</h4>
+                                    <p class="mb-3">You don't have any shredding bins currently assigned.</p>
+                                </div>
+                            </t>
+
+                            <t t-if="bins">
+                                <!-- Search and Filter Bar -->
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <form action="/my/shredding-bins" method="GET" class="form-inline">
+                                            <div class="input-group">
+                                                <input type="text" name="search" class="form-control" placeholder="Search bins..." t-att-value="search"/>
+                                                <div class="input-group-append">
+                                                    <button type="submit" class="btn btn-outline-secondary">
+                                                        <i class="fa fa-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>Barcode</th>
+                                                <th>Bin Size</th>
+                                                <th>Location</th>
+                                                <th>Fill Level</th>
+                                                <th>Last Service</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="bins" t-as="bin">
+                                                <tr>
+                                                    <td>
+                                                        <strong><t t-esc="bin.barcode or 'N/A'"/></strong>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="bin.bin_size">
+                                                            <t t-set="size_dict" t-value="dict([('small', 'Small'), ('medium', 'Medium'), ('large', 'Large'), ('xlarge', 'Extra Large')])"/>
+                                                            <span class="badge badge-secondary">
+                                                                <t t-esc="size_dict.get(bin.bin_size, bin.bin_size)"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not specified</span>
+                                                        </t>
+                                                    </td>
+                                                    <td>
+                                                        <t t-esc="bin.location_id.name if bin.location_id else bin.last_scan_location_id.name if bin.last_scan_location_id else 'Unknown'"/>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="bin.current_fill_level">
+                                                            <t t-set="fill_dict" t-value="dict([('empty', 'Empty'), ('quarter', '25%'), ('half', '50%'), ('three_quarter', '75%'), ('full', 'Full')])"/>
+                                                            <span t-att-class="'badge badge-' + ('success' if bin.current_fill_level == 'empty' else 'warning' if bin.current_fill_level in ['quarter', 'half'] else 'danger')">
+                                                                <t t-esc="fill_dict.get(bin.current_fill_level, bin.current_fill_level)"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Unknown</span>
+                                                        </t>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="bin.last_service_date">
+                                                            <t t-esc="bin.last_service_date.strftime('%Y-%m-%d') if isinstance(bin.last_service_date, datetime.datetime) else bin.last_service_date"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Never</span>
+                                                        </t>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="bin.status">
+                                                            <t t-set="status_dict" t-value="dict([('available', 'Available'), ('in_service', 'In Service'), ('checked_out', 'Checked Out'), ('maintenance', 'Maintenance'), ('retired', 'Retired')])"/>
+                                                            <span t-att-class="'badge badge-' + ('success' if bin.status == 'available' else 'primary' if bin.status == 'checked_out' else 'warning')">
+                                                                <t t-esc="status_dict.get(bin.status, bin.status)"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Unknown</span>
+                                                        </t>
+                                                    </td>
+                                                    <td>
+                                                        <a t-attf-href="/my/shredding-bin/#{bin.id}" class="btn btn-sm btn-primary" title="View Details">
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <t t-if="pager">
+                                    <t t-call="portal.pager"/>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Portal Shredding Bin Detail View -->
+        <template id="portal_shredding_bin_detail" name="Shredding Bin Detail">
+            <t t-call="portal.portal_layout">
+                <t t-set="title">Shredding Bin Details</t>
+
+                <div class="container my-4">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <!-- Bin Header Card -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <h3 class="mb-0">
+                                                <i class="fa fa-trash-alt"></i> 
+                                                Shredding Bin: <t t-esc="bin.barcode or 'No Barcode'"/>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h5 class="text-muted mb-3">Bin Information</h5>
+                                            <table class="table table-sm">
+                                                <tr>
+                                                    <th style="width: 40%;">Barcode:</th>
+                                                    <td>
+                                                        <span class="badge badge-info"><t t-esc="bin.barcode or 'Not assigned'"/></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Bin Size:</th>
+                                                    <td>
+                                                        <t t-if="bin.bin_size">
+                                                            <t t-set="size_dict" t-value="dict([('small', 'Small'), ('medium', 'Medium'), ('large', 'Large'), ('xlarge', 'Extra Large')])"/>
+                                                            <span class="badge badge-secondary">
+                                                                <t t-esc="size_dict.get(bin.bin_size, bin.bin_size)"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not specified</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Status:</th>
+                                                    <td>
+                                                        <t t-if="bin.status">
+                                                            <t t-set="status_dict" t-value="dict([('available', 'Available'), ('in_service', 'In Service'), ('checked_out', 'Checked Out'), ('maintenance', 'Maintenance'), ('retired', 'Retired')])"/>
+                                                            <span t-att-class="'badge badge-' + ('success' if bin.status == 'available' else 'primary' if bin.status == 'checked_out' else 'warning')">
+                                                                <t t-esc="status_dict.get(bin.status, bin.status)"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Unknown</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Scan Status:</th>
+                                                    <td>
+                                                        <t t-if="bin.barcode_scan_status">
+                                                            <t t-set="scan_dict" t-value="dict([('not_scanned', 'Not Scanned'), ('scanned_in', 'Scanned In'), ('scanned_out', 'Scanned Out')])"/>
+                                                            <span t-att-class="'badge badge-' + ('success' if bin.barcode_scan_status == 'scanned_in' else 'warning')">
+                                                                <t t-esc="scan_dict.get(bin.barcode_scan_status, bin.barcode_scan_status)"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not set</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Department:</th>
+                                                    <td><t t-esc="bin.current_department_id.name if bin.current_department_id else 'Not assigned'"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Location:</th>
+                                                    <td><t t-esc="bin.location_id.name if bin.location_id else 'Not set'"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last Scan Location:</th>
+                                                    <td><t t-esc="bin.last_scan_location_id.name if bin.last_scan_location_id else 'None'"/></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <h5 class="text-muted mb-3">Service Details</h5>
+                                            <table class="table table-sm">
+                                                <tr>
+                                                    <th style="width: 40%;">Fill Level:</th>
+                                                    <td>
+                                                        <t t-if="bin.current_fill_level">
+                                                            <t t-set="fill_dict" t-value="dict([('empty', 'Empty'), ('quarter', '25%'), ('half', '50%'), ('three_quarter', '75%'), ('full', 'Full')])"/>
+                                                            <span t-att-class="'badge badge-' + ('success' if bin.current_fill_level == 'empty' else 'warning' if bin.current_fill_level in ['quarter', 'half'] else 'danger')">
+                                                                <t t-esc="fill_dict.get(bin.current_fill_level, bin.current_fill_level)"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Unknown</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Weight Capacity:</th>
+                                                    <td>
+                                                        <t t-if="bin.weight_capacity_lbs">
+                                                            <t t-esc="'%.1f lbs' % bin.weight_capacity_lbs"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not specified</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Volume Capacity:</th>
+                                                    <td>
+                                                        <t t-if="bin.volume_capacity_cf">
+                                                            <t t-esc="'%.2f cu ft' % bin.volume_capacity_cf"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not specified</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Last Service Date:</th>
+                                                    <td>
+                                                        <t t-if="bin.last_service_date">
+                                                            <span class="badge badge-info">
+                                                                <t t-esc="bin.last_service_date.strftime('%Y-%m-%d %H:%M') if isinstance(bin.last_service_date, datetime.datetime) else bin.last_service_date"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Never serviced</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Total Services:</th>
+                                                    <td><strong><t t-esc="bin.total_services_count or 0"/></strong> services</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Current Period Services:</th>
+                                                    <td><strong><t t-esc="bin.current_period_services or 0"/></strong> services</td>
+                                                </tr>
+                                                <tr t-if="bin.base_rate_per_service">
+                                                    <th>Service Rate:</th>
+                                                    <td>
+                                                        <t t-esc="'$%.2f' % bin.base_rate_per_service"/>
+                                                        <t t-if="bin.currency_id"> <t t-esc="bin.currency_id.name"/></t>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Service Summary -->
+                                    <div class="row mt-4" t-if="bin.service_summary">
+                                        <div class="col-12">
+                                            <h5 class="text-muted mb-3">Service Summary</h5>
+                                            <div class="alert alert-info">
+                                                <t t-esc="bin.service_summary"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Service Events History -->
+                            <div class="card shadow-sm mb-4" t-if="bin.service_event_ids">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fa fa-history"></i> Service History (<t t-esc="len(bin.service_event_ids)"/>)
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Service Date</th>
+                                                    <th>Event Type</th>
+                                                    <th>Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="bin.service_event_ids" t-as="event">
+                                                    <tr>
+                                                        <td><t t-esc="event.create_date.strftime('%Y-%m-%d') if event.create_date else 'Unknown'"/></td>
+                                                        <td><t t-esc="event.name or 'Service Event'"/></td>
+                                                        <td><t t-esc="event.description or 'N/A'"/></td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div class="card shadow-sm">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fa fa-bolt"></i> Quick Actions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <a href="/my/shredding-bins" class="btn btn-secondary">
+                                        <i class="fa fa-arrow-left"></i> Back to Bins
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

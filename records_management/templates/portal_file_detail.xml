@@ -58,7 +58,42 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Barcode:</th>
-                                                    <td><t t-esc="file.barcode or 'Not assigned'"/></td>
+                                                    <td>
+                                                        <t t-if="file.barcode">
+                                                            <span class="badge badge-info"><t t-esc="file.barcode"/></span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not assigned</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>File Category:</th>
+                                                    <td>
+                                                        <t t-if="file.file_category">
+                                                            <t t-set="file_categories" t-value="dict([('permanent', 'Permanent'), ('temporary', 'Temporary'), ('archived', 'Archived'), ('active', 'Active')])"/>
+                                                            <span class="badge badge-primary">
+                                                                <t t-esc="file_categories.get(file.file_category, file.file_category)"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not specified</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>State:</th>
+                                                    <td>
+                                                        <t t-if="file.state">
+                                                            <t t-set="state_dict" t-value="dict([('draft', 'Draft'), ('active', 'Active'), ('archived', 'Archived'), ('destroyed', 'Destroyed')])"/>
+                                                            <span t-att-class="'badge badge-' + ('success' if file.state == 'active' else 'warning' if file.state == 'draft' else 'secondary')">
+                                                                <t t-esc="state_dict.get(file.state, file.state)"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Unknown</span>
+                                                        </t>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Department:</th>
@@ -74,6 +109,10 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
+                                                    <th>Location:</th>
+                                                    <td><t t-esc="file.location_id.name if file.location_id else 'Not assigned'"/></td>
+                                                </tr>
+                                                <tr>
                                                     <th>Description:</th>
                                                     <td><t t-esc="file.description or 'None'"/></td>
                                                 </tr>
@@ -81,28 +120,58 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <h5 class="text-muted mb-3">Statistics</h5>
+                                            <h5 class="text-muted mb-3">Statistics &amp; Dates</h5>
                                             <table class="table table-sm">
                                                 <tr>
                                                     <th style="width: 40%;">Documents:</th>
-                                                    <td><strong><t t-esc="len(documents or [])"/></strong> documents</td>
+                                                    <td><strong><t t-esc="file.document_count or len(documents or [])"/></strong> documents</td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Created Date:</th>
-                                                    <td><t t-esc="file.create_date.strftime('%Y-%m-%d') if file.create_date else 'Unknown'"/></td>
+                                                    <th>Date Created:</th>
+                                                    <td>
+                                                        <t t-if="file.date_created">
+                                                            <span class="badge badge-info">
+                                                                <t t-esc="file.date_created.strftime('%Y-%m-%d') if isinstance(file.date_created, datetime.datetime) else file.date_created"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not set</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Date Received:</th>
+                                                    <td>
+                                                        <t t-if="file.received_date">
+                                                            <span class="badge badge-success">
+                                                                <t t-esc="file.received_date.strftime('%Y-%m-%d') if isinstance(file.received_date, datetime.datetime) else file.received_date"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Not set</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Record Created:</th>
+                                                    <td><t t-esc="file.create_date.strftime('%Y-%m-%d %H:%M') if file.create_date else 'Unknown'"/></td>
                                                 </tr>
                                                 <tr>
                                                     <th>Last Updated:</th>
-                                                    <td><t t-esc="file.write_date.strftime('%Y-%m-%d') if file.write_date else 'Unknown'"/></td>
+                                                    <td><t t-esc="file.write_date.strftime('%Y-%m-%d %H:%M') if file.write_date else 'Unknown'"/></td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Status:</th>
+                                                    <th>Active Status:</th>
                                                     <td>
                                                         <span t-att-class="'badge badge-' + ('success' if file.active else 'secondary')">
                                                             <t t-if="file.active">Active</t>
                                                             <t t-else="">Archived</t>
                                                         </span>
                                                     </td>
+                                                </tr>
+                                                <tr t-if="file.owner_id">
+                                                    <th>Owner:</th>
+                                                    <td><t t-esc="file.owner_id.name"/></td>
                                                 </tr>
                                             </table>
                                         </div>
