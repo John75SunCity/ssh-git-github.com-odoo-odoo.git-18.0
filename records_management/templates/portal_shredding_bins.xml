@@ -140,7 +140,7 @@
                                     <div class="row align-items-center">
                                         <div class="col-md-8">
                                             <h3 class="mb-0">
-                                                <i class="fa fa-trash-alt"></i> 
+                                                <i class="fa fa-trash-alt"></i>
                                                 Shredding Bin: <t t-esc="bin.barcode or 'No Barcode'"/>
                                             </h3>
                                         </div>
