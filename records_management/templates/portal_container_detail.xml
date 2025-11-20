@@ -91,15 +91,46 @@
                                             <table class="table table-sm">
                                                 <tr>
                                                     <th style="width: 40%;">Contents Type:</th>
-                                                    <td><t t-esc="container.primary_content_type or 'Not specified'"/></td>
+                                                    <td><t t-esc="dict(container._fields['primary_content_type'].selection).get(container.primary_content_type, 'Not specified')"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Box Contents:</th>
+                                                    <td><t t-esc="container.content_description or 'Not specified'"/></td>
                                                 </tr>
                                                 <tr>
                                                     <th>Description:</th>
                                                     <td><t t-esc="container.description or 'None'"/></td>
                                                 </tr>
                                                 <tr>
+                                                    <th>Alphabetical Range:</th>
+                                                    <td><t t-esc="container.alpha_range_display or 'Not set'"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Date Range:</th>
+                                                    <td><t t-esc="container.content_date_range_display or 'Not set'"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Search Keywords:</th>
+                                                    <td><t t-esc="container.search_keywords or 'None'"/></td>
+                                                </tr>
+                                                <tr>
                                                     <th>Retention Policy:</th>
                                                     <td><t t-esc="container.retention_policy_id.name if container.retention_policy_id else 'Not set'"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Storage Start Date:</th>
+                                                    <td><t t-esc="container.storage_start_date.strftime('%Y-%m-%d') if container.storage_start_date else 'Not set'"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Destruction Due:</th>
+                                                    <td>
+                                                        <t t-if="container.permanent_retention">
+                                                            <span class="badge badge-info">Permanent Retention</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <t t-esc="container.destruction_due_date.strftime('%Y-%m-%d') if container.destruction_due_date else 'Not set'"/>
+                                                        </t>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <th>Files Count:</th>

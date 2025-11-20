@@ -35,9 +35,6 @@
                                 <a class="dropdown-item" href="#" onclick="editContainer()">
                                     <i class="fa fa-edit"></i> Edit Details
                                 </a>
-                                <a class="dropdown-item" href="#" onclick="updateSequenceRange()">
-                                    <i class="fa fa-sort-numeric-asc"></i> Update Sequence Range
-                                </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-danger" href="#" onclick="requestDestruction()">
                                     <i class="fa fa-trash"></i> Request Destruction
@@ -72,13 +69,16 @@
                                         <td t-esc="container.create_date.strftime('%Y-%m-%d %H:%M')"/>
                                     </tr>
                                     <tr>
-                                        <th>Sequence Range:</th>
-                                        <td>
-                                            <span id="sequence-range-display" t-esc="container.sequence_range or 'Not set'"/>
-                                            <button class="btn btn-sm btn-outline-secondary ml-2" onclick="editSequenceRange()">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                        </td>
+                                        <th>Storage Start:</th>
+                                        <td t-esc="container.storage_start_date.strftime('%Y-%m-%d') if container.storage_start_date else 'Not set'"/>
+                                    </tr>
+                                    <tr>
+                                        <th>Alpha Range:</th>
+                                        <td t-esc="container.alpha_range_display or 'Not set'"/>
+                                    </tr>
+                                    <tr>
+                                        <th>Date Range:</th>
+                                        <td t-esc="container.content_date_range_display or 'Not set'"/>
                                     </tr>
                                     <tr>
                                         <th>File Count:</th>
@@ -94,21 +94,42 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
-                                <h5><i class="fa fa-notes-medical"></i> Notes</h5>
+                                <h5><i class="fa fa-file-text"></i> Container Details</h5>
                             </div>
                             <div class="card-body">
-                                <div id="notes-display">
-                                    <p t-esc="container.notes or 'No notes'"/>
-                                    <button class="btn btn-sm btn-outline-secondary" onclick="editNotes()">
-                                        <i class="fa fa-edit"></i> Edit Notes
-                                    </button>
-                                </div>
-                                <div id="notes-edit" style="display: none;">
-                                    <textarea id="notes-textarea" class="form-control mb-2" rows="4" 
-                                              t-esc="container.notes or ''"></textarea>
-                                    <button class="btn btn-sm btn-success" onclick="saveNotes()">Save</button>
-                                    <button class="btn btn-sm btn-secondary" onclick="cancelEditNotes()">Cancel</button>
-                                </div>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th width="150">Contents Type:</th>
+                                        <td t-esc="dict(container._fields['primary_content_type'].selection).get(container.primary_content_type, 'Not specified')"/>
+                                    </tr>
+                                    <tr>
+                                        <th>Box Contents:</th>
+                                        <td t-esc="container.content_description or 'Not specified'"/>
+                                    </tr>
+                                    <tr>
+                                        <th>Description:</th>
+                                        <td t-esc="container.description or 'No description'"/>
+                                    </tr>
+                                    <tr>
+                                        <th>Keywords:</th>
+                                        <td t-esc="container.search_keywords or 'None'"/>
+                                    </tr>
+                                    <tr>
+                                        <th>Retention:</th>
+                                        <td>
+                                            <t t-if="container.permanent_retention">
+                                                <span class="badge badge-info">Permanent</span>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-esc="container.retention_policy_id.name if container.retention_policy_id else 'Not set'"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="container.destruction_due_date and not container.permanent_retention">
+                                        <th>Destruction Due:</th>
+                                        <td t-esc="container.destruction_due_date.strftime('%Y-%m-%d')"/>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                     </div>
