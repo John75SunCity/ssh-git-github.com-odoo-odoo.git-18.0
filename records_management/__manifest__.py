@@ -704,6 +704,7 @@
         "templates/portal_centralized_docs.xml",
         # Request & Workflow Templates
         "templates/portal_requests_template.xml",
+        "templates/portal_request_create.xml",  # Generic request creation form (retrieval, scanning)
         "templates/portal_pickup_request_create.xml",
         "templates/portal_destruction_request_create.xml",
         "templates/portal_work_order_templates.xml",

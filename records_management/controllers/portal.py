@@ -1073,18 +1073,28 @@ class RecordsManagementController(http.Controller):
         Portal page for customers to view technician certifications.
         Shows NAID operator certifications with training status.
         """
-        # Get all active NAID operator certifications
-        certifications = request.env['naid.operator.certification'].search([
-            ('active', '=', True)
-        ], order='certification_date desc')
+        Customer Certifications Portal:
+        - Destruction Certificates (NAID AAA certificates from completed shredding jobs)
+        - Training Courses & Materials (eLearning portal access)
+        
+        NOTE: NAID Operator Certifications are for employees only, not shown here.
+        """
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get destruction certificates for this customer (from completed jobs)
+        destruction_certificates = request.env['naid.certificate'].sudo().search([
+            ('partner_id', '=', partner.id),
+            ('state', '=', 'completed')
+        ], order='certificate_date desc')
 
-        # Get training courses for reference
-        training_courses = request.env['slide.channel'].search([
-            ('is_published', '=', True)
-        ])
+        # Get training courses available to customers
+        training_courses = request.env['slide.channel'].sudo().search([
+            ('is_published', '=', True),
+            ('website_published', '=', True),
+        ], order='name')
 
         context = {
-            'certifications': certifications,
+            'destruction_certificates': destruction_certificates,
             'training_courses': training_courses,
             'page_name': 'certifications',
         }
@@ -1094,16 +1104,23 @@ class RecordsManagementController(http.Controller):
     @http.route("/my/certifications/<int:certification_id>", type="http", auth="user", website=True)
     def portal_certification_detail(self, certification_id):
         """
-        Detailed view of a specific certification.
+        Detailed view of a destruction certificate (NAID AAA certificate).
+        Shows certificate details, items destroyed, dates, signatures, etc.
         """
-        certification = request.env['naid.operator.certification'].browse(certification_id)
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get destruction certificate with security check
+        certificate = request.env['naid.certificate'].sudo().search([
+            ('id', '=', certification_id),
+            ('partner_id', '=', partner.id)
+        ], limit=1)
 
-        # Check if certification exists and user has access
-        if not certification.exists():
+        # Check if certificate exists and user has access
+        if not certificate:
             return request.redirect('/my/certifications')
 
         context = {
-            'certification': certification,
+            'certificate': certificate,
             'page_name': 'certification_detail',
         }
 
@@ -3010,13 +3027,27 @@ class RecordsManagementController(http.Controller):
 
         if request.httprequest.method == 'GET':
             departments = request.env['records.department'].sudo().search([('company_id', '=', partner.id)])
-            containers = request.env['records.container'].sudo().search([('partner_id', '=', partner.id)])
+            # Keep sudo() context for containers to avoid barcode nomenclature access issues in template
+            containers_sudo = request.env['records.container'].sudo().search([('partner_id', '=', partner.id)])
             files = request.env['records.file'].sudo().search([('partner_id', '=', partner.id)])
+            
+            # Pre-fetch location names to avoid barcode nomenclature access in template
+            container_data = []
+            for container in containers_sudo:
+                container_data.append({
+                    'id': container.id,
+                    'name': container.name,
+                    'description': container.description or 'No description',
+                    'location_name': container.location_id.name if container.location_id else None,
+                    'barcode': container.barcode,
+                    'state': container.state,
+                })
 
             values = {
                 'request_type': request_type,
                 'departments': departments,
-                'containers': containers,
+                'containers': containers_sudo,
+                'container_data': container_data,  # Safe data without ORM access
                 'files': files,
                 'page_name': f'request_create_{request_type}',
             }
@@ -5764,7 +5795,8 @@ class RecordsManagementController(http.Controller):
         """Chain of custody tracking for all containers."""
         partner = request.env.user.partner_id.commercial_partner_id
 
-        custody_records = request.env['chain.of.custody'].search([
+        # Use sudo() but filter by partner to ensure security
+        custody_records = request.env['chain.of.custody'].sudo().search([
             ('partner_id', '=', partner.id)
         ], order='transfer_date desc', limit=100)
 
@@ -5930,6 +5962,77 @@ class RecordsManagementController(http.Controller):
         }
 
         return request.render("records_management.portal_reports_export", values)
+    
+    @http.route(['/records/report/documents'], type='http', auth='user', website=True)
+    def portal_report_documents(self, **kw):
+        """Document Inventory Report - PDF generation"""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get all documents for this customer
+        documents = request.env['records.document'].sudo().search([
+            ('partner_id', '=', partner.id)
+        ], order='file_id, name')
+        
+        values = {
+            'page_name': 'reports',
+            'partner': partner,
+            'documents': documents,
+            'total_documents': len(documents),
+            'report_date': fields.Date.today(),
+        }
+        
+        # Return PDF report
+        return request.env.ref('records_management.action_report_document_inventory').report_action(documents, data=values)
+    
+    @http.route(['/records/report/certificates'], type='http', auth='user', website=True)
+    def portal_report_certificates(self, **kw):
+        """Certificate Report - PDF generation"""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get all certificates for this customer
+        certificates = request.env['naid.certificate'].sudo().search([
+            ('partner_id', '=', partner.id)
+        ], order='certificate_date desc')
+        
+        values = {
+            'page_name': 'reports',
+            'partner': partner,
+            'certificates': certificates,
+            'total_certificates': len(certificates),
+            'report_date': fields.Date.today(),
+        }
+        
+        # Return PDF report
+        return request.env.ref('records_management.action_report_naid_certificate').report_action(certificates, data=values)
+    
+    @http.route(['/records/report/containers'], type='http', auth='user', website=True)
+    def portal_report_containers(self, **kw):
+        """Container Status Report - PDF generation"""
+        partner = request.env.user.partner_id.commercial_partner_id
+        
+        # Get all containers for this customer
+        containers = request.env['records.container'].sudo().search([
+            ('partner_id', '=', partner.id)
+        ], order='name')
+        
+        # Calculate summary stats
+        summary = {
+            'total_containers': len(containers),
+            'active_containers': len(containers.filtered(lambda c: c.state == 'active')),
+            'in_storage': len(containers.filtered(lambda c: c.state == 'storage')),
+            'total_files': sum(containers.mapped('file_count')),
+        }
+        
+        values = {
+            'page_name': 'reports',
+            'partner': partner,
+            'containers': containers,
+            'summary': summary,
+            'report_date': fields.Date.today(),
+        }
+        
+        # Return PDF report
+        return request.env.ref('records_management.action_report_container_status').report_action(containers, data=values)
 
     # ================================================================
     # FEEDBACK & SUPPORT ROUTES

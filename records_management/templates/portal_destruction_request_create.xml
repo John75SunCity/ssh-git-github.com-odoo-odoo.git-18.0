@@ -84,25 +84,25 @@
                                             </div>
                                         </t>
                                         
-                                        <t t-if="containers">
+                                        <t t-if="container_data">
                                             <div class="card">
                                                 <div class="card-body" style="max-height: 400px; overflow-y: auto;">
-                                                    <t t-foreach="containers" t-as="container">
+                                                    <t t-foreach="container_data" t-as="container">
                                                         <div class="custom-control custom-checkbox mb-2">
                                                             <input type="checkbox" 
                                                                    class="custom-control-input" 
                                                                    name="container_ids" 
-                                                                   t-att-id="'container_%s' % container.id"
-                                                                   t-att-value="container.id"/>
-                                                            <label class="custom-control-label" t-att-for="'container_%s' % container.id">
-                                                                <strong t-esc="container.barcode"/>
+                                                                   t-att-id="'container_%s' % container['id']"
+                                                                   t-att-value="container['id']"/>
+                                                            <label class="custom-control-label" t-att-for="'container_%s' % container['id']">
+                                                                <strong t-esc="container['barcode']"/>
                                                                 <span class="text-muted"> - </span>
-                                                                <span t-esc="container.description or 'No description'"/>
-                                                                <t t-if="container.location_id">
+                                                                <span t-esc="container['description']"/>
+                                                                <t t-if="container.get('location_name')">
                                                                     <br/>
                                                                     <small class="text-muted">
                                                                         <i class="fa fa-map-marker"></i>
-                                                                        Location: <span t-esc="container.location_id.name"/>
+                                                                        Location: <span t-esc="container['location_name']"/>
                                                                     </small>
                                                                 </t>
                                                             </label>
