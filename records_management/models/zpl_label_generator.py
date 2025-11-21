@@ -207,27 +207,29 @@ class ZPLLabelGenerator(models.AbstractModel):
         Generate ZPL code for container label with barcode and box icon.
         
         Layout (4" x 1.33"):
-        - Top: Barcode (Code 128)
-        - Middle: Container name (truncated to fit)
-        - Bottom: Customer name + Location
-        - Right side: Box archive icon (font awesome approximation)
+        - Top: Large barcode spanning most of width
+        - Bottom left: Container name
+        - Bottom middle: Customer name
+        - Bottom right: Location/Vault
+        - Right side: Box archive icon
         """
         # ZPL dimensions in dots (203 DPI)
         label_width_dots = int(self.CONTAINER_LABEL_WIDTH * 203)
         label_height_dots = int(self.CONTAINER_LABEL_HEIGHT * 203)
         
         # Truncate text to fit
-        container_name = (container_name[:35] + '...') if len(container_name) > 35 else container_name
-        customer_name = (customer_name[:30] + '...') if len(customer_name) > 30 else customer_name
-        location = (location[:30] + '...') if len(location) > 30 else location
+        container_name = (container_name[:20] + '...') if len(container_name) > 20 else container_name
+        customer_name = (customer_name[:25] + '...') if len(customer_name) > 25 else customer_name
+        location = (location[:25] + '...') if len(location) > 25 else location
         
         zpl = f"""^XA
-^FO50,20^BY2^BCN,60,Y,N,N^FD{barcode}^FS
-^FO50,90^A0N,25,25^FD{container_name}^FS
-^FO50,120^A0N,18,18^FD{customer_name}^FS
-^FO50,145^A0N,18,18^FD{location}^FS
-^FO{label_width_dots - 100},20^GB80,80,4^FS
-^FO{label_width_dots - 90},30^A0N,20,20^FDBOX^FS
+^FO30,10^BY3^BCN,100,Y,N,N^FD{barcode}^FS
+^FO30,120^A0N,30,30^FDContainer: ^FS
+^FO30,155^A0N,24,24^FD{container_name}^FS
+^FO30,185^A0N,20,20^FD{customer_name}^FS
+^FO30,210^A0N,18,18^FD{location}^FS
+^FO{label_width_dots - 120},10^GB100,100,5^FS
+^FO{label_width_dots - 105},50^A0N,30,30^FDBOX^FS
 ^XZ"""
         return zpl
     
