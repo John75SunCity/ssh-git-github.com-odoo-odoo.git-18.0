@@ -60,7 +60,7 @@
         <field name="name">barcode.preprint.tracking.tree</field>
         <field name="model">barcode.preprint.tracking</field>
         <field name="arch" type="xml">
-            <tree string="Pre-Print Batches">
+            <list string="Pre-Print Batches">
                 <field name="name"/>
                 <field name="label_type"/>
                 <field name="quantity"/>
@@ -68,7 +68,7 @@
                 <field name="printed_by_id"/>
                 <field name="print_date"/>
                 <button name="action_reprint" string="Reprint" type="object" icon="fa-print"/>
-            </tree>
+            </list>
         </field>
     </record>
     
@@ -128,14 +128,14 @@
         <field name="name">barcode.batch.print.tree</field>
         <field name="model">barcode.batch.print</field>
         <field name="arch" type="xml">
-            <tree string="Batch Print History">
+            <list string="Batch Print History">
                 <field name="name"/>
                 <field name="record_type"/>
                 <field name="record_count"/>
                 <field name="printed_by_id"/>
                 <field name="print_date"/>
                 <button name="action_reprint" string="Reprint" type="object" icon="fa-print"/>
-            </tree>
+            </list>
         </field>
     </record>
     
