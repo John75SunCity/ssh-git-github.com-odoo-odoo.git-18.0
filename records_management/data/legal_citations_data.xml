@@ -3,7 +3,7 @@
     <data noupdate="1">
         
         <!-- =============================================================== -->
-        <!-- LEGAL CITATION TYPES (from O'Neil Stratus + common additions) -->
+        <!-- LEGAL CITATION TYPES (industry standard + common additions) -->
         <!-- =============================================================== -->
         
         <record id="citation_type_federal" model="legal.citation.type">
@@ -49,7 +49,7 @@
         </record>
         
         <!-- =============================================================== -->
-        <!-- DISPOSITION METHODS (from O'Neil Stratus documentation) -->
+        <!-- DISPOSITION METHODS (industry standard documentation) -->
         <!-- =============================================================== -->
         
         <record id="disposition_shred" model="record.disposition">
@@ -199,7 +199,7 @@
         </record>
         
         <!-- =============================================================== -->
-        <!-- SAMPLE RECORD SERIES (Examples from O'Neil Stratus) -->
+        <!-- SAMPLE RECORD SERIES (Industry standard examples) -->
         <!-- =============================================================== -->
         
         <record id="series_audit_reports" model="record.series">

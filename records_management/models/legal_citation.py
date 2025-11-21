@@ -7,7 +7,6 @@ class LegalCitation(models.Model):
     """
     Legal Citation - Laws, regulations, codes that justify retention policies
     
-    From O'Neil Stratus documentation:
     "Cites or describes the laws, regulations, code, or rules that justify 
     the retention policy. The retention information for a record series may 
     reference one or more legal citations."

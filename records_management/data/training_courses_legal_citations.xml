@@ -394,7 +394,7 @@ Citation Type: Industry
 
         <!-- Lesson 4: Record Series Codes -->
         <record id="slide_record_series" model="slide.slide">
-            <field name="name">Record Series Codes - O'Neil Stratus Standard</field>
+            <field name="name">Record Series Codes - Industry Standard</field>
             <field name="channel_id" ref="slide_channel_legal_citations"/>
             <field name="slide_type">article</field>
             <field name="is_published">true</field>
@@ -474,8 +474,8 @@ Citation Type: Industry
                 </table>
             </div>
 
-            <h3>O'Neil Stratus Naming Convention</h3>
-            <p>Record Series codes follow industry-standard O'Neil Stratus format:</p>
+            <h3>Industry Standard Naming Convention</h3>
+            <p>Record Series codes follow industry-standard format:</p>
 
             <pre class="bg-light p-3">
 Format: [CATEGORY]-[SUBCATEGORY] or [PREFIX]-[NUMBER]

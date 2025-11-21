@@ -6,7 +6,6 @@ class RecordSeries(models.Model):
     """
     Record Series - Groups of identical or related records
     
-    From O'Neil Stratus documentation:
     "Group of identical or related records that are normally used and filed as a unit. 
     Record Series may break down and be categorized along such lines as legal, payroll, 
     personnel, and contract depending on the organization. A record series can be assigned 

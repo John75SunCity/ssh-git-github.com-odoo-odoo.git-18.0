@@ -6,7 +6,6 @@ class RecordDisposition(models.Model):
     """
     Record Disposition - How records are handled at end of retention period
     
-    From O'Neil Stratus documentation:
     "Descriptive term from a controlled list that describes how a record series 
     is to be handled at the end of its retention period."
     

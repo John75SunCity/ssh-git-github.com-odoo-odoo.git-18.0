@@ -6,13 +6,11 @@ class LegalCitationType(models.Model):
     """
     Legal Citation Type - Categorizes legal citations
     
-    Examples from O'Neil Stratus:
+    Examples:
     - Federal (FED)
     - State (ST)
     - County (CO)
     - City (CI)
-    
-    Additional common types:
     - Industry Standard
     - Corporate Policy
     - Regulatory Body
