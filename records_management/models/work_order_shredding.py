@@ -121,14 +121,14 @@ class WorkOrderShredding(models.Model):
             if order.start_date and order.completion_date:
                 delta = order.completion_date - order.start_date
                 order.actual_duration = delta.total_seconds() / 3600.0
+            else:
+                order.actual_duration = 0.0
 
     @api.depends('scanned_barcode_ids')
     def _compute_scanned_count(self):
         """Count of containers scanned during work order."""
         for order in self:
             order.scanned_count = len(order.scanned_barcode_ids)
-            else:
-                order.actual_duration = 0.0
 
     @api.depends('state', 'invoice_id')
     def _compute_invoiced(self):
