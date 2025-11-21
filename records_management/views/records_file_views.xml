@@ -144,8 +144,8 @@
                 <button name="action_assign_barcode_and_track" type="object" string="Assign Barcode"
                         class="btn-primary" invisible="barcode"
                         help="Assign pre-printed barcode from sheet and enable inventory tracking"/>
-                <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
-                <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
+                <button name="action_print_barcode_label" type="object" string="Print Label" class="btn-info"/>
+                <button name="action_print_qr_label" type="object" string="Print QR Label" class="btn-success"/>
                 <field name="state" widget="statusbar" statusbar_visible="draft,stored,retrieved,at_customer,in_transit,returned"/>
             </header>
             <sheet>

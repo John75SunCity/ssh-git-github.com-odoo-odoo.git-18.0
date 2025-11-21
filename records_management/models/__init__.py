@@ -302,6 +302,7 @@ from . import workflow_visualization_manager
 from . import button_action_placeholders
 from . import records_container_assign_barcode_wizard
 from . import zpl_label_generator  # ZPL label printing service
+from . import barcode_batch_print  # Batch print tracking
 from . import res_users
 
 import logging

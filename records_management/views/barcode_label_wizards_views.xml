@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ========================================================================
+         BARCODE PRE-PRINT WIZARD VIEWS
+         ======================================================================== -->
+    
+    <record id="view_barcode_preprint_wizard_form" model="ir.ui.view">
+        <field name="name">barcode.preprint.wizard.form</field>
+        <field name="model">barcode.preprint.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Pre-Print Barcode Labels">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <p><i class="fa fa-info-circle"/> <strong>Pre-Print Barcode Labels</strong></p>
+                        <p>Generate blank barcode labels in advance for future use. Labels will show barcode only with "UNASSIGNED" placeholder text.</p>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="label_type" widget="radio"/>
+                            <field name="quantity"/>
+                            <field name="start_number" placeholder="Leave blank for auto-number"/>
+                        </group>
+                        <group>
+                            <field name="prefix"/>
+                            <field name="notes" placeholder="Optional notes about this batch (e.g., 'For warehouse expansion')"/>
+                        </group>
+                    </group>
+                    
+                    <div class="alert alert-success mt16">
+                        <p><i class="fa fa-check-circle"/> <strong>Benefits of Pre-Printing:</strong></p>
+                        <ul>
+                            <li>Labels ready when you need them</li>
+                            <li>Faster container/folder creation</li>
+                            <li>All labels tracked in system</li>
+                            <li>Easy to reprint if damaged</li>
+                        </ul>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_print_preprint_labels" string="Generate Labels" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_barcode_preprint_wizard" model="ir.actions.act_window">
+        <field name="name">Pre-Print Barcode Labels</field>
+        <field name="res_model">barcode.preprint.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+    <!-- ========================================================================
+         BARCODE PRE-PRINT TRACKING VIEWS
+         ======================================================================== -->
+    
+    <record id="view_barcode_preprint_tracking_tree" model="ir.ui.view">
+        <field name="name">barcode.preprint.tracking.tree</field>
+        <field name="model">barcode.preprint.tracking</field>
+        <field name="arch" type="xml">
+            <tree string="Pre-Print Batches">
+                <field name="name"/>
+                <field name="label_type"/>
+                <field name="quantity"/>
+                <field name="used_count"/>
+                <field name="printed_by_id"/>
+                <field name="print_date"/>
+                <button name="action_reprint" string="Reprint" type="object" icon="fa-print"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="view_barcode_preprint_tracking_form" model="ir.ui.view">
+        <field name="name">barcode.preprint.tracking.form</field>
+        <field name="model">barcode.preprint.tracking</field>
+        <field name="arch" type="xml">
+            <form string="Pre-Print Batch">
+                <header>
+                    <button name="action_reprint" string="Reprint Labels" type="object" class="btn-primary" icon="fa-print"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="label_type"/>
+                            <field name="quantity"/>
+                            <field name="used_count"/>
+                            <field name="start_number"/>
+                        </group>
+                        <group>
+                            <field name="prefix"/>
+                            <field name="printed_by_id"/>
+                            <field name="print_date"/>
+                            <field name="attachment_id" widget="pdf_viewer"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                    <group string="Barcode List">
+                        <field name="barcode_list" nolabel="1" widget="text"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_barcode_preprint_tracking" model="ir.actions.act_window">
+        <field name="name">Pre-Print Batches</field>
+        <field name="res_model">barcode.preprint.tracking</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <!-- ========================================================================
+         BARCODE BATCH PRINT TRACKING VIEWS
+         ======================================================================== -->
+    
+    <record id="view_barcode_batch_print_tree" model="ir.ui.view">
+        <field name="name">barcode.batch.print.tree</field>
+        <field name="model">barcode.batch.print</field>
+        <field name="arch" type="xml">
+            <tree string="Batch Print History">
+                <field name="name"/>
+                <field name="record_type"/>
+                <field name="record_count"/>
+                <field name="printed_by_id"/>
+                <field name="print_date"/>
+                <button name="action_reprint" string="Reprint" type="object" icon="fa-print"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="view_barcode_batch_print_form" model="ir.ui.view">
+        <field name="name">barcode.batch.print.form</field>
+        <field name="model">barcode.batch.print</field>
+        <field name="arch" type="xml">
+            <form string="Batch Print">
+                <header>
+                    <button name="action_reprint" string="Reprint Batch" type="object" class="btn-primary" icon="fa-print"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="record_type"/>
+                            <field name="record_count"/>
+                        </group>
+                        <group>
+                            <field name="printed_by_id"/>
+                            <field name="print_date"/>
+                            <field name="attachment_id" widget="pdf_viewer"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_barcode_batch_print" model="ir.actions.act_window">
+        <field name="name">Batch Print History</field>
+        <field name="res_model">barcode.batch.print</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <!-- ========================================================================
+         BARCODE REPRINT WIZARD VIEWS
+         ======================================================================== -->
+    
+    <record id="view_barcode_reprint_wizard_form" model="ir.ui.view">
+        <field name="name">barcode.reprint.wizard.form</field>
+        <field name="model">barcode.reprint.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Authorize Barcode Reprint">
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        <h3><i class="fa fa-exclamation-triangle"/> <strong>⚠️ DUPLICATE BARCODE WARNING</strong></h3>
+                        <p>This barcode has already been printed! Reprinting will create a duplicate label.</p>
+                        <p><strong>Barcode:</strong> <field name="barcode" readonly="1" nolabel="1" class="text-monospace"/></p>
+                        <p><strong>Previously Printed:</strong> <field name="previous_print_date" readonly="1" nolabel="1"/></p>
+                    </div>
+                    
+                    <group invisible="1">
+                        <field name="container_id"/>
+                        <field name="file_id"/>
+                        <field name="record_type"/>
+                    </group>
+                    
+                    <group>
+                        <field name="reason" required="1" placeholder="Explain why this label needs to be reprinted (e.g., 'Label damaged', 'Label lost', 'Incorrect information')"/>
+                    </group>
+                    
+                    <group>
+                        <field name="warning_acknowledged" required="1"/>
+                    </group>
+                    
+                    <div class="alert alert-info mt16">
+                        <p><i class="fa fa-info-circle"/> <strong>Authorization Required</strong></p>
+                        <p>Your electronic signature is required to approve this reprint and maintain audit trail.</p>
+                    </div>
+                    
+                    <group string="Electronic Signature">
+                        <field name="signature" widget="signature" options="{'type': 'sign_request', 'full_name': signature_name}"/>
+                        <field name="signature_name" invisible="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm_reprint" string="Authorize Reprint" type="object" class="btn-danger"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <!-- ========================================================================
+         BATCH REPRINT WIZARD VIEWS
+         ======================================================================== -->
+    
+    <record id="view_barcode_batch_reprint_wizard_form" model="ir.ui.view">
+        <field name="name">barcode.batch.reprint.wizard.form</field>
+        <field name="model">barcode.batch.reprint.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Authorize Batch Reprint">
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        <h3><i class="fa fa-exclamation-triangle"/> <strong>⚠️ BATCH REPRINT WARNING</strong></h3>
+                        <p>Some of the selected records have already been printed!</p>
+                        <p><strong>Total Labels:</strong> <field name="total_count" readonly="1" nolabel="1"/></p>
+                        <p><strong>Previously Printed:</strong> <field name="reprint_count" readonly="1" nolabel="1" class="text-danger"/></p>
+                    </div>
+                    
+                    <group invisible="1">
+                        <field name="container_ids"/>
+                        <field name="file_ids"/>
+                        <field name="reprint_ids"/>
+                        <field name="reprint_file_ids"/>
+                        <field name="record_type"/>
+                    </group>
+                    
+                    <group>
+                        <field name="reason" required="1" placeholder="Explain why these labels need to be reprinted"/>
+                    </group>
+                    
+                    <group>
+                        <field name="warning_acknowledged" required="1"/>
+                    </group>
+                    
+                    <group string="Electronic Signature (Required)">
+                        <field name="signature" widget="signature"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm_batch_reprint" string="Authorize Batch Reprint" type="object" class="btn-danger"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <!-- ========================================================================
+         BATCH ERROR WIZARD VIEWS
+         ======================================================================== -->
+    
+    <record id="view_batch_label_error_wizard_form" model="ir.ui.view">
+        <field name="name">batch.label.error.wizard.form</field>
+        <field name="model">batch.label.error.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Batch Print Error">
+                <sheet>
+                    <div class="alert alert-danger" role="alert">
+                        <h3><i class="fa fa-times-circle"/> <strong>Cannot Print All Labels</strong></h3>
+                    </div>
+                    
+                    <group invisible="1">
+                        <field name="container_ids"/>
+                        <field name="missing_barcode_ids"/>
+                        <field name="error_type"/>
+                    </group>
+                    
+                    <group>
+                        <field name="error_message" widget="text" nolabel="1"/>
+                    </group>
+                    
+                    <div class="alert alert-info mt16">
+                        <p><strong>Options:</strong></p>
+                        <ul>
+                            <li><strong>Print Valid Only:</strong> Print labels for records that have barcodes, skip the rest</li>
+                            <li><strong>Cancel:</strong> Return to the list and fix the issues first</li>
+                        </ul>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_print_valid_only" string="Print Valid Only" type="object" class="btn-primary"/>
+                    <button name="action_cancel" string="Cancel" type="object" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

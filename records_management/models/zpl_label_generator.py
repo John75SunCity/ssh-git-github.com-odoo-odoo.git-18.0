@@ -429,3 +429,72 @@ class ZPLLabelGenerator(models.AbstractModel):
             'filename': f"folder_labels_batch_{fields.Date.today()}.pdf",
             'label_count': len(all_zpl)
         }
+    
+    def generate_preprint_container_labels(self, barcode_list):
+        """
+        Generate pre-printed blank container labels with barcodes.
+        
+        Used for printing labels in advance that will be applied to containers later.
+        Labels show barcode but no container-specific information.
+        
+        Args:
+            barcode_list (list): List of barcode strings to print
+        
+        Returns:
+            dict: PDF data, filename, label count
+        """
+        if not barcode_list:
+            raise UserError(_("No barcodes provided for pre-printing."))
+        
+        all_zpl = []
+        for barcode in barcode_list:
+            # Generate blank label with just barcode and "UNASSIGNED" placeholder
+            zpl = self._generate_container_zpl(
+                barcode=barcode,
+                container_name='UNASSIGNED',
+                customer_name='',
+                location_name=''
+            )
+            all_zpl.append(zpl)
+        
+        combined_zpl = '\n'.join(all_zpl)
+        pdf_data = self._render_zpl_to_pdf(
+            zpl=combined_zpl,
+            width=self.CONTAINER_LABEL_WIDTH,
+            height=self.CONTAINER_LABEL_HEIGHT,
+            dpmm=8
+        )
+        
+        return {
+            'pdf_data': pdf_data,
+            'filename': f"preprint_container_labels_{fields.Date.today()}.pdf",
+            'label_count': len(all_zpl)
+        }
+    
+    def generate_preprint_folder_labels(self, barcode_list):
+        """Generate pre-printed blank folder labels with barcodes."""
+        if not barcode_list:
+            raise UserError(_("No barcodes provided for pre-printing."))
+        
+        all_zpl = []
+        for barcode in barcode_list:
+            zpl = self._generate_folder_zpl(
+                barcode=barcode,
+                folder_name='UNASSIGNED',
+                container_name=''
+            )
+            all_zpl.append(zpl)
+        
+        combined_zpl = '\n'.join(all_zpl)
+        pdf_data = self._render_zpl_to_pdf(
+            zpl=combined_zpl,
+            width=self.FOLDER_LABEL_WIDTH,
+            height=self.FOLDER_LABEL_HEIGHT,
+            dpmm=8
+        )
+        
+        return {
+            'pdf_data': pdf_data,
+            'filename': f"preprint_folder_labels_{fields.Date.today()}.pdf",
+            'label_count': len(all_zpl)
+        }

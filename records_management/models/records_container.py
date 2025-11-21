@@ -1706,23 +1706,48 @@ class RecordsContainer(models.Model):
         """
         Generate and download a professional barcode label for this container.
         
-        Uses ZPL (Zebra Programming Language) and Labelary's free API to create
-        a PDF label with:
-        - Code 128 barcode (physical or temp barcode)
-        - Container name
-        - Customer name
-        - Current location
-        - Box icon (Font Awesome approximation)
+        Enhanced features:
+        - Checks if barcode was previously printed (requires signature for reprint)
+        - Logs print action in chatter with timestamp and user
+        - Attaches PDF to record for easy reprinting
+        - Uses ZPL + Labelary API for professional output
         
         Label size: 4" x 1.33" (standard Avery-compatible sheet, 14 per page)
         """
         self.ensure_one()
         
+        barcode = self.barcode or self.temp_barcode
+        if not barcode:
+            raise UserError(_("Container must have a barcode before printing labels."))
+        
+        # Check if this barcode was previously printed
+        previous_print = self.env['ir.attachment'].search([
+            ('res_model', '=', self._name),
+            ('res_id', '=', self.id),
+            ('name', 'ilike', 'container_label'),
+        ], limit=1)
+        
+        if previous_print:
+            # Require signature for reprint
+            return {
+                'name': _('Confirm Barcode Reprint'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'barcode.reprint.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_container_id': self.id,
+                    'default_barcode': barcode,
+                    'default_previous_print_date': previous_print.create_date,
+                    'default_record_type': 'container',
+                }
+            }
+        
         # Generate label using ZPL service
         generator = self.env['zpl.label.generator']
         result = generator.generate_container_label(self)
         
-        # Create attachment for download
+        # Create attachment for download and easy reprinting
         attachment = self.env['ir.attachment'].create({
             'name': result['filename'],
             'type': 'binary',
@@ -1730,7 +1755,18 @@ class RecordsContainer(models.Model):
             'res_model': self._name,
             'res_id': self.id,
             'mimetype': 'application/pdf',
+            'description': f"Container barcode label printed by {self.env.user.name}",
         })
+        
+        # Log in chatter
+        self.message_post(
+            body=_("Container barcode label printed by %s<br/>Barcode: <strong>%s</strong>") % (
+                self.env.user.name,
+                barcode
+            ),
+            subject=_("Barcode Label Printed"),
+            attachment_ids=[attachment.id],
+        )
         
         # Return download action
         return {
@@ -1745,6 +1781,7 @@ class RecordsContainer(models.Model):
         
         Label size: 1" x 1.25" (49 per sheet)
         QR code directs users to portal where they can log in and view container details.
+        Logs print action in chatter.
         """
         self.ensure_one()
         
@@ -1758,7 +1795,15 @@ class RecordsContainer(models.Model):
             'res_model': self._name,
             'res_id': self.id,
             'mimetype': 'application/pdf',
+            'description': f"QR code label printed by {self.env.user.name}",
         })
+        
+        # Log in chatter
+        self.message_post(
+            body=_("QR code label printed by %s") % self.env.user.name,
+            subject=_("QR Label Printed"),
+            attachment_ids=[attachment.id],
+        )
         
         return {
             'type': 'ir.actions.act_url',
@@ -1771,12 +1816,18 @@ class RecordsContainer(models.Model):
         """
         Print barcode labels for multiple containers in a single PDF.
         
+        Enhanced features:
+        - Handles errors gracefully (missing barcodes, API failures)
+        - Allows retry on partial failures
+        - Logs each container's print in its chatter
+        - Attaches PDF to a batch tracking record
+        
         Args:
             container_ids (list): List of container IDs to print labels for.
                                  If None, uses active_ids from context.
         
         Returns:
-            Action to download multi-page PDF with all labels.
+            Action to download multi-page PDF with all labels, or wizard for errors.
         """
         if container_ids is None:
             container_ids = self.env.context.get('active_ids', [])
@@ -1786,18 +1837,86 @@ class RecordsContainer(models.Model):
         
         containers = self.browse(container_ids)
         
-        generator = self.env['zpl.label.generator']
-        result = generator.generate_batch_container_labels(containers)
+        # Check for containers without barcodes
+        missing_barcodes = containers.filtered(lambda c: not c.barcode and not c.temp_barcode)
+        if missing_barcodes:
+            return {
+                'name': _('Containers Missing Barcodes'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'batch.label.error.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_container_ids': [(6, 0, container_ids)],
+                    'default_missing_barcode_ids': [(6, 0, missing_barcodes.ids)],
+                    'default_error_type': 'missing_barcode',
+                }
+            }
         
-        attachment = self.env['ir.attachment'].create({
-            'name': result['filename'],
-            'type': 'binary',
-            'datas': result['pdf_data'],
-            'mimetype': 'application/pdf',
-        })
+        # Check for previously printed barcodes
+        previously_printed = []
+        for container in containers:
+            prev = self.env['ir.attachment'].search([
+                ('res_model', '=', 'records.container'),
+                ('res_id', '=', container.id),
+                ('name', 'ilike', 'container_label'),
+            ], limit=1)
+            if prev:
+                previously_printed.append(container.id)
         
-        return {
-            'type': 'ir.actions.act_url',
+        if previously_printed:
+            # Require signature for batch reprint
+            return {
+                'name': _('Confirm Batch Barcode Reprint'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'barcode.batch.reprint.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_container_ids': [(6, 0, container_ids)],
+                    'default_reprint_ids': [(6, 0, previously_printed)],
+                    'default_record_type': 'container',
+                }
+            }
+        
+        # Generate batch labels
+        try:
+            generator = self.env['zpl.label.generator']
+            result = generator.generate_batch_container_labels(containers)
+            
+            # Create batch tracking record
+            batch_record = self.env['barcode.batch.print'].create({
+                'record_type': 'container',
+                'record_count': len(containers),
+                'printed_by_id': self.env.user.id,
+                'print_date': fields.Datetime.now(),
+            })
+            
+            attachment = self.env['ir.attachment'].create({
+                'name': result['filename'],
+                'type': 'binary',
+                'datas': result['pdf_data'],
+                'res_model': batch_record._name,
+                'res_id': batch_record.id,
+                'mimetype': 'application/pdf',
+                'description': f"Batch print of {len(containers)} container labels",
+            })
+            
+            batch_record.attachment_id = attachment.id
+            
+            # Log in each container's chatter
+            for container in containers:
+                container.message_post(
+                    body=_("Included in batch label print by %s<br/>Batch: %s<br/>Total labels: %s") % (
+                        self.env.user.name,
+                        batch_record.name,
+                        len(containers)
+                    ),
+                    subject=_("Batch Label Printed"),
+                )
+            
+            return {
+                'type': 'ir.actions.act_url',
             'url': f'/web/content/{attachment.id}?download=true',
             'target': 'new',
         }

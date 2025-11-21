@@ -83,16 +83,16 @@ Documents
                                     </button>
                                 </div>
                                 <div class="col-6">
-                                    <button class="btn btn-info btn-sm" type="object" name="action_generate_barcode">
-<i class="fas fa-barcode" title="Generate Barcode" aria-hidden="true"/>
+                                    <button class="btn btn-info btn-sm" type="object" name="action_print_barcode_label">
+<i class="fas fa-barcode" title="Print Barcode Label" aria-hidden="true"/>
 Barcode
                                     </button>
                                 </div>
                             </div>
                             <div class="row mt-1">
                                 <div class="col-12">
-                                    <button class="btn btn-success btn-sm" type="object" name="action_generate_qr_code">
-<i class="fas fa-qrcode" title="Generate QR Code" aria-hidden="true"/>
+                                    <button class="btn btn-success btn-sm" type="object" name="action_print_qr_label">
+<i class="fas fa-qrcode" title="Print QR Code Label" aria-hidden="true"/>
 QR Code
                                     </button>
                                 </div>
@@ -108,12 +108,12 @@ View Documents</a>
 <a role="menuitem" type="object" name="action_retrieve_container" class="dropdown-item">
 <i class="fas fa-map-marker" title="Retrieve Container" aria-hidden="true"/>
 Retrieve Container</a>
-<a role="menuitem" type="object" name="action_generate_barcode" class="dropdown-item">
-<i class="fas fa-barcode" title="Print Barcode" aria-hidden="true"/>
+<a role="menuitem" type="object" name="action_print_barcode_label" class="dropdown-item">
+<i class="fas fa-barcode" title="Print Barcode Label" aria-hidden="true"/>
 Print Barcode</a>
-<a role="menuitem" type="object" name="action_generate_qr_code" class="dropdown-item">
-<i class="fas fa-qrcode" title="Generate QR Code" aria-hidden="true"/>
-Generate QR Code</a>
+<a role="menuitem" type="object" name="action_print_qr_label" class="dropdown-item">
+<i class="fas fa-qrcode" title="Print QR Code Label" aria-hidden="true"/>
+Print QR Label</a>
                             <div class="dropdown-divider"/>
 <a role="menuitem" type="object" name="action_destroy" class="dropdown-item">
 <i class="fas fa-trash" title="Destroy Container"/>
@@ -216,7 +216,7 @@ Destroy Container</a>
                 <button name="action_retrieve_container" type="object" string="Retrieve Container" class="btn-secondary" invisible="state != 'in_storage'"/>
                 <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-warning" invisible="not is_due_for_destruction"/>
                 <button name="action_destroy" type="object" string="Destroy Container" class="btn-danger" invisible="state != 'pending_destruction'"/>
-                <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
+                <button name="action_print_barcode_label" type="object" string="Print Barcode" class="btn-info"/>
                 <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
                 <!-- File Management Buttons -->
                 <button name="action_add_files" type="object" string="Add Files" class="btn-success" 

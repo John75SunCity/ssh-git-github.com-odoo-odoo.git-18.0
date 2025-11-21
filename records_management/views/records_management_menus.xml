@@ -588,6 +588,9 @@
 
         <!-- Barcode Configuration Items will be populated from separate views -->
         <menuitem id="menu_barcode_seasonal_pricing" name="Seasonal Pricing Rules" parent="records_management.menu_barcode_config" action="barcode_seasonal_pricing_action" sequence="10" groups="records_management.group_records_manager,records_management.group_records_admin" />
+        <menuitem id="menu_barcode_preprint" name="Pre-Print Labels" parent="records_management.menu_barcode_config" action="action_barcode_preprint_wizard" sequence="15" groups="records_management.group_records_manager,records_management.group_records_admin" />
+        <menuitem id="menu_barcode_preprint_tracking" name="Pre-Print Batches" parent="records_management.menu_barcode_config" action="action_barcode_preprint_tracking" sequence="20" groups="records_management.group_records_manager,records_management.group_records_admin" />
+        <menuitem id="menu_barcode_batch_print" name="Batch Print History" parent="records_management.menu_barcode_config" action="action_barcode_batch_print" sequence="25" groups="records_management.group_records_manager,records_management.group_records_admin" />
 
         <!-- System Configuration -->
         <menuitem id="menu_rm_module_configurator" name="RM Module Configurator" parent="records_management.menu_records_configuration" action="action_rm_module_configurator" sequence="35" groups="records_management.group_records_manager,records_management.group_records_admin" />

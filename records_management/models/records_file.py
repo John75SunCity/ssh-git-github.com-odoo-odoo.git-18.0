@@ -618,22 +618,42 @@ class RecordsFile(models.Model):
         """
         Generate and download a professional barcode label for this file folder.
         
-        Uses ZPL (Zebra Programming Language) and Labelary's free API to create
-        a PDF label with:
-        - Code 128 barcode (physical or temp barcode)
-        - Folder name
-        - Parent container name
-        - Folder icon (Font Awesome approximation)
-        
+        Enhanced with reprint detection, signature requirement, and chatter logging.
         Label size: 2.5935" x 1" (standard file folder labels, 30 per page)
         """
         self.ensure_one()
         
-        # Generate label using ZPL service
+        barcode = self.barcode or self.temp_barcode
+        if not barcode:
+            raise UserError(_("Folder must have a barcode before printing labels."))
+        
+        # Check for previous print
+        previous_print = self.env['ir.attachment'].search([
+            ('res_model', '=', self._name),
+            ('res_id', '=', self.id),
+            ('name', 'ilike', 'folder_label'),
+        ], limit=1)
+        
+        if previous_print:
+            return {
+                'name': _('Confirm Barcode Reprint'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'barcode.reprint.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_file_id': self.id,
+                    'default_barcode': barcode,
+                    'default_previous_print_date': previous_print.create_date,
+                    'default_record_type': 'folder',
+                }
+            }
+        
+        # Generate label
         generator = self.env['zpl.label.generator']
         result = generator.generate_folder_label(self)
         
-        # Create attachment for download
+        # Create attachment
         attachment = self.env['ir.attachment'].create({
             'name': result['filename'],
             'type': 'binary',
@@ -641,9 +661,19 @@ class RecordsFile(models.Model):
             'res_model': self._name,
             'res_id': self.id,
             'mimetype': 'application/pdf',
+            'description': f"Folder barcode label printed by {self.env.user.name}",
         })
         
-        # Return download action
+        # Log in chatter
+        self.message_post(
+            body=_("Folder barcode label printed by %s<br/>Barcode: <strong>%s</strong>") % (
+                self.env.user.name,
+                barcode
+            ),
+            subject=_("Barcode Label Printed"),
+            attachment_ids=[attachment.id],
+        )
+        
         return {
             'type': 'ir.actions.act_url',
             'url': f'/web/content/{attachment.id}?download=true',
@@ -655,7 +685,7 @@ class RecordsFile(models.Model):
         Generate QR code label that links to customer portal login.
         
         Label size: 1" x 1.25" (49 per sheet)
-        QR code directs users to portal where they can log in and view folder details.
+        Logs print action in chatter.
         """
         self.ensure_one()
         
@@ -669,7 +699,15 @@ class RecordsFile(models.Model):
             'res_model': self._name,
             'res_id': self.id,
             'mimetype': 'application/pdf',
+            'description': f"QR code label printed by {self.env.user.name}",
         })
+        
+        # Log in chatter
+        self.message_post(
+            body=_("QR code label printed by %s") % self.env.user.name,
+            subject=_("QR Label Printed"),
+            attachment_ids=[attachment.id],
+        )
         
         return {
             'type': 'ir.actions.act_url',
