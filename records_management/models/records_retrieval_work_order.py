@@ -29,6 +29,24 @@ class RecordsRetrievalWorkOrder(models.Model):
     currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', compute='_compute_currency_id', store=True)
 
     # ============================================================================
+    # BARCODE SCANNING FIELDS
+    # ============================================================================
+    scanned_barcode_ids = fields.Many2many(
+        comodel_name='records.container',
+        relation='retrieval_work_order_scanned_barcodes',
+        column1='work_order_id',
+        column2='container_id',
+        string='Scanned Containers',
+        help="Containers that were scanned during this retrieval"
+    )
+    scanned_count = fields.Integer(
+        string='Scanned Items',
+        compute='_compute_scanned_count',
+        store=True
+    )
+    last_scan_time = fields.Datetime(string='Last Scan', readonly=True)
+
+    # ============================================================================
     # METHODS
     # ============================================================================
     @api.model_create_multi
@@ -48,6 +66,12 @@ class RecordsRetrievalWorkOrder(models.Model):
     def _compute_currency_id(self):
         for record in self:
             record.currency_id = record.company_id.currency_id
+
+    @api.depends('scanned_barcode_ids')
+    def _compute_scanned_count(self):
+        """Count of containers scanned during retrieval."""
+        for order in self:
+            order.scanned_count = len(order.scanned_barcode_ids)
 
     # ============================================================================
     # ACTION METHODS
@@ -78,6 +102,65 @@ class RecordsRetrievalWorkOrder(models.Model):
             raise UserError(_("Completed work orders cannot be cancelled."))
         self.write({'state': 'cancelled'})
         return True
+
+    def action_scan_barcode(self, barcode_value):
+        """
+        Scan a barcode during retrieval.
+        Works with USB scanners (types into field) or manual entry.
+        
+        Args:
+            barcode_value (str): The barcode to scan
+            
+        Returns:
+            dict: Scan result with success/message
+        """
+        self.ensure_one()
+        
+        if self.state not in ['draft', 'in_progress']:
+            return {
+                'success': False,
+                'message': _('Work order must be active to scan barcodes')
+            }
+        
+        # Find container
+        container = self.env['records.container'].search([
+            '|',
+            ('barcode', '=', barcode_value),
+            ('temp_barcode', '=', barcode_value)
+        ], limit=1)
+        
+        if not container:
+            return {
+                'success': False,
+                'message': _('Container not found: %s') % barcode_value
+            }
+        
+        # Check duplicate
+        if container in self.scanned_barcode_ids:
+            return {
+                'success': False,
+                'message': _('Already scanned: %s') % container.name,
+                'warning': True
+            }
+        
+        # Add to scanned list
+        self.write({
+            'scanned_barcode_ids': [(4, container.id)],
+            'last_scan_time': fields.Datetime.now(),
+        })
+        
+        # Log
+        self.message_post(
+            body=_('Retrieved container: %s (Barcode: %s)') % (container.name, barcode_value),
+            subtype_xmlid='mail.mt_note'
+        )
+        
+        return {
+            'success': True,
+            'message': _('Retrieved: %s') % container.name,
+            'container_id': container.id,
+            'total_scanned': len(self.scanned_barcode_ids)
+        }
 
     def action_reset_to_draft(self):
         """Reset work order to draft state"""

@@ -84,6 +84,28 @@ class WorkOrderShredding(models.Model):
     completion_percentage = fields.Float(string="Completion %", compute='_compute_completion_percentage', store=False)
 
     # ============================================================================
+    # BARCODE SCANNING FIELDS
+    # ============================================================================
+    scanned_barcode_ids = fields.Many2many(
+        comodel_name='records.container',
+        relation='work_order_shredding_scanned_barcodes',
+        column1='work_order_id',
+        column2='container_id',
+        string='Scanned Containers',
+        help="Containers that were scanned during this work order"
+    )
+    scanned_count = fields.Integer(
+        string='Scanned Items',
+        compute='_compute_scanned_count',
+        store=True
+    )
+    last_scan_time = fields.Datetime(
+        string='Last Scan',
+        readonly=True,
+        help="Timestamp of the most recent barcode scan"
+    )
+
+    # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
     @api.depends('name', 'partner_id.name', 'state')
@@ -99,6 +121,12 @@ class WorkOrderShredding(models.Model):
             if order.start_date and order.completion_date:
                 delta = order.completion_date - order.start_date
                 order.actual_duration = delta.total_seconds() / 3600.0
+
+    @api.depends('scanned_barcode_ids')
+    def _compute_scanned_count(self):
+        """Count of containers scanned during work order."""
+        for order in self:
+            order.scanned_count = len(order.scanned_barcode_ids)
             else:
                 order.actual_duration = 0.0
 
@@ -258,6 +286,66 @@ class WorkOrderShredding(models.Model):
         self.certificate_id = certificate
         self.message_post(body=_("Destruction Certificate %s created for %d boxes.", certificate.name, self.boxes_count))
         return certificate
+
+    def action_scan_barcode(self, barcode_value):
+        """
+        Scan a barcode during work order execution.
+        Can be called from mobile app, USB scanner, or manual entry.
+        
+        Args:
+            barcode_value (str): The barcode value to scan
+            
+        Returns:
+            dict: Result with success status and message
+        """
+        self.ensure_one()
+        
+        if self.state not in ['confirmed', 'assigned', 'in_progress']:
+            return {
+                'success': False,
+                'message': _('Work order must be confirmed/in progress to scan barcodes')
+            }
+        
+        # Find container by barcode
+        container = self.env['records.container'].search([
+            '|',
+            ('barcode', '=', barcode_value),
+            ('temp_barcode', '=', barcode_value)
+        ], limit=1)
+        
+        if not container:
+            return {
+                'success': False,
+                'message': _('No container found with barcode: %s') % barcode_value
+            }
+        
+        # Check if already scanned
+        if container in self.scanned_barcode_ids:
+            return {
+                'success': False,
+                'message': _('Container %s already scanned') % container.name,
+                'warning': True
+            }
+        
+        # Add to scanned list
+        self.write({
+            'scanned_barcode_ids': [(4, container.id)],
+            'last_scan_time': fields.Datetime.now(),
+        })
+        
+        # Log in chatter
+        self.message_post(
+            body=_('Container scanned: %s (Barcode: %s)') % (container.name, barcode_value),
+            subtype_xmlid='mail.mt_note'
+        )
+        
+        return {
+            'success': True,
+            'message': _('Scanned: %s') % container.name,
+            'container_id': container.id,
+            'container_name': container.name,
+            'total_scanned': len(self.scanned_barcode_ids)
+        }
 
     # ============================================================================
     # CONSTRAINTS

@@ -42,7 +42,7 @@
         # "sms",
         # "maintenance",
         # "point_of_sale",
-        # "barcodes",
+        "barcodes",  # ✅ ENABLED for barcode scanning
         # "industry_fsm",
         # "sign",
         "survey",
