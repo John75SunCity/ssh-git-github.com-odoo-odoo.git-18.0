@@ -139,11 +139,12 @@
         "data/training_courses_legal_citations.xml",  # Legal Citations & Records Retention training course
         # ============================================================================
         # TEMPORARY: Demo data moved to regular data section to force load
+        # NOTE: intelligent_search_demo_data.xml disabled - references missing partners
         # ============================================================================
         "demo/customer_inventory_demo.xml",
         "demo/model_records_demo.xml",
         "demo/field_label_demo_data.xml",
-        "demo/intelligent_search_demo_data.xml",
+        # "demo/intelligent_search_demo_data.xml",  # DISABLED - requires base.res_partner_12 which may not exist
         "demo/records_config_mail_templates_data.xml",
         # ============================================================================
         # REPORTS: All report templates and actions (174 files)
@@ -749,7 +750,7 @@
         # "demo/advanced_billing_demo.xml",  # Commented out - requires billing_config records
         "demo/model_records_demo.xml",
         "demo/field_label_demo_data.xml",
-        "demo/intelligent_search_demo_data.xml",
+        # "demo/intelligent_search_demo_data.xml",  # DISABLED - requires base.res_partner_12 which may not exist
         # "demo/naid_demo_certificates.xml",  # Commented out - field mismatches causing module load errors
         "demo/records_config_mail_templates_data.xml"
     ],
