@@ -26,6 +26,7 @@
                     <header>
                         <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'" />
                         <button name="action_start_work" string="Start Shredding" type="object" class="btn-warning" invisible="state != 'confirmed'" />
+                        <button name="action_open_scanner" string="📷 Scan Barcodes" type="object" class="btn-primary" invisible="state not in ['confirmed','assigned','in_progress']" icon="fa-barcode"/>
                         <button name="action_complete_work" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'" />
                         <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['draft','confirmed']" />
                         <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'" />
@@ -67,6 +68,30 @@
                             </group>
                         </group>
                         <notebook>
+                            <page name="barcode_scanning" string="📷 Barcode Scanning" invisible="state not in ['confirmed','assigned','in_progress']">
+                                <group>
+                                    <group name="scan_status" string="Scanning Status">
+                                        <field name="scanned_count" readonly="1"/>
+                                        <field name="last_scan_time" readonly="1"/>
+                                    </group>
+                                </group>
+                                <separator string="Scanned Containers"/>
+                                <field name="scanned_barcode_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create': True}">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="barcode"/>
+                                        <field name="partner_id"/>
+                                    </list>
+                                </field>
+                                <div class="alert alert-info" role="status">
+                                    <p><i class="fa fa-info-circle" title="Information"/> <strong>How to Scan:</strong></p>
+                                    <ul>
+                                        <li><strong>USB Scanner:</strong> Focus on barcode field below and scan</li>
+                                        <li><strong>Mobile:</strong> Tap camera icon to scan with phone camera</li>
+                                        <li><strong>Manual:</strong> Type barcode and press Enter</li>
+                                    </ul>
+                                </div>
+                            </page>
                             <page name="materials" string="Materials &amp; Resources">
                                 <group>
                                     <group>

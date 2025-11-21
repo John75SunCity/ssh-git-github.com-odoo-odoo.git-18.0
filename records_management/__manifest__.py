@@ -390,6 +390,7 @@
         "views/barcode_seasonal_pricing_views.xml",
         "views/barcode_storage_box_views.xml",
         "views/barcode_label_wizards_views.xml",
+        "views/barcode_scan_wizard_views.xml",
         "views/customer_negotiated_rate_views.xml",
         "views/base_rate_views.xml",
         "views/billing_period_views.xml",

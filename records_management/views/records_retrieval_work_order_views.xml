@@ -20,6 +20,13 @@
             <field name="model">records.retrieval.work.order</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <button name="action_start_progress" string="Start" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_open_scanner" string="📷 Scan Barcodes" type="object" class="btn-primary" invisible="state not in ['draft','in_progress']" icon="fa-barcode"/>
+                        <button name="action_complete" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'"/>
+                        <button name="action_cancel" string="Cancel" type="object" class="btn-secondary" invisible="state == 'completed'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
+                    </header>
                     <sheet>
                         <group>
                             <field name="name"/>
@@ -31,6 +38,30 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                         <notebook>
+                            <page name="barcode_scanning" string="📷 Barcode Scanning" invisible="state not in ['draft','in_progress']">
+                                <group>
+                                    <group name="scan_status" string="Scanning Status">
+                                        <field name="scanned_count" readonly="1"/>
+                                        <field name="last_scan_time" readonly="1"/>
+                                    </group>
+                                </group>
+                                <separator string="Scanned Containers"/>
+                                <field name="scanned_barcode_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create': True}">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="barcode"/>
+                                        <field name="partner_id"/>
+                                    </list>
+                                </field>
+                                <div class="alert alert-info" role="status">
+                                    <p><i class="fa fa-info-circle" title="Information"/> <strong>How to Scan:</strong></p>
+                                    <ul>
+                                        <li><strong>USB Scanner:</strong> Focus on barcode field below and scan</li>
+                                        <li><strong>Mobile:</strong> Tap camera icon to scan with phone camera</li>
+                                        <li><strong>Manual:</strong> Type barcode and press Enter</li>
+                                    </ul>
+                                </div>
+                            </page>
                             <page name="details" string="Details">
                                 <group>
                                     <group name="dates" string="Scheduling">

@@ -18,6 +18,7 @@ from . import barcode_generation_history
 from . import barcode_models_enhanced
 from . import barcode_pricing_tier
 from . import barcode_product
+from . import barcode_scan_wizard
 from . import barcode_seasonal_pricing
 from . import barcode_storage_box
 from . import base_rate

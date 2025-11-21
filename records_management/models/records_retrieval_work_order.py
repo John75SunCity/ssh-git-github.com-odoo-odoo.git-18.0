@@ -162,6 +162,21 @@ class RecordsRetrievalWorkOrder(models.Model):
             'total_scanned': len(self.scanned_barcode_ids)
         }
 
+    def action_open_scanner(self):
+        """Open barcode scanner wizard for continuous scanning."""
+        self.ensure_one()
+        return {
+            'name': _('Scan Barcodes'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'barcode.scan.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_work_order_model': self._name,
+                'default_work_order_id': self.id,
+            }
+        }
+
     def action_reset_to_draft(self):
         """Reset work order to draft state"""
         self.ensure_one()
