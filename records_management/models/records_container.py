@@ -1917,9 +1917,11 @@ class RecordsContainer(models.Model):
             
             return {
                 'type': 'ir.actions.act_url',
-            'url': f'/web/content/{attachment.id}?download=true',
-            'target': 'new',
-        }
+                'url': f'/web/content/{attachment.id}?download=true',
+                'target': 'new',
+            }
+        except Exception as e:
+            raise UserError(_("Error generating batch labels: %s") % str(e))
 
     # ============================================================================
     # VALIDATION METHODS
