@@ -21,7 +21,7 @@ class LegalCitation(models.Model):
     _name = 'legal.citation'
     _description = 'Legal Citation'
     _order = 'code, title'
-    
+
     # ============================================================================
     # CORE IDENTIFICATION
     # ============================================================================
@@ -35,7 +35,7 @@ class LegalCitation(models.Model):
         required=True,
         help='Descriptive title for this legal citation'
     )
-    
+
     # ============================================================================
     # LEGAL DETAILS
     # ============================================================================
@@ -55,7 +55,7 @@ class LegalCitation(models.Model):
         string='Jurisdiction',
         help='Jurisdiction for this legal citation (e.g., "California", "Federal", "New York")'
     )
-    
+
     # ============================================================================
     # CATEGORIZATION
     # ============================================================================
@@ -65,7 +65,7 @@ class LegalCitation(models.Model):
         required=True,
         help='Type of legal citation (Federal, State, County, City, etc.)'
     )
-    
+
     # ============================================================================
     # RETENTION REQUIREMENTS
     # ============================================================================
@@ -85,7 +85,7 @@ class LegalCitation(models.Model):
         default='year',
         help='Unit of time for retention period'
     )
-    
+
     # ============================================================================
     # DESCRIPTION & NOTES
     # ============================================================================
@@ -93,7 +93,7 @@ class LegalCitation(models.Model):
         string='Description',
         help='Detailed description of this legal citation and why it matters'
     )
-    
+
     # ============================================================================
     # SYSTEM FIELDS
     # ============================================================================
@@ -101,7 +101,7 @@ class LegalCitation(models.Model):
         default=True,
         help='Inactive citations are hidden but retain historical data'
     )
-    
+
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
@@ -109,7 +109,7 @@ class LegalCitation(models.Model):
         compute='_compute_display_name',
         store=True
     )
-    
+
     @api.depends('code', 'title')
     def _compute_display_name(self):
         for citation in self:
@@ -119,14 +119,14 @@ class LegalCitation(models.Model):
                 citation.display_name = citation.code
             else:
                 citation.display_name = citation.title or _('New Citation')
-    
+
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================
     _sql_constraints = [
         ('code_unique', 'unique(code)', 'Citation code must be unique!'),
     ]
-    
+
     @api.constrains('retention_value', 'retention_unit')
     def _check_retention_value(self):
         for citation in self:

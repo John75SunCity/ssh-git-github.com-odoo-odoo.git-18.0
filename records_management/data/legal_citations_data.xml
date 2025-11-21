@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        
+
         <!-- =============================================================== -->
         <!-- LEGAL CITATION TYPES (industry standard + common additions) -->
         <!-- =============================================================== -->
-        
+
         <record id="citation_type_federal" model="legal.citation.type">
             <field name="name">Federal</field>
             <field name="code">FED</field>
             <field name="description">Federal laws and regulations applicable nationwide</field>
             <field name="sequence">10</field>
         </record>
-        
+
         <record id="citation_type_state" model="legal.citation.type">
             <field name="name">State</field>
             <field name="code">ST</field>
             <field name="description">State-level laws and regulations</field>
             <field name="sequence">20</field>
         </record>
-        
+
         <record id="citation_type_county" model="legal.citation.type">
             <field name="name">County</field>
             <field name="code">CO</field>
             <field name="description">County-level ordinances and regulations</field>
             <field name="sequence">30</field>
         </record>
-        
+
         <record id="citation_type_city" model="legal.citation.type">
             <field name="name">City</field>
             <field name="code">CI</field>
             <field name="description">City-level ordinances and regulations</field>
             <field name="sequence">40</field>
         </record>
-        
+
         <record id="citation_type_industry" model="legal.citation.type">
             <field name="name">Industry Standard</field>
             <field name="code">IND</field>
             <field name="description">Industry-specific standards and best practices</field>
             <field name="sequence">50</field>
         </record>
-        
+
         <record id="citation_type_corporate" model="legal.citation.type">
             <field name="name">Corporate Policy</field>
             <field name="code">CORP</field>
             <field name="description">Internal corporate retention policies</field>
             <field name="sequence">60</field>
         </record>
-        
+
         <!-- =============================================================== -->
         <!-- DISPOSITION METHODS (industry standard documentation) -->
         <!-- =============================================================== -->
-        
+
         <record id="disposition_shred" model="record.disposition">
             <field name="name">Shred</field>
             <field name="code">SHRD</field>
@@ -60,7 +60,7 @@
             <field name="is_destructive" eval="True"/>
             <field name="requires_certificate" eval="True"/>
         </record>
-        
+
         <record id="disposition_incinerate" model="record.disposition">
             <field name="name">Incinerate</field>
             <field name="code">INCN</field>
@@ -69,7 +69,7 @@
             <field name="is_destructive" eval="True"/>
             <field name="requires_certificate" eval="True"/>
         </record>
-        
+
         <record id="disposition_recycle" model="record.disposition">
             <field name="name">Recycle</field>
             <field name="code">RCYL</field>
@@ -78,7 +78,7 @@
             <field name="is_destructive" eval="True"/>
             <field name="requires_certificate" eval="False"/>
         </record>
-        
+
         <record id="disposition_transfer" model="record.disposition">
             <field name="name">Transfer Ownership</field>
             <field name="code">XFER</field>
@@ -87,7 +87,7 @@
             <field name="is_destructive" eval="False"/>
             <field name="requires_certificate" eval="True"/>
         </record>
-        
+
         <record id="disposition_archive" model="record.disposition">
             <field name="name">Archive (Permanent Storage)</field>
             <field name="code">ARCH</field>
@@ -96,7 +96,7 @@
             <field name="is_destructive" eval="False"/>
             <field name="requires_certificate" eval="False"/>
         </record>
-        
+
         <record id="disposition_review" model="record.disposition">
             <field name="name">Review for Retention Extension</field>
             <field name="code">RVEW</field>
@@ -105,11 +105,11 @@
             <field name="is_destructive" eval="False"/>
             <field name="requires_certificate" eval="False"/>
         </record>
-        
+
         <!-- =============================================================== -->
         <!-- COMMON LEGAL CITATIONS (Federal) -->
         <!-- =============================================================== -->
-        
+
         <!-- IRS Tax Records -->
         <record id="citation_irs_general" model="legal.citation">
             <field name="code">IRS-GEN</field>
@@ -123,7 +123,7 @@
             <field name="retention_unit">year</field>
             <field name="description">IRS requires retention of tax records for 7 years from filing date or 7 years from date tax became due, whichever is later</field>
         </record>
-        
+
         <!-- HIPAA Medical Records -->
         <record id="citation_hipaa_medical" model="legal.citation">
             <field name="code">HIPAA-164</field>
@@ -137,7 +137,7 @@
             <field name="retention_unit">year</field>
             <field name="description">HIPAA requires retention of medical records for 6 years from creation or last effective date</field>
         </record>
-        
+
         <!-- SOX Document Retention -->
         <record id="citation_sox_802" model="legal.citation">
             <field name="code">SOX-802</field>
@@ -151,7 +151,7 @@
             <field name="retention_unit">year</field>
             <field name="description">SOX Section 802 requires public companies to retain audit workpapers for 7 years</field>
         </record>
-        
+
         <!-- OSHA Employee Records -->
         <record id="citation_osha_medical" model="legal.citation">
             <field name="code">OSHA-1910</field>
@@ -165,7 +165,7 @@
             <field name="retention_unit">year</field>
             <field name="description">OSHA requires employee medical records be retained for duration of employment plus 30 years</field>
         </record>
-        
+
         <!-- FLSA Payroll Records -->
         <record id="citation_flsa_payroll" model="legal.citation">
             <field name="code">FLSA-211</field>
@@ -179,11 +179,11 @@
             <field name="retention_unit">year</field>
             <field name="description">FLSA requires payroll records and collective bargaining agreements be retained for 3 years</field>
         </record>
-        
+
         <!-- =============================================================== -->
         <!-- COMMON LEGAL CITATIONS (State - California Examples) -->
         <!-- =============================================================== -->
-        
+
         <!-- California Personnel Records -->
         <record id="citation_ca_personnel" model="legal.citation">
             <field name="code">CAC-001</field>
@@ -197,11 +197,11 @@
             <field name="retention_unit">year</field>
             <field name="description">California requires personnel and health records be retained for 7 years after employment termination</field>
         </record>
-        
+
         <!-- =============================================================== -->
         <!-- SAMPLE RECORD SERIES (Industry standard examples) -->
         <!-- =============================================================== -->
-        
+
         <record id="series_audit_reports" model="record.series">
             <field name="code">GS3011-156</field>
             <field name="name">Audit Reports</field>
@@ -211,7 +211,7 @@
             <field name="default_retention_value">7</field>
             <field name="default_retention_unit">year</field>
         </record>
-        
+
         <record id="series_personnel_files" model="record.series">
             <field name="code">HR-PERS</field>
             <field name="name">Personnel Files</field>
@@ -221,7 +221,7 @@
             <field name="default_retention_value">7</field>
             <field name="default_retention_unit">year</field>
         </record>
-        
+
         <record id="series_tax_records" model="record.series">
             <field name="code">TAX-PYRL</field>
             <field name="name">Payroll Tax Records</field>
@@ -231,7 +231,7 @@
             <field name="default_retention_value">7</field>
             <field name="default_retention_unit">year</field>
         </record>
-        
+
         <record id="series_medical_records" model="record.series">
             <field name="code">MED-PTNT</field>
             <field name="name">Patient Medical Records</field>
@@ -241,7 +241,7 @@
             <field name="default_retention_value">10</field>
             <field name="default_retention_unit">year</field>
         </record>
-        
+
         <record id="series_legal_contracts" model="record.series">
             <field name="code">LEG-CNTR</field>
             <field name="name">Legal Contracts</field>
@@ -251,31 +251,31 @@
             <field name="default_retention_value">7</field>
             <field name="default_retention_unit">year</field>
         </record>
-        
+
         <!-- =============================================================== -->
         <!-- LINK CITATIONS TO RECORD SERIES -->
         <!-- Note: We update the existing records by reusing their IDs -->
         <!-- =============================================================== -->
-        
+
         <!-- Tax Records → IRS + FLSA Citations -->
         <record id="series_tax_records" model="record.series">
             <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_irs_general'), ref('citation_flsa_payroll')])]"/>
         </record>
-        
+
         <!-- Personnel Files → California + OSHA -->
         <record id="series_personnel_files" model="record.series">
             <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_ca_personnel'), ref('citation_osha_medical')])]"/>
         </record>
-        
+
         <!-- Medical Records → HIPAA -->
         <record id="series_medical_records" model="record.series">
             <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_hipaa_medical')])]"/>
         </record>
-        
+
         <!-- Audit Reports → SOX -->
         <record id="series_audit_reports" model="record.series">
             <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_sox_802')])]"/>
         </record>
-        
+
     </data>
 </odoo>

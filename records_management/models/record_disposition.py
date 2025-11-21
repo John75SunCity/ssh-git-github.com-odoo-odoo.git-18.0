@@ -20,7 +20,7 @@ class RecordDisposition(models.Model):
     _name = 'record.disposition'
     _description = 'Record Disposition Method'
     _order = 'sequence, name'
-    
+
     name = fields.Char(
         string='Disposition Method',
         required=True,
@@ -56,7 +56,7 @@ class RecordDisposition(models.Model):
         default=False,
         help='Check if this disposition requires a certificate of destruction/transfer'
     )
-    
+
     _sql_constraints = [
         ('code_unique', 'unique(code)', 'Disposition code must be unique!'),
     ]

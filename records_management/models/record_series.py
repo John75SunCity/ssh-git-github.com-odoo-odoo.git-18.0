@@ -24,7 +24,7 @@ class RecordSeries(models.Model):
     _name = 'record.series'
     _description = 'Record Series'
     _order = 'code, name'
-    
+
     # ============================================================================
     # CORE IDENTIFICATION
     # ============================================================================
@@ -42,7 +42,7 @@ class RecordSeries(models.Model):
         string='Description',
         help='Detailed description of what records belong to this series'
     )
-    
+
     # ============================================================================
     # RETENTION & LEGAL CITATIONS
     # ============================================================================
@@ -55,7 +55,7 @@ class RecordSeries(models.Model):
         help='Legal citations that justify the retention policy for this record series. '
              'A record series may reference one or more legal citations.'
     )
-    
+
     # ============================================================================
     # DISPOSITION
     # ============================================================================
@@ -64,7 +64,7 @@ class RecordSeries(models.Model):
         string='Disposition Method',
         help='How records in this series should be handled at end of retention period'
     )
-    
+
     # ============================================================================
     # DEFAULT RETENTION (can be overridden by legal citations)
     # ============================================================================
@@ -84,7 +84,7 @@ class RecordSeries(models.Model):
         default='year',
         help='Unit of time for default retention period'
     )
-    
+
     # ============================================================================
     # CATEGORIZATION
     # ============================================================================
@@ -104,7 +104,7 @@ class RecordSeries(models.Model):
         string='Category',
         help='General category for this record series'
     )
-    
+
     # ============================================================================
     # CUSTOMER RELATIONSHIP
     # ============================================================================
@@ -118,7 +118,7 @@ class RecordSeries(models.Model):
         string='Department',
         help='Department this record series belongs to (optional)'
     )
-    
+
     # ============================================================================
     # SYSTEM FIELDS
     # ============================================================================
@@ -126,7 +126,7 @@ class RecordSeries(models.Model):
         default=True,
         help='Inactive series are hidden but retain historical data'
     )
-    
+
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
@@ -134,7 +134,7 @@ class RecordSeries(models.Model):
         compute='_compute_display_name',
         store=True
     )
-    
+
     @api.depends('code', 'name')
     def _compute_display_name(self):
         for series in self:
@@ -144,11 +144,11 @@ class RecordSeries(models.Model):
                 series.display_name = series.code
             else:
                 series.display_name = series.name or _('New Series')
-    
+
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================
     _sql_constraints = [
-        ('code_partner_unique', 'unique(code, partner_id)', 
+        ('code_partner_unique', 'unique(code, partner_id)',
          'Record series code must be unique per customer!'),
     ]

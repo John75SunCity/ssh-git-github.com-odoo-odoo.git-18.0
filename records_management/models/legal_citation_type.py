@@ -18,7 +18,7 @@ class LegalCitationType(models.Model):
     _name = 'legal.citation.type'
     _description = 'Legal Citation Type'
     _order = 'sequence, name'
-    
+
     name = fields.Char(
         string='Citation Type',
         required=True,
@@ -43,7 +43,7 @@ class LegalCitationType(models.Model):
         default=True,
         help='Inactive types are hidden but retain historical data'
     )
-    
+
     _sql_constraints = [
         ('code_unique', 'unique(code)', 'Citation type code must be unique!'),
     ]
