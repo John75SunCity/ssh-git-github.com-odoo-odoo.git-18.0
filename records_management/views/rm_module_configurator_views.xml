@@ -42,11 +42,11 @@
             </header>
 <sheet>
 <!-- MASTER TOGGLE - Quick Enable/Disable All Features -->
-<div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
+<div class="alert alert-info" role="status" style="margin-bottom: 20px;">
     <div class="row">
         <div class="col-md-8">
             <h4 class="alert-heading">
-                <i class="fa fa-toggle-on"/> Master Feature Control
+                <i class="fa fa-toggle-on" title="Toggle"/> Master Feature Control
             </h4>
             <p class="mb-0">
                 Use this master switch to enable or disable <strong>all feature toggles</strong> at once.

@@ -385,7 +385,7 @@
                 <field name="default_retention_value"/>
                 <field name="default_retention_unit"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click">
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
