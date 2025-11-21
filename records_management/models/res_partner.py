@@ -483,13 +483,13 @@ class ResPartner(models.Model):
     # ACTION METHODS
     # ============================================================================
     def action_view_departments(self):
-        """Opens the tree view of departments related to this partner."""
+        """Opens the list view of departments related to this partner."""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
             'name': _('Departments'),
             'res_model': 'records.department',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form,kanban',
             'domain': [('partner_id', '=', self.id)],
             'context': {
                 'default_partner_id': self.id,
