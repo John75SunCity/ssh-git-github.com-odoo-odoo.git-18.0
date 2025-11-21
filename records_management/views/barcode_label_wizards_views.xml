@@ -10,8 +10,8 @@
         <field name="arch" type="xml">
             <form string="Pre-Print Barcode Labels">
                 <sheet>
-                    <div class="alert alert-info" role="alert">
-                        <p><i class="fa fa-info-circle"/> <strong>Pre-Print Barcode Labels</strong></p>
+                    <div class="alert alert-info" role="status">
+                        <p><i class="fa fa-info-circle" title="Information"/> <strong>Pre-Print Barcode Labels</strong></p>
                         <p>Generate blank barcode labels in advance for future use. Labels will show barcode only with "UNASSIGNED" placeholder text.</p>
                     </div>
                     
@@ -27,8 +27,8 @@
                         </group>
                     </group>
                     
-                    <div class="alert alert-success mt16">
-                        <p><i class="fa fa-check-circle"/> <strong>Benefits of Pre-Printing:</strong></p>
+                    <div class="alert alert-success mt16" role="status">
+                        <p><i class="fa fa-check-circle" title="Success"/> <strong>Benefits of Pre-Printing:</strong></p>
                         <ul>
                             <li>Labels ready when you need them</li>
                             <li>Faster container/folder creation</li>
@@ -188,8 +188,8 @@
         <field name="arch" type="xml">
             <form string="Authorize Barcode Reprint">
                 <sheet>
-                    <div class="alert alert-warning" role="alert">
-                        <h3><i class="fa fa-exclamation-triangle"/> <strong>⚠️ DUPLICATE BARCODE WARNING</strong></h3>
+                    <div class="alert alert-warning" role="alertdialog">
+                        <h3><i class="fa fa-exclamation-triangle" title="Warning"/> <strong>⚠️ DUPLICATE BARCODE WARNING</strong></h3>
                         <p>This barcode has already been printed! Reprinting will create a duplicate label.</p>
                         <p><strong>Barcode:</strong> <field name="barcode" readonly="1" nolabel="1" class="text-monospace"/></p>
                         <p><strong>Previously Printed:</strong> <field name="previous_print_date" readonly="1" nolabel="1"/></p>
@@ -209,8 +209,8 @@
                         <field name="warning_acknowledged" required="1"/>
                     </group>
                     
-                    <div class="alert alert-info mt16">
-                        <p><i class="fa fa-info-circle"/> <strong>Authorization Required</strong></p>
+                    <div class="alert alert-info mt16" role="status">
+                        <p><i class="fa fa-info-circle" title="Information"/> <strong>Authorization Required</strong></p>
                         <p>Your electronic signature is required to approve this reprint and maintain audit trail.</p>
                     </div>
                     
@@ -237,8 +237,8 @@
         <field name="arch" type="xml">
             <form string="Authorize Batch Reprint">
                 <sheet>
-                    <div class="alert alert-warning" role="alert">
-                        <h3><i class="fa fa-exclamation-triangle"/> <strong>⚠️ BATCH REPRINT WARNING</strong></h3>
+                    <div class="alert alert-warning" role="alertdialog">
+                        <h3><i class="fa fa-exclamation-triangle" title="Warning"/> <strong>⚠️ BATCH REPRINT WARNING</strong></h3>
                         <p>Some of the selected records have already been printed!</p>
                         <p><strong>Total Labels:</strong> <field name="total_count" readonly="1" nolabel="1"/></p>
                         <p><strong>Previously Printed:</strong> <field name="reprint_count" readonly="1" nolabel="1" class="text-danger"/></p>
@@ -282,8 +282,8 @@
         <field name="arch" type="xml">
             <form string="Batch Print Error">
                 <sheet>
-                    <div class="alert alert-danger" role="alert">
-                        <h3><i class="fa fa-times-circle"/> <strong>Cannot Print All Labels</strong></h3>
+                    <div class="alert alert-danger" role="alertdialog">
+                        <h3><i class="fa fa-times-circle" title="Error"/> <strong>Cannot Print All Labels</strong></h3>
                     </div>
                     
                     <group invisible="1">
@@ -296,7 +296,7 @@
                         <field name="error_message" widget="text" nolabel="1"/>
                     </group>
                     
-                    <div class="alert alert-info mt16">
+                    <div class="alert alert-info mt16" role="status">
                         <p><strong>Options:</strong></p>
                         <ul>
                             <li><strong>Print Valid Only:</strong> Print labels for records that have barcodes, skip the rest</li>
