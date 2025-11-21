@@ -10,13 +10,13 @@
         <field name="name">legal.citation.type.tree</field>
         <field name="model">legal.citation.type</field>
         <field name="arch" type="xml">
-            <tree string="Legal Citation Types" editable="bottom">
+            <list string="Legal Citation Types" editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="code"/>
                 <field name="name"/>
                 <field name="description"/>
                 <field name="active" widget="boolean_toggle"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -88,14 +88,14 @@
         <field name="name">record.disposition.tree</field>
         <field name="model">record.disposition</field>
         <field name="arch" type="xml">
-            <tree string="Disposition Methods" editable="bottom">
+            <list string="Disposition Methods" editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="code"/>
                 <field name="name"/>
                 <field name="is_destructive" widget="boolean_toggle"/>
                 <field name="requires_certificate" widget="boolean_toggle"/>
                 <field name="active" widget="boolean_toggle"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -175,7 +175,7 @@
         <field name="name">legal.citation.tree</field>
         <field name="model">legal.citation</field>
         <field name="arch" type="xml">
-            <tree string="Legal Citations">
+            <list string="Legal Citations">
                 <field name="code"/>
                 <field name="title"/>
                 <field name="legal_citation_type_id"/>
@@ -183,7 +183,7 @@
                 <field name="retention_value"/>
                 <field name="retention_unit"/>
                 <field name="active" widget="boolean_toggle"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -280,7 +280,7 @@
         <field name="name">record.series.tree</field>
         <field name="model">record.series</field>
         <field name="arch" type="xml">
-            <tree string="Record Series">
+            <list string="Record Series">
                 <field name="code"/>
                 <field name="name"/>
                 <field name="category"/>
@@ -289,7 +289,7 @@
                 <field name="default_retention_unit"/>
                 <field name="disposition_id"/>
                 <field name="active" widget="boolean_toggle"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -331,13 +331,13 @@
                     <notebook>
                         <page string="Legal Citations" name="legal_citations">
                             <field name="legal_citation_ids" widget="many2many_tags">
-                                <tree>
+                                <list>
                                     <field name="code"/>
                                     <field name="title"/>
                                     <field name="jurisdiction"/>
                                     <field name="retention_value"/>
                                     <field name="retention_unit"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Description" name="description">
