@@ -95,8 +95,6 @@ class ZPLLabelGenerator(models.AbstractModel):
                 'zpl': raw ZPL code (for debugging)
             }
         """
-        self.ensure_one()
-        
         # Get barcode (prefer physical, fallback to temp)
         barcode = container.barcode or container.temp_barcode
         if not barcode:
@@ -138,8 +136,6 @@ class ZPLLabelGenerator(models.AbstractModel):
                 'zpl': raw ZPL code
             }
         """
-        self.ensure_one()
-        
         barcode = folder.barcode or folder.temp_barcode
         if not barcode:
             raise UserError(_("File folder %s has no barcode assigned.") % folder.name)
@@ -178,8 +174,6 @@ class ZPLLabelGenerator(models.AbstractModel):
                 'zpl': raw ZPL code
             }
         """
-        self.ensure_one()
-        
         # Get base URL for portal
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         portal_url = f"{base_url}/my"
