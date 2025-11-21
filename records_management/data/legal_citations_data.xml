@@ -254,29 +254,26 @@
         
         <!-- =============================================================== -->
         <!-- LINK CITATIONS TO RECORD SERIES -->
+        <!-- Note: We update the existing records by reusing their IDs -->
         <!-- =============================================================== -->
         
         <!-- Tax Records → IRS + FLSA Citations -->
-        <record id="series_tax_records_update" model="record.series">
-            <field name="id" ref="series_tax_records"/>
+        <record id="series_tax_records" model="record.series">
             <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_irs_general'), ref('citation_flsa_payroll')])]"/>
         </record>
         
         <!-- Personnel Files → California + OSHA -->
-        <record id="series_personnel_files_update" model="record.series">
-            <field name="id" ref="series_personnel_files"/>
+        <record id="series_personnel_files" model="record.series">
             <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_ca_personnel'), ref('citation_osha_medical')])]"/>
         </record>
         
         <!-- Medical Records → HIPAA -->
-        <record id="series_medical_records_update" model="record.series">
-            <field name="id" ref="series_medical_records"/>
+        <record id="series_medical_records" model="record.series">
             <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_hipaa_medical')])]"/>
         </record>
         
         <!-- Audit Reports → SOX -->
-        <record id="series_audit_reports_update" model="record.series">
-            <field name="id" ref="series_audit_reports"/>
+        <record id="series_audit_reports" model="record.series">
             <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_sox_802')])]"/>
         </record>
         

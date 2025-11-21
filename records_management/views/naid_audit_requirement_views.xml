@@ -75,7 +75,7 @@
                             <group>
                                 <group string="Survey &amp; Quality">
         <field name="survey_id"/>
-        <field name="quality_check_id"/>
+        <field name="quality_check_id" attrs="{'invisible': [('quality_check_id', '=', False)]}" optional="hide"/>
                                 </group>
                                 <group string="Documents &amp; Signatures">
         <field name="document_ids" widget="many2many_tags"/>

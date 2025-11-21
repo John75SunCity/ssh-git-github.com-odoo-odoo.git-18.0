@@ -58,12 +58,20 @@ class NAIDAuditRequirement(models.Model):
         help='Survey template containing the audit checklist questions'
     )
 
-    # Quality Control Integration
+    # Quality Control Integration (only if quality module is installed)
     quality_check_id = fields.Many2one(
         'quality.check',
         string='Quality Check Template',
-        help='Quality control template for automated audit checks'
+        help='Quality control template for automated audit checks (requires quality module)',
+        ondelete='set null'  # Prevent errors if quality module is uninstalled
     )
+    
+    def _get_quality_module_installed(self):
+        """Check if quality module is installed"""
+        return self.env['ir.module.module'].search([
+            ('name', '=', 'quality'),
+            ('state', '=', 'installed')
+        ], limit=1)
 
     # Calendar Integration for Scheduling
     calendar_event_ids = fields.One2many(
@@ -359,8 +367,12 @@ class NAIDAuditRequirement(models.Model):
         }
 
     def action_create_quality_check(self):
-        """Create a quality check for this audit requirement"""
+        """Create a quality check for this audit requirement (requires quality module)"""
         self.ensure_one()
+        
+        # Check if quality module is installed
+        if not self._get_quality_module_installed():
+            raise ValidationError(_("Quality module is not installed. Please install it to use quality checks."))
 
         if not self.quality_check_id:
             raise ValidationError(_("Please configure a quality check template first."))
