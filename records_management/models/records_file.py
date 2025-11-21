@@ -611,6 +611,109 @@ class RecordsFile(models.Model):
         }
     
     # ============================================================================
+    # LABEL PRINTING METHODS (ZPL + Labelary API)
+    # ============================================================================
+    
+    def action_print_barcode_label(self):
+        """
+        Generate and download a professional barcode label for this file folder.
+        
+        Uses ZPL (Zebra Programming Language) and Labelary's free API to create
+        a PDF label with:
+        - Code 128 barcode (physical or temp barcode)
+        - Folder name
+        - Parent container name
+        - Folder icon (Font Awesome approximation)
+        
+        Label size: 2.5935" x 1" (standard file folder labels, 30 per page)
+        """
+        self.ensure_one()
+        
+        # Generate label using ZPL service
+        generator = self.env['zpl.label.generator']
+        result = generator.generate_folder_label(self)
+        
+        # Create attachment for download
+        attachment = self.env['ir.attachment'].create({
+            'name': result['filename'],
+            'type': 'binary',
+            'datas': result['pdf_data'],
+            'res_model': self._name,
+            'res_id': self.id,
+            'mimetype': 'application/pdf',
+        })
+        
+        # Return download action
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'new',
+        }
+    
+    def action_print_qr_label(self):
+        """
+        Generate QR code label that links to customer portal login.
+        
+        Label size: 1" x 1.25" (49 per sheet)
+        QR code directs users to portal where they can log in and view folder details.
+        """
+        self.ensure_one()
+        
+        generator = self.env['zpl.label.generator']
+        result = generator.generate_qr_label(self, record_type='folder')
+        
+        attachment = self.env['ir.attachment'].create({
+            'name': result['filename'],
+            'type': 'binary',
+            'datas': result['pdf_data'],
+            'res_model': self._name,
+            'res_id': self.id,
+            'mimetype': 'application/pdf',
+        })
+        
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'new',
+        }
+    
+    @api.model
+    def action_print_batch_labels(self, folder_ids=None):
+        """
+        Print barcode labels for multiple folders in a single PDF.
+        
+        Args:
+            folder_ids (list): List of folder IDs to print labels for.
+                              If None, uses active_ids from context.
+        
+        Returns:
+            Action to download multi-page PDF with all labels.
+        """
+        if folder_ids is None:
+            folder_ids = self.env.context.get('active_ids', [])
+        
+        if not folder_ids:
+            raise UserError(_("No folders selected for batch label printing."))
+        
+        folders = self.browse(folder_ids)
+        
+        generator = self.env['zpl.label.generator']
+        result = generator.generate_batch_folder_labels(folders)
+        
+        attachment = self.env['ir.attachment'].create({
+            'name': result['filename'],
+            'type': 'binary',
+            'datas': result['pdf_data'],
+            'mimetype': 'application/pdf',
+        })
+        
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'new',
+        }
+    
+    # ============================================================================
     # CONSTRAINTS
     # ============================================================================
     @api.constrains('barcode')

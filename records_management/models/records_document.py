@@ -1404,6 +1404,34 @@ class RecordsDocument(models.Model):
             }
         except Exception as e:
             raise ValidationError(_('Error printing document label: %s') % str(e))
+    
+    def action_print_qr_label(self):
+        """
+        Generate QR code label that links to customer portal login.
+        
+        Label size: 1" x 1.25" (49 per sheet)
+        QR code directs users to portal where they can log in and view document details.
+        Useful for physical document storage or client handouts.
+        """
+        self.ensure_one()
+        
+        generator = self.env['zpl.label.generator']
+        result = generator.generate_qr_label(self, record_type='document')
+        
+        attachment = self.env['ir.attachment'].create({
+            'name': result['filename'],
+            'type': 'binary',
+            'datas': result['pdf_data'],
+            'res_model': self._name,
+            'res_id': self.id,
+            'mimetype': 'application/pdf',
+        })
+        
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'new',
+        }
 
     def action_schedule_review(self):
         """Action to schedule document review"""

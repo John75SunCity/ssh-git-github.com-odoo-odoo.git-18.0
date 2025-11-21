@@ -1699,6 +1699,110 @@ class RecordsContainer(models.Model):
         return movements.get_portal_movements(self.partner_id)['movements']
 
     # ============================================================================
+    # LABEL PRINTING METHODS (ZPL + Labelary API)
+    # ============================================================================
+    
+    def action_print_barcode_label(self):
+        """
+        Generate and download a professional barcode label for this container.
+        
+        Uses ZPL (Zebra Programming Language) and Labelary's free API to create
+        a PDF label with:
+        - Code 128 barcode (physical or temp barcode)
+        - Container name
+        - Customer name
+        - Current location
+        - Box icon (Font Awesome approximation)
+        
+        Label size: 4" x 1.33" (standard Avery-compatible sheet, 14 per page)
+        """
+        self.ensure_one()
+        
+        # Generate label using ZPL service
+        generator = self.env['zpl.label.generator']
+        result = generator.generate_container_label(self)
+        
+        # Create attachment for download
+        attachment = self.env['ir.attachment'].create({
+            'name': result['filename'],
+            'type': 'binary',
+            'datas': result['pdf_data'],
+            'res_model': self._name,
+            'res_id': self.id,
+            'mimetype': 'application/pdf',
+        })
+        
+        # Return download action
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'new',
+        }
+    
+    def action_print_qr_label(self):
+        """
+        Generate QR code label that links to customer portal login.
+        
+        Label size: 1" x 1.25" (49 per sheet)
+        QR code directs users to portal where they can log in and view container details.
+        """
+        self.ensure_one()
+        
+        generator = self.env['zpl.label.generator']
+        result = generator.generate_qr_label(self, record_type='container')
+        
+        attachment = self.env['ir.attachment'].create({
+            'name': result['filename'],
+            'type': 'binary',
+            'datas': result['pdf_data'],
+            'res_model': self._name,
+            'res_id': self.id,
+            'mimetype': 'application/pdf',
+        })
+        
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'new',
+        }
+    
+    @api.model
+    def action_print_batch_labels(self, container_ids=None):
+        """
+        Print barcode labels for multiple containers in a single PDF.
+        
+        Args:
+            container_ids (list): List of container IDs to print labels for.
+                                 If None, uses active_ids from context.
+        
+        Returns:
+            Action to download multi-page PDF with all labels.
+        """
+        if container_ids is None:
+            container_ids = self.env.context.get('active_ids', [])
+        
+        if not container_ids:
+            raise UserError(_("No containers selected for batch label printing."))
+        
+        containers = self.browse(container_ids)
+        
+        generator = self.env['zpl.label.generator']
+        result = generator.generate_batch_container_labels(containers)
+        
+        attachment = self.env['ir.attachment'].create({
+            'name': result['filename'],
+            'type': 'binary',
+            'datas': result['pdf_data'],
+            'mimetype': 'application/pdf',
+        })
+        
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'new',
+        }
+
+    # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
     @api.constrains("partner_id", "department_id")

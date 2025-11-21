@@ -301,6 +301,7 @@ from . import work_order_shredding
 from . import workflow_visualization_manager
 from . import button_action_placeholders
 from . import records_container_assign_barcode_wizard
+from . import zpl_label_generator  # ZPL label printing service
 from . import res_users
 
 import logging
