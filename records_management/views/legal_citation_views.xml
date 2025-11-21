@@ -428,7 +428,7 @@
 
     <menuitem id="menu_records_retention"
               name="Records Retention"
-              parent="records_management.menu_records_config"
+              parent="records_management.menu_records_configuration"
               sequence="50"/>
 
     <menuitem id="menu_legal_citation_type"
