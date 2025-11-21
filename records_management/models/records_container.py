@@ -1144,13 +1144,8 @@ class RecordsContainer(models.Model):
         """
         self.ensure_one()
         
-        # Return QR code generation action with secure portal URL
-        return {
-            'type': 'ir.actions.report',
-            'report_name': 'records_management.report_container_qrcode',
-            'report_type': 'qweb-pdf',
-            'context': self.env.context,
-        }
+        # Return QR code report action
+        return self.env.ref('records_management.report_container_qrcode').report_action(self)
 
     # ============================================================================
     # SMART BUTTON ACTIONS (Stock Integration)
