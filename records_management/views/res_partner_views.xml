@@ -1,52 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Minimal res.partner extension for Records Management
-             Extended with Department User Management
-             
-             Temporarily disabled due to field validation error:
-             Field "department_user_assignment_ids" does not exist on res.partner model
-        
-        <record id="view_partner_form_department_users" model="ir.ui.view">
-            <field name="name">res.partner.form.department.users</field>
+        <!-- Add Departments section to Contact form -->
+        <record id="view_partner_form_departments" model="ir.ui.view">
+            <field name="name">res.partner.form.departments</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//notebook" position="inside">
-                    <page string="Department Users" name="department_users" 
-                          invisible="not is_company and not parent_id">
-                        <group>
-                            <group>
-                                <field name="department_ids" invisible="1"/>
-                            </group>
-                        </group>
-                        
-                        <group string="Department Access Assignments">
-                            <p class="text-muted">
-                                Assign users to departments for granular portal access control. 
-                                Users will only see inventory for their assigned departments.
-                            </p>
-                        </group>
-
-                        <field name="department_user_assignment_ids" nolabel="1">
-                            <list editable="bottom" create="true" delete="true">
-                                <field name="department_id" 
-                                       domain="[('partner_id', '=', parent.id)]"
-                                       required="1"/>
-                                <field name="user_id" required="1"/>
-                                <field name="role" required="1"/>
-                                <field name="state"/>
-                                <field name="can_view_records"/>
-                                <field name="can_edit_records"/>
-                                <field name="can_create_records"/>
-                                <field name="can_delete_records"/>
-                                <field name="active"/>
+                    <page string="Departments" name="departments">
+                        <field name="department_ids" nolabel="1">
+                            <list string="Departments" create="true" delete="true" editable="bottom">
+                                <field name="name" string="Department"/>
+                                <field name="parent_department_id" string="Parent Department"/>
+                                <field name="partner_id" string="Customer" invisible="1"/>
+                                <field name="code" string="Code"/>
+                                <field name="container_count" string="Containers"/>
+                                <field name="file_count" string="Files"/>
+                                <field name="document_count" string="Documents"/>
+                                <field name="state" string="Status"/>
+                                <field name="responsible_user_id" string="Responsible" widget="many2one_avatar_user"/>
+                                <button name="action_view_containers" type="object" 
+                                        icon="fa-box" title="View Containers"
+                                        invisible="container_count == 0"/>
+                                <button name="action_view_files" type="object" 
+                                        icon="fa-folder" title="View Files"
+                                        invisible="file_count == 0"/>
+                                <button name="action_view_documents" type="object" 
+                                        icon="fa-file" title="View Documents"
+                                        invisible="document_count == 0"/>
                             </list>
                         </field>
                     </page>
                 </xpath>
             </field>
         </record>
-        -->
     </data>
 </odoo>
