@@ -238,22 +238,23 @@ class ZPLLabelGenerator(models.AbstractModel):
         Generate ZPL code for file folder label with barcode and folder icon.
         
         Layout (2.5935" x 1"):
-        - Left: Barcode (smaller, rotated)
-        - Center: Folder name
-        - Right: Folder icon approximation
+        - Top: Larger barcode for better scanning
+        - Middle: Folder name (larger font)
+        - Bottom: Container name
+        - Right: Folder icon
         """
         label_width_dots = int(self.FOLDER_LABEL_WIDTH * 203)
         label_height_dots = int(self.FOLDER_LABEL_HEIGHT * 203)
         
-        folder_name = (folder_name[:25] + '...') if len(folder_name) > 25 else folder_name
-        container_name = (container_name[:20] + '...') if len(container_name) > 20 else container_name
+        folder_name = (folder_name[:20] + '...') if len(folder_name) > 20 else folder_name
+        container_name = (container_name[:18] + '...') if len(container_name) > 18 else container_name
         
         zpl = f"""^XA
-^FO20,10^BY1^BCN,50,N,N,N^FD{barcode}^FS
-^FO20,70^A0N,20,20^FD{folder_name}^FS
-^FO20,95^A0N,15,15^FD{container_name}^FS
-^FO{label_width_dots - 60},10^GB50,60,3^FS
-^FO{label_width_dots - 55},15^A0N,12,12^FDFLDR^FS
+^FO15,5^BY2^BCN,80,N,N,N^FD{barcode}^FS
+^FO15,95^A0N,25,25^FD{folder_name}^FS
+^FO15,125^A0N,18,18^FD{container_name}^FS
+^FO{label_width_dots - 80},5^GB70,70,4^FS
+^FO{label_width_dots - 72},30^A0N,18,18^FDFLDR^FS
 ^XZ"""
         return zpl
     
@@ -262,23 +263,23 @@ class ZPLLabelGenerator(models.AbstractModel):
         Generate ZPL code for QR code label linking to portal.
         
         Layout (1" x 1.25"):
-        - Top: QR Code (centered)
-        - Bottom: Record type + truncated name
+        - Top: Larger QR Code (centered)
+        - Bottom: Record type and label (better spacing)
         """
         label_width_dots = int(self.QR_LABEL_WIDTH * 203)
         label_height_dots = int(self.QR_LABEL_HEIGHT * 203)
         
-        label_text = (label_text[:15] + '...') if len(label_text) > 15 else label_text
+        label_text = (label_text[:12] + '...') if len(label_text) > 12 else label_text
         
-        # QR code position (centered)
-        qr_size = 120  # dots
+        # QR code position (centered, larger)
+        qr_size = 140  # dots (was 120)
         qr_x = (label_width_dots - qr_size) // 2
         
         zpl = f"""^XA
-^FO{qr_x},10^BQN,2,4^FDQA,{qr_data}^FS
-^FO10,140^A0N,18,18^FD{record_type.upper()}^FS
-^FO10,160^A0N,15,15^FD{label_text}^FS
-^FO10,180^A0N,12,12^FDScan for Portal^FS
+^FO{qr_x},10^BQN,2,5^FDQA,{qr_data}^FS
+^FO10,160^A0N,20,20^FD{record_type.upper()}^FS
+^FO10,185^A0N,18,18^FD{label_text}^FS
+^FO10,210^A0N,14,14^FDScan for Portal^FS
 ^XZ"""
         return zpl
     
