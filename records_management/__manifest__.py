@@ -399,7 +399,7 @@
         "views/destruction_event_views.xml",
         "views/destruction_certificate_views.xml",
         "views/inventory_item_destruction_views.xml",
-        "views/legal_citation_views.xml",
+        # "views/legal_citation_views.xml",  # MOVED - Must load after root menus
         "views/location_group_views.xml",
         "views/maintenance_request_views.xml",
         "views/naid_certificate_views.xml",
@@ -592,6 +592,7 @@
         # ============================================================================
         # VIEWS WITH MENUITEMS: Must load AFTER root_menus, BEFORE child menus
 
+        "views/legal_citation_views.xml",  # MOVED HERE - Requires menu_records_configuration parent
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_line_actions_menus.xml",
         "views/advanced_billing_profile_views.xml",
