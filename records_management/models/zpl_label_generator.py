@@ -207,29 +207,35 @@ class ZPLLabelGenerator(models.AbstractModel):
         Generate ZPL code for container label with barcode and box icon.
         
         Layout (4" x 1.33"):
-        - Top: Large barcode spanning most of width
-        - Bottom left: Container name
-        - Bottom middle: Customer name
-        - Bottom right: Location/Vault
-        - Right side: Box archive icon
+        - Top: Full-width barcode spanning left to box icon
+        - Middle: Centered bold container ID/number
+        - Bottom: Centered customer name and location info
+        - Right side: Box archive icon (styled like fa-box-archive)
         """
         # ZPL dimensions in dots (203 DPI)
         label_width_dots = int(self.CONTAINER_LABEL_WIDTH * 203)
         label_height_dots = int(self.CONTAINER_LABEL_HEIGHT * 203)
         
-        # Truncate text to fit
-        container_name = (container_name[:20] + '...') if len(container_name) > 20 else container_name
-        customer_name = (customer_name[:25] + '...') if len(customer_name) > 25 else customer_name
-        location = (location[:25] + '...') if len(location) > 25 else location
+        # Calculate barcode width (full width minus icon space and margins)
+        barcode_width = label_width_dots - 160  # Leave space for box icon
+        
+        # Truncate text to fit (more generous for centered layout)
+        container_name = (container_name[:30] + '...') if len(container_name) > 30 else container_name
+        customer_name = (customer_name[:35] + '...') if len(customer_name) > 35 else customer_name
+        location = (location[:35] + '...') if len(location) > 35 else location
+        
+        # Center calculations for text
+        text_center = barcode_width // 2
         
         zpl = f"""^XA
-^FO30,10^BY3^BCN,100,Y,N,N^FD{barcode}^FS
-^FO30,120^A0N,30,30^FDContainer: ^FS
-^FO30,155^A0N,24,24^FD{container_name}^FS
-^FO30,185^A0N,20,20^FD{customer_name}^FS
-^FO30,210^A0N,18,18^FD{location}^FS
-^FO{label_width_dots - 120},10^GB100,100,5^FS
-^FO{label_width_dots - 105},50^A0N,30,30^FDBOX^FS
+^FO20,10^BY4^BCN,100,N,N,N^FD{barcode}^FS
+^FO{text_center - 100},120^A0N,35,35^FR^FD{barcode}^FS
+^FO{text_center - 150},160^A0N,25,25^FR^FD{customer_name}^FS
+^FO{text_center - 150},190^A0N,22,22^FR^FD{location}^FS
+^FO{label_width_dots - 130},10^GB110,110,6^FS
+^FO{label_width_dots - 115},25^GB80,15,15^FS
+^FO{label_width_dots - 115},45^GB80,60,6^FS
+^FO{label_width_dots - 105},110^A0N,12,12^FDARCHIVE^FS
 ^XZ"""
         return zpl
     
