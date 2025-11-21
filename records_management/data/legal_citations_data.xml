@@ -256,38 +256,28 @@
         <!-- LINK CITATIONS TO RECORD SERIES -->
         <!-- =============================================================== -->
         
-        <!-- Tax Records → IRS Citation -->
-        <record id="link_tax_irs" model="record.series.legal.citation.rel">
-            <field name="series_id" ref="series_tax_records"/>
-            <field name="citation_id" ref="citation_irs_general"/>
-        </record>
-        
-        <record id="link_tax_flsa" model="record.series.legal.citation.rel">
-            <field name="series_id" ref="series_tax_records"/>
-            <field name="citation_id" ref="citation_flsa_payroll"/>
+        <!-- Tax Records → IRS + FLSA Citations -->
+        <record id="series_tax_records_update" model="record.series">
+            <field name="id" ref="series_tax_records"/>
+            <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_irs_general'), ref('citation_flsa_payroll')])]"/>
         </record>
         
         <!-- Personnel Files → California + OSHA -->
-        <record id="link_personnel_ca" model="record.series.legal.citation.rel">
-            <field name="series_id" ref="series_personnel_files"/>
-            <field name="citation_id" ref="citation_ca_personnel"/>
-        </record>
-        
-        <record id="link_personnel_osha" model="record.series.legal.citation.rel">
-            <field name="series_id" ref="series_personnel_files"/>
-            <field name="citation_id" ref="citation_osha_medical"/>
+        <record id="series_personnel_files_update" model="record.series">
+            <field name="id" ref="series_personnel_files"/>
+            <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_ca_personnel'), ref('citation_osha_medical')])]"/>
         </record>
         
         <!-- Medical Records → HIPAA -->
-        <record id="link_medical_hipaa" model="record.series.legal.citation.rel">
-            <field name="series_id" ref="series_medical_records"/>
-            <field name="citation_id" ref="citation_hipaa_medical"/>
+        <record id="series_medical_records_update" model="record.series">
+            <field name="id" ref="series_medical_records"/>
+            <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_hipaa_medical')])]"/>
         </record>
         
         <!-- Audit Reports → SOX -->
-        <record id="link_audit_sox" model="record.series.legal.citation.rel">
-            <field name="series_id" ref="series_audit_reports"/>
-            <field name="citation_id" ref="citation_sox_802"/>
+        <record id="series_audit_reports_update" model="record.series">
+            <field name="id" ref="series_audit_reports"/>
+            <field name="legal_citation_ids" eval="[(6, 0, [ref('citation_sox_802')])]"/>
         </record>
         
     </data>
