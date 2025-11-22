@@ -30,3 +30,4 @@ from . import container_indexing_wizard
 from . import batch_barcode_operations
 from . import barcode_preprint_wizard
 from . import barcode_reprint_wizard
+from . import department_user_wizard

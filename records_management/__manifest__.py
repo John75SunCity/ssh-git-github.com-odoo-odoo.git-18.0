@@ -613,6 +613,7 @@
         "views/custom_box_volume_calculator_views.xml",
         "views/customer_portal_diagram_views.xml",
         "views/departmental_billing_menus.xml",
+        "views/department_user_wizard_views.xml",
         "views/document_search_attempt_views.xml",
         "views/enhanced_features_menus.xml",
         "views/file_retrieval_views.xml",

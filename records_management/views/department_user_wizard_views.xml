@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Department User Creation Wizard -->
+        <record id="department_user_wizard_view_form" model="ir.ui.view">
+            <field name="name">department.user.wizard.form</field>
+            <field name="model">department.user.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Create Portal User for Department">
+                    <group>
+                        <group>
+                            <field name="department_id" invisible="1"/>
+                            <field name="company_partner_id" readonly="1"/>
+                            <field name="first_name" placeholder="John"/>
+                            <field name="last_name" placeholder="Doe"/>
+                            <field name="email" placeholder="john.doe@example.com" widget="email"/>
+                        </group>
+                        <group>
+                            <field name="phone" widget="phone"/>
+                            <field name="mobile" widget="phone"/>
+                            <field name="portal_access_level"/>
+                        </group>
+                    </group>
+                    
+                    <div class="alert alert-info" role="alert">
+                        <p><strong>✅ Correct Approach:</strong></p>
+                        <ul>
+                            <li>This wizard creates an <strong>individual contact</strong> under the company</li>
+                            <li>Each user gets their own name (no conflicts)</li>
+                            <li>Portal user is automatically created and linked</li>
+                            <li>Invitation email will be sent to user</li>
+                        </ul>
+                    </div>
+                    
+                    <footer>
+                        <button name="action_create_portal_user" string="Create Portal User" 
+                                type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Action to open wizard -->
+        <record id="action_department_user_wizard" model="ir.actions.act_window">
+            <field name="name">Add Portal User to Department</field>
+            <field name="res_model">department.user.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_records_department"/>
+            <field name="binding_view_types">form</field>
+        </record>
+    </data>
+</odoo>
