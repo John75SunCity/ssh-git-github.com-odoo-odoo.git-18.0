@@ -3,7 +3,7 @@
  * Extracted from inline script in portal_document_retrieval.xml for compliance with
  * asset pipeline and security guidelines.
  */
-odoo.define('records_management.portal_document_retrieval', function(require) {
+odoo.define('records_management.portal_document_retrieval', [], function(require) {
     'use strict';
 
     // Frontend-compatible implementation

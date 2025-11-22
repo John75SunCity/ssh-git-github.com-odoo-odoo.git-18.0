@@ -31,7 +31,7 @@
  * 
  * BROWSER SUPPORT: Modern browsers (ES6+), graceful fallback for older browsers
  */
-odoo.define('records_management.portal_organization_diagram', function(require) {
+odoo.define('records_management.portal_organization_diagram', [], function(require) {
     'use strict';
 
     // Frontend-compatible implementation

@@ -2,7 +2,7 @@
  * Dynamically updates field labels based on customer configuration
  */
 
-odoo.define('records_management.FieldLabelCustomizer', function (require) {
+odoo.define('records_management.FieldLabelCustomizer', [], function (require) {
 'use strict';
 
 // Frontend-compatible implementation using vanilla JS

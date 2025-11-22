@@ -1,4 +1,4 @@
-odoo.define('records_management.portal_signature', function (require) {
+odoo.define('records_management.portal_signature', [], function (require) {
     "use strict";
 
     // Frontend-compatible implementation without backend dependencies

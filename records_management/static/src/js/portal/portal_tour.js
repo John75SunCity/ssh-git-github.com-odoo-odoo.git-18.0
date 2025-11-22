@@ -1,20 +1,15 @@
-/** @odoo-module **/
 /**
  * Portal / Inventory Tours
  *
- * This file previously mixed ESM (`@odoo-module`) + legacy AMD (`odoo.define`).
- * The mixed pattern was triggering asset bundling instability in test mode
- * (web.assets_web.bundle.xml failure) when `web_tour.tour` wasn't resolvable
- * early enough. We now:
- *   - Keep a pure ESM implementation
- *   - Provide a defensive lazy resolver for the legacy `web_tour.tour` API
- *     only if available (for backwards compatibility)
- *   - Always register tours through the modern registry so Owl test harness
- *     can discover them even if legacy loader is skipped.
+ * Provides interactive tours for the customer portal.
+ * Uses AMD module format for compatibility with Odoo's module loader.
  */
 
-import { registry } from "@web/core/registry";
-import { tourManager } from "@web_tour/tour_manager";
+odoo.define('records_management.portal_tour', ['@web/core/registry', '@web_tour/tour_manager'], function (require) {
+    "use strict";
+    
+    const { registry } = require('@web/core/registry');
+    const { tourManager } = require('@web_tour/tour_manager');
 
 const $ = window.jQuery;
 const hasJQuery = Boolean($);

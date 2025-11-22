@@ -4,7 +4,7 @@
  * from a CDN only when a diagram container is present. Avoids committing large
  * minified vendor bundles into the repository while preserving functionality.
  */
-odoo.define('records_management.visualization_dynamic_loader', function (require) {
+odoo.define('records_management.visualization_dynamic_loader', ['web.public.widget'], function (require) {
     'use strict';
 
     const publicWidget = require('web.public.widget');

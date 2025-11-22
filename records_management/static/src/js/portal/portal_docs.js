@@ -3,7 +3,7 @@
  * Handles filtering, searching, and interactions for the centralized document portal
  */
 
-odoo.define('records_management.portal_docs', function (require) {
+odoo.define('records_management.portal_docs', ['web.public.widget', 'web.rpc', 'web.core'], function (require) {
     'use strict';
 
     var publicWidget = require('web.public.widget');

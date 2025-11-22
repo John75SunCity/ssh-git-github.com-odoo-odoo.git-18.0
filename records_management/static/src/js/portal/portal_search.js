@@ -3,7 +3,7 @@
  * For customer portal search functionality
  */
 
-odoo.define("records_management.portal_search", function (require) {
+odoo.define("records_management.portal_search", ['web.public.widget', 'web.rpc'], function (require) {
   "use strict";
 
   var publicWidget = require("web.public.widget");

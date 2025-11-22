@@ -1,4 +1,4 @@
-odoo.define('records_management.portal_user_import', function (require) {
+odoo.define('records_management.portal_user_import', [], function (require) {
     "use strict";
 
     // Frontend-compatible implementation

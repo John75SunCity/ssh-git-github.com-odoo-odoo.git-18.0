@@ -28,7 +28,7 @@
  * - underscore.js (_.escape, _.debounce)
  * - web.ajax (jsonRpc)
  */
-odoo.define('records_management.portal_barcode_management', function (require) {
+odoo.define('records_management.portal_barcode_management', [], function (require) {
     'use strict';
 
     // Frontend-compatible implementation
