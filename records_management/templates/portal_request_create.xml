@@ -10,7 +10,7 @@
                     <t t-else="">New Service Request</t>
                 </t>
 
-                <div class="container my-4">
+                <div class="container my-4 document-retrieval-wizard">
                     <div class="row justify-content-center">
                         <div class="col-lg-8">
                             <div class="card shadow">

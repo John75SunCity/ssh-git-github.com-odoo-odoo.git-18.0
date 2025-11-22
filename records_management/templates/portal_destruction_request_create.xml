@@ -6,7 +6,7 @@
             <t t-call="portal.portal_layout">
                 <t t-set="title">Request Destruction Service</t>
 
-                <div class="o_portal_destruction_request_create">
+                <div class="o_portal_destruction_request_create document-retrieval-wizard">
                     <div class="row justify-content-center">
                         <div class="col-lg-8">
                             <!-- Header -->

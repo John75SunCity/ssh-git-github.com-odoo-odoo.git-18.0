@@ -10,7 +10,7 @@
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
             <t t-set="title">Containers &amp; Boxes</t>
 
-            <div class="container-fluid">
+            <div class="container-fluid o_portal_inventory">
                 <!-- Action Bar -->
                 <div class="row mb-3">
                     <div class="col-md-8">
@@ -26,6 +26,9 @@
                     </div>
                     <div class="col-md-4 text-right">
                         <div class="btn-group">
+                            <button class="btn btn-success btn-export" type="button">
+                                <i class="fa fa-download"></i> Export
+                            </button>
                             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                                 <i class="fa fa-cogs"></i> Bulk Actions
                             </button>
@@ -297,14 +300,17 @@
         <t t-call="portal.portal_layout">
             <t t-set="title">File Folders</t>
 
-            <div class="container-fluid">
+            <div class="container-fluid o_portal_inventory">
                 <!-- Search Bar -->
                 <div class="row mb-3">
                     <div class="col-md-8">
-                        <input type="text" class="form-control" placeholder="Search file folders..." 
+                        <input type="text" class="form-control search-input" placeholder="Search file folders..." 
                                t-att-value="search" name="search" id="search_input"/>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 text-right">
+                        <button class="btn btn-success btn-export mr-2" type="button">
+                            <i class="fa fa-download"></i> Export
+                        </button>
                         <button class="btn btn-primary" onclick="performSearch()">
                             <i class="fa fa-search"></i> Search
                         </button>
@@ -389,7 +395,20 @@
         <t t-call="portal.portal_layout">
             <t t-set="title">Documents &amp; PDF Scans</t>
 
-            <div class="container-fluid">
+            <div class="container-fluid o_portal_inventory">
+                <!-- Action Bar -->
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <input type="text" class="form-control search-input" placeholder="Search documents..." 
+                               t-att-value="search" name="search" id="search_input"/>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <button class="btn btn-success btn-export" type="button">
+                            <i class="fa fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Documents Table -->
                 <div class="card">
                     <div class="card-body p-0">
