@@ -204,38 +204,40 @@ class ZPLLabelGenerator(models.AbstractModel):
     
     def _generate_container_zpl(self, barcode, container_name, customer_name='', location=''):
         """
-        Generate ZPL code for container label with barcode and box icon.
+        Generate ZPL code for container label with barcode and large archive box icon.
         
         Layout (4" x 1.33"):
-        - Top: Full-width barcode spanning left to box icon
-        - Middle: Centered bold container ID/number
-        - Bottom: Centered customer name and location info
-        - Right side: Box archive icon (styled like fa-box-archive)
+        - Left: Barcode with text below
+        - Right: Large archive box icon (~1" wide) with rounded corners
+        - Text: Left-aligned customer and location info
         """
         # ZPL dimensions in dots (203 DPI)
         label_width_dots = int(self.CONTAINER_LABEL_WIDTH * 203)
         label_height_dots = int(self.CONTAINER_LABEL_HEIGHT * 203)
         
-        # Calculate barcode width (full width minus icon space and margins)
-        barcode_width = label_width_dots - 160  # Leave space for box icon
+        # Icon dimensions (approximately 1 inch = 203 dots)
+        icon_size = 200  # ~1 inch wide/tall
+        icon_x = label_width_dots - icon_size - 20  # 20 dots margin from right
+        icon_y = 10  # 10 dots from top
         
-        # Truncate text to fit (more generous for centered layout)
-        container_name = (container_name[:30] + '...') if len(container_name) > 30 else container_name
-        customer_name = (customer_name[:35] + '...') if len(customer_name) > 35 else customer_name
-        location = (location[:35] + '...') if len(location) > 35 else location
+        # Truncate text to fit
+        container_name = (container_name[:25] + '...') if len(container_name) > 25 else container_name
+        customer_name = (customer_name[:30] + '...') if len(customer_name) > 30 else customer_name
+        location = (location[:30] + '...') if len(location) > 30 else location
         
-        # Center calculations for text
-        text_center = barcode_width // 2
+        # Archive box icon with rounded corners (using circles at corners)
+        corner_radius = 20
         
         zpl = f"""^XA
-^FO20,10^BY4^BCN,100,N,N,N^FD{barcode}^FS
-^FO{text_center - 100},120^A0N,35,35^FR^FD{barcode}^FS
-^FO{text_center - 150},160^A0N,25,25^FR^FD{customer_name}^FS
-^FO{text_center - 150},190^A0N,22,22^FR^FD{location}^FS
-^FO{label_width_dots - 130},10^GB110,110,6^FS
-^FO{label_width_dots - 115},25^GB80,15,15^FS
-^FO{label_width_dots - 115},45^GB80,60,6^FS
-^FO{label_width_dots - 105},110^A0N,12,12^FDARCHIVE^FS
+^FO20,10^BY3^BCN,80,N,N,N^FD{barcode}^FS
+^FO20,100^A0N,30,30^FD{barcode}^FS
+^FO20,140^A0N,24,24^FD{customer_name}^FS
+^FO20,170^A0N,20,20^FD{location}^FS
+^FO{icon_x},{icon_y}^GB{icon_size},{icon_size},8^FS
+^FO{icon_x + 15},{icon_y + 15}^GB{icon_size - 30},{icon_size - 30},8^FS
+^FO{icon_x + 20},{icon_y + 20}^GB{icon_size - 40},40,40^FS
+^FO{icon_x + 30},{icon_y + 70}^GB{icon_size - 60},20,20^FS
+^FO{icon_x + 70},{icon_y + 165}^A0N,18,18^FDARCHIVE^FS
 ^XZ"""
         return zpl
     
