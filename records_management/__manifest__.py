@@ -1,6 +1,6 @@
 {
     "name": "Records Management - Enterprise Edition",
-    'version': '18.0.1.0.8',
+    'version': '18.0.1.0.9',
     'category': 'Productivity/Records',
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
@@ -795,14 +795,15 @@
 
             # Legacy Portal Assets (To be gradually migrated)
             "records_management/static/src/js/portal/portal_dashboard_bootstrap.js",
-            "records_management/static/src/js/portal/portal_accessibility.js",
+            # NOTE: portal_accessibility.js moved to backend_only/ (ESM format)
             "records_management/static/src/css/portal_tour.css",
             "records_management/static/src/css/intelligent_search.css",
+            # NOTE: customer_portal_diagram.css remains for reports
             "records_management/static/src/css/customer_portal_diagram.css",
             "records_management/static/src/css/barcode_scanner.css",
             "records_management/static/src/js/portal/portal_tour.js",
             "records_management/static/src/js/portal/portal_inventory_highlights.js",
-            "records_management/static/src/js/portal/portal_inventory_search.js",
+            # NOTE: portal_inventory_search.js moved to backend_only/ (ESM format)
             "records_management/static/src/js/portal/portal_quote_generator.js",
             "records_management/static/src/js/portal/portal_signature.js",
             "records_management/static/src/js/portal/portal_user_import.js",
@@ -815,11 +816,13 @@
             "records_management/static/src/js/portal/portal_document_retrieval.js",
             # Organization diagram interactive logic (migrated from inline script)
             "records_management/static/src/js/portal/portal_organization_diagram.js",
-            # Grok-Enhanced Portal Interactive Features (AJAX, filtering, mobile optimization)
-            "records_management/static/src/js/portal/portal_interactive.js",
+            # ✨ NEW: Portal Interactive Features (AJAX, live search, mobile responsive, wizards, barcode)
+            # Converted from ESM to AMD format - Production ready with enterprise security
+            "records_management/static/src/js/portal/portal_interactive_features.js",
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
-            "records_management/static/src/js/portal/customer_portal_diagram.js",
+            # NOTE: customer_portal_diagram.js moved to backend_only/ (ESM format)
+            # NOTE: customer_portal_diagram_templates.xml kept for backend views
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
         ],
         "point_of_sale.assets": [
