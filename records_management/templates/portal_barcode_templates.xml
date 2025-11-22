@@ -143,7 +143,7 @@
                 <t t-set="title" t-esc="scan_config['title']"/>
             </t>
             
-            <div class="container mt-4">
+            <div class="container mt-4 barcode-scanner">
                 <!-- Scanner Header -->
                 <div class="row mb-4">
                     <div class="col-12">

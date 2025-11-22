@@ -12,7 +12,7 @@
                 <t t-set="title">Document Retrieval</t>
             </t>
 
-            <div class="container-fluid o_portal_document_retrieval">
+            <div class="container-fluid o_portal_document_retrieval document-retrieval-wizard">
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="card">
