@@ -6556,3 +6556,244 @@ class RecordsManagementController(http.Controller):
                 'error_title': _('Invitation Failed'),
                 'error_message': _('Failed to add team member: %s') % str(e),
             })
+
+    # =============================
+    # INTERACTIVE FEATURES - AJAX ENDPOINTS
+    # =============================
+
+    @http.route(['/my/document-retrieval/calculate-price'], type='json', auth='user')
+    def portal_document_retrieval_calculate_price(self, container_ids=None, **kw):
+        """
+        Calculate price for document retrieval request
+        
+        Security: Ensures containers belong to user's commercial partner
+        Used by: portal_interactive_features.js - PortalDocumentRetrieval widget
+        """
+        try:
+            if not container_ids or not isinstance(container_ids, list):
+                return {'error': _('Invalid container selection'), 'total_price': 0}
+
+            # Security: Get user's commercial partner
+            partner = request.env.user.partner_id.commercial_partner_id
+
+            # Security: Filter containers by partner ownership
+            Container = request.env['records.container']
+            containers = Container.search([
+                ('id', 'in', container_ids),
+                ('partner_id', 'child_of', partner.commercial_partner_id.id)
+            ])
+
+            # Calculate retrieval price
+            # Base rate: $25 per container + $2.50 per box within container
+            base_rate = 25.00
+            box_rate = 2.50
+            total_price = 0.0
+
+            for container in containers:
+                total_price += base_rate
+                total_price += (container.box_count or 0) * box_rate
+
+            return {
+                'success': True,
+                'total_price': total_price,
+                'container_count': len(containers),
+                'base_rate': base_rate,
+                'box_rate': box_rate
+            }
+
+        except Exception as e:
+            _logger.error(f"Price calculation failed: {str(e)}", exc_info=True)
+            return {
+                'error': _('Price calculation failed: %s') % str(e),
+                'total_price': 0
+            }
+
+    @http.route(['/my/barcode/process/<string:scan_type>'], type='json', auth='user')
+    def portal_barcode_process(self, scan_type, barcode=None, **kw):
+        """
+        Process barcode scan from portal
+        
+        Security: Returns only records belonging to user's commercial partner
+        Used by: portal_interactive_features.js - PortalBarcodeScanner widget
+        
+        Args:
+            scan_type: 'container', 'box', or 'document'
+            barcode: Scanned barcode value
+        """
+        try:
+            if not barcode:
+                return {'success': False, 'error': _('No barcode provided')}
+
+            # Security: Get user's commercial partner
+            partner = request.env.user.partner_id.commercial_partner_id
+
+            # Process based on scan type
+            if scan_type == 'container':
+                Container = request.env['records.container']
+                record = Container.search([
+                    ('barcode', '=', barcode),
+                    ('partner_id', 'child_of', partner.commercial_partner_id.id)
+                ], limit=1)
+
+                if record:
+                    return {
+                        'success': True,
+                        'record': {
+                            'id': record.id,
+                            'name': record.name,
+                            'barcode': record.barcode,
+                            'location': record.location_id.name if record.location_id else False,
+                            'box_count': record.box_count or 0,
+                            'status': record.state,
+                        }
+                    }
+
+            elif scan_type == 'box':
+                Box = request.env['records.box']
+                record = Box.search([
+                    ('barcode', '=', barcode),
+                    ('partner_id', 'child_of', partner.commercial_partner_id.id)
+                ], limit=1)
+
+                if record:
+                    return {
+                        'success': True,
+                        'record': {
+                            'id': record.id,
+                            'name': record.name,
+                            'barcode': record.barcode,
+                            'container': record.container_id.name if record.container_id else False,
+                            'location': record.location_id.name if record.location_id else False,
+                            'status': record.state,
+                        }
+                    }
+
+            elif scan_type == 'document':
+                Document = request.env['records.document']
+                record = Document.search([
+                    ('barcode', '=', barcode),
+                    ('partner_id', 'child_of', partner.commercial_partner_id.id)
+                ], limit=1)
+
+                if record:
+                    return {
+                        'success': True,
+                        'record': {
+                            'id': record.id,
+                            'name': record.name,
+                            'barcode': record.barcode,
+                            'box': record.box_id.name if record.box_id else False,
+                            'document_type': record.document_type_id.name if record.document_type_id else False,
+                        }
+                    }
+
+            else:
+                return {'success': False, 'error': _('Invalid scan type: %s') % scan_type}
+
+            # No record found
+            return {
+                'success': False,
+                'error': _('No %s found with barcode: %s') % (scan_type, barcode)
+            }
+
+        except Exception as e:
+            _logger.error(f"Barcode processing failed: {str(e)}", exc_info=True)
+            return {
+                'success': False,
+                'error': _('Barcode processing failed: %s') % str(e)
+            }
+
+    @http.route(['/my/inventory/export'], type='http', auth='user')
+    def portal_inventory_export(self, **kw):
+        """
+        Export inventory to Excel/CSV
+        
+        Security: Exports only user's commercial partner data
+        Used by: portal_interactive_features.js - PortalInventory widget
+        """
+        try:
+            # Security: Get user's commercial partner
+            partner = request.env.user.partner_id.commercial_partner_id
+
+            # Get filters from request
+            search = kw.get('search', '')
+            location_id = kw.get('location_id')
+            status = kw.get('status')
+
+            # Build domain with partner filtering
+            domain = [('partner_id', 'child_of', partner.commercial_partner_id.id)]
+
+            if search:
+                domain.append('|')
+                domain.append(('name', 'ilike', search))
+                domain.append(('barcode', 'ilike', search))
+
+            if location_id:
+                domain.append(('location_id', '=', int(location_id)))
+
+            if status:
+                domain.append(('state', '=', status))
+
+            # Get containers
+            Container = request.env['records.container']
+            containers = Container.search(domain, order='name asc')
+
+            # Create CSV export
+            import csv
+            import io
+
+            output = io.StringIO()
+            writer = csv.writer(output)
+
+            # Headers
+            writer.writerow([
+                'Container ID',
+                'Name',
+                'Barcode',
+                'Location',
+                'Box Count',
+                'Status',
+                'Created Date'
+            ])
+
+            # Data rows
+            for container in containers:
+                writer.writerow([
+                    container.id,
+                    container.name,
+                    container.barcode or '',
+                    container.location_id.name if container.location_id else '',
+                    container.box_count or 0,
+                    container.state,
+                    container.create_date.strftime('%Y-%m-%d') if container.create_date else ''
+                ])
+
+            # Prepare response
+            output.seek(0)
+            response = request.make_response(
+                output.getvalue(),
+                headers=[
+                    ('Content-Type', 'text/csv'),
+                    ('Content-Disposition', 'attachment; filename="inventory_export_%s.csv"' % datetime.now().strftime('%Y%m%d_%H%M%S'))
+                ]
+            )
+
+            # Audit log
+            request.env['naid.audit.log'].create({
+                'action_type': 'export',
+                'user_id': request.env.user.id,
+                'description': _('Inventory exported by %s (%d records)') % (
+                    request.env.user.name,
+                    len(containers)
+                ),
+                'timestamp': datetime.now(),
+            })
+
+            return response
+
+        except Exception as e:
+            _logger.error(f"Inventory export failed: {str(e)}", exc_info=True)
+            return request.render('records_management.portal_error', {
+                'error_title': _('Export Failed'),
+                'error_message': _('Failed to export inventory: %s') % str(e),
+            })
