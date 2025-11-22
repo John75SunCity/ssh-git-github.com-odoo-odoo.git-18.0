@@ -1,7 +1,7 @@
 /**
  * Portal Interactive Features - Production Ready
  * Enhanced UI/UX with AJAX, filtering, mobile optimizations, and barcode scanning
- * 
+ *
  * FEATURES:
  * ✨ AJAX pagination - No page reloads
  * 🔍 Live search with debouncing
@@ -10,7 +10,7 @@
  * 📊 Real-time price calculation
  * 📷 Barcode scanner integration
  * 🔔 Toast notifications
- * 
+ *
  * CONVERTED: ESM → AMD for frontend compatibility
  * AUTHOR: Enhanced by Grok AI recommendations
  */
@@ -239,7 +239,7 @@ odoo.define('records_management.portal_interactive_features', ['web.public.widge
 
             $('body').append(toast);
             const $toast = $('.toast').last();
-            
+
             if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
                 new bootstrap.Toast($toast[0]).show();
             } else {
@@ -370,7 +370,7 @@ odoo.define('records_management.portal_interactive_features', ['web.public.widge
             ev.preventDefault();
             // Integration with device camera or barcode scanner
             this._showNotification('Please scan barcode or enter manually...', 'info');
-            
+
             // Focus the input field for manual entry
             $('.barcode-input').focus();
         },
@@ -407,7 +407,7 @@ odoo.define('records_management.portal_interactive_features', ['web.public.widge
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             `);
-            
+
             // Clear input for next scan
             $('.barcode-input').val('');
         },
