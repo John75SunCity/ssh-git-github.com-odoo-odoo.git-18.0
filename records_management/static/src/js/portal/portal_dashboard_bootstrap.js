@@ -5,10 +5,10 @@
  * superseded by a Website Builder override. This script mirrors the
  * data provided via the controller when the dashboard renders normally.
  */
-odoo.define('records_management.portal_dashboard_bootstrap', function (require) {
+odoo.define('records_management.portal_dashboard_bootstrap', ['@web/core/utils/ajax'], function (require) {
     'use strict';
 
-    // Using native fetch instead of web.ajax for frontend compatibility
+    const ajax = require('@web/core/utils/ajax');
 
     /**
      * Render a single dashboard card into a DOM node.
