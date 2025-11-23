@@ -1184,18 +1184,23 @@ class RecordsManagementController(http.Controller):
         """
         partner = request.env.user.partner_id
         
-        # Get summary counts for dashboard cards
+        # Get summary counts for dashboard cards - Hierarchical Inventory
         container_count = request.env['records.container'].sudo().search_count([
             ('partner_id', 'child_of', partner.commercial_partner_id.id)
         ])
         
+        file_folder_count = request.env['records.file.folder'].sudo().search_count([
+            ('partner_id', 'child_of', partner.commercial_partner_id.id)
+        ])
+        
+        document_count = request.env['inventory.document'].sudo().search_count([
+            ('partner_id', 'child_of', partner.commercial_partner_id.id)
+        ])
+        
+        # Get active service request count
         request_count = request.env['portal.request'].sudo().search_count([
             ('partner_id', 'child_of', partner.commercial_partner_id.id),
             ('state', 'not in', ['cancelled', 'done'])
-        ])
-        
-        document_count = request.env['records.document'].sudo().search_count([
-            ('partner_id', 'child_of', partner.commercial_partner_id.id)
         ])
         
         certificate_count = request.env['destruction.certificate'].sudo().search_count([
@@ -1210,8 +1215,9 @@ class RecordsManagementController(http.Controller):
         values = {
             'page_name': 'portal_hub',
             'container_count': container_count,
-            'request_count': request_count,
+            'file_folder_count': file_folder_count,
             'document_count': document_count,
+            'request_count': request_count,
             'certificate_count': certificate_count,
             'recent_requests': recent_requests,
             'partner': partner,
