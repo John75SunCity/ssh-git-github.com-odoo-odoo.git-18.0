@@ -785,8 +785,9 @@
         # Optional heavy visualization bundle loaded only when flowchart / portal diagram features are enabled.
         # This reduces baseline asset generation time for generic back-end usage and speeds up unit test asset build.
         "records_management.assets_visualization_optional": [
+            # TEMPORARILY DISABLED - Need vanilla JS conversion (publicWidget unavailable in frontend)
             # Dynamic loader replaces large minified vendor bundles to satisfy repo guideline (no minified libs committed)
-            "records_management/static/src/js/visualization_dynamic_loader.js",
+            # "records_management/static/src/js/visualization_dynamic_loader.js",
             # Local placeholder CSS (unminified real library recommended for production replacement)
             "records_management/static/src/lib/vis/vis-network.css",
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
@@ -804,14 +805,16 @@
             "records_management/static/src/css/customer_portal_diagram.css",
             "records_management/static/src/css/barcode_scanner.css",
             "records_management/static/src/js/portal/portal_tour.js",
-            "records_management/static/src/js/portal/portal_inventory_highlights.js",
+            # TEMPORARILY DISABLED - Need vanilla JS conversion (publicWidget unavailable in frontend)
+            # "records_management/static/src/js/portal/portal_inventory_highlights.js",
             # NOTE: portal_inventory_search.js moved to backend_only/ (ESM format)
             "records_management/static/src/js/portal/portal_quote_generator.js",
-            "records_management/static/src/js/portal/portal_signature.js",
+            # TEMPORARILY DISABLED - Need vanilla JS conversion (publicWidget unavailable in frontend)
+            # "records_management/static/src/js/portal/portal_signature.js",
             "records_management/static/src/js/portal/portal_user_import.js",
             "records_management/static/src/js/field_label_customizer.js",
-            # Newly externalized portal barcode management logic (extracted from inline script)
-            "records_management/static/src/js/portal/portal_barcode_management.js",
+            # TEMPORARILY DISABLED - Need vanilla JS conversion (barcode removed from portal for security)
+            # "records_management/static/src/js/portal/portal_barcode_management.js",
             # Barcode command handler for standard Odoo commands
             "records_management/static/src/js/barcode_command_handler.js",
             # Newly externalized portal document retrieval logic
