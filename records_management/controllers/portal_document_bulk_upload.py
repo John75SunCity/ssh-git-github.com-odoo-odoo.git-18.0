@@ -40,7 +40,7 @@ class PortalBulkUpload(http.Controller):
             'page_name': 'bulk_upload',
         })
         
-        return request.render('records_management.portal_bulk_upload', values)
+        return request.render('records_management.portal_document_bulk_upload', values)
     
     def _process_container_upload(self, upload, partner, has_header):
         """Process container CSV upload"""
