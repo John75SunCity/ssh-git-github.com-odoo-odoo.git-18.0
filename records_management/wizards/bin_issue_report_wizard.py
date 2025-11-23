@@ -505,10 +505,11 @@ class BinIssueReportWizard(models.TransientModel):
     def _create_billing_record(self, work_order):
         """Create billing record for customer fault issues."""
         # This would integrate with accounting module
-        # For now, just log the billing requirement
+        # Security: Log only non-sensitive metadata, not billing amounts or customer details
         _logger.info(
-            "Billing required for bin issue: Bin %s, Amount: %s, Work Order: %s",
-            self.bin_id.barcode, self.billing_amount, work_order.name if work_order else 'None'
+            "Billing record creation initiated for bin issue: Bin ID=%s, Work Order ID=%s",
+            self.bin_id.id if self.bin_id else 'None',
+            work_order.id if work_order else 'None'
         )
 
     def _send_customer_notification(self):
