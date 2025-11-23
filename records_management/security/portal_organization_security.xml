@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ================================================================== -->
+        <!-- PORTAL ORGANIZATION CHART SECURITY RULES                           -->
+        <!-- Ensures portal company admins can view their organization hierarchy -->
+        <!-- ================================================================== -->
+
+        <!-- Portal Company Admin: Can view organization hierarchy (res.partner) -->
+        <!-- NOTE: res.partner already has base portal rules, but we need to ensure -->
+        <!-- organization chart viewing works properly with commercial_partner_id -->
+        <record id="res_partner_portal_organization_rule" model="ir.rule">
+            <field name="name">res.partner: Portal organization chart access</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="domain_force">[
+                '|',
+                    ('id', 'child_of', user.partner_id.commercial_partner_id.id),
+                    ('id', '=', user.partner_id.commercial_partner_id.id)
+            ]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Portal Company Admin: Can create sub-contacts in their organization -->
+        <record id="res_partner_portal_company_admin_create_rule" model="ir.rule">
+            <field name="name">res.partner: Portal company admin can add team members</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="domain_force">[
+                ('parent_id', 'child_of', user.partner_id.commercial_partner_id.id)
+            ]</field>
+            <field name="groups" eval="[(4, ref('records_management.group_portal_company_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+    </data>
+</odoo>
