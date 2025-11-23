@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================== -->
+    <!-- PORTAL CALENDAR VIEW - Customer Service Schedule                  -->
+    <!-- Shows scheduled shredding services, pickups, retrievals, etc.     -->
+    <!-- ================================================================== -->
+
+    <template id="portal_calendar_view" name="My Service Calendar">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Service Calendar</t>
+            </t>
+
+            <div class="container mt-4">
+                <!-- Page Header -->
+                <div class="row mb-4">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h2 class="mb-3">
+                                    <i class="fa fa-calendar fa-fw"></i>
+                                    My Scheduled Services
+                                </h2>
+                                <p class="text-muted mb-0">
+                                    View all your upcoming services, pickups, and appointments.
+                                    This includes recurring shredding services, container pickups, document retrievals, and scheduled deliveries.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legend -->
+                <div class="row mb-3">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="mb-3">Calendar Legend</h6>
+                                <div class="row">
+                                    <div class="col-md-3 col-6 mb-2">
+                                        <span class="badge badge-pill" style="background-color: #8B0000; padding: 8px 12px;">
+                                            <i class="fa fa-shredder"></i> Shredding Service
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-2">
+                                        <span class="badge badge-pill" style="background-color: #007bff; padding: 8px 12px;">
+                                            <i class="fa fa-truck"></i> Pickup
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-2">
+                                        <span class="badge badge-pill" style="background-color: #28a745; padding: 8px 12px;">
+                                            <i class="fa fa-download"></i> Retrieval
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-2">
+                                        <span class="badge badge-pill" style="background-color: #ffc107; padding: 8px 12px;">
+                                            <i class="fa fa-box"></i> Delivery
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-2">
+                                        <span class="badge badge-pill" style="background-color: #dc3545; padding: 8px 12px;">
+                                            <i class="fa fa-fire"></i> Destruction
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-2">
+                                        <span class="badge badge-pill" style="background-color: #6610f2; padding: 8px 12px;">
+                                            <i class="fa fa-clipboard-list"></i> Request
+                                        </span>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-2">
+                                        <span class="badge badge-pill" style="background-color: #20c997; padding: 8px 12px;">
+                                            <i class="fa fa-file-alt"></i> Document Access
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar Container -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <!-- Loading Indicator -->
+                                <div id="calendar-loading" class="text-center py-5">
+                                    <i class="fa fa-spinner fa-spin fa-3x text-primary"></i>
+                                    <p class="mt-3 text-muted">Loading your scheduled services...</p>
+                                </div>
+                                
+                                <!-- Calendar Element -->
+                                <div id="portal-calendar" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Details Modal -->
+                <div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="eventModalTitle">Event Details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&amp;times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="eventModalBody">
+                                <!-- Dynamic content -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <a href="#" id="eventViewDetailsBtn" class="btn btn-primary" style="display: none;">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FullCalendar CSS -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css"/>
+
+            <!-- FullCalendar JS -->
+            <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+            <!-- Custom Calendar Script -->
+            <script type="text/javascript">
+                odoo.define('records_management.portal_calendar', function (require) {
+                    'use strict';
+
+                    var publicWidget = require('web.public.widget');
+                    var ajax = require('web.ajax');
+
+                    publicWidget.registry.PortalCalendar = publicWidget.Widget.extend({
+                        selector: '#portal-calendar',
+
+                        start: function () {
+                            var self = this;
+                            var calendarEl = document.getElementById('portal-calendar');
+                            
+                            if (!calendarEl) {
+                                console.error('Calendar element not found');
+                                return this._super.apply(this, arguments);
+                            }
+
+                            var calendar = new FullCalendar.Calendar(calendarEl, {
+                                initialView: 'dayGridMonth',
+                                headerToolbar: {
+                                    left: 'prev,next today',
+                                    center: 'title',
+                                    right: 'dayGridMonth,timeGridWeek,listWeek'
+                                },
+                                buttonText: {
+                                    today: 'Today',
+                                    month: 'Month',
+                                    week: 'Week',
+                                    list: 'List'
+                                },
+                                height: 'auto',
+                                events: function(info, successCallback, failureCallback) {
+                                    // Fetch events from server
+                                    ajax.jsonRpc('/my/calendar/events', 'call', {
+                                        start: info.startStr,
+                                        end: info.endStr
+                                    }).then(function(events) {
+                                        $('#calendar-loading').hide();
+                                        $('#portal-calendar').show();
+                                        successCallback(events);
+                                    }).catch(function(error) {
+                                        console.error('Error fetching calendar events:', error);
+                                        $('#calendar-loading').html(
+                                            '<div class="alert alert-danger">Failed to load calendar events. Please try again later.</div>'
+                                        );
+                                        failureCallback(error);
+                                    });
+                                },
+                                eventClick: function(info) {
+                                    info.jsEvent.preventDefault();
+                                    
+                                    var event = info.event;
+                                    var props = event.extendedProps;
+                                    
+                                    // Build modal content
+                                    var modalBody = '<dl class="row">';
+                                    modalBody += '<dt class="col-sm-4">Title:</dt><dd class="col-sm-8">' + event.title + '</dd>';
+                                    modalBody += '<dt class="col-sm-4">Date:</dt><dd class="col-sm-8">' + 
+                                        event.start.toLocaleDateString() + ' ' + 
+                                        (event.start.toLocaleTimeString() !== '12:00:00 AM' ? event.start.toLocaleTimeString() : '') + 
+                                        '</dd>';
+                                    
+                                    if (event.end) {
+                                        modalBody += '<dt class="col-sm-4">End:</dt><dd class="col-sm-8">' + 
+                                            event.end.toLocaleDateString() + ' ' + event.end.toLocaleTimeString() + 
+                                            '</dd>';
+                                    }
+                                    
+                                    // Add type-specific details
+                                    if (props.type === 'shredding') {
+                                        modalBody += '<dt class="col-sm-4">Frequency:</dt><dd class="col-sm-8">' + 
+                                            (props.frequency || 'N/A').charAt(0).toUpperCase() + (props.frequency || 'N/A').slice(1) + 
+                                            '</dd>';
+                                        modalBody += '<dt class="col-sm-4">Location:</dt><dd class="col-sm-8">' + (props.location || 'N/A') + '</dd>';
+                                    } else if (props.type === 'service') {
+                                        modalBody += '<dt class="col-sm-4">Type:</dt><dd class="col-sm-8">' + 
+                                            (props.work_order_type || 'N/A').charAt(0).toUpperCase() + (props.work_order_type || 'N/A').slice(1) + 
+                                            '</dd>';
+                                        modalBody += '<dt class="col-sm-4">Stage:</dt><dd class="col-sm-8">' + (props.stage || 'N/A') + '</dd>';
+                                    } else if (props.type === 'request') {
+                                        modalBody += '<dt class="col-sm-4">Request Type:</dt><dd class="col-sm-8">' + 
+                                            (props.request_type || 'N/A').charAt(0).toUpperCase() + (props.request_type || 'N/A').slice(1) + 
+                                            '</dd>';
+                                        modalBody += '<dt class="col-sm-4">Status:</dt><dd class="col-sm-8">' + (props.state || 'N/A') + '</dd>';
+                                    }
+                                    
+                                    modalBody += '</dl>';
+                                    
+                                    // Update modal
+                                    $('#eventModalTitle').text(event.title);
+                                    $('#eventModalBody').html(modalBody);
+                                    
+                                    // Show/hide "View Details" button
+                                    if (event.url) {
+                                        $('#eventViewDetailsBtn').attr('href', event.url).show();
+                                    } else {
+                                        $('#eventViewDetailsBtn').hide();
+                                    }
+                                    
+                                    // Show modal
+                                    $('#eventDetailsModal').modal('show');
+                                },
+                                eventDidMount: function(info) {
+                                    // Add tooltip
+                                    $(info.el).tooltip({
+                                        title: info.event.title,
+                                        placement: 'top',
+                                        trigger: 'hover',
+                                        container: 'body'
+                                    });
+                                }
+                            });
+
+                            calendar.render();
+                            
+                            return this._super.apply(this, arguments);
+                        }
+                    });
+
+                    return publicWidget.registry.PortalCalendar;
+                });
+            </script>
+        </t>
+    </template>
+</odoo>

@@ -1,6 +1,6 @@
 {
     "name": "Records Management - Enterprise Edition",
-    'version': '18.0.1.0.20',
+    'version': '18.0.1.0.21',
     'category': 'Productivity/Records',
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": "Records Management - Enterprise Grade DMS Module. Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.",
@@ -711,6 +711,7 @@
         "templates/portal_barcode_templates.xml",
         "templates/portal_barcode_row.xml",
         "templates/portal_centralized_docs.xml",
+        "templates/portal_calendar_view.xml",  # NEW: Service calendar (shredding, pickups, retrievals)
         # Request & Workflow Templates
         "templates/portal_requests_template.xml",
         "templates/portal_request_create.xml",  # Generic request creation form (retrieval, scanning)

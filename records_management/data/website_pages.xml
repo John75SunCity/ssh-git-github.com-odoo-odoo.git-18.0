@@ -94,7 +94,17 @@
 
                                     <!-- Row 3: Advanced Features -->
                                     <div class="row mt-4">
-                                        <div class="col-lg-6 mb-4">
+                                        <div class="col-lg-4 mb-4">
+                                            <div class="card h-100 border-primary">
+                                                <div class="card-body text-center">
+                                                    <i class="fa fa-calendar-alt fa-3x text-primary mb-3"></i>
+                                                    <h4 class="card-title">My Calendar</h4>
+                                                    <p class="card-text">View scheduled services, pickups, and appointments</p>
+                                                    <a href="/my/calendar" class="btn btn-primary">View Calendar</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 mb-4">
                                             <div class="card h-100 border-success">
                                                 <div class="card-body text-center">
                                                     <i class="fa fa-sitemap fa-3x text-success mb-3"></i>
@@ -105,7 +115,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6 mb-4">
+                                        <div class="col-lg-4 mb-4">
                                             <div class="card h-100 border-info">
                                                 <div class="card-body text-center">
                                                     <i class="fa fa-search fa-3x text-info mb-3"></i>
