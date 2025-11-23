@@ -179,13 +179,32 @@ class PortalInventorySearch {
                 const link = e.target.closest('.pagination a');
                 const href = link.getAttribute('href');
                 
-                // Prevent default only for valid URLs
-                if (href && href !== '#' && !href.startsWith('javascript:')) {
+                // Security: Prevent default only for safe URLs (reject javascript:, data:, vbscript: schemes)
+                if (href && href !== '#' && this.isSafeUrl(href)) {
                     e.preventDefault();
                     this.loadPageContent(href);
                 }
             }
         });
+    }
+
+    /**
+     * Security check: Validate URL scheme to prevent code injection
+     * Rejects javascript:, data:, and vbscript: schemes per OWASP/CodeQL recommendations
+     * @param {string} url - The URL to validate
+     * @returns {boolean} - True if URL is safe to use
+     */
+    isSafeUrl(url) {
+        if (!url || typeof url !== 'string') {
+            return false;
+        }
+        
+        // Normalize URL for comparison (decode and lowercase)
+        const normalizedUrl = decodeURI(url).trim().toLowerCase();
+        
+        // Reject dangerous URL schemes
+        const dangerousSchemes = ['javascript:', 'data:', 'vbscript:'];
+        return !dangerousSchemes.some(scheme => normalizedUrl.startsWith(scheme));
     }
 
     /**
