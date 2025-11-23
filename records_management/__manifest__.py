@@ -797,35 +797,39 @@
             "records_management/static/src/portal_components/**/*",
 
             # Legacy Portal Assets (To be gradually migrated)
-            "records_management/static/src/js/portal/portal_dashboard_bootstrap.js",
+            # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses @web/core/utils/ajax)
+            # "records_management/static/src/js/portal/portal_dashboard_bootstrap.js",
             # NOTE: portal_accessibility.js moved to backend_only/ (ESM format)
             "records_management/static/src/css/portal_tour.css",
             "records_management/static/src/css/intelligent_search.css",
             # NOTE: customer_portal_diagram.css remains for reports
             "records_management/static/src/css/customer_portal_diagram.css",
             "records_management/static/src/css/barcode_scanner.css",
-            "records_management/static/src/js/portal/portal_tour.js",
+            # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses @web_tour/tour_manager)
+            # "records_management/static/src/js/portal/portal_tour.js",
             # ✅ RE-ENABLED - Converted to vanilla JavaScript (inventory dashboard widgets)
             "records_management/static/src/js/portal/portal_inventory_highlights.js",
             # NOTE: portal_inventory_search.js moved to backend_only/ (ESM format)
-            "records_management/static/src/js/portal/portal_quote_generator.js",
+            # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses web.public.widget)
+            # "records_management/static/src/js/portal/portal_quote_generator.js",
             # ✅ RE-ENABLED - Converted to vanilla JavaScript (e-signature widget for destruction certificates)
             "records_management/static/src/js/portal/portal_signature.js",
-            "records_management/static/src/js/portal/portal_user_import.js",
+            # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses web.public.widget)
+            # "records_management/static/src/js/portal/portal_user_import.js",
             "records_management/static/src/js/field_label_customizer.js",
             # ✅ RE-ENABLED - Converted to vanilla JavaScript (customer barcode printing - ESSENTIAL)
             "records_management/static/src/js/portal/portal_barcode_management.js",
-            # Barcode command handler for standard Odoo commands
-            "records_management/static/src/js/barcode_command_handler.js",
-            # Newly externalized portal document retrieval logic
-            "records_management/static/src/js/portal/portal_document_retrieval.js",
-            # Organization diagram interactive logic (migrated from inline script)
+            # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses @web/core/network/rpc_service)
+            # "records_management/static/src/js/barcode_command_handler.js",
+            # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses web.public.widget)
+            # "records_management/static/src/js/portal/portal_document_retrieval.js",
+            # ✅ RE-ENABLED - Converted to vanilla JavaScript (organization chart visualization)
             "records_management/static/src/js/portal/portal_organization_diagram.js",
-            # ✨ NEW: Portal Interactive Features (AJAX, live search, mobile responsive, wizards, barcode)
-            # Converted from ESM to AMD format - Production ready with enterprise security
-            "records_management/static/src/js/portal/portal_interactive_features.js",
+            # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses web.public.widget, web.ajax)
+            # "records_management/static/src/js/portal/portal_interactive_features.js",
             "records_management/static/src/xml/intelligent_search_templates.xml",
-            "records_management/static/src/js/intelligent_search.js",
+            # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses @web/views/fields/standard_field_props)
+            # "records_management/static/src/js/intelligent_search.js",
             # NOTE: customer_portal_diagram.js moved to backend_only/ (ESM format)
             # NOTE: customer_portal_diagram_templates.xml kept for backend views
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"
