@@ -178,7 +178,7 @@
         <record id="action_stock_location_records" model="ir.actions.act_window">
             <field name="name">Storage Locations (Inventory Integration)</field>
             <field name="res_model">stock.location</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="domain">[('is_records_location', '=', True)]</field>
             <field name="context">{
                 'default_is_records_location': True,
