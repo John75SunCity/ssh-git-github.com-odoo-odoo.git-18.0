@@ -81,12 +81,28 @@
             <field name="sequence">70</field>
         </record>
 
-        <!-- Contact (Child of Portal Hub) -->
-        <record id="portal_menu_contact" model="website.menu">
+        <!-- Contact Us -->
+        <record id="portal_menu_contactus" model="website.menu">
             <field name="name">Contact Us</field>
             <field name="url">/contactus</field>
             <field name="parent_id" ref="portal_hub_main_menu"/>
             <field name="sequence">80</field>
+        </record>
+
+        <!-- Barcode Scanner Hub (NEW - Previously Hidden) -->
+        <record id="portal_menu_barcode_scanner" model="website.menu">
+            <field name="name">Barcode Scanner</field>
+            <field name="url">/my/barcode/main</field>
+            <field name="parent_id" ref="portal_hub_main_menu"/>
+            <field name="sequence">60</field>
+        </record>
+
+        <!-- Organization Chart (NEW - Previously Hidden) -->
+        <record id="portal_menu_organization" model="website.menu">
+            <field name="name">Organization</field>
+            <field name="url">/my/organization</field>
+            <field name="parent_id" ref="portal_hub_main_menu"/>
+            <field name="sequence">90</field>
         </record>
 
     </data>
