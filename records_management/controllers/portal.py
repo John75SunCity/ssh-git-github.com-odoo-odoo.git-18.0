@@ -1990,7 +1990,14 @@ class RecordsManagementController(http.Controller):
                 container_vals['description'] = post.get('description')
             if post.get('location_id'):
                 container_vals['current_location_id'] = int(post.get('location_id'))
-            if post.get('barcode'):
+            
+            # Barcode handling - generate or use custom
+            if post.get('generate_barcode'):
+                # Auto-generate barcode using sequence
+                container_vals['barcode'] = request.env['ir.sequence'].sudo().next_by_code('records.container') or f'CNT-{name[:10].upper()}'
+            elif post.get('custom_barcode'):
+                container_vals['barcode'] = post.get('custom_barcode')
+            elif post.get('barcode'):
                 container_vals['barcode'] = post.get('barcode')
 
             container = request.env['records.container'].sudo().create(container_vals)
