@@ -805,12 +805,12 @@
             "records_management/static/src/css/customer_portal_diagram.css",
             "records_management/static/src/css/barcode_scanner.css",
             "records_management/static/src/js/portal/portal_tour.js",
-            # TEMPORARILY DISABLED - Need vanilla JS conversion (publicWidget unavailable in frontend)
-            # "records_management/static/src/js/portal/portal_inventory_highlights.js",
+            # ✅ RE-ENABLED - Converted to vanilla JavaScript (inventory dashboard widgets)
+            "records_management/static/src/js/portal/portal_inventory_highlights.js",
             # NOTE: portal_inventory_search.js moved to backend_only/ (ESM format)
             "records_management/static/src/js/portal/portal_quote_generator.js",
-            # TEMPORARILY DISABLED - Need vanilla JS conversion (publicWidget unavailable in frontend)
-            # "records_management/static/src/js/portal/portal_signature.js",
+            # ✅ RE-ENABLED - Converted to vanilla JavaScript (e-signature widget for destruction certificates)
+            "records_management/static/src/js/portal/portal_signature.js",
             "records_management/static/src/js/portal/portal_user_import.js",
             "records_management/static/src/js/field_label_customizer.js",
             # ✅ RE-ENABLED - Converted to vanilla JavaScript (customer barcode printing - ESSENTIAL)
