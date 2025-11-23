@@ -135,7 +135,7 @@ class AdvancedInventorySearch(CustomerPortal):
             'can_export': True,
         }
 
-        return request.render("records_management.advanced_search_results", values)
+        return request.render("records_management.portal_advanced_inventory_search", values)
 
     def _build_advanced_search_domain(self, partner, filters):
         """
