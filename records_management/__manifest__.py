@@ -785,9 +785,9 @@
         # Optional heavy visualization bundle loaded only when flowchart / portal diagram features are enabled.
         # This reduces baseline asset generation time for generic back-end usage and speeds up unit test asset build.
         "records_management.assets_visualization_optional": [
-            # TEMPORARILY DISABLED - Need vanilla JS conversion (publicWidget unavailable in frontend)
+            # ✅ RE-ENABLED - Converted to vanilla JavaScript (organization chart dynamic loader)
             # Dynamic loader replaces large minified vendor bundles to satisfy repo guideline (no minified libs committed)
-            # "records_management/static/src/js/visualization_dynamic_loader.js",
+            "records_management/static/src/js/visualization_dynamic_loader.js",
             # Local placeholder CSS (unminified real library recommended for production replacement)
             "records_management/static/src/lib/vis/vis-network.css",
             "records_management/static/src/xml/customer_portal_diagram_templates.xml"

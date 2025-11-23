@@ -3,11 +3,11 @@
  * Lightweight dynamic loader that fetches visualization libraries (vis-network)
  * from a CDN only when a diagram container is present. Avoids committing large
  * minified vendor bundles into the repository while preserving functionality.
+ *
+ * DEPENDENCIES: NONE (Pure vanilla JavaScript)
  */
-odoo.define('records_management.visualization_dynamic_loader', ['web.public.widget'], function (require) {
+(function () {
     'use strict';
-
-    const publicWidget = require('web.public.widget');
 
     // Local (served by Odoo) preferred paths
     const LOCAL_JS = '/records_management/static/src/lib/vis/vis-network.js';
@@ -19,7 +19,9 @@ odoo.define('records_management.visualization_dynamic_loader', ['web.public.widg
     const CDN_CSS = `https://unpkg.com/vis-network@${CDN_VERSION}/dist/vis-network.min.css`;
 
     function injectTag(tag, attrs, marker) {
-        if (document.querySelector(`[data-vis-network="${marker}"]`)) { return Promise.resolve(); }
+        if (document.querySelector(`[data-vis-network="${marker}"]`)) { 
+            return Promise.resolve(); 
+        }
         return new Promise((resolve, reject) => {
             const el = document.createElement(tag);
             Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k, v));
@@ -60,15 +62,24 @@ odoo.define('records_management.visualization_dynamic_loader', ['web.public.widg
         }
     }
 
-    publicWidget.registry.VisualizationDynamicLoader = publicWidget.Widget.extend({
+    const VisualizationDynamicLoader = {
         selector: '.o_portal_organization_diagram, .o_system_flowchart_view',
-        start: function () {
-            if (this.el) {
+        
+        init() {
+            const elements = document.querySelectorAll(this.selector);
+            if (elements.length > 0) {
                 ensureAssets();
             }
-            return this._super.apply(this, arguments);
-        },
-    });
+        }
+    };
 
-    return publicWidget.registry.VisualizationDynamicLoader;
-});
+    // Auto-initialize on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => VisualizationDynamicLoader.init());
+    } else {
+        VisualizationDynamicLoader.init();
+    }
+
+    // Expose globally
+    window.RecordsManagementVisualizationDynamicLoader = VisualizationDynamicLoader;
+})();
