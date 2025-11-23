@@ -586,3 +586,12 @@ window.showVideoTour = function() {
 };
 
 console.log('Portal Tour module loaded successfully');
+
+    // Return public API for AMD module
+    return {
+        startPortalTour: window.portalFunctions.startPortalTour,
+        startInventoryTour: window.portalFunctions.startInventoryTour,
+        showVideoTour: window.portalFunctions.showVideoTour,
+        portalFunctions: window.portalFunctions
+    };
+});
