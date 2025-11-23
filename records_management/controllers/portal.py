@@ -6413,10 +6413,11 @@ class RecordsManagementController(http.Controller):
                 else:
                     color = '#e91e63'  # Pink - portal user
 
-            # Create node
+            # Create node - vis-network requires 'label' field for display
             node = {
                 'id': p.id,
-                'name': p.name,
+                'label': p.name,  # vis-network displays this
+                'name': p.name,   # Keep for compatibility
                 'type': node_type,
                 'color': color,
                 'email': p.email or '',
