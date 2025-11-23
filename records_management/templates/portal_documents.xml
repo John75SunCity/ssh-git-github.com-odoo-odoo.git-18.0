@@ -113,8 +113,8 @@
                                                         <t t-esc="document.document_type_id.name if document.document_type_id else 'N/A'"/>
                                                     </td>
                                                     <td>
-                                                        <t t-if="document.attachment_id and document.attachment_id.file_size">
-                                                            <t t-set="file_size" t-value="document.attachment_id.file_size"/>
+                                                        <t t-if="document.attachment_ids and document.attachment_ids[0].file_size">
+                                                            <t t-set="file_size" t-value="document.attachment_ids[0].file_size"/>
                                                             <t t-set="size_mb" t-value="file_size / (1024*1024)"/>
                                                             <t t-set="size_kb" t-value="file_size / 1024"/>
                                                             <t t-esc="('{:.1f} MB'.format(size_mb) if file_size > 1024*1024 else '{:.1f} KB'.format(size_kb))"/>
@@ -136,7 +136,7 @@
                                                             <a t-attf-href="/my/document/#{document.id}" class="btn btn-sm btn-primary" title="View Details">
                                                                 <i class="fa fa-eye"></i>
                                                             </a>
-                                                            <t t-if="document.attachment_id">
+                                                            <t t-if="document.attachment_ids">
                                                                 <a t-attf-href="/my/document/#{document.id}/download" class="btn btn-sm btn-success" title="Download">
                                                                     <i class="fa fa-download"></i>
                                                                 </a>
@@ -194,8 +194,8 @@
 
                                         <dt class="col-sm-4">Size:</dt>
                                         <dd class="col-sm-8">
-                                            <t t-if="document.attachment_id and document.attachment_id.file_size">
-                                                <t t-set="file_size" t-value="document.attachment_id.file_size"/>
+                                            <t t-if="document.attachment_ids and document.attachment_ids[0].file_size">
+                                                <t t-set="file_size" t-value="document.attachment_ids[0].file_size"/>
                                                 <t t-set="size_mb" t-value="file_size / (1024*1024)"/>
                                                 <t t-set="size_kb" t-value="file_size / 1024"/>
                                                 <t t-esc="('{:.1f} MB'.format(size_mb) if file_size > 1024*1024 else '{:.1f} KB'.format(size_kb))"/>
