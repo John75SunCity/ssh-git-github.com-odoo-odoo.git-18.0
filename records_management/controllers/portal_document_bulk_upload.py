@@ -14,28 +14,34 @@ class PortalBulkUpload(http.Controller):
         values = {}
         upload_type = post.get('upload_type', 'container')  # container, file, or document
         
+        # Get partner info
+        current_user = request.env.user
+        base_partner = current_user.partner_id.commercial_partner_id
+        
         if request.httprequest.method == 'POST' and post.get('upload_file'):
-            partner = request.env.user.partner_id.commercial_partner_id
             upload = post.get('upload_file')
             has_header = bool(post.get('has_header', True))
             
             # Process based on upload type
             if upload_type == 'container':
-                result = self._process_container_upload(upload, partner, has_header)
+                result = self._process_container_upload(upload, base_partner, has_header)
             elif upload_type == 'file':
-                result = self._process_file_upload(upload, partner, has_header)
+                result = self._process_file_upload(upload, base_partner, has_header)
             elif upload_type == 'document':
-                result = self._process_document_upload(upload, partner, has_header)
+                result = self._process_document_upload(upload, base_partner, has_header)
             else:
                 result = {'success': False, 'error': 'Invalid upload type'}
             
             values.update(result)
         
-        # Get partner info for form
-        current_user = request.env.user
-        base_partner = current_user.partner_id.commercial_partner_id
+        # Load departments for the dropdown
+        departments = request.env['records.department'].sudo().search([
+            ('company_id', '=', base_partner.id)
+        ])
+        
         values.update({
             'partner': base_partner,
+            'partners': departments,  # Template expects 'partners' for the dropdown
             'upload_type': upload_type,
             'page_name': 'bulk_upload',
         })
