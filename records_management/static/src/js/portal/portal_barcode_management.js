@@ -1,27 +1,27 @@
 /**
  * Records Management Portal - Barcode Management Logic
- * 
+ *
  * PURPOSE: Customer-facing barcode generation and management widget
  * USE CASE: /my/barcodes route - portal users generate/view barcodes
- * 
+ *
  * FEATURES:
  * ✓ Multi-type barcode generation (container/file/temp)
  * ✓ Real-time filtering with debounced search (300ms)
  * ✓ Print/download barcode images
  * ✓ Bootstrap 5 notifications with auto-dismiss
  * ✓ Integration with ir.sequence for proper barcode format
- * 
+ *
  * PERFORMANCE OPTIMIZATIONS (Grok 2025):
  * - Debounced filter updates (300ms) prevents excessive DOM queries
  * - Full row text search (faster than multiple selectors)
  * - Cleaner promise chains with throw/catch
  * - Batch DOM operations where possible
- * 
+ *
  * BARCODE MODELS:
  * - portal.barcode.container (sequence: records.barcode.container)
- * - portal.barcode.file (sequence: records.barcode.file)  
+ * - portal.barcode.file (sequence: records.barcode.file)
  * - portal.barcode.temp (sequence: records.barcode.temp)
- * 
+ *
  * DEPENDENCIES:
  * - jQuery (Odoo frontend)
  * - Bootstrap 5 (alerts, modals)
