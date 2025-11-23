@@ -101,8 +101,52 @@ const viewRegistry = registry.category("views");
       start: function () {
         var self = this;
         return this._super.apply(this, arguments).then(function () {
+          return self._loadVisNetwork();
+        }).then(function() {
           self._initializeDiagram();
+        }).catch(function(err) {
+          console.error("[DiagramView] Failed to load vis-network library", err);
+          self._showFallbackMessage();
         });
+      },
+
+      _loadVisNetwork: function() {
+        // Check if already loaded
+        if (window.vis && window.vis.Network) {
+          return Promise.resolve();
+        }
+        
+        // Load from CDN
+        var CDN_VERSION = '9.1.6';
+        var CDN_CSS = 'https://unpkg.com/vis-network@' + CDN_VERSION + '/dist/vis-network.min.css';
+        var CDN_JS = 'https://unpkg.com/vis-network@' + CDN_VERSION + '/dist/vis-network.min.js';
+        
+        return new Promise(function(resolve, reject) {
+          // Load CSS
+          var cssLink = document.createElement('link');
+          cssLink.rel = 'stylesheet';
+          cssLink.href = CDN_CSS;
+          document.head.appendChild(cssLink);
+          
+          // Load JS
+          var script = document.createElement('script');
+          script.src = CDN_JS;
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      },
+
+      _showFallbackMessage: function() {
+        var container = this.el.querySelector('.o_diagram_container');
+        if (container) {
+          container.innerHTML = '<div class="p-5 text-center">' +
+            '<i class="fa fa-exclamation-triangle fa-3x text-warning mb-3"></i>' +
+            '<h5>Diagram Visualization Unavailable</h5>' +
+            '<p class="text-muted">The visualization library could not be loaded.</p>' +
+            '<p class="text-muted">Please check your internet connection and refresh the page.</p>' +
+            '</div>';
+        }
       },
 
       _initializeDiagram: function () {
@@ -112,6 +156,7 @@ const viewRegistry = registry.category("views");
         var record = this.state.data;
         if (!record || !record.node_data || !record.edge_data) {
           console.warn("[DiagramView] No diagram data available - fields may not be loaded");
+          this._showEmptyDataMessage();
           return;
         }
 
@@ -126,12 +171,26 @@ const viewRegistry = registry.category("views");
             throw new Error("Invalid data format: expected arrays");
           }
 
-          var container = this.el.querySelector(".o_diagram_container");
-          // Check if vis.js is available
-          if (typeof window.vis === 'undefined') {
-            console.error("vis.js library is not loaded");
+          if (nodes.length === 0) {
+            this._showEmptyDataMessage();
             return;
           }
+
+          var container = this.el.querySelector(".o_diagram_container");
+          // Check if vis.js is available
+          if (!window.vis || !window.vis.Network) {
+            console.error("[DiagramView] vis.Network not available");
+            this._showFallbackMessage();
+            return;
+          }
+
+          // Ensure nodes have 'label' field for vis-network
+          nodes = nodes.map(function(node) {
+            if (!node.label && node.name) {
+              node.label = node.name;
+            }
+            return node;
+          });
 
           var data = {
             nodes: new window.vis.DataSet(nodes),
@@ -141,8 +200,22 @@ const viewRegistry = registry.category("views");
           var options = this._getNetworkOptions();
           this.network = new window.vis.Network(container, data, options);
           this._setupNetworkEvents();
+          
+          console.log("[DiagramView] Diagram rendered successfully with", nodes.length, "nodes");
         } catch (error) {
-          console.error("Error initializing portal diagram:", error);
+          console.error("[DiagramView] Error initializing diagram:", error);
+          this._showFallbackMessage();
+        }
+      },
+
+      _showEmptyDataMessage: function() {
+        var container = this.el.querySelector('.o_diagram_container');
+        if (container) {
+          container.innerHTML = '<div class="p-5 text-center">' +
+            '<i class="fa fa-info-circle fa-3x text-info mb-3"></i>' +
+            '<h5>No Diagram Data</h5>' +
+            '<p class="text-muted">This record has no diagram data to display.</p>' +
+            '</div>';
         }
       },
 

@@ -3,11 +3,10 @@
  * Extracted from inline script in portal_document_retrieval.xml for compliance with
  * asset pipeline and security guidelines.
  */
-odoo.define('records_management.portal_document_retrieval', [], function(require) {
+odoo.define('records_management.portal_document_retrieval', ['web.public.widget'], function(require) {
     'use strict';
 
-    // Frontend-compatible implementation
-    const publicWidget = { Widget: { extend: function(obj) { return obj; } } };
+    const publicWidget = require('web.public.widget');
 
     const RetrievalPortal = publicWidget.Widget.extend({
         selector: '.o_portal_document_retrieval',

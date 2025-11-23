@@ -1,6 +1,6 @@
 // New file: JS for modern inventory UI - highlights, multi-select actions, clean animations.
 
-odoo.define('records_management.portal_inventory_highlights', [], function (require) {
+odoo.define('records_management.portal_inventory_highlights', ['web.public.widget'], function (require) {
     "use strict";
 
     // Frontend-compatible implementation - no backend dependencies
