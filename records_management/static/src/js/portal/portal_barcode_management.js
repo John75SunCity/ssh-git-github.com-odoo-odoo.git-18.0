@@ -11,10 +11,10 @@
  * ✓ Bootstrap 5 notifications with auto-dismiss
  * ✓ Integration with ir.sequence for proper barcode format
  *
- * PERFORMANCE OPTIMIZATIONS (Grok 2025):
+ * PERFORMANCE OPTIMIZATIONS:
  * - Debounced filter updates (300ms) prevents excessive DOM queries
  * - Full row text search (faster than multiple selectors)
- * - Cleaner promise chains with throw/catch
+ * - Vanilla JavaScript for better performance
  * - Batch DOM operations where possible
  *
  * BARCODE MODELS:
@@ -22,57 +22,120 @@
  * - portal.barcode.file (sequence: records.barcode.file)
  * - portal.barcode.temp (sequence: records.barcode.temp)
  *
- * DEPENDENCIES:
- * - jQuery (Odoo frontend)
- * - Bootstrap 5 (alerts, modals)
- * - underscore.js (_.escape, _.debounce)
- * - web.ajax (jsonRpc)
+ * DEPENDENCIES: NONE (Pure vanilla JavaScript)
  */
-odoo.define('records_management.portal_barcode_management', ['web.public.widget', 'web.ajax'], function (require) {
+(function () {
     'use strict';
 
-    const publicWidget = require('web.public.widget');
-    const ajax = require('web.ajax');
     const _t = function(str) { return str; };
+    
+    // Debounce utility (replaces _.debounce)
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+    
+    // HTML escape utility (replaces _.escape)
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return String(text).replace(/[&<>"']/g, m => map[m]);
+    }
 
-    const BarcodePortal = publicWidget.Widget.extend({
+    const BarcodePortal = {
         selector: '[data-rm-portal-barcode]',
-        events: {
-            'click [data-action="generate-barcode"]': '_onGenerateBarcode',
-            'click [data-action="generate-container-barcode"]': '_onGenerateContainerBarcode',
-            'click [data-action="generate-file-barcode"]': '_onGenerateFileBarcode',
-            'click [data-action="generate-temp-barcode"]': '_onGenerateTempBarcode',
-            'click [data-action="clear-filters"]': '_onClearFilters',
-            'keyup #barcodeSearch': '_onFilterChanged',
-            'change #barcodeTypeFilter': '_onFilterChanged',
-            'change #barcodeStatusFilter': '_onFilterChanged',
-            'click [data-barcode-action]': '_onBarcodeRowAction',
-            'click [data-action="print-barcode-image"]': '_onPrintBarcodeImage',
-            'click [data-action="download-barcode-image"]': '_onDownloadBarcodeImage',
+        containers: null,
+
+        init() {
+            this.containers = document.querySelectorAll(this.selector);
+            if (this.containers.length === 0) return;
+
+            this._attachEventListeners();
+            this._filterBarcodes();
         },
 
-        start() {
-            // Initial filter application (noop if empty)
-            this._filterBarcodes();
-            return this._super.apply(this, arguments);
+        _attachEventListeners() {
+            this.containers.forEach(container => {
+                // Generate barcode buttons
+                container.querySelectorAll('[data-action="generate-barcode"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => this._onGenerateBarcode(e));
+                });
+                container.querySelectorAll('[data-action="generate-container-barcode"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => this._onGenerateContainerBarcode(e));
+                });
+                container.querySelectorAll('[data-action="generate-file-barcode"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => this._onGenerateFileBarcode(e));
+                });
+                container.querySelectorAll('[data-action="generate-temp-barcode"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => this._onGenerateTempBarcode(e));
+                });
+
+                // Filter controls
+                container.querySelectorAll('[data-action="clear-filters"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => this._onClearFilters(e));
+                });
+                
+                const searchInput = container.querySelector('#barcodeSearch');
+                if (searchInput) {
+                    searchInput.addEventListener('keyup', debounce(() => this._filterBarcodes(), 300));
+                }
+                
+                const typeFilter = container.querySelector('#barcodeTypeFilter');
+                if (typeFilter) {
+                    typeFilter.addEventListener('change', debounce(() => this._filterBarcodes(), 300));
+                }
+                
+                const statusFilter = container.querySelector('#barcodeStatusFilter');
+                if (statusFilter) {
+                    statusFilter.addEventListener('change', debounce(() => this._filterBarcodes(), 300));
+                }
+
+                // Barcode row actions
+                container.querySelectorAll('[data-barcode-action]').forEach(btn => {
+                    btn.addEventListener('click', (e) => this._onBarcodeRowAction(e));
+                });
+
+                // Print/download actions
+                container.querySelectorAll('[data-action="print-barcode-image"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => this._onPrintBarcodeImage(e));
+                });
+                container.querySelectorAll('[data-action="download-barcode-image"]').forEach(btn => {
+                    btn.addEventListener('click', (e) => this._onDownloadBarcodeImage(e));
+                });
+            });
         },
+
 
         /**
-         * Handlers
+         * Event Handlers
          */
         _onGenerateBarcode(ev) {
             ev.preventDefault();
-            const $btn = $(ev.currentTarget);
-            const barcodeType = $btn.data('barcode-type') || 'container'; // default to container
+            const btn = ev.currentTarget;
+            const barcodeType = btn.dataset.barcodeType || 'container';
 
-            if ($btn.prop('disabled')) {
-                return;
-            }
-            $btn.prop('disabled', true).addClass('disabled');
-            const $spinner = $('<span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>');
-            $btn.append($spinner);
+            if (btn.disabled) return;
+            
+            btn.disabled = true;
+            btn.classList.add('disabled');
+            const spinner = document.createElement('span');
+            spinner.className = 'spinner-border spinner-border-sm ms-2';
+            spinner.setAttribute('role', 'status');
+            spinner.setAttribute('aria-hidden', 'true');
+            btn.appendChild(spinner);
 
-            // Route to type-specific generation
             const typeRoutes = {
                 'container': '/records_management/portal/generate_container_barcode',
                 'file': '/records_management/portal/generate_file_barcode',
@@ -81,65 +144,81 @@ odoo.define('records_management.portal_barcode_management', ['web.public.widget'
 
             const route = typeRoutes[barcodeType] || typeRoutes['container'];
 
-            ajax.jsonRpc(route, 'call', {
-                barcode_format: 'code128', // respects nomenclature rules
-            }).then(r => {
-                if (!r || !r.success) {
-                    throw new Error(r && r.error || 'Unknown error');
+            fetch(route, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    jsonrpc: '2.0',
+                    method: 'call',
+                    params: {
+                        barcode_format: 'code128'
+                    }
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const result = data.result || data;
+                if (!result || !result.success) {
+                    throw new Error((result && result.error) || 'Unknown error');
                 }
-                this._insertBarcodeRow(r.barcode, r.row_html);
+                this._insertBarcodeRow(result.barcode, result.row_html);
                 this._filterBarcodes();
-                this._notify(_t('Barcode %s created', r.barcode.name), 'success');
-            }).catch(e => {
-                console.error('[BarcodePortal] Generation error:', e);
-                this._notify(e.message || _t('Error generating barcode'), 'danger');
-            }).always(() => {
-                $spinner.remove();
-                $btn.prop('disabled', false).removeClass('disabled');
+                this._notify(`Barcode ${result.barcode.name} created`, 'success');
+            })
+            .catch(error => {
+                console.error('[BarcodePortal] Generation error:', error);
+                this._notify(error.message || 'Error generating barcode', 'danger');
+            })
+            .finally(() => {
+                spinner.remove();
+                btn.disabled = false;
+                btn.classList.remove('disabled');
             });
         },
 
-        /**
-         * Type-specific barcode generators (use sequences from models)
-         */
         _onGenerateContainerBarcode(ev) {
             ev.preventDefault();
-            $(ev.currentTarget).data('barcode-type', 'container');
+            ev.currentTarget.dataset.barcodeType = 'container';
             this._onGenerateBarcode(ev);
         },
 
         _onGenerateFileBarcode(ev) {
             ev.preventDefault();
-            $(ev.currentTarget).data('barcode-type', 'file');
+            ev.currentTarget.dataset.barcodeType = 'file';
             this._onGenerateBarcode(ev);
         },
 
         _onGenerateTempBarcode(ev) {
             ev.preventDefault();
-            $(ev.currentTarget).data('barcode-type', 'temp');
+            ev.currentTarget.dataset.barcodeType = 'temp';
             this._onGenerateBarcode(ev);
         },
 
         _onClearFilters(ev) {
             ev.preventDefault();
-            this.$('#barcodeSearch').val('');
-            this.$('#barcodeTypeFilter').val('');
-            this.$('#barcodeStatusFilter').val('');
+            const container = ev.currentTarget.closest(this.selector);
+            const searchInput = container.querySelector('#barcodeSearch');
+            const typeFilter = container.querySelector('#barcodeTypeFilter');
+            const statusFilter = container.querySelector('#barcodeStatusFilter');
+            
+            if (searchInput) searchInput.value = '';
+            if (typeFilter) typeFilter.value = '';
+            if (statusFilter) statusFilter.value = '';
+            
             this._filterBarcodes();
         },
 
-        _onFilterChanged: _.debounce(function () {
-            this._filterBarcodes();
-        }, 300),  // Debounced for performance (Grok optimization)
-
         _onBarcodeRowAction(ev) {
             ev.preventDefault();
-            const $target = $(ev.currentTarget);
-            const action = $target.data('barcode-action');
-            const barcodeId = $target.data('barcode-id');
-            if (!action) {
-                return;
-            }
+            const target = ev.currentTarget;
+            const action = target.dataset.barcodeAction;
+            const barcodeId = target.dataset.barcodeId;
+            
+            if (!action) return;
+            
             const dispatch = {
                 printBarcode: this._printBarcode.bind(this),
                 viewBarcodeDetails: this._viewBarcodeDetails.bind(this),
@@ -147,6 +226,7 @@ odoo.define('records_management.portal_barcode_management', ['web.public.widget'
                 duplicateBarcode: this._duplicateBarcode.bind(this),
                 deactivateBarcode: this._deactivateBarcode.bind(this),
             };
+            
             if (dispatch[action]) {
                 dispatch[action](barcodeId);
             } else {
@@ -164,21 +244,21 @@ odoo.define('records_management.portal_barcode_management', ['web.public.widget'
             this._downloadBarcodeImage();
         },
 
+
         /**
-         * Core logic methods (mirroring removed inline functions)
+         * Core logic methods
          */
         _printBarcode(barcodeId) {
             console.log('[BarcodePortal] Printing barcode', barcodeId);
-            // Future: open a print-friendly route or generate PDF
-            this._showNotification(_t('Print functionality coming soon'), 'info');
+            this._notify('Print functionality coming soon', 'info');
         },
 
         _viewBarcodeDetails(barcodeId) {
             console.log('[BarcodePortal] Viewing details for', barcodeId);
-            // Show modal (Bootstrap 5 assumed)
-            const $modal = this.$('#barcodeDetailsModal');
-            if ($modal.length) {
-                $modal.modal('show');
+            const modal = document.querySelector('#barcodeDetailsModal');
+            if (modal && window.bootstrap) {
+                const bsModal = new bootstrap.Modal(modal);
+                bsModal.show();
             }
         },
 
@@ -194,15 +274,13 @@ odoo.define('records_management.portal_barcode_management', ['web.public.widget'
             console.log('[BarcodePortal] Deactivating barcode', barcodeId);
         },
 
-        /**
-         * Insert barcode row with type-specific rendering
-         */
         _insertBarcodeRow(barcode, rowHtml) {
-            const tbody = this.$('#barcodeTable tbody');
+            const tbody = document.querySelector('#barcodeTable tbody');
+            if (!tbody) return;
+
             if (rowHtml) {
-                tbody.prepend(rowHtml);
+                tbody.insertAdjacentHTML('afterbegin', rowHtml);
             } else if (barcode) {
-                // Fallback: render based on barcode model type
                 const typeIcons = {
                     'container': 'fa-box',
                     'file': 'fa-file-alt',
@@ -210,103 +288,133 @@ odoo.define('records_management.portal_barcode_management', ['web.public.widget'
                 };
                 const icon = typeIcons[barcode.barcode_type] || 'fa-barcode';
 
-                const row = $('<tr>').attr('data-barcode-id', barcode.id).html(`
+                const row = document.createElement('tr');
+                row.dataset.barcodeId = barcode.id;
+                row.innerHTML = `
                     <td>
                         <i class="fa ${icon} me-2"></i>
-                        <code>${_.escape(barcode.name)}</code>
-                        <br/><small class="text-muted">Format: ${_.escape(barcode.barcode_format)}</small>
-                        ${barcode.sequence_code ? '<br/><small class="text-muted">Sequence: ' + _.escape(barcode.sequence_code) + '</small>' : ''}
+                        <code>${escapeHtml(barcode.name)}</code>
+                        <br/><small class="text-muted">Format: ${escapeHtml(barcode.barcode_format)}</small>
+                        ${barcode.sequence_code ? '<br/><small class="text-muted">Sequence: ' + escapeHtml(barcode.sequence_code) + '</small>' : ''}
                     </td>
-                    <td><span class="badge bg-secondary">${_.escape(barcode.barcode_type)}</span></td>
-                    <td>${barcode.linked_record ? _.escape(barcode.linked_record) : '-'}</td>
-                    <td>${barcode.created_date ? _.escape(barcode.created_date) : '-'}</td>
-                    <td><span class="badge bg-success">${_.escape(barcode.state)}</span></td>
+                    <td><span class="badge bg-secondary">${escapeHtml(barcode.barcode_type)}</span></td>
+                    <td>${barcode.linked_record ? escapeHtml(barcode.linked_record) : '-'}</td>
+                    <td>${barcode.created_date ? escapeHtml(barcode.created_date) : '-'}</td>
+                    <td><span class="badge bg-success">${escapeHtml(barcode.state)}</span></td>
                     <td>${barcode.barcode_image ? '<img src="data:image/png;base64,' + barcode.barcode_image + '" style="height:30px;"/>' : ''}</td>
-                    <td>${barcode.last_scanned ? _.escape(barcode.last_scanned) : '-'}</td>
+                    <td>${barcode.last_scanned ? escapeHtml(barcode.last_scanned) : '-'}</td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
                             <button class="btn btn-outline-primary" data-barcode-action="printBarcode" data-barcode-id="${barcode.id}">
-                                <i class="fa fa-print"/>
+                                <i class="fa fa-print"></i>
                             </button>
                             <button class="btn btn-outline-secondary" data-barcode-action="viewBarcodeDetails" data-barcode-id="${barcode.id}">
-                                <i class="fa fa-eye"/>
+                                <i class="fa fa-eye"></i>
                             </button>
                         </div>
                     </td>
-                `);
-                tbody.prepend(row);
+                `;
+                tbody.insertBefore(row, tbody.firstChild);
             }
         },
 
         _filterBarcodes() {
-            const s = (this.$('#barcodeSearch').val() || '').trim().toLowerCase();
-            const t = (this.$('#barcodeTypeFilter').val() || '').toLowerCase();
-            const st = (this.$('#barcodeStatusFilter').val() || '').toLowerCase();
+            this.containers.forEach(container => {
+                const searchInput = container.querySelector('#barcodeSearch');
+                const typeFilter = container.querySelector('#barcodeTypeFilter');
+                const statusFilter = container.querySelector('#barcodeStatusFilter');
 
-            // Optimized: Use full row text for search (Grok pattern)
-            this.$('#barcodeTable tbody tr').each(function () {
-                const $row = $(this);
-                const text = this.textContent.toLowerCase();  // Faster than multiple selectors
-                
-                // Type and status still need specific selectors for exact matching
-                const typeText = $row.find('td:nth-child(2) .badge').text().toLowerCase();
-                const statusText = $row.find('td:nth-child(5) .badge').text().toLowerCase();
+                const s = (searchInput ? searchInput.value : '').trim().toLowerCase();
+                const t = (typeFilter ? typeFilter.value : '').toLowerCase();
+                const st = (statusFilter ? statusFilter.value : '').toLowerCase();
 
-                const matchesSearch = !s || text.includes(s);
-                const matchesType = !t || typeText === t;
-                const matchesStatus = !st || statusText === st;
+                const table = container.querySelector('#barcodeTable');
+                if (!table) return;
 
-                $row.toggle(matchesSearch && matchesType && matchesStatus);
+                table.querySelectorAll('tbody tr').forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    const typeBadge = row.querySelector('td:nth-child(2) .badge');
+                    const statusBadge = row.querySelector('td:nth-child(5) .badge');
+                    
+                    const typeText = typeBadge ? typeBadge.textContent.toLowerCase() : '';
+                    const statusText = statusBadge ? statusBadge.textContent.toLowerCase() : '';
+
+                    const matchesSearch = !s || text.includes(s);
+                    const matchesType = !t || typeText === t;
+                    const matchesStatus = !st || statusText === st;
+
+                    row.style.display = (matchesSearch && matchesType && matchesStatus) ? '' : 'none';
+                });
             });
         },
 
         _printBarcodeImage() {
-            const barcodeImage = this.$('#modalBarcodeImage').attr('src');
-            if (!barcodeImage) {
-                this._showNotification(_t('No barcode image available'), 'warning');
+            const modalImage = document.querySelector('#modalBarcodeImage');
+            if (!modalImage || !modalImage.src) {
+                this._notify('No barcode image available', 'warning');
                 return;
             }
+            
             const w = window.open('', '_blank');
             if (!w) {
-                this._showNotification(_t('Please allow pop-ups for this site'), 'warning');
+                this._notify('Please allow pop-ups for this site', 'warning');
                 return;
             }
-            w.document.write(`<img src="${_.escape(barcodeImage)}" style="max-width:100%;"/>`);
+            
+            w.document.write(`<img src="${escapeHtml(modalImage.src)}" style="max-width:100%;"/>`);
             w.document.close();
             w.print();
         },
 
         _downloadBarcodeImage() {
-            const barcodeImage = this.$('#modalBarcodeImage').attr('src');
-            if (!barcodeImage) {
-                this._showNotification(_t('No barcode image available'), 'warning');
+            const modalImage = document.querySelector('#modalBarcodeImage');
+            if (!modalImage || !modalImage.src) {
+                this._notify('No barcode image available', 'warning');
                 return;
             }
+            
             const link = document.createElement('a');
-            link.href = barcodeImage;
+            link.href = modalImage.src;
             link.download = 'barcode.png';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         },
 
-        /**
-         * Helper to show Bootstrap toast/alert notifications (Grok optimized)
-         */
         _notify(msg, type = 'info') {
-            const $n = $(`<div class="alert alert-${type} alert-dismissible position-fixed fade show" style="top:20px;right:20px;z-index:9999;min-width:300px;">
-                ${_.escape(msg)}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>`);
-            $('body').append($n);
-            setTimeout(() => $n.alert('close'), 5000);
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible position-fixed fade show`;
+            notification.style.cssText = 'top:20px;right:20px;z-index:9999;min-width:300px;';
+            notification.innerHTML = `
+                ${escapeHtml(msg)}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    if (window.bootstrap && window.bootstrap.Alert) {
+                        const bsAlert = bootstrap.Alert.getInstance(notification) || new bootstrap.Alert(notification);
+                        bsAlert.close();
+                    } else {
+                        notification.remove();
+                    }
+                }
+            }, 5000);
         },
         
-        // Backward compatibility alias
         _showNotification(message, type) {
             return this._notify(message, type);
         },
-    });
+    };
 
-    publicWidget.registry.BarcodePortal = BarcodePortal;
-    return BarcodePortal;
-});
+    // Auto-initialize on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => BarcodePortal.init());
+    } else {
+        BarcodePortal.init();
+    }
+
+    // Expose globally
+    window.RecordsManagementBarcodePortal = BarcodePortal;
+})();

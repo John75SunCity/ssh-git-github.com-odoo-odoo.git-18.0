@@ -813,8 +813,8 @@
             # "records_management/static/src/js/portal/portal_signature.js",
             "records_management/static/src/js/portal/portal_user_import.js",
             "records_management/static/src/js/field_label_customizer.js",
-            # TEMPORARILY DISABLED - Need vanilla JS conversion (barcode removed from portal for security)
-            # "records_management/static/src/js/portal/portal_barcode_management.js",
+            # ✅ RE-ENABLED - Converted to vanilla JavaScript (customer barcode printing - ESSENTIAL)
+            "records_management/static/src/js/portal/portal_barcode_management.js",
             # Barcode command handler for standard Odoo commands
             "records_management/static/src/js/barcode_command_handler.js",
             # Newly externalized portal document retrieval logic
