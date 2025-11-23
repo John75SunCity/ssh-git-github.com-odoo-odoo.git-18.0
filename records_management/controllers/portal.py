@@ -1173,6 +1173,53 @@ class RecordsManagementController(http.Controller):
             return request.redirect('/my?error=feedback_failed')
 
     # ============================================================================
+    # PORTAL HUB - Main Landing Page
+    # ============================================================================
+
+    @http.route(['/portal-hub'], type='http', auth='user', website=True)
+    def portal_hub(self, **kw):
+        """
+        Portal Hub - Main landing page for Records Management Portal.
+        Provides quick access to all portal features and recent activity.
+        """
+        partner = request.env.user.partner_id
+        
+        # Get summary counts for dashboard cards
+        container_count = request.env['records.container'].sudo().search_count([
+            ('partner_id', 'child_of', partner.commercial_partner_id.id)
+        ])
+        
+        request_count = request.env['portal.request'].sudo().search_count([
+            ('partner_id', 'child_of', partner.commercial_partner_id.id),
+            ('state', 'not in', ['cancelled', 'done'])
+        ])
+        
+        document_count = request.env['records.document'].sudo().search_count([
+            ('partner_id', 'child_of', partner.commercial_partner_id.id)
+        ])
+        
+        certificate_count = request.env['destruction.certificate'].sudo().search_count([
+            ('partner_id', 'child_of', partner.commercial_partner_id.id)
+        ])
+        
+        # Get recent activities
+        recent_requests = request.env['portal.request'].sudo().search([
+            ('partner_id', 'child_of', partner.commercial_partner_id.id)
+        ], order='create_date desc', limit=5)
+        
+        values = {
+            'page_name': 'portal_hub',
+            'container_count': container_count,
+            'request_count': request_count,
+            'document_count': document_count,
+            'certificate_count': certificate_count,
+            'recent_requests': recent_requests,
+            'partner': partner,
+        }
+        
+        return request.render('records_management.portal_hub_page', values)
+
+    # ============================================================================
     # CERTIFICATES PORTAL ROUTES
     # ============================================================================
 
