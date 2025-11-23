@@ -171,4 +171,3 @@ After fixes, test each form:
 2. Test each fix individually
 3. Commit incrementally with clear messages
 4. Run `python3 development-tools/portal_field_audit.py` after each fix to verify
-

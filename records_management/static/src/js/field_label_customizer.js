@@ -1,31 +1,29 @@
 /* Field Label Customization Widget for Portal
  * Dynamically updates field labels based on customer configuration
+ * Odoo 18 Compatible - Pure JavaScript implementation
  */
 
-odoo.define('records_management.FieldLabelCustomizer', [], function (require) {
+(function () {
 'use strict';
 
-// Frontend-compatible implementation using vanilla JS
-var publicWidget = { Widget: { extend: function(obj) { return obj; } } };
-var ajax = { jsonRpc: function(url, method, params) { 
-    return fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', method: method, params: params })
-    }).then(r => r.json()).then(r => r.result);
-} };
-
-var FieldLabelCustomizer = publicWidget.Widget.extend({
+/**
+ * Field Label Customizer - Vanilla JS implementation for portal
+ */
+var FieldLabelCustomizer = {
     selector: '.o_portal_field_customizer',
     
     /**
-     * @override
+     * Initialize the customizer
      */
-    start: function () {
+    init: function () {
         var self = this;
-        return this._super.apply(this, arguments).then(function () {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                self._loadCustomLabels();
+            });
+        } else {
             self._loadCustomLabels();
-        });
+        }
     },
     
     /**
@@ -34,17 +32,38 @@ var FieldLabelCustomizer = publicWidget.Widget.extend({
      */
     _loadCustomLabels: function () {
         var self = this;
-        var customerId = this.$el.data('customer-id');
-        var departmentId = this.$el.data('department-id');
+        var elements = document.querySelectorAll(this.selector);
         
-        return ajax.jsonRpc('/portal/field-labels/get', 'call', {
-            customer_id: customerId,
-            department_id: departmentId
-        }).then(function (result) {
-            if (result.success && result.labels) {
-                self._applyCustomLabels(result.labels);
+        if (elements.length === 0) {
+            return;
+        }
+        
+        var element = elements[0];
+        var customerId = element.dataset.customerId;
+        var departmentId = element.dataset.departmentId;
+        
+        fetch('/portal/field-labels/get', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ 
+                jsonrpc: '2.0', 
+                method: 'call', 
+                params: {
+                    customer_id: customerId,
+                    department_id: departmentId
+                }
+            })
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(result) {
+            if (result.result && result.result.success && result.result.labels) {
+                self._applyCustomLabels(result.result.labels);
             }
-        }).catch(function (error) {
+        })
+        .catch(function (error) {
             console.warn('Failed to load custom field labels:', error);
         });
     },
@@ -56,42 +75,46 @@ var FieldLabelCustomizer = publicWidget.Widget.extend({
      */
     _applyCustomLabels: function (labels) {
         var self = this;
+        var containers = document.querySelectorAll(this.selector);
         
-        // Update field labels based on data attributes
-        this.$el.find('[data-field-name]').each(function () {
-            var $element = $(this);
-            var fieldName = $element.data('field-name');
-            
-            if (labels[fieldName]) {
-                var customLabel = labels[fieldName];
+        containers.forEach(function(container) {
+            // Update field labels based on data attributes
+            container.querySelectorAll('[data-field-name]').forEach(function (element) {
+                var fieldName = element.dataset.fieldName;
                 
-                // Update label text
-                if ($element.is('label')) {
-                    $element.text(customLabel);
-                } else {
-                    // Update associated label
-                    var labelFor = $element.attr('id');
-                    if (labelFor) {
-                        $('label[for="' + labelFor + '"]').text(customLabel);
+                if (labels[fieldName]) {
+                    var customLabel = labels[fieldName];
+                    
+                    // Update label text
+                    if (element.tagName.toLowerCase() === 'label') {
+                        element.textContent = customLabel;
+                    } else {
+                        // Update associated label
+                        var labelFor = element.getAttribute('id');
+                        if (labelFor) {
+                            var label = document.querySelector('label[for="' + labelFor + '"]');
+                            if (label) {
+                                label.textContent = customLabel;
+                            }
+                        }
+                        
+                        // Update placeholder if exists
+                        if (element.hasAttribute('placeholder')) {
+                            element.setAttribute('placeholder', customLabel);
+                        }
                     }
                     
-                    // Update placeholder if exists
-                    if ($element.attr('placeholder')) {
-                        $element.attr('placeholder', customLabel);
+                    // Update help text if it references the field name
+                    var helpText = element.nextElementSibling;
+                    if (helpText && (helpText.classList.contains('text-muted') || helpText.classList.contains('help-block'))) {
+                        var helpContent = helpText.textContent;
+                        var defaultLabel = self._getDefaultLabel(fieldName);
+                        if (defaultLabel && helpContent.includes(defaultLabel)) {
+                            helpText.textContent = helpContent.replace(defaultLabel, customLabel);
+                        }
                     }
                 }
-                
-                // Update help text if it references the field name
-                var $helpText = $element.siblings('.text-muted, .help-block');
-                if ($helpText.length) {
-                    var helpContent = $helpText.text();
-                    // Simple replacement of field name in help text
-                    var defaultLabel = self._getDefaultLabel(fieldName);
-                    if (defaultLabel && helpContent.includes(defaultLabel)) {
-                        $helpText.text(helpContent.replace(defaultLabel, customLabel));
-                    }
-                }
-            }
+            });
         });
         
         // Update form headings and section titles
@@ -107,20 +130,24 @@ var FieldLabelCustomizer = publicWidget.Widget.extend({
      * @param {Object} labels
      */
     _updateFormHeadings: function (labels) {
-        // Update section headings that might reference field names
-        this.$el.find('h1, h2, h3, h4, h5, h6').each(function () {
-            var $heading = $(this);
-            var headingText = $heading.text();
-            
-            // Check if heading contains field references
-            Object.keys(labels).forEach(function (fieldName) {
-                var defaultLabel = this._getDefaultLabel(fieldName);
-                if (defaultLabel && headingText.includes(defaultLabel)) {
-                    var newText = headingText.replace(defaultLabel, labels[fieldName]);
-                    $heading.text(newText);
-                }
-            }.bind(this));
-        }.bind(this));
+        var self = this;
+        var containers = document.querySelectorAll(this.selector);
+        
+        containers.forEach(function(container) {
+            // Update section headings that might reference field names
+            container.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(function (heading) {
+                var headingText = heading.textContent;
+                
+                // Check if heading contains field references
+                Object.keys(labels).forEach(function (fieldName) {
+                    var defaultLabel = self._getDefaultLabel(fieldName);
+                    if (defaultLabel && headingText.includes(defaultLabel)) {
+                        var newText = headingText.replace(defaultLabel, labels[fieldName]);
+                        heading.textContent = newText;
+                    }
+                });
+            });
+        });
     },
     
     /**
@@ -129,13 +156,16 @@ var FieldLabelCustomizer = publicWidget.Widget.extend({
      * @param {Object} labels
      */
     _updateTableHeaders: function (labels) {
-        this.$el.find('table th[data-field-name]').each(function () {
-            var $th = $(this);
-            var fieldName = $th.data('field-name');
-            
-            if (labels[fieldName]) {
-                $th.text(labels[fieldName]);
-            }
+        var containers = document.querySelectorAll(this.selector);
+        
+        containers.forEach(function(container) {
+            container.querySelectorAll('table th[data-field-name]').forEach(function (th) {
+                var fieldName = th.dataset.fieldName;
+                
+                if (labels[fieldName]) {
+                    th.textContent = labels[fieldName];
+                }
+            });
         });
     },
     
@@ -172,24 +202,22 @@ var FieldLabelCustomizer = publicWidget.Widget.extend({
             'hierarchy_display': 'Location Path'
         };
         
-        return defaultLabels[fieldName] || fieldName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        return defaultLabels[fieldName] || fieldName.replace('_', ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); });
     }
-});
+};
 
-// Also export a utility function for direct use
-var loadTransitoryFieldConfig = function (customerId, departmentId) {
-    return ajax.jsonRpc('/portal/field-labels/transitory-config', 'call', {
-        customer_id: customerId,
-        department_id: departmentId
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        FieldLabelCustomizer.init();
     });
-};
+} else {
+    FieldLabelCustomizer.init();
+}
 
-// Auto-initialize on portal pages
-publicWidget.registry.FieldLabelCustomizer = FieldLabelCustomizer;
+// Make available globally for manual initialization if needed
+if (typeof window !== 'undefined') {
+    window.RecordsManagementFieldLabelCustomizer = FieldLabelCustomizer;
+}
 
-return {
-    FieldLabelCustomizer: FieldLabelCustomizer,
-    loadTransitoryFieldConfig: loadTransitoryFieldConfig
-};
-
-});
+})();
