@@ -6466,17 +6466,22 @@ class RecordsManagementController(http.Controller):
             'connections': len(edges),
         }
 
-        # Prepare diagram data as dictionary (QWeb needs dict access, not object attributes)
+        # Prepare diagram data as dictionary with RAW Python lists/dicts
+        # Template will JSON-serialize via t-out directive (QWeb handles conversion automatically)
+        # DO NOT use json.dumps() here - that causes double-encoding in template!
         diagram_data = {
             'id': company.id,
-            'node_data': json.dumps(nodes),
-            'edge_data': json.dumps(edges),
-            'diagram_stats': json.dumps(stats),
+            'node_data': nodes,      # Raw Python list (QWeb converts to JSON via t-out)
+            'edge_data': edges,      # Raw Python list (QWeb converts to JSON via t-out)
+            'diagram_stats': stats,  # Raw Python dict (QWeb converts to JSON via t-out)
             'show_messaging': True,
             'show_access_rights': False,
             'layout_type': 'hierarchical',
             'search_query': '',
         }
+
+        # Debug: Log what we're sending to template
+        _logger.info(f"Organization chart data - Nodes: {len(nodes)}, Edges: {len(edges)}, Stats: {stats}")
 
         # Prepare context for template
         values = {
