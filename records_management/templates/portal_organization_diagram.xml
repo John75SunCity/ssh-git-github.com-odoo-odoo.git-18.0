@@ -53,7 +53,7 @@
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="search-query"
                                                        placeholder="Search by name, department, or role..."
-                                                       t-att-value="diagram.search_query or ''"/>
+                                                       t-att-value="diagram.get('search_query', '')"/>
                                                 <div class="input-group-append">
                                                     <button class="btn btn-primary" type="button" id="search-button">
                                                         <i class="fa fa-search"/>
@@ -66,13 +66,13 @@
                                         <div class="form-group">
                                             <label for="layout-select">Layout Style</label>
                                             <select class="form-control" id="layout-select">
-                                                <option value="hierarchical" t-att-selected="diagram.layout_type == 'hierarchical' and 'selected' or None">
+                                                <option value="hierarchical" t-att-selected="diagram.get('layout_type') == 'hierarchical' and 'selected' or None">
                                                     Hierarchical
                                                 </option>
-                                                <option value="network" t-att-selected="diagram.layout_type == 'network' and 'selected' or None">
+                                                <option value="network" t-att-selected="diagram.get('layout_type') == 'network' and 'selected' or None">
                                                     Network
                                                 </option>
-                                                <option value="circular" t-att-selected="diagram.layout_type == 'circular' and 'selected' or None">
+                                                <option value="circular" t-att-selected="diagram.get('layout_type') == 'circular' and 'selected' or None">
                                                     Circular
                                                 </option>
                                             </select>
@@ -81,7 +81,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label>Options</label><br/>
-                                            <div class="form-check form-check-inline" t-if="diagram.show_messaging">
+                                            <div class="form-check form-check-inline" t-if="diagram.get('show_messaging')">
                                                 <input class="form-check-input" type="checkbox" id="enable-messaging" checked="checked"/>
                                                 <label class="form-check-label" for="enable-messaging">
                                                     Enable Messaging
@@ -251,7 +251,7 @@
 
             <!-- JSON payload (consumed by JS asset) -->
             <script type="application/json" id="diagram-data">
-{"nodes": <t t-out="diagram.node_data or '[]'"/>, "edges": <t t-out="diagram.edge_data or '[]'"/>, "stats": <t t-out="diagram.diagram_stats or '{}'"/>, "config": {"show_messaging": <t t-out="diagram.show_messaging and 'true' or 'false'"/>, "show_access_rights": <t t-out="diagram.show_access_rights and 'true' or 'false'"/>, "layout_type": "<t t-out="diagram.layout_type"/>", "diagram_id": <t t-out="diagram.id"/>, "user_id": <t t-out="user.id"/>, "partner_id": <t t-out="partner.id"/>}}
+{"nodes": <t t-out="diagram.get('node_data', [])"/>, "edges": <t t-out="diagram.get('edge_data', [])"/>, "stats": <t t-out="diagram.get('diagram_stats', {})"/>, "config": {"show_messaging": <t t-out="diagram.get('show_messaging') and 'true' or 'false'"/>, "show_access_rights": <t t-out="diagram.get('show_access_rights') and 'true' or 'false'"/>, "layout_type": "<t t-out="diagram.get('layout_type', 'hierarchical')"/>", "diagram_id": <t t-out="diagram.get('id', 0)"/>, "user_id": <t t-out="user.id"/>, "partner_id": <t t-out="partner.id"/>}}
             </script>
 
         </t>
