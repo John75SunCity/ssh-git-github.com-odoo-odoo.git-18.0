@@ -40,27 +40,26 @@
         "base_import",
         # Enterprise / optional modules (comment out if not available in your environment)
         # "sms",
-        "maintenance",  # ✅ ENABLED - Installed via odoo-update
+        "maintenance",  # ✅ REQUIRED - Used in maintenance_request_views.xml and maintenance_equipment_views.xml
         # "point_of_sale",
         "barcodes",  # ✅ ENABLED for barcode scanning
-        "industry_fsm",  # ✅ ENABLED - Field Service Management installed
-        "sign",  # ✅ ENABLED - E-signature module installed
+        "industry_fsm",  # ✅ REQUIRED - Used extensively in FSM integration (see records_management_fsm module)
+        "sign",  # ✅ REQUIRED - Used for e-signatures in portal requests and destruction certificates
         "survey",
-        "documents",  # ✅ ENABLED - Document management installed
-        "helpdesk",  # ✅ ENABLED - Support ticket system installed
+        # "documents",
+        # "helpdesk",
         # "mass_mailing",
-        "website_slides",  # ✅ ENABLED - eLearning platform installed
-        "quality",  # ✅ ENABLED - Quality control installed
+        # "website_slides",
+        "quality",  # ✅ REQUIRED - Used in quality inspection workflows
         # "hr_attendance",
-        "iot",  # ✅ ENABLED - IoT integration installed
+        # "iot",
         # "hr_payroll",
-        "planning",  # ✅ ENABLED - Employee scheduling installed
-        "sale_renting",  # ✅ ENABLED - Rental management installed
+        # "planning",
+        # "rental",
         # "appointment",
         # "sale_ecommerce",
         # "hr_expense",
-        "frontdesk",  # ✅ ENABLED - Visitor management installed
-        "web_studio",  # ✅ ENABLED - App customization installed
+        # "frontdesk",
     ],
     "data": [
         # ============================================================================
