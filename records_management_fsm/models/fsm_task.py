@@ -63,10 +63,10 @@ class ProjectTaskFSMExtension(models.Model):
     ], string="Customer Rating")
 
     # Worksheet integration
-    worksheet_ids = fields.One2many(
+    rm_worksheet_ids = fields.One2many(
         comodel_name='fsm.worksheet.instance',
         inverse_name='task_id',
-        string="Worksheets"
+        string="RM Worksheets"
     )
     worksheet_complete = fields.Boolean(
         string="Worksheet Complete",
@@ -100,12 +100,12 @@ class ProjectTaskFSMExtension(models.Model):
     # COMPUTE METHODS
     # ============================================================================
 
-    @api.depends('worksheet_ids.is_complete')
+    @api.depends('rm_worksheet_ids', 'rm_worksheet_ids.is_complete')
     def _compute_worksheet_complete(self):
         """Check if all worksheets are complete"""
         for task in self:
-            if task.worksheet_ids:
-                task.worksheet_complete = all(w.is_complete for w in task.worksheet_ids)
+            if task.rm_worksheet_ids:
+                task.worksheet_complete = all(ws.is_complete for ws in task.rm_worksheet_ids)
             else:
                 task.worksheet_complete = False
 
@@ -156,8 +156,8 @@ class ProjectTaskFSMExtension(models.Model):
 
         # Get weight from worksheet if available
         weight = self.weight_processed
-        if not weight and self.worksheet_ids:
-            for worksheet in self.worksheet_ids:
+        if not weight and self.rm_worksheet_ids:
+            for worksheet in self.rm_worksheet_ids:
                 if worksheet.weight_recorded:
                     weight = worksheet.weight_recorded
                     break
