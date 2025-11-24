@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="add_to_work_order_wizard_view_form" model="ir.ui.view">
+            <field name="name">add.to.work.order.wizard.view.form</field>
+            <field name="model">add.to.work.order.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="alert alert-info" role="status">
+                            <p><i class="fa fa-info-circle"/> Adding <strong><field name="container_count"/> container(s)</strong> to an existing work order.</p>
+                            <p>Customer: <strong><field name="partner_id" readonly="1"/></strong></p>
+                        </div>
+                        
+                        <group>
+                            <field name="work_order_type" widget="radio"/>
+                        </group>
+                        
+                        <group invisible="work_order_type != 'retrieval'">
+                            <field name="retrieval_work_order_id" 
+                                   options="{'no_create': True, 'no_open': True}"
+                                   required="work_order_type == 'retrieval'"/>
+                        </group>
+                        
+                        <group invisible="work_order_type != 'destruction'">
+                            <field name="destruction_work_order_id" 
+                                   options="{'no_create': True, 'no_open': True}"
+                                   required="work_order_type == 'destruction'"/>
+                        </group>
+                        
+                        <separator string="Containers to Add"/>
+                        <field name="container_ids" readonly="1">
+                            <tree>
+                                <field name="name"/>
+                                <field name="barcode"/>
+                                <field name="state" widget="badge" 
+                                       decoration-success="state == 'in'"
+                                       decoration-info="state == 'out'"
+                                       decoration-warning="state == 'pending'"
+                                       decoration-muted="state == 'perm_out'"
+                                       decoration-danger="state == 'destroyed'"/>
+                                <field name="current_location_id"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                    <footer>
+                        <button string="Add to Work Order" 
+                                name="action_add_to_order" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <button string="Cancel" special="cancel" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

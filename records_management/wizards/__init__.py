@@ -31,3 +31,4 @@ from . import batch_barcode_operations
 from . import barcode_preprint_wizard
 from . import barcode_reprint_wizard
 from . import department_user_wizard
+from . import add_to_work_order_wizard

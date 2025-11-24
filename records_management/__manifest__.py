@@ -110,6 +110,7 @@
         "data/document_retrieval_rates_data.xml",
         "data/products_data.xml",
         "data/storage_fee_data.xml",
+        "data/container_bulk_actions.xml",  # Bulk actions for container management
 
         # Additional data files - previously not loaded
         "data/base_rates_container_access_data.xml",
@@ -367,6 +368,7 @@
         "views/temp_inventory_reject_wizard_views.xml",
         "views/visitor_pos_wizard_views.xml",
         "views/work_order_bin_assignment_wizard_views.xml",
+        "wizards/add_to_work_order_wizard_views.xml",
         # ============================================================================
         # CRITICAL EARLY VIEWS: Actions that must be defined before menus reference them
         # ============================================================================

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Server Action: Bulk Create Retrieval Work Order -->
+        <record id="action_bulk_create_retrieval_order" model="ir.actions.server">
+            <field name="name">📦 Create Retrieval Work Order</field>
+            <field name="model_id" ref="model_records_container"/>
+            <field name="binding_model_id" ref="model_records_container"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+# Bulk create retrieval work order from selected containers
+if records:
+    # Get partner from first container (all should be same customer)
+    partner = records[0].partner_id
+    
+    # Validate all containers belong to same partner
+    if any(c.partner_id != partner for c in records):
+        raise UserError(_("All selected containers must belong to the same customer."))
+    
+    # Validate containers are in storage
+    invalid = records.filtered(lambda c: c.state not in ('in', 'out'))
+    if invalid:
+        raise UserError(_("Only containers that are 'In Storage' or 'Out' can be added to retrieval orders.\nInvalid: %s") % ', '.join(invalid.mapped('name')))
+    
+    # Create new retrieval work order
+    work_order = env['records.retrieval.work.order'].create({
+        'name': _('Retrieval - %s (%s containers)') % (partner.name, len(records)),
+        'partner_id': partner.id,
+        'user_id': env.user.id,
+        'state': 'draft',
+        'delivery_method': 'scan',
+        'scanned_barcode_ids': [(6, 0, records.ids)],
+    })
+    
+    # Post message
+    work_order.message_post(
+        body=_('📦 Created from bulk action with %d container(s): %s') % (len(records), ', '.join(records.mapped('name'))),
+        subject=_('Bulk Retrieval Order Created')
+    )
+    
+    # Return action to open the new work order
+    action = {
+        'name': _('Retrieval Work Order'),
+        'type': 'ir.actions.act_window',
+        'res_model': 'records.retrieval.work.order',
+        'res_id': work_order.id,
+        'view_mode': 'form',
+        'target': 'current',
+    }
+            </field>
+        </record>
+
+        <!-- Server Action: Bulk Create Destruction Work Order -->
+        <record id="action_bulk_create_destruction_order" model="ir.actions.server">
+            <field name="name">🔥 Create Destruction Work Order</field>
+            <field name="model_id" ref="model_records_container"/>
+            <field name="binding_model_id" ref="model_records_container"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+# Bulk create destruction work order from selected containers
+if records:
+    # Get partner from first container
+    partner = records[0].partner_id
+    
+    # Validate all containers belong to same partner
+    if any(c.partner_id != partner for c in records):
+        raise UserError(_("All selected containers must belong to the same customer."))
+    
+    # Validate containers are in storage
+    invalid = records.filtered(lambda c: c.state not in ('in', 'out'))
+    if invalid:
+        raise UserError(_("Only containers that are 'In Storage' or 'Out' can be scheduled for destruction.\nInvalid: %s") % ', '.join(invalid.mapped('name')))
+    
+    # Create new destruction work order
+    work_order = env['container.destruction.work.order'].create({
+        'name': _('Destruction - %s (%s containers)') % (partner.name, len(records)),
+        'partner_id': partner.id,
+        'user_id': env.user.id,
+        'state': 'draft',
+        'destruction_method': 'shred',
+        'container_ids': [(6, 0, records.ids)],
+    })
+    
+    # Post message
+    work_order.message_post(
+        body=_('🔥 Created from bulk action with %d container(s): %s') % (len(records), ', '.join(records.mapped('name'))),
+        subject=_('Bulk Destruction Order Created')
+    )
+    
+    # Return action to open the new work order
+    action = {
+        'name': _('Destruction Work Order'),
+        'type': 'ir.actions.act_window',
+        'res_model': 'container.destruction.work.order',
+        'res_id': work_order.id,
+        'view_mode': 'form',
+        'target': 'current',
+    }
+            </field>
+        </record>
+
+        <!-- Server Action: Bulk Create Container Access Request -->
+        <record id="action_bulk_create_access_request" model="ir.actions.server">
+            <field name="name">🔑 Create Access Request</field>
+            <field name="model_id" ref="model_records_container"/>
+            <field name="binding_model_id" ref="model_records_container"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+# Bulk create container access request from selected containers
+if records:
+    # Get partner from first container
+    partner = records[0].partner_id
+    
+    # Validate all containers belong to same partner
+    if any(c.partner_id != partner for c in records):
+        raise UserError(_("All selected containers must belong to the same customer."))
+    
+    # Validate containers are accessible
+    invalid = records.filtered(lambda c: c.state not in ('in', 'out'))
+    if invalid:
+        raise UserError(_("Only containers that are 'In Storage' or 'Out' can have access requests.\nInvalid: %s") % ', '.join(invalid.mapped('name')))
+    
+    # Create new portal request for container access
+    request = env['portal.request'].create({
+        'name': _('Container Access - %s (%s containers)') % (partner.name, len(records)),
+        'partner_id': partner.id,
+        'request_type': 'container_access',
+        'state': 'pending',
+        'description': _('Bulk access request for containers:\n%s') % '\n'.join('• ' + c.name for c in records),
+        'container_ids': [(6, 0, records.ids)],
+    })
+    
+    # Post message
+    request.message_post(
+        body=_('🔑 Created from bulk action with %d container(s)') % len(records),
+        subject=_('Bulk Access Request Created')
+    )
+    
+    # Return action to open the new request
+    action = {
+        'name': _('Container Access Request'),
+        'type': 'ir.actions.act_window',
+        'res_model': 'portal.request',
+        'res_id': request.id,
+        'view_mode': 'form',
+        'target': 'current',
+    }
+            </field>
+        </record>
+
+        <!-- Server Action: Add to Existing Work Order (Wizard) -->
+        <record id="action_bulk_add_to_work_order" model="ir.actions.server">
+            <field name="name">➕ Add to Existing Work Order</field>
+            <field name="model_id" ref="model_records_container"/>
+            <field name="binding_model_id" ref="model_records_container"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+# Open wizard to add selected containers to existing work order
+if records:
+    # Get partner from first container
+    partner = records[0].partner_id
+    
+    # Validate all containers belong to same partner
+    if any(c.partner_id != partner for c in records):
+        raise UserError(_("All selected containers must belong to the same customer."))
+    
+    # Create wizard
+    wizard = env['add.to.work.order.wizard'].create({
+        'container_ids': [(6, 0, records.ids)],
+        'partner_id': partner.id,
+    })
+    
+    # Return action to open wizard
+    action = {
+        'name': _('Add to Existing Work Order'),
+        'type': 'ir.actions.act_window',
+        'res_model': 'add.to.work.order.wizard',
+        'res_id': wizard.id,
+        'view_mode': 'form',
+        'target': 'new',
+    }
+            </field>
+        </record>
+
+    </data>
+</odoo>
