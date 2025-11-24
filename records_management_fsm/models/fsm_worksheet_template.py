@@ -163,7 +163,7 @@ class FSMWorksheetChecklistItem(models.Model):
         ('photo', 'Photo'),
         ('signature', 'Signature'),
     ], string='Field Type', default='checkbox', required=True)
-    
+
     is_complete = fields.Boolean(string='Complete', default=False)
     text_value = fields.Text(string='Text Value')
     number_value = fields.Float(string='Number Value')
