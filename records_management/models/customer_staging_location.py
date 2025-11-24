@@ -212,7 +212,7 @@ class CustomerStagingLocation(models.Model):
             'name': _('Containers at %s') % self.complete_name,
             'type': 'ir.actions.act_window',
             'res_model': 'records.container',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('customer_staging_location_id', 'in', child_locations.ids)],
             'context': {'default_customer_staging_location_id': self.id}
         }

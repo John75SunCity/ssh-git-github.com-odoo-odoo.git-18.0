@@ -466,7 +466,7 @@ class AccountMoveLine(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Related Containers"),
             "res_model": "records.container",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("id", "in", container_ids_list)],
             "context": {"default_partner_id": self.partner_id.id if self.partner_id else False},
         }

@@ -125,7 +125,7 @@ class ProductContainerType(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Containers - %s", self.name),
             "res_model": "records.container",
-            "view_mode": "tree,form,kanban",
+            "view_mode": "list,form,kanban",
             "domain": [("container_type_id", "=", self.id)],
             "context": {"default_container_type_id": self.id, "default_company_id": self.company_id.id},
         }

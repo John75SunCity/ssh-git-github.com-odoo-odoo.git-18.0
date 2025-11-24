@@ -504,7 +504,7 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Containers'),
             'res_model': 'records.container',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',
             'domain': [('partner_id', '=', self.id)],
             'context': {'default_partner_id': self.id}
         }
@@ -516,7 +516,7 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Documents'),
             'res_model': 'records.document',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('partner_id', '=', self.id)],
             'context': {'default_partner_id': self.id}
         }

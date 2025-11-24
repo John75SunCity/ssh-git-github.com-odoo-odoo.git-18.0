@@ -250,7 +250,7 @@ class StockLocation(models.Model):
             'name': _('Containers at %s') % self.display_name,
             'type': 'ir.actions.act_window',
             'res_model': 'stock.quant',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [
                 ('location_id', '=', self.id),
                 ('is_records_container', '=', True),

@@ -147,7 +147,7 @@ class StockLocationRecordsExtension(models.Model):
             'name': _('Containers at %s') % self.display_name,
             'type': 'ir.actions.act_window',
             'res_model': 'records.container',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',
             'domain': [('location_id', '=', self.id)],
             'context': {'default_location_id': self.id}
         }

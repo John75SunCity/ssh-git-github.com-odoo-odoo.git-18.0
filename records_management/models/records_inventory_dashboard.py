@@ -190,7 +190,7 @@ class RecordsInventoryDashboard(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Filtered Containers'),
             'res_model': 'records.container',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',
             'domain': self._get_container_domain(),
             'context': {'default_company_id': self.company_id.id}
         }
