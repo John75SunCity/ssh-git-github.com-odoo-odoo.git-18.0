@@ -3455,6 +3455,9 @@ class RecordsManagementController(http.Controller):
             })
             
             # Create work order based on request type
+            work_order = None
+            fsm_task = None
+            
             if request_type == 'retrieval':
                 # Create retrieval work order
                 work_order = request.env['records.retrieval.work.order'].sudo().create({
@@ -3465,6 +3468,14 @@ class RecordsManagementController(http.Controller):
                     'delivery_method': 'scan',
                     'scanned_barcode_ids': [(6, 0, container_ids)],
                 })
+                
+                # Auto-create FSM task
+                fsm_task = self._create_fsm_task_for_work_order(
+                    work_order, 
+                    'retrieval', 
+                    partner, 
+                    containers
+                )
                 
                 # Link work order to portal request
                 portal_request.message_post(
@@ -3482,6 +3493,14 @@ class RecordsManagementController(http.Controller):
                     'destruction_method': 'shred',
                     'container_ids': [(6, 0, container_ids)],
                 })
+                
+                # Auto-create FSM task
+                fsm_task = self._create_fsm_task_for_work_order(
+                    work_order,
+                    'destruction',
+                    partner,
+                    containers
+                )
                 
                 # Link work order to portal request
                 portal_request.message_post(

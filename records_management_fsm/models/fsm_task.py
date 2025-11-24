@@ -62,9 +62,52 @@ class ProjectTaskFSMExtension(models.Model):
         ('5', 'Excellent')
     ], string="Customer Rating")
 
+    # Worksheet integration
+    worksheet_ids = fields.One2many(
+        'fsm.worksheet.instance',
+        'task_id',
+        string="Worksheets"
+    )
+    worksheet_complete = fields.Boolean(
+        string="Worksheet Complete",
+        compute='_compute_worksheet_complete',
+        store=True
+    )
+
+    # Work order links
+    retrieval_work_order_id = fields.Many2one(
+        'records.retrieval.work.order',
+        string="Retrieval Work Order"
+    )
+    destruction_work_order_id = fields.Many2one(
+        'container.destruction.work.order',
+        string="Destruction Work Order"
+    )
+    pickup_request_id = fields.Many2one(
+        'pickup.request',
+        string="Pickup Request"
+    )
+    shredding_work_order_id = fields.Many2one(
+        'work.order.shredding',
+        string="Shredding Work Order"
+    )
+    portal_request_id = fields.Many2one(
+        'portal.request',
+        string="Portal Request"
+    )
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+
+    @api.depends('worksheet_ids.is_complete')
+    def _compute_worksheet_complete(self):
+        """Check if all worksheets are complete"""
+        for task in self:
+            if task.worksheet_ids:
+                task.worksheet_complete = all(w.is_complete for w in task.worksheet_ids)
+            else:
+                task.worksheet_complete = False
 
     @api.depends('stage_id')
     def _compute_service_complete(self):
@@ -80,11 +123,44 @@ class ProjectTaskFSMExtension(models.Model):
     # BUSINESS METHODS
     # ============================================================================
 
+    def action_create_worksheet(self, template_id):
+        """Create worksheet instance from template"""
+        self.ensure_one()
+        template = self.env['fsm.worksheet.template'].browse(template_id)
+        if not template:
+            raise UserError(_("Worksheet template not found"))
+
+        worksheet = self.env['fsm.worksheet.instance'].create({
+            'task_id': self.id,
+            'template_id': template.id,
+        })
+        return worksheet
+
+    def action_view_worksheets(self):
+        """Open worksheets for this task"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Worksheets'),
+            'res_model': 'fsm.worksheet.instance',
+            'view_mode': 'tree,form',
+            'domain': [('task_id', '=', self.id)],
+            'context': {'default_task_id': self.id},
+        }
+
     def action_generate_destruction_certificate(self):
         """Generate destruction certificate for completed service"""
         self.ensure_one()
         if not self.service_complete:
             raise UserError(_("Cannot generate certificate for incomplete service"))
+
+        # Get weight from worksheet if available
+        weight = self.weight_processed
+        if not weight and self.worksheet_ids:
+            for worksheet in self.worksheet_ids:
+                if worksheet.weight_recorded:
+                    weight = worksheet.weight_recorded
+                    break
 
         # Certificate generation logic will be implemented in destruction certificate model
         certificate_vals = {
@@ -92,9 +168,12 @@ class ProjectTaskFSMExtension(models.Model):
             'partner_id': self.partner_id.id,
             'destruction_date': fields.Date.today(),
             'destruction_type': self.destruction_type,
-            'weight_processed': self.weight_processed,
-            'shredding_team_id': self.shredding_team_id.id,
+            'weight_processed': weight,
         }
+
+        # Only add shredding_team_id if field exists
+        if hasattr(self, 'shredding_team_id') and self.shredding_team_id:
+            certificate_vals['shredding_team_id'] = self.shredding_team_id.id
 
         certificate = self.env['destruction.certificate'].create(certificate_vals)
         self.destruction_certificate_id = certificate.id
@@ -107,3 +186,23 @@ class ProjectTaskFSMExtension(models.Model):
             'view_mode': 'form',
             'target': 'current',
         }
+
+    def write(self, vals):
+        """Auto-complete work orders when FSM task is done"""
+        res = super().write(vals)
+        
+        # If task stage changed to done/closed
+        if 'stage_id' in vals:
+            for task in self:
+                if task.service_complete and task.worksheet_complete:
+                    # Auto-complete linked work orders
+                    if task.retrieval_work_order_id and task.retrieval_work_order_id.state != 'completed':
+                        task.retrieval_work_order_id.action_complete()
+                    
+                    if task.destruction_work_order_id and task.destruction_work_order_id.state != 'completed':
+                        task.destruction_work_order_id.action_complete()
+                    
+                    if task.shredding_work_order_id and task.shredding_work_order_id.state != 'completed':
+                        task.shredding_work_order_id.write({'state': 'completed'})
+        
+        return res

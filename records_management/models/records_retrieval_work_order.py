@@ -28,6 +28,10 @@ class RecordsRetrievalWorkOrder(models.Model):
     retrieval_team_id = fields.Many2one(comodel_name='maintenance.team', string='Retrieval Team')
     currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', compute='_compute_currency_id', store=True)
 
+    # FSM Integration
+    fsm_task_id = fields.Many2one('project.task', string='FSM Task', readonly=True, copy=False)
+    fsm_task_count = fields.Integer(compute='_compute_fsm_task_count', string='FSM Tasks')
+
     # ============================================================================
     # BARCODE SCANNING FIELDS
     # ============================================================================
@@ -73,6 +77,11 @@ class RecordsRetrievalWorkOrder(models.Model):
         for order in self:
             order.scanned_count = len(order.scanned_barcode_ids)
 
+    def _compute_fsm_task_count(self):
+        """Count linked FSM tasks"""
+        for order in self:
+            order.fsm_task_count = 1 if order.fsm_task_id else 0
+
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
@@ -82,7 +91,75 @@ class RecordsRetrievalWorkOrder(models.Model):
         if self.state != 'draft':
             raise UserError(_("Only draft work orders can be started."))
         self.write({'state': 'in_progress'})
+        
+        # Auto-create FSM task
+        if not self.fsm_task_id:
+            self.action_create_fsm_task()
+        
         return True
+
+    def action_create_fsm_task(self):
+        """Create FSM task with retrieval worksheet"""
+        self.ensure_one()
+        
+        if self.fsm_task_id:
+            raise UserError(_("FSM task already exists for this work order"))
+        
+        # Get or create FSM project
+        fsm_project = self.env.ref('records_management_fsm.project_field_service', raise_if_not_found=False)
+        if not fsm_project:
+            # Create default FSM project
+            fsm_project = self.env['project.project'].create({
+                'name': 'Field Service',
+                'is_fsm': True,
+                'allow_timesheets': True,
+            })
+        
+        # Create FSM task
+        task_vals = {
+            'name': f"Retrieval: {self.name}",
+            'project_id': fsm_project.id,
+            'partner_id': self.partner_id.id,
+            'user_id': self.user_id.id if self.user_id else False,
+            'date_deadline': fields.Date.today(),
+            'retrieval_work_order_id': self.id,
+            'container_ids': [(6, 0, self.scanned_barcode_ids.ids)],
+        }
+        
+        task = self.env['project.task'].create(task_vals)
+        self.fsm_task_id = task.id
+        
+        # Create worksheet from template
+        template = self.env.ref('records_management_fsm.worksheet_template_retrieval', raise_if_not_found=False)
+        if template:
+            self.env['fsm.worksheet.instance'].create({
+                'task_id': task.id,
+                'template_id': template.id,
+            })
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('FSM Task'),
+            'res_model': 'project.task',
+            'res_id': task.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+    def action_view_fsm_task(self):
+        """Open related FSM task"""
+        self.ensure_one()
+        if not self.fsm_task_id:
+            return self.action_create_fsm_task()
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('FSM Task'),
+            'res_model': 'project.task',
+            'res_id': self.fsm_task_id.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     def action_complete(self):
         """Complete the retrieval work order"""
