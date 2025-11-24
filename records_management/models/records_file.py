@@ -309,8 +309,66 @@ class RecordsFile(models.Model):
                     })
                     file.quant_id = quant.id
                     file.state = 'stored'
+            
+            # NAID Audit Log - File Creation
+            self.env['naid.audit.log'].sudo().create({
+                'name': _('File Created: %s') % file.name,
+                'action_type': 'file_created',
+                'description': _('File folder created: %s (Barcode: %s, Container: %s)') % (
+                    file.name,
+                    file.barcode or file.temp_barcode or 'N/A',
+                    file.container_id.name if file.container_id else 'None'
+                ),
+                'user_id': self.env.user.id,
+            })
         
         return files
+    
+    def write(self, vals):
+        """Override write to add NAID audit logging for file updates."""
+        result = super().write(vals)
+        
+        for file in self:
+            # Track important field changes
+            important_fields = ['name', 'barcode', 'container_id', 'state', 'location_id']
+            changed_fields = [field for field in important_fields if field in vals]
+            
+            if changed_fields:
+                description_parts = [_('File updated: %s') % file.name]
+                if 'name' in vals:
+                    description_parts.append(_('Name changed'))
+                if 'barcode' in vals:
+                    description_parts.append(_('Barcode: %s') % (vals['barcode'] or 'Removed'))
+                if 'container_id' in vals:
+                    container = self.env['records.container'].browse(vals['container_id']) if vals['container_id'] else None
+                    description_parts.append(_('Container: %s') % (container.name if container else 'Removed'))
+                if 'state' in vals:
+                    description_parts.append(_('State: %s') % vals['state'])
+                
+                self.env['naid.audit.log'].sudo().create({
+                    'name': _('File Updated: %s') % file.name,
+                    'action_type': 'file_updated',
+                    'description': ', '.join(description_parts),
+                    'user_id': self.env.user.id,
+                })
+        
+        return result
+    
+    def unlink(self):
+        """Override unlink to add NAID audit logging for file deletion."""
+        for file in self:
+            self.env['naid.audit.log'].sudo().create({
+                'name': _('File Deleted: %s') % file.name,
+                'action_type': 'unlink',
+                'description': _('File folder deleted: %s (Barcode: %s, Container: %s)') % (
+                    file.name,
+                    file.barcode or file.temp_barcode or 'N/A',
+                    file.container_id.name if file.container_id else 'None'
+                ),
+                'user_id': self.env.user.id,
+            })
+        
+        return super().unlink()
     
     def _get_or_create_draft_staging_location(self, partner):
         """
