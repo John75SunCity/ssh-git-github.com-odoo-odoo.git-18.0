@@ -693,6 +693,7 @@
         "templates/advanced_search_templates.xml",
         "templates/portal_containers.xml",
         "templates/portal_containers_list.xml",
+        "templates/portal_bulk_actions.xml",  # Portal bulk action JavaScript
         "templates/portal_container_create.xml",
         "templates/portal_container_detail.xml",  # NEW: Container detail with edit/delete
         "templates/portal_container_movements.xml",  # NEW: Movement history timeline

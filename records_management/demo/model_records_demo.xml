@@ -300,7 +300,7 @@
         <record id="demo_paper_bale_001" model="paper.bale.recycling">
             <field name="name">Bale-001-Demo</field>
             <field name="bale_id" ref="demo_bale_001"/>
-            <field name="state">pending</field>
+            <field name="state">submitted</field>
             <field name="collection_date" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d')"/>
         </record>
 
@@ -308,7 +308,7 @@
         <record id="demo_paper_bale_002" model="paper.bale.recycling">
             <field name="name">Bale-002-Demo</field>
             <field name="bale_id" ref="demo_bale_002"/>
-            <field name="state">pending</field>
+            <field name="state">submitted</field>
             <field name="collection_date" eval="(datetime.now() + timedelta(days=45)).strftime('%Y-%m-%d')"/>
         </record>
 
@@ -333,7 +333,7 @@
             <field name="name">Document Destruction Request Template</field>
             <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="request_type">destruction</field>
-            <field name="state">pending</field>
+            <field name="state">submitted</field>
             <field name="description">Template for customer document destruction requests</field>
             <field name="priority">1</field>
         </record>
@@ -342,7 +342,7 @@
             <field name="name">Document Retrieval Request Template</field>
             <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="request_type">retrieval</field>
-            <field name="state">pending</field>
+            <field name="state">submitted</field>
             <field name="description">Template for customer document retrieval requests</field>
             <field name="priority">1</field>
         </record>
@@ -352,7 +352,7 @@
             <field name="name">Destruction Request - XYZ</field>
             <field name="partner_id" ref="demo_customer_xyz_industries"/>
             <field name="request_type">destruction</field>
-            <field name="state">pending</field>
+            <field name="state">submitted</field>
             <field name="description">Bulk destruction request for end-of-life documents</field>
             <field name="priority">2</field>
         </record>
@@ -360,7 +360,7 @@
             <field name="name">Retrieval Request - ABC</field>
             <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="request_type">retrieval</field>
-            <field name="state">pending</field>
+            <field name="state">submitted</field>
             <field name="description">Request retrieval of archived payroll records</field>
             <field name="priority">2</field>
         </record>

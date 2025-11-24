@@ -3367,6 +3367,156 @@ class RecordsManagementController(http.Controller):
                 'total': 0
             }
     
+    @http.route(['/my/containers/bulk_request'], type='json', auth='user', methods=['POST'])
+    def create_bulk_container_request(self, request_type='', container_ids=None, **kw):
+        """
+        Portal endpoint for bulk container requests.
+        Customers can select multiple containers and submit requests for:
+        - Retrieval
+        - Destruction  
+        - Permanent Removal (perm-out)
+        - Access
+        
+        Returns JSON with success status and created request ID.
+        """
+        try:
+            if not container_ids or not isinstance(container_ids, list):
+                return {
+                    'success': False,
+                    'error': 'No containers selected. Please select at least one container.'
+                }
+            
+            if not request_type:
+                return {
+                    'success': False,
+                    'error': 'Request type is required.'
+                }
+            
+            # Get current user's partner
+            partner = request.env.user.partner_id.commercial_partner_id
+            
+            # Validate containers belong to this customer
+            Container = request.env['records.container'].sudo()
+            containers = Container.browse(container_ids)
+            
+            # Security check
+            invalid_containers = containers.filtered(lambda c: c.partner_id.commercial_partner_id != partner)
+            if invalid_containers:
+                return {
+                    'success': False,
+                    'error': 'You do not have permission to request actions on some selected containers.'
+                }
+            
+            # Map request types to portal.request types and descriptions
+            request_type_map = {
+                'retrieval': {
+                    'type': 'retrieval',
+                    'title': 'Container Retrieval Request',
+                    'description': 'Customer requested retrieval of containers from storage.'
+                },
+                'destruction': {
+                    'type': 'destruction',
+                    'title': 'Container Destruction Request',
+                    'description': 'Customer requested secure destruction of containers.\\n\\nCharges will apply:\\n• Removal fee: $15/container\\n• Shredding fee: $25/container'
+                },
+                'permanent_removal': {
+                    'type': 'pickup',  # Use pickup type for perm-out
+                    'title': 'Permanent Removal Request',
+                    'description': 'Customer requested permanent removal of containers (perm-out).\\n\\nCharges will apply:\\n• Removal fee: $15/container'
+                },
+                'access': {
+                    'type': 'other',
+                    'title': 'Container Access Request',
+                    'description': 'Customer requested access to containers for viewing/inspection.'
+                }
+            }
+            
+            if request_type not in request_type_map:
+                return {
+                    'success': False,
+                    'error': f'Invalid request type: {request_type}'
+                }
+            
+            req_config = request_type_map[request_type]
+            
+            # Build container list for description
+            container_list = '\\n'.join('• ' + c.name for c in containers)
+            
+            # Create portal request
+            PortalRequest = request.env['portal.request'].sudo()
+            portal_request = PortalRequest.create({
+                'name': f"{req_config['title']} - {partner.name} ({len(containers)} containers)",
+                'partner_id': partner.id,
+                'request_type': req_config['type'],
+                'state': 'submitted',
+                'description': f"{req_config['description']}\\n\\nContainers:\\n{container_list}",
+                'priority': '2',  # Medium priority
+                'container_ids': [(6, 0, container_ids)],
+            })
+            
+            # Create work order based on request type
+            if request_type == 'retrieval':
+                # Create retrieval work order
+                work_order = request.env['records.retrieval.work.order'].sudo().create({
+                    'name': f"Portal Retrieval - {partner.name} ({len(containers)} containers)",
+                    'partner_id': partner.id,
+                    'user_id': request.env.ref('base.user_admin').id,  # Assign to admin
+                    'state': 'draft',
+                    'delivery_method': 'scan',
+                    'scanned_barcode_ids': [(6, 0, container_ids)],
+                })
+                
+                # Link work order to portal request
+                portal_request.message_post(
+                    body=f'Retrieval work order created: <a href="/web#id={work_order.id}&model=records.retrieval.work.order">{work_order.name}</a>',
+                    subject='Work Order Created'
+                )
+                
+            elif request_type == 'destruction':
+                # Create destruction work order
+                work_order = request.env['container.destruction.work.order'].sudo().create({
+                    'name': f"Portal Destruction - {partner.name} ({len(containers)} containers)",
+                    'partner_id': partner.id,
+                    'user_id': request.env.ref('base.user_admin').id,
+                    'state': 'draft',
+                    'destruction_method': 'shred',
+                    'container_ids': [(6, 0, container_ids)],
+                })
+                
+                # Link work order to portal request
+                portal_request.message_post(
+                    body=f'Destruction work order created: <a href="/web#id={work_order.id}&model=container.destruction.work.order">{work_order.name}</a>',
+                    subject='Work Order Created'
+                )
+            
+            # Send notification to backend team
+            # Get records management group users
+            rm_group = request.env.ref('records_management.group_records_manager', raise_if_not_found=False)
+            if rm_group:
+                portal_request.message_subscribe(partner_ids=rm_group.users.mapped('partner_id').ids)
+            
+            # Post notification message
+            portal_request.message_post(
+                body=f'🔔 New portal request submitted by {partner.name}\\n\\n{len(containers)} container(s) selected',
+                subject=f'New {req_config["title"]}',
+                subtype_xmlid='mail.mt_comment',
+                message_type='notification'
+            )
+            
+            return {
+                'success': True,
+                'message': f'Request submitted successfully! Our team has been notified and will process your request for {len(containers)} container(s).',
+                'request_id': portal_request.id,
+                'container_count': len(containers)
+            }
+            
+        except Exception as e:
+            _logger.error(f"Bulk container request failed: {str(e)}", exc_info=True)
+            return {
+                'success': False,
+                'error': f'An error occurred: {str(e)}'
+            }
+    
     @http.route(['/my/files/search'], type='json', auth='user', methods=['POST'])
     def instant_file_search(self, query='', offset=0, limit=50, **kw):
         """

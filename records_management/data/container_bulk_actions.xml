@@ -127,9 +127,9 @@ if records:
     request = env['portal.request'].create({
         'name': _('Container Access - %s (%s containers)') % (partner.name, len(records)),
         'partner_id': partner.id,
-        'request_type': 'container_access',
-        'state': 'pending',
-        'description': _('Bulk access request for containers:\n%s') % '\n'.join('• ' + c.name for c in records),
+        'request_type': 'other',  # Container access type
+        'state': 'submitted',
+        'description': _('Container Access Request\n\nBulk access request for containers:\n%s') % '\n'.join('• ' + c.name for c in records),
         'container_ids': [(6, 0, records.ids)],
     })
 

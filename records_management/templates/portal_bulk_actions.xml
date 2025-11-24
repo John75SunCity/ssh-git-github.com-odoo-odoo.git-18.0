@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Portal Bulk Actions JavaScript -->
+        <template id="portal_bulk_actions_scripts" name="Portal Bulk Actions Scripts">
+            <script type="text/javascript">
+                // Portal Bulk Actions Handler
+                var PortalBulkActions = {
+                    selectedContainers: new Set(),
+                    
+                    // Initialize bulk selection checkboxes
+                    init: function() {
+                        var self = this;
+                        
+                        // Add "Select All" checkbox to header
+                        if ($('.o_portal_container_list thead').length) {
+                            $('.o_portal_container_list thead tr').prepend(
+                                '<th class="text-center"><input type="checkbox" id="select_all_containers" title="Select All"/></th>'
+                            );
+                        }
+                        
+                        // Add checkboxes to each row
+                        $('.o_portal_container_list tbody tr').each(function() {
+                            var containerId = $(this).data('container-id');
+                            if (containerId) {
+                                $(this).prepend(
+                                    '<td class="text-center"><input type="checkbox" class="container-checkbox" value="' + containerId + '"/></td>'
+                                );
+                            }
+                        });
+                        
+                        // Select All handler
+                        $('#select_all_containers').on('change', function() {
+                            var isChecked = $(this).prop('checked');
+                            $('.container-checkbox').prop('checked', isChecked);
+                            self.updateSelection();
+                        });
+                        
+                        // Individual checkbox handler
+                        $('.container-checkbox').on('change', function() {
+                            self.updateSelection();
+                        });
+                        
+                        // Show bulk action toolbar when items selected
+                        this.updateSelection();
+                    },
+                    
+                    // Update selected containers set
+                    updateSelection: function() {
+                        this.selectedContainers.clear();
+                        $('.container-checkbox:checked').each(function() {
+                            PortalBulkActions.selectedContainers.add(parseInt($(this).val()));
+                        });
+                        
+                        this.updateToolbar();
+                    },
+                    
+                    // Show/hide bulk action toolbar
+                    updateToolbar: function() {
+                        var count = this.selectedContainers.size;
+                        if (count > 0) {
+                            if ($('#bulk_action_toolbar').length === 0) {
+                                this.createToolbar();
+                            }
+                            $('#bulk_action_toolbar .selection-count').text(count);
+                            $('#bulk_action_toolbar').slideDown();
+                        } else {
+                            $('#bulk_action_toolbar').slideUp();
+                        }
+                    },
+                    
+                    // Create bulk action toolbar
+                    createToolbar: function() {
+                        var toolbar = `
+                            <div id="bulk_action_toolbar" class="alert alert-info sticky-top" style="display:none; z-index: 1000;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong><span class="selection-count">0</span> container(s) selected</strong>
+                                    </div>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="PortalBulkActions.requestRetrieval()">
+                                            <i class="fa fa-truck"></i> Request Retrieval
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="PortalBulkActions.requestDestruction()">
+                                            <i class="fa fa-fire"></i> Request Destruction
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-warning" onclick="PortalBulkActions.requestPermanentRemoval()">
+                                            <i class="fa fa-sign-out"></i> Permanent Removal
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-info" onclick="PortalBulkActions.requestAccess()">
+                                            <i class="fa fa-key"></i> Request Access
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="PortalBulkActions.clearSelection()">
+                                            <i class="fa fa-times"></i> Clear
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        $('.o_portal_container_list').before(toolbar);
+                    },
+                    
+                    // Clear selection
+                    clearSelection: function() {
+                        $('.container-checkbox, #select_all_containers').prop('checked', false);
+                        this.updateSelection();
+                    },
+                    
+                    // Submit bulk request
+                    submitRequest: function(requestType, title, confirmMessage) {
+                        if (this.selectedContainers.size === 0) {
+                            alert('Please select at least one container.');
+                            return;
+                        }
+                        
+                        if (!confirm(confirmMessage)) {
+                            return;
+                        }
+                        
+                        var containerIds = Array.from(this.selectedContainers);
+                        
+                        $.ajax({
+                            url: '/my/containers/bulk_request',
+                            method: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'call',
+                                params: {
+                                    request_type: requestType,
+                                    container_ids: containerIds,
+                                    csrf_token: odoo.csrf_token
+                                }
+                            }),
+                            success: function(response) {
+                                if (response.result &amp;&amp; response.result.success) {
+                                    alert(response.result.message);
+                                    window.location.href = '/my/requests/' + response.result.request_id;
+                                } else {
+                                    alert('Error: ' + (response.result ? response.result.error : 'Unknown error'));
+                                }
+                            },
+                            error: function() {
+                                alert('Network error. Please try again.');
+                            }
+                        });
+                    },
+                    
+                    // Request retrieval
+                    requestRetrieval: function() {
+                        this.submitRequest(
+                            'retrieval',
+                            'Request Retrieval',
+                            'Submit retrieval request for ' + this.selectedContainers.size + ' container(s)?\\n\\nThis will create a work order for our team to process.'
+                        );
+                    },
+                    
+                    // Request destruction
+                    requestDestruction: function() {
+                        this.submitRequest(
+                            'destruction',
+                            'Request Destruction',
+                            'Submit destruction request for ' + this.selectedContainers.size + ' container(s)?\\n\\nWARNING: This will permanently destroy the selected containers and their contents.\\n\\nCharges will apply:\\n• Removal fee: $15/container\\n• Shredding fee: $25/container'
+                        );
+                    },
+                    
+                    // Request permanent removal (perm-out)
+                    requestPermanentRemoval: function() {
+                        this.submitRequest(
+                            'permanent_removal',
+                            'Permanent Removal',
+                            'Submit permanent removal request for ' + this.selectedContainers.size + ' container(s)?\\n\\nYou will take these containers back permanently.\\n\\nCharges will apply:\\n• Removal fee: $15/container'
+                        );
+                    },
+                    
+                    // Request access
+                    requestAccess: function() {
+                        this.submitRequest(
+                            'access',
+                            'Request Access',
+                            'Submit access request for ' + this.selectedContainers.size + ' container(s)?\\n\\nThis will create a request for our team to prepare these containers for your access.'
+                        );
+                    }
+                };
+                
+                // Initialize when document ready
+                $(document).ready(function() {
+                    if ($('.o_portal_container_list').length) {
+                        PortalBulkActions.init();
+                    }
+                });
+            </script>
+        </template>
+        
+        <!-- Include bulk actions script in portal pages -->
+        <template id="portal_my_containers_bulk" inherit_id="records_management.portal_my_containers" name="Add Bulk Actions to Portal Containers">
+            <xpath expr="//t[@t-call='portal.portal_layout']" position="inside">
+                <t t-call="records_management.portal_bulk_actions_scripts"/>
+            </xpath>
+        </template>
+        
+    </data>
+</odoo>
