@@ -12,6 +12,8 @@
     # Load order: security first, then data, then views/actions, menus last
     "data": [
         "security/ir.model.access.csv",
+        "data/fsm_project_data.xml",
+        "data/fsm_worksheet_templates.xml",
         "data/fsm_model_external_ids_data.xml",
         "data/fleet_fsm_action_bridge.xml",
         "views/enhanced_fsm_integration_views.xml",
@@ -20,6 +22,7 @@
         "views/fsm_reschedule_wizard_views.xml",
         "views/fsm_task_service_line_views.xml",
         "views/fsm_task_views.xml",
+        "views/fsm_worksheet_views.xml",
         "views/mobile_fsm_integration_views.xml",
         # Menus loaded last to ensure actions above are available
         "views/fleet_fsm_integration_menus.xml",

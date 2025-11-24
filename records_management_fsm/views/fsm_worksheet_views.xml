@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================ -->
+        <!-- FSM WORKSHEET INSTANCE VIEWS -->
+        <!-- ============================================ -->
+
+        <!-- Tree View -->
+        <record id="fsm_worksheet_instance_view_tree" model="ir.ui.view">
+            <field name="name">fsm.worksheet.instance.view.tree</field>
+            <field name="model">fsm.worksheet.instance</field>
+            <field name="arch" type="xml">
+                <tree string="FSM Worksheets" decoration-success="is_complete==True" decoration-warning="completion_percentage&lt;50" decoration-info="completion_percentage&gt;=50 and not is_complete">
+                    <field name="name"/>
+                    <field name="task_id"/>
+                    <field name="partner_id"/>
+                    <field name="template_id"/>
+                    <field name="completion_percentage" widget="progressbar"/>
+                    <field name="is_complete" invisible="1"/>
+                    <field name="customer_signature_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="fsm_worksheet_instance_view_form" model="ir.ui.view">
+            <field name="name">fsm.worksheet.instance.view.form</field>
+            <field name="model">fsm.worksheet.instance</field>
+            <field name="arch" type="xml">
+                <form string="FSM Worksheet">
+                    <header>
+                        <field name="completion_percentage" widget="percentpie"/>
+                        <field name="is_complete" invisible="1"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="task_id" readonly="1"/>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="template_id" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="weight_recorded"/>
+                                <field name="customer_signature_date" readonly="1"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Checklist" name="checklist">
+                                <field name="checklist_ids" mode="tree">
+                                    <tree editable="bottom" decoration-success="is_complete==True">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name"/>
+                                        <field name="description"/>
+                                        <field name="field_type"/>
+                                        <field name="is_mandatory"/>
+                                        <field name="is_complete" widget="boolean_toggle"/>
+                                        <field name="text_value" attrs="{'invisible': [('field_type', '!=', 'text')], 'required': [('field_type', '=', 'text'), ('is_mandatory', '=', True)]}"/>
+                                        <field name="number_value" attrs="{'invisible': [('field_type', '!=', 'number')], 'required': [('field_type', '=', 'number'), ('is_mandatory', '=', True)]}"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            
+                            <page string="Photos" name="photos">
+                                <field name="photo_ids" widget="many2many_binary"/>
+                            </page>
+                            
+                            <page string="Signatures" name="signatures">
+                                <group>
+                                    <field name="customer_signature" widget="image" options="{'size': [400, 200]}"/>
+                                    <field name="customer_signature_date"/>
+                                </group>
+                            </page>
+                            
+                            <page string="Technician Notes" name="notes">
+                                <field name="technician_notes" placeholder="Additional notes or observations..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="fsm_worksheet_instance_view_search" model="ir.ui.view">
+            <field name="name">fsm.worksheet.instance.view.search</field>
+            <field name="model">fsm.worksheet.instance</field>
+            <field name="arch" type="xml">
+                <search string="Search Worksheets">
+                    <field name="name"/>
+                    <field name="task_id"/>
+                    <field name="partner_id"/>
+                    <field name="template_id"/>
+                    
+                    <filter string="In Progress" name="in_progress" domain="[('is_complete', '=', False)]"/>
+                    <filter string="Completed" name="completed" domain="[('is_complete', '=', True)]"/>
+                    <filter string="Signed" name="signed" domain="[('customer_signature_date', '!=', False)]"/>
+                    
+                    <separator/>
+                    <filter string="Today" name="today" domain="[('create_date', '&gt;=', datetime.datetime.now().replace(hour=0,minute=0,second=0))]"/>
+                    <filter string="This Week" name="this_week" domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    
+                    <group expand="0" string="Group By">
+                        <filter string="FSM Task" name="group_task" context="{'group_by': 'task_id'}"/>
+                        <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Template" name="group_template" context="{'group_by': 'template_id'}"/>
+                        <filter string="Completion Status" name="group_status" context="{'group_by': 'is_complete'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Kanban View -->
+        <record id="fsm_worksheet_instance_view_kanban" model="ir.ui.view">
+            <field name="name">fsm.worksheet.instance.view.kanban</field>
+            <field name="model">fsm.worksheet.instance</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="task_id"/>
+                    <field name="partner_id"/>
+                    <field name="completion_percentage"/>
+                    <field name="is_complete"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                    </div>
+                                    <span class="float-right badge badge-pill" t-att-class="record.is_complete.raw_value ? 'badge-success' : 'badge-warning'">
+                                        <t t-if="record.is_complete.raw_value">✓ Complete</t>
+                                        <t t-else=""><field name="completion_percentage"/>%</t>
+                                    </span>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="task_id"/>
+                                    <br/>
+                                    <field name="partner_id"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Actions -->
+        <record id="action_fsm_worksheet_instance" model="ir.actions.act_window">
+            <field name="name">FSM Worksheets</field>
+            <field name="res_model">fsm.worksheet.instance</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="context">{'search_default_in_progress': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-clipboard-list"/> No FSM worksheets yet!
+                </p>
+                <p>
+                    Worksheets are automatically created when FSM tasks are generated from work orders.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_fsm_worksheet_instance_completed" model="ir.actions.act_window">
+            <field name="name">Completed Worksheets</field>
+            <field name="res_model">fsm.worksheet.instance</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="context">{'search_default_completed': 1}</field>
+            <field name="domain">[('is_complete', '=', True)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-check-circle"/> No completed worksheets yet!
+                </p>
+            </field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- FSM WORKSHEET TEMPLATE VIEWS -->
+        <!-- ============================================ -->
+
+        <!-- Tree View -->
+        <record id="fsm_worksheet_template_view_tree" model="ir.ui.view">
+            <field name="name">fsm.worksheet.template.view.tree</field>
+            <field name="model">fsm.worksheet.template</field>
+            <field name="arch" type="xml">
+                <tree string="Worksheet Templates">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="service_type"/>
+                    <field name="requires_signature"/>
+                    <field name="requires_photos"/>
+                    <field name="requires_weight"/>
+                    <field name="generates_certificate"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="fsm_worksheet_template_view_form" model="ir.ui.view">
+            <field name="name">fsm.worksheet.template.view.form</field>
+            <field name="model">fsm.worksheet.template</field>
+            <field name="arch" type="xml">
+                <form string="Worksheet Template">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Template Name..."/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="service_type"/>
+                                <field name="sequence"/>
+                            </group>
+                            <group>
+                                <field name="requires_signature"/>
+                                <field name="requires_photos"/>
+                                <field name="requires_weight"/>
+                                <field name="generates_certificate"/>
+                            </group>
+                        </group>
+                        
+                        <field name="description" placeholder="Instructions for this worksheet..."/>
+                        
+                        <notebook>
+                            <page string="Checklist Items" name="checklist_items">
+                                <field name="checklist_line_ids">
+                                    <tree editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name"/>
+                                        <field name="description"/>
+                                        <field name="field_type"/>
+                                        <field name="is_mandatory"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_fsm_worksheet_template" model="ir.actions.act_window">
+            <field name="name">Worksheet Templates</field>
+            <field name="res_model">fsm.worksheet.template</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-file-text-o"/> Create worksheet templates!
+                </p>
+                <p>
+                    Worksheet templates define the checklists technicians follow for each service type.
+                </p>
+            </field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- MENUS -->
+        <!-- ============================================ -->
+
+        <!-- Main FSM Worksheets Menu -->
+        <menuitem id="menu_fsm_worksheets_root" 
+                  name="FSM Worksheets" 
+                  parent="records_management.menu_records_operations" 
+                  sequence="80"
+                  groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
+
+        <menuitem id="menu_fsm_worksheet_instance" 
+                  name="Active Worksheets" 
+                  parent="menu_fsm_worksheets_root" 
+                  action="action_fsm_worksheet_instance" 
+                  sequence="10"/>
+
+        <menuitem id="menu_fsm_worksheet_instance_completed" 
+                  name="Completed Worksheets" 
+                  parent="menu_fsm_worksheets_root" 
+                  action="action_fsm_worksheet_instance_completed" 
+                  sequence="20"/>
+
+        <menuitem id="menu_fsm_worksheet_template" 
+                  name="Worksheet Templates" 
+                  parent="records_management.menu_records_configuration" 
+                  action="action_fsm_worksheet_template" 
+                  sequence="95"
+                  groups="records_management.group_records_manager,records_management.group_records_admin"/>
+
+    </data>
+</odoo>

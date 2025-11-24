@@ -24,8 +24,8 @@ class FSMWorksheetTemplate(models.Model):
 
     description = fields.Text(string='Instructions')
     checklist_line_ids = fields.One2many(
-        'fsm.worksheet.checklist.line',
-        'template_id',
+        comodel_name='fsm.worksheet.checklist.line',
+        inverse_name='template_id',
         string='Checklist Items'
     )
     requires_signature = fields.Boolean(string='Requires Customer Signature', default=True)
@@ -40,7 +40,12 @@ class FSMWorksheetChecklistLine(models.Model):
     _description = 'FSM Worksheet Checklist Line'
     _order = 'sequence, id'
 
-    template_id = fields.Many2one('fsm.worksheet.template', string='Template', required=True, ondelete='cascade')
+    template_id = fields.Many2one(
+        comodel_name='fsm.worksheet.template',
+        string='Template',
+        required=True,
+        ondelete='cascade'
+    )
     sequence = fields.Integer(string='Sequence', default=10)
     name = fields.Char(string='Checklist Item', required=True)
     description = fields.Text(string='Instructions')
@@ -141,7 +146,12 @@ class FSMWorksheetChecklistItem(models.Model):
     _description = 'FSM Worksheet Checklist Item'
     _order = 'sequence, id'
 
-    worksheet_id = fields.Many2one('fsm.worksheet.instance', string='Worksheet', required=True, ondelete='cascade')
+    worksheet_id = fields.Many2one(
+        comodel_name='fsm.worksheet.instance',
+        string='Worksheet',
+        required=True,
+        ondelete='cascade'
+    )
     sequence = fields.Integer(string='Sequence', default=10)
     name = fields.Char(string='Item', required=True)
     description = fields.Text(string='Instructions')
@@ -153,9 +163,12 @@ class FSMWorksheetChecklistItem(models.Model):
         ('photo', 'Photo'),
         ('signature', 'Signature'),
     ], string='Field Type', default='checkbox', required=True)
-
+    
     is_complete = fields.Boolean(string='Complete', default=False)
     text_value = fields.Text(string='Text Value')
     number_value = fields.Float(string='Number Value')
-    photo_id = fields.Many2one('ir.attachment', string='Photo')
+    photo_id = fields.Many2one(
+        comodel_name='ir.attachment',
+        string='Photo'
+    )
     signature_data = fields.Binary(string='Signature')

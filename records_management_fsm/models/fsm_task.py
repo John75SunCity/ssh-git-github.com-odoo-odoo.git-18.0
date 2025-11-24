@@ -64,8 +64,8 @@ class ProjectTaskFSMExtension(models.Model):
 
     # Worksheet integration
     worksheet_ids = fields.One2many(
-        'fsm.worksheet.instance',
-        'task_id',
+        comodel_name='fsm.worksheet.instance',
+        inverse_name='task_id',
         string="Worksheets"
     )
     worksheet_complete = fields.Boolean(
@@ -76,23 +76,23 @@ class ProjectTaskFSMExtension(models.Model):
 
     # Work order links
     retrieval_work_order_id = fields.Many2one(
-        'records.retrieval.work.order',
+        comodel_name='records.retrieval.work.order',
         string="Retrieval Work Order"
     )
     destruction_work_order_id = fields.Many2one(
-        'container.destruction.work.order',
+        comodel_name='container.destruction.work.order',
         string="Destruction Work Order"
     )
     pickup_request_id = fields.Many2one(
-        'pickup.request',
+        comodel_name='pickup.request',
         string="Pickup Request"
     )
     shredding_work_order_id = fields.Many2one(
-        'work.order.shredding',
+        comodel_name='work.order.shredding',
         string="Shredding Work Order"
     )
     portal_request_id = fields.Many2one(
-        'portal.request',
+        comodel_name='portal.request',
         string="Portal Request"
     )
 

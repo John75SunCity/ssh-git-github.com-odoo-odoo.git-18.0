@@ -8,6 +8,7 @@ from . import fsm_order
 from . import fsm_reschedule_wizard
 from . import fsm_task
 from . import fsm_task_service_line
+from . import fsm_worksheet_template
 from . import mobile_fsm_integration
 from . import shredding_service
 from . import setup

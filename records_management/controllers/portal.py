@@ -3367,6 +3367,138 @@ class RecordsManagementController(http.Controller):
                 'total': 0
             }
     
+    def _create_fsm_task_for_work_order(self, work_order, service_type, partner, containers):
+        """
+        Helper method to create FSM task and calendar event for work orders.
+        
+        Args:
+            work_order: The work order record (retrieval, destruction, etc.)
+            service_type: Type of service ('retrieval', 'destruction', 'shredding_onsite', etc.)
+            partner: Customer partner record
+            containers: Recordset of containers involved
+            
+        Returns:
+            project.task: Created FSM task
+        """
+        # Get or create FSM project
+        fsm_project = request.env.ref('records_management_fsm.project_field_service', raise_if_not_found=False)
+        if not fsm_project:
+            # Create default FSM project
+            fsm_project = request.env['project.project'].sudo().create({
+                'name': 'Field Service',
+                'is_fsm': True,
+                'allow_timesheets': True,
+            })
+        
+        # Map service types to worksheet templates
+        template_map = {
+            'retrieval': 'records_management_fsm.worksheet_template_retrieval',
+            'destruction': 'records_management_fsm.worksheet_template_destruction',
+            'shredding_onsite': 'records_management_fsm.worksheet_template_shredding_onsite',
+            'shredding_offsite': 'records_management_fsm.worksheet_template_shredding_offsite',
+            'access': 'records_management_fsm.worksheet_template_access',
+            'pickup': 'records_management_fsm.worksheet_template_pickup',
+        }
+        
+        # Service type display names
+        service_names = {
+            'retrieval': 'Container Retrieval',
+            'destruction': 'Container Destruction',
+            'shredding_onsite': 'On-Site Shredding',
+            'shredding_offsite': 'Off-Site Shredding',
+            'access': 'Container Access',
+            'pickup': 'Container Pickup',
+        }
+        
+        # Calculate scheduled date (next business day)
+        from datetime import datetime, timedelta
+        scheduled_date = datetime.now()
+        # Skip to next business day if weekend
+        while scheduled_date.weekday() >= 5:  # 5=Saturday, 6=Sunday
+            scheduled_date += timedelta(days=1)
+        scheduled_date += timedelta(days=1)  # Next business day
+        
+        # Create FSM task
+        task_vals = {
+            'name': f"{service_names.get(service_type, 'Service')}: {partner.name}",
+            'project_id': fsm_project.id,
+            'partner_id': partner.id,
+            'date_deadline': scheduled_date.date(),
+            'planned_date_begin': scheduled_date,
+            'planned_date_end': scheduled_date + timedelta(hours=2),
+            'description': f"Portal request for {len(containers)} container(s)\n\nContainers:\n" + 
+                          '\n'.join(f"• {c.name}" for c in containers[:10]) +
+                          (f"\n... and {len(containers) - 10} more" if len(containers) > 10 else ""),
+            'container_ids': [(6, 0, containers.ids)],
+        }
+        
+        # Link to appropriate work order
+        if hasattr(work_order, '_name'):
+            if work_order._name == 'records.retrieval.work.order':
+                task_vals['retrieval_work_order_id'] = work_order.id
+            elif work_order._name == 'container.destruction.work.order':
+                task_vals['destruction_work_order_id'] = work_order.id
+                task_vals['destruction_type'] = work_order.destruction_method if hasattr(work_order, 'destruction_method') else 'off_site'
+            elif work_order._name == 'work.order.shredding':
+                task_vals['shredding_work_order_id'] = work_order.id
+            elif work_order._name == 'pickup.request':
+                task_vals['pickup_request_id'] = work_order.id
+        
+        # Create the task
+        fsm_task = request.env['project.task'].sudo().create(task_vals)
+        
+        # Link FSM task back to work order
+        if hasattr(work_order, 'fsm_task_id'):
+            work_order.sudo().write({'fsm_task_id': fsm_task.id})
+        
+        # Create worksheet from template
+        template_xml_id = template_map.get(service_type)
+        if template_xml_id:
+            template = request.env.ref(template_xml_id, raise_if_not_found=False)
+            if template:
+                request.env['fsm.worksheet.instance'].sudo().create({
+                    'task_id': fsm_task.id,
+                    'template_id': template.id,
+                })
+        
+        # Create calendar event for internal team
+        calendar_vals = {
+            'name': f"{service_names.get(service_type, 'Service')} - {partner.name}",
+            'start': scheduled_date,
+            'stop': scheduled_date + timedelta(hours=2),
+            'partner_ids': [(4, partner.id)],
+            'description': f"FSM Task: {fsm_task.name}\n\n{len(containers)} container(s) to process",
+            'location': partner.street or partner.city or '',
+            'alarm_ids': [(0, 0, {
+                'name': 'Notification',
+                'alarm_type': 'notification',
+                'interval': 'hours',
+                'duration': 1,
+            })],
+        }
+        
+        # Add assigned user if available
+        if hasattr(work_order, 'user_id') and work_order.user_id:
+            calendar_vals['user_id'] = work_order.user_id.id
+            calendar_vals['partner_ids'].append((4, work_order.user_id.partner_id.id))
+        
+        calendar_event = request.env['calendar.event'].sudo().create(calendar_vals)
+        
+        # Link calendar event to FSM task (if FSM supports it)
+        if hasattr(fsm_task, 'calendar_event_id'):
+            fsm_task.sudo().write({'calendar_event_id': calendar_event.id})
+        
+        # Post message to work order about FSM task creation
+        if hasattr(work_order, 'message_post'):
+            work_order.sudo().message_post(
+                body=f'✅ FSM Task created: <a href="/web#id={fsm_task.id}&model=project.task">{fsm_task.name}</a><br/>'
+                     f'📅 Scheduled: {scheduled_date.strftime("%B %d, %Y at %I:%M %p")}<br/>'
+                     f'📋 Calendar event created for team',
+                subject='FSM Task & Calendar Event Created'
+            )
+        
+        return fsm_task
+    
     @http.route(['/my/containers/bulk_request'], type='json', auth='user', methods=['POST'])
     def create_bulk_container_request(self, request_type='', container_ids=None, **kw):
         """

@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ============================================ -->
+        <!-- CONTAINER RETRIEVAL WORKSHEET TEMPLATE -->
+        <!-- ============================================ -->
+        <record id="worksheet_template_retrieval" model="fsm.worksheet.template">
+            <field name="name">Container Retrieval Checklist</field>
+            <field name="service_type">retrieval</field>
+            <field name="sequence">10</field>
+            <field name="description">Standard checklist for container retrieval operations</field>
+            <field name="requires_signature" eval="True"/>
+            <field name="requires_photos" eval="False"/>
+            <field name="requires_weight" eval="False"/>
+            <field name="generates_certificate" eval="False"/>
+        </record>
+
+        <record id="worksheet_line_retrieval_1" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_retrieval"/>
+            <field name="sequence">10</field>
+            <field name="name">Verify customer identity and authorization</field>
+            <field name="description">Check ID and retrieval authorization</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_retrieval_2" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_retrieval"/>
+            <field name="sequence">20</field>
+            <field name="name">Locate containers in storage facility</field>
+            <field name="description">Use barcode scanner or location system</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_retrieval_3" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_retrieval"/>
+            <field name="sequence">30</field>
+            <field name="name">Scan all container barcodes</field>
+            <field name="description">Verify each container matches retrieval list</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_retrieval_4" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_retrieval"/>
+            <field name="sequence">40</field>
+            <field name="name">Inspect container condition</field>
+            <field name="description">Note any damage, tampering, or security concerns</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">text</field>
+        </record>
+
+        <record id="worksheet_line_retrieval_5" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_retrieval"/>
+            <field name="sequence">50</field>
+            <field name="name">Load containers securely into vehicle</field>
+            <field name="description">Ensure proper handling and security during transport</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_retrieval_6" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_retrieval"/>
+            <field name="sequence">60</field>
+            <field name="name">Customer signature and delivery confirmation</field>
+            <field name="description">Customer acknowledges receipt of containers</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">signature</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- CONTAINER DESTRUCTION WORKSHEET TEMPLATE -->
+        <!-- ============================================ -->
+        <record id="worksheet_template_destruction" model="fsm.worksheet.template">
+            <field name="name">Container Destruction Checklist</field>
+            <field name="service_type">destruction</field>
+            <field name="sequence">20</field>
+            <field name="description">NAID AAA certified destruction process checklist</field>
+            <field name="requires_signature" eval="True"/>
+            <field name="requires_photos" eval="True"/>
+            <field name="requires_weight" eval="True"/>
+            <field name="generates_certificate" eval="True"/>
+        </record>
+
+        <record id="worksheet_line_destruction_1" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_destruction"/>
+            <field name="sequence">10</field>
+            <field name="name">Verify destruction authorization</field>
+            <field name="description">Confirm customer authorization for destruction</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_destruction_2" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_destruction"/>
+            <field name="sequence">20</field>
+            <field name="name">Photograph containers before destruction</field>
+            <field name="description">Take photos of sealed containers for audit trail</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">photo</field>
+        </record>
+
+        <record id="worksheet_line_destruction_3" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_destruction"/>
+            <field name="sequence">30</field>
+            <field name="name">Weigh containers/materials before destruction</field>
+            <field name="description">Record weight for certificate and billing</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">number</field>
+        </record>
+
+        <record id="worksheet_line_destruction_4" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_destruction"/>
+            <field name="sequence">40</field>
+            <field name="name">Verify shredder operation and security</field>
+            <field name="description">Ensure NAID AAA compliance and proper operation</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_destruction_5" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_destruction"/>
+            <field name="sequence">50</field>
+            <field name="name">Complete destruction process</field>
+            <field name="description">Materials shredded to NAID AAA particle size</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_destruction_6" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_destruction"/>
+            <field name="sequence">60</field>
+            <field name="name">Photograph shredded materials</field>
+            <field name="description">Document destruction completion</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">photo</field>
+        </record>
+
+        <record id="worksheet_line_destruction_7" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_destruction"/>
+            <field name="sequence">70</field>
+            <field name="name">Customer witness signature (if present)</field>
+            <field name="description">Optional customer witness signature</field>
+            <field name="is_mandatory" eval="False"/>
+            <field name="field_type">signature</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- ON-SITE SHREDDING WORKSHEET TEMPLATE -->
+        <!-- ============================================ -->
+        <record id="worksheet_template_shredding_onsite" model="fsm.worksheet.template">
+            <field name="name">On-Site Shredding Service Checklist</field>
+            <field name="service_type">shredding_onsite</field>
+            <field name="sequence">30</field>
+            <field name="description">Mobile shredding service at customer location</field>
+            <field name="requires_signature" eval="True"/>
+            <field name="requires_photos" eval="True"/>
+            <field name="requires_weight" eval="True"/>
+            <field name="generates_certificate" eval="True"/>
+        </record>
+
+        <record id="worksheet_line_shredding_onsite_1" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_shredding_onsite"/>
+            <field name="sequence">10</field>
+            <field name="name">Check in with customer contact</field>
+            <field name="description">Verify service appointment and location</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_shredding_onsite_2" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_shredding_onsite"/>
+            <field name="sequence">20</field>
+            <field name="name">Position mobile shredder safely</field>
+            <field name="description">Ensure safe positioning and operation area</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_shredding_onsite_3" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_shredding_onsite"/>
+            <field name="sequence">30</field>
+            <field name="name">Weigh materials before shredding</field>
+            <field name="description">Record weight for certificate and billing</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">number</field>
+        </record>
+
+        <record id="worksheet_line_shredding_onsite_4" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_shredding_onsite"/>
+            <field name="sequence">40</field>
+            <field name="name">Customer witnesses destruction</field>
+            <field name="description">Customer observes shredding process</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_shredding_onsite_5" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_shredding_onsite"/>
+            <field name="sequence">50</field>
+            <field name="name">Complete shredding operation</field>
+            <field name="description">All materials shredded to specification</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_shredding_onsite_6" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_shredding_onsite"/>
+            <field name="sequence">60</field>
+            <field name="name">Customer signature</field>
+            <field name="description">Customer confirms completion of service</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">signature</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- OFF-SITE SHREDDING WORKSHEET TEMPLATE -->
+        <!-- ============================================ -->
+        <record id="worksheet_template_shredding_offsite" model="fsm.worksheet.template">
+            <field name="name">Off-Site Shredding Service Checklist</field>
+            <field name="service_type">shredding_offsite</field>
+            <field name="sequence">40</field>
+            <field name="description">Pickup and off-site destruction service</field>
+            <field name="requires_signature" eval="True"/>
+            <field name="requires_photos" eval="True"/>
+            <field name="requires_weight" eval="True"/>
+            <field name="generates_certificate" eval="True"/>
+        </record>
+
+        <record id="worksheet_line_shredding_offsite_1" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_shredding_offsite"/>
+            <field name="sequence">10</field>
+            <field name="name">Collect materials from customer</field>
+            <field name="description">Verify quantity and container integrity</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_shredding_offsite_2" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_shredding_offsite"/>
+            <field name="sequence">20</field>
+            <field name="name">Customer pickup signature</field>
+            <field name="description">Customer acknowledges material transfer</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">signature</field>
+        </record>
+
+        <record id="worksheet_line_shredding_offsite_3" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_shredding_offsite"/>
+            <field name="sequence">30</field>
+            <field name="name">Transport to secure facility</field>
+            <field name="description">Maintain chain of custody during transport</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_shredding_offsite_4" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_shredding_offsite"/>
+            <field name="sequence">40</field>
+            <field name="name">Weigh at facility</field>
+            <field name="description">Record certified weight</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">number</field>
+        </record>
+
+        <record id="worksheet_line_shredding_offsite_5" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_shredding_offsite"/>
+            <field name="sequence">50</field>
+            <field name="name">Complete destruction process</field>
+            <field name="description">Materials destroyed to NAID AAA standards</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- CONTAINER PICKUP WORKSHEET TEMPLATE -->
+        <!-- ============================================ -->
+        <record id="worksheet_template_pickup" model="fsm.worksheet.template">
+            <field name="name">Container Pickup/Delivery Checklist</field>
+            <field name="service_type">pickup</field>
+            <field name="sequence">50</field>
+            <field name="description">New container delivery and setup</field>
+            <field name="requires_signature" eval="True"/>
+            <field name="requires_photos" eval="False"/>
+            <field name="requires_weight" eval="False"/>
+            <field name="generates_certificate" eval="False"/>
+        </record>
+
+        <record id="worksheet_line_pickup_1" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_pickup"/>
+            <field name="sequence">10</field>
+            <field name="name">Verify delivery address and contact</field>
+            <field name="description">Confirm location and customer contact</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_pickup_2" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_pickup"/>
+            <field name="sequence">20</field>
+            <field name="name">Inspect container condition</field>
+            <field name="description">Verify container is clean and undamaged</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_pickup_3" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_pickup"/>
+            <field name="sequence">30</field>
+            <field name="name">Apply barcode labels</field>
+            <field name="description">Scan and affix barcode labels to container</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_pickup_4" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_pickup"/>
+            <field name="sequence">40</field>
+            <field name="name">Position container per customer instructions</field>
+            <field name="description">Place container in requested location</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_pickup_5" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_pickup"/>
+            <field name="sequence">50</field>
+            <field name="name">Customer signature</field>
+            <field name="description">Customer acknowledges delivery and setup</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">signature</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- CONTAINER ACCESS WORKSHEET TEMPLATE -->
+        <!-- ============================================ -->
+        <record id="worksheet_template_access" model="fsm.worksheet.template">
+            <field name="name">Container Access Request Checklist</field>
+            <field name="service_type">access</field>
+            <field name="sequence">60</field>
+            <field name="description">Customer access to containers for viewing/inspection</field>
+            <field name="requires_signature" eval="True"/>
+            <field name="requires_photos" eval="False"/>
+            <field name="requires_weight" eval="False"/>
+            <field name="generates_certificate" eval="False"/>
+        </record>
+
+        <record id="worksheet_line_access_1" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_access"/>
+            <field name="sequence">10</field>
+            <field name="name">Verify customer identity and authorization</field>
+            <field name="description">Check ID and access authorization</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_access_2" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_access"/>
+            <field name="sequence">20</field>
+            <field name="name">Escort customer to container location</field>
+            <field name="description">Maintain security and supervision</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_access_3" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_access"/>
+            <field name="sequence">30</field>
+            <field name="name">Access time/duration</field>
+            <field name="description">Record time customer accessed containers</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">text</field>
+        </record>
+
+        <record id="worksheet_line_access_4" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_access"/>
+            <field name="sequence">40</field>
+            <field name="name">Verify container security after access</field>
+            <field name="description">Ensure containers are properly secured</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_access_5" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_access"/>
+            <field name="sequence">50</field>
+            <field name="name">Customer signature</field>
+            <field name="description">Customer acknowledges completion of access</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">signature</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- MEDIA DESTRUCTION WORKSHEET TEMPLATE -->
+        <!-- ============================================ -->
+        <record id="worksheet_template_media_destruction" model="fsm.worksheet.template">
+            <field name="name">Media Destruction Checklist</field>
+            <field name="service_type">media_destruction</field>
+            <field name="sequence">70</field>
+            <field name="description">Specialized media and electronic destruction</field>
+            <field name="requires_signature" eval="True"/>
+            <field name="requires_photos" eval="True"/>
+            <field name="requires_weight" eval="True"/>
+            <field name="generates_certificate" eval="True"/>
+        </record>
+
+        <record id="worksheet_line_media_1" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_media_destruction"/>
+            <field name="sequence">10</field>
+            <field name="name">Inventory and catalog media items</field>
+            <field name="description">Document all items for destruction</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">text</field>
+        </record>
+
+        <record id="worksheet_line_media_2" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_media_destruction"/>
+            <field name="sequence">20</field>
+            <field name="name">Photograph items before destruction</field>
+            <field name="description">Visual audit trail</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">photo</field>
+        </record>
+
+        <record id="worksheet_line_media_3" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_media_destruction"/>
+            <field name="sequence">30</field>
+            <field name="name">Physical destruction of media</field>
+            <field name="description">Shred, degauss, or physically destroy as appropriate</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_media_4" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_media_destruction"/>
+            <field name="sequence">40</field>
+            <field name="name">Photograph destroyed media</field>
+            <field name="description">Proof of destruction</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">photo</field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- HARD DRIVE DESTRUCTION WORKSHEET -->
+        <!-- ============================================ -->
+        <record id="worksheet_template_hard_drive" model="fsm.worksheet.template">
+            <field name="name">Hard Drive Destruction Checklist</field>
+            <field name="service_type">hard_drive</field>
+            <field name="sequence">80</field>
+            <field name="description">Secure hard drive destruction process</field>
+            <field name="requires_signature" eval="True"/>
+            <field name="requires_photos" eval="True"/>
+            <field name="requires_weight" eval="False"/>
+            <field name="generates_certificate" eval="True"/>
+        </record>
+
+        <record id="worksheet_line_hard_drive_1" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_hard_drive"/>
+            <field name="sequence">10</field>
+            <field name="name">Catalog hard drive serial numbers</field>
+            <field name="description">Record all drive identifiers</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">text</field>
+        </record>
+
+        <record id="worksheet_line_hard_drive_2" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_hard_drive"/>
+            <field name="sequence">20</field>
+            <field name="name">Photograph drives before destruction</field>
+            <field name="description">Visual record of drives</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">photo</field>
+        </record>
+
+        <record id="worksheet_line_hard_drive_3" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_hard_drive"/>
+            <field name="sequence">30</field>
+            <field name="name">Physical destruction - crushing/shredding</field>
+            <field name="description">Destroy platters beyond recovery</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">checkbox</field>
+        </record>
+
+        <record id="worksheet_line_hard_drive_4" model="fsm.worksheet.checklist.line">
+            <field name="template_id" ref="worksheet_template_hard_drive"/>
+            <field name="sequence">40</field>
+            <field name="name">Photograph destroyed drives</field>
+            <field name="description">Proof of complete destruction</field>
+            <field name="is_mandatory" eval="True"/>
+            <field name="field_type">photo</field>
+        </record>
+
+    </data>
+</odoo>
