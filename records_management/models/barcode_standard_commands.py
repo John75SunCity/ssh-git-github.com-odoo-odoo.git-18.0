@@ -312,16 +312,18 @@ class RecordsContainerBarcodeCommands(models.Model):
             'user_id': self.env.user.id,
         })
         
-            # Log the operation
-            self.env['naid.audit.log'].sudo().create({
-                'name': _('Retrieval Request: %s') % retrieval.name,
-                'container_id': self.id,
-                'action_type': 'container_move_requested',  # Required Selection field
-                'action': 'barcode_return',  # Optional legacy field
-                'description': _('Retrieval request created via barcode command: %s') % retrieval.name,
-                'user_id': self.env.user.id,
-                'timestamp': fields.Datetime.now(),
-            })        self.write({
+        # Log the operation
+        self.env['naid.audit.log'].sudo().create({
+            'name': _('Retrieval Request: %s') % retrieval.name,
+            'container_id': self.id,
+            'action_type': 'container_move_requested',  # Required Selection field
+            'action': 'barcode_return',  # Optional legacy field
+            'description': _('Retrieval request created via barcode command: %s') % retrieval.name,
+            'user_id': self.env.user.id,
+            'timestamp': fields.Datetime.now(),
+        })
+        
+        self.write({
             'last_barcode_operation': 'Retrieval Requested',
             'last_barcode_operation_date': fields.Datetime.now(),
         })
