@@ -461,10 +461,16 @@ class RecordsContainer(models.Model):
         for record in records:
             if record.state not in ('draft',) and not record.quant_id:
                 record._create_stock_quant()
+        
+        # Update location container counts
+        records._update_location_counts()
 
         return records
 
     def write(self, vals):
+        # Track old locations before write
+        old_locations = self.mapped('location_id')
+        
         if any(key in vals for key in ["location_id", "state"]) and "last_access_date" not in vals:
             vals["last_access_date"] = fields.Date.today()
         # Prevent changing temp_barcode after physical barcode assigned unless superuser context flag
@@ -478,6 +484,15 @@ class RecordsContainer(models.Model):
             for record in self:
                 if record.state not in ('draft',) and not record.quant_id:
                     record._create_stock_quant()
+        
+        # Update location counts if location changed
+        if 'location_id' in vals:
+            new_locations = self.mapped('location_id')
+            affected_locations = old_locations | new_locations
+            if affected_locations:
+                affected_locations._compute_records_container_count()
+        
+        return result
 
         # ✅ PHASE 1 ENHANCEMENT: Real-time location synchronization
         # When location_id changes, create movement record and sync with quant
@@ -502,12 +517,22 @@ class RecordsContainer(models.Model):
         return result
 
     def unlink(self):
+        # Track locations before deletion
+        locations = self.mapped('location_id')
+        
         for record in self:
             if record.state not in ("draft", "destroyed"):
                 raise UserError(_("You can only delete containers that are in 'Draft' or 'Destroyed' state."))
             if record.document_ids:
                 raise UserError(_("Cannot delete a container that has documents linked to it."))
-        return super().unlink()
+        
+        result = super().unlink()
+        
+        # Update location counts after deletion
+        if locations:
+            locations._compute_records_container_count()
+        
+        return result
 
     # ============================================================================
     # DEFAULT METHODS
@@ -1964,3 +1989,12 @@ class RecordsContainer(models.Model):
             "</list>"
         )
         return arch
+    
+    # =========================================================================
+    # LOCATION COUNT UPDATES
+    # =========================================================================
+    def _update_location_counts(self):
+        """Trigger recompute of container counts on affected locations"""
+        locations = self.mapped('location_id')
+        if locations:
+            locations._compute_records_container_count()

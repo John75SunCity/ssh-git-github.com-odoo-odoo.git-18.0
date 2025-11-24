@@ -183,7 +183,8 @@ class StockLocation(models.Model):
     records_container_count = fields.Integer(
         string="Records Containers",
         compute='_compute_records_container_count',
-        help="Number of records containers (stock.quant with is_records_container=True)"
+        store=True,
+        help="Total number of records containers at this location (including draft/temp containers)"
     )
     
     # ============================================================================
@@ -234,11 +235,21 @@ class StockLocation(models.Model):
     
     @api.depends('quant_ids')
     def _compute_records_container_count(self):
-        """Count records containers at this location"""
+        """Count ALL records containers at this location (including draft/temp without quants)"""
         for location in self:
-            location.records_container_count = len(
-                location.quant_ids.filtered('is_records_container')
-            )
+            # Count both:
+            # 1. Containers with quants (activated containers)
+            quant_count = len(location.quant_ids.filtered('is_records_container'))
+            
+            # 2. Containers without quants (draft/temp containers)
+            # These have location_id set but no quant_id yet
+            draft_containers = self.env['records.container'].search_count([
+                ('location_id', '=', location.id),
+                ('quant_id', '=', False),
+                ('state', '!=', 'destroyed')
+            ])
+            
+            location.records_container_count = quant_count + draft_containers
     
     # ============================================================================
     # BUSINESS LOGIC
