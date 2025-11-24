@@ -10,6 +10,7 @@
         <record id="fsm_worksheet_instance_view_tree" model="ir.ui.view">
             <field name="name">fsm.worksheet.instance.view.tree</field>
             <field name="model">fsm.worksheet.instance</field>
+            <field name="type">list</field>
             <field name="arch" type="xml">
                 <tree string="FSM Worksheets" decoration-success="is_complete==True" decoration-warning="completion_percentage&lt;50" decoration-info="completion_percentage&gt;=50 and not is_complete">
                     <field name="name"/>
@@ -27,6 +28,7 @@
         <record id="fsm_worksheet_instance_view_form" model="ir.ui.view">
             <field name="name">fsm.worksheet.instance.view.form</field>
             <field name="model">fsm.worksheet.instance</field>
+            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="FSM Worksheet">
                     <header>
@@ -96,6 +98,7 @@
         <record id="fsm_worksheet_instance_view_search" model="ir.ui.view">
             <field name="name">fsm.worksheet.instance.view.search</field>
             <field name="model">fsm.worksheet.instance</field>
+            <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Search Worksheets">
                     <field name="name"/>
@@ -125,6 +128,7 @@
         <record id="fsm_worksheet_instance_view_kanban" model="ir.ui.view">
             <field name="name">fsm.worksheet.instance.view.kanban</field>
             <field name="model">fsm.worksheet.instance</field>
+            <field name="type">kanban</field>
             <field name="arch" type="xml">
                 <kanban class="o_kanban_mobile">
                     <field name="name"/>
@@ -193,6 +197,7 @@
         <record id="fsm_worksheet_template_view_tree" model="ir.ui.view">
             <field name="name">fsm.worksheet.template.view.tree</field>
             <field name="model">fsm.worksheet.template</field>
+            <field name="type">list</field>
             <field name="arch" type="xml">
                 <tree string="Worksheet Templates">
                     <field name="sequence" widget="handle"/>
@@ -211,6 +216,7 @@
         <record id="fsm_worksheet_template_view_form" model="ir.ui.view">
             <field name="name">fsm.worksheet.template.view.form</field>
             <field name="model">fsm.worksheet.template</field>
+            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Worksheet Template">
                     <sheet>
