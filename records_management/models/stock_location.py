@@ -182,7 +182,7 @@ class StockLocation(models.Model):
     
     # Computed field for container count (used in views)
     records_container_count = fields.Integer(
-        string="Container Count",
+        string="Records Containers",
         compute='_compute_records_container_count',
         store=False,
         help="Number of records containers at this location"

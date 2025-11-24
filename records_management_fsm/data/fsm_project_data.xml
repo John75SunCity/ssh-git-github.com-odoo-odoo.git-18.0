@@ -7,6 +7,7 @@
             <field name="name">Field Service - Records Management</field>
             <field name="is_fsm" eval="True"/>
             <field name="allow_timesheets" eval="True"/>
+            <field name="billing_type">customer_rate</field>
             <field name="active" eval="True"/>
             <field name="sequence">10</field>
         </record>
