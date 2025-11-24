@@ -12,7 +12,6 @@
     # Load order: security first, then data, then views/actions, menus last
     "data": [
         "security/ir.model.access.csv",
-        "data/fsm_project_data.xml",
         "data/fsm_worksheet_templates.xml",
         "data/fsm_model_external_ids_data.xml",
         "data/fleet_fsm_action_bridge.xml",
