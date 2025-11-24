@@ -104,6 +104,10 @@
                                 invisible="state != 'authorized'" class="oe_highlight"/>
                         <button name="action_start_destruction" string="Start Destruction" type="object" 
                                 invisible="state not in ['scheduled']" class="oe_highlight"/>
+                        <button name="action_verify_and_destroy" string="✅ Verified and Destroyed" type="object" 
+                                invisible="state not in ['in_progress', 'scheduled']" 
+                                class="btn-danger"
+                                confirm="This will destroy ALL containers, create destruction charges (removal + shredding), and close the work order. Continue?"/>
                         <button name="action_mark_all_destroyed" string="📦 Mark All as Destroyed" type="object" 
                                 invisible="state not in ['in_progress', 'scheduled']" 
                                 class="btn-danger"

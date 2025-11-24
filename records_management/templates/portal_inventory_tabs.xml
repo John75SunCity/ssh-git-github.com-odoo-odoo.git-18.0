@@ -104,7 +104,7 @@
                                             </td>
                                             <td>
                                                 <span class="badge" 
-                                                      t-att-class="'badge-success' if container.state == 'in' else 'badge-warning' if container.state == 'pending' else 'badge-info'"
+                                                      t-att-class="'badge-success' if container.state == 'in' else 'badge-warning' if container.state == 'pending' else 'badge-info' if container.state == 'out' else 'badge-secondary' if container.state == 'perm_out' else 'badge-danger'"
                                                       t-esc="container.state_display or 'Pending'"/>
                                             </td>
                                             <td>

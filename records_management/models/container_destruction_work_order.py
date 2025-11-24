@@ -319,6 +319,87 @@ class ContainerDestructionWorkOrder(models.Model):
         
         return True
 
+    def action_verify_and_destroy(self):
+        """
+        Verify all containers scanned and execute destruction workflow.
+        
+        This is the new recommended method that uses the barcode workflow
+        automation with automatic billing and work order closure.
+        
+        Workflow:
+        1. Validates all containers are ready for destruction
+        2. Calls action_barcode_destroy() on each container
+        3. Each container automatically:
+           - Sets state='destroyed', active=False
+           - Creates invoice charges (removal + shredding)
+           - Logs to NAID audit trail
+        4. Auto-closes work order when all complete
+        
+        Returns:
+            dict: Notification action
+        """
+        self.ensure_one()
+        
+        if self.state not in ['in_progress', 'scheduled']:
+            raise UserError(_("Can only verify and destroy when work order is scheduled or in progress."))
+        
+        if not self.container_ids:
+            raise UserError(_("No containers selected for destruction."))
+        
+        destroyed_count = 0
+        failed_containers = []
+        
+        for container in self.container_ids:
+            # Skip already destroyed containers
+            if container.state == 'destroyed':
+                continue
+            
+            try:
+                # Use new barcode workflow - handles billing, audit logs, state changes
+                container.action_barcode_destroy()
+                destroyed_count += 1
+            except UserError as e:
+                failed_containers.append((container.name, str(e)))
+        
+        # Update work order state
+        if destroyed_count > 0:
+            # Check if all containers now destroyed
+            all_destroyed = all(c.state == 'destroyed' for c in self.container_ids)
+            
+            if all_destroyed:
+                self.write({
+                    'state': 'destroyed',
+                    'actual_destruction_date': fields.Date.today(),
+                    'destruction_end_time': fields.Datetime.now(),
+                })
+                
+                message = _("✅ All %d container(s) verified and destroyed.<br/>• Destruction charges created<br/>• Work order completed") % destroyed_count
+            else:
+                message = _("✅ %d container(s) verified and destroyed.<br/>• Destruction charges created<br/>• %d remaining") % (
+                    destroyed_count, 
+                    len(self.container_ids.filtered(lambda c: c.state != 'destroyed'))
+                )
+            
+            if failed_containers:
+                message += "<br/><br/>⚠️ Failed containers:<br/>"
+                for name, error in failed_containers:
+                    message += "• %s: %s<br/>" % (name, error)
+            
+            self.message_post(body=message, subject=_("Destruction Verified"))
+        else:
+            raise UserError(_("All selected containers are already destroyed or failed validation."))
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Destruction Complete'),
+                'message': _('%d container(s) destroyed and billed') % destroyed_count,
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+
     def action_generate_certificate(self):
         self.ensure_one()
         if self.state != 'destroyed':

@@ -72,7 +72,7 @@
                                         <tr>
                                             <td><strong t-esc="container.name"/></td>
                                             <td>
-                                                <span t-att-class="'badge bg-' + ('success' if container.state == 'in' else 'warning' if container.state == 'pending' else 'info')">
+                                                <span t-att-class="'badge bg-' + ('success' if container.state == 'in' else 'warning' if container.state == 'pending' else 'info' if container.state == 'out' else 'secondary' if container.state == 'perm_out' else 'danger')">
                                                     <t t-esc="container.state_display or 'Pending'"/>
                                                 </span>
                                             </td>

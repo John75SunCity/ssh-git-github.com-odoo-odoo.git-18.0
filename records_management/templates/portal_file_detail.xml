@@ -85,11 +85,12 @@
                                                     <th>State:</th>
                                                     <td>
                                                         <t t-if="file.state">
-                                                            <span t-att-class="'badge badge-' + ('success' if file.state == 'in' else 'warning' if file.state == 'pending' else 'info')">
-                                                                <t t-if="not file.active">Destroyed</t>
-                                                                <t t-elif="file.state == 'pending'">Pending</t>
+                                                            <span t-att-class="'badge badge-' + ('success' if file.state == 'in' else 'warning' if file.state == 'pending' else 'info' if file.state == 'out' else 'secondary' if file.state == 'perm_out' else 'danger')">
+                                                                <t t-if="file.state == 'pending'">Pending</t>
                                                                 <t t-elif="file.state == 'in'">In Storage</t>
                                                                 <t t-elif="file.state == 'out'">Out</t>
+                                                                <t t-elif="file.state == 'perm_out'">Perm-Out</t>
+                                                                <t t-elif="file.state == 'destroyed'">Destroyed</t>
                                                             </span>
                                                         </t>
                                                         <t t-else="">

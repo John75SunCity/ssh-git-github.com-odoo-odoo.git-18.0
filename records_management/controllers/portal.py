@@ -5950,6 +5950,8 @@ class RecordsManagementController(http.Controller):
             'pending_containers': len(containers.filtered(lambda c: c.state == 'pending')),
             'in_storage': len(containers.filtered(lambda c: c.state == 'in')),
             'out_containers': len(containers.filtered(lambda c: c.state == 'out')),
+            'perm_out_containers': len(containers.filtered(lambda c: c.state == 'perm_out')),
+            'destroyed_containers': len(containers.filtered(lambda c: c.state == 'destroyed')),
             'total_files': sum(containers.mapped('file_count')),
         }
 
@@ -6094,6 +6096,8 @@ class RecordsManagementController(http.Controller):
             'pending_containers': len(containers.filtered(lambda c: c.state == 'pending')),
             'in_storage': len(containers.filtered(lambda c: c.state == 'in')),
             'out_containers': len(containers.filtered(lambda c: c.state == 'out')),
+            'perm_out_containers': len(containers.filtered(lambda c: c.state == 'perm_out')),
+            'destroyed_containers': len(containers.filtered(lambda c: c.state == 'destroyed')),
             'total_files': sum(containers.mapped('file_count')),
         }
         

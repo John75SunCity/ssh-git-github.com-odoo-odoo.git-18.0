@@ -72,21 +72,21 @@
             <field name="name">Contracts</field>
             <field name="code">CNTR-DATA</field>
             <field name="description">Legal contracts and agreements</field>
-            <field name="state">in</field>
+            <field name="state">active</field>
         </record>
 
         <record id="demo_document_type_invoices" model="records.document.type">
             <field name="name">Invoices</field>
             <field name="code">INV-DATA</field>
             <field name="description">Financial invoices and receipts</field>
-            <field name="state">in</field>
+            <field name="state">active</field>
         </record>
 
         <record id="demo_document_type_hr_files" model="records.document.type">
             <field name="name">HR Personnel Files</field>
             <field name="code">HR-DATA</field>
             <field name="description">Human resources and employee records</field>
-            <field name="state">in</field>
+            <field name="state">active</field>
         </record>
 
         <!-- Additional Demo Document Types -->
@@ -94,13 +94,13 @@
             <field name="name">Medical Records</field>
             <field name="code">MED-DATA</field>
             <field name="description">Medical and healthcare documentation</field>
-            <field name="state">in</field>
+            <field name="state">active</field>
         </record>
         <record id="demo_document_type_payroll" model="records.document.type">
             <field name="name">Payroll</field>
             <field name="code">PAY-DATA</field>
             <field name="description">Payroll and compensation records</field>
-            <field name="state">in</field>
+            <field name="state">active</field>
         </record>
 
         <!-- Demo Retention Policies -->
@@ -110,7 +110,7 @@
             <field name="retention_years">7</field>
             <field name="description">Standard 7-year retention for business documents</field>
             <field name="active">True</field>
-            <field name="state">in</field>
+            <field name="state">active</field>
         </record>
 
         <record id="demo_retention_policy_hr" model="records.retention.policy">
@@ -119,7 +119,7 @@
             <field name="retention_years">10</field>
             <field name="description">Extended retention for HR and employment records</field>
             <field name="active">True</field>
-            <field name="state">in</field>
+            <field name="state">active</field>
         </record>
 
         <!-- Additional Demo Retention Policies -->
@@ -129,7 +129,7 @@
             <field name="retention_years">15</field>
             <field name="description">Extended 15-year retention for legal contracts</field>
             <field name="active">True</field>
-            <field name="state">in</field>
+            <field name="state">active</field>
         </record>
         <record id="demo_retention_policy_finance_12y" model="records.retention.policy">
             <field name="name">Finance Records (12 Years)</field>
@@ -137,7 +137,7 @@
             <field name="retention_years">12</field>
             <field name="description">12-year retention for finance and audit records</field>
             <field name="active">True</field>
-            <field name="state">in</field>
+            <field name="state">active</field>
         </record>
 
         <!-- Demo Container Types - Reference actual Type 01-06 classifications -->

@@ -277,7 +277,7 @@
                                                                         <td><span t-esc="container.location_id.name if container.location_id else 'Not Assigned'"/></td>
                                                                         <td>
                                                                             <span class="badge" 
-                                                                                  t-att-class="'bg-success' if container.state == 'in' else 'bg-warning' if container.state == 'pending' else 'bg-info'"
+                                                                                  t-att-class="'bg-success' if container.state == 'in' else 'bg-warning' if container.state == 'pending' else 'bg-info' if container.state == 'out' else 'bg-secondary' if container.state == 'perm_out' else 'bg-danger'"
                                                                                   t-esc="container.state_display or 'Pending'"/>
                                                                         </td>
                                                                         <td><span t-esc="container.file_folder_count or 0"/> folders</td>

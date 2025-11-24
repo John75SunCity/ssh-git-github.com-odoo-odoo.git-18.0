@@ -184,3 +184,80 @@ class RecordsRetrievalWorkOrder(models.Model):
             raise UserError(_("Only cancelled work orders can be reset to draft."))
         self.write({'state': 'draft'})
         return True
+
+    def action_verify_and_return(self):
+        """
+        Verify all scanned containers and execute permanent removal (perm-out) workflow.
+        
+        This is used when customers want to take their items back permanently.
+        Creates removal charges only (no shredding fees).
+        
+        Returns:
+            dict: Notification action with results
+        """
+        self.ensure_one()
+        
+        # Validate state
+        if self.state not in ['in_progress', 'draft']:
+            raise UserError(_("Can only verify and return items when work order is active."))
+        
+        # Check for scanned containers
+        if not self.scanned_barcode_ids:
+            raise UserError(_("No containers have been scanned for this retrieval."))
+        
+        returned_count = 0
+        failed_containers = []
+        
+        # Process each scanned container
+        for container in self.scanned_barcode_ids:
+            # Skip if already returned
+            if container.state == 'perm_out':
+                continue
+            
+            try:
+                # Execute barcode perm-out workflow (sets state, creates 1 charge, audit log)
+                container.action_barcode_perm_out()
+                returned_count += 1
+            except UserError as e:
+                # Collect failures for reporting
+                failed_containers.append((container.name, str(e)))
+        
+        # Auto-close work order if all containers returned
+        all_returned = all(c.state == 'perm_out' for c in self.scanned_barcode_ids)
+        if all_returned:
+            self.write({
+                'state': 'completed',
+                'completion_date': fields.Datetime.now()
+            })
+            message = _("✅ All %d container(s) verified and returned to customer.<br/>• Removal charges created ($15/container)<br/>• Work order completed") % returned_count
+        else:
+            remaining = len(self.scanned_barcode_ids.filtered(lambda c: c.state != 'perm_out'))
+            message = _("✅ %d container(s) verified and returned to customer.<br/>• Removal charges created ($15/container)<br/>• %d container(s) remaining") % (
+                returned_count,
+                remaining
+            )
+        
+        # Add failure details if any
+        if failed_containers:
+            message += "<br/><br/>⚠️ Failed containers:<br/>"
+            for name, error in failed_containers:
+                message += "• %s: %s<br/>" % (name, error)
+        
+        # Post message to chatter
+        self.message_post(
+            body=message,
+            subject=_("Perm-Out Verification Complete"),
+            subtype_xmlid='mail.mt_note'
+        )
+        
+        # Return success notification
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Perm-Out Complete'),
+                'message': _('%d container(s) returned to customer and billed for removal') % returned_count,
+                'type': 'success',
+                'sticky': False,
+            }
+        }
