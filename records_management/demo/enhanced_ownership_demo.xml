@@ -76,7 +76,7 @@
             <field name="partner_id" ref="demo_company_city_gov"/>
             <field name="stock_owner_id" ref="demo_company_city_gov"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="content_date_from">2025-01-01</field>
             <field name="content_date_to">2025-12-31</field>
             <field name="primary_content_type">legal</field>
@@ -90,7 +90,7 @@
             <field name="partner_id" ref="demo_company_city_gov"/>
             <field name="stock_owner_id" ref="demo_dept_city_clerk"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="content_date_from">2025-01-01</field>
             <field name="content_date_to">2025-12-31</field>
             <field name="primary_content_type">legal</field>
@@ -104,7 +104,7 @@
             <field name="partner_id" ref="demo_company_city_gov"/>
             <field name="stock_owner_id" ref="demo_subdept_auditing"/>
             <field name="container_type_id" ref="container_type_01_standard"/>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="content_date_from">2025-01-01</field>
             <field name="content_date_to">2025-12-31</field>
             <field name="primary_content_type">financial</field>
@@ -179,7 +179,7 @@
             <field name="partner_id" ref="demo_company_city_gov"/>
             <field name="billing_config_id" ref="demo_billing_config_company"/>
             <field name="date">2025-11-01</field>
-            <field name="state">draft</field>
+            <field name="state">pending</field>
         </record>
 
         <!-- Portal access logs demonstrating ownership filtering -->

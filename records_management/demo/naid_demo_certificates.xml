@@ -18,7 +18,7 @@
             <field name="certificate_number">NAID-DEMO-002</field>
             <field name="partner_id" ref="base.res_partner_2"/>
             <field name="destruction_date" eval="(DateTime.now() - timedelta(days=2)).strftime('%Y-%m-%d %H:%M:%S')"/>
-            <field name="state">draft</field>
+            <field name="state">pending</field>
             <field name="witness_name">Jane Demo Witness</field>
         </record>
 

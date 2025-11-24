@@ -239,7 +239,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2019-01-01</field>
             <field name="content_date_to">2019-12-31</field>
@@ -259,7 +259,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -279,7 +279,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
@@ -299,7 +299,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
@@ -319,7 +319,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
@@ -339,7 +339,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
@@ -359,7 +359,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -379,7 +379,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -399,7 +399,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -419,7 +419,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -439,7 +439,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
@@ -459,7 +459,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
@@ -479,7 +479,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
@@ -499,7 +499,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
@@ -519,7 +519,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -539,7 +539,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
@@ -559,7 +559,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -579,7 +579,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -599,7 +599,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
@@ -619,7 +619,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2019-01-01</field>
             <field name="content_date_to">2019-12-31</field>
@@ -639,7 +639,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -659,7 +659,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
@@ -679,7 +679,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
@@ -699,7 +699,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
@@ -719,7 +719,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
@@ -739,7 +739,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2019-01-01</field>
             <field name="content_date_to">2019-12-31</field>
@@ -759,7 +759,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -779,7 +779,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -799,7 +799,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -819,7 +819,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -839,7 +839,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
@@ -859,7 +859,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -879,7 +879,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-10-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -899,7 +899,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
@@ -919,7 +919,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -939,7 +939,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -959,7 +959,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
@@ -979,7 +979,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -999,7 +999,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-10-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -1019,7 +1019,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">PICKUP/PULL LISTS 08-09 CALENDARS 98-09</field>
             <field name="content_description">PICKUP/PULL LISTS 08-09 CALENDARS 98-09</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -1039,7 +1039,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO'S</field>
             <field name="content_description">WO'S</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
@@ -1059,7 +1059,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO'S</field>
             <field name="content_description">WO'S</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
@@ -1079,7 +1079,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES/CHECKS</field>
             <field name="content_description">INVOICES/CHECKS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
@@ -1099,7 +1099,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES/CHECKS</field>
             <field name="content_description">INVOICES/CHECKS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-10-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -1119,7 +1119,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">RECEIPTS/PAYROLL CHECK STUBS</field>
             <field name="content_description">RECEIPTS/PAYROLL CHECK STUBS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
@@ -1139,7 +1139,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">RECEIPTS</field>
             <field name="content_description">RECEIPTS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
@@ -1159,7 +1159,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO</field>
             <field name="content_description">WO</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -1179,7 +1179,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO</field>
             <field name="content_description">WO</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-10-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -1199,7 +1199,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
@@ -1219,7 +1219,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BIG CHAIRS -TEST COMPANY</field>
             <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -1239,7 +1239,7 @@
             <field name="document_type_id" ref="doc_type_payroll"/>
             <field name="description">PAYROLL/RECEIPTS CHECK COPIES</field>
             <field name="content_description">PAYROLL/RECEIPTS CHECK COPIES</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2018-01-01</field>
             <field name="content_date_to">2018-12-31</field>
@@ -1259,7 +1259,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">RECEIPTS</field>
             <field name="content_description">RECEIPTS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
@@ -1279,7 +1279,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES CHECKS RECEIPTS</field>
             <field name="content_description">INVOICES CHECKS RECEIPTS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -1299,7 +1299,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">CLOSING DOCS 9230 &amp; 9270 BTK</field>
             <field name="content_description">CLOSING DOCS 9230 &amp; 9270 BTK</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
@@ -1319,7 +1319,7 @@
             <field name="document_type_id" ref="doc_type_payroll"/>
             <field name="description">PAY STUBS ALL RECEIPTS 2007-2009</field>
             <field name="content_description">PAY STUBS ALL RECEIPTS 2007-2009</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -1339,7 +1339,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES</field>
             <field name="content_description">INVOICES</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -1359,7 +1359,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO'S</field>
             <field name="content_description">WO'S</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -1379,7 +1379,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO'S</field>
             <field name="content_description">WO'S</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -1399,7 +1399,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES 2010 RECEIPTS 2010 CHECKS 2010</field>
             <field name="content_description">INVOICES 2010 RECEIPTS 2010 CHECKS 2010</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -1419,7 +1419,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">W.O.</field>
             <field name="content_description">W.O.</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-10-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -1439,7 +1439,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">W.O.</field>
             <field name="content_description">W.O.</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -1459,7 +1459,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WORK ORDERS</field>
             <field name="content_description">WORK ORDERS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
@@ -1479,7 +1479,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">EMPL II</field>
             <field name="content_description">EMPL II</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2018-01-01</field>
             <field name="content_date_to">2018-12-31</field>
@@ -1499,7 +1499,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">OFFICE</field>
             <field name="content_description">OFFICE</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2018-01-01</field>
             <field name="content_date_to">2018-12-31</field>
@@ -1519,7 +1519,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">OFFICE</field>
             <field name="content_description">OFFICE</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -1539,7 +1539,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO</field>
             <field name="content_description">WO</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
@@ -1559,7 +1559,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO</field>
             <field name="content_description">WO</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -1579,7 +1579,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">FAXES</field>
             <field name="content_description">FAXES</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>
@@ -1599,7 +1599,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">FAXES PULL REQUEST</field>
             <field name="content_description">FAXES PULL REQUEST</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -1619,7 +1619,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WORKORDERS</field>
             <field name="content_description">WORKORDERS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -1639,7 +1639,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">CALENDER 2013</field>
             <field name="content_description">CALENDER 2013</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
@@ -1659,7 +1659,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WORKORDERS</field>
             <field name="content_description">WORKORDERS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -1679,7 +1679,7 @@
             <field name="document_type_id" ref="doc_type_payroll"/>
             <field name="description">PAYROLL SELECT STAFFING</field>
             <field name="content_description">PAYROLL SELECT STAFFING</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2019-01-01</field>
             <field name="content_date_to">2019-12-31</field>
@@ -1699,7 +1699,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">CREDIT CARDS PAID DEPOSITS</field>
             <field name="content_description">CREDIT CARDS PAID DEPOSITS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -1719,7 +1719,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES</field>
             <field name="content_description">INVOICES</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
@@ -1739,7 +1739,7 @@
             <field name="document_type_id" ref="doc_type_payroll"/>
             <field name="description">TIME CARDS PAYROLL CHECK COPIES</field>
             <field name="content_description">TIME CARDS PAYROLL CHECK COPIES</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
@@ -1759,7 +1759,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES</field>
             <field name="content_description">INVOICES</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
@@ -1779,7 +1779,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES</field>
             <field name="content_description">INVOICES</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
@@ -1799,7 +1799,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">RECEIPTS</field>
             <field name="content_description">RECEIPTS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -1819,7 +1819,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">FAX/WO'S</field>
             <field name="content_description">FAX/WO'S</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -1839,7 +1839,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">FAX/WO'S</field>
             <field name="content_description">FAX/WO'S</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -1859,7 +1859,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO FAXES</field>
             <field name="content_description">WO FAXES</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2018-01-01</field>
             <field name="content_date_to">2018-12-31</field>
@@ -1879,7 +1879,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">DEPOSITS 2014</field>
             <field name="content_description">DEPOSITS 2014</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -1899,7 +1899,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES 2014</field>
             <field name="content_description">INVOICES 2014</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
@@ -1919,7 +1919,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">INVOICES 2014</field>
             <field name="content_description">INVOICES 2014</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -1939,7 +1939,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO &amp; FAX</field>
             <field name="content_description">WO &amp; FAX</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2020-01-01</field>
             <field name="content_date_to">2020-12-31</field>
@@ -1959,7 +1959,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">JESUS</field>
             <field name="content_description">JESUS</field>
-            <field name="state">destroyed</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
@@ -1979,7 +1979,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">DESTROY</field>
             <field name="content_description">DESTROY</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
@@ -1999,7 +1999,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO &amp; FAX</field>
             <field name="content_description">WO &amp; FAX</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2022-01-01</field>
             <field name="content_date_to">2022-12-31</field>
@@ -2019,7 +2019,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WO &amp; FAX</field>
             <field name="content_description">WO &amp; FAX</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -2039,7 +2039,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">FAX &amp; WO</field>
             <field name="content_description">FAX &amp; WO</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-12-31</field>
@@ -2059,7 +2059,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">W.O.'S</field>
             <field name="content_description">W.O.'S</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2021-01-01</field>
             <field name="content_date_to">2021-12-31</field>
@@ -2079,7 +2079,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">CALENDER</field>
             <field name="content_description">CALENDER</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
@@ -2099,7 +2099,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">DESTRUCTION LIST 2015</field>
             <field name="content_description">DESTRUCTION LIST 2015</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2023-01-01</field>
             <field name="content_date_to">2023-03-31</field>
@@ -2123,7 +2123,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">SPRAY PAINT CANS</field>
             <field name="content_description">SPRAY PAINT CANS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-04-01</field>
             <field name="content_date_to">2023-06-30</field>
@@ -2143,7 +2143,7 @@
             <field name="document_type_id" ref="doc_type_mixed"/>
             <field name="description">BALE LOG SHEETS</field>
             <field name="content_description">BALE LOG SHEETS</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
@@ -2163,7 +2163,7 @@
             <field name="document_type_id" ref="doc_type_work_orders"/>
             <field name="description">WORK ORDERS - CITY OF EL PASO</field>
             <field name="content_description">WORK ORDERS - CITY OF EL PASO</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_secure_vault"/>
             <field name="content_date_from">2023-07-01</field>
             <field name="content_date_to">2023-09-30</field>
@@ -2183,7 +2183,7 @@
             <field name="document_type_id" ref="doc_type_invoices"/>
             <field name="description">DEPOSITS-2024</field>
             <field name="content_description">DEPOSITS-2024</field>
-            <field name="state">in_storage</field>
+            <field name="state">in</field>
             <field name="location_id" ref="location_main_warehouse_b"/>
             <field name="content_date_from">2024-01-01</field>
             <field name="content_date_to">2024-12-31</field>

@@ -187,11 +187,13 @@ class RecordsFile(models.Model):
     # STATUS TRACKING
     # ============================================================================
     state = fields.Selection([
-        ('pending', 'Pending'),  # Created but never scanned into internal location
-        ('in', 'In Storage'),    # At internal location (in container)
-        ('out', 'Out'),          # With customer (retrieved from container)
+        ('pending', 'Pending'),      # Created but never scanned into internal location
+        ('in', 'In Storage'),        # At internal location (in container)
+        ('out', 'Out'),              # With customer (retrieved from container)
+        ('perm_out', 'Perm-Out'),    # Permanent removal - returned to customer (active=False, removal fee only)
+        ('destroyed', 'Destroyed'),   # Physically destroyed/shredded (active=False, removal + shredding fees)
     ], string='Status', default='pending', tracking=True,
-    help="File status: PENDING = Created but not scanned in | IN = At internal location | OUT = With customer. Use Archive (destroyed) for physically destroyed files.")
+    help="File status: PENDING = Created but not scanned in | IN = At internal location | OUT = With customer | PERM-OUT = Permanent removal (returned to customer, removal fee) | DESTROYED = Physically shredded (removal + shredding fees).")
     
     # ============================================================================
     # LEGAL CITATIONS & RECORD SERIES (Optional Compliance Features)

@@ -170,15 +170,17 @@ class RecordsContainer(models.Model):
     # ============================================================================
     state = fields.Selection(
         [
-            ("pending", "Pending"),  # Created but never scanned into internal location
-            ("in", "In Storage"),     # At internal warehouse location
-            ("out", "Out"),           # Transferred to customer via work order
+            ("pending", "Pending"),      # Created but never scanned into internal location
+            ("in", "In Storage"),        # At internal warehouse location
+            ("out", "Out"),              # Transferred to customer via work order
+            ("perm_out", "Perm-Out"),    # Permanent removal - returned to customer, service discontinued (active=False, removal fee only)
+            ("destroyed", "Destroyed"),   # Physically destroyed/shredded (active=False, removal fee + shredding fee)
         ],
         string="Status",
         default="pending",
         required=True,
         tracking=True,
-        help="Container status: PENDING = Created but not scanned in | IN = At internal location | OUT = With customer. Use Archive (destroyed) for physically destroyed containers."
+        help="Container status: PENDING = Created but not scanned in | IN = At internal location | OUT = With customer | PERM-OUT = Permanent removal (returned to customer, removal fee charged) | DESTROYED = Physically shredded (removal + shredding fees charged). Both perm_out and destroyed archive the container."
     )
     
     state_display = fields.Char(
@@ -1956,6 +1958,203 @@ class RecordsContainer(models.Model):
             }
         except Exception as e:
             raise UserError(_("Error generating batch labels: %s") % str(e))
+
+    # ============================================================================
+    # BILLING & WORK ORDER AUTOMATION METHODS
+    # ============================================================================
+    
+    def _create_destruction_charges(self):
+        """
+        Create invoice charges for container destruction.
+        
+        Destruction includes:
+        - Per-item removal fee
+        - Per-item shredding fee
+        
+        Creates 2 invoice line items.
+        """
+        self.ensure_one()
+        
+        if not self.partner_id:
+            raise UserError(_("Cannot create destruction charges: No customer assigned to container %s") % (self.barcode or self.name))
+        
+        # Get or create draft invoice for customer
+        invoice = self._get_or_create_draft_invoice()
+        
+        # Get product for removal fee
+        removal_product = self._get_removal_fee_product()
+        shredding_product = self._get_shredding_fee_product()
+        
+        # Create invoice lines
+        invoice_line_vals = [
+            {
+                'product_id': removal_product.id,
+                'name': _('Container Removal Fee - %s') % (self.barcode or self.name),
+                'quantity': 1,
+                'price_unit': removal_product.list_price,
+                'move_id': invoice.id,
+            },
+            {
+                'product_id': shredding_product.id,
+                'name': _('Container Shredding Fee - %s') % (self.barcode or self.name),
+                'quantity': 1,
+                'price_unit': shredding_product.list_price,
+                'move_id': invoice.id,
+            }
+        ]
+        
+        self.env['account.move.line'].create(invoice_line_vals)
+        
+        # Log charge creation
+        self.message_post(
+            body=_("Destruction charges created:<br/>• Removal fee: %s<br/>• Shredding fee: %s<br/>Total: %s") % (
+                removal_product.list_price,
+                shredding_product.list_price,
+                removal_product.list_price + shredding_product.list_price
+            ),
+            subject=_("Destruction Charges Created")
+        )
+        
+        return invoice
+    
+    def _create_removal_charges(self):
+        """
+        Create invoice charges for permanent removal (perm-out).
+        
+        Perm-Out includes:
+        - Per-item removal fee ONLY (no shredding)
+        
+        Creates 1 invoice line item.
+        """
+        self.ensure_one()
+        
+        if not self.partner_id:
+            raise UserError(_("Cannot create removal charges: No customer assigned to container %s") % (self.barcode or self.name))
+        
+        # Get or create draft invoice for customer
+        invoice = self._get_or_create_draft_invoice()
+        
+        # Get product for removal fee
+        removal_product = self._get_removal_fee_product()
+        
+        # Create invoice line
+        invoice_line_vals = {
+            'product_id': removal_product.id,
+            'name': _('Container Removal Fee (Perm-Out) - %s') % (self.barcode or self.name),
+            'quantity': 1,
+            'price_unit': removal_product.list_price,
+            'move_id': invoice.id,
+        }
+        
+        self.env['account.move.line'].create(invoice_line_vals)
+        
+        # Log charge creation
+        self.message_post(
+            body=_("Removal charges created (Perm-Out):<br/>• Removal fee: %s") % removal_product.list_price,
+            subject=_("Perm-Out Charges Created")
+        )
+        
+        return invoice
+    
+    def _get_or_create_draft_invoice(self):
+        """Get existing draft invoice or create new one for customer"""
+        # Find existing draft invoice for this customer
+        invoice = self.env['account.move'].search([
+            ('partner_id', '=', self.partner_id.id),
+            ('move_type', '=', 'out_invoice'),
+            ('state', '=', 'draft'),
+        ], limit=1)
+        
+        if not invoice:
+            # Create new draft invoice
+            invoice = self.env['account.move'].create({
+                'partner_id': self.partner_id.id,
+                'move_type': 'out_invoice',
+                'invoice_date': fields.Date.today(),
+            })
+        
+        return invoice
+    
+    def _get_removal_fee_product(self):
+        """Get or create product for removal fees"""
+        product = self.env['product.product'].search([
+            ('default_code', '=', 'RM-REMOVAL-FEE'),
+        ], limit=1)
+        
+        if not product:
+            product = self.env['product.product'].create({
+                'name': 'Container Removal Fee',
+                'default_code': 'RM-REMOVAL-FEE',
+                'type': 'service',
+                'list_price': 15.00,  # Default price - configurable
+                'invoice_policy': 'order',
+                'description': 'Per-container removal fee for destruction or perm-out services',
+            })
+        
+        return product
+    
+    def _get_shredding_fee_product(self):
+        """Get or create product for shredding fees"""
+        product = self.env['product.product'].search([
+            ('default_code', '=', 'RM-SHREDDING-FEE'),
+        ], limit=1)
+        
+        if not product:
+            product = self.env['product.product'].create({
+                'name': 'Container Shredding Fee',
+                'default_code': 'RM-SHREDDING-FEE',
+                'type': 'service',
+                'list_price': 25.00,  # Default price - configurable
+                'invoice_policy': 'order',
+                'description': 'Per-container shredding fee for destruction services',
+            })
+        
+        return product
+    
+    def _check_and_close_destruction_work_order(self):
+        """Check if all containers on destruction work order are destroyed, close if complete"""
+        # Find associated destruction work order
+        work_order = self.env['container.destruction.work.order'].search([
+            ('container_ids', 'in', self.id),
+            ('state', 'not in', ('completed', 'cancelled')),
+        ], limit=1)
+        
+        if work_order:
+            # Check if all containers are destroyed
+            all_destroyed = all(c.state == 'destroyed' for c in work_order.container_ids)
+            
+            if all_destroyed:
+                work_order.write({
+                    'state': 'completed',
+                    'actual_destruction_date': fields.Datetime.now(),
+                })
+                
+                work_order.message_post(
+                    body=_("All containers destroyed. Work order auto-completed."),
+                    subject=_("Work Order Completed")
+                )
+    
+    def _check_and_close_perm_out_work_order(self):
+        """Check if all containers on perm-out work order are processed, close if complete"""
+        # Find associated work order (could be retrieval or custom perm-out type)
+        work_order = self.env['file.retrieval.work.order'].search([
+            ('container_ids', 'in', self.id),
+            ('state', 'not in', ('completed', 'cancelled')),
+        ], limit=1)
+        
+        if work_order:
+            # Check if all containers are perm_out
+            all_perm_out = all(c.state == 'perm_out' for c in work_order.container_ids)
+            
+            if all_perm_out:
+                work_order.write({
+                    'state': 'completed',
+                })
+                
+                work_order.message_post(
+                    body=_("All containers permanently removed. Work order auto-completed."),
+                    subject=_("Work Order Completed")
+                )
 
     # ============================================================================
     # VALIDATION METHODS

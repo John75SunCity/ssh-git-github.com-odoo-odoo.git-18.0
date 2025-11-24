@@ -158,33 +158,19 @@ class RecordsContainerBarcodeOperations(models.Model):
         return self._open_barcode_transfer(transfer)
     
     def action_barcode_complete_shredding(self):
-        """Complete destruction process via barcode operation"""
+        """
+        Complete destruction process via barcode operation.
+        
+        UPDATED: Now uses new 'destroyed' state and billing automation.
+        Legacy method maintained for backward compatibility.
+        """
         self.ensure_one()
         
-        if self.state != 'pending_destruction':
-            raise UserError(_('Container must be in pending destruction state.'))
+        if self.state not in ('in', 'out', 'pending_destruction'):
+            raise UserError(_('Container must be in storage, out with customer, or pending destruction state.'))
         
-        transfer = self._create_barcode_transfer(
-            operation_type='complete_shredding',
-            source_location_barcode='WH/SHRED/QUEUE',
-            dest_location_barcode='WH/SHRED/COMPLETE',
-            notes='Complete destruction process'
-        )
-        
-        self._log_barcode_operation('barcode_complete_shred', 'WH/SHRED/COMPLETE', transfer.id)
-        
-        self.write({
-            'state': 'destroyed',
-            'destruction_date': fields.Date.today(),
-            'last_barcode_operation': 'Destruction Complete',
-            'last_barcode_operation_date': fields.Datetime.now(),
-            'pending_transfer_id': transfer.id,
-        })
-        
-        # Auto-generate destruction certificate
-        self._generate_destruction_certificate()
-        
-        return self._open_barcode_transfer(transfer)
+        # Use new destruction workflow
+        return self.action_barcode_destroy()
     
     def action_barcode_add_to_inventory(self):
         """
@@ -231,6 +217,122 @@ class RecordsContainerBarcodeOperations(models.Model):
         transfer.button_validate()
         
         return self._open_barcode_transfer(transfer)
+    
+    def action_barcode_destroy(self):
+        """
+        Mark container as destroyed and create destruction charges.
+        
+        Destruction Workflow:
+        1. Technician scans containers on destruction work order
+        2. Clicks "Verified and Destroyed" button (calls this method)
+        3. System: Sets state='destroyed', active=False
+        4. Creates invoice charges: removal fee + shredding fee
+        5. Closes work order if all items processed
+        6. Creates NAID audit log
+        
+        Billing: Removal fee + Shredding fee (2 line items)
+        """
+        self.ensure_one()
+        
+        # Validation
+        if self.state not in ('in', 'out'):
+            raise UserError(_("Can only destroy containers that are 'In Storage' or 'Out with Customer'. Current state: %s") % dict(self._fields['state'].selection).get(self.state))
+        
+        # Perform destruction
+        self.write({
+            'state': 'destroyed',
+            'active': False,
+            'destruction_date': fields.Date.today(),
+            'last_barcode_operation': 'Verified and Destroyed',
+            'last_barcode_operation_date': fields.Datetime.now(),
+        })
+        
+        # Create destruction charges (removal + shredding fees)
+        self._create_destruction_charges()
+        
+        # Check and close work order if all items complete
+        self._check_and_close_destruction_work_order()
+        
+        # Audit log
+        self.env['naid.audit.log'].sudo().create({
+            'name': _('Destruction: %s') % self.name,
+            'action_type': 'container_destroyed',
+            'container_id': self.id,
+            'description': _('Container %s destroyed via barcode workflow. Customer: %s. Charges created.') % (self.barcode or self.name, self.partner_id.name),
+            'user_id': self.env.user.id,
+            'timestamp': fields.Datetime.now(),
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Container Destroyed'),
+                'message': _('Container %s marked as destroyed. Destruction charges created.') % (self.barcode or self.name),
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+    
+    def action_barcode_perm_out(self):
+        """
+        Mark container as permanent removal and create removal charges.
+        
+        Perm-Out Workflow:
+        1. Customer discontinues service, takes items back permanently
+        2. Technician scans containers on perm-out work order
+        3. Clicks "Verified and Returned" button (calls this method)
+        4. System: Sets state='perm_out', active=False
+        5. Creates invoice charge: removal fee ONLY (no shredding)
+        6. Closes work order if all items processed
+        7. Creates NAID audit log
+        
+        Billing: Removal fee only (1 line item)
+        """
+        self.ensure_one()
+        
+        # Validation
+        if self.state not in ('in', 'out'):
+            raise UserError(_("Can only perm-out containers that are 'In Storage' or 'Out with Customer'. Current state: %s") % dict(self._fields['state'].selection).get(self.state))
+        
+        # Perform perm-out
+        self.write({
+            'state': 'perm_out',
+            'active': False,
+            'last_barcode_operation': 'Verified and Returned (Perm-Out)',
+            'last_barcode_operation_date': fields.Datetime.now(),
+        })
+        
+        # Create removal charges (NO shredding fee)
+        self._create_removal_charges()
+        
+        # Check and close work order if all items complete
+        self._check_and_close_perm_out_work_order()
+        
+        # Audit log
+        self.env['naid.audit.log'].sudo().create({
+            'name': _('Perm-Out: %s') % self.name,
+            'action_type': 'container_perm_out',
+            'container_id': self.id,
+            'description': _('Container %s permanently removed and returned to customer %s. Removal charges created.') % (self.barcode or self.name, self.partner_id.name),
+            'user_id': self.env.user.id,
+            'timestamp': fields.Datetime.now(),
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Container Returned'),
+                'message': _('Container %s permanently removed. Removal charges created.') % (self.barcode or self.name),
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+    
+    # ============================================================================
+    # HELPER METHODS
+    # ============================================================================
     
     def _create_barcode_transfer(self, operation_type, source_location_barcode, 
                                    dest_location_barcode, notes=''):

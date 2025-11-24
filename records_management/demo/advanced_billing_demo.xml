@@ -8,7 +8,7 @@
             <field name="name">Monthly Storage + Service</field>
             <field name="partner_id" ref="base.res_partner_1"/>
             <field name="date">2025-01-01</field>
-            <field name="state">draft</field>
+            <field name="state">pending</field>
         </record>
 
         <!-- Quarterly Storage + Monthly Service Customer -->
@@ -16,7 +16,7 @@
             <field name="name">Quarterly Storage + Monthly Service</field>
             <field name="partner_id" ref="base.res_partner_2"/>
             <field name="date">2025-01-01</field>
-            <field name="state">draft</field>
+            <field name="state">pending</field>
         </record>
 
         <!-- Prepaid Storage Customer -->
@@ -24,7 +24,7 @@
             <field name="name">Prepaid Storage</field>
             <field name="partner_id" ref="base.res_partner_3"/>
             <field name="date">2025-01-01</field>
-            <field name="state">draft</field>
+            <field name="state">pending</field>
         </record>
 
         <!-- Billing Contacts for Monthly Customer -->
