@@ -183,7 +183,6 @@ class StockLocation(models.Model):
     records_container_count = fields.Integer(
         string="Records Containers",
         compute='_compute_records_container_count',
-        store=True,
         help="Total number of records containers at this location (including draft/temp containers)"
     )
     
