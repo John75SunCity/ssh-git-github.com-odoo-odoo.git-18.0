@@ -55,8 +55,8 @@
                         
                         <notebook>
                             <page string="Checklist" name="checklist">
-                                <field name="checklist_ids" mode="tree">
-                                    <tree editable="bottom" decoration-success="is_complete==True">
+                                <field name="checklist_ids">
+                                    <list editable="bottom" decoration-success="is_complete==True">
                                         <field name="sequence" widget="handle"/>
                                         <field name="name"/>
                                         <field name="description"/>
@@ -65,7 +65,7 @@
                                         <field name="is_complete" widget="boolean_toggle"/>
                                         <field name="text_value" attrs="{'invisible': [('field_type', '!=', 'text')], 'required': [('field_type', '=', 'text'), ('is_mandatory', '=', True)]}"/>
                                         <field name="number_value" attrs="{'invisible': [('field_type', '!=', 'number')], 'required': [('field_type', '=', 'number'), ('is_mandatory', '=', True)]}"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             
