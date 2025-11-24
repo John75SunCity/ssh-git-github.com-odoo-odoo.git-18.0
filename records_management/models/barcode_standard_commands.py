@@ -72,7 +72,9 @@ class RecordsContainerBarcodeCommands(models.Model):
             
             # Log the validation
             self.env['naid.audit.log'].sudo().create({
+                'name': _('Transfer Validated: %s') % transfer.name,
                 'container_id': self.id,
+                'action_type': 'container_updated',
                 'action': 'barcode_validate',
                 'description': _('Transfer validated via barcode command: %s') % transfer.name,
                 'user_id': self.env.user.id,
@@ -143,7 +145,9 @@ class RecordsContainerBarcodeCommands(models.Model):
             
             # Log the cancellation
             self.env['naid.audit.log'].sudo().create({
+                'name': _('Transfer Discarded: %s') % transfer_name,
                 'container_id': self.id,
+                'action_type': 'container_updated',
                 'action': 'barcode_discard',
                 'description': _('Transfer discarded via barcode command: %s') % transfer_name,
                 'user_id': self.env.user.id,
@@ -402,7 +406,9 @@ class RecordsContainerBarcodeCommands(models.Model):
         
         # Log the scan
         self.env['naid.audit.log'].sudo().create({
+            'name': _('Barcode Scan: %s') % barcode,
             'container_id': container.id,
+            'action_type': 'access',
             'action': 'barcode_scan',
             'description': _('Container scanned: %s') % barcode,
             'user_id': self.env.user.id,
