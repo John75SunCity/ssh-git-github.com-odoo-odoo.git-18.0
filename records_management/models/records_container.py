@@ -495,8 +495,8 @@ class RecordsContainer(models.Model):
         if 'location_id' in vals:
             new_locations = self.mapped('location_id')
             affected_locations = old_locations | new_locations
-            if affected_locations:
-                affected_locations._compute_records_container_count()
+            # Location counts are handled via native quant_ids relationship
+            pass
         
         return result
 
@@ -534,9 +534,7 @@ class RecordsContainer(models.Model):
         
         result = super().unlink()
         
-        # Update location counts after deletion
-        if locations:
-            locations._compute_records_container_count()
+        # Location counts are handled via native quant_ids relationship
         
         return result
 
@@ -2207,7 +2205,5 @@ class RecordsContainer(models.Model):
     # LOCATION COUNT UPDATES
     # =========================================================================
     def _update_location_counts(self):
-        """Trigger recompute of container counts on affected locations"""
-        locations = self.mapped('location_id')
-        if locations:
-            locations._compute_records_container_count()
+        """Location counts are handled via native quant_ids relationship - method kept for compatibility"""
+        pass
