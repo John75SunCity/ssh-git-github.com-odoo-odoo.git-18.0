@@ -109,8 +109,8 @@
                                             </small>
                                         </td>
                                         <td>
-                                            <span t-att-class="'badge bg-' + ('success' if container.state == 'stored' else 'warning')">
-                                                <t t-esc="container.state"/>
+                                            <span t-att-class="'badge bg-' + ('success' if container.state == 'in' else 'warning' if container.state == 'pending' else 'info')">
+                                                <t t-esc="container.state_display or 'Pending'"/>
                                             </span>
                                         </td>
                                         <td t-esc="container.location_id.name if container.location_id else 'Not Set'"/>

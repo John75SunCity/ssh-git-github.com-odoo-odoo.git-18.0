@@ -127,9 +127,10 @@
 
                                         <dt class="col-sm-4">Status:</dt>
                                         <dd class="col-sm-8">
-                                            <span t-if="container.state == 'active'" class="badge badge-success">Active</span>
-                                            <span t-if="container.state == 'archived'" class="badge badge-warning">Archived</span>
-                                            <span t-if="container.state == 'destroyed'" class="badge badge-danger">Destroyed</span>
+                                            <span t-if="not container.active" class="badge badge-danger">Destroyed</span>
+                                            <span t-elif="container.state == 'pending'" class="badge badge-warning">Pending</span>
+                                            <span t-elif="container.state == 'in'" class="badge badge-success">In Storage</span>
+                                            <span t-elif="container.state == 'out'" class="badge badge-info">Out</span>
                                         </dd>
                                     </dl>
                                 </div>

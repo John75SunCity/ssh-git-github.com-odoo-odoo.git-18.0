@@ -254,8 +254,8 @@
                                                             </t>
                                                         </td>
                                                         <td>
-                                                            <span t-att-class="'badge bg-%s' % ('warning' if container.state == 'draft' else 'success')">
-                                                                <t t-esc="container.state"/>
+                                                            <span t-att-class="'badge bg-%s' % ('warning' if container.state == 'pending' else 'success')">
+                                                                <t t-esc="container.state_display or 'Pending'"/>
                                                             </span>
                                                         </td>
                                                         <td>

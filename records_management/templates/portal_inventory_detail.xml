@@ -18,8 +18,8 @@
                             <i class="fa fa-archive text-primary"></i>
                             <span t-esc="container.name"/>
                             <span class="badge" 
-                                  t-att-class="'badge-success' if container.state == 'active' else 'badge-warning'"
-                                  t-esc="container.state.title() if container.state else 'Active'"/>
+                                  t-att-class="'badge-success' if container.state == 'in' else 'badge-warning' if container.state == 'pending' else 'badge-info'"
+                                  t-esc="container.state_display or 'Pending'"/>
                         </h2>
                         <p class="text-muted" t-esc="container.description or 'No description'"/>
                     </div>

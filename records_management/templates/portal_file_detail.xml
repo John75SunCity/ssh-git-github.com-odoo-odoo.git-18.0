@@ -85,9 +85,11 @@
                                                     <th>State:</th>
                                                     <td>
                                                         <t t-if="file.state">
-                                                            <t t-set="state_dict" t-value="dict([('draft', 'Draft'), ('active', 'Active'), ('archived', 'Archived'), ('destroyed', 'Destroyed')])"/>
-                                                            <span t-att-class="'badge badge-' + ('success' if file.state == 'active' else 'warning' if file.state == 'draft' else 'secondary')">
-                                                                <t t-esc="state_dict.get(file.state, file.state)"/>
+                                                            <span t-att-class="'badge badge-' + ('success' if file.state == 'in' else 'warning' if file.state == 'pending' else 'info')">
+                                                                <t t-if="not file.active">Destroyed</t>
+                                                                <t t-elif="file.state == 'pending'">Pending</t>
+                                                                <t t-elif="file.state == 'in'">In Storage</t>
+                                                                <t t-elif="file.state == 'out'">Out</t>
                                                             </span>
                                                         </t>
                                                         <t t-else="">

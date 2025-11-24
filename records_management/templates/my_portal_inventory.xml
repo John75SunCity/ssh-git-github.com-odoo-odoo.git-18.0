@@ -376,7 +376,7 @@
                                                         </button>
                                                         <button class="btn btn-outline-danger btn-sm" 
                                                                 t-att-onclick="'requestDestruction(' + str(record.get('id')) + ')'"
-                                                                t-if="record.get('state') != 'destroyed'">
+                                                                t-if="record.get('active', True)">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </div>

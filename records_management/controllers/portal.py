@@ -5947,8 +5947,9 @@ class RecordsManagementController(http.Controller):
 
         summary = {
             'total_containers': len(containers),
-            'active_containers': len(containers.filtered(lambda c: c.state == 'active')),
-            'in_storage': len(containers.filtered(lambda c: c.state == 'storage')),
+            'pending_containers': len(containers.filtered(lambda c: c.state == 'pending')),
+            'in_storage': len(containers.filtered(lambda c: c.state == 'in')),
+            'out_containers': len(containers.filtered(lambda c: c.state == 'out')),
             'total_files': sum(containers.mapped('file_count')),
         }
 
@@ -6090,8 +6091,9 @@ class RecordsManagementController(http.Controller):
         # Calculate summary stats
         summary = {
             'total_containers': len(containers),
-            'active_containers': len(containers.filtered(lambda c: c.state == 'active')),
-            'in_storage': len(containers.filtered(lambda c: c.state == 'storage')),
+            'pending_containers': len(containers.filtered(lambda c: c.state == 'pending')),
+            'in_storage': len(containers.filtered(lambda c: c.state == 'in')),
+            'out_containers': len(containers.filtered(lambda c: c.state == 'out')),
             'total_files': sum(containers.mapped('file_count')),
         }
         

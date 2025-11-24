@@ -104,8 +104,8 @@
                                             </td>
                                             <td>
                                                 <span class="badge" 
-                                                      t-att-class="'badge-success' if container.state == 'active' else 'badge-warning'"
-                                                      t-esc="container.state.title() if container.state else 'Active'"/>
+                                                      t-att-class="'badge-success' if container.state == 'in' else 'badge-warning' if container.state == 'pending' else 'badge-info'"
+                                                      t-esc="container.state_display or 'Pending'"/>
                                             </td>
                                             <td>
                                                 <span t-esc="len(container.file_ids)" class="badge badge-info"/>

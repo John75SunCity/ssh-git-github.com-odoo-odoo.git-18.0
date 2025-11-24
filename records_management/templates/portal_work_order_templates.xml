@@ -188,7 +188,7 @@
                                                         <td><t t-esc="container.name"/></td>
                                                         <td><t t-esc="container.current_location_id.name"/></td>
                                                         <td>
-                                                            <span class="badge badge-info"><t t-esc="container.state"/></span>
+                                                            <span class="badge badge-info"><t t-esc="container.state_display or 'Pending'"/></span>
                                                         </td>
                                                         <td><t t-esc="container.write_date" t-options='{"widget": "datetime"}'/></td>
                                                     </tr>

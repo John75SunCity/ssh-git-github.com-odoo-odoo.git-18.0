@@ -48,7 +48,7 @@
                                                 <td><t t-esc="container.name"/></td>
                                                 <td><t t-esc="container.description or '-'"/></td>
                                                 <td><t t-esc="container.container_type_id.name if container.container_type_id else '-'"/></td>
-                                                <td><t t-esc="container.state"/></td>
+                                                <td><t t-esc="container.state_display or 'Pending'"/></td>
                                             </tr>
                                         </t>
                                     </tbody>
