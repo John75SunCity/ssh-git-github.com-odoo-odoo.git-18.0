@@ -810,6 +810,133 @@ class RecordsFile(models.Model):
         }
     
     # ============================================================================
+    # BILLING & WORK ORDER AUTOMATION METHODS (Mirror container logic)
+    # ============================================================================
+    
+    def _create_destruction_charges(self):
+        """
+        Create invoice charges for file destruction.
+        
+        Destruction includes:
+        - Per-item removal fee
+        - Per-item shredding fee
+        
+        Creates 2 invoice line items.
+        """
+        self.ensure_one()
+        
+        if not self.partner_id:
+            raise UserError(_("Cannot create destruction charges: No customer assigned to file %s") % self.name)
+        
+        # Get or create draft invoice for customer
+        invoice = self._get_or_create_draft_invoice()
+        
+        # Get product for removal and shredding fees
+        removal_product = self._get_removal_fee_product()
+        shredding_product = self._get_shredding_fee_product()
+        
+        # Create invoice lines
+        invoice_line_vals = [
+            {
+                'product_id': removal_product.id,
+                'name': _('File Removal Fee - %s') % self.name,
+                'quantity': 1,
+                'price_unit': removal_product.list_price * 0.5,  # Files are half price of containers
+                'move_id': invoice.id,
+            },
+            {
+                'product_id': shredding_product.id,
+                'name': _('File Shredding Fee - %s') % self.name,
+                'quantity': 1,
+                'price_unit': shredding_product.list_price * 0.5,  # Files are half price of containers
+                'move_id': invoice.id,
+            }
+        ]
+        
+        self.env['account.move.line'].create(invoice_line_vals)
+        
+        # Log charge creation
+        total = (removal_product.list_price + shredding_product.list_price) * 0.5
+        self.message_post(
+            body=_("Destruction charges created:<br/>• Removal fee: %s<br/>• Shredding fee: %s<br/>Total: %s") % (
+                removal_product.list_price * 0.5,
+                shredding_product.list_price * 0.5,
+                total
+            ),
+            subject=_("Destruction Charges Created")
+        )
+        
+        return invoice
+    
+    def _create_removal_charges(self):
+        """
+        Create invoice charges for permanent removal (perm-out).
+        
+        Perm-Out includes:
+        - Per-item removal fee ONLY (no shredding)
+        
+        Creates 1 invoice line item.
+        """
+        self.ensure_one()
+        
+        if not self.partner_id:
+            raise UserError(_("Cannot create removal charges: No customer assigned to file %s") % self.name)
+        
+        # Get or create draft invoice for customer
+        invoice = self._get_or_create_draft_invoice()
+        
+        # Get product for removal fee
+        removal_product = self._get_removal_fee_product()
+        
+        # Create invoice line
+        invoice_line_vals = {
+            'product_id': removal_product.id,
+            'name': _('File Removal Fee (Perm-Out) - %s') % self.name,
+            'quantity': 1,
+            'price_unit': removal_product.list_price * 0.5,  # Files are half price of containers
+            'move_id': invoice.id,
+        }
+        
+        self.env['account.move.line'].create(invoice_line_vals)
+        
+        # Log charge creation
+        self.message_post(
+            body=_("Removal charges created (Perm-Out):<br/>• Removal fee: %s") % (removal_product.list_price * 0.5),
+            subject=_("Perm-Out Charges Created")
+        )
+        
+        return invoice
+    
+    def _get_or_create_draft_invoice(self):
+        """Get existing draft invoice or create new one for customer"""
+        invoice = self.env['account.move'].search([
+            ('partner_id', '=', self.partner_id.id),
+            ('move_type', '=', 'out_invoice'),
+            ('state', '=', 'draft'),
+        ], limit=1)
+        
+        if not invoice:
+            invoice = self.env['account.move'].create({
+                'partner_id': self.partner_id.id,
+                'move_type': 'out_invoice',
+                'invoice_date': fields.Date.today(),
+            })
+        
+        return invoice
+    
+    def _get_removal_fee_product(self):
+        """Get product for removal fees"""
+        return self.env['product.product'].search([
+            ('default_code', '=', 'RM-REMOVAL-FEE'),
+        ], limit=1)
+    
+    def _get_shredding_fee_product(self):
+        """Get product for shredding fees"""
+        return self.env['product.product'].search([
+            ('default_code', '=', 'RM-SHREDDING-FEE'),
+        ], limit=1)
+    
+    # ============================================================================
     # CONSTRAINTS
     # ============================================================================
     @api.constrains('barcode')
