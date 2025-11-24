@@ -9,9 +9,6 @@
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
-# Import translation function
-from odoo.tools.translate import _
-
 # Bulk create retrieval work order from selected containers
 if records:
     # Get partner from first container (all should be same customer)
@@ -19,12 +16,12 @@ if records:
 
     # Validate all containers belong to same partner
     if any(c.partner_id != partner for c in records):
-        raise UserError(_("All selected containers must belong to the same customer."))
+        raise UserError("All selected containers must belong to the same customer.")
 
     # Validate containers are in storage
     invalid = records.filtered(lambda c: c.state not in ('in', 'out'))
     if invalid:
-        raise UserError(_("Only containers that are 'In Storage' or 'Out' can be added to retrieval orders.\nInvalid: %s") % ', '.join(invalid.mapped('name')))
+        raise UserError("Only containers that are 'In Storage' or 'Out' can be added to retrieval orders.\nInvalid: %s" % ', '.join(invalid.mapped('name')))
 
     # Create new retrieval work order
     work_order = env['records.retrieval.work.order'].create({
@@ -62,9 +59,6 @@ if records:
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
-# Import translation function
-from odoo.tools.translate import _
-
 # Bulk create destruction work order from selected containers
 if records:
     # Get partner from first container
@@ -72,12 +66,12 @@ if records:
 
     # Validate all containers belong to same partner
     if any(c.partner_id != partner for c in records):
-        raise UserError(_("All selected containers must belong to the same customer."))
+        raise UserError("All selected containers must belong to the same customer.")
 
     # Validate containers are in storage
     invalid = records.filtered(lambda c: c.state not in ('in', 'out'))
     if invalid:
-        raise UserError(_("Only containers that are 'In Storage' or 'Out' can be scheduled for destruction.\nInvalid: %s") % ', '.join(invalid.mapped('name')))
+        raise UserError("Only containers that are 'In Storage' or 'Out' can be scheduled for destruction.\nInvalid: %s" % ', '.join(invalid.mapped('name')))
 
     # Create new destruction work order
     work_order = env['container.destruction.work.order'].create({
@@ -115,9 +109,6 @@ if records:
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
-# Import translation function
-from odoo.tools.translate import _
-
 # Bulk create container access request from selected containers
 if records:
     # Get partner from first container
@@ -125,12 +116,12 @@ if records:
 
     # Validate all containers belong to same partner
     if any(c.partner_id != partner for c in records):
-        raise UserError(_("All selected containers must belong to the same customer."))
+        raise UserError("All selected containers must belong to the same customer.")
 
     # Validate containers are accessible
     invalid = records.filtered(lambda c: c.state not in ('in', 'out'))
     if invalid:
-        raise UserError(_("Only containers that are 'In Storage' or 'Out' can have access requests.\nInvalid: %s") % ', '.join(invalid.mapped('name')))
+        raise UserError("Only containers that are 'In Storage' or 'Out' can have access requests.\nInvalid: %s" % ', '.join(invalid.mapped('name')))
 
     # Create new portal request for container access
     request = env['portal.request'].create({
@@ -168,9 +159,6 @@ if records:
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
-# Import translation function
-from odoo.tools.translate import _
-
 # Open wizard to add selected containers to existing work order
 if records:
     # Get partner from first container
@@ -178,7 +166,7 @@ if records:
 
     # Validate all containers belong to same partner
     if any(c.partner_id != partner for c in records):
-        raise UserError(_("All selected containers must belong to the same customer."))
+        raise UserError("All selected containers must belong to the same customer.")
 
     # Create wizard
     wizard = env['add.to.work.order.wizard'].create({
