@@ -9,6 +9,9 @@
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
+# Import translation function
+from odoo.tools.translate import _
+
 # Bulk create retrieval work order from selected containers
 if records:
     # Get partner from first container (all should be same customer)
@@ -25,7 +28,7 @@ if records:
 
     # Create new retrieval work order
     work_order = env['records.retrieval.work.order'].create({
-        'name': _('Retrieval - %s (%s containers)') % (partner.name, len(records)),
+        'name': 'Retrieval - %s (%s containers)' % (partner.name, len(records)),
         'partner_id': partner.id,
         'user_id': env.user.id,
         'state': 'draft',
@@ -35,13 +38,13 @@ if records:
 
     # Post message
     work_order.message_post(
-        body=_('📦 Created from bulk action with %d container(s): %s') % (len(records), ', '.join(records.mapped('name'))),
-        subject=_('Bulk Retrieval Order Created')
+        body='📦 Created from bulk action with %d container(s): %s' % (len(records), ', '.join(records.mapped('name'))),
+        subject='Bulk Retrieval Order Created'
     )
 
     # Return action to open the new work order
     action = {
-        'name': _('Retrieval Work Order'),
+        'name': 'Retrieval Work Order',
         'type': 'ir.actions.act_window',
         'res_model': 'records.retrieval.work.order',
         'res_id': work_order.id,
@@ -59,6 +62,9 @@ if records:
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
+# Import translation function
+from odoo.tools.translate import _
+
 # Bulk create destruction work order from selected containers
 if records:
     # Get partner from first container
@@ -75,7 +81,7 @@ if records:
 
     # Create new destruction work order
     work_order = env['container.destruction.work.order'].create({
-        'name': _('Destruction - %s (%s containers)') % (partner.name, len(records)),
+        'name': 'Destruction - %s (%s containers)' % (partner.name, len(records)),
         'partner_id': partner.id,
         'user_id': env.user.id,
         'state': 'draft',
@@ -85,13 +91,13 @@ if records:
 
     # Post message
     work_order.message_post(
-        body=_('🔥 Created from bulk action with %d container(s): %s') % (len(records), ', '.join(records.mapped('name'))),
-        subject=_('Bulk Destruction Order Created')
+        body='🔥 Created from bulk action with %d container(s): %s' % (len(records), ', '.join(records.mapped('name'))),
+        subject='Bulk Destruction Order Created'
     )
 
     # Return action to open the new work order
     action = {
-        'name': _('Destruction Work Order'),
+        'name': 'Destruction Work Order',
         'type': 'ir.actions.act_window',
         'res_model': 'container.destruction.work.order',
         'res_id': work_order.id,
@@ -109,6 +115,9 @@ if records:
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
+# Import translation function
+from odoo.tools.translate import _
+
 # Bulk create container access request from selected containers
 if records:
     # Get partner from first container
@@ -125,23 +134,23 @@ if records:
 
     # Create new portal request for container access
     request = env['portal.request'].create({
-        'name': _('Container Access - %s (%s containers)') % (partner.name, len(records)),
+        'name': 'Container Access - %s (%s containers)' % (partner.name, len(records)),
         'partner_id': partner.id,
-        'request_type': 'other',  # Container access type
+        'request_type': 'other',
         'state': 'submitted',
-        'description': _('Container Access Request\n\nBulk access request for containers:\n%s') % '\n'.join('• ' + c.name for c in records),
+        'description': 'Container Access Request\n\nBulk access request for containers:\n%s' % '\n'.join('• ' + c.name for c in records),
         'container_ids': [(6, 0, records.ids)],
     })
 
     # Post message
     request.message_post(
-        body=_('🔑 Created from bulk action with %d container(s)') % len(records),
-        subject=_('Bulk Access Request Created')
+        body='🔑 Created from bulk action with %d container(s)' % len(records),
+        subject='Bulk Access Request Created'
     )
 
     # Return action to open the new request
     action = {
-        'name': _('Container Access Request'),
+        'name': 'Container Access Request',
         'type': 'ir.actions.act_window',
         'res_model': 'portal.request',
         'res_id': request.id,
@@ -159,6 +168,9 @@ if records:
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
+# Import translation function
+from odoo.tools.translate import _
+
 # Open wizard to add selected containers to existing work order
 if records:
     # Get partner from first container
@@ -176,7 +188,7 @@ if records:
 
     # Return action to open wizard
     action = {
-        'name': _('Add to Existing Work Order'),
+        'name': 'Add to Existing Work Order',
         'type': 'ir.actions.act_window',
         'res_model': 'add.to.work.order.wizard',
         'res_id': wizard.id,
