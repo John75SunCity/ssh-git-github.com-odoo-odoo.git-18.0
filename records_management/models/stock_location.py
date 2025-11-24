@@ -180,8 +180,13 @@ class StockLocation(models.Model):
         help="All inventory currently at this location"
     )
     
-    # Note: Use native 'quant_ids' field to count containers via stock.quant records
-    # No need for separate records_container_count field
+    # Computed field for container count (used in views)
+    records_container_count = fields.Integer(
+        string="Container Count",
+        compute='_compute_records_container_count',
+        store=False,
+        help="Number of records containers at this location"
+    )
     
     # ============================================================================
     # COMPUTE METHODS
@@ -200,6 +205,12 @@ class StockLocation(models.Model):
                 location.position,
             ]
             location.full_coordinates = ' / '.join(filter(None, parts))
+    
+    @api.depends('container_ids')
+    def _compute_records_container_count(self):
+        """Count records containers at this location"""
+        for location in self:
+            location.records_container_count = len(location.container_ids)
     
     @api.depends('quant_ids', 'quant_ids.quantity')
     def _compute_current_usage(self):
