@@ -206,4 +206,3 @@ class RecordsInventoryDashboard(models.Model):
                     raise ValidationError(_("Please specify both start and end dates for a custom range."))
                 if record.date_from > record.date_to:
                     raise ValidationError(_("Start date must be before or the same as the end date."))
-

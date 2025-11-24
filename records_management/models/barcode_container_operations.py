@@ -328,7 +328,7 @@ class RecordsContainerBarcodeOperations(models.Model):
             product = self.env['product.product'].create({
                 'name': 'Records Container (Generic)',
                 'default_code': 'CONTAINER-GENERIC',
-                'type': 'product',  # Use simple 'product' type
+                'type': 'storable',  # Odoo 18: 'storable' for inventory tracking
                 'tracking': 'none',
                 'company_id': self.company_id.id,
                 # Intentionally NOT setting detailed_type - let Odoo defaults handle it
