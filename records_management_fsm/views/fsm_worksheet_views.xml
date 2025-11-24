@@ -12,7 +12,7 @@
             <field name="model">fsm.worksheet.instance</field>
             <field name="type">list</field>
             <field name="arch" type="xml">
-                <tree string="FSM Worksheets" decoration-success="is_complete==True" decoration-warning="completion_percentage&lt;50" decoration-info="completion_percentage&gt;=50 and not is_complete">
+                <list string="FSM Worksheets" decoration-success="is_complete==True" decoration-warning="completion_percentage&lt;50" decoration-info="completion_percentage&gt;=50 and not is_complete">
                     <field name="name"/>
                     <field name="task_id"/>
                     <field name="partner_id"/>
@@ -20,7 +20,7 @@
                     <field name="completion_percentage" widget="progressbar"/>
                     <field name="is_complete" invisible="1"/>
                     <field name="customer_signature_date"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -199,7 +199,7 @@
             <field name="model">fsm.worksheet.template</field>
             <field name="type">list</field>
             <field name="arch" type="xml">
-                <tree string="Worksheet Templates">
+                <list string="Worksheet Templates">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="service_type"/>
@@ -208,7 +208,7 @@
                     <field name="requires_weight"/>
                     <field name="generates_certificate"/>
                     <field name="active"/>
-                </tree>
+                </list>
             </field>
         </record>
 
