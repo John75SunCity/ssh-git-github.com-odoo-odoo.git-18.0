@@ -37,7 +37,10 @@ class RecordsContainer(models.Model):
              "Customer uses their own naming/numbering system. This is what appears on portal.\n"
              "EDITABLE: Customer can update this name at any time (except when destroyed)."
     )
-    active = fields.Boolean(default=True)
+    active = fields.Boolean(
+        default=True,
+        help="Uncheck to archive (mark as Destroyed). Archived containers are read-only and represent physically destroyed records."
+    )
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company, required=True, readonly=True
     )
@@ -167,20 +170,21 @@ class RecordsContainer(models.Model):
     # ============================================================================
     state = fields.Selection(
         [
-            ("draft", "Draft"),
-            ("active", "Active/Indexed"),
-            ("pending_pickup", "Pending Pickup"),
-            ("in_storage", "In Storage"),
-            ("in_transit", "In Transit"),
-            ("retrieved", "Retrieved"),
-            ("pending_destruction", "Pending Destruction"),
-            ("destroyed", "Destroyed"),
+            ("pending", "Pending"),  # Created but never scanned into internal location
+            ("in", "In Storage"),     # At internal warehouse location
+            ("out", "Out"),           # Transferred to customer via work order
         ],
         string="Status",
-        default="draft",
+        default="pending",
         required=True,
         tracking=True,
-        help="Container lifecycle: Draft → Active/Indexed → Pending Pickup → In Storage → In Transit → Retrieved"
+        help="Container status: PENDING = Created but not scanned in | IN = At internal location | OUT = With customer. Use Archive (destroyed) for physically destroyed containers."
+    )
+    
+    state_display = fields.Char(
+        string="Status Display",
+        compute='_compute_state_display',
+        help="Shows current state or 'Destroyed' if archived"
     )
 
     # ============================================================================
@@ -457,9 +461,9 @@ class RecordsContainer(models.Model):
         # Create records
         records = super().create(vals_list)
 
-        # ✅ NEW: Create stock.quant for each container (stock integration)
+        # ✅ Create stock.quant when container is scanned IN (not pending)
         for record in records:
-            if record.state not in ('draft',) and not record.quant_id:
+            if record.state == 'in' and not record.quant_id:
                 record._create_stock_quant()
         
         # Update location container counts
@@ -479,10 +483,10 @@ class RecordsContainer(models.Model):
 
         result = super().write(vals)
 
-        # ✅ FIX: Create stock.quant when container is activated (state changes from draft)
+        # ✅ Create stock.quant when container is scanned IN (state changes to 'in')
         if 'state' in vals:
             for record in self:
-                if record.state not in ('draft',) and not record.quant_id:
+                if record.state == 'in' and not record.quant_id:
                     record._create_stock_quant()
         
         # Update location counts if location changed
@@ -521,8 +525,8 @@ class RecordsContainer(models.Model):
         locations = self.mapped('location_id')
         
         for record in self:
-            if record.state not in ("draft", "destroyed"):
-                raise UserError(_("You can only delete containers that are in 'Draft' or 'Destroyed' state."))
+            if record.active:
+                raise UserError(_("You can only delete archived (destroyed) containers. Use the Archive button to mark as destroyed first."))
             if record.document_ids:
                 raise UserError(_("Cannot delete a container that has documents linked to it."))
         
@@ -557,6 +561,16 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # COMPUTE & SEARCH METHODS
     # ============================================================================
+    @api.depends('state', 'active')
+    def _compute_state_display(self):
+        """Show 'Destroyed' when archived, otherwise show current state"""
+        for container in self:
+            if not container.active:
+                container.state_display = "Destroyed"
+            else:
+                state_dict = dict(container._fields['state'].selection)
+                container.state_display = state_dict.get(container.state, container.state)
+    
     @api.depends("document_ids")
     def _compute_document_count(self):
         for container in self:
@@ -584,7 +598,7 @@ class RecordsContainer(models.Model):
                 container.destruction_due_date
                 and container.destruction_due_date <= today
                 and not container.permanent_retention
-                and container.state != "destroyed"
+                and container.active  # Only active (non-archived) containers
             )
 
     def _search_due_for_destruction(self, operator, value):
@@ -592,7 +606,7 @@ class RecordsContainer(models.Model):
         domain = [
             ("destruction_due_date", "<=", today),
             ("permanent_retention", "=", False),
-            ("state", "!=", "destroyed"),
+            ("active", "=", True),  # Only active (non-archived)
         ]
         if (operator == "=" and value) or (operator == "!=" and not value):
             return domain
@@ -1084,9 +1098,9 @@ class RecordsContainer(models.Model):
         """
         self.ensure_one()
 
-        # Only draft or active containers can be stored
-        if self.state not in ('draft', 'active'):
-            raise UserError(_("Only draft or active containers can be processed for storage"))
+        # Can process containers that are pending or already in storage
+        if self.state == 'out':
+            raise UserError(_("Cannot process containers that are OUT with customer. Request return first."))
 
         # Create field service ticket for pickup
         fsm_project = self.env['project.project'].search([

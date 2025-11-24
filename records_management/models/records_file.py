@@ -187,13 +187,11 @@ class RecordsFile(models.Model):
     # STATUS TRACKING
     # ============================================================================
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('stored', 'Stored in Container'),
-        ('retrieved', 'Retrieved from Container'),
-        ('at_customer', 'At Customer Site'),
-        ('in_transit', 'In Transit'),
-        ('returned', 'Returned to Container'),
-    ], string='Status', default='draft', tracking=True)
+        ('pending', 'Pending'),  # Created but never scanned into internal location
+        ('in', 'In Storage'),    # At internal location (in container)
+        ('out', 'Out'),          # With customer (retrieved from container)
+    ], string='Status', default='pending', tracking=True,
+    help="File status: PENDING = Created but not scanned in | IN = At internal location | OUT = With customer. Use Archive (destroyed) for physically destroyed files.")
     
     # ============================================================================
     # LEGAL CITATIONS & RECORD SERIES (Optional Compliance Features)

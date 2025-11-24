@@ -235,21 +235,21 @@ class StockLocation(models.Model):
     
     @api.depends('quant_ids')
     def _compute_records_container_count(self):
-        """Count ALL records containers at this location (including draft/temp without quants)"""
+        """Count ALL active (non-archived) records containers at this location"""
         for location in self:
             # Count both:
-            # 1. Containers with quants (activated containers)
+            # 1. Containers with quants (scanned into inventory)
             quant_count = len(location.quant_ids.filtered('is_records_container'))
             
-            # 2. Containers without quants (draft/temp containers)
-            # These have location_id set but no quant_id yet
-            draft_containers = self.env['records.container'].search_count([
+            # 2. Containers without quants (pending/created but not scanned in)
+            # Uses active=True to exclude archived (destroyed) containers
+            pending_containers = self.env['records.container'].search_count([
                 ('location_id', '=', location.id),
                 ('quant_id', '=', False),
-                ('state', '!=', 'destroyed')
+                ('active', '=', True)  # Exclude archived (destroyed)
             ])
             
-            location.records_container_count = quant_count + draft_containers
+            location.records_container_count = quant_count + pending_containers
     
     # ============================================================================
     # BUSINESS LOGIC
