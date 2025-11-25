@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- NetworkDiagram Component Template -->
+    <t t-name="web_vis_network.NetworkDiagram">
+        <div class="o_network_diagram_component">
+            <div t-ref="network-container" 
+                 class="o_network_container"
+                 t-att-style="`height: ${props.height}px; border: 1px solid #dee2e6; border-radius: 4px;`"/>
+        </div>
+    </t>
+</templates>
