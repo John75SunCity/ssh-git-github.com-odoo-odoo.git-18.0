@@ -10,7 +10,7 @@
         <field name="arch" type="xml">
             <xpath expr="//form/sheet" position="before">
                 <header>
-                    <button name="action_open_3d_view" 
+                    <button name="action_open_in_3d_view" 
                             type="object" 
                             string="3D View" 
                             class="btn-primary"
