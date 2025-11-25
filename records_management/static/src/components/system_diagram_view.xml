@@ -25,12 +25,27 @@
                     </button>
                 </div>
                 
-                <!-- Diagram Name -->
-                <div class="flex-grow-1 ms-3">
-                    <h5 class="mb-0" t-if="state.diagramName">
+                <!-- Diagram Selector -->
+                <div class="flex-grow-1 ms-3 d-flex align-items-center gap-3">
+                    <label class="mb-0 fw-bold">
                         <i class="fa fa-sitemap me-2"/>
-                        <t t-esc="state.diagramName"/>
-                    </h5>
+                        Select Diagram:
+                    </label>
+                    <select class="form-select" 
+                            style="max-width: 400px;"
+                            t-on-change="onDiagramChange"
+                            t-att-disabled="state.loading"
+                            t-model="state.diagramId">
+                        <option t-foreach="state.availableDiagrams" 
+                                t-as="diagram" 
+                                t-key="diagram.id"
+                                t-att-value="diagram.id"
+                                t-att-selected="diagram.id === state.diagramId">
+                            <t t-esc="diagram.name"/> 
+                            (<t t-esc="diagram.node_count || 0"/> nodes, 
+                            <t t-esc="diagram.edge_count || 0"/> edges)
+                        </option>
+                    </select>
                 </div>
                 
                 <!-- Diagram Stats -->

@@ -37,9 +37,13 @@ export class SystemDiagramView extends Component {
             diagramName: '',
             nodeCount: 0,
             edgeCount: 0,
+            availableDiagrams: [],  // All diagrams for dropdown selector
         });
         
         onWillStart(async () => {
+            // Load all available diagrams for dropdown
+            await this.loadAvailableDiagrams();
+            // Then load the selected diagram data
             await this.loadDiagramData();
         });
         
@@ -62,6 +66,36 @@ export class SystemDiagramView extends Component {
         onMounted(() => {
             console.log("System Diagram View mounted", this.state);
         });
+    }
+    
+    /**
+     * Load all available diagrams for dropdown selector
+     */
+    async loadAvailableDiagrams() {
+        try {
+            this.state.availableDiagrams = await this.orm.searchRead(
+                'system.diagram.data',
+                [],
+                ['id', 'name', 'search_type', 'node_count', 'edge_count'],
+                { order: 'name' }
+            );
+            console.log(`Loaded ${this.state.availableDiagrams.length} diagrams for dropdown`);
+        } catch (error) {
+            console.error('Error loading available diagrams:', error);
+            this.state.availableDiagrams = [];
+        }
+    }
+    
+    /**
+     * Handle diagram selection change from dropdown
+     */
+    async onDiagramChange(event) {
+        const newDiagramId = parseInt(event.target.value, 10);
+        if (newDiagramId && newDiagramId !== this.state.diagramId) {
+            console.log(`Switching to diagram ID: ${newDiagramId}`);
+            this.state.diagramId = newDiagramId;
+            await this.loadDiagramData();
+        }
     }
     
     /**
