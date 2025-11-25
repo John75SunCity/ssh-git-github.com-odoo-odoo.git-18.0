@@ -82,16 +82,16 @@ export class NetworkDiagram extends Component {
         // Attach event handlers if provided
         if (this.props.onNodeClick) {
             this.network.on('click', (params) => {
-                if (params.nodes.length > 0) {
-                    this.props.onNodeClick(params.nodes[0], params);
+                if (params.nodes && params.nodes.length > 0) {
+                    this.props.onNodeClick(params);
                 }
             });
         }
 
         if (this.props.onEdgeClick) {
             this.network.on('click', (params) => {
-                if (params.edges.length > 0) {
-                    this.props.onEdgeClick(params.edges[0], params);
+                if (params.edges && params.edges.length > 0) {
+                    this.props.onEdgeClick(params);
                 }
             });
         }
@@ -135,7 +135,16 @@ export class NetworkDiagram extends Component {
                 hover: true,
                 navigationButtons: true,
                 keyboard: true,
-                tooltipDelay: 200
+                tooltipDelay: 200,
+                zoomSpeed: 0.5,  // Slower zoom (default is 1)
+                zoomView: true,
+                dragView: true
+            },
+            manipulation: {
+                enabled: false
+            },
+            configure: {
+                enabled: false
             }
         };
     }

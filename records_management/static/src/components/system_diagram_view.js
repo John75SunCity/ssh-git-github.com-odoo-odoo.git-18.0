@@ -250,18 +250,21 @@ export class SystemDiagramView extends Component {
      * @param {Object} params - Click event parameters from vis.js
      */
     onNodeClick(params) {
-        if (params.nodes.length > 0) {
-            const nodeId = params.nodes[0];
-            console.log('Node clicked:', nodeId, params);
-            
-            // Find the clicked node
-            const node = this.state.nodes.find(n => n.id === nodeId);
-            if (node) {
-                this.notification.add(
-                    `Clicked: ${node.label}`,
-                    { type: "info" }
-                );
-            }
+        // Safety check for params and nodes array
+        if (!params || !params.nodes || params.nodes.length === 0) {
+            return;
+        }
+        
+        const nodeId = params.nodes[0];
+        console.log('Node clicked:', nodeId, params);
+        
+        // Find the clicked node
+        const node = this.state.nodes.find(n => n.id === nodeId);
+        if (node) {
+            this.notification.add(
+                `Clicked: ${node.label}`,
+                { type: "info" }
+            );
             
             // TODO: Add custom logic for different node types
             // e.g., open model record, show user details, etc.
@@ -274,22 +277,25 @@ export class SystemDiagramView extends Component {
      * @param {Object} params - Click event parameters from vis.js
      */
     onEdgeClick(params) {
-        if (params.edges.length > 0) {
-            const edgeId = params.edges[0];
-            console.log('Edge clicked:', edgeId, params);
+        // Safety check for params and edges array
+        if (!params || !params.edges || params.edges.length === 0) {
+            return;
+        }
+        
+        const edgeId = params.edges[0];
+        console.log('Edge clicked:', edgeId, params);
+        
+        // Find the clicked edge
+        const edge = this.state.edges.find(e => e.id === edgeId);
+        if (edge) {
+            const fromNode = this.state.nodes.find(n => n.id === edge.from);
+            const toNode = this.state.nodes.find(n => n.id === edge.to);
             
-            // Find the clicked edge
-            const edge = this.state.edges.find(e => e.id === edgeId);
-            if (edge) {
-                const fromNode = this.state.nodes.find(n => n.id === edge.from);
-                const toNode = this.state.nodes.find(n => n.id === edge.to);
-                
-                if (fromNode && toNode) {
-                    this.notification.add(
-                        `Connection: ${fromNode.label} → ${toNode.label}`,
-                        { type: "info" }
-                    );
-                }
+            if (fromNode && toNode) {
+                this.notification.add(
+                    `Connection: ${fromNode.label} → ${toNode.label}`,
+                    { type: "info" }
+                );
             }
         }
     }
