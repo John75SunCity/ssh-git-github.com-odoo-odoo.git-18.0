@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component, onWillStart, onMounted, useState } from "@odoo/owl";
+import { Component, onWillStart, onMounted, onWillUpdateProps, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { NetworkDiagram } from "@web_vis_network/components/network_diagram";
@@ -41,6 +41,22 @@ export class SystemDiagramView extends Component {
         
         onWillStart(async () => {
             await this.loadDiagramData();
+        });
+        
+        onWillUpdateProps(async (nextProps) => {
+            // Reload diagram when props change (e.g., clicking different diagram in list)
+            const newActiveId = nextProps.action?.context?.active_id;
+            const newResId = nextProps.action?.res_id;
+            
+            if (newActiveId && newActiveId !== this.state.diagramId) {
+                console.log(`Props changed: loading new diagram ID ${newActiveId}`);
+                this.state.diagramId = newActiveId;
+                await this.loadDiagramData();
+            } else if (newResId && newResId !== this.state.diagramId) {
+                console.log(`Props changed: loading new diagram ID ${newResId}`);
+                this.state.diagramId = newResId;
+                await this.loadDiagramData();
+            }
         });
         
         onMounted(() => {

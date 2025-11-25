@@ -19,6 +19,7 @@
                 <field name="edge_count" string="Edges"/>
                 <field name="cache_timestamp" string="Cache Updated"/>
                 <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open_owl_diagram" string="View Diagram" type="object" class="btn btn-sm btn-primary" icon="fa-sitemap"/>
             </list>
         </field>
     </record>
