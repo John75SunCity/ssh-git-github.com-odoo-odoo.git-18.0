@@ -866,9 +866,19 @@ class SystemDiagramData(models.Model):
         the cache and triggering field recomputation.
         """
         self.ensure_one()
+        _logger.info("=== Starting diagram regeneration for record ID: %s ===", self.id)
+        
         # Force recomputation of computed fields
         self._invalidate_cache(['nodes_data', 'edges_data', 'diagram_config', 'diagram_html'])
         self._compute_diagram_data()
         self._compute_diagram_config()
         self._compute_diagram_html()
-        return True
+        
+        _logger.info("=== Diagram regeneration complete. Nodes: %s, Edges: %s ===", 
+                    self.node_count, self.edge_count)
+        
+        # Return action to reload the view
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
