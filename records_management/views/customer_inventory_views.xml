@@ -117,55 +117,6 @@
                 </p>
             </field>
         </record>
-                </p>
-                <ol>
-                    <li>Click the <b>New</b> button above</li>
-                    <li>Select <b>Customer</b> (the partner whose inventory to snapshot)</li>
-                    <li>Set <b>Inventory Date</b> (typically month-end or billing cycle date)</li>
-                    <li>Choose <b>Department</b> if customer has multiple departments</li>
-                    <li>System auto-generates <b>Inventory Name</b> (e.g., "INV-ABC-Corp-202501")</li>
-                    <li>Click <b>Generate Inventory</b> - system automatically:
-                        <ul>
-                            <li>Counts all active containers for customer</li>
-                            <li>Calculates total storage volume (cubic feet)</li>
-                            <li>Lists all documents and their retention status</li>
-                            <li>Determines storage locations and distribution</li>
-                            <li>Calculates billing amounts based on rates</li>
-                        </ul>
-                    </li>
-                    <li>Review the <b>Inventory Lines</b> tab (detailed item list)</li>
-                    <li>Check <b>Summary Totals</b> (containers, documents, volume, cost)</li>
-                    <li>Click <b>Confirm</b> to lock the inventory (creates immutable snapshot)</li>
-                    <li>Use <b>Print Report</b> to generate customer-facing inventory report</li>
-                    <li>Click <b>Send to Customer</b> to email report via portal</li>
-                </ol>
-                <p>
-                    <b>📊 Inventory Status Workflow:</b>
-                </p>
-                <ul>
-                    <li><b>Draft:</b> Inventory being generated, can be recalculated</li>
-                    <li><b>Confirmed:</b> Inventory locked, represents point-in-time snapshot</li>
-                    <li><b>Sent:</b> Inventory report delivered to customer</li>
-                    <li><b>Approved:</b> Customer acknowledged inventory accuracy</li>
-                    <li><b>Disputed:</b> Customer questions inventory (requires investigation)</li>
-                </ul>
-                <p>
-                    <b>🚀 Key Features:</b><br/>
-                    • Automated inventory generation from current container data<br/>
-                    • Point-in-time snapshot for billing accuracy<br/>
-                    • Detailed line items (container-by-container breakdown)<br/>
-                    • Storage location distribution analysis<br/>
-                    • Retention policy compliance tracking<br/>
-                    • Billing calculation with rate verification<br/>
-                    • Customer portal integration for self-service access<br/>
-                    • Historical inventory comparison and trending<br/>
-                    • Export to Excel for customer analysis
-                </p>
-                <p>
-                    <b>💡 Best Practice:</b> Generate inventory at the same time each month (e.g., last day of month) for consistency. Always confirm inventory before billing cycle runs.
-                </p>
-            </field>
-        </record>
         
         <!-- Inventory Snapshots - Periodic audit records -->
         <record id="action_inventory_snapshots" model="ir.actions.act_window">
