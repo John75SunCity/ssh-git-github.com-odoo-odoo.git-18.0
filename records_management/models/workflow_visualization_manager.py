@@ -9,9 +9,12 @@ workflow states, and system interactions.
 
 from datetime import datetime, timedelta
 import json
+import logging
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class WorkflowVisualizationManager(models.Model):
@@ -95,16 +98,7 @@ class WorkflowVisualizationManager(models.Model):
             })
             return True
         except Exception as e:
-            self.env["ir.logging"].create(
-                {
-                    "name": "Process Flow Generation Error",
-                    "type": "server",
-                    "level": "ERROR",
-                    "message": _("Error generating process flow diagram: %s") % str(e),
-                    "path": "workflow.visualization.manager",
-                    "func": "action_generate_process_flow_diagram",
-                }
-            )
+            _logger.error("Error generating process flow diagram: %s", str(e), exc_info=True)
             raise
 
     def _generate_process_flow(self, model_name):
@@ -171,16 +165,7 @@ class WorkflowVisualizationManager(models.Model):
         }
 
         # Log analytics generation
-        self.env["ir.logging"].create(
-            {
-                "name": "Workflow Analytics",
-                "type": "server",
-                "level": "INFO",
-                "message": _("Generated workflow analytics for model %s") % model_name,
-                "path": "workflow.visualization.manager",
-                "func": "get_workflow_analytics",
-            }
-        )
+        _logger.info("Generated workflow analytics for model %s", model_name)
 
         return analytics
 
@@ -217,13 +202,11 @@ class WorkflowVisualizationManager(models.Model):
                 visualization = self.create(viz_data)
                 created_visualizations.append(visualization)
             except Exception as e:
-                self.env['ir.logging'].create({
-                    'name': 'Default Visualization Creation Error',
-                    'type': 'server',
-                    'level': 'ERROR',
-                    'message': _('Error creating default visualization %s: %s') % (viz_data['name'], str(e)),
-                    'path': 'workflow.visualization.manager',
-                    'func': 'action_create_default_visualizations',
-                })
+                _logger.error(
+                    "Error creating default visualization %s: %s",
+                    viz_data['name'],
+                    str(e),
+                    exc_info=True
+                )
 
         return created_visualizations
