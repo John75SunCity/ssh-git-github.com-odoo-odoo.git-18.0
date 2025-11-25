@@ -45,15 +45,17 @@ Note: Library files must be downloaded separately. See README.md for instruction
     'data': [],
     'assets': {
         'web.assets_backend': [
-            # Owl component for network diagrams (includes CDN fallback)
+            # Vis.js library files (local - no CDN dependency!)
+            'web_vis_network/static/lib/vis-network/vis-network.min.js',
+            'web_vis_network/static/lib/vis-network/vis-network.min.css',
+            # Owl component for network diagrams
             'web_vis_network/static/src/components/network_diagram.js',
             'web_vis_network/static/src/xml/network_diagram.xml',
-            # Note: Local vis.js files can be added here after downloading
-            # Uncomment these lines after downloading vis.js library:
-            # 'web_vis_network/static/lib/vis-network/vis-network.min.js',
-            # 'web_vis_network/static/lib/vis-network/vis-network.min.css',
         ],
         'web.assets_frontend': [
+            # Vis.js library for frontend (portal, website, etc.)
+            'web_vis_network/static/lib/vis-network/vis-network.min.js',
+            'web_vis_network/static/lib/vis-network/vis-network.min.css',
             # Frontend components
             'web_vis_network/static/src/components/network_diagram.js',
             'web_vis_network/static/src/xml/network_diagram.xml',

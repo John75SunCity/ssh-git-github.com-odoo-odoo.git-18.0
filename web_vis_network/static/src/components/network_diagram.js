@@ -43,10 +43,8 @@ export class NetworkDiagram extends Component {
     setup() {
         this.containerRef = useRef("network-container");
         this.network = null;
-        this.visLoaded = false;
 
-        onMounted(async () => {
-            await this.ensureVisLoaded();
+        onMounted(() => {
             this.initNetwork();
         });
 
@@ -57,49 +55,13 @@ export class NetworkDiagram extends Component {
         });
     }
 
-    /**
-     * Ensure vis.js library is loaded
-     * Loads from CDN if local files not available
-     */
-    async ensureVisLoaded() {
-        if (typeof vis !== 'undefined') {
-            this.visLoaded = true;
-            return;
-        }
-
-        console.log('vis.js not found locally, loading from CDN...');
-
-        // Load CSS
-        const cssLink = document.createElement('link');
-        cssLink.rel = 'stylesheet';
-        cssLink.href = 'https://cdn.jsdelivr.net/npm/vis-network@9.1.9/dist/dist/vis-network.min.css';
-        document.head.appendChild(cssLink);
-
-        // Load JavaScript
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js';
-            script.onload = () => {
-                console.log('vis.js loaded successfully from CDN');
-                this.visLoaded = true;
-                resolve();
-            };
-            script.onerror = () => {
-                console.error('Failed to load vis.js from CDN');
-                reject(new Error('Failed to load vis.js'));
-            };
-            document.head.appendChild(script);
-        });
-    }
-
     initNetwork() {
         if (typeof vis === 'undefined') {
-            console.error('vis.js library not loaded! Unable to render network diagram.');
+            console.error('vis.js library not loaded! This should not happen with web_vis_network module installed.');
             const container = this.containerRef.el;
             container.innerHTML = '<div style="padding: 20px; text-align: center; color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px;">' +
-                '<h4>⚠️ vis.js Library Not Available</h4>' +
-                '<p>The vis.js library could not be loaded. Please check your internet connection or contact your administrator.</p>' +
-                '<p>See web_vis_network module README.md for installation instructions.</p>' +
+                '<h4>⚠️ vis.js Library Error</h4>' +
+                '<p>The vis.js library failed to load. Please update the web_vis_network module or contact support.</p>' +
                 '</div>';
             return;
         }
