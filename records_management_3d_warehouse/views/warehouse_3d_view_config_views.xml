@@ -22,12 +22,35 @@
         <field name="model">warehouse.3d.view.config</field>
         <field name="arch" type="xml">
             <form string="3D View Configuration">
+                <header>
+                    <button name="action_open_3d_view" 
+                            type="object" 
+                            string="Open 3D View" 
+                            class="btn-primary"/>
+                </header>
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="blueprint_id"/>
-                        <field name="view_mode"/>
-                        <field name="color_scheme"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="blueprint_id"/>
+                            <field name="is_default"/>
+                        </group>
+                        <group>
+                            <field name="view_mode"/>
+                            <field name="color_scheme"/>
+                            <field name="show_grid"/>
+                            <field name="show_legend"/>
+                        </group>
+                    </group>
+                    <group string="Filters">
+                        <field name="location_ids" widget="many2many_tags"/>
+                        <field name="customer_ids" widget="many2many_tags"/>
+                    </group>
+                    <group string="Display Options">
+                        <field name="show_warehouse_structure"/>
+                        <field name="show_empty_locations"/>
+                        <field name="camera_angle"/>
+                        <field name="camera_distance"/>
                     </group>
                 </sheet>
             </form>

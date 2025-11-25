@@ -22,22 +22,72 @@
         <field name="model">warehouse.shelving.template</field>
         <field name="arch" type="xml">
             <form string="Shelving Template">
+                <header>
+                    <button name="action_generate_locations" 
+                            type="object" 
+                            string="Generate Locations" 
+                            class="btn-primary"
+                            invisible="locations_generated"/>
+                    <button name="action_regenerate_locations" 
+                            type="object" 
+                            string="Regenerate Locations" 
+                            class="btn-warning"
+                            invisible="not locations_generated"
+                            confirm="This will archive existing locations and create new ones. Continue?"/>
+                    <button name="action_view_locations" 
+                            type="object" 
+                            string="View Locations" 
+                            class="btn-secondary"
+                            invisible="not locations_generated"/>
+                </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_locations" 
+                                type="object" 
+                                class="oe_stat_button" 
+                                icon="fa-cubes"
+                                invisible="not locations_generated">
+                            <field name="location_ids" widget="statinfo" string="Locations"/>
+                        </button>
+                    </div>
                     <group>
-                        <field name="name"/>
-                        <field name="description"/>
-                        <field name="blueprint_id"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="blueprint_id"/>
+                            <field name="locations_generated" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="aisle_name"/>
+                            <field name="rack_prefix"/>
+                            <field name="container_type_id"/>
+                        </group>
                     </group>
-                    <group>
-                        <group string="Dimensions">
+                    <group string="Dimensions (inches)">
+                        <group>
                             <field name="shelving_width"/>
                             <field name="shelving_depth"/>
                             <field name="shelving_height"/>
-                            <field name="shelf_count"/>
                         </group>
-                        <group string="Capacity">
-                            <field name="total_capacity"/>
+                        <group>
+                            <field name="shelf_count"/>
                             <field name="positions_per_shelf"/>
+                            <field name="manual_positions_per_shelf"/>
+                            <field name="total_capacity"/>
+                        </group>
+                    </group>
+                    <group string="Position">
+                        <group>
+                            <field name="start_x"/>
+                            <field name="start_y"/>
+                            <field name="start_z"/>
+                        </group>
+                    </group>
+                    <group string="Duplication">
+                        <group>
+                            <field name="duplicate_count"/>
+                            <field name="duplication_direction"/>
+                            <field name="spacing_between"/>
                         </group>
                     </group>
                 </sheet>

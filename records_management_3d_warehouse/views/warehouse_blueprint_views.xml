@@ -21,12 +21,86 @@
         <field name="model">warehouse.blueprint</field>
         <field name="arch" type="xml">
             <form string="Warehouse Blueprint">
+                <header>
+                    <button name="action_open_3d_view" 
+                            type="object" 
+                            string="Open 3D View" 
+                            class="btn-primary"/>
+                    <button name="action_open_designer" 
+                            type="object" 
+                            string="Open Designer" 
+                            class="btn-secondary"/>
+                </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_shelving_templates" 
+                                type="object" 
+                                class="oe_stat_button" 
+                                icon="fa-sitemap">
+                            <field name="shelving_template_count" widget="statinfo" string="Shelving Templates"/>
+                        </button>
+                        <button name="action_view_locations" 
+                                type="object" 
+                                class="oe_stat_button" 
+                                icon="fa-map-marker">
+                            <field name="location_count" widget="statinfo" string="Locations"/>
+                        </button>
+                    </div>
                     <group>
-                        <field name="name"/>
-                        <field name="warehouse_id"/>
-                        <field name="active"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="warehouse_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="length"/>
+                            <field name="width"/>
+                            <field name="height"/>
+                        </group>
                     </group>
+                    <notebook>
+                        <page string="Shelving Templates" name="shelving">
+                            <field name="shelving_template_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="aisle_name"/>
+                                    <field name="total_capacity"/>
+                                    <field name="locations_generated"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Walls" name="walls">
+                            <field name="wall_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="start_x"/>
+                                    <field name="start_y"/>
+                                    <field name="end_x"/>
+                                    <field name="end_y"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Doors" name="doors">
+                            <field name="door_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="pos_x"/>
+                                    <field name="pos_y"/>
+                                    <field name="door_type"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Offices/Zones" name="offices">
+                            <field name="office_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="zone_type"/>
+                                    <field name="start_x"/>
+                                    <field name="start_y"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

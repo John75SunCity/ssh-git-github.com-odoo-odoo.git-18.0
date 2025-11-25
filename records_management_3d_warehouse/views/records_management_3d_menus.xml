@@ -30,4 +30,11 @@
               action="action_warehouse_3d_view_config"
               sequence="30"/>
     
+    <!-- Quick Start Wizard -->
+    <menuitem id="menu_warehouse_3d_quickstart"
+              name="Quick Start Wizard"
+              parent="menu_warehouse_3d_root"
+              action="action_warehouse_3d_quickstart_wizard"
+              sequence="5"/>
+    
 </odoo>
