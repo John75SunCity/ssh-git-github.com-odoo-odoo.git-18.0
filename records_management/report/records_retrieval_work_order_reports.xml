@@ -26,18 +26,14 @@
                                                 <td><strong>ID:</strong></td>
                                                 <td><span t-esc="doc.id"/></td>
                                             </tr>
-                                            <t t-if="hasattr(doc, 'name')">
-                                            <tr>
+                                            <tr t-if="doc.name">
                                                 <td><strong>Name:</strong></td>
                                                 <td><span t-esc="doc.name"/></td>
                                             </tr>
-                                            </t>
-                                            <t t-if="hasattr(doc, 'create_date')">
-                                            <tr>
+                                            <tr t-if="doc.create_date">
                                                 <td><strong>Created:</strong></td>
-                                                <td><span t-esc="doc.create_date"/></td>
+                                                <td><span t-field="doc.create_date"/></td>
                                             </tr>
-                                            </t>
                                         </tbody>
                                     </table>
                                 </div>
