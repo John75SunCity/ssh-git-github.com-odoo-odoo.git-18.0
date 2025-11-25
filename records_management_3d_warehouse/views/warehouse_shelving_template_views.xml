@@ -2,17 +2,17 @@
 <odoo>
     <!-- Warehouse Shelving Template Views - Placeholder -->
 
-    <!-- Tree View -->
+    <!-- List View -->
     <record id="view_warehouse_shelving_template_tree" model="ir.ui.view">
         <field name="name">warehouse.shelving.template.tree</field>
         <field name="model">warehouse.shelving.template</field>
         <field name="arch" type="xml">
-            <tree string="Shelving Templates">
+            <list string="Shelving Templates">
                 <field name="name"/>
                 <field name="blueprint_id"/>
                 <field name="total_capacity"/>
                 <field name="locations_generated"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -49,7 +49,7 @@
     <record id="action_warehouse_shelving_template" model="ir.actions.act_window">
         <field name="name">Shelving Templates</field>
         <field name="res_model">warehouse.shelving.template</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 
 </odoo>
