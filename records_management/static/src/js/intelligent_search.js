@@ -231,7 +231,7 @@ class ContainerSearchWidget extends Component {
             }
         });
 
-        this.rpc = useService("rpc");
+        this.orm = useService("orm");
         this.debouncedSearch = debounce(this.performSearch.bind(this), 300);
     }
 
@@ -267,7 +267,13 @@ class ContainerSearchWidget extends Component {
                 include_metadata: true
             };
 
-            const result = await this.rpc("/records/search/containers", searchParams);
+            // Use ORM service to call model method directly (Odoo 18 pattern)
+            const result = await this.orm.call(
+                'records.container',
+                'search_containers_intelligent',
+                [],
+                searchParams
+            );
 
             this.state.suggestions = result.suggestions || [];
             this.state.searchPerformed = true;
@@ -500,7 +506,7 @@ class FileSearchWidget extends Component {
             loading: false
         });
 
-        this.rpc = useService("rpc");
+        this.orm = useService("orm");
         this.debouncedSearch = debounce(this.performFileSearch.bind(this), 500);
     }
 
@@ -537,7 +543,13 @@ class FileSearchWidget extends Component {
                 relevance_threshold: 0.3
             };
 
-            const result = await this.rpc("/records/search/files", searchParams);
+            // Use ORM service to call model method directly (Odoo 18 pattern)
+            const result = await this.orm.call(
+                'records.file.folder',
+                'search_files_intelligent',
+                [],
+                searchParams
+            );
 
             this.state.results = result.files || [];
             this.state.searchPerformed = true;
