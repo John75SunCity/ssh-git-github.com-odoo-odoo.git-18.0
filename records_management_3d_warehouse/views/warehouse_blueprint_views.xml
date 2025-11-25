@@ -26,10 +26,6 @@
                             type="object" 
                             string="Open 3D View" 
                             class="btn-primary"/>
-                    <button name="action_open_designer" 
-                            type="object" 
-                            string="Open Designer" 
-                            class="btn-secondary"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
