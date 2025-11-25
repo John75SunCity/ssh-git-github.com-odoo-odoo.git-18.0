@@ -72,33 +72,51 @@
             </field>
         </record>
         <record id="action_customer_inventory" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model customer.inventory has state field - consider using default search filters -->
             <field name="name">Customer Inventory</field>
-            <field name="res_model">customer.inventory</field>
-            <field name="view_mode">list,form</field>
+            <field name="res_model">records.container</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="context">{
+                'search_default_group_by_customer': 1,
+                'search_default_active': 1,
+            }</field>
+            <field name="domain">[]</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-bar-chart"/> No customer inventory data yet!
+                    <i class="fa fa-cubes"/> No customer inventory yet!
                 </p>
                 <p>
-                    <b>⚠️ Prerequisites for customer inventory:</b>
+                    <b>📊 Customer Inventory Management:</b>
                 </p>
                 <ul>
-                    <li>✓ <b>Customer Setup</b> - Go to: <i>Contacts</i> (create customers with "Is a Records Management Customer" enabled)</li>
-                    <li>✓ <b>Containers Created</b> - Go to: <i>Operations &gt; Containers</i> (customers must have stored containers)</li>
-                    <li>✓ <b>Documents Added</b> - Go to: <i>Operations &gt; Documents</i> (link documents to containers)</li>
-                    <li>✓ <b>Inventory Period</b> - Define reporting period (monthly, quarterly, annual)</li>
+                    <li>Track all containers and documents by customer</li>
+                    <li>Monitor inventory levels and locations</li>
+                    <li>Generate detailed inventory reports</li>
+                    <li>Manage customer-specific retention policies</li>
                 </ul>
                 <p>
-                    <b>📋 Understanding Customer Inventory:</b>
+                    <b>🎯 Key Features:</b>
                 </p>
+                <ul>
+                    <li>Customer-specific inventory views</li>
+                    <li>Real-time location tracking</li>
+                    <li>Automated inventory audits</li>
+                    <li>Compliance reporting and analytics</li>
+                </ul>
                 <p>
-                    Customer Inventory provides a <b>comprehensive snapshot</b> of all items stored for each customer at a 
-                    specific point in time. This is essential for billing accuracy, customer reporting, and regulatory compliance. 
-                    Inventory records track containers, documents, storage locations, and associated costs.
+                    <b>🚀 To view customer inventory:</b>
                 </p>
+                <ul>
+                    <li>Containers are automatically grouped by customer/partner</li>
+                    <li>Use search filters to narrow by location, status, or container type</li>
+                    <li>Click on a customer group to see their containers</li>
+                    <li>Access detailed reports from Operations &gt; Reports menu</li>
+                </ul>
                 <p>
-                    <b>🎯 To create an inventory snapshot:</b>
+                    💡 <b>Note:</b> For periodic inventory snapshots and audits, use the 
+                    <i>Compliance &amp; Reports &gt; Inventory Snapshots</i> menu.
+                </p>
+            </field>
+        </record>
                 </p>
                 <ol>
                     <li>Click the <b>New</b> button above</li>
@@ -145,6 +163,41 @@
                 </p>
                 <p>
                     <b>💡 Best Practice:</b> Generate inventory at the same time each month (e.g., last day of month) for consistency. Always confirm inventory before billing cycle runs.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Inventory Snapshots - Periodic audit records -->
+        <record id="action_inventory_snapshots" model="ir.actions.act_window">
+            <field name="name">Inventory Snapshots</field>
+            <field name="res_model">customer.inventory</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="context">{'search_default_state_completed': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class="fa fa-camera"/> No inventory snapshots yet!
+                </p>
+                <p>
+                    <b>📸 Inventory Snapshot Management:</b>
+                </p>
+                <ul>
+                    <li>Create periodic inventory audits</li>
+                    <li>Track inventory changes over time</li>
+                    <li>Verify container counts and locations</li>
+                    <li>Generate compliance audit reports</li>
+                </ul>
+                <p>
+                    <b>🎯 Use Cases:</b>
+                </p>
+                <ul>
+                    <li><b>Full Inventory:</b> Complete count of all items</li>
+                    <li><b>Sample Inventory:</b> Statistical sampling for verification</li>
+                    <li><b>Variance Check:</b> Compare against previous counts</li>
+                    <li><b>Audit Inventory:</b> Compliance and regulatory audits</li>
+                </ul>
+                <p>
+                    💡 <b>Note:</b> For real-time customer inventory views, use the 
+                    <i>Inventory &gt; Customer Inventory</i> menu.
                 </p>
             </field>
         </record>

@@ -502,12 +502,20 @@
         <!-- All containers, files, scans across ALL customers -->
         <!-- ========================================== -->
 
-            <!-- Customer Inventory - Filter view of ALL inventory by customer/department -->
+            <!-- Customer Inventory - Real-time view of containers grouped by customer -->
     <menuitem id="menu_customer_inventory"
               name="Customer Inventory"
               parent="records_management.menu_records_inventory"
               action="action_customer_inventory"
               sequence="5"/>
+              
+        <!-- Inventory Snapshots - Periodic inventory audits and snapshots -->
+    <menuitem id="menu_inventory_snapshots"
+              name="Inventory Snapshots"
+              parent="records_management.menu_records_compliance_reports"
+              action="action_inventory_snapshots"
+              sequence="12"
+              groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
 
         <!-- Digital Scans - MASTER VIEW of ALL scanned documents -->
         <menuitem id="menu_records_digital_scan" name="Digital Scans" parent="records_management.menu_records_inventory" action="action_records_digital_scan" sequence="20" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
