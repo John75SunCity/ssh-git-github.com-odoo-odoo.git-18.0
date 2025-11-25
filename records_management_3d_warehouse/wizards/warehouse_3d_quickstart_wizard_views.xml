@@ -12,15 +12,17 @@
                     <group>
                         <field name="warehouse_id"/>
                         <field name="blueprint_name"/>
-                        <field name="warehouse_width"/>
-                        <field name="warehouse_depth"/>
-                        <field name="warehouse_height"/>
+                        <field name="length_feet"/>
+                        <field name="width_feet"/>
+                        <field name="height_feet"/>
+                        <field name="use_template"/>
+                        <field name="container_type_id"/>
                     </group>
                 </sheet>
                 <footer>
-                    <button name="action_create_blueprint" 
+                    <button name="action_generate_warehouse" 
                             type="object" 
-                            string="Create Blueprint" 
+                            string="Generate Warehouse" 
                             class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
