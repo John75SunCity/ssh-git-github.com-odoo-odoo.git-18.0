@@ -9,7 +9,7 @@ export class Warehouse3DView extends Component {
         this.orm = useService("orm");
         this.action = useService("action");
         this.notification = useService("notification");
-        this.rpc = useService("rpc");
+        this.http = useService("http");
         
         this.graphContainer = useRef("graph3d-container");
         
@@ -39,7 +39,7 @@ export class Warehouse3DView extends Component {
             this.state.loading = true;
             this.state.error = null;
             
-            const result = await this.rpc("/warehouse/3d/data", {
+            const result = await this.http.post("/warehouse/3d/data", {
                 config_id: this.state.config_id,
             });
             
