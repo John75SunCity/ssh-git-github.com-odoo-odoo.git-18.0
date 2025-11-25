@@ -2,10 +2,11 @@
 <odoo>
     <!-- Records Management 3D Warehouse Menus -->
     
-    <!-- Main Menu -->
+    <!-- Main Menu (points to blueprints by default) -->
     <menuitem id="menu_warehouse_3d_root"
               name="3D Warehouse"
               parent="stock.menu_stock_root"
+              action="action_warehouse_blueprint"
               sequence="50"/>
     
     <!-- Blueprints -->
