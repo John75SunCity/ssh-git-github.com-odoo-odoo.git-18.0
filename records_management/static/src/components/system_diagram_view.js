@@ -33,7 +33,7 @@ export class SystemDiagramView extends Component {
             options: {},
             loading: true,
             error: null,
-            diagramId: this.props.action?.context?.active_id || 1,
+            diagramId: null,  // Will be set in onWillStart
             nodeCount: 0,
             edgeCount: 0,
         });
@@ -51,13 +51,43 @@ export class SystemDiagramView extends Component {
      * Load diagram data from the backend
      * 
      * Fetches nodes, edges, and configuration from the system.diagram.data
-     * model using the get_diagram_data API method.
+     * model using the get_diagram_data API method. If no diagram exists,
+     * the backend will create a default one.
      */
     async loadDiagramData() {
         this.state.loading = true;
         this.state.error = null;
         
         try {
+            // First, get or create a diagram record
+            if (!this.state.diagramId) {
+                console.log("Finding or creating diagram record...");
+                
+                // Search for existing diagram
+                const diagrams = await this.orm.searchRead(
+                    'system.diagram.data',
+                    [],
+                    ['id', 'name'],
+                    { limit: 1 }
+                );
+                
+                if (diagrams.length > 0) {
+                    this.state.diagramId = diagrams[0].id;
+                    console.log(`Found existing diagram: ID ${this.state.diagramId}`);
+                } else {
+                    // Create new diagram
+                    this.state.diagramId = await this.orm.create(
+                        'system.diagram.data',
+                        [{
+                            name: 'System Architecture Diagram',
+                            search_type: 'all',
+                            show_access_only: false,
+                        }]
+                    );
+                    console.log(`Created new diagram: ID ${this.state.diagramId}`);
+                }
+            }
+            
             console.log(`Loading diagram data for ID: ${this.state.diagramId}`);
             
             const result = await this.orm.call(

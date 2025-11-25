@@ -928,23 +928,25 @@ class SystemDiagramData(models.Model):
             nodes = json.loads(result['nodes_data'])
             edges = json.loads(result['edges_data'])
         """
+        # Create default record if none exists
         diagram = self.browse(diagram_id)
         if not diagram.exists():
-            _logger.warning("Diagram ID %s does not exist", diagram_id)
-            return {
-                'nodes_data': '[]',
-                'edges_data': '[]',
-                'diagram_config': '{}',
-            }
+            _logger.info("Diagram ID %s does not exist, creating default record", diagram_id)
+            diagram = self.create({
+                'name': 'System Architecture Diagram',
+                'search_type': 'all',
+                'show_access_only': False,
+            })
+            _logger.info("Created default diagram with ID: %s", diagram.id)
         
         # Force computation if data is empty
         if not diagram.nodes_data or diagram.nodes_data == '[]':
-            _logger.info("Diagram data empty, forcing recomputation for ID: %s", diagram_id)
+            _logger.info("Diagram data empty, forcing recomputation for ID: %s", diagram.id)
             diagram._compute_diagram_data()
             diagram._compute_diagram_config()
         
         _logger.info("Returning diagram data for ID %s: %s nodes, %s edges",
-                    diagram_id, diagram.node_count, diagram.edge_count)
+                    diagram.id, diagram.node_count, diagram.edge_count)
         
         return {
             'nodes_data': diagram.nodes_data or '[]',
