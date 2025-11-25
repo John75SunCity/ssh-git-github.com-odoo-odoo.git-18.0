@@ -580,9 +580,9 @@ class SystemDiagramData(models.Model):
         nodes = []
         edges = []
         try:
-            # Get sharing records
+            # Get sharing records (no company filter as model doesn't have company_id)
             sharing_records = self.env["cross.department.sharing"].search(
-                [("company_id", "=", self.company_id.id)], limit=50
+                [], limit=50
             )  # Limit for performance
 
             for sharing in sharing_records:
