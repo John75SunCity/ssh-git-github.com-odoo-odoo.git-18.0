@@ -931,6 +931,28 @@ class SystemDiagramData(models.Model):
         # Return True for Owl component compatibility
         return True
 
+    def action_open_owl_diagram(self):
+        """Open the modern Owl-based diagram view for this specific record.
+        
+        This action opens the SystemDiagramView Owl component with the
+        current record's ID in the context, ensuring the correct diagram
+        data is loaded and displayed.
+        
+        Returns:
+            dict: Client action to open the Owl diagram view
+        """
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'system_diagram_view',
+            'name': self.name,
+            'context': {
+                'active_id': self.id,
+                'active_model': 'system.diagram.data',
+            },
+            'target': 'current',
+        }
+
     @api.model
     def get_diagram_data(self, diagram_id):
         """API method for Owl component to fetch diagram data.

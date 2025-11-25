@@ -29,6 +29,9 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="System Diagram Data">
+                <header>
+                    <button name="action_open_owl_diagram" string="Open Modern Diagram" type="object" class="btn btn-primary"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>

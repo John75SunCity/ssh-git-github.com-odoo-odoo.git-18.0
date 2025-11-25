@@ -25,8 +25,13 @@
                     </button>
                 </div>
                 
-                <!-- Spacer -->
-                <div class="flex-grow-1"/>
+                <!-- Diagram Name -->
+                <div class="flex-grow-1 ms-3">
+                    <h5 class="mb-0" t-if="state.diagramName">
+                        <i class="fa fa-sitemap me-2"/>
+                        <t t-esc="state.diagramName"/>
+                    </h5>
+                </div>
                 
                 <!-- Diagram Stats -->
                 <div class="o_cp_right d-flex gap-2">

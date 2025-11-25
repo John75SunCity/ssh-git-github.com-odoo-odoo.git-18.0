@@ -33,7 +33,8 @@ export class SystemDiagramView extends Component {
             options: {},
             loading: true,
             error: null,
-            diagramId: null,  // Will be set in onWillStart
+            diagramId: null,  // Will be set from context or found
+            diagramName: '',
             nodeCount: 0,
             edgeCount: 0,
         });
@@ -51,40 +52,58 @@ export class SystemDiagramView extends Component {
      * Load diagram data from the backend
      * 
      * Fetches nodes, edges, and configuration from the system.diagram.data
-     * model using the get_diagram_data API method. If no diagram exists,
-     * the backend will create a default one.
+     * model using the get_diagram_data API method. 
+     * 
+     * Priority order for diagram selection:
+     * 1. active_id from action context (when opening from list/form)
+     * 2. res_id from action context (when opening specific record)
+     * 3. First available diagram in database
+     * 4. Create new default diagram
      */
     async loadDiagramData() {
         this.state.loading = true;
         this.state.error = null;
         
         try {
-            // First, get or create a diagram record
+            // Get diagram ID from context or find/create one
             if (!this.state.diagramId) {
-                console.log("Finding or creating diagram record...");
+                console.log("Determining which diagram to load...");
                 
-                // Search for existing diagram
-                const diagrams = await this.orm.searchRead(
-                    'system.diagram.data',
-                    [],
-                    ['id', 'name'],
-                    { limit: 1 }
-                );
-                
-                if (diagrams.length > 0) {
-                    this.state.diagramId = diagrams[0].id;
-                    console.log(`Found existing diagram: ID ${this.state.diagramId}`);
-                } else {
-                    // Create new diagram
-                    this.state.diagramId = await this.orm.create(
+                // Priority 1: Check action context for active_id
+                const activeId = this.props.action?.context?.active_id;
+                if (activeId) {
+                    this.state.diagramId = activeId;
+                    console.log(`Using active_id from context: ${this.state.diagramId}`);
+                }
+                // Priority 2: Check for res_id in action context
+                else if (this.props.action?.res_id) {
+                    this.state.diagramId = this.props.action.res_id;
+                    console.log(`Using res_id from action: ${this.state.diagramId}`);
+                }
+                // Priority 3: Search for existing diagram
+                else {
+                    const diagrams = await this.orm.searchRead(
                         'system.diagram.data',
-                        [{
-                            name: 'System Architecture Diagram',
-                            search_type: 'all',
-                            show_access_only: false,
-                        }]
+                        [],
+                        ['id', 'name'],
+                        { limit: 1 }
                     );
-                    console.log(`Created new diagram: ID ${this.state.diagramId}`);
+                    
+                    if (diagrams.length > 0) {
+                        this.state.diagramId = diagrams[0].id;
+                        console.log(`Found existing diagram: ID ${this.state.diagramId}`);
+                    } else {
+                        // Priority 4: Create new diagram
+                        this.state.diagramId = await this.orm.create(
+                            'system.diagram.data',
+                            [{
+                                name: 'System Architecture Diagram',
+                                search_type: 'all',
+                                show_access_only: false,
+                            }]
+                        );
+                        console.log(`Created new diagram: ID ${this.state.diagramId}`);
+                    }
                 }
             }
             
@@ -109,6 +128,17 @@ export class SystemDiagramView extends Component {
             
             this.state.nodeCount = this.state.nodes.length;
             this.state.edgeCount = this.state.edges.length;
+            
+            // Get diagram name for display
+            const diagramRecord = await this.orm.read(
+                'system.diagram.data',
+                [this.state.diagramId],
+                ['name', 'search_type']
+            );
+            if (diagramRecord.length > 0) {
+                this.state.diagramName = diagramRecord[0].name;
+                console.log(`Loaded diagram: "${this.state.diagramName}" (${diagramRecord[0].search_type})`);
+            }
             
             console.log(`Loaded ${this.state.nodeCount} nodes and ${this.state.edgeCount} edges`);
             
