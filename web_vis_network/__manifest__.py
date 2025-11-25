@@ -12,17 +12,19 @@ This module provides the vis.js network visualization library for use
 in Odoo modules. It bundles the vis.js library as an Odoo asset that
 can be included in any module.
 
-Features:
----------
+Features
+--------
+
 * Vis.js network visualization library
 * Proper asset bundling for Odoo 18
 * Reusable across multiple modules
 * CDN fallback support
 
-Usage:
-------
+Usage
+-----
+
 Add 'web_vis_network' to your module dependencies, then include the
-asset bundle in your views:
+asset bundle in your views::
 
     'depends': ['web', 'web_vis_network'],
     
@@ -33,6 +35,8 @@ asset bundle in your views:
     }
 
 Or use it in custom Owl components for advanced visualizations.
+
+Note: Library files must be downloaded separately. See README.md for instructions.
     """,
     'author': 'Your Company',
     'website': 'https://www.yourcompany.com',
@@ -41,17 +45,18 @@ Or use it in custom Owl components for advanced visualizations.
     'data': [],
     'assets': {
         'web.assets_backend': [
-            # Vis.js library files (download required - see static/lib/vis-network/DOWNLOAD_INSTRUCTIONS.md)
-            'web_vis_network/static/lib/vis-network/vis-network.min.js',
-            'web_vis_network/static/lib/vis-network/vis-network.min.css',
-            # Owl component for network diagrams
+            # Owl component for network diagrams (includes CDN fallback)
             'web_vis_network/static/src/components/network_diagram.js',
             'web_vis_network/static/src/xml/network_diagram.xml',
+            # Note: Local vis.js files can be added here after downloading
+            # Uncomment these lines after downloading vis.js library:
+            # 'web_vis_network/static/lib/vis-network/vis-network.min.js',
+            # 'web_vis_network/static/lib/vis-network/vis-network.min.css',
         ],
         'web.assets_frontend': [
-            # Vis.js library for frontend (portal, website, etc.)
-            'web_vis_network/static/lib/vis-network/vis-network.min.js',
-            'web_vis_network/static/lib/vis-network/vis-network.min.css',
+            # Frontend components
+            'web_vis_network/static/src/components/network_diagram.js',
+            'web_vis_network/static/src/xml/network_diagram.xml',
         ],
     },
     'installable': True,
