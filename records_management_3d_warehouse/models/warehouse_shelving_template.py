@@ -12,6 +12,7 @@ class WarehouseShelvingTemplate(models.Model):
     # CORE FIELDS
     # ============================================================================
     name = fields.Char('Template Name', required=True, tracking=True)
+    description = fields.Text('Description', help='Detailed description of this shelving template')
     active = fields.Boolean(default=True)
     blueprint_id = fields.Many2one(
         'warehouse.blueprint',
