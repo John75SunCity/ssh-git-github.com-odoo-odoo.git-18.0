@@ -41,15 +41,6 @@
                             invisible="not locations_generated"/>
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="action_view_locations"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-cubes"
-                                invisible="not locations_generated">
-                            <field name="location_ids" widget="statinfo" string="Locations"/>
-                        </button>
-                    </div>
                     <group>
                         <group>
                             <field name="name"/>
