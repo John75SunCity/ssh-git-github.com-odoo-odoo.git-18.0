@@ -1,6 +1,6 @@
 {
     'name': '3D Warehouse Visualization',
-    'version': '19.0.1.0.0',
+    'version': '18.0.1.0.0',
     'category': 'Inventory/Inventory',
     'summary': 'Advanced 3D warehouse visualization with interactive blueprints and capacity analytics',
     'description': """

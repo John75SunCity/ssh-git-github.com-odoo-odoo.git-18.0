@@ -81,10 +81,8 @@ except Exception as e:
     <field name="state">code</field>
     <field name="code"><![CDATA[
 # Send training reminders for upcoming sessions
-try:
-    env['naid.training.schedule']._send_training_reminders()
-except Exception as e:
-    log(_('Error sending NAID training reminders: %s') % str(e))
+for record in env['naid.training.schedule'].search([]):
+    record.action_send_training_reminders()
 ]]>    </field>
     <field name="active" eval="True"/>
     <field name="interval_number" eval="1"/>
@@ -100,10 +98,8 @@ except Exception as e:
     <field name="state">code</field>
     <field name="code"><![CDATA[
 # Check and update expired certifications
-try:
-    env['naid.operator.certification'].action_check_expiry()
-except Exception as e:
-    log(_('Error checking NAID certification expiry: %s') % str(e))
+for record in env['naid.operator.certification'].search([]):
+    record._check_expiry()
 ]]>    </field>
     <field name="active" eval="True"/>
     <field name="interval_number" eval="1"/>
