@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Records Management 3D Warehouse Menus -->
+    
+    <!-- Main Menu -->
+    <menuitem id="menu_warehouse_3d_root"
+              name="3D Warehouse"
+              parent="stock.menu_stock_root"
+              sequence="50"/>
+    
+    <!-- Blueprints -->
+    <menuitem id="menu_warehouse_blueprint"
+              name="Blueprints"
+              parent="menu_warehouse_3d_root"
+              action="action_warehouse_blueprint"
+              sequence="10"/>
+    
+    <!-- Shelving Templates -->
+    <menuitem id="menu_warehouse_shelving_template"
+              name="Shelving Templates"
+              parent="menu_warehouse_3d_root"
+              action="action_warehouse_shelving_template"
+              sequence="20"/>
+    
+    <!-- 3D View Configurations -->
+    <menuitem id="menu_warehouse_3d_view_config"
+              name="3D View Configurations"
+              parent="menu_warehouse_3d_root"
+              action="action_warehouse_3d_view_config"
+              sequence="30"/>
+    
+</odoo>

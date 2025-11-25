@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Warehouse Blueprint Views - Placeholder -->
+    
+    <!-- Tree View -->
+    <record id="view_warehouse_blueprint_tree" model="ir.ui.view">
+        <field name="name">warehouse.blueprint.tree</field>
+        <field name="model">warehouse.blueprint</field>
+        <field name="arch" type="xml">
+            <tree string="Warehouse Blueprints">
+                <field name="name"/>
+                <field name="warehouse_id"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Form View -->
+    <record id="view_warehouse_blueprint_form" model="ir.ui.view">
+        <field name="name">warehouse.blueprint.form</field>
+        <field name="model">warehouse.blueprint</field>
+        <field name="arch" type="xml">
+            <form string="Warehouse Blueprint">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="warehouse_id"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Action -->
+    <record id="action_warehouse_blueprint" model="ir.actions.act_window">
+        <field name="name">Warehouse Blueprints</field>
+        <field name="res_model">warehouse.blueprint</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+</odoo>

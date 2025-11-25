@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Warehouse 3D View Config Views - Placeholder -->
+    
+    <!-- Tree View -->
+    <record id="view_warehouse_3d_view_config_tree" model="ir.ui.view">
+        <field name="name">warehouse.3d.view.config.tree</field>
+        <field name="model">warehouse.3d.view.config</field>
+        <field name="arch" type="xml">
+            <tree string="3D View Configurations">
+                <field name="name"/>
+                <field name="blueprint_id"/>
+                <field name="view_mode"/>
+                <field name="color_scheme"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Form View -->
+    <record id="view_warehouse_3d_view_config_form" model="ir.ui.view">
+        <field name="name">warehouse.3d.view.config.form</field>
+        <field name="model">warehouse.3d.view.config</field>
+        <field name="arch" type="xml">
+            <form string="3D View Configuration">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="blueprint_id"/>
+                        <field name="view_mode"/>
+                        <field name="color_scheme"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Action -->
+    <record id="action_warehouse_3d_view_config" model="ir.actions.act_window">
+        <field name="name">3D View Configurations</field>
+        <field name="res_model">warehouse.3d.view.config</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+</odoo>

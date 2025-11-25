@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Stock Location 3D Views - Placeholder -->
+    
+    <!-- Inherit stock.location form to add 3D view button -->
+    <record id="view_location_form_3d_inherit" model="ir.ui.view">
+        <field name="name">stock.location.form.3d.inherit</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_open_3d_view" 
+                        type="object" 
+                        string="3D View" 
+                        class="btn-primary"
+                        invisible="not is_records_location"/>
+            </xpath>
+        </field>
+    </record>
+    
+</odoo>

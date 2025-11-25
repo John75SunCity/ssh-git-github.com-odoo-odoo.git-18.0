@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Warehouse 3D Quickstart Wizard Views - Placeholder -->
+    
+    <!-- Form View -->
+    <record id="view_warehouse_3d_quickstart_wizard_form" model="ir.ui.view">
+        <field name="name">warehouse.3d.quickstart.wizard.form</field>
+        <field name="model">warehouse.3d.quickstart.wizard</field>
+        <field name="arch" type="xml">
+            <form string="3D Warehouse Quick Start">
+                <sheet>
+                    <group>
+                        <field name="warehouse_id"/>
+                        <field name="blueprint_name"/>
+                        <field name="warehouse_width"/>
+                        <field name="warehouse_depth"/>
+                        <field name="warehouse_height"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_create_blueprint" 
+                            type="object" 
+                            string="Create Blueprint" 
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Action -->
+    <record id="action_warehouse_3d_quickstart_wizard" model="ir.actions.act_window">
+        <field name="name">3D Warehouse Quick Start</field>
+        <field name="res_model">warehouse.3d.quickstart.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+</odoo>
