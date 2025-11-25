@@ -177,6 +177,11 @@ class SystemDiagramData(models.Model):
         """
         _logger.info("=== DIAGRAM DATA COMPUTATION STARTED ===")
         for record in self:
+            # Safety check: verify record still exists
+            if not record.exists():
+                _logger.warning("Record ID %s no longer exists, skipping computation", record.id)
+                continue
+                
             _logger.info("Computing diagram data for record ID: %s", record.id)
             try:
                 nodes = []
@@ -192,6 +197,11 @@ class SystemDiagramData(models.Model):
                     _logger.warning("Error getting core system nodes: %s", str(e))
 
                 # Model relationship nodes
+                # Safety check before accessing field
+                if not record.exists():
+                    _logger.warning("Record was deleted during computation, aborting")
+                    break
+                    
                 if not record.show_access_only:
                     try:
                         model_nodes, model_edges = record._get_model_relationships()
@@ -215,6 +225,11 @@ class SystemDiagramData(models.Model):
                     _logger.warning("Error getting user access data: %s", str(e))
 
                 # Cross-department sharing nodes
+                # Safety check before accessing field
+                if not record.exists():
+                    _logger.warning("Record was deleted during computation, aborting")
+                    break
+                    
                 if not record.show_access_only:
                     sharing_nodes, sharing_edges = record._get_cross_department_sharing()
                     _logger.info("Cross-department sharing returned: %s nodes, %s edges", 
@@ -224,6 +239,11 @@ class SystemDiagramData(models.Model):
                     _logger.info("Total after sharing: %s nodes, %s edges", len(nodes), len(edges))
 
                 # Apply search filters
+                # Safety check before accessing field
+                if not record.exists():
+                    _logger.warning("Record was deleted during computation, aborting")
+                    break
+                    
                 if record.search_query:
                     try:
                         nodes, edges = record._apply_search_filter(nodes, edges)
@@ -237,6 +257,11 @@ class SystemDiagramData(models.Model):
                 edges_json = json.dumps(edges, indent=2)
                 _logger.info("JSON serialization complete - nodes_data: %s chars, edges_data: %s chars",
                            len(nodes_json), len(edges_json))
+
+                # Final safety check before writing
+                if not record.exists():
+                    _logger.warning("Record was deleted before field assignment, aborting")
+                    break
 
                 record.nodes_data = nodes_json
                 record.edges_data = edges_json
