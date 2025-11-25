@@ -314,6 +314,14 @@
         <field name="params" eval="{'withControlPanel': True}"/>
     </record>
 
+    <!-- New Owl-based System Diagram View (uses web_vis_network) -->
+    <record id="action_system_diagram_owl" model="ir.actions.client">
+        <field name="name">System Architecture Diagram</field>
+        <field name="tag">system_diagram_view</field>
+        <field name="target">current</field>
+        <field name="params" eval="{}"/>
+    </record>
+
     <menuitem id="system_diagram_data_menu_architecture"
               name="System Architecture"
               parent="records_management.menu_records_configuration"
@@ -367,6 +375,14 @@
               parent="records_management.menu_records_operations"
               action="action_system_flowchart_interactive"
               sequence="5"
+              groups="records_management.group_records_user"/>
+
+    <!-- New Owl-based diagram menu -->
+    <menuitem id="system_diagram_data_menu_owl_view"
+              name="System Diagram (Modern)"
+              parent="system_diagram_data_menu_analysis"
+              action="action_system_diagram_owl"
+              sequence="1"
               groups="records_management.group_records_user"/>
 
     <menuitem id="system_diagram_data_menu_flowchart_access"

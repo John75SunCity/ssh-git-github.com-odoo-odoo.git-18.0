@@ -12,6 +12,7 @@
         "base",
         "mail",
         "web",
+        "web_vis_network",  # ✅ REQUIRED - Vis.js library for advanced diagrams
         "product",
         "stock",
         "account",
@@ -783,6 +784,9 @@
             "records_management/static/src/xml/intelligent_search_templates.xml",
             "records_management/static/src/xml/system_flowchart_templates.xml",
             "records_management/static/src/js/intelligent_search.js",
+            # System Diagram Owl Component (uses web_vis_network module)
+            "records_management/static/src/components/system_diagram_view.js",
+            "records_management/static/src/components/system_diagram_view.xml",
             # Heavy visualization assets (vis-network + flowchart templates) moved to separate optional bundle
         ],
         # Optional heavy visualization bundle loaded only when flowchart / portal diagram features are enabled.

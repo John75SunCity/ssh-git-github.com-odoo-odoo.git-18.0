@@ -903,8 +903,51 @@ class SystemDiagramData(models.Model):
         _logger.info("=== Diagram regeneration complete. Nodes: %s, Edges: %s ===", 
                     self.node_count, self.edge_count)
         
-        # Return action to reload the view
+        # Return True for Owl component compatibility
+        return True
+
+    @api.model
+    def get_diagram_data(self, diagram_id):
+        """API method for Owl component to fetch diagram data.
+        
+        This method provides a clean API for the SystemDiagramView Owl component
+        to retrieve all necessary diagram data in one call. It ensures data is
+        computed and returns JSON strings ready for parsing in JavaScript.
+        
+        Args:
+            diagram_id (int): ID of system.diagram.data record
+            
+        Returns:
+            dict: Dictionary containing:
+                - nodes_data (str): JSON string of nodes array
+                - edges_data (str): JSON string of edges array
+                - diagram_config (str): JSON string of vis.js options
+                
+        Example:
+            result = env['system.diagram.data'].get_diagram_data(1)
+            nodes = json.loads(result['nodes_data'])
+            edges = json.loads(result['edges_data'])
+        """
+        diagram = self.browse(diagram_id)
+        if not diagram.exists():
+            _logger.warning("Diagram ID %s does not exist", diagram_id)
+            return {
+                'nodes_data': '[]',
+                'edges_data': '[]',
+                'diagram_config': '{}',
+            }
+        
+        # Force computation if data is empty
+        if not diagram.nodes_data or diagram.nodes_data == '[]':
+            _logger.info("Diagram data empty, forcing recomputation for ID: %s", diagram_id)
+            diagram._compute_diagram_data()
+            diagram._compute_diagram_config()
+        
+        _logger.info("Returning diagram data for ID %s: %s nodes, %s edges",
+                    diagram_id, diagram.node_count, diagram.edge_count)
+        
         return {
-            'type': 'ir.actions.client',
-            'tag': 'reload',
+            'nodes_data': diagram.nodes_data or '[]',
+            'edges_data': diagram.edges_data or '[]',
+            'diagram_config': diagram.diagram_config or '{}',
         }

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    
+    <!-- System Diagram View Template -->
+    <t t-name="records_management.SystemDiagramView">
+        <div class="o_system_diagram_view d-flex flex-column h-100">
+            
+            <!-- Control Panel -->
+            <div class="o_control_panel d-flex align-items-center p-3 border-bottom">
+                
+                <!-- Action Buttons -->
+                <div class="o_cp_buttons d-flex gap-2">
+                    <button class="btn btn-primary" 
+                            t-on-click="onRegenerate"
+                            t-att-disabled="state.loading">
+                        <i class="fa fa-refresh" t-att-class="{'fa-spin': state.loading}"/>
+                        <span class="ms-2">Regenerate Diagram</span>
+                    </button>
+                    
+                    <button class="btn btn-secondary" 
+                            t-on-click="onExport"
+                            t-att-disabled="state.loading">
+                        <i class="fa fa-download"/>
+                        <span class="ms-2">Export</span>
+                    </button>
+                </div>
+                
+                <!-- Spacer -->
+                <div class="flex-grow-1"/>
+                
+                <!-- Diagram Stats -->
+                <div class="o_cp_right d-flex gap-2">
+                    <span class="badge bg-primary" t-if="!state.loading">
+                        <i class="fa fa-circle-o me-1"/>
+                        <t t-esc="state.nodeCount"/> nodes
+                    </span>
+                    <span class="badge bg-info" t-if="!state.loading">
+                        <i class="fa fa-arrows-h me-1"/>
+                        <t t-esc="state.edgeCount"/> edges
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Content Area -->
+            <div class="o_content flex-grow-1 position-relative">
+                
+                <!-- Loading State -->
+                <div t-if="state.loading" 
+                     class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-white">
+                    <i class="fa fa-spinner fa-spin fa-3x text-primary mb-3"/>
+                    <p class="text-muted">Loading diagram data...</p>
+                </div>
+                
+                <!-- Error State -->
+                <div t-elif="state.error" 
+                     class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-white">
+                    <i class="fa fa-exclamation-triangle fa-3x text-danger mb-3"/>
+                    <h4 class="text-danger">Error Loading Diagram</h4>
+                    <p class="text-muted"><t t-esc="state.error"/></p>
+                    <button class="btn btn-primary mt-3" t-on-click="loadDiagramData">
+                        <i class="fa fa-refresh me-2"/>
+                        Retry
+                    </button>
+                </div>
+                
+                <!-- Empty State -->
+                <div t-elif="state.nodeCount === 0 and !state.loading" 
+                     class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-white">
+                    <i class="fa fa-info-circle fa-3x text-info mb-3"/>
+                    <h4 class="text-info">No Diagram Data</h4>
+                    <p class="text-muted">Click "Regenerate Diagram" to generate the system diagram.</p>
+                </div>
+                
+                <!-- Diagram Display -->
+                <div t-else="" class="h-100 p-3">
+                    <NetworkDiagram 
+                        nodes="state.nodes"
+                        edges="state.edges"
+                        options="state.options"
+                        height="800"
+                        onNodeClick.bind="onNodeClick"
+                        onEdgeClick.bind="onEdgeClick"/>
+                </div>
+            </div>
+            
+        </div>
+    </t>
+    
+</templates>
