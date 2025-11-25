@@ -38,9 +38,23 @@ export class Warehouse3DView extends Component {
             this.state.loading = true;
             this.state.error = null;
             
-            const result = await this.env.services.rpc("/warehouse/3d/data", {
-                config_id: this.state.config_id,
-            });
+            // Call the model method directly via ORM service (like system_flowchart_view.js pattern)
+            const config = await this.orm.searchRead(
+                'warehouse.3d.view.config',
+                [['id', '=', this.state.config_id]],
+                ['blueprint_id', 'view_mode', 'color_scheme']
+            );
+            
+            if (!config || config.length === 0) {
+                throw new Error('Configuration not found');
+            }
+            
+            // Call the model's method to get visualization data
+            const result = await this.orm.call(
+                'warehouse.3d.view.config',
+                'get_3d_visualization_data',
+                [this.state.config_id]
+            );
             
             if (result.error) {
                 throw new Error(result.error);
