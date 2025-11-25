@@ -317,14 +317,77 @@ export class SystemDiagramView extends Component {
         
         // Find the clicked node
         const node = this.state.nodes.find(n => n.id === nodeId);
-        if (node) {
-            this.notification.add(
-                `Clicked: ${node.label}`,
-                { type: "info" }
-            );
+        if (!node) {
+            return;
+        }
+        
+        // Extract node metadata (stored in title or custom fields)
+        const nodeType = node.group || node.nodeType;
+        const recordId = node.recordId;
+        const modelName = node.model;
+        
+        console.log(`Node click - Type: ${nodeType}, Model: ${modelName}, ID: ${recordId}`);
+        
+        // Handle different node types
+        if (nodeType === 'model' && modelName) {
+            // Open the model's list view
+            this.action.doAction({
+                type: 'ir.actions.act_window',
+                res_model: modelName,
+                views: [[false, 'list'], [false, 'form']],
+                name: node.label,
+                target: 'current',
+            });
+            this.notification.add(`Opening ${node.label} records`, { type: "info" });
             
-            // TODO: Add custom logic for different node types
-            // e.g., open model record, show user details, etc.
+        } else if (nodeType === 'user' && recordId) {
+            // Open user form view
+            this.action.doAction({
+                type: 'ir.actions.act_window',
+                res_model: 'res.users',
+                res_id: recordId,
+                views: [[false, 'form']],
+                name: `User: ${node.label}`,
+                target: 'new',
+            });
+            
+        } else if (nodeType === 'department' && recordId) {
+            // Open department form view
+            this.action.doAction({
+                type: 'ir.actions.act_window',
+                res_model: 'hr.department',
+                res_id: recordId,
+                views: [[false, 'form']],
+                name: `Department: ${node.label}`,
+                target: 'new',
+            });
+            
+        } else if (nodeType === 'record' && modelName && recordId) {
+            // Open specific record form view
+            this.action.doAction({
+                type: 'ir.actions.act_window',
+                res_model: modelName,
+                res_id: recordId,
+                views: [[false, 'form']],
+                name: node.label,
+                target: 'new',
+            });
+            
+        } else if (nodeType === 'field' && modelName) {
+            // Open model configuration for field details
+            this.action.doAction({
+                type: 'ir.actions.act_window',
+                res_model: 'ir.model',
+                domain: [['model', '=', modelName]],
+                views: [[false, 'list'], [false, 'form']],
+                name: `Model Fields: ${modelName}`,
+                target: 'current',
+            });
+            this.notification.add(`Viewing fields for ${modelName}`, { type: "info" });
+            
+        } else {
+            // Generic node - just show notification
+            this.notification.add(`Clicked: ${node.label}`, { type: "info" });
         }
     }
     
