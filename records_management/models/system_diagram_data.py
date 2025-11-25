@@ -175,14 +175,19 @@ class SystemDiagramData(models.Model):
         Raises:
             None (handles exceptions internally with logging and fallback data)
         """
+        _logger.info("=== DIAGRAM DATA COMPUTATION STARTED ===")
         for record in self:
+            _logger.info("Computing diagram data for record ID: %s", record.id)
             try:
                 nodes = []
                 edges = []
 
                 # Core system nodes (always add these)
                 try:
-                    nodes.extend(record._get_core_system_nodes())
+                    core_nodes = record._get_core_system_nodes()
+                    _logger.info("Core nodes returned: %s nodes", len(core_nodes))
+                    nodes.extend(core_nodes)
+                    _logger.info("Total nodes after adding core: %s", len(nodes))
                 except Exception as e:
                     _logger.warning("Error getting core system nodes: %s", str(e))
 
@@ -190,39 +195,60 @@ class SystemDiagramData(models.Model):
                 if not record.show_access_only:
                     try:
                         model_nodes, model_edges = record._get_model_relationships()
+                        _logger.info("Model relationships returned: %s nodes, %s edges", 
+                                   len(model_nodes), len(model_edges))
                         nodes.extend(model_nodes)
                         edges.extend(model_edges)
+                        _logger.info("Total after models: %s nodes, %s edges", len(nodes), len(edges))
                     except Exception as e:
                         _logger.warning("Error getting model relationships: %s", str(e))
 
                 # User and access nodes
                 try:
                     user_nodes, access_edges = record._get_user_access_data()
+                    _logger.info("User access returned: %s nodes, %s edges", 
+                               len(user_nodes), len(access_edges))
                     nodes.extend(user_nodes)
                     edges.extend(access_edges)
+                    _logger.info("Total after users: %s nodes, %s edges", len(nodes), len(edges))
                 except Exception as e:
                     _logger.warning("Error getting user access data: %s", str(e))
 
                 # Cross-department sharing nodes
                 if not record.show_access_only:
                     sharing_nodes, sharing_edges = record._get_cross_department_sharing()
+                    _logger.info("Cross-department sharing returned: %s nodes, %s edges", 
+                               len(sharing_nodes), len(sharing_edges))
                     nodes.extend(sharing_nodes)
                     edges.extend(sharing_edges)
+                    _logger.info("Total after sharing: %s nodes, %s edges", len(nodes), len(edges))
 
                 # Apply search filters
                 if record.search_query:
                     try:
                         nodes, edges = record._apply_search_filter(nodes, edges)
+                        _logger.info("After search filter: %s nodes, %s edges", len(nodes), len(edges))
                     except Exception as e:
                         _logger.warning("Error applying search filter: %s", str(e))
 
-                record.nodes_data = json.dumps(nodes, indent=2)
-                record.edges_data = json.dumps(edges, indent=2)
+                # Serialize to JSON
+                _logger.info("=== Final counts - Nodes: %s, Edges: %s ===", len(nodes), len(edges))
+                nodes_json = json.dumps(nodes, indent=2)
+                edges_json = json.dumps(edges, indent=2)
+                _logger.info("JSON serialization complete - nodes_data: %s chars, edges_data: %s chars",
+                           len(nodes_json), len(edges_json))
+
+                record.nodes_data = nodes_json
+                record.edges_data = edges_json
+                _logger.info("Fields assigned - nodes_data: %s, edges_data: %s",
+                           len(record.nodes_data or ""), len(record.edges_data or ""))
 
             except Exception as e:
                 _logger.error("Error computing diagram data: %s", str(e), exc_info=True)
                 record.nodes_data = json.dumps([{'id': 'error', 'label': 'Error Generating Data', 'group': 'error'}])
                 record.edges_data = json.dumps([])
+        
+        _logger.info("=== DIAGRAM DATA COMPUTATION COMPLETED ===")
 
     @api.depends('layout_algorithm', 'node_spacing', 'edge_length')
     def _compute_diagram_config(self):
