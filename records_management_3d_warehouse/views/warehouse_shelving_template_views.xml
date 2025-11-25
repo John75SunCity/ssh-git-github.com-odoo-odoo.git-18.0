@@ -23,28 +23,28 @@
         <field name="arch" type="xml">
             <form string="Shelving Template">
                 <header>
-                    <button name="action_generate_locations" 
-                            type="object" 
-                            string="Generate Locations" 
+                    <button name="action_generate_locations"
+                            type="object"
+                            string="Generate Locations"
                             class="btn-primary"
                             invisible="locations_generated"/>
-                    <button name="action_regenerate_locations" 
-                            type="object" 
-                            string="Regenerate Locations" 
+                    <button name="action_regenerate_locations"
+                            type="object"
+                            string="Regenerate Locations"
                             class="btn-warning"
                             invisible="not locations_generated"
                             confirm="This will archive existing locations and create new ones. Continue?"/>
-                    <button name="action_view_locations" 
-                            type="object" 
-                            string="View Locations" 
+                    <button name="action_view_locations"
+                            type="object"
+                            string="View Locations"
                             class="btn-secondary"
                             invisible="not locations_generated"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_locations" 
-                                type="object" 
-                                class="oe_stat_button" 
+                        <button name="action_view_locations"
+                                type="object"
+                                class="oe_stat_button"
                                 icon="fa-cubes"
                                 invisible="not locations_generated">
                             <field name="location_ids" widget="statinfo" string="Locations"/>
