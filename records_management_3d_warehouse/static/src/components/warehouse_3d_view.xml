@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    
+    <t t-name="records_management_3d_warehouse.Warehouse3DView">
+        <div class="warehouse-3d-main-container">
+            
+            <!-- Loading State -->
+            <div t-if="state.loading" class="warehouse-3d-loading">
+                <div class="text-center p-5">
+                    <i class="fa fa-spinner fa-spin fa-3x text-primary mb-3"/>
+                    <h4>Loading 3D Warehouse Visualization...</h4>
+                    <p class="text-muted">Preparing location data and rendering graph</p>
+                </div>
+            </div>
+            
+            <!-- Error State -->
+            <div t-if="state.error and !state.loading" class="warehouse-3d-error">
+                <div class="alert alert-danger m-4">
+                    <h4><i class="fa fa-exclamation-triangle"/> Error Loading Warehouse</h4>
+                    <p t-esc="state.error"/>
+                    <button class="btn btn-primary mt-2" t-on-click="() => this.loadData()">
+                        <i class="fa fa-refresh"/> Retry
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div t-if="!state.loading and !state.error" class="warehouse-3d-content">
+                
+                <!-- Top Control Bar -->
+                <div class="warehouse-3d-controls">
+                    <div class="d-flex align-items-center justify-content-between p-2 bg-light border-bottom">
+                        
+                        <!-- Left Controls -->
+                        <div class="d-flex align-items-center gap-2">
+                            
+                            <!-- View Mode Selector -->
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-primary dropdown-toggle" 
+                                        type="button" 
+                                        data-bs-toggle="dropdown">
+                                    <i class="fa fa-eye"/> 
+                                    <t t-esc="state.data.view_mode_label || 'View Mode'"/>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="#" 
+                                           t-on-click.prevent="() => this.switchViewMode('capacity')">
+                                            📦 Capacity Utilization
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" 
+                                           t-on-click.prevent="() => this.switchViewMode('revenue')">
+                                            💰 Revenue per Container
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" 
+                                           t-on-click.prevent="() => this.switchViewMode('customer')">
+                                            👤 By Customer
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" 
+                                           t-on-click.prevent="() => this.switchViewMode('age_fifo')">
+                                            ⏳ Oldest First (FIFO)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" 
+                                           t-on-click.prevent="() => this.switchViewMode('age_lifo')">
+                                            🆕 Newest First (LIFO)
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" 
+                                           t-on-click.prevent="() => this.switchViewMode('fsm_orders')">
+                                            🔧 FSM Work Orders
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" 
+                                           t-on-click.prevent="() => this.switchViewMode('file_folders')">
+                                            📁 File Folders
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" 
+                                           t-on-click.prevent="() => this.switchViewMode('security')">
+                                            🔒 Security Levels
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" 
+                                           t-on-click.prevent="() => this.switchViewMode('temperature')">
+                                            🌡️ Climate Control
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Rotation Toggle -->
+                            <button class="btn btn-sm btn-outline-secondary" 
+                                    t-on-click="() => this.toggleRotation()"
+                                    t-att-class="{ 'active': state.rotating }">
+                                <i class="fa fa-rotate-right"/>
+                                <t t-if="state.rotating">Stop Rotation</t>
+                                <t t-else="">Auto Rotate</t>
+                            </button>
+                            
+                            <!-- Refresh Data -->
+                            <button class="btn btn-sm btn-outline-info" 
+                                    t-on-click="() => this.loadData()">
+                                <i class="fa fa-refresh"/> Refresh
+                            </button>
+                        </div>
+                        
+                        <!-- Right Controls -->
+                        <div class="d-flex align-items-center gap-2">
+                            
+                            <!-- Statistics Badge -->
+                            <span class="badge bg-primary">
+                                <i class="fa fa-box"/> 
+                                <t t-esc="state.data.statistics?.total_containers || 0"/> Containers
+                            </span>
+                            
+                            <span class="badge bg-success">
+                                <i class="fa fa-dollar-sign"/>
+                                $<t t-esc="state.data.statistics?.total_revenue || 0"/>
+                            </span>
+                            
+                            <!-- Export Button -->
+                            <button class="btn btn-sm btn-outline-success" 
+                                    t-on-click="() => this.exportToPNG()">
+                                <i class="fa fa-download"/> Export PNG
+                            </button>
+                            
+                            <!-- Settings Button -->
+                            <button class="btn btn-sm btn-outline-dark" 
+                                    t-on-click="() => this.openSettings()">
+                                <i class="fa fa-cog"/> Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 3D Graph Container -->
+                <div class="warehouse-3d-graph-wrapper">
+                    <div class="warehouse-3d-graph" 
+                         t-ref="graph3d-container">
+                        <!-- vis.js Graph3d will be rendered here -->
+                    </div>
+                </div>
+                
+                <!-- Legend Panel -->
+                <div t-if="state.data.settings?.show_legend and state.data.legend" 
+                     class="warehouse-3d-legend">
+                    <div class="card m-2">
+                        <div class="card-header bg-dark text-white">
+                            <h6 class="mb-0">
+                                <i class="fa fa-info-circle"/> 
+                                <t t-esc="state.data.legend.title"/>
+                            </h6>
+                        </div>
+                        <div class="card-body p-2">
+                            <div class="legend-items">
+                                <t t-foreach="state.data.legend.items" t-as="item" t-key="item.label">
+                                    <div class="legend-item d-flex align-items-center mb-1">
+                                        <div class="legend-color-box me-2" 
+                                             t-att-style="'background-color: ' + item.color"/>
+                                        <span class="legend-label small" t-esc="item.label"/>
+                                        <span class="legend-value small text-muted ms-auto" 
+                                              t-if="item.value"
+                                              t-esc="item.value"/>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Instructions Panel (Collapsible) -->
+                <div class="warehouse-3d-instructions">
+                    <div class="card m-2">
+                        <div class="card-header bg-info text-white cursor-pointer" 
+                             data-bs-toggle="collapse" 
+                             data-bs-target="#instructions-content">
+                            <h6 class="mb-0">
+                                <i class="fa fa-question-circle"/> 
+                                How to Use (Click to expand)
+                            </h6>
+                        </div>
+                        <div id="instructions-content" class="collapse">
+                            <div class="card-body p-2 small">
+                                <ul class="mb-0">
+                                    <li><strong>Rotate:</strong> Click and drag to rotate the view</li>
+                                    <li><strong>Zoom:</strong> Scroll wheel or pinch to zoom in/out</li>
+                                    <li><strong>Pan:</strong> Right-click and drag to pan</li>
+                                    <li><strong>Select Container:</strong> Click on a box to view details</li>
+                                    <li><strong>Change View:</strong> Use the "View Mode" dropdown to switch visualizations</li>
+                                    <li><strong>Export:</strong> Click "Export PNG" to save the current view</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+    </t>
+    
+</templates>

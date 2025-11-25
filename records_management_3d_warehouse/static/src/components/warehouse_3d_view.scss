@@ -1,0 +1,311 @@
+// =========================================
+// 3D Warehouse Visualization Styling
+// =========================================
+
+.warehouse-3d-main-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: #f8f9fa;
+    overflow: hidden;
+    
+    // Loading State
+    .warehouse-3d-loading {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        i.fa-spinner {
+            color: #007bff;
+        }
+    }
+    
+    // Error State
+    .warehouse-3d-error {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    // Main Content
+    .warehouse-3d-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+    
+    // Control Bar
+    .warehouse-3d-controls {
+        flex-shrink: 0;
+        background: white;
+        border-bottom: 2px solid #dee2e6;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        z-index: 10;
+        
+        .btn-group {
+            .dropdown-menu {
+                max-height: 400px;
+                overflow-y: auto;
+            }
+        }
+        
+        .badge {
+            font-size: 0.85rem;
+            padding: 0.35rem 0.65rem;
+        }
+    }
+    
+    // 3D Graph Wrapper
+    .warehouse-3d-graph-wrapper {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        background: #ffffff;
+    }
+    
+    // 3D Graph Container
+    .warehouse-3d-graph {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        
+        // vis.js Graph3d canvas
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+    }
+    
+    // Legend Panel
+    .warehouse-3d-legend {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        max-width: 300px;
+        z-index: 5;
+        
+        .card {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            border: none;
+            
+            .card-header {
+                border-bottom: 1px solid rgba(255,255,255,0.2);
+                
+                h6 {
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                }
+            }
+            
+            .card-body {
+                max-height: 300px;
+                overflow-y: auto;
+            }
+        }
+        
+        .legend-items {
+            .legend-item {
+                padding: 4px 0;
+                border-bottom: 1px solid #f0f0f0;
+                
+                &:last-child {
+                    border-bottom: none;
+                }
+                
+                .legend-color-box {
+                    width: 20px;
+                    height: 20px;
+                    border: 1px solid #dee2e6;
+                    border-radius: 3px;
+                    flex-shrink: 0;
+                }
+                
+                .legend-label {
+                    font-size: 0.85rem;
+                    flex: 1;
+                }
+                
+                .legend-value {
+                    font-size: 0.8rem;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+    
+    // Instructions Panel
+    .warehouse-3d-instructions {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        max-width: 350px;
+        z-index: 5;
+        
+        .card {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            border: none;
+            
+            .card-header {
+                border-bottom: 1px solid rgba(255,255,255,0.2);
+                cursor: pointer;
+                user-select: none;
+                
+                &:hover {
+                    background-color: #17a2b8 !important;
+                }
+                
+                h6 {
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                }
+            }
+            
+            .card-body {
+                ul {
+                    padding-left: 1.2rem;
+                    
+                    li {
+                        margin-bottom: 0.3rem;
+                        
+                        strong {
+                            color: #007bff;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// =========================================
+// Responsive Design
+// =========================================
+
+@media (max-width: 768px) {
+    .warehouse-3d-main-container {
+        .warehouse-3d-controls {
+            .d-flex {
+                flex-direction: column;
+                gap: 0.5rem;
+                
+                &.justify-content-between {
+                    align-items: stretch !important;
+                }
+                
+                .btn-group,
+                .badge,
+                button {
+                    width: 100%;
+                }
+            }
+        }
+        
+        .warehouse-3d-legend,
+        .warehouse-3d-instructions {
+            position: static;
+            max-width: none;
+            margin: 10px;
+        }
+    }
+}
+
+// =========================================
+// Utility Classes
+// =========================================
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+// =========================================
+// vis.js Graph3d Customization
+// =========================================
+
+.vis-graph3d-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    
+    .vis-graph3d-axis {
+        stroke: #495057;
+        stroke-width: 1px;
+    }
+    
+    .vis-graph3d-axis-x,
+    .vis-graph3d-axis-y,
+    .vis-graph3d-axis-z {
+        fill: #495057;
+        font-size: 12px;
+    }
+    
+    .vis-graph3d-grid {
+        stroke: #dee2e6;
+        stroke-width: 0.5px;
+    }
+    
+    .vis-graph3d-bar {
+        stroke: rgba(0,0,0,0.2);
+        stroke-width: 1px;
+    }
+    
+    .vis-graph3d-dot {
+        stroke: rgba(0,0,0,0.3);
+        stroke-width: 1px;
+    }
+}
+
+// =========================================
+// Tooltip Styling (if custom tooltips needed)
+// =========================================
+
+.warehouse-3d-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    
+    .tooltip-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        border-bottom: 1px solid rgba(255,255,255,0.3);
+        padding-bottom: 5px;
+    }
+    
+    .tooltip-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 3px 0;
+        
+        .tooltip-label {
+            opacity: 0.8;
+            margin-right: 10px;
+        }
+        
+        .tooltip-value {
+            font-weight: 500;
+        }
+    }
+}
+
+// =========================================
+// Print Styles
+// =========================================
+
+@media print {
+    .warehouse-3d-main-container {
+        .warehouse-3d-controls,
+        .warehouse-3d-instructions {
+            display: none;
+        }
+        
+        .warehouse-3d-graph-wrapper {
+            height: 100vh;
+        }
+    }
+}

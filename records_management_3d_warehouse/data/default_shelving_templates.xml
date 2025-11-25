@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- ============================================ -->
+        <!-- Default Shelving Templates -->
+        <!-- ============================================ -->
+        
+        <!-- Standard 4-foot Box Shelving -->
+        <record id="shelving_template_standard_4ft" model="warehouse.shelving.template">
+            <field name="name">Standard 4ft Box Shelving (48" × 24" × 96")</field>
+            <field name="description">Standard 4-foot wide shelving unit suitable for letter/legal size boxes. 5 shelves with 4 positions per shelf.</field>
+            <field name="shelving_width">48.0</field>
+            <field name="shelving_depth">24.0</field>
+            <field name="shelving_height">96.0</field>
+            <field name="shelf_count">5</field>
+            <field name="aisle_name">A</field>
+            <field name="rack_prefix">R</field>
+            <field name="duplicate_count">10</field>
+            <field name="duplication_direction">horizontal_x</field>
+            <field name="spacing_between">36.0</field>
+            <field name="start_x">60.0</field>
+            <field name="start_y">60.0</field>
+            <field name="start_z">0.0</field>
+        </record>
+        
+        <!-- Heavy Duty 6-foot Shelving -->
+        <record id="shelving_template_heavy_duty_6ft" model="warehouse.shelving.template">
+            <field name="name">Heavy Duty 6ft Shelving (72" × 30" × 120")</field>
+            <field name="description">Heavy-duty 6-foot wide shelving for large containers. 6 shelves with 6 positions per shelf.</field>
+            <field name="shelving_width">72.0</field>
+            <field name="shelving_depth">30.0</field>
+            <field name="shelving_height">120.0</field>
+            <field name="shelf_count">6</field>
+            <field name="aisle_name">B</field>
+            <field name="rack_prefix">R</field>
+            <field name="duplicate_count">8</field>
+            <field name="duplication_direction">horizontal_x</field>
+            <field name="spacing_between">48.0</field>
+            <field name="start_x">60.0</field>
+            <field name="start_y">150.0</field>
+            <field name="start_z">0.0</field>
+        </record>
+        
+        <!-- Compact 3-foot Shelving -->
+        <record id="shelving_template_compact_3ft" model="warehouse.shelving.template">
+            <field name="name">Compact 3ft Shelving (36" × 18" × 72")</field>
+            <field name="description">Compact 3-foot shelving for smaller boxes and file folders. 4 shelves with 3 positions per shelf.</field>
+            <field name="shelving_width">36.0</field>
+            <field name="shelving_depth">18.0</field>
+            <field name="shelving_height">72.0</field>
+            <field name="shelf_count">4</field>
+            <field name="aisle_name">C</field>
+            <field name="rack_prefix">R</field>
+            <field name="duplicate_count">15</field>
+            <field name="duplication_direction">horizontal_y</field>
+            <field name="spacing_between">24.0</field>
+            <field name="start_x">60.0</field>
+            <field name="start_y">240.0</field>
+            <field name="start_z">0.0</field>
+        </record>
+        
+        <!-- Mobile File Cart Template -->
+        <record id="shelving_template_mobile_cart" model="warehouse.shelving.template">
+            <field name="name">Mobile File Cart (24" × 18" × 48")</field>
+            <field name="description">Mobile file cart for temporary storage and transport. 3 shelves with 2 positions per shelf.</field>
+            <field name="shelving_width">24.0</field>
+            <field name="shelving_depth">18.0</field>
+            <field name="shelving_height">48.0</field>
+            <field name="shelf_count">3</field>
+            <field name="aisle_name">CART</field>
+            <field name="rack_prefix">C</field>
+            <field name="duplicate_count">5</field>
+            <field name="duplication_direction">horizontal_x</field>
+            <field name="spacing_between">30.0</field>
+            <field name="start_x">60.0</field>
+            <field name="start_y">330.0</field>
+            <field name="start_z">0.0</field>
+        </record>
+        
+        <!-- High-Density Archive Shelving -->
+        <record id="shelving_template_high_density" model="warehouse.shelving.template">
+            <field name="name">High-Density Archive (60" × 36" × 144")</field>
+            <field name="description">High-density archive shelving for maximum capacity. 8 shelves with 5 positions per shelf.</field>
+            <field name="shelving_width">60.0</field>
+            <field name="shelving_depth">36.0</field>
+            <field name="shelving_height">144.0</field>
+            <field name="shelf_count">8</field>
+            <field name="aisle_name">D</field>
+            <field name="rack_prefix">R</field>
+            <field name="duplicate_count">12</field>
+            <field name="duplication_direction">horizontal_x</field>
+            <field name="spacing_between">42.0</field>
+            <field name="start_x">600.0</field>
+            <field name="start_y">60.0</field>
+            <field name="start_z">0.0</field>
+        </record>
+        
+        <!-- Climate-Controlled Storage -->
+        <record id="shelving_template_climate_controlled" model="warehouse.shelving.template">
+            <field name="name">Climate-Controlled Storage (48" × 24" × 84")</field>
+            <field name="description">Temperature and humidity-controlled shelving for sensitive documents. 5 shelves with 4 positions per shelf.</field>
+            <field name="shelving_width">48.0</field>
+            <field name="shelving_depth">24.0</field>
+            <field name="shelving_height">84.0</field>
+            <field name="shelf_count">5</field>
+            <field name="aisle_name">E</field>
+            <field name="rack_prefix">R</field>
+            <field name="duplicate_count">6</field>
+            <field name="duplication_direction">horizontal_y</field>
+            <field name="spacing_between">36.0</field>
+            <field name="start_x">600.0</field>
+            <field name="start_y">300.0</field>
+            <field name="start_z">0.0</field>
+        </record>
+        
+    </data>
+</odoo>
