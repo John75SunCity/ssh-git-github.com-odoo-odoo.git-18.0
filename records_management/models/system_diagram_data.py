@@ -180,19 +180,28 @@ class SystemDiagramData(models.Model):
                 nodes = []
                 edges = []
 
-                # Core system nodes
-                nodes.extend(record._get_core_system_nodes())
+                # Core system nodes (always add these)
+                try:
+                    nodes.extend(record._get_core_system_nodes())
+                except Exception as e:
+                    _logger.warning("Error getting core system nodes: %s", str(e))
 
                 # Model relationship nodes
                 if not record.show_access_only:
-                    model_nodes, model_edges = record._get_model_relationships()
-                    nodes.extend(model_nodes)
-                    edges.extend(model_edges)
+                    try:
+                        model_nodes, model_edges = record._get_model_relationships()
+                        nodes.extend(model_nodes)
+                        edges.extend(model_edges)
+                    except Exception as e:
+                        _logger.warning("Error getting model relationships: %s", str(e))
 
                 # User and access nodes
-                user_nodes, access_edges = record._get_user_access_data()
-                nodes.extend(user_nodes)
-                edges.extend(access_edges)
+                try:
+                    user_nodes, access_edges = record._get_user_access_data()
+                    nodes.extend(user_nodes)
+                    edges.extend(access_edges)
+                except Exception as e:
+                    _logger.warning("Error getting user access data: %s", str(e))
 
                 # Cross-department sharing nodes
                 if not record.show_access_only:
@@ -202,7 +211,10 @@ class SystemDiagramData(models.Model):
 
                 # Apply search filters
                 if record.search_query:
-                    nodes, edges = record._apply_search_filter(nodes, edges)
+                    try:
+                        nodes, edges = record._apply_search_filter(nodes, edges)
+                    except Exception as e:
+                        _logger.warning("Error applying search filter: %s", str(e))
 
                 record.nodes_data = json.dumps(nodes, indent=2)
                 record.edges_data = json.dumps(edges, indent=2)
