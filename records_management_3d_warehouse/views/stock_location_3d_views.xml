@@ -8,12 +8,14 @@
         <field name="model">stock.location</field>
         <field name="inherit_id" ref="stock.view_location_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//header" position="inside">
-                <button name="action_open_3d_view" 
-                        type="object" 
-                        string="3D View" 
-                        class="btn-primary"
-                        invisible="not is_records_location"/>
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <button name="action_open_3d_view" 
+                            type="object" 
+                            string="3D View" 
+                            class="btn-primary"
+                            invisible="not is_records_location"/>
+                </header>
             </xpath>
         </field>
     </record>
