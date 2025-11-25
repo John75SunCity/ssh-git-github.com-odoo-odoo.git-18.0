@@ -130,29 +130,26 @@ export class SystemDiagramView extends Component {
                     this.state.diagramId = this.props.action.res_id;
                     console.log(`Using res_id from action: ${this.state.diagramId}`);
                 }
-                // Priority 3: Search for existing diagram
+                // Priority 3: Use first from available diagrams
+                else if (this.state.availableDiagrams.length > 0) {
+                    this.state.diagramId = this.state.availableDiagrams[0].id;
+                    console.log(`Using first available diagram: ID ${this.state.diagramId}`);
+                }
+                // Priority 4: No diagrams exist - let backend create one
                 else {
-                    const diagrams = await this.orm.searchRead(
-                        'system.diagram.data',
-                        [],
-                        ['id', 'name'],
-                        { limit: 1 }
-                    );
-                    
-                    if (diagrams.length > 0) {
-                        this.state.diagramId = diagrams[0].id;
-                        console.log(`Found existing diagram: ID ${this.state.diagramId}`);
-                    } else {
-                        // Priority 4: Create new diagram
-                        this.state.diagramId = await this.orm.create(
-                            'system.diagram.data',
-                            [{
-                                name: 'System Architecture Diagram',
-                                search_type: 'all',
-                                show_access_only: false,
-                            }]
-                        );
-                        console.log(`Created new diagram: ID ${this.state.diagramId}`);
+                    console.log("No diagrams available, backend will create default");
+                }
+            }
+            
+            // Verify diagram still exists before trying to load it
+            if (this.state.diagramId) {
+                const exists = this.state.availableDiagrams.some(d => d.id === this.state.diagramId);
+                if (!exists) {
+                    console.warn(`Diagram ID ${this.state.diagramId} no longer exists, will reload list`);
+                    this.state.diagramId = null;
+                    await this.loadAvailableDiagrams();
+                    if (this.state.availableDiagrams.length > 0) {
+                        this.state.diagramId = this.state.availableDiagrams[0].id;
                     }
                 }
             }
@@ -180,15 +177,29 @@ export class SystemDiagramView extends Component {
             this.state.edgeCount = this.state.edges.length;
             
             // Get diagram name for display
-            const diagramRecord = await this.orm.read(
-                'system.diagram.data',
-                [this.state.diagramId],
-                ['name', 'search_type']
-            );
-            if (diagramRecord.length > 0) {
-                this.state.diagramName = diagramRecord[0].name;
-                console.log(`Loaded diagram: "${this.state.diagramName}" (${diagramRecord[0].search_type})`);
+            try {
+                const diagramRecord = await this.orm.read(
+                    'system.diagram.data',
+                    [this.state.diagramId],
+                    ['name', 'search_type']
+                );
+                if (diagramRecord.length > 0) {
+                    this.state.diagramName = diagramRecord[0].name;
+                    console.log(`Loaded diagram: "${this.state.diagramName}" (${diagramRecord[0].search_type})`);
+                }
+            } catch (readError) {
+                // If we can't read the diagram (it was deleted), refresh the list
+                console.warn("Could not read diagram record, refreshing available diagrams", readError);
+                await this.loadAvailableDiagrams();
+                if (this.state.availableDiagrams.length > 0) {
+                    // Try loading the first available diagram instead
+                    this.state.diagramId = this.state.availableDiagrams[0].id;
+                    return await this.loadDiagramData();
+                }
             }
+            
+            // Refresh available diagrams list to sync with any backend changes
+            await this.loadAvailableDiagrams();
             
             console.log(`Loaded ${this.state.nodeCount} nodes and ${this.state.edgeCount} edges`);
             
@@ -198,11 +209,28 @@ export class SystemDiagramView extends Component {
             
         } catch (error) {
             console.error('Error loading diagram data:', error);
-            this.state.error = error.message || "Failed to load diagram data";
-            this.notification.add(
-                `Failed to load diagram: ${this.state.error}`,
-                { type: "danger" }
-            );
+            
+            // Check if it's an "Invalid ids list" error (deleted diagram)
+            if (error.message && error.message.includes('Invalid ids list')) {
+                console.warn('Diagram was deleted, refreshing available diagrams and trying again');
+                this.state.diagramId = null;
+                await this.loadAvailableDiagrams();
+                
+                if (this.state.availableDiagrams.length > 0) {
+                    // Retry with first available diagram
+                    this.state.diagramId = this.state.availableDiagrams[0].id;
+                    return await this.loadDiagramData();
+                } else {
+                    // No diagrams exist - backend will create one
+                    this.state.error = "No diagrams available. Click Regenerate to create a new diagram.";
+                }
+            } else {
+                this.state.error = error.message || "Failed to load diagram data";
+                this.notification.add(
+                    `Failed to load diagram: ${this.state.error}`,
+                    { type: "danger" }
+                );
+            }
         } finally {
             this.state.loading = false;
         }
@@ -220,6 +248,20 @@ export class SystemDiagramView extends Component {
         try {
             console.log("Regenerating diagram data...");
             
+            // Check if current diagram still exists
+            if (this.state.diagramId) {
+                const exists = this.state.availableDiagrams.some(d => d.id === this.state.diagramId);
+                if (!exists) {
+                    console.warn(`Current diagram ${this.state.diagramId} was deleted, refreshing list`);
+                    await this.loadAvailableDiagrams();
+                    if (this.state.availableDiagrams.length > 0) {
+                        this.state.diagramId = this.state.availableDiagrams[0].id;
+                    } else {
+                        this.state.diagramId = null;
+                    }
+                }
+            }
+            
             await this.orm.call(
                 'system.diagram.data',
                 'action_regenerate_diagram',
@@ -235,10 +277,25 @@ export class SystemDiagramView extends Component {
             
         } catch (error) {
             console.error('Error regenerating diagram:', error);
-            this.notification.add(
-                `Failed to regenerate diagram: ${error.message}`,
-                { type: "danger" }
-            );
+            
+            // Handle deleted diagram during regeneration
+            if (error.message && error.message.includes('Invalid ids list')) {
+                this.notification.add(
+                    "The diagram was deleted. Loading available diagrams...",
+                    { type: "warning" }
+                );
+                this.state.diagramId = null;
+                await this.loadAvailableDiagrams();
+                if (this.state.availableDiagrams.length > 0) {
+                    this.state.diagramId = this.state.availableDiagrams[0].id;
+                    await this.loadDiagramData();
+                }
+            } else {
+                this.notification.add(
+                    `Failed to regenerate diagram: ${error.message}`,
+                    { type: "danger" }
+                );
+            }
         } finally {
             this.state.loading = false;
         }
