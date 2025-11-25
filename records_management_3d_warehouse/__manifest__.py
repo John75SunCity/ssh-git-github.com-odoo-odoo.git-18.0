@@ -61,6 +61,10 @@ Technical Requirements:
     ],
     'assets': {
         'web.assets_backend': [
+            # Vis.js Graph3d library from CDN
+            'https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.js',
+            'https://unpkg.com/vis-graph3d@latest/dist/vis-graph3d.min.css',
+            # Owl components
             'records_management_3d_warehouse/static/src/components/**/*.js',
             'records_management_3d_warehouse/static/src/components/**/*.xml',
             'records_management_3d_warehouse/static/src/components/**/*.scss',
