@@ -59,39 +59,39 @@ import { NetworkDiagram } from "@web_vis_network/components/network_diagram";
 export class SystemDiagramView extends Component {
     static template = "records_management.SystemDiagramView";
     static components = { NetworkDiagram };
-    
+
     setup() {
         this.orm = useService("orm");
         this.action = useService("action");
-        
+
         this.state = useState({
             nodes: [],
             edges: [],
             options: {},
             loading: true,
         });
-        
+
         onWillStart(async () => {
             await this.loadDiagramData();
         });
     }
-    
+
     async loadDiagramData() {
         this.state.loading = true;
-        
+
         // Call your existing Python method to get data
         const result = await this.orm.call(
             'system.diagram.data',
             'get_diagram_data',
             [this.props.action.context.active_id || 1],
         );
-        
+
         this.state.nodes = JSON.parse(result.nodes_data || '[]');
         this.state.edges = JSON.parse(result.edges_data || '[]');
         this.state.options = JSON.parse(result.diagram_config || '{}');
         this.state.loading = false;
     }
-    
+
     async onRegenerate() {
         await this.orm.call(
             'system.diagram.data',
@@ -100,7 +100,7 @@ export class SystemDiagramView extends Component {
         );
         await this.loadDiagramData();
     }
-    
+
     onNodeClick(nodeId, params) {
         console.log('Node clicked:', nodeId, params);
         // Add your custom logic here
@@ -126,13 +126,13 @@ Create new file: `records_management/static/src/xml/system_diagram.xml`
                     </button>
                 </div>
             </div>
-            
+
             <div class="o_content">
                 <div t-if="state.loading" class="o_loading">
                     <i class="fa fa-spinner fa-spin fa-3x"/>
                     <p>Loading diagram...</p>
                 </div>
-                
+
                 <NetworkDiagram t-else=""
                     nodes="state.nodes"
                     edges="state.edges"
@@ -174,14 +174,14 @@ import json
 class SystemDiagramData(models.Model):
     _name = 'system.diagram.data'
     _description = 'System Architecture Diagram Data'
-    
+
     # Keep existing fields but remove diagram_html
     nodes_data = fields.Text('Nodes Data', compute='_compute_diagram_data')
     edges_data = fields.Text('Edges Data', compute='_compute_diagram_data')
     diagram_config = fields.Text('Diagram Configuration', compute='_compute_diagram_config')
-    
+
     # Remove _compute_diagram_html method - no longer needed!
-    
+
     @api.model
     def get_diagram_data(self, diagram_id):
         """API method for Owl component to fetch data"""
@@ -191,7 +191,7 @@ class SystemDiagramData(models.Model):
             'edges_data': diagram.edges_data,
             'diagram_config': diagram.diagram_config,
         }
-    
+
     def action_regenerate_diagram(self):
         """Simplified regeneration - just invalidate cache"""
         self.ensure_one()

@@ -5,17 +5,17 @@ import { registry } from "@web/core/registry";
 
 /**
  * NetworkDiagram Component
- * 
+ *
  * Owl component for rendering vis.js network diagrams.
  * This is a reusable component that can be used across multiple modules.
- * 
+ *
  * Usage:
  * ------
  * import { NetworkDiagram } from "@web_vis_network/components/network_diagram";
- * 
+ *
  * In your template:
  * <NetworkDiagram nodes="state.nodes" edges="state.edges" options="state.options"/>
- * 
+ *
  * Props:
  * ------
  * - nodes: Array of node objects (required)
@@ -25,7 +25,7 @@ import { registry } from "@web/core/registry";
  */
 export class NetworkDiagram extends Component {
     static template = "web_vis_network.NetworkDiagram";
-    
+
     static props = {
         nodes: { type: Array, optional: false },
         edges: { type: Array, optional: false },
@@ -34,46 +34,46 @@ export class NetworkDiagram extends Component {
         onNodeClick: { type: Function, optional: true },
         onEdgeClick: { type: Function, optional: true },
     };
-    
+
     static defaultProps = {
         height: 600,
         options: {},
     };
-    
+
     setup() {
         this.containerRef = useRef("network-container");
         this.network = null;
-        
+
         onMounted(() => {
             this.initNetwork();
         });
-        
+
         onWillUnmount(() => {
             if (this.network) {
                 this.network.destroy();
             }
         });
     }
-    
+
     initNetwork() {
         if (typeof vis === 'undefined') {
             console.error('vis.js library not loaded! Make sure web_vis_network module is installed.');
             return;
         }
-        
+
         const container = this.containerRef.el;
         const nodes = new vis.DataSet(this.props.nodes);
         const edges = new vis.DataSet(this.props.edges);
-        
+
         const data = { nodes, edges };
         const options = this.getDefaultOptions();
-        
+
         // Merge custom options with defaults
         const finalOptions = Object.assign({}, options, this.props.options);
-        
+
         // Create network
         this.network = new vis.Network(container, data, finalOptions);
-        
+
         // Attach event handlers if provided
         if (this.props.onNodeClick) {
             this.network.on('click', (params) => {
@@ -82,7 +82,7 @@ export class NetworkDiagram extends Component {
                 }
             });
         }
-        
+
         if (this.props.onEdgeClick) {
             this.network.on('click', (params) => {
                 if (params.edges.length > 0) {
@@ -91,7 +91,7 @@ export class NetworkDiagram extends Component {
             });
         }
     }
-    
+
     getDefaultOptions() {
         return {
             nodes: {
@@ -134,7 +134,7 @@ export class NetworkDiagram extends Component {
             }
         };
     }
-    
+
     /**
      * Update the network data
      * Call this method when nodes or edges change
@@ -147,7 +147,7 @@ export class NetworkDiagram extends Component {
             });
         }
     }
-    
+
     /**
      * Fit the network to the viewport
      */
@@ -156,7 +156,7 @@ export class NetworkDiagram extends Component {
             this.network.fit();
         }
     }
-    
+
     /**
      * Stabilize the network physics
      */
