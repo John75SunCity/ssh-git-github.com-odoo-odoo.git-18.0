@@ -17,7 +17,7 @@
                                 <field name="key_issuance_allowed" />
                             </group>
                             <group name="key_restriction_details" invisible="key_issuance_allowed == True">
-                                <field name="key_restriction_reason" required="key_issuance_allowed == False" />
+                                <field name="key_restriction_reason" readonly="1" />
                                 <field name="key_restriction_date" />
                                 <field name="key_restriction_approved_by" />
                                 <field name="restricted_unlock_count" />
