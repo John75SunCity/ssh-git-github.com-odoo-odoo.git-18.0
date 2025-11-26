@@ -881,6 +881,8 @@ class RecordsContainer(models.Model):
     def action_view_documents(self):
         """View all documents in this container"""
         self.ensure_one()
+        if not self.id:
+            return {'type': 'ir.actions.act_window_close'}
         list_view_id = self.env.ref('records_management.records_document_view_list').id
         form_view_id = self.env.ref('records_management.records_document_view_form').id
         return {
@@ -896,6 +898,8 @@ class RecordsContainer(models.Model):
     def action_view_files(self):
         """View all file folders in this container"""
         self.ensure_one()
+        if not self.id:
+            return {'type': 'ir.actions.act_window_close'}
         list_view_id = self.env.ref('records_management.records_file_view_list').id
         form_view_id = self.env.ref('records_management.records_file_view_form').id
         return {
@@ -948,6 +952,8 @@ class RecordsContainer(models.Model):
         Note: This is NOT deletion - files remain tracked for return
         """
         self.ensure_one()
+        if not self.id:
+            return {'type': 'ir.actions.act_window_close'}
         list_view_id = self.env.ref('records_management.records_file_view_list').id
         form_view_id = self.env.ref('records_management.records_file_view_form').id
         return {
@@ -1719,6 +1725,8 @@ class RecordsContainer(models.Model):
             list of formatted movement data
         """
         self.ensure_one()
+        if not self.id:
+            return []
 
         domain = [('container_id', '=', self.id)]
         if movement_type:
