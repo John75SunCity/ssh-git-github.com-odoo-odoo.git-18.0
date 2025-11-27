@@ -206,7 +206,7 @@
             <field name="view_mode">list</field>
         </record>
         <!-- Temporary Inventory moved to Inventory menu -->
-        <menuitem id="menu_temp_inventory_root" name="Temporary Inventory" parent="records_management.menu_records_inventory" sequence="25" />
+        <!-- menu_temp_inventory_root removed - defined in records_management_root_menus.xml -->
         <menuitem id="menu_temp_inventory" name="Inventories" parent="records_management.menu_temp_inventory_root" action="action_temp_inventory" sequence="10" />
         <menuitem id="menu_temp_inventory_movement" name="Movements" parent="records_management.menu_temp_inventory_root" action="action_temp_inventory_movement" sequence="20" />
         <menuitem id="menu_temp_inventory_audit" name="Audit Trail" parent="records_management.menu_temp_inventory_root" action="action_temp_inventory_audit" sequence="30" groups="records_management.group_records_manager,records_management.group_records_admin" />

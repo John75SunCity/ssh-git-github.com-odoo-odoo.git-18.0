@@ -474,7 +474,7 @@
         <menuitem id="menu_destruction_services" name="Destruction Work Orders" parent="records_management.menu_shredding_operations" action="action_records_destruction" sequence="30" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
 
         <menuitem id="menu_paper_model_bales" name="Bales" parent="menu_paper_recycling" action="action_paper_model_bale" sequence="10" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
-        <menuitem id="menu_load_shipments" name="Load Shipments" parent="menu_paper_recycling" action="action_paper_load_shipment" sequence="20" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
+        <!-- menu_load_shipments removed - defined in paper_load_shipment_views.xml -->
 
         <menuitem id="menu_work_order_coordinators" name="Work Order Coordinators" parent="records_management.menu_records_operations" action="action_work_order_coordinator" sequence="60" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
         <menuitem id="menu_workflow_visualizations" name="Workflow Visualizations" parent="records_management.menu_records_operations" action="action_workflow_visualization_manager" sequence="65" groups="records_management.group_records_manager,records_management.group_records_admin" />
@@ -495,7 +495,7 @@
             </field>
         </record>
         <menuitem id="menu_portal_feedback" name="Portal Feedback" parent="records_management.menu_records_operations" action="action_feedback_responses" sequence="78" groups="records_management.group_records_manager,records_management.group_records_admin" />
-        <menuitem id="menu_feedback_analytics" name="Feedback Analytics" parent="records_management.menu_portal_feedback" action="action_feedback_analytics" sequence="10" groups="records_management.group_records_manager,records_management.group_records_admin" />
+        <!-- menu_feedback_analytics removed - defined in portal_feedback_menus.xml -->
 
         <!-- ========================================== -->
         <!-- INVENTORY MENU - Master Views             -->
@@ -601,8 +601,8 @@
         <menuitem id="menu_barcode_batch_print" name="Batch Print History" parent="records_management.menu_barcode_config" action="action_barcode_batch_print" sequence="25" groups="records_management.group_records_manager,records_management.group_records_admin" />
 
         <!-- System Configuration -->
-        <menuitem id="menu_rm_module_configurator" name="RM Module Configurator" parent="records_management.menu_records_configuration" action="action_rm_module_configurator" sequence="35" groups="records_management.group_records_manager,records_management.group_records_admin" />
-        <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="records_management.menu_records_configuration" action="action_field_label_customization" sequence="40" groups="records_management.group_records_manager,records_management.group_records_admin" />
+        <!-- menu_rm_module_configurator removed - defined in rm_module_configurator_views.xml -->
+        <!-- menu_field_label_customization removed - defined in transitory_field_config_views.xml -->
 
         <!-- Billing Configuration - Moved to Billing & Finance parent menu -->
 
