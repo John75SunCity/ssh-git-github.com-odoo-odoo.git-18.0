@@ -50,7 +50,7 @@ class RecordsManagementController(http.Controller):
         Returns a dict with permission details for all major portal actions.
         
         Permission levels:
-        - 'full': Can create, read, update, delete (green light)
+        - 'full': Can add, read, update, request destruction (green light)
         - 'partial': Can read and some actions but not all (yellow light)  
         - 'readonly': Can only view/read (yellow light)
         - 'none': No access (red light)
@@ -58,8 +58,12 @@ class RecordsManagementController(http.Controller):
         Each permission includes:
         - level: 'full', 'partial', 'readonly', 'none'
         - color: 'green', 'yellow', 'red'
-        - can_create, can_read, can_update, can_delete: boolean flags
+        - can_create, can_read, can_update, can_request_destruction: boolean flags
         - message: Human readable description of permissions
+        
+        Note: In records management, customers don't "delete" items - they request
+        destruction services. The physical containers/files are retrieved, shredded,
+        and billed. Records are archived (not deleted) in the system.
         """
         user = request.env.user
         
@@ -72,20 +76,27 @@ class RecordsManagementController(http.Controller):
         is_portal_dept_user = user.has_group('records_management.group_portal_department_user')
         is_portal_readonly = user.has_group('records_management.group_portal_readonly_employee')
         
-        def make_perm(can_create, can_read, can_update, can_delete):
-            """Helper to build permission dict from CRUD flags"""
-            if can_create and can_read and can_update and can_delete:
+        def make_perm(can_create, can_read, can_update, can_request_destruction):
+            """Helper to build permission dict from action flags.
+            
+            Args:
+                can_create: Can add new items
+                can_read: Can view items
+                can_update: Can edit item details
+                can_request_destruction: Can submit destruction service requests
+            """
+            if can_create and can_read and can_update and can_request_destruction:
                 level = 'full'
                 color = 'green'
-                message = 'Full access: You can create, view, edit, and delete'
+                message = 'Full access: You can add, view, edit, and request destruction'
             elif can_create and can_read and can_update:
                 level = 'partial'
                 color = 'yellow'
-                message = 'Partial access: You can create, view, and edit (cannot delete)'
+                message = 'Partial access: You can add, view, and edit (cannot request destruction)'
             elif can_read and can_update:
                 level = 'partial'
                 color = 'yellow'
-                message = 'Partial access: You can view and edit (cannot create or delete)'
+                message = 'Partial access: You can view and edit (cannot add new or request destruction)'
             elif can_read:
                 level = 'readonly'
                 color = 'yellow'
@@ -101,7 +112,9 @@ class RecordsManagementController(http.Controller):
                 'can_create': can_create,
                 'can_read': can_read,
                 'can_update': can_update,
-                'can_delete': can_delete,
+                'can_request_destruction': can_request_destruction,
+                # Keep can_delete as alias for backward compatibility
+                'can_delete': can_request_destruction,
                 'message': message,
             }
         

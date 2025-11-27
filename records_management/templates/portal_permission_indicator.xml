@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- 
+        <!--
         Permission Indicator Component
-        
-        Shows a traffic light indicator (green/yellow/red) to inform users of their 
+
+        Shows a traffic light indicator (green/yellow/red) to inform users of their
         access rights BEFORE they start filling out forms.
-        
+
         Usage in templates:
             <t t-call="records_management.permission_indicator">
                 <t t-set="perm_key" t-value="'containers'"/>
             </t>
-        
+
         Or with inline permission object:
             <t t-call="records_management.permission_indicator">
                 <t t-set="perm" t-value="permissions.get('containers')"/>
             </t>
         -->
-        
+
         <!-- Main Permission Indicator Template -->
         <template id="permission_indicator" name="Permission Indicator">
             <!-- Get permission from key or direct perm object -->
             <t t-set="perm_obj" t-value="perm if perm else (permissions.get(perm_key) if permissions and perm_key else None)"/>
-            
+
             <t t-if="perm_obj">
                 <span t-attf-class="permission-indicator permission-#{perm_obj.get('color', 'gray')}"
                       t-att-title="perm_obj.get('message', '')"
@@ -32,11 +32,11 @@
                 </span>
             </t>
         </template>
-        
+
         <!-- Permission Indicator with Label -->
         <template id="permission_indicator_with_label" name="Permission Indicator with Label">
             <t t-set="perm_obj" t-value="perm if perm else (permissions.get(perm_key) if permissions and perm_key else None)"/>
-            
+
             <t t-if="perm_obj">
                 <div class="permission-indicator-wrapper d-inline-flex align-items-center"
                      t-att-title="perm_obj.get('message', '')"
@@ -54,11 +54,11 @@
                 </div>
             </t>
         </template>
-        
+
         <!-- Permission Badge (for headers) -->
         <template id="permission_badge" name="Permission Badge">
             <t t-set="perm_obj" t-value="perm if perm else (permissions.get(perm_key) if permissions and perm_key else None)"/>
-            
+
             <t t-if="perm_obj">
                 <span t-attf-class="badge bg-#{perm_obj.get('color') == 'green' and 'success' or perm_obj.get('color') == 'yellow' and 'warning' or perm_obj.get('color') == 'red' and 'danger' or 'secondary'} ms-2"
                       t-att-title="perm_obj.get('message', '')"
@@ -75,11 +75,11 @@
                 </span>
             </t>
         </template>
-        
+
         <!-- Permission Card Header (shows detailed permissions) -->
         <template id="permission_card_header" name="Permission Card Header">
             <t t-set="perm_obj" t-value="perm if perm else (permissions.get(perm_key) if permissions and perm_key else None)"/>
-            
+
             <t t-if="perm_obj">
                 <div t-attf-class="alert alert-#{perm_obj.get('color') == 'green' and 'success' or perm_obj.get('color') == 'yellow' and 'warning' or perm_obj.get('color') == 'red' and 'danger' or 'secondary'} py-2 mb-3 d-flex align-items-center justify-content-between">
                     <div>
@@ -87,7 +87,7 @@
                         <strong><t t-esc="perm_obj.get('message', '')"/></strong>
                     </div>
                     <div class="permission-icons">
-                        <span class="me-2" t-att-title="'Can Create'" data-bs-toggle="tooltip">
+                        <span class="me-2" t-att-title="'Can Add New'" data-bs-toggle="tooltip">
                             <i t-attf-class="fa fa-plus-circle #{perm_obj.get('can_create') and 'text-success' or 'text-muted opacity-50'}"></i>
                         </span>
                         <span class="me-2" t-att-title="'Can View'" data-bs-toggle="tooltip">
@@ -96,14 +96,14 @@
                         <span class="me-2" t-att-title="'Can Edit'" data-bs-toggle="tooltip">
                             <i t-attf-class="fa fa-edit #{perm_obj.get('can_update') and 'text-success' or 'text-muted opacity-50'}"></i>
                         </span>
-                        <span t-att-title="'Can Delete'" data-bs-toggle="tooltip">
-                            <i t-attf-class="fa fa-trash #{perm_obj.get('can_delete') and 'text-success' or 'text-muted opacity-50'}"></i>
+                        <span t-att-title="'Can Request Destruction'" data-bs-toggle="tooltip">
+                            <i t-attf-class="fa fa-fire #{perm_obj.get('can_request_destruction') and 'text-success' or 'text-muted opacity-50'}"></i>
                         </span>
                     </div>
                 </div>
             </t>
         </template>
-        
+
         <!-- Permission Legend (for help pages) -->
         <template id="permission_legend" name="Permission Legend">
             <div class="permission-legend card mb-3">
@@ -115,7 +115,7 @@
                         <div class="col-md-4">
                             <span class="text-success"><i class="fa fa-circle"></i></span>
                             <strong class="ms-2">Green</strong>
-                            <small class="text-muted d-block ms-4">Full access - create, view, edit, delete</small>
+                            <small class="text-muted d-block ms-4">Full access - add, view, edit, request services</small>
                         </div>
                         <div class="col-md-4">
                             <span class="text-warning"><i class="fa fa-circle"></i></span>
@@ -128,10 +128,31 @@
                             <small class="text-muted d-block ms-4">No access to this feature</small>
                         </div>
                     </div>
+                    <div class="row mt-3 pt-3 border-top">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-2">Permission Icons:</h6>
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fa fa-plus-circle text-success"></i>
+                            <small class="ms-1">Can Add New</small>
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fa fa-eye text-success"></i>
+                            <small class="ms-1">Can View</small>
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fa fa-edit text-success"></i>
+                            <small class="ms-1">Can Edit</small>
+                        </div>
+                        <div class="col-md-3">
+                            <i class="fa fa-fire text-success"></i>
+                            <small class="ms-1">Can Request Destruction</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </template>
-        
+
         <!-- User Role Badge -->
         <template id="user_role_badge" name="User Role Badge">
             <t t-if="permissions and permissions.get('user_role')">
@@ -141,7 +162,7 @@
                 </span>
             </t>
         </template>
-        
+
         <!-- CSS Styles for Permission Indicators -->
         <template id="portal_permission_assets" name="Portal Permission Assets" inherit_id="portal.portal_layout" priority="99">
             <xpath expr="//head" position="inside">
@@ -163,7 +184,7 @@
                     .permission-icons .text-muted.opacity-50 {
                         opacity: 0.3 !important;
                     }
-                    
+
                     /* Pulsing animation for restricted actions */
                     .permission-red .fa-circle {
                         animation: pulse-red 2s infinite;
@@ -172,7 +193,7 @@
                         0%, 100% { opacity: 1; }
                         50% { opacity: 0.5; }
                     }
-                    
+
                     /* Page header permission indicator positioning */
                     .page-header .permission-indicator {
                         position: absolute;
@@ -184,7 +205,7 @@
                     }
                 </style>
             </xpath>
-            
+
             <!-- Initialize tooltips for permission indicators -->
             <xpath expr="//body" position="inside">
                 <script>
@@ -198,6 +219,6 @@
                 </script>
             </xpath>
         </template>
-        
+
     </data>
 </odoo>

@@ -56,17 +56,18 @@
                                                 </button>
                                             </t>
                                             
-                                            <!-- Delete button - check permissions -->
-                                            <t t-if="permissions.get('containers', {}).get('can_delete')">
-                                                <button class="btn btn-danger btn-sm" onclick="deleteContainer()">
-                                                    <i class="fa fa-trash"></i> Delete
-                                                </button>
+                                            <!-- Request Destruction button - check permissions -->
+                                            <t t-if="permissions.get('containers', {}).get('can_request_destruction')">
+                                                <a t-attf-href="/my/request/new/destruction?container_id={{container.id}}" 
+                                                   class="btn btn-warning btn-sm">
+                                                    <i class="fa fa-fire"></i> Request Destruction
+                                                </a>
                                             </t>
                                             <t t-else="">
-                                                <button class="btn btn-danger btn-sm disabled" disabled="disabled"
-                                                        title="You don't have permission to delete containers"
+                                                <button class="btn btn-warning btn-sm disabled" disabled="disabled"
+                                                        title="You don't have permission to request destruction services"
                                                         data-bs-toggle="tooltip">
-                                                    <i class="fa fa-trash"></i> Delete
+                                                    <i class="fa fa-fire"></i> Request Destruction
                                                 </button>
                                             </t>
                                         </div>
