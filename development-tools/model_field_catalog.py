@@ -237,7 +237,23 @@ class ModelFieldCatalog:
                             file_path=str(file_path)
                         )
                 
-                self.models[model_info.name] = model_info
+                # MERGE fields if model already exists (inheritance extension)
+                if model_info.name in self.models:
+                    existing = self.models[model_info.name]
+                    # Merge fields from inheritance extension
+                    for field_name, field_info in model_info.fields.items():
+                        if field_name not in existing.fields:
+                            existing.fields[field_name] = field_info
+                    # Merge field category lists
+                    for attr in ['many2one_fields', 'one2many_fields', 'many2many_fields',
+                                 'selection_fields', 'computed_fields', 'related_fields']:
+                        existing_list = getattr(existing, attr)
+                        new_list = getattr(model_info, attr)
+                        for item in new_list:
+                            if item not in existing_list:
+                                existing_list.append(item)
+                else:
+                    self.models[model_info.name] = model_info
     
     def _extract_class_body(self, content: str, class_start: int) -> Optional[str]:
         """Extract the body of a class definition."""

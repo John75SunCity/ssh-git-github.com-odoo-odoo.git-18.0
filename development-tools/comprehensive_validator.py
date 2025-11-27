@@ -254,6 +254,9 @@ class ComprehensiveValidator:
         - Relational field comodels are valid
         - Related field paths are traversable
         - Selection field values are valid (if checking domains)
+        
+        NOTE: This skips fields inside One2many/Many2many inline views since
+        those fields belong to the COMODEL, not the main view's model.
         """
         issues = []
         
@@ -283,45 +286,80 @@ class ComprehensiveValidator:
             if arch_elem is None:
                 continue
             
-            # Get the arch content
+            # Parse arch as XML to properly handle nested structures
             try:
-                arch_str = ET.tostring(arch_elem, encoding='unicode')
+                # Get inner elements of the arch field
+                inner_content_parts = []
+                for child in arch_elem:
+                    inner_content_parts.append(ET.tostring(child, encoding='unicode'))
+                arch_str = ''.join(inner_content_parts)
+                
+                if not arch_str and arch_elem.text:
+                    arch_str = arch_elem.text
+                    
+                if not arch_str:
+                    continue
+                    
+                # Parse the arch as XML
+                arch_root = ET.fromstring(f"<root>{arch_str}</root>")
             except Exception:
                 continue
             
-            # Extract all field references
-            field_pattern = re.compile(r'<field\s+[^>]*name=["\']([^"\']+)["\']')
-            
-            for match in field_pattern.finditer(arch_str):
-                field_ref = match.group(1)
+            # Validate fields at the TOP level only (not inside nested One2many views)
+            self._validate_view_fields_recursive(view_id, model_name, arch_root, issues, depth=0)
+        
+        return issues
+    
+    def _validate_view_fields_recursive(self, view_id: str, model_name: str, 
+                                         element: ET.Element, issues: List[str], depth: int):
+        """Recursively validate fields, switching to comodel for nested One2many views."""
+        
+        # Structural elements that indicate a nested view (One2many inline)
+        NESTED_VIEW_TAGS = {'list', 'tree', 'form', 'kanban'}
+        
+        for child in element:
+            if child.tag == 'field':
+                field_ref = child.get('name', '')
+                if not field_ref:
+                    continue
                 
-                # Skip dotted references (related field access)
+                # Skip dotted references
                 if '.' in field_ref:
-                    # Validate the path
                     is_valid, error = self.catalog.validate_field_reference(model_name, field_ref)
                     if not is_valid:
                         self.catalog_field_errors += 1
                         issues.append(f"❌ View {view_id}: Invalid field path '{field_ref}' - {error}")
                     continue
                 
-                # Check if field exists on model
+                # Check if field exists on current model
                 if not self.catalog.field_exists(model_name, field_ref):
                     self.catalog_field_errors += 1
                     issues.append(f"❌ View {view_id}: Field '{field_ref}' not found on model '{model_name}'")
                     continue
                 
-                # For relational fields, validate comodel if specified in domain/context
+                # If this field has nested view elements, validate them with the COMODEL
                 field_info = self.catalog.get_field_info(model_name, field_ref)
                 if field_info and field_info.comodel_name:
+                    # Check for nested view definitions (One2many/Many2many inline views)
+                    for nested_child in child:
+                        if nested_child.tag in NESTED_VIEW_TAGS:
+                            # Recurse with the comodel
+                            comodel = field_info.comodel_name
+                            if self.catalog.model_exists(comodel):
+                                self._validate_view_fields_recursive(
+                                    view_id, comodel, nested_child, issues, depth + 1
+                                )
+                    
+                    # Also validate comodel exists (for records.* models only)
                     if not self.catalog.model_exists(field_info.comodel_name):
-                        # Comodel might be external - just warn
                         if field_info.comodel_name.startswith('records.'):
                             self.catalog_comodel_errors += 1
                             issues.append(
                                 f"❌ View {view_id}: Field '{field_ref}' references unknown comodel '{field_info.comodel_name}'"
                             )
-        
-        return issues
+            else:
+                # Recurse into other elements (group, notebook, page, etc.)
+                self._validate_view_fields_recursive(view_id, model_name, child, issues, depth)
 
     def check_action_res_models(self, root: ET.Element, file_path: Path):
         """Check <record model="ir.actions.act_window"> res_model values.
@@ -827,14 +865,40 @@ class ComprehensiveValidator:
         # Strip comments to avoid false positives
         stripped = self.COMMENT_PATTERN.sub('', content)
         
-        # Check 1: <tree> tags inside arch
+        # Check 1: <tree> tags inside arch - parse per-record to handle priority=0 correctly
         if '<tree' in stripped:
-            # Exception: priority=0 fallback views are required
-            has_priority_zero = ('priority" eval="0"' in content or 
-                                'priority">0</field>' in content or
-                                "priority' eval=\"0\"" in content)
-            
-            if not has_priority_zero:
+            # Parse XML to check each view record individually
+            try:
+                # Find all <record> blocks with ir.ui.view model
+                record_pattern = re.compile(
+                    r'<record[^>]*model\s*=\s*["\']ir\.ui\.view["\'][^>]*>.*?</record>',
+                    re.DOTALL
+                )
+                view_records = record_pattern.findall(stripped)
+                
+                legacy_tree_count = 0
+                for record_block in view_records:
+                    # Check if THIS specific record has priority=0
+                    has_priority_zero = (
+                        'priority" eval="0"' in record_block or
+                        'priority">0</field>' in record_block or
+                        "priority' eval=\"0\"" in record_block or
+                        'priority">0<' in record_block
+                    )
+                    
+                    if not has_priority_zero:
+                        # Count <tree> tags in this record's arch
+                        tree_in_record = self.TREE_TAG_PATTERN.findall(record_block)
+                        legacy_tree_count += len(tree_in_record)
+                
+                if legacy_tree_count > 0:
+                    self.legacy_tree_tag_usages += legacy_tree_count
+                    issues.append(
+                        f"❌ Legacy <tree> tag detected ({legacy_tree_count} occurrence(s)) – "
+                        f"replace with <list> for Odoo 18+ compliance"
+                    )
+            except Exception:
+                # Fallback: simple file-level check if XML parsing fails
                 tree_matches = self.TREE_TAG_PATTERN.findall(stripped)
                 if tree_matches:
                     self.legacy_tree_tag_usages += len(tree_matches)
