@@ -2100,11 +2100,6 @@ class RecordsManagementController(http.Controller):
             ('company_id', '=', partner.id)
         ])
 
-        # Get available locations
-        locations = request.env['stock.location'].search([
-            '|', ('partner_id', '=', partner.id), ('partner_id', '=', False)
-        ])
-
         # Get container types
         container_types = request.env['records.container.type'].search([])
 
@@ -2129,7 +2124,6 @@ class RecordsManagementController(http.Controller):
         values = {
             'container': container,
             'departments': departments,
-            'locations': locations,
             'container_types': container_types,
             'movements': movements,
             'files': files,
@@ -2161,18 +2155,17 @@ class RecordsManagementController(http.Controller):
             departments = request.env['records.department'].sudo().search([
                 ('company_id', '=', partner.id)
             ])
-            locations = request.env['stock.location'].sudo().search([
-                '|', ('partner_id', '=', partner.id), ('partner_id', '=', False)
-            ])
             container_types = request.env['records.container.type'].sudo().search([])
+            # Get retention policies for the form
+            retention_policies = request.env['records.retention.rule'].sudo().search([])
 
             values = {
                 'departments': departments,
-                'locations': locations,
                 'container_types': container_types,
+                'retention_policies': retention_policies,
                 'page_name': 'container_create',
             }
-            return request.render("records_management.portal_container_create", values)
+            return request.render("records_management.portal_container_create_form", values)
 
         # POST request - create container
         try:
@@ -2348,18 +2341,12 @@ class RecordsManagementController(http.Controller):
             ('container_ids', 'in', [container_id])
         ], order='timestamp desc')
 
-        # Get available locations for move requests
-        locations = request.env['stock.location'].search([
-            '|', ('partner_id', '=', partner.id), ('partner_id', '=', False)
-        ])
-
         # Check if user can request moves
         can_request_move = request.env.user.has_group('records_management.group_portal_department_user')
 
         values = {
             'container': container,
             'movements': movements,
-            'locations': locations,
             'can_request_move': can_request_move,
             'page_name': 'container_movements',
         }
