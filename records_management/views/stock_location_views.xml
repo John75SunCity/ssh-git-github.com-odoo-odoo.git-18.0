@@ -8,10 +8,11 @@
         <field name="arch" type="xml">
             <!-- Add custom fields to tree view -->
             <xpath expr="//field[@name='usage']" position="after">
-                <field name="records_location" optional="show"/>
+                <field name="is_records_location" optional="show"/>
             </xpath>
             <xpath expr="//field[@name='storage_category_id']" position="after">
                 <field name="max_capacity" optional="show"/>
+                <field name="records_container_count" optional="show"/>
             </xpath>
         </field>
     </record>
@@ -40,31 +41,10 @@
                 </div>
             </xpath>
 
-            <!-- Add records_location field after name -->
+            <!-- Add hidden fields needed for smart buttons -->
             <xpath expr="//field[@name='name']" position="after">
-                <field name="records_container_count" optional="show" invisible="1"/>
-                <field name="records_file_count" optional="show" invisible="1"/>
-            </xpath>
-
-            <!-- Add custom fields in appropriate sections -->
-            <xpath expr="//field[@name='location_id']" position="after">
-                <field name="customer_staging_location_id" optional="show"/>
-                <field name="active" optional="show"/>
-                <field name="activity_state" optional="show"/>
-                <field name="location_id" optional="show"/>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- Stock Location Tree View (Technical) - Add Custom Fields -->
-    <record id="stock_location_view_tree_technical_inherit_records" model="ir.ui.view">
-        <field name="name">stock.location.view.tree.technical.inherit.records</field>
-        <field name="model">stock.location</field>
-        <field name="inherit_id" ref="stock.stock_location_view_tree_technical"/>
-        <field name="arch" type="xml">
-            <!-- Add stock_owner_id field -->
-            <xpath expr="//field[@name='name']" position="after">
-                <field name="stock_owner_id" optional="show"/>
+                <field name="records_container_count" invisible="1"/>
+                <field name="records_file_count" invisible="1"/>
             </xpath>
         </field>
     </record>
