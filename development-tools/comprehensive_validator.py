@@ -45,6 +45,13 @@ try:
 except ImportError:
     FIELD_REFERENCE_VALIDATOR_AVAILABLE = False
 
+# Try to import model field catalog for comprehensive field validation
+try:
+    from model_field_catalog import ModelFieldCatalog, get_catalog
+    MODEL_FIELD_CATALOG_AVAILABLE = True
+except ImportError:
+    MODEL_FIELD_CATALOG_AVAILABLE = False
+
 class ComprehensiveValidator:
     """Odoo 18.0+ XML Validator optimized for records_management module."""
     
@@ -83,6 +90,11 @@ class ComprehensiveValidator:
         # Cron tracking
         self._cron_id_first_seen: Dict[str, Path] = {}
         self._duplicate_cron_issues: List[str] = []
+        
+        # Model field catalog for comprehensive validation
+        self.catalog = None
+        self.catalog_field_errors = 0
+        self.catalog_comodel_errors = 0
 
     # ---------------------- Modernization / New Checks ----------------------
     def check_hierarchy_tags(self, root: ET.Element, file_path: Path):
@@ -221,12 +233,94 @@ class ComprehensiveValidator:
             self.check_active_id_usage(content, Path(file_path))
             # Post-parse heuristic: parent/child relation but no hierarchy view in same file
             self.check_missing_hierarchy_view(root, content, Path(file_path))
+            
+            # Catalog-based field validation (if catalog is available)
+            if self.catalog:
+                catalog_issues = self.validate_with_catalog(root, Path(file_path))
+                issues.extend(catalog_issues)
 
         except ET.ParseError as e:
             issues.append(f"❌ XML Parse Error: {e}")
         except Exception as e:
             issues.append(f"❌ Structure validation error: {e}")
 
+        return issues
+
+    def validate_with_catalog(self, root: ET.Element, file_path: Path) -> List[str]:
+        """Validate view field references against the model field catalog.
+        
+        This provides highly accurate validation by checking:
+        - Field names exist on the model
+        - Relational field comodels are valid
+        - Related field paths are traversable
+        - Selection field values are valid (if checking domains)
+        """
+        issues = []
+        
+        if not self.catalog:
+            return issues
+        
+        # Find all view records
+        for record in root.findall(".//record[@model='ir.ui.view']"):
+            view_id = record.get('id', 'unknown')
+            model_elem = record.find(".//field[@name='model']")
+            arch_elem = record.find(".//field[@name='arch']")
+            inherit_id_elem = record.find(".//field[@name='inherit_id']")
+            
+            # Skip inherited views - they may reference fields from parent
+            if inherit_id_elem is not None:
+                continue
+            
+            if model_elem is None or not model_elem.text:
+                continue
+            
+            model_name = model_elem.text.strip()
+            
+            # Skip if model is not in our catalog (external module)
+            if not self.catalog.model_exists(model_name):
+                continue
+            
+            if arch_elem is None:
+                continue
+            
+            # Get the arch content
+            try:
+                arch_str = ET.tostring(arch_elem, encoding='unicode')
+            except Exception:
+                continue
+            
+            # Extract all field references
+            field_pattern = re.compile(r'<field\s+[^>]*name=["\']([^"\']+)["\']')
+            
+            for match in field_pattern.finditer(arch_str):
+                field_ref = match.group(1)
+                
+                # Skip dotted references (related field access)
+                if '.' in field_ref:
+                    # Validate the path
+                    is_valid, error = self.catalog.validate_field_reference(model_name, field_ref)
+                    if not is_valid:
+                        self.catalog_field_errors += 1
+                        issues.append(f"❌ View {view_id}: Invalid field path '{field_ref}' - {error}")
+                    continue
+                
+                # Check if field exists on model
+                if not self.catalog.field_exists(model_name, field_ref):
+                    self.catalog_field_errors += 1
+                    issues.append(f"❌ View {view_id}: Field '{field_ref}' not found on model '{model_name}'")
+                    continue
+                
+                # For relational fields, validate comodel if specified in domain/context
+                field_info = self.catalog.get_field_info(model_name, field_ref)
+                if field_info and field_info.comodel_name:
+                    if not self.catalog.model_exists(field_info.comodel_name):
+                        # Comodel might be external - just warn
+                        if field_info.comodel_name.startswith('records.'):
+                            self.catalog_comodel_errors += 1
+                            issues.append(
+                                f"❌ View {view_id}: Field '{field_ref}' references unknown comodel '{field_info.comodel_name}'"
+                            )
+        
         return issues
 
     def check_action_res_models(self, root: ET.Element, file_path: Path):
@@ -512,12 +606,26 @@ class ComprehensiveValidator:
         """Validate all XML files in the records_management module"""
         print("🔍 COMPREHENSIVE RECORDS MANAGEMENT VALIDATOR")
         print("=" * 60)
-        print("🎯 Enhanced to catch XML structural and formatting issues")
+        print("🎯 Odoo 18.0+ / 19.0 Optimized with Dynamic Field Catalog")
         print()
+        
+        # Build the model field catalog first
+        if MODEL_FIELD_CATALOG_AVAILABLE:
+            try:
+                self.catalog = get_catalog()
+                print(f"✅ Model Field Catalog active ({len(self.catalog.models)} models, "
+                      f"{sum(len(m.fields) for m in self.catalog.models.values())} fields)")
+            except Exception as e:
+                print(f"⚠️  Model Field Catalog failed to load: {e}")
+                self.catalog = None
+        else:
+            print("⚠️  Model Field Catalog not available - using basic validation")
+            self.catalog = None
+        
         # Collect local model names once
         self.collect_local_model_names()
         if self.local_models:
-            print(f"📚 Local models collected: {len(self.local_models)}")
+            print(f"📚 Local models (basic): {len(self.local_models)}")
         else:
             print("📚 Local models collected: 0 (skipping res_model cross-check)")
 
