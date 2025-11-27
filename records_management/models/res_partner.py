@@ -63,11 +63,29 @@ class ResPartner(models.Model):
     container_count = fields.Integer(
         string="Container Count",
         compute='_compute_records_stats',
+        store=True,
+        help="Total number of records containers owned by this partner"
+    )
+
+    file_count = fields.Integer(
+        string="File Count",
+        compute='_compute_records_stats',
+        store=True,
+        help="Total number of records files owned by this partner"
     )
 
     document_count = fields.Integer(
         string="Document Count",
         compute='_compute_records_stats',
+        store=True,
+        help="Total number of records documents owned by this partner"
+    )
+
+    department_count = fields.Integer(
+        string="Department Count",
+        compute='_compute_records_stats',
+        store=True,
+        help="Total number of records departments for this partner"
     )
 
     destruction_address_id = fields.Many2one(comodel_name='res.partner', string='Destruction Address')
@@ -116,8 +134,9 @@ class ResPartner(models.Model):
     )
     total_records_containers = fields.Integer(
         string='Total Records Containers',
-        compute='_compute_transitory_stats',
-        help="Cached copy of the container counter for portal stats"
+        compute='_compute_records_stats',
+        store=True,
+        help="Total containers for this partner (same as container_count, for portal display)"
     )
 
     # =========================================================================
@@ -309,98 +328,134 @@ class ResPartner(models.Model):
         for partner in self:
             partner.total_transitory_items = total_map.get(partner.id, 0)
             partner.active_transitory_items = active_map.get(partner.id, 0)
-            partner.total_records_containers = partner.container_count
 
+    @api.depends('child_ids', 'commercial_partner_id')
     def _compute_records_stats(self):
-        """Compute container_count & document_count in batch.
+        """Compute container_count, file_count, document_count & department_count in batch.
 
-        Counts containers based on TWO ownership criteria:
-        1. partner_id (primary customer relationship)
-        2. stock_owner_id (inventory ownership - Company/Department/Child Dept hierarchy)
+        Counts are based on ownership hierarchy:
+        - Company partners: see all records owned by the company and all child departments
+        - Department/Contact partners: see records owned directly by them
+        - Portal users: see records of their assigned departments
         
-        This ensures:
-        - Company contacts see all containers owned at company level + all department containers
-        - Department contacts see containers owned by their specific department
-        - Portal users assigned to departments see their department's inventory
+        All fields are stored for performance in list/kanban views.
         """
         if not self:
             return
 
-        # Build list of all partner IDs including children (commercial hierarchy)
-        all_partner_ids = set()
+        # Initialize all fields to 0
         for partner in self:
-            # Include self
-            all_partner_ids.add(partner.id)
-            # Include all child contacts under same commercial entity
-            if partner.commercial_partner_id:
-                all_partner_ids.add(partner.commercial_partner_id.id)
-                # Include all children of the commercial partner
-                children = self.env['res.partner'].search([
-                    ('commercial_partner_id', '=', partner.commercial_partner_id.id)
-                ])
-                all_partner_ids.update(children.ids)
+            partner.container_count = 0
+            partner.file_count = 0
+            partner.document_count = 0
+            partner.department_count = 0
+            partner.total_records_containers = 0
 
-        # Count containers by BOTH partner_id (customer) AND stock_owner_id (inventory owner)
-        container_rows = self.env['records.container'].read_group(
-            ['|', 
-             ('partner_id', 'in', list(all_partner_ids)),
-             ('stock_owner_id', 'in', list(all_partner_ids))],
-            ['partner_id', 'stock_owner_id'],
-            ['partner_id', 'stock_owner_id']
-        )
-        document_rows = self.env['records.document'].read_group(
-            [('partner_id', 'in', list(all_partner_ids))],
-            ['partner_id'],
-            ['partner_id']
-        )
-
-        # Build container count map from partner_id and stock_owner_id
-        container_map = {}
-        for row in container_rows or []:
-            count = row.get('__count', 0)
-            # Check partner_id field
-            partner_raw = row.get('partner_id')
-            if partner_raw:
-                pid = partner_raw[0] if isinstance(partner_raw, (list, tuple)) else partner_raw
-                container_map[pid] = container_map.get(pid, 0) + count
-            # Check stock_owner_id field  
-            stock_owner_raw = row.get('stock_owner_id')
-            if stock_owner_raw:
-                sid = stock_owner_raw[0] if isinstance(stock_owner_raw, (list, tuple)) else stock_owner_raw
-                # Avoid double-counting if both fields point to same partner
-                if not partner_raw or sid != pid:
-                    container_map[sid] = container_map.get(sid, 0) + count
-
-        # Build document count map
-        document_map = {}
-        for row in document_rows or []:
-            partner_raw = row.get('partner_id')
-            if not partner_raw:
-                continue
-            pid = partner_raw[0] if isinstance(partner_raw, (list, tuple)) else partner_raw
-            document_map[pid] = row.get('__count', 0)
-
+        # Build list of all partner IDs including commercial hierarchy
+        all_partner_ids = set(self.ids)
+        commercial_map = {}  # Maps partner_id -> set of related IDs
+        
         for partner in self:
-            # Sum counts for this partner and all its commercial children
-            total_containers = 0
-            total_documents = 0
-
-            # Get all related partner IDs (self + commercial hierarchy)
             related_ids = {partner.id}
             if partner.commercial_partner_id:
                 related_ids.add(partner.commercial_partner_id.id)
-                children = self.env['res.partner'].search([
+                all_partner_ids.add(partner.commercial_partner_id.id)
+                # Include all children of the commercial partner
+                children = self.env['res.partner'].sudo().search([
                     ('commercial_partner_id', '=', partner.commercial_partner_id.id)
                 ])
                 related_ids.update(children.ids)
+                all_partner_ids.update(children.ids)
+            commercial_map[partner.id] = related_ids
 
-            # Sum counts across all related partners
-            for pid in related_ids:
-                total_containers += container_map.get(pid, 0)
-                total_documents += document_map.get(pid, 0)
+        all_partner_ids = list(all_partner_ids)
+
+        # Count CONTAINERS by partner_id and stock_owner_id
+        container_map = {}
+        try:
+            container_rows = self.env['records.container'].sudo().read_group(
+                ['|', 
+                 ('partner_id', 'in', all_partner_ids),
+                 ('stock_owner_id', 'in', all_partner_ids)],
+                ['partner_id', 'stock_owner_id'],
+                ['partner_id', 'stock_owner_id']
+            )
+            for row in container_rows or []:
+                count = row.get('__count', 0)
+                partner_raw = row.get('partner_id')
+                if partner_raw:
+                    pid = partner_raw[0] if isinstance(partner_raw, (list, tuple)) else partner_raw
+                    container_map[pid] = container_map.get(pid, 0) + count
+                stock_owner_raw = row.get('stock_owner_id')
+                if stock_owner_raw:
+                    sid = stock_owner_raw[0] if isinstance(stock_owner_raw, (list, tuple)) else stock_owner_raw
+                    if not partner_raw or sid != pid:
+                        container_map[sid] = container_map.get(sid, 0) + count
+        except Exception:
+            container_map = {}
+
+        # Count FILES by partner_id
+        file_map = {}
+        try:
+            file_rows = self.env['records.file'].sudo().read_group(
+                [('partner_id', 'in', all_partner_ids)],
+                ['partner_id'],
+                ['partner_id']
+            )
+            for row in file_rows or []:
+                partner_raw = row.get('partner_id')
+                if partner_raw:
+                    pid = partner_raw[0] if isinstance(partner_raw, (list, tuple)) else partner_raw
+                    file_map[pid] = row.get('__count', 0)
+        except Exception:
+            file_map = {}
+
+        # Count DOCUMENTS by partner_id
+        document_map = {}
+        try:
+            document_rows = self.env['records.document'].sudo().read_group(
+                [('partner_id', 'in', all_partner_ids)],
+                ['partner_id'],
+                ['partner_id']
+            )
+            for row in document_rows or []:
+                partner_raw = row.get('partner_id')
+                if partner_raw:
+                    pid = partner_raw[0] if isinstance(partner_raw, (list, tuple)) else partner_raw
+                    document_map[pid] = row.get('__count', 0)
+        except Exception:
+            document_map = {}
+
+        # Count DEPARTMENTS by partner_id
+        department_map = {}
+        try:
+            dept_rows = self.env['records.department'].sudo().read_group(
+                [('partner_id', 'in', all_partner_ids)],
+                ['partner_id'],
+                ['partner_id']
+            )
+            for row in dept_rows or []:
+                partner_raw = row.get('partner_id')
+                if partner_raw:
+                    pid = partner_raw[0] if isinstance(partner_raw, (list, tuple)) else partner_raw
+                    department_map[pid] = row.get('__count', 0)
+        except Exception:
+            department_map = {}
+
+        # Assign totals to each partner
+        for partner in self:
+            related_ids = commercial_map.get(partner.id, {partner.id})
+            
+            total_containers = sum(container_map.get(pid, 0) for pid in related_ids)
+            total_files = sum(file_map.get(pid, 0) for pid in related_ids)
+            total_documents = sum(document_map.get(pid, 0) for pid in related_ids)
+            total_departments = sum(department_map.get(pid, 0) for pid in related_ids)
 
             partner.container_count = total_containers
+            partner.file_count = total_files
             partner.document_count = total_documents
+            partner.department_count = total_departments
+            partner.total_records_containers = total_containers  # Alias for portal display
 
     # =========================================================================
     # COMPUTE: BIN KEY STATS
