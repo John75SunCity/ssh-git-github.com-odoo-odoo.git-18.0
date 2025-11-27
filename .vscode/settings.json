@@ -1,7 +1,7 @@
 {
   "github.copilot.advanced.instructionsFile": ".github/copilot-instructions.md",
   "grok.integration.instructionsFile": ".github/copilot-instructions.md",
-  "github.copilot.selectedCompletionModel": "grok-4-0709",
+  "github.copilot.selectedCompletionModel": "",
   "chat.useAgentsMdFile": true,
   "github.copilot.nextEditSuggestions.enabled": true,
   "github.copilot.chat.codesearch.enabled": true,

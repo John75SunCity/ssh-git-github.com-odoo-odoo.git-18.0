@@ -49,15 +49,15 @@ Technical Requirements:
         # Data
         'data/default_shelving_templates.xml',
         
+        # Wizards (must load before menus that reference them)
+        'wizards/warehouse_3d_quickstart_wizard_views.xml',
+        
         # Views
         'views/warehouse_blueprint_views.xml',
         'views/warehouse_shelving_template_views.xml',
         'views/warehouse_3d_view_config_views.xml',
         'views/stock_location_3d_views.xml',
         'views/records_management_3d_menus.xml',
-        
-        # Wizards
-        'wizards/warehouse_3d_quickstart_wizard_views.xml',
     ],
     'assets': {
         'web.assets_backend': [
