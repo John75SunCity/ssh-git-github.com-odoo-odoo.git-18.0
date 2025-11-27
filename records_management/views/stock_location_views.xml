@@ -12,7 +12,6 @@
             </xpath>
             <xpath expr="//field[@name='storage_category_id']" position="after">
                 <field name="max_capacity" optional="show"/>
-                <field name="records_container_count" optional="show"/>
             </xpath>
         </field>
     </record>
@@ -41,10 +40,37 @@
                 </div>
             </xpath>
 
-            <!-- Add hidden fields needed for smart buttons -->
+            <!-- Add records_location field after name -->
             <xpath expr="//field[@name='name']" position="after">
-                <field name="records_container_count" invisible="1"/>
-                <field name="records_file_count" invisible="1"/>
+                <field name="records_container_count" optional="show" invisible="1"/>
+                <field name="records_file_count" optional="show" invisible="1"/>
+            </xpath>
+
+            <!-- Add custom fields in appropriate sections -->
+            <xpath expr="//field[@name='location_id']" position="after">
+                <field name="is_records_location"/>
+                <field name="building"/>
+                <field name="floor"/>
+                <field name="zone"/>
+                <field name="aisle"/>
+                <field name="rack"/>
+                <field name="shelf"/>
+                <field name="position"/>
+                <field name="max_capacity"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Stock Location Tree View (Technical) - Add Custom Fields -->
+    <record id="stock_location_view_tree_technical_inherit_records" model="ir.ui.view">
+        <field name="name">stock.location.view.tree.technical.inherit.records</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.stock_location_view_tree_technical"/>
+        <field name="arch" type="xml">
+            <!-- Add fields -->
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_records_location" optional="show"/>
+                <field name="max_capacity" optional="show"/>
             </xpath>
         </field>
     </record>
