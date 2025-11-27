@@ -49,10 +49,19 @@ class RecordsManagementController(http.Controller):
         Prepare common values for portal layout templates.
         Returns base context dictionary for portal pages.
         """
+        partner = request.env.user.partner_id
+        commercial_partner = partner.commercial_partner_id if partner else partner
+        
+        # Get custom field labels for this customer
+        field_labels = request.env['field.label.customization'].sudo().get_labels_dict(
+            commercial_partner.id if commercial_partner else None
+        )
+        
         return {
             'page_name': 'records_management',
             'user': request.env.user,
-            'partner': request.env.user.partner_id,
+            'partner': partner,
+            'field_labels': field_labels,  # Custom terminology for this customer
         }
 
     def _check_dashboard_access(self):

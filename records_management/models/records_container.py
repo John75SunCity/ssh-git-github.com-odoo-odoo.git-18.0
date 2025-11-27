@@ -2208,6 +2208,41 @@ class RecordsContainer(models.Model):
             "</list>"
         )
         return arch
+
+    # =========================================================================
+    # DYNAMIC FIELD LABELS
+    # =========================================================================
+    @api.model
+    def fields_get(self, allfields=None, attributes=None):
+        """Override to apply custom field labels based on user's partner configuration.
+        
+        This allows different customers to see their preferred terminology:
+        - Healthcare: 'Chart Box', 'Medical Records', 'HIPAA Level'
+        - Legal: 'Matter Box', 'Case Materials', 'Privilege Level'
+        - Corporate: 'Box Number', 'Contents', 'Classification'
+        """
+        result = super().fields_get(allfields=allfields, attributes=attributes)
+        
+        # Get the current user's partner for label customization
+        try:
+            partner_id = self.env.user.partner_id.id if self.env.user.partner_id else None
+            
+            # Check if there's a commercial partner (company) that might have config
+            if self.env.user.partner_id and self.env.user.partner_id.commercial_partner_id:
+                partner_id = self.env.user.partner_id.commercial_partner_id.id
+            
+            label_config = self.env['field.label.customization'].sudo()
+            custom_labels = label_config.get_labels_dict(partner_id)
+            
+            # Apply custom labels to field definitions
+            for field_name, custom_label in custom_labels.items():
+                if field_name in result and custom_label:
+                    result[field_name]['string'] = custom_label
+        except Exception:
+            # Don't break the view if label customization fails
+            pass
+        
+        return result
     
     # =========================================================================
     # LOCATION COUNT UPDATES

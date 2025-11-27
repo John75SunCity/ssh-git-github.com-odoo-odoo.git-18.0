@@ -13,7 +13,7 @@
                 <!-- Page Header with Actions (Grok Pattern) -->
                 <div class="page-header d-flex justify-content-between align-items-center">
                     <h1>
-                        <i class="fa fa-box"></i> My Storage Containers
+                        <i class="fa fa-box"></i> My <t t-esc="field_labels.get('name', 'Container')"/>s
                         <span class="badge bg-primary ms-2" t-esc="container_count"/>
                     </h1>
                     <div class="actions">
@@ -82,10 +82,10 @@
                                 <th style="width: 40px;">
                                     <input type="checkbox" id="selectAll" class="form-check-input"/>
                                 </th>
-                                <th>Container ID</th>
+                                <th><t t-esc="field_labels.get('name', 'Container Number')"/></th>
                                 <th>Status</th>
                                 <th>Location</th>
-                                <th>Department</th>
+                                <th><t t-esc="field_labels.get('department_id', 'Department')"/></th>
                                 <th>Date Stored</th>
                                 <th>Actions</th>
                             </tr>

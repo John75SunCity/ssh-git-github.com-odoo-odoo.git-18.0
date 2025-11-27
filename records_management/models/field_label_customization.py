@@ -116,52 +116,147 @@ class FieldLabelCustomization(models.Model):
             else:
                 record.available_fields = "Select a valid model to see available fields"
 
+    # Field name to label field mapping - maps actual model fields to customization fields
+    FIELD_LABEL_MAP = {
+        # records.container fields
+        'name': 'label_container_number',
+        'description': 'label_item_description',
+        'content_description': 'label_content_description',
+        'parent_id': 'label_parent_container',
+        'container_type_id': 'label_folder_type',
+        'hierarchy_display': 'label_hierarchy_display',
+        'content_date_from': 'label_date_from',
+        'content_date_to': 'label_date_to',
+        'destruction_due_date': 'label_destruction_date',
+        'alpha_range_start': 'label_sequence_from',
+        'alpha_range_end': 'label_sequence_to',
+        'primary_content_type': 'label_record_type',
+        'confidentiality_level': 'label_confidentiality',
+        'filing_system': 'label_filing_system',
+        'project_code': 'label_project_code',
+        'customer_reference': 'label_client_reference',
+        'file_count': 'label_file_count',
+        'authorized_by': 'label_authorized_by',
+        'department_id': 'label_created_by_dept',
+        'special_handling': 'label_special_handling',
+        'compliance_notes': 'label_compliance_notes',
+        'weight': 'label_weight_estimate',
+        'dimensions': 'label_size_estimate',
+    }
+
     @api.model
-    def get_custom_label(self, model_name, field_name, original_label):
-        """Get the highest priority custom label for a field"""
-        customization = self.search([
-            ('model_name', '=', model_name),
-            ('field_name', '=', field_name)
-        ], order='priority desc', limit=1)
-
-        if customization:
-            return customization.custom_label
-        return original_label
+    def get_config_for_partner(self, partner_id=None):
+        """Get the highest priority configuration for a specific partner or global.
+        
+        Priority order:
+        1. Partner-specific config (highest priority)
+        2. Department-specific config
+        3. Global config (no partner or department)
+        """
+        domain = [('active', '=', True)]
+        
+        if partner_id:
+            # Try partner-specific first
+            config = self.search(domain + [('partner_id', '=', partner_id)], 
+                                order='priority desc', limit=1)
+            if config:
+                return config
+        
+        # Try global config
+        config = self.search(domain + [('partner_id', '=', False), ('department_id', '=', False)], 
+                            order='priority desc', limit=1)
+        return config
 
     @api.model
-    def get_container_labels(self):
-        """Get all container-related labels for the current configuration"""
-        # Get the highest priority configuration
-        config = self.search([], order='priority desc', limit=1)
+    def get_custom_label(self, field_name, partner_id=None):
+        """Get the custom label for a field based on partner's configuration.
+        
+        Args:
+            field_name: The technical field name (e.g., 'name', 'content_description')
+            partner_id: Optional partner ID to get partner-specific labels
+            
+        Returns:
+            Custom label string or None if no customization exists
+        """
+        config = self.get_config_for_partner(partner_id)
+        if not config:
+            return None
+        
+        label_field = self.FIELD_LABEL_MAP.get(field_name)
+        if label_field and hasattr(config, label_field):
+            return getattr(config, label_field)
+        return None
 
-        if config:
-            return {
-                'container_number': config.label_container_number,
-                'item_description': config.label_item_description,
-                'content_description': config.label_content_description,
-                'date_from': config.label_date_from,
-                'date_to': config.label_date_to,
-                'record_type': config.label_record_type,
-                'confidentiality': config.label_confidentiality,
-                'project_code': config.label_project_code,
-                'client_reference': config.label_client_reference,
-                'authorized_by': config.label_authorized_by,
-                'created_by_dept': config.label_created_by_dept,
-            }
-
-        # Return defaults if no configuration exists
-        return {
-            'container_number': 'Container Number',
-            'item_description': 'Item Description',
+    @api.model
+    def get_labels_dict(self, partner_id=None):
+        """Get all custom labels as a dictionary for templates/views.
+        
+        Returns dict mapping field names to their custom labels.
+        Only includes fields that have been customized (different from default).
+        """
+        config = self.get_config_for_partner(partner_id)
+        
+        # Default labels
+        defaults = {
+            'name': 'Container Number',
+            'description': 'Item Description',
             'content_description': 'Content Description',
-            'date_from': 'Date From',
-            'date_to': 'Date To',
-            'record_type': 'Record Type',
-            'confidentiality': 'Confidentiality',
+            'parent_id': 'Parent Container',
+            'container_type_id': 'Item Type',
+            'hierarchy_display': 'Location Path',
+            'content_date_from': 'Date From',
+            'content_date_to': 'Date To',
+            'destruction_due_date': 'Destruction Date',
+            'alpha_range_start': 'Sequence From',
+            'alpha_range_end': 'Sequence To',
+            'primary_content_type': 'Record Type',
+            'confidentiality_level': 'Confidentiality',
+            'filing_system': 'Filing System',
             'project_code': 'Project Code',
-            'client_reference': 'Client Reference',
+            'customer_reference': 'Client Reference',
+            'file_count': 'Number of Files',
             'authorized_by': 'Authorized By',
-            'created_by_dept': 'Created By Department',
+            'department_id': 'Created By Department',
+            'special_handling': 'Special Handling Instructions',
+            'compliance_notes': 'Compliance Notes',
+            'weight': 'Estimated Weight',
+            'dimensions': 'Estimated Size',
+        }
+        
+        if not config:
+            return defaults
+        
+        # Override with custom labels
+        labels = defaults.copy()
+        for field_name, label_field in self.FIELD_LABEL_MAP.items():
+            if hasattr(config, label_field):
+                custom_value = getattr(config, label_field)
+                if custom_value:
+                    labels[field_name] = custom_value
+        
+        return labels
+
+    @api.model
+    def get_container_labels(self, partner_id=None):
+        """Get all container-related labels for the current configuration.
+        
+        Backward compatible method - now uses get_labels_dict internally.
+        """
+        labels = self.get_labels_dict(partner_id)
+        
+        # Return in the old format for backward compatibility
+        return {
+            'container_number': labels.get('name', 'Container Number'),
+            'item_description': labels.get('description', 'Item Description'),
+            'content_description': labels.get('content_description', 'Content Description'),
+            'date_from': labels.get('content_date_from', 'Date From'),
+            'date_to': labels.get('content_date_to', 'Date To'),
+            'record_type': labels.get('primary_content_type', 'Record Type'),
+            'confidentiality': labels.get('confidentiality_level', 'Confidentiality'),
+            'project_code': labels.get('project_code', 'Project Code'),
+            'client_reference': labels.get('customer_reference', 'Client Reference'),
+            'authorized_by': labels.get('authorized_by', 'Authorized By'),
+            'created_by_dept': labels.get('department_id', 'Created By Department'),
         }
 
     @api.constrains('model_name', 'field_name', 'priority')

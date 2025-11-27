@@ -59,7 +59,7 @@
                                             <h5 class="text-muted mb-3">Basic Information</h5>
                                             <table class="table table-sm">
                                                 <tr>
-                                                    <th style="width: 40%;">Container Number:</th>
+                                                    <th style="width: 40%;"><t t-esc="field_labels.get('name', 'Container Number') if field_labels else 'Container Number'"/>:</th>
                                                     <td><strong><t t-esc="container.name"/></strong></td>
                                                 </tr>
                                                 <tr>
@@ -67,7 +67,7 @@
                                                     <td><t t-esc="container.barcode or 'Not assigned'"/></td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Department:</th>
+                                                    <th><t t-esc="field_labels.get('department_id', 'Department') if field_labels else 'Department'"/>:</th>
                                                     <td><t t-esc="container.department_id.name or 'Not assigned'"/></td>
                                                 </tr>
                                                 <tr>
@@ -90,15 +90,15 @@
                                             <h5 class="text-muted mb-3">Contents &amp; Retention</h5>
                                             <table class="table table-sm">
                                                 <tr>
-                                                    <th style="width: 40%;">Contents Type:</th>
+                                                    <th style="width: 40%;"><t t-esc="field_labels.get('primary_content_type', 'Contents Type') if field_labels else 'Contents Type'"/>:</th>
                                                     <td><t t-esc="dict(container._fields['primary_content_type'].selection).get(container.primary_content_type, 'Not specified')"/></td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Box Contents:</th>
+                                                    <th><t t-esc="field_labels.get('content_description', 'Box Contents') if field_labels else 'Box Contents'"/>:</th>
                                                     <td><t t-esc="container.content_description or 'Not specified'"/></td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Description:</th>
+                                                    <th><t t-esc="field_labels.get('description', 'Description') if field_labels else 'Description'"/>:</th>
                                                     <td><t t-esc="container.description or 'None'"/></td>
                                                 </tr>
                                                 <tr>
@@ -122,7 +122,7 @@
                                                     <td><t t-esc="container.storage_start_date.strftime('%Y-%m-%d') if container.storage_start_date else 'Not set'"/></td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Destruction Due:</th>
+                                                    <th><t t-esc="field_labels.get('destruction_due_date', 'Destruction Due') if field_labels else 'Destruction Due'"/>:</th>
                                                     <td>
                                                         <t t-if="container.permanent_retention">
                                                             <span class="badge badge-info">Permanent Retention</span>
@@ -133,7 +133,7 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <th>Files Count:</th>
+                                                    <th><t t-esc="field_labels.get('file_count', 'Files Count') if field_labels else 'Files Count'"/>:</th>
                                                     <td><strong><t t-esc="len(files or [])"/></strong> files</td>
                                                 </tr>
                                                 <tr>
