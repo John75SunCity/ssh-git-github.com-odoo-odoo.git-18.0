@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- Saved Search List View -->
     <record id="view_records_saved_search_tree" model="ir.ui.view">
         <field name="name">records.saved.search.tree</field>
@@ -150,5 +151,5 @@
             </p>
         </field>
     </record>
-
+    </data>
 </odoo>

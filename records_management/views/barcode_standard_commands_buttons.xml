@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- ============================================================================ -->
     <!-- ODOO STANDARD BARCODE COMMANDS - BUTTON EXTENSIONS -->
     <!-- Adds standard Odoo barcode command buttons to container forms and wizards -->
@@ -212,5 +213,5 @@
             
         </field>
     </record>
-
+    </data>
 </odoo>

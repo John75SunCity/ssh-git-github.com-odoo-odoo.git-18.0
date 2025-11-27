@@ -95,7 +95,7 @@
                                         <field name="temp_barcode_preview" 
                                                string="🏷️ Temp Barcode (Auto)"
                                                readonly="1"
-                                               attrs="{'invisible': [('name', '=', False)]}"/>
+                                               invisible="name == False"/>
                                         <field name="partner_id" column_invisible="1"/>
                                     </list>
                                 </field>

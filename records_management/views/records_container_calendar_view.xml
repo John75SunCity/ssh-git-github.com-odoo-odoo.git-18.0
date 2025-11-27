@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <!-- Calendar View for Destruction Dates - Visualization for Retention Management -->
     <record id="view_records_container_calendar_destruction" model="ir.ui.view">
         <field name="name">records.container.calendar.destruction</field>
@@ -57,5 +58,5 @@
     </record>
 
     <!-- Menu item moved to records_container_menus.xml to load after root menus -->
-
+    </data>
 </odoo>

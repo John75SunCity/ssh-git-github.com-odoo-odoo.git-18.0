@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+    <data>
     <!-- ========================================================================
          BARCODE OPERATION BUTTONS - UI TO BARCODE VALUE BRIDGE
          
@@ -221,5 +221,5 @@
         <field name="binding_model_id" ref="records_management.model_records_container"/>
         <field name="binding_view_types">list</field>
     </record>
-    
+    </data>
 </odoo>

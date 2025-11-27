@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <data>
     <!-- =============================================================== -->
     <!-- LEGAL CITATION TYPE VIEWS -->
     <!-- =============================================================== -->
@@ -454,5 +454,5 @@
               parent="menu_records_retention"
               action="record_series_action"
               sequence="40"/>
-
+    </data>
 </odoo>

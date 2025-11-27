@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <data>
     <!-- Stock Location Tree View - Add Custom Fields -->
     <record id="stock_location_view_tree_inherit_records" model="ir.ui.view">
         <field name="name">stock.location.view.tree.inherit.records</field>
@@ -48,5 +49,5 @@
             </xpath>
         </field>
     </record>
-
+    </data>
 </odoo>
