@@ -898,6 +898,7 @@ class RecordsManagementPortal(CustomerPortal):
     def portal_container_create_form(self, error=None, **kw):
         """Portal form to create a new container (Quick Add style)"""
         partner = request.env.user.partner_id
+        user = request.env.user
 
         # Get departments for this customer
         departments = request.env['records.department'].search([
@@ -905,10 +906,44 @@ class RecordsManagementPortal(CustomerPortal):
             ('active', '=', True)
         ])
 
+        # Build permissions dict expected by template
+        # Check user groups to determine permission level
+        is_company_admin = user.has_group('records_management.group_portal_company_admin')
+        is_dept_admin = user.has_group('records_management.group_portal_department_admin')
+        is_dept_user = user.has_group('records_management.group_portal_department_user')
+        is_readonly = user.has_group('records_management.group_portal_readonly_employee')
+
+        # Determine user role name
+        if is_company_admin:
+            user_role = 'Company Admin'
+            can_create = True
+        elif is_dept_admin:
+            user_role = 'Department Admin'
+            can_create = True
+        elif is_dept_user:
+            user_role = 'Department User'
+            can_create = True
+        elif is_readonly:
+            user_role = 'Read-Only'
+            can_create = False
+        else:
+            user_role = 'Portal User'
+            can_create = True  # Default portal users can create
+
+        permissions = {
+            'user_role': user_role,
+            'containers': {
+                'can_create': can_create,
+                'can_read': True,
+                'can_update': not is_readonly,
+            },
+        }
+
         values = {
             'page_name': 'container_create',
             'departments': departments,
             'partner': partner,
+            'permissions': permissions,
             'error': error,
         }
         return request.render('records_management.portal_container_create_form', values)

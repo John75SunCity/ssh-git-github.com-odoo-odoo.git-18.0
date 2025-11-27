@@ -24,6 +24,7 @@ import logging
 from datetime import datetime, timedelta
 
 # Odoo core imports
+from markupsafe import Markup
 from odoo import http, _, fields
 from odoo.http import request
 from dateutil.relativedelta import relativedelta
@@ -7222,13 +7223,13 @@ class RecordsManagementController(http.Controller):
         }
 
         # Prepare diagram data - JSON-encode lists/dicts for JavaScript consumption
-        # QWeb t-out does NOT convert Python to JSON - it outputs Python repr (single quotes, True/False)
-        # We must use json.dumps() here so template receives valid JSON strings
+        # QWeb t-out escapes HTML by default - wrap with Markup() to mark as safe
+        # This prevents HTML entities like &quot; from corrupting the JSON
         diagram_data = {
             'id': company.id,
-            'node_data_json': json.dumps(nodes),      # Pre-serialized JSON string
-            'edge_data_json': json.dumps(edges),      # Pre-serialized JSON string
-            'diagram_stats_json': json.dumps(stats),  # Pre-serialized JSON string
+            'node_data_json': Markup(json.dumps(nodes)),      # Pre-serialized, marked safe
+            'edge_data_json': Markup(json.dumps(edges)),      # Pre-serialized, marked safe
+            'diagram_stats_json': Markup(json.dumps(stats)),  # Pre-serialized, marked safe
             'show_messaging': True,
             'show_access_rights': False,
             'layout_type': 'hierarchical',

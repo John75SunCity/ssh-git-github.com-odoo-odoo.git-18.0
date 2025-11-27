@@ -159,7 +159,7 @@ class RmModuleConfigurator(models.Model):
     bulk_user_import_enabled = fields.Boolean(default=True)
     retrieval_work_order_enabled = fields.Boolean(default=True)
     photo_enabled = fields.Boolean(default=True)
-    photo_portal_access = fields.Boolean(default=False)
+    photo_portal_access = fields.Boolean(default=True, help="Allow portal users to view container/document photos.")
     key_restriction_enabled = fields.Boolean(default=True, help="Enable key access restriction management for partners.")
 
     current_value = fields.Char(compute="_compute_current_value", store=True)
