@@ -2106,7 +2106,7 @@ class RecordsManagementController(http.Controller):
         # Get movement history
         movements = request.env['chain.of.custody'].search([
             ('container_ids', 'in', [container_id])
-        ], order='timestamp desc', limit=20)
+        ], order='transfer_date desc', limit=20)
 
         # Get files in this container
         files = request.env['records.file'].sudo().search([
@@ -2158,11 +2158,14 @@ class RecordsManagementController(http.Controller):
             container_types = request.env['records.container.type'].sudo().search([])
             # Get retention policies for the form
             retention_policies = request.env['records.retention.rule'].sudo().search([])
+            # Get user permissions for traffic light indicators
+            permissions = self._get_user_permissions()
 
             values = {
                 'departments': departments,
                 'container_types': container_types,
                 'retention_policies': retention_policies,
+                'permissions': permissions,
                 'page_name': 'container_create',
             }
             return request.render("records_management.portal_container_create_form", values)
@@ -2339,7 +2342,7 @@ class RecordsManagementController(http.Controller):
         # Get movement history
         movements = request.env['chain.of.custody'].search([
             ('container_ids', 'in', [container_id])
-        ], order='timestamp desc')
+        ], order='transfer_date desc')
 
         # Check if user can request moves
         can_request_move = request.env.user.has_group('records_management.group_portal_department_user')
