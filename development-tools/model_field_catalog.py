@@ -68,7 +68,7 @@ class ModelInfo:
     rec_name: Optional[str] = None
     fields: Dict[str, FieldInfo] = field(default_factory=dict)
     file_path: Optional[str] = None
-    
+
     # Relational field summaries for quick lookup
     many2one_fields: List[str] = field(default_factory=list)
     one2many_fields: List[str] = field(default_factory=list)
@@ -101,39 +101,39 @@ class ModelFieldCatalog:
     - Computed field dependency tracking
     - View field usage tracking
     """
-    
+
     # Common inherited fields from mail.thread, mail.activity.mixin, etc.
     COMMON_INHERITED_FIELDS = {
         # Base model fields
-        'id', 'create_date', 'create_uid', 'write_date', 'write_uid', 
+        'id', 'create_date', 'create_uid', 'write_date', 'write_uid',
         'display_name', '__last_update',
-        
+
         # mail.thread fields
         'message_ids', 'message_follower_ids', 'message_partner_ids',
         'message_channel_ids', 'message_is_follower', 'message_needaction',
-        'message_needaction_counter', 'message_has_error', 
+        'message_needaction_counter', 'message_has_error',
         'message_has_error_counter', 'message_attachment_count',
         'message_main_attachment_id', 'website_message_ids',
-        
+
         # mail.activity.mixin fields
         'activity_ids', 'activity_state', 'activity_user_id',
         'activity_type_id', 'activity_type_icon', 'activity_date_deadline',
         'activity_summary', 'activity_exception_decoration',
         'activity_exception_icon', 'my_activity_date_deadline',
-        
+
         # portal.mixin fields
         'access_url', 'access_token', 'access_warning',
-        
+
         # image.mixin fields
         'image_1920', 'image_1024', 'image_512', 'image_256', 'image_128',
-        
+
         # Active field (common)
         'active',
-        
+
         # Company-dependent fields
         'company_id',
     }
-    
+
     # Field type patterns for regex parsing
     FIELD_TYPE_PATTERNS = {
         'Char': r'fields\.Char\s*\(',
@@ -156,7 +156,7 @@ class ModelFieldCatalog:
         'Properties': r'fields\.Properties\s*\(',
         'PropertiesDefinition': r'fields\.PropertiesDefinition\s*\(',
     }
-    
+
     def __init__(self, module_path: str = "records_management"):
         self.module_path = Path(module_path)
         self.models: Dict[str, ModelInfo] = {}
@@ -164,62 +164,62 @@ class ModelFieldCatalog:
         self.comodel_references: Dict[str, Set[str]] = defaultdict(set)  # comodel -> set of referencing fields
         self.field_to_model: Dict[str, str] = {}  # field_name -> model_name (for ambiguous lookups)
         self._built = False
-    
+
     def build(self) -> 'ModelFieldCatalog':
         """Build the complete catalog from source files."""
         if self._built:
             return self
-        
+
         print("📚 Building Model & Field Catalog...")
-        
+
         # Scan Python models
         self._scan_models()
-        
+
         # Scan XML views
         self._scan_views()
-        
+
         # Build cross-references
         self._build_cross_references()
-        
+
         self._built = True
         self._print_summary()
-        
+
         return self
-    
+
     def _scan_models(self) -> None:
         """Scan all Python files for model definitions."""
         model_dirs = [
             self.module_path / "models",
             self.module_path / "wizards",
         ]
-        
+
         for model_dir in model_dirs:
             if not model_dir.exists():
                 continue
-            
+
             for py_file in sorted(model_dir.rglob("*.py")):
                 if py_file.name.startswith("__"):
                     continue
-                
+
                 try:
                     self._parse_model_file(py_file)
                 except Exception as e:
                     print(f"  ⚠️  Error parsing {py_file.name}: {e}")
-    
+
     def _parse_model_file(self, file_path: Path) -> None:
         """Parse a Python file for model and field definitions."""
         content = file_path.read_text(encoding='utf-8', errors='ignore')
         lines = content.split('\n')
-        
+
         # Find all class definitions that are Odoo models
         class_pattern = re.compile(
             r'class\s+(\w+)\s*\([^)]*(?:models\.Model|models\.TransientModel|models\.AbstractModel)[^)]*\)\s*:'
         )
-        
+
         for class_match in class_pattern.finditer(content):
             class_name = class_match.group(1)
             class_start = class_match.start()
-            
+
             # Find the class body
             class_body = self._extract_class_body(content, class_start)
             if not class_body:
