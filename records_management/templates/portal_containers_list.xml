@@ -170,59 +170,182 @@
                     <t t-call="portal.pager"/>
                 </t>
                 
+                <!-- Bulk Action Toolbar (hidden by default, appears when items selected) -->
+                <div id="container_bulk_action_toolbar" class="alert alert-info" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1050; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px; min-width: 600px;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="me-3">
+                            <strong><i class="fa fa-box"></i> <span id="container_selection_count">0</span> container(s) selected</strong>
+                        </div>
+                        <div class="btn-group flex-wrap" role="group">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="ContainerBulkActions.requestRetrieval()">
+                                <i class="fa fa-truck"></i> Request Retrieval
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="ContainerBulkActions.requestReturnToWarehouse()">
+                                <i class="fa fa-warehouse"></i> Return to Warehouse
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="ContainerBulkActions.requestDestruction()">
+                                <i class="fa fa-fire"></i> Request Destruction
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="ContainerBulkActions.clearSelection()">
+                                <i class="fa fa-times"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Bulk Actions and Export Script -->
                 <script type="text/javascript">
-                    document.addEventListener('DOMContentLoaded', function() {
-                        // Select All functionality
-                        const selectAllCheckbox = document.getElementById('selectAll');
-                        const containerCheckboxes = document.querySelectorAll('.container-checkbox');
+                    var ContainerBulkActions = {
+                        selectedContainers: new Set(),
                         
-                        if (selectAllCheckbox) {
-                            selectAllCheckbox.addEventListener('change', function() {
-                                containerCheckboxes.forEach(checkbox => {
-                                    checkbox.checked = selectAllCheckbox.checked;
+                        init: function() {
+                            var self = this;
+                            var selectAllCheckbox = document.getElementById('selectAll');
+                            var containerCheckboxes = document.querySelectorAll('.container-checkbox');
+                            
+                            if (selectAllCheckbox) {
+                                selectAllCheckbox.addEventListener('change', function() {
+                                    var isChecked = this.checked;
+                                    containerCheckboxes.forEach(function(checkbox) {
+                                        checkbox.checked = isChecked;
+                                    });
+                                    self.updateSelection();
+                                });
+                            }
+                            
+                            containerCheckboxes.forEach(function(checkbox) {
+                                checkbox.addEventListener('change', function() {
+                                    self.updateSelection();
                                 });
                             });
-                        }
+                            
+                            // Export button
+                            var exportBtn = document.querySelector('.btn-export');
+                            if (exportBtn) {
+                                exportBtn.addEventListener('click', function() {
+                                    self.exportSelected();
+                                });
+                            }
+                        },
                         
-                        // Export functionality
-                        const exportBtn = document.querySelector('.btn-export');
-                        if (exportBtn) {
-                            exportBtn.addEventListener('click', function() {
-                                const selectedContainers = [];
-                                containerCheckboxes.forEach(checkbox => {
-                                    if (checkbox.checked) {
-                                        selectedContainers.push({
-                                            id: checkbox.value,
-                                            name: checkbox.dataset.name,
-                                            number: checkbox.dataset.number
-                                        });
+                        updateSelection: function() {
+                            this.selectedContainers.clear();
+                            var self = this;
+                            document.querySelectorAll('.container-checkbox:checked').forEach(function(cb) {
+                                self.selectedContainers.add(parseInt(cb.value));
+                            });
+                            
+                            var count = this.selectedContainers.size;
+                            var toolbar = document.getElementById('container_bulk_action_toolbar');
+                            var countSpan = document.getElementById('container_selection_count');
+                            
+                            if (count > 0) {
+                                toolbar.style.display = 'block';
+                                countSpan.textContent = count;
+                            } else {
+                                toolbar.style.display = 'none';
+                            }
+                        },
+                        
+                        clearSelection: function() {
+                            document.querySelectorAll('.container-checkbox, #selectAll').forEach(function(cb) {
+                                cb.checked = false;
+                            });
+                            this.updateSelection();
+                        },
+                        
+                        submitRequest: function(requestType, confirmMessage) {
+                            if (this.selectedContainers.size === 0) {
+                                alert('Please select at least one container.');
+                                return;
+                            }
+                            
+                            if (!confirm(confirmMessage)) {
+                                return;
+                            }
+                            
+                            var containerIds = Array.from(this.selectedContainers);
+                            
+                            fetch('/my/containers/bulk_request', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    jsonrpc: '2.0',
+                                    method: 'call',
+                                    params: {
+                                        request_type: requestType,
+                                        container_ids: containerIds
                                     }
-                                });
-                                
-                                if (selectedContainers.length === 0) {
-                                    alert('Please select at least one container to export');
-                                    return;
+                                })
+                            })
+                            .then(function(response) { return response.json(); })
+                            .then(function(data) {
+                                if (data.result &amp;&amp; data.result.success) {
+                                    alert(data.result.message);
+                                    window.location.href = '/my/requests/' + data.result.request_id;
+                                } else {
+                                    alert('Error: ' + (data.result ? data.result.error : 'Unknown error'));
                                 }
-                                
-                                // Create CSV content
-                                let csvContent = 'Container ID,Container Number,Name\n';
-                                selectedContainers.forEach(container => {
-                                    csvContent += `${container.id},"${container.number}","${container.name}"\n`;
-                                });
-                                
-                                // Download CSV file
-                                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                                const link = document.createElement('a');
-                                const url = URL.createObjectURL(blob);
-                                link.setAttribute('href', url);
-                                link.setAttribute('download', 'containers_export_' + new Date().toISOString().split('T')[0] + '.csv');
-                                link.style.visibility = 'hidden';
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
+                            })
+                            .catch(function(error) {
+                                alert('Network error. Please try again.');
+                                console.error('Error:', error);
                             });
+                        },
+                        
+                        requestRetrieval: function() {
+                            this.submitRequest(
+                                'retrieval',
+                                'Submit retrieval request for ' + this.selectedContainers.size + ' container(s)?\\n\\nThis will create a work order for our team to deliver these containers to you.'
+                            );
+                        },
+                        
+                        requestReturnToWarehouse: function() {
+                            this.submitRequest(
+                                'return_to_warehouse',
+                                'Submit return to warehouse request for ' + this.selectedContainers.size + ' container(s)?\\n\\nOur team will pick up the containers from your location and return them to secure storage.'
+                            );
+                        },
+                        
+                        requestDestruction: function() {
+                            this.submitRequest(
+                                'destruction',
+                                'Submit destruction request for ' + this.selectedContainers.size + ' container(s)?\\n\\n⚠️ WARNING: This will permanently destroy the selected containers and their contents.\\n\\nCharges will apply:\\n• Removal fee: $15/container\\n• Shredding fee: $25/container'
+                            );
+                        },
+                        
+                        exportSelected: function() {
+                            var selectedContainers = [];
+                            document.querySelectorAll('.container-checkbox:checked').forEach(function(checkbox) {
+                                selectedContainers.push({
+                                    id: checkbox.value,
+                                    name: checkbox.dataset.name || '',
+                                    barcode: checkbox.dataset.barcode || ''
+                                });
+                            });
+                            
+                            if (selectedContainers.length === 0) {
+                                alert('Please select at least one container to export');
+                                return;
+                            }
+                            
+                            var csvContent = 'Container ID,Container Name,Barcode\\n';
+                            selectedContainers.forEach(function(container) {
+                                csvContent += container.id + ',"' + container.name + '","' + container.barcode + '"\\n';
+                            });
+                            
+                            var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                            var link = document.createElement('a');
+                            link.href = URL.createObjectURL(blob);
+                            link.download = 'containers_export_' + new Date().toISOString().split('T')[0] + '.csv';
+                            link.click();
                         }
+                    };
+                    
+                    document.addEventListener('DOMContentLoaded', function() {
+                        ContainerBulkActions.init();
                     });
                 </script>
 

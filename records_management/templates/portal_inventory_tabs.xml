@@ -401,6 +401,153 @@
 
                 <!-- Pagination -->
                 <t t-if="pager" t-call="portal.pager"/>
+                
+                <!-- Bulk Action Toolbar (hidden by default) -->
+                <div id="file_bulk_action_toolbar" class="alert alert-info" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1050; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="me-3">
+                            <strong><i class="fa fa-folder"></i> <span id="file_selection_count">0</span> file(s) selected</strong>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="FileBulkActions.requestRetrieval()">
+                                <i class="fa fa-truck"></i> Request Retrieval
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="FileBulkActions.requestReturnToWarehouse()">
+                                <i class="fa fa-warehouse"></i> Return to Warehouse
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="FileBulkActions.clearSelection()">
+                                <i class="fa fa-times"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- File Bulk Actions Script -->
+                <script type="text/javascript">
+                    var FileBulkActions = {
+                        selectedFiles: new Set(),
+                        
+                        init: function() {
+                            var self = this;
+                            
+                            // Select all handler
+                            var selectAllEl = document.getElementById('select-all-files');
+                            if (selectAllEl) {
+                                selectAllEl.addEventListener('change', function() {
+                                    var checkboxes = document.querySelectorAll('.file-checkbox');
+                                    var isChecked = this.checked;
+                                    checkboxes.forEach(function(cb) {
+                                        cb.checked = isChecked;
+                                    });
+                                    self.updateSelection();
+                                });
+                            }
+                            
+                            // Individual checkbox handlers
+                            document.querySelectorAll('.file-checkbox').forEach(function(cb) {
+                                cb.addEventListener('change', function() {
+                                    self.updateSelection();
+                                });
+                            });
+                        },
+                        
+                        updateSelection: function() {
+                            this.selectedFiles.clear();
+                            var self = this;
+                            document.querySelectorAll('.file-checkbox:checked').forEach(function(cb) {
+                                self.selectedFiles.add(parseInt(cb.value));
+                            });
+                            
+                            var count = this.selectedFiles.size;
+                            var toolbar = document.getElementById('file_bulk_action_toolbar');
+                            var countSpan = document.getElementById('file_selection_count');
+                            
+                            if (count > 0) {
+                                toolbar.style.display = 'block';
+                                countSpan.textContent = count;
+                            } else {
+                                toolbar.style.display = 'none';
+                            }
+                        },
+                        
+                        clearSelection: function() {
+                            document.querySelectorAll('.file-checkbox, #select-all-files').forEach(function(cb) {
+                                cb.checked = false;
+                            });
+                            this.updateSelection();
+                        },
+                        
+                        submitRequest: function(requestType, confirmMessage) {
+                            if (this.selectedFiles.size === 0) {
+                                alert('Please select at least one file.');
+                                return;
+                            }
+                            
+                            if (!confirm(confirmMessage)) {
+                                return;
+                            }
+                            
+                            var fileIds = Array.from(this.selectedFiles);
+                            
+                            fetch('/my/files/bulk_request', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    jsonrpc: '2.0',
+                                    method: 'call',
+                                    params: {
+                                        request_type: requestType,
+                                        file_ids: fileIds
+                                    }
+                                })
+                            })
+                            .then(function(response) { return response.json(); })
+                            .then(function(data) {
+                                if (data.result &amp;&amp; data.result.success) {
+                                    alert(data.result.message);
+                                    window.location.href = '/my/requests/' + data.result.request_id;
+                                } else {
+                                    alert('Error: ' + (data.result ? data.result.error : 'Unknown error'));
+                                }
+                            })
+                            .catch(function(error) {
+                                alert('Network error. Please try again.');
+                                console.error('Error:', error);
+                            });
+                        },
+                        
+                        requestRetrieval: function() {
+                            this.submitRequest(
+                                'retrieval',
+                                'Submit retrieval request for ' + this.selectedFiles.size + ' file(s)?\\n\\nThis will create a work order for our team to retrieve these files from storage.'
+                            );
+                        },
+                        
+                        requestReturnToWarehouse: function() {
+                            this.submitRequest(
+                                'return_to_warehouse',
+                                'Submit return to warehouse request for ' + this.selectedFiles.size + ' file(s)?\\n\\nOur team will pick up these files from your location and return them to secure storage.'
+                            );
+                        }
+                    };
+                    
+                    document.addEventListener('DOMContentLoaded', function() {
+                        if (document.getElementById('select-all-files')) {
+                            FileBulkActions.init();
+                        }
+                    });
+                    
+                    function toggleAllFiles(checkbox) {
+                        FileBulkActions.updateSelection();
+                    }
+                    
+                    function performSearch() {
+                        var searchValue = document.getElementById('search_input').value;
+                        window.location.href = '/my/inventory/files?search=' + encodeURIComponent(searchValue);
+                    }
+                </script>
             </div>
         </t>
     </template>

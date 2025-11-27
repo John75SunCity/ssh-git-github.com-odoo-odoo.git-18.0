@@ -3778,6 +3778,11 @@ class RecordsManagementController(http.Controller):
                     'title': 'Container Retrieval Request',
                     'description': 'Customer requested retrieval of containers from storage.'
                 },
+                'return_to_warehouse': {
+                    'type': 'pickup',
+                    'title': 'Return to Warehouse Request',
+                    'description': 'Customer requested pickup of containers to return to warehouse storage.\\n\\nOur team will pick up the containers from your location and return them to secure storage.'
+                },
                 'destruction': {
                     'type': 'destruction',
                     'title': 'Container Destruction Request',
@@ -3872,6 +3877,31 @@ class RecordsManagementController(http.Controller):
                     subject='Work Order Created'
                 )
             
+            elif request_type == 'return_to_warehouse':
+                # Create pickup request for return to warehouse
+                work_order = request.env['pickup.request'].sudo().create({
+                    'name': f"Portal Return to Warehouse - {partner.name} ({len(containers)} containers)",
+                    'partner_id': partner.id,
+                    'state': 'draft',
+                    'pickup_type': 'return',
+                    'container_ids': [(6, 0, container_ids)],
+                    'notes': f'Customer requested pickup to return {len(containers)} container(s) to warehouse storage.',
+                })
+                
+                # Auto-create FSM task for pickup
+                fsm_task = self._create_fsm_task_for_work_order(
+                    work_order,
+                    'pickup',
+                    partner,
+                    containers
+                )
+                
+                # Link work order to portal request
+                portal_request.message_post(
+                    body=f'Pickup request created for return to warehouse: <a href="/web#id={work_order.id}&model=pickup.request">{work_order.name}</a>',
+                    subject='Pickup Request Created'
+                )
+            
             # Send notification to backend team
             # Get records management group users
             rm_group = request.env.ref('records_management.group_records_manager', raise_if_not_found=False)
@@ -3895,6 +3925,159 @@ class RecordsManagementController(http.Controller):
             
         except Exception as e:
             _logger.error(f"Bulk container request failed: {str(e)}", exc_info=True)
+            return {
+                'success': False,
+                'error': f'An error occurred: {str(e)}'
+            }
+
+    @http.route(['/my/files/bulk_request'], type='json', auth='user', methods=['POST'])
+    def create_bulk_file_request(self, request_type='', file_ids=None, **kw):
+        """
+        Portal endpoint for bulk file requests.
+        Customers can select multiple files and submit requests for:
+        - Retrieval (file retrieval from containers)
+        - Return to Warehouse (return files currently out)
+        
+        Returns JSON with success status and created request ID.
+        """
+        try:
+            if not file_ids or not isinstance(file_ids, list):
+                return {
+                    'success': False,
+                    'error': 'No files selected. Please select at least one file.'
+                }
+            
+            if not request_type:
+                return {
+                    'success': False,
+                    'error': 'Request type is required.'
+                }
+            
+            # Get current user's partner
+            partner = request.env.user.partner_id.commercial_partner_id
+            
+            # Validate files belong to this customer
+            RecordsFile = request.env['records.file'].sudo()
+            files = RecordsFile.browse(file_ids)
+            
+            # Security check
+            invalid_files = files.filtered(lambda f: f.partner_id.commercial_partner_id != partner)
+            if invalid_files:
+                return {
+                    'success': False,
+                    'error': 'You do not have permission to request actions on some selected files.'
+                }
+            
+            # Department access check for non-company-admins
+            if not request.env.user.has_group('records_management.group_portal_company_admin'):
+                accessible_depts = request.env.user.accessible_department_ids.ids
+                unauthorized_files = files.filtered(lambda f: f.department_id.id not in accessible_depts)
+                if unauthorized_files:
+                    return {
+                        'success': False,
+                        'error': 'You do not have department access to some selected files.'
+                    }
+            
+            # Map request types
+            request_type_map = {
+                'retrieval': {
+                    'type': 'retrieval',
+                    'title': 'File Retrieval Request',
+                    'description': 'Customer requested retrieval of file folders from storage.'
+                },
+                'return_to_warehouse': {
+                    'type': 'pickup',
+                    'title': 'Return Files to Warehouse',
+                    'description': 'Customer requested pickup of file folders to return to warehouse storage.'
+                },
+            }
+            
+            if request_type not in request_type_map:
+                return {
+                    'success': False,
+                    'error': f'Invalid request type: {request_type}'
+                }
+            
+            req_config = request_type_map[request_type]
+            
+            # Build file list for description
+            file_list = '\\n'.join('• ' + f.name + (' (in ' + f.container_id.name + ')' if f.container_id else '') for f in files)
+            
+            # Get unique containers that contain these files
+            container_ids = list(set(f.container_id.id for f in files if f.container_id))
+            
+            # Create portal request
+            PortalRequest = request.env['portal.request'].sudo()
+            portal_request = PortalRequest.create({
+                'name': f"{req_config['title']} - {partner.name} ({len(files)} files)",
+                'partner_id': partner.id,
+                'request_type': req_config['type'],
+                'state': 'submitted',
+                'description': f"{req_config['description']}\\n\\nFiles:\\n{file_list}",
+                'priority': '2',
+                'container_ids': [(6, 0, container_ids)] if container_ids else False,
+            })
+            
+            # Create work order
+            work_order = None
+            
+            if request_type == 'retrieval':
+                work_order = request.env['records.retrieval.work.order'].sudo().create({
+                    'name': f"Portal File Retrieval - {partner.name} ({len(files)} files)",
+                    'partner_id': partner.id,
+                    'user_id': request.env.ref('base.user_admin').id,
+                    'state': 'draft',
+                    'delivery_method': 'scan',
+                    'notes': f'File retrieval request for {len(files)} file folder(s).\\n\\n{file_list}',
+                })
+                
+                containers = request.env['records.container'].sudo().browse(container_ids)
+                fsm_task = self._create_fsm_task_for_work_order(work_order, 'retrieval', partner, containers)
+                
+                portal_request.message_post(
+                    body=f'Retrieval work order created: <a href="/web#id={work_order.id}&model=records.retrieval.work.order">{work_order.name}</a>',
+                    subject='Work Order Created'
+                )
+                
+            elif request_type == 'return_to_warehouse':
+                work_order = request.env['pickup.request'].sudo().create({
+                    'name': f"Portal File Return - {partner.name} ({len(files)} files)",
+                    'partner_id': partner.id,
+                    'state': 'draft',
+                    'pickup_type': 'return',
+                    'container_ids': [(6, 0, container_ids)] if container_ids else False,
+                    'notes': f'Customer requested return of {len(files)} file folder(s) to warehouse.\\n\\n{file_list}',
+                })
+                
+                containers = request.env['records.container'].sudo().browse(container_ids)
+                fsm_task = self._create_fsm_task_for_work_order(work_order, 'pickup', partner, containers)
+                
+                portal_request.message_post(
+                    body=f'Pickup request created for file return: <a href="/web#id={work_order.id}&model=pickup.request">{work_order.name}</a>',
+                    subject='Pickup Request Created'
+                )
+            
+            # Send notification
+            rm_group = request.env.ref('records_management.group_records_manager', raise_if_not_found=False)
+            if rm_group:
+                portal_request.message_subscribe(partner_ids=rm_group.users.mapped('partner_id').ids)
+            
+            portal_request.message_post(
+                body=f'🔔 New portal request submitted by {partner.name}\\n\\n{len(files)} file(s) selected',
+                subject=f'New {req_config["title"]}',
+                subtype_xmlid='mail.mt_comment',
+                message_type='notification'
+            )
+            
+            return {
+                'success': True,
+                'message': f'Request submitted successfully! Our team has been notified and will process your request for {len(files)} file(s).',
+                'request_id': portal_request.id,
+                'file_count': len(files)
+            }
+            
+        except Exception as e:
+            _logger.error(f"Bulk file request failed: {str(e)}", exc_info=True)
             return {
                 'success': False,
                 'error': f'An error occurred: {str(e)}'

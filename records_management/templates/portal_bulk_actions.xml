@@ -81,6 +81,9 @@
                                         <button type="button" class="btn btn-sm btn-primary" onclick="PortalBulkActions.requestRetrieval()">
                                             <i class="fa fa-truck"></i> Request Retrieval
                                         </button>
+                                        <button type="button" class="btn btn-sm btn-success" onclick="PortalBulkActions.requestReturnToWarehouse()">
+                                            <i class="fa fa-warehouse"></i> Return to Warehouse
+                                        </button>
                                         <button type="button" class="btn btn-sm btn-danger" onclick="PortalBulkActions.requestDestruction()">
                                             <i class="fa fa-fire"></i> Request Destruction
                                         </button>
@@ -152,6 +155,15 @@
                             'retrieval',
                             'Request Retrieval',
                             'Submit retrieval request for ' + this.selectedContainers.size + ' container(s)?\\n\\nThis will create a work order for our team to process.'
+                        );
+                    },
+                    
+                    // Request return to warehouse
+                    requestReturnToWarehouse: function() {
+                        this.submitRequest(
+                            'return_to_warehouse',
+                            'Return to Warehouse',
+                            'Submit return to warehouse request for ' + this.selectedContainers.size + ' container(s)?\\n\\nOur team will pick up the containers from your location and return them to secure storage.'
                         );
                     },
                     
