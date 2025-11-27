@@ -1759,9 +1759,13 @@ class RecordsManagementController(http.Controller):
         if not has_access:
             return request.redirect('/my/containers')
 
+        # Get user permissions for traffic light indicators
+        permissions = self._get_user_permissions()
+
         values = {
             'container': container,
             'page_name': 'container_detail',
+            'permissions': permissions,
         }
 
         return request.render("records_management.portal_container_detail", values)
@@ -2060,6 +2064,9 @@ class RecordsManagementController(http.Controller):
 
         containers = Container.search(domain, order=order, limit=20, offset=pager['offset'])
 
+        # Get permissions for the template
+        permissions = self._get_user_permissions()
+
         values.update({
             'containers': containers,
             'page_name': 'inventory_containers',
@@ -2070,6 +2077,7 @@ class RecordsManagementController(http.Controller):
             'filterby': filterby,
             'search': search or '',
             'container_count': container_count,
+            'permissions': permissions,
         })
 
         return request.render("records_management.portal_inventory_containers", values)
@@ -2346,11 +2354,13 @@ class RecordsManagementController(http.Controller):
 
         # Check if user can request moves
         can_request_move = request.env.user.has_group('records_management.group_portal_department_user')
+        permissions = self._get_user_permissions()
 
         values = {
             'container': container,
             'movements': movements,
             'can_request_move': can_request_move,
+            'permissions': permissions,
             'page_name': 'container_movements',
         }
 
@@ -2481,6 +2491,7 @@ class RecordsManagementController(http.Controller):
         # Permission flags
         can_edit = request.env.user.has_group('records_management.group_portal_department_user')
         can_delete = request.env.user.has_group('records_management.group_portal_department_admin')
+        permissions = self._get_user_permissions()
 
         values = {
             'file': file_record,
@@ -2489,6 +2500,7 @@ class RecordsManagementController(http.Controller):
             'containers': containers,
             'can_edit': can_edit,
             'can_delete': can_delete,
+            'permissions': permissions,
             'page_name': 'file_detail',
         }
 
@@ -2523,6 +2535,7 @@ class RecordsManagementController(http.Controller):
                 'departments': departments,
                 'containers': containers,
                 'preselect_container_id': preselect_container_id,
+                'permissions': self._get_user_permissions(),
                 'page_name': 'file_create',
             }
             return request.render("records_management.portal_file_create", values)
@@ -2804,6 +2817,7 @@ class RecordsManagementController(http.Controller):
             'pager': pager,
             'search': search or '',
             'doc_count': doc_count,
+            'permissions': self._get_user_permissions(),
         })
 
         return request.render("records_management.portal_inventory_documents", values)
@@ -2838,6 +2852,7 @@ class RecordsManagementController(http.Controller):
         # Permission flags
         can_edit = request.env.user.has_group('records_management.group_portal_department_user')
         can_delete = request.env.user.has_group('records_management.group_portal_department_admin')
+        permissions = self._get_user_permissions()
 
         values = {
             'document': doc_record,
@@ -2847,6 +2862,7 @@ class RecordsManagementController(http.Controller):
             'containers': containers,
             'can_edit': can_edit,
             'can_delete': can_delete,
+            'permissions': permissions,
             'page_name': 'document_detail',
         }
 
@@ -2874,6 +2890,7 @@ class RecordsManagementController(http.Controller):
                 'departments': departments,
                 'files': files,
                 'containers': containers,
+                'permissions': self._get_user_permissions(),
                 'page_name': 'document_create',
             }
             return request.render("records_management.portal_document_create", values)
