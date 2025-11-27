@@ -44,7 +44,7 @@
     <record id="action_records_container_calendar" model="ir.actions.act_window">
         <field name="name">Container Schedule</field>
         <field name="res_model">records.container</field>
-        <field name="view_mode">calendar,tree,kanban,form</field>
+        <field name="view_mode">calendar,list,kanban,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

@@ -34,7 +34,7 @@
             </form>
         </field>
     </record>
-    <!-- Updated XML ID and changed view_mode to tree,form for consistency -->
+    <!-- Updated for Odoo 18+ using view_mode list,form -->
     <record id="billing_period_action" model="ir.actions.act_window">
         <field name="name">Billing Periods</field>
         <field name="res_model">billing.period</field>

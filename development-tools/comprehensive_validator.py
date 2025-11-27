@@ -2,17 +2,23 @@
 """
 Comprehensive Records Management Module Validator
 ==============================================
+Optimized for Odoo 18.0+ / 19.0 Projects
 
 This validator checks for XML structural issues, field duplications, syntax errors,
-and schema compliance problems that can cause deployment failures.
+schema compliance, and Odoo 18+ modernization requirements.
 
-ENHANCED to catch issues missed in previous validations including:
+ENHANCED CHECKS:
 - Duplicate field definitions in views
-- Excessive whitespace and formatting issues  
-- Invalid menu visibility syntax
+- Legacy <tree> tag usage (should be <list> in Odoo 18+)
+- Legacy view_mode="tree" (should be view_mode="list")
+- Deprecated attrs= usage (use direct invisible/readonly expressions)
+- Deprecated states= usage (migrate to statusbar widgets)
+- Missing <data> wrapper in XML files
 - XML schema compliance problems
 - Field/model reference validation
 - jingtrang XML schema validation (enhanced error messages)
+- Menu action reference validation
+- Scheduled action (ir.cron) duplicate detection
 """
 
 import os
@@ -23,6 +29,7 @@ import traceback
 from collections import defaultdict
 import subprocess
 import sys
+from typing import List, Set, Dict, Tuple, Optional
 
 # Try to import enhanced XML validator
 try:
@@ -39,29 +46,43 @@ except ImportError:
     FIELD_REFERENCE_VALIDATOR_AVAILABLE = False
 
 class ComprehensiveValidator:
+    """Odoo 18.0+ XML Validator optimized for records_management module."""
+    
+    # Pre-compiled regex patterns for performance
+    ATTRS_PATTERN = re.compile(r'\battrs\s*=\s*["\']')
+    STATES_PATTERN = re.compile(r'\bstates\s*=\s*["\']')
+    TREE_TAG_PATTERN = re.compile(r'<tree\b[^>]*>')
+    VIEW_MODE_TREE_PATTERN = re.compile(r'<field\s+name\s*=\s*["\']view_mode["\']\s*>([^<]*tree[^<]*)</field>', re.IGNORECASE)
+    SCRIPT_TAG_PATTERN = re.compile(r'<script\b')
+    DATA_WRAPPER_PATTERN = re.compile(r'<data(\s|>)')
+    COMMENT_PATTERN = re.compile(r'<!--.*?-->', re.DOTALL)
+    MODEL_NAME_PATTERN = re.compile(r"_name\s*=\s*['\"]([a-z0-9_.]+)['\"]", re.IGNORECASE)
+    
     def __init__(self):
         self.total_files = 0
         self.total_issues = 0
         self.files_with_issues = 0
         self.files_passed = 0
         # Local model registry collected from Python files
-        self.local_models = set()
-        # Action XML IDs collected from XML files (e.g., ir.actions.* and <act_window>)
-        self.action_xml_ids = set()
+        self.local_models: Set[str] = set()
+        # Action XML IDs collected from XML files
+        self.action_xml_ids: Set[str] = set()
         # Non-blocking warnings to display after summary
-        self.global_warnings = []
-        # Counters for new modernization categories
+        self.global_warnings: List[str] = []
+        
+        # Modernization counters
         self.hierarchy_issues = 0
         self.deprecated_attr_usage = 0
         self.deprecated_states_usage = 0
-        # New modernization counters
-        self.legacy_tree_usages = 0
+        self.legacy_tree_tag_usages = 0
+        self.legacy_view_mode_tree_usages = 0
         self.inline_script_usages = 0
         self.missing_hierarchy_view_warnings = 0
+        self.missing_data_wrapper = 0
+        
         # Cron tracking
-        self._cron_id_first_seen = {}
-        # Stored as blocking errors (may be downgraded to warnings when isolated)
-        self._duplicate_cron_issues = []
+        self._cron_id_first_seen: Dict[str, Path] = {}
+        self._duplicate_cron_issues: List[str] = []
 
     # ---------------------- Modernization / New Checks ----------------------
     def check_hierarchy_tags(self, root: ET.Element, file_path: Path):
@@ -89,29 +110,33 @@ class ComprehensiveValidator:
         self.hierarchy_issues += len(issues)
         return issues
 
-    def check_deprecated_attrs_usage(self, content: str):
-        """Detect legacy attrs= usage (deprecated in modern view logic)."""
-        # Fast check first
+    def check_deprecated_attrs_usage(self, content: str) -> List[str]:
+        """Detect legacy attrs= usage (deprecated in Odoo 18+).
+        
+        In Odoo 18+, use direct invisible="expression" or readonly="expression" instead.
+        """
         if 'attrs=' not in content:
             return []
-        # Avoid false positives in comments by simple heuristic (not perfect but sufficient)
-        issues = []
-        pattern = re.compile(r"attrs=\"|attrs='")
-        if pattern.search(content):
-            issues.append("❌ Deprecated 'attrs=' usage detected – replace with direct invisible/required expressions or decoration attributes")
+        # Strip comments to avoid false positives
+        stripped = self.COMMENT_PATTERN.sub('', content)
+        if self.ATTRS_PATTERN.search(stripped):
             self.deprecated_attr_usage += 1
-        return issues
+            return ["❌ Deprecated 'attrs=' usage detected – replace with direct invisible/readonly expressions"]
+        return []
 
-    def check_deprecated_states_usage(self, content: str):
-        """Detect legacy states= usage (server-side state logic should move to widgets/attrs equivalent in Odoo 18)."""
+    def check_deprecated_states_usage(self, content: str) -> List[str]:
+        """Detect legacy states= usage (deprecated in Odoo 18+).
+        
+        Migrate to statusbar widgets or compute-driven visibility.
+        """
         if 'states=' not in content:
             return []
-        issues = []
-        pattern = re.compile(r"states=\"|states='")
-        if pattern.search(content):
-            issues.append("❌ Deprecated 'states=' usage detected – migrate to statusbar widgets or compute-driven visibility")
+        # Strip comments to avoid false positives
+        stripped = self.COMMENT_PATTERN.sub('', content)
+        if self.STATES_PATTERN.search(stripped):
             self.deprecated_states_usage += 1
-        return issues
+            return ["❌ Deprecated 'states=' usage detected – migrate to statusbar widgets or compute-driven visibility"]
+        return []
 
     def check_active_id_usage(self, content: str, file_path: Path):
         """Flag active_id usage for manual review.
@@ -129,13 +154,15 @@ class ComprehensiveValidator:
             f"WARN {file_path}: contains {count} occurrence(s) of active_id – verify usage is limited to UI defaults / action contexts"
         )
 
-    def collect_local_model_names(self):
-        """Scan records_management/models and wizards to collect `_name` model names"""
+    def collect_local_model_names(self) -> None:
+        """Scan records_management/models and wizards to collect `_name` model names.
+        
+        Uses pre-compiled regex for performance.
+        """
         model_dirs = [
             Path("records_management/models"),
             Path("records_management/wizards"),
         ]
-        name_regex = re.compile(r"_name\s*=\s*['\"]([a-z0-9_.]+)['\"]", re.IGNORECASE)
         for base in model_dirs:
             if not base.exists():
                 continue
@@ -144,7 +171,7 @@ class ComprehensiveValidator:
                     text = py_file.read_text(encoding="utf-8", errors="ignore")
                 except Exception:
                     continue
-                for match in name_regex.findall(text):
+                for match in self.MODEL_NAME_PATTERN.findall(text):
                     self.local_models.add(match.strip())
 
     def validate_xml_structure(self, file_path, content):
@@ -446,18 +473,21 @@ class ComprehensiveValidator:
 
         return issues
 
-    def check_data_structure(self, content):
-        """Check for proper data tag structure"""
+    def check_data_structure(self, content: str) -> List[str]:
+        """Check for proper <data> wrapper in XML files.
+        
+        All <record>, <menuitem>, and <act_window> elements should be wrapped
+        in a <data> element inside <odoo>.
+        """
         issues = []
 
-        # Check if XML has proper odoo/data structure
         if '<odoo>' in content:
-            # Accept <data> with or without attributes (e.g., <data noupdate="1">)
-            has_data_wrapper = re.search(r"<data(\s|>)", content) is not None
+            has_data_wrapper = self.DATA_WRAPPER_PATTERN.search(content) is not None
             if not has_data_wrapper:
                 # Check if there are records that should be in data tags
                 if any(tag in content for tag in ['<record', '<menuitem', '<act_window']):
-                    issues.append("⚠️  Records found without <data> wrapper - may cause schema issues")
+                    self.missing_data_wrapper += 1
+                    issues.append("❌ Records found without <data> wrapper – add <data> element inside <odoo>")
 
         return issues
 
@@ -623,14 +653,17 @@ class ComprehensiveValidator:
         print(f"✅ Files passed: {self.files_passed}")
         print(f"❌ Files with issues: {self.files_with_issues}")
         print(f"🐛 Total issues found: {self.total_issues}")
-        if self.hierarchy_issues or self.deprecated_attr_usage or self.deprecated_states_usage:
-            print("\n🧪 Modernization metrics:")
-            print(f"   • Hierarchy attribute issues: {self.hierarchy_issues}")
-            print(f"   • Deprecated attrs= usages: {self.deprecated_attr_usage}")
-            print(f"   • Deprecated states= usages: {self.deprecated_states_usage}")
-            print(f"   • Legacy <tree> usages: {self.legacy_tree_usages}")
-            print(f"   • Inline <script> usages: {self.inline_script_usages}")
-            print(f"   • Missing hierarchy view warnings: {self.missing_hierarchy_view_warnings}")
+        
+        # Modernization metrics (always show for Odoo 18+ projects)
+        print("\n🧪 Odoo 18+ Modernization Metrics:")
+        print(f"   • Legacy <tree> tags: {self.legacy_tree_tag_usages}")
+        print(f"   • Legacy view_mode='tree': {self.legacy_view_mode_tree_usages}")
+        print(f"   • Deprecated attrs= usages: {self.deprecated_attr_usage}")
+        print(f"   • Deprecated states= usages: {self.deprecated_states_usage}")
+        print(f"   • Missing <data> wrappers: {self.missing_data_wrapper}")
+        print(f"   • Hierarchy attribute issues: {self.hierarchy_issues}")
+        print(f"   • Inline <script> usages: {self.inline_script_usages}")
+        print(f"   • Missing hierarchy view warnings: {self.missing_hierarchy_view_warnings}")
         if nested_issues:
             print(f"   • Nested sublist field errors: {nested_issues}")
 
@@ -670,46 +703,67 @@ class ComprehensiveValidator:
         return self.total_issues
 
     # ---------------- Additional Modernization Checks -----------------
-    def check_legacy_tree_usage(self, content: str, file_path: Path):
-        """Detect legacy <tree> tag usage (should be <list> in Odoo 18).
+    def check_legacy_tree_usage(self, content: str, file_path: Path) -> List[str]:
+        """Detect legacy <tree> tag usage in arch XML (should be <list> in Odoo 18+).
 
-        Blocking error: each occurrence increments total issues.
+        This checks for:
+        1. <tree> tags inside view arch (should be <list>)
+        2. view_mode fields containing 'tree' (should be 'list')
         
-        EXCEPTION: Technical fallback views with priority=0 and <tree> tags are required by Odoo 18
-        for One2many mode='tree' rendering and should not be flagged as legacy.
-        Note: Odoo 18 removed 'tree' as a valid view type, so we check for priority=0 only.
+        EXCEPTIONS (not flagged):
+        - Technical fallback views with priority=0 (required for One2many rendering)
+        - Content inside XML comments
         """
-        if '<tree' not in content:
-            return []
-        # Avoid false positives inside comments by naive exclusion of <!-- ... --> blocks
-        stripped = re.sub(r'<!--.*?-->', '', content, flags=re.DOTALL)
+        issues = []
+        
+        # Strip comments to avoid false positives
+        stripped = self.COMMENT_PATTERN.sub('', content)
+        
+        # Check 1: <tree> tags inside arch
+        if '<tree' in stripped:
+            # Exception: priority=0 fallback views are required
+            has_priority_zero = ('priority" eval="0"' in content or 
+                                'priority">0</field>' in content or
+                                "priority' eval=\"0\"" in content)
+            
+            if not has_priority_zero:
+                tree_matches = self.TREE_TAG_PATTERN.findall(stripped)
+                if tree_matches:
+                    self.legacy_tree_tag_usages += len(tree_matches)
+                    issues.append(
+                        f"❌ Legacy <tree> tag detected ({len(tree_matches)} occurrence(s)) – "
+                        f"replace with <list> for Odoo 18+ compliance"
+                    )
+        
+        # Check 2: view_mode containing 'tree' instead of 'list'
+        view_mode_matches = self.VIEW_MODE_TREE_PATTERN.findall(stripped)
+        if view_mode_matches:
+            self.legacy_view_mode_tree_usages += len(view_mode_matches)
+            for match in view_mode_matches:
+                corrected = match.replace('tree', 'list')
+                issues.append(
+                    f"❌ Legacy view_mode '{match.strip()}' detected – "
+                    f"replace 'tree' with 'list' → '{corrected.strip()}'"
+                )
+        
+        return issues
 
-        # Check if this is a technical fallback view with priority=0
-        # These are required for One2many fallback and should not be flagged
-        # Note: We no longer check for type='tree' since Odoo 18 removed it as valid view type
-        has_priority_zero = 'priority" eval="0"' in content or 'priority">0</field>' in content
-
-        if has_priority_zero:
-            return []
-
-        matches = re.findall(r'<tree\b', stripped)
-        if not matches:
-            return []
-        self.legacy_tree_usages += len(matches)
-        return [f"❌ Legacy <tree> tag detected ({len(matches)} occurrence(s)) – replace with <list> for Odoo 18 modernization"]
-
-    def check_inline_script_usage(self, content: str, file_path: Path):
-        """Detect inline <script> blocks in view XML (warn)."""
+    def check_inline_script_usage(self, content: str, file_path: Path) -> List[str]:
+        """Detect inline <script> blocks in view XML (non-blocking warning).
+        
+        Prefer using web.assets_frontend/backend bundles or OWL components.
+        """
         if '<script' not in content:
             return []
-        stripped = re.sub(r'<!--.*?-->', '', content, flags=re.DOTALL)
-        matches = re.findall(r'<script\b', stripped)
+        stripped = self.COMMENT_PATTERN.sub('', content)
+        matches = self.SCRIPT_TAG_PATTERN.findall(stripped)
         if not matches:
             return []
         self.inline_script_usages += len(matches)
-        # Non-blocking: push to global warnings so they do not fail validation
+        # Non-blocking: push to global warnings
         self.global_warnings.append(
-            f"WARN {file_path}: inline <script> tag detected ({len(matches)} occurrence(s)) – prefer assets pipeline or JS modules"
+            f"WARN {file_path}: inline <script> tag detected ({len(matches)} occurrence(s)) – "
+            f"prefer assets pipeline or OWL components"
         )
         return []
 

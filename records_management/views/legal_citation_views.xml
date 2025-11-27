@@ -67,7 +67,7 @@
     <record id="legal_citation_type_action" model="ir.actions.act_window">
         <field name="name">Legal Citation Types</field>
         <field name="res_model">legal.citation.type</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -154,7 +154,7 @@
     <record id="record_disposition_action" model="ir.actions.act_window">
         <field name="name">Disposition Methods</field>
         <field name="res_model">record.disposition</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -258,7 +258,7 @@
     <record id="legal_citation_action" model="ir.actions.act_window">
         <field name="name">Legal Citations</field>
         <field name="res_model">legal.citation</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -409,7 +409,7 @@
     <record id="record_series_action" model="ir.actions.act_window">
         <field name="name">Record Series</field>
         <field name="res_model">record.series</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">list,kanban,form</field>
         <field name="context">{'search_default_active': 1, 'search_default_my_company': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
