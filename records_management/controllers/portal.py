@@ -2412,6 +2412,12 @@ class RecordsManagementController(http.Controller):
         RecordsFile = request.env['records.file']
         domain = [('partner_id', '=', partner.id)]
 
+        # Department-level filtering for non-company-admins
+        if not request.env.user.has_group('records_management.group_portal_company_admin'):
+            accessible_depts = request.env.user.accessible_department_ids.ids
+            if accessible_depts:
+                domain += [('department_id', 'in', accessible_depts)]
+
         if search:
             domain += ['|', '|', ('name', 'ilike', search), ('barcode', 'ilike', search), ('description', 'ilike', search)]
 
@@ -2427,12 +2433,16 @@ class RecordsManagementController(http.Controller):
 
         files = RecordsFile.search(domain, order='create_date desc', limit=20, offset=pager['offset'])
 
+        # Get permissions for the template
+        permissions = self._get_user_permissions()
+
         values.update({
             'files': files,
             'page_name': 'inventory_files',
             'pager': pager,
             'search': search or '',
             'file_count': file_count,
+            'permissions': permissions,
         })
 
         return request.render("records_management.portal_inventory_files", values)

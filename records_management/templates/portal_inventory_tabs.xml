@@ -301,6 +301,21 @@
             <t t-set="title">File Folders</t>
 
             <div class="container-fluid o_portal_inventory">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3><i class="fa fa-folder"></i> File Folders <span class="badge bg-primary" t-esc="file_count"/></h3>
+                    <div>
+                        <t t-if="permissions and permissions.get('files', {}).get('can_create')">
+                            <a href="/my/inventory/files/create" class="btn btn-success">
+                                <i class="fa fa-plus-circle"></i> Add File
+                            </a>
+                        </t>
+                        <a href="/my/inventory/containers" class="btn btn-outline-secondary">
+                            <i class="fa fa-box"></i> Back to Containers
+                        </a>
+                    </div>
+                </div>
+                
                 <!-- Search Bar -->
                 <div class="row mb-3">
                     <div class="col-md-8">

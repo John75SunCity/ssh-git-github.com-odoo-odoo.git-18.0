@@ -25,7 +25,17 @@
                         </t>
                     </h1>
                     <div class="actions">
-                        <!-- Only show action buttons if user has permission -->
+                        <!-- Add Container button -->
+                        <t t-if="permissions.get('containers', {}).get('can_create')">
+                            <a href="/my/inventory/containers/create" class="btn btn-success">
+                                <i class="fa fa-plus-circle"></i> Add Container
+                            </a>
+                        </t>
+                        <!-- View All Files button -->
+                        <a href="/my/inventory/files" class="btn btn-outline-primary">
+                            <i class="fa fa-folder"></i> View All Files
+                        </a>
+                        <!-- Find a File button -->
                         <a href="/my/request/new/file_search" class="btn btn-info">
                             <i class="fa fa-search"></i> Find a File
                         </a>
