@@ -43,7 +43,7 @@ class ResPartner(models.Model):
     department_ids = fields.One2many(
         'records.department',
         'partner_id',
-        string="Departments"
+        string="RM Departments"
     )
 
     department_count = fields.Integer(

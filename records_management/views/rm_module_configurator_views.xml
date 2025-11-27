@@ -42,10 +42,10 @@
             </header>
 <sheet>
 <!-- MASTER TOGGLE - Quick Enable/Disable All Features -->
-<div class="alert alert-info" role="status" style="margin-bottom: 20px;">
+<div class="alert alert-info" role="status" aria-live="polite" style="margin-bottom: 20px;">
     <div class="row">
         <div class="col-md-8">
-            <h4 class="alert-heading">
+            <h4 class="fw-bold text-info">
                 <i class="fa fa-toggle-on" title="Toggle"/> Master Feature Control
             </h4>
             <p class="mb-0">
