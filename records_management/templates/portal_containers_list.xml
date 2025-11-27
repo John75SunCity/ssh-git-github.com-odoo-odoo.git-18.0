@@ -35,31 +35,74 @@
                         <a href="/my/inventory/files" class="btn btn-outline-primary">
                             <i class="fa fa-folder"></i> View All Files
                         </a>
-                        <!-- Find a File button -->
-                        <a href="/my/request/new/file_search" class="btn btn-info">
-                            <i class="fa fa-search"></i> Find a File
-                        </a>
-                        <t t-if="permissions.get('requests', {}).get('can_create')">
-                            <a href="/my/request/new/retrieval" class="btn btn-primary">
-                                <i class="fa fa-plus"></i> New Request
-                            </a>
-                        </t>
-                        <t t-else="">
-                            <button class="btn btn-primary disabled" disabled="disabled" 
-                                    title="You don't have permission to create requests"
-                                    data-bs-toggle="tooltip">
-                                <i class="fa fa-plus"></i> New Request
-                            </button>
-                        </t>
                         <button class="btn btn-secondary btn-export" data-format="xlsx">
                             <i class="fa fa-download"></i> Export
                         </button>
                     </div>
                 </div>
+                
+                <!-- Quick Filter Tabs (State-based) -->
+                <ul class="nav nav-tabs mb-3" id="containerStateTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a t-att-class="'nav-link' + (' active' if not state_filter or state_filter == 'all' else '')" 
+                           href="/my/inventory/containers?state_filter=all">
+                            <i class="fa fa-list"></i> All
+                            <span class="badge bg-secondary ms-1" t-esc="counts.get('all', 0)"/>
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a t-att-class="'nav-link' + (' active' if state_filter == 'in' else '')"
+                           href="/my/inventory/containers?state_filter=in">
+                            <i class="fa fa-warehouse text-success"></i> In Storage
+                            <span class="badge bg-success ms-1" t-esc="counts.get('in', 0)"/>
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a t-att-class="'nav-link' + (' active' if state_filter == 'out' else '')"
+                           href="/my/inventory/containers?state_filter=out">
+                            <i class="fa fa-truck text-warning"></i> Out (With You)
+                            <span class="badge bg-warning text-dark ms-1" t-esc="counts.get('out', 0)"/>
+                        </a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a t-att-class="'nav-link' + (' active' if state_filter == 'pending' else '')"
+                           href="/my/inventory/containers?state_filter=pending">
+                            <i class="fa fa-clock text-info"></i> Pending (Ready for Storage)
+                            <span class="badge bg-info ms-1" t-esc="counts.get('pending', 0)"/>
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Context-Aware Action Banner -->
+                <t t-if="state_filter == 'out' and counts.get('out', 0) > 0">
+                    <div class="alert alert-warning d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fa fa-info-circle"></i>
+                            <strong>These containers are currently with you.</strong> 
+                            Select items to return to warehouse storage.
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="ContainerBulkActions.selectAllAndReturn()">
+                            <i class="fa fa-check-double"></i> Select All &amp; Return to Warehouse
+                        </button>
+                    </div>
+                </t>
+                <t t-if="state_filter == 'pending' and counts.get('pending', 0) > 0">
+                    <div class="alert alert-info d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fa fa-info-circle"></i>
+                            <strong>These containers are ready for initial storage.</strong>
+                            Select items to send to our warehouse for secure storage.
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="ContainerBulkActions.selectAllAndSendToStorage()">
+                            <i class="fa fa-check-double"></i> Select All &amp; Send to Storage
+                        </button>
+                    </div>
+                </t>
 
                 <!-- Filter Bar (Grok Enhanced) -->
                 <div class="filter-bar">
                     <form method="get">
+                        <input type="hidden" name="state_filter" t-att-value="state_filter or 'all'"/>
                         <div class="row">
                             <!-- Search Input -->
                             <div class="col-md-3 mb-2">
@@ -171,24 +214,13 @@
                 </t>
                 
                 <!-- Bulk Action Toolbar (hidden by default, appears when items selected) -->
-                <div id="container_bulk_action_toolbar" class="alert alert-info" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1050; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px; min-width: 600px;">
+                <div id="container_bulk_action_toolbar" class="alert alert-info" style="display:none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1050; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-radius: 8px; min-width: 500px;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="me-3">
                             <strong><i class="fa fa-box"></i> <span id="container_selection_count">0</span> container(s) selected</strong>
                         </div>
-                        <div class="btn-group flex-wrap" role="group">
-                            <button type="button" class="btn btn-sm btn-primary" onclick="ContainerBulkActions.requestRetrieval()">
-                                <i class="fa fa-truck"></i> Request Retrieval
-                            </button>
-                            <button type="button" class="btn btn-sm btn-success" onclick="ContainerBulkActions.requestReturnToWarehouse()">
-                                <i class="fa fa-warehouse"></i> Return to Warehouse
-                            </button>
-                            <button type="button" class="btn btn-sm btn-danger" onclick="ContainerBulkActions.requestDestruction()">
-                                <i class="fa fa-fire"></i> Request Destruction
-                            </button>
-                            <button type="button" class="btn btn-sm btn-secondary" onclick="ContainerBulkActions.clearSelection()">
-                                <i class="fa fa-times"></i> Clear
-                            </button>
+                        <div class="btn-group flex-wrap" role="group" id="bulk_action_buttons">
+                            <!-- Dynamic buttons based on state filter -->
                         </div>
                     </div>
                 </div>
@@ -197,6 +229,7 @@
                 <script type="text/javascript">
                     var ContainerBulkActions = {
                         selectedContainers: new Set(),
+                        stateFilter: '<t t-esc="state_filter or 'all'"/>',
                         
                         init: function() {
                             var self = this;
@@ -226,6 +259,66 @@
                                     self.exportSelected();
                                 });
                             }
+                            
+                            // Build dynamic action buttons based on state filter
+                            this.buildActionButtons();
+                        },
+                        
+                        buildActionButtons: function() {
+                            var buttonsContainer = document.getElementById('bulk_action_buttons');
+                            if (!buttonsContainer) return;
+                            
+                            var buttons = '';
+                            
+                            if (this.stateFilter === 'out') {
+                                // Items currently with customer - show Return to Warehouse
+                                buttons = `
+                                    &lt;button type="button" class="btn btn-sm btn-success" onclick="ContainerBulkActions.requestReturnToWarehouse()"&gt;
+                                        &lt;i class="fa fa-warehouse"&gt;&lt;/i&gt; Return to Warehouse
+                                    &lt;/button&gt;
+                                `;
+                            } else if (this.stateFilter === 'pending') {
+                                // Pending items - show Send to Storage
+                                buttons = `
+                                    &lt;button type="button" class="btn btn-sm btn-primary" onclick="ContainerBulkActions.sendToStorage()"&gt;
+                                        &lt;i class="fa fa-warehouse"&gt;&lt;/i&gt; Send to Storage
+                                    &lt;/button&gt;
+                                `;
+                            } else if (this.stateFilter === 'in') {
+                                // In storage - show Request Retrieval
+                                buttons = `
+                                    &lt;button type="button" class="btn btn-sm btn-primary" onclick="ContainerBulkActions.requestRetrieval()"&gt;
+                                        &lt;i class="fa fa-truck"&gt;&lt;/i&gt; Request Retrieval
+                                    &lt;/button&gt;
+                                    &lt;button type="button" class="btn btn-sm btn-danger" onclick="ContainerBulkActions.requestDestruction()"&gt;
+                                        &lt;i class="fa fa-fire"&gt;&lt;/i&gt; Request Destruction
+                                    &lt;/button&gt;
+                                `;
+                            } else {
+                                // All - show all options
+                                buttons = `
+                                    &lt;button type="button" class="btn btn-sm btn-primary" onclick="ContainerBulkActions.requestRetrieval()"&gt;
+                                        &lt;i class="fa fa-truck"&gt;&lt;/i&gt; Retrieval
+                                    &lt;/button&gt;
+                                    &lt;button type="button" class="btn btn-sm btn-success" onclick="ContainerBulkActions.requestReturnToWarehouse()"&gt;
+                                        &lt;i class="fa fa-warehouse"&gt;&lt;/i&gt; Return
+                                    &lt;/button&gt;
+                                    &lt;button type="button" class="btn btn-sm btn-info" onclick="ContainerBulkActions.sendToStorage()"&gt;
+                                        &lt;i class="fa fa-archive"&gt;&lt;/i&gt; To Storage
+                                    &lt;/button&gt;
+                                    &lt;button type="button" class="btn btn-sm btn-danger" onclick="ContainerBulkActions.requestDestruction()"&gt;
+                                        &lt;i class="fa fa-fire"&gt;&lt;/i&gt; Destroy
+                                    &lt;/button&gt;
+                                `;
+                            }
+                            
+                            buttons += `
+                                &lt;button type="button" class="btn btn-sm btn-secondary" onclick="ContainerBulkActions.clearSelection()"&gt;
+                                    &lt;i class="fa fa-times"&gt;&lt;/i&gt; Clear
+                                &lt;/button&gt;
+                            `;
+                            
+                            buttonsContainer.innerHTML = buttons;
                         },
                         
                         updateSelection: function() {
@@ -314,6 +407,35 @@
                                 'destruction',
                                 'Submit destruction request for ' + this.selectedContainers.size + ' container(s)?\\n\\n⚠️ WARNING: This will permanently destroy the selected containers and their contents.\\n\\nCharges will apply:\\n• Removal fee: $15/container\\n• Shredding fee: $25/container'
                             );
+                        },
+                        
+                        sendToStorage: function() {
+                            this.submitRequest(
+                                'send_to_storage',
+                                'Send ' + this.selectedContainers.size + ' container(s) to storage?\\n\\nOur team will pick up these pending containers from your location and place them in secure warehouse storage.\\n\\nThis initiates your storage service for these items.'
+                            );
+                        },
+                        
+                        selectAllAndReturn: function() {
+                            // Select all checkboxes
+                            document.querySelectorAll('.container-checkbox').forEach(function(cb) {
+                                cb.checked = true;
+                            });
+                            document.getElementById('selectAll').checked = true;
+                            this.updateSelection();
+                            // Trigger the return action
+                            this.requestReturnToWarehouse();
+                        },
+                        
+                        selectAllAndSendToStorage: function() {
+                            // Select all checkboxes
+                            document.querySelectorAll('.container-checkbox').forEach(function(cb) {
+                                cb.checked = true;
+                            });
+                            document.getElementById('selectAll').checked = true;
+                            this.updateSelection();
+                            // Trigger the send to storage action
+                            this.sendToStorage();
                         },
                         
                         exportSelected: function() {

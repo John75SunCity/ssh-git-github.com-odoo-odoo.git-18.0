@@ -1631,7 +1631,7 @@ class RecordsManagementController(http.Controller):
     # ============================================================================
 
     @http.route(['/my/containers', '/my/containers/page/<int:page>'], type='http', auth="user", website=True)
-    def portal_my_containers(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, **kw):
+    def portal_my_containers(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, search=None, state_filter=None, **kw):
         """
         Display container inventory for portal users
         FIXED: Uses records.container model with correct ownership fields
@@ -1642,11 +1642,8 @@ class RecordsManagementController(http.Controller):
 
         Container = request.env['records.container'].sudo()
 
-        # Build domain - use hierarchical access for stock_owner_id
-        # Users can see containers where:
-        # - partner_id matches their company (direct ownership)
-        # - OR stock_owner_id is themselves or any child department (hierarchical ownership)
-        domain = [
+        # Build base domain - use hierarchical access for stock_owner_id
+        base_domain = [
             '|',
             ('partner_id', '=', partner.id),
             ('stock_owner_id', 'child_of', partner.id),
@@ -1654,7 +1651,7 @@ class RecordsManagementController(http.Controller):
 
         # Search filter
         if search:
-            domain += [
+            base_domain += [
                 '|', '|', '|', '|',
                 ('name', 'ilike', search),
                 ('barcode', 'ilike', search),
@@ -1665,9 +1662,22 @@ class RecordsManagementController(http.Controller):
 
         # Date filtering
         if date_begin and date_end:
-            domain += [('create_date', '>=', date_begin), ('create_date', '<=', date_end)]
+            base_domain += [('create_date', '>=', date_begin), ('create_date', '<=', date_end)]
 
-        # Status filter
+        # Calculate counts for each state (for tab badges)
+        counts = {
+            'all': Container.search_count(base_domain),
+            'in': Container.search_count(base_domain + [('state', '=', 'in')]),
+            'out': Container.search_count(base_domain + [('state', '=', 'out')]),
+            'pending': Container.search_count(base_domain + [('state', '=', 'pending')]),
+        }
+
+        # Apply state filter to domain
+        domain = list(base_domain)
+        if state_filter and state_filter != 'all':
+            domain += [('state', '=', state_filter)]
+
+        # Legacy status filter (for backward compatibility)
         searchbar_filters = {
             'all': {'label': 'All Containers', 'domain': []},
             'active': {'label': 'Active', 'domain': [('state', '=', 'active')]},
@@ -1694,13 +1704,13 @@ class RecordsManagementController(http.Controller):
             sortby = 'date'
         order = searchbar_sortings[sortby]['order']
 
-        # Count total containers
+        # Count total containers (with all filters applied)
         container_count = Container.search_count(domain)
 
         # Pager setup
         pager = request.website.pager(
             url="/my/containers",
-            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby, 'filterby': filterby, 'search': search},
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby, 'filterby': filterby, 'search': search, 'state_filter': state_filter},
             total=container_count,
             page=page,
             step=self._items_per_page,
@@ -1708,6 +1718,9 @@ class RecordsManagementController(http.Controller):
 
         # Get containers for current page
         containers = Container.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+
+        # Get user permissions
+        permissions = self._get_user_permissions()
 
         values.update({
             'containers': containers,
@@ -1720,6 +1733,9 @@ class RecordsManagementController(http.Controller):
             'filterby': filterby,
             'search': search or '',
             'container_count': container_count,
+            'state_filter': state_filter or 'all',
+            'counts': counts,
+            'permissions': permissions,
         })
 
         return request.render("records_management.portal_my_containers", values)
@@ -3783,6 +3799,11 @@ class RecordsManagementController(http.Controller):
                     'title': 'Return to Warehouse Request',
                     'description': 'Customer requested pickup of containers to return to warehouse storage.\\n\\nOur team will pick up the containers from your location and return them to secure storage.'
                 },
+                'send_to_storage': {
+                    'type': 'pickup',
+                    'title': 'Send to Storage Request',
+                    'description': 'Customer requested initial pickup of pending containers to begin storage service.\\n\\nOur team will pick up these new containers from your location and place them in secure warehouse storage.'
+                },
                 'destruction': {
                     'type': 'destruction',
                     'title': 'Container Destruction Request',
@@ -3885,7 +3906,7 @@ class RecordsManagementController(http.Controller):
                     'state': 'draft',
                     'pickup_type': 'return',
                     'container_ids': [(6, 0, container_ids)],
-                    'notes': f'Customer requested pickup to return {len(containers)} container(s) to warehouse storage.',
+                    'internal_notes': f'Customer requested pickup to return {len(containers)} container(s) to warehouse storage.',
                 })
                 
                 # Auto-create FSM task for pickup
@@ -3899,6 +3920,31 @@ class RecordsManagementController(http.Controller):
                 # Link work order to portal request
                 portal_request.message_post(
                     body=f'Pickup request created for return to warehouse: <a href="/web#id={work_order.id}&model=pickup.request">{work_order.name}</a>',
+                    subject='Pickup Request Created'
+                )
+            
+            elif request_type == 'send_to_storage':
+                # Create pickup request for initial storage (pending containers)
+                work_order = request.env['pickup.request'].sudo().create({
+                    'name': f"Portal Initial Storage Pickup - {partner.name} ({len(containers)} containers)",
+                    'partner_id': partner.id,
+                    'state': 'draft',
+                    'pickup_type': 'initial',
+                    'container_ids': [(6, 0, container_ids)],
+                    'internal_notes': f'Customer requested initial pickup of {len(containers)} pending container(s) to begin storage service.',
+                })
+                
+                # Auto-create FSM task for pickup
+                fsm_task = self._create_fsm_task_for_work_order(
+                    work_order,
+                    'pickup',
+                    partner,
+                    containers
+                )
+                
+                # Link work order to portal request
+                portal_request.message_post(
+                    body=f'Pickup request created for initial storage: <a href="/web#id={work_order.id}&model=pickup.request">{work_order.name}</a>',
                     subject='Pickup Request Created'
                 )
             
@@ -4046,7 +4092,7 @@ class RecordsManagementController(http.Controller):
                     'state': 'draft',
                     'pickup_type': 'return',
                     'container_ids': [(6, 0, container_ids)] if container_ids else False,
-                    'notes': f'Customer requested return of {len(files)} file folder(s) to warehouse.\\n\\n{file_list}',
+                    'internal_notes': f'Customer requested return of {len(files)} file folder(s) to warehouse.\\n\\n{file_list}',
                 })
                 
                 containers = request.env['records.container'].sudo().browse(container_ids)

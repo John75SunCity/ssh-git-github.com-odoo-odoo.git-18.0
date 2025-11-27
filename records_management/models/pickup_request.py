@@ -79,6 +79,26 @@ class PickupRequest(models.Model):
         ('bulk', 'Bulk Pickup'),
     ], string='Service Type', default='standard', tracking=True)
 
+    # Pickup Type - for categorizing the purpose of pickup
+    pickup_type = fields.Selection([
+        ('return', 'Return to Warehouse'),
+        ('initial', 'Initial Storage Pickup'),
+        ('destruction', 'Pickup for Destruction'),
+        ('permanent', 'Permanent Removal'),
+        ('other', 'Other'),
+    ], string='Pickup Type', default='return', tracking=True,
+       help="Purpose of the pickup request")
+
+    # Direct Container Link (for portal bulk requests)
+    container_ids = fields.Many2many(
+        comodel_name='records.container',
+        relation='pickup_request_container_rel',
+        column1='request_id',
+        column2='container_id',
+        string='Containers',
+        help="Containers included in this pickup request"
+    )
+
     estimated_volume = fields.Float(string='Estimated Volume (cubic feet)', tracking=True)
     estimated_weight = fields.Float(string='Estimated Weight (lbs)', tracking=True)
 
