@@ -71,7 +71,6 @@ from . import document_search_attempt
 from . import feedback_improvement_area
 from . import field_label_customization
 from . import file_retrieval_item
-from . import full_customization_name
 from . import hard_drive_scan_wizard
 from . import hr_employee
 from . import inventory_adjustment_reason

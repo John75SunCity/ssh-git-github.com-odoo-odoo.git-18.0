@@ -622,8 +622,6 @@
         "views/document_search_attempt_views.xml",
         "views/enhanced_features_menus.xml",
         "views/file_retrieval_views.xml",
-        "views/full_customization_name_view_form.xml",
-        "views/full_customization_name_views.xml",
         "views/hard_drive_scan_wizard_line_views.xml",
         "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_location_transfer_views.xml",

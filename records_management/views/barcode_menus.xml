@@ -6,11 +6,6 @@
 <!-- Menu Items for Barcode Configuration and History -->
 
 <!-- menu_barcode_config removed - defined in records_management_root_menus.xml -->
-<!-- Original had groups="base.group_system" but root_menus uses group_records_manager -->
-<menuitem id="menu_barcode_config_placeholder" name="Barcode Configuration" parent="records_management.menu_records_configuration" groups="base.group_system" invisible="1" 
-action="action_barcode_generation_history" sequence="40"/>
-
-
 
 <menuitem id="menu_barcode_history" name="Barcode History" parent="records_management.menu_records_reporting" 
 action="action_barcode_generation_history" sequence="40"/>

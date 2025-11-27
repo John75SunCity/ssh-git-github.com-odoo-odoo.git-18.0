@@ -214,6 +214,7 @@
                 
                 <!-- JavaScript for AJAX Search -->
                 <script type="text/javascript">
+                //<![CDATA[
                     document.addEventListener('DOMContentLoaded', function() {
                         const searchBtn = document.getElementById('searchContainersBtn');
                         const submitBtn = document.getElementById('submitBtn');
@@ -351,6 +352,7 @@
                             });
                         });
                     });
+                //]]>
                 </script>
             </t>
         </template>
