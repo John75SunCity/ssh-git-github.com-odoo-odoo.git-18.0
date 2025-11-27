@@ -466,6 +466,7 @@
         "views/shredding_service_event_views.xml",
         "views/shredding_service_views.xml",
         "views/shredding_team_views.xml",
+        "views/stock_location_views.xml",
         "views/stock_lot_views.xml",
         "views/survey_feedback_theme_views.xml",
         "views/survey_improvement_action_views.xml",

@@ -188,6 +188,14 @@ class StockLocation(models.Model):
         help="Number of records containers at this location"
     )
     
+    # Computed field for file count (used in views)
+    records_file_count = fields.Integer(
+        string="File Folders",
+        compute='_compute_records_file_count',
+        store=False,
+        help="Number of file folders at this location"
+    )
+    
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
@@ -211,6 +219,15 @@ class StockLocation(models.Model):
         """Count records containers at this location"""
         for location in self:
             location.records_container_count = len(location.container_ids)
+    
+    @api.depends('quant_ids')
+    def _compute_records_file_count(self):
+        """Count file folders at this location"""
+        RecordsFile = self.env['records.file']
+        for location in self:
+            location.records_file_count = RecordsFile.search_count([
+                ('location_id', '=', location.id)
+            ])
     
     @api.depends('quant_ids', 'quant_ids.quantity')
     def _compute_current_usage(self):
@@ -244,18 +261,33 @@ class StockLocation(models.Model):
     # BUSINESS LOGIC
     # ============================================================================
     def action_view_containers(self):
-        """View all records containers at this location"""
+        """View all records.container records at this location"""
         self.ensure_one()
         return {
-            'name': _('Containers at %s') % self.display_name,
+            'name': _('Records Containers at %s') % self.display_name,
             'type': 'ir.actions.act_window',
-            'res_model': 'stock.quant',
-            'view_mode': 'list,form',
-            'domain': [
-                ('location_id', '=', self.id),
-                ('is_records_container', '=', True),
-            ],
-            'context': {'default_location_id': self.id},
+            'res_model': 'records.container',
+            'view_mode': 'tree,form,kanban',
+            'domain': [('location_id', '=', self.id)],
+            'context': {
+                'default_location_id': self.id,
+                'search_default_location_id': self.id,
+            },
+        }
+    
+    def action_view_files(self):
+        """View all records.file records at this location (files in containers at this location)"""
+        self.ensure_one()
+        return {
+            'name': _('File Folders at %s') % self.display_name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'records.file',
+            'view_mode': 'tree,form,kanban',
+            'domain': [('location_id', '=', self.id)],
+            'context': {
+                'default_location_id': self.id,
+                'search_default_location_id': self.id,
+            },
         }
     
     def action_view_inventory(self):
