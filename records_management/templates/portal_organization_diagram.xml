@@ -250,8 +250,9 @@
             </div>
 
             <!-- JSON payload (consumed by JS asset) -->
+            <!-- Note: node_data_json, edge_data_json, diagram_stats_json are pre-serialized JSON strings from controller -->
             <script type="application/json" id="diagram-data">
-{"nodes": <t t-out="diagram.get('node_data', [])"/>, "edges": <t t-out="diagram.get('edge_data', [])"/>, "stats": <t t-out="diagram.get('diagram_stats', {})"/>, "config": {"show_messaging": <t t-out="diagram.get('show_messaging') and 'true' or 'false'"/>, "show_access_rights": <t t-out="diagram.get('show_access_rights') and 'true' or 'false'"/>, "layout_type": "<t t-out="diagram.get('layout_type', 'hierarchical')"/>", "diagram_id": <t t-out="diagram.get('id', 0)"/>, "user_id": <t t-out="user.id"/>, "partner_id": <t t-out="partner.id"/>}}
+{"nodes": <t t-raw="diagram.get('node_data_json', '[]')"/>, "edges": <t t-raw="diagram.get('edge_data_json', '[]')"/>, "stats": <t t-raw="diagram.get('diagram_stats_json', '{}')"/>, "config": {"show_messaging": <t t-out="diagram.get('show_messaging') and 'true' or 'false'"/>, "show_access_rights": <t t-out="diagram.get('show_access_rights') and 'true' or 'false'"/>, "layout_type": "<t t-out="diagram.get('layout_type', 'hierarchical')"/>", "diagram_id": <t t-out="diagram.get('id', 0)"/>, "user_id": <t t-out="user.id"/>, "partner_id": <t t-out="partner.id"/>}}
             </script>
 
         </t>

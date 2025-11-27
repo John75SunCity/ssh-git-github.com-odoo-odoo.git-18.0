@@ -7221,14 +7221,14 @@ class RecordsManagementController(http.Controller):
             'connections': len(edges),
         }
 
-        # Prepare diagram data as dictionary with RAW Python lists/dicts
-        # Template will JSON-serialize via t-out directive (QWeb handles conversion automatically)
-        # DO NOT use json.dumps() here - that causes double-encoding in template!
+        # Prepare diagram data - JSON-encode lists/dicts for JavaScript consumption
+        # QWeb t-out does NOT convert Python to JSON - it outputs Python repr (single quotes, True/False)
+        # We must use json.dumps() here so template receives valid JSON strings
         diagram_data = {
             'id': company.id,
-            'node_data': nodes,      # Raw Python list (QWeb converts to JSON via t-out)
-            'edge_data': edges,      # Raw Python list (QWeb converts to JSON via t-out)
-            'diagram_stats': stats,  # Raw Python dict (QWeb converts to JSON via t-out)
+            'node_data_json': json.dumps(nodes),      # Pre-serialized JSON string
+            'edge_data_json': json.dumps(edges),      # Pre-serialized JSON string
+            'diagram_stats_json': json.dumps(stats),  # Pre-serialized JSON string
             'show_messaging': True,
             'show_access_rights': False,
             'layout_type': 'hierarchical',
