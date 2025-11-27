@@ -10,19 +10,37 @@
             </t>
 
             <div class="container mt-4 o_portal_inventory">
+                <!-- Permission Indicator -->
+                <t t-call="records_management.permission_card_header">
+                    <t t-set="perm_key" t-value="'containers'"/>
+                </t>
+                
                 <!-- Page Header with Actions (Grok Pattern) -->
                 <div class="page-header d-flex justify-content-between align-items-center">
                     <h1>
                         <i class="fa fa-box"></i> My <t t-esc="field_labels.get('name', 'Container')"/>s
                         <span class="badge bg-primary ms-2" t-esc="container_count"/>
+                        <t t-call="records_management.permission_indicator">
+                            <t t-set="perm_key" t-value="'containers'"/>
+                        </t>
                     </h1>
                     <div class="actions">
+                        <!-- Only show action buttons if user has permission -->
                         <a href="/my/request/new/file_search" class="btn btn-info">
                             <i class="fa fa-search"></i> Find a File
                         </a>
-                        <a href="/my/request/new/retrieval" class="btn btn-primary">
-                            <i class="fa fa-plus"></i> New Request
-                        </a>
+                        <t t-if="permissions.get('requests', {}).get('can_create')">
+                            <a href="/my/request/new/retrieval" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> New Request
+                            </a>
+                        </t>
+                        <t t-else="">
+                            <button class="btn btn-primary disabled" disabled="disabled" 
+                                    title="You don't have permission to create requests"
+                                    data-bs-toggle="tooltip">
+                                <i class="fa fa-plus"></i> New Request
+                            </button>
+                        </t>
                         <button class="btn btn-secondary btn-export" data-format="xlsx">
                             <i class="fa fa-download"></i> Export
                         </button>

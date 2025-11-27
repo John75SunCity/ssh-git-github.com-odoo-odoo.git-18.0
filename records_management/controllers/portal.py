@@ -44,6 +44,182 @@ class RecordsManagementController(http.Controller):
     # COMMON HELPER METHODS
     # ============================================================================
 
+    def _get_user_permissions(self):
+        """
+        Get comprehensive permission information for the current user.
+        Returns a dict with permission details for all major portal actions.
+        
+        Permission levels:
+        - 'full': Can create, read, update, delete (green light)
+        - 'partial': Can read and some actions but not all (yellow light)  
+        - 'readonly': Can only view/read (yellow light)
+        - 'none': No access (red light)
+        
+        Each permission includes:
+        - level: 'full', 'partial', 'readonly', 'none'
+        - color: 'green', 'yellow', 'red'
+        - can_create, can_read, can_update, can_delete: boolean flags
+        - message: Human readable description of permissions
+        """
+        user = request.env.user
+        
+        # Determine user's role level
+        is_system_admin = user.has_group('base.group_system')
+        is_records_manager = user.has_group('records_management.group_records_manager')
+        is_records_user = user.has_group('records_management.group_records_user')
+        is_portal_company_admin = user.has_group('records_management.group_portal_company_admin')
+        is_portal_dept_admin = user.has_group('records_management.group_portal_department_admin')
+        is_portal_dept_user = user.has_group('records_management.group_portal_department_user')
+        is_portal_readonly = user.has_group('records_management.group_portal_readonly_employee')
+        
+        def make_perm(can_create, can_read, can_update, can_delete):
+            """Helper to build permission dict from CRUD flags"""
+            if can_create and can_read and can_update and can_delete:
+                level = 'full'
+                color = 'green'
+                message = 'Full access: You can create, view, edit, and delete'
+            elif can_create and can_read and can_update:
+                level = 'partial'
+                color = 'yellow'
+                message = 'Partial access: You can create, view, and edit (cannot delete)'
+            elif can_read and can_update:
+                level = 'partial'
+                color = 'yellow'
+                message = 'Partial access: You can view and edit (cannot create or delete)'
+            elif can_read:
+                level = 'readonly'
+                color = 'yellow'
+                message = 'Read only: You can view but cannot make changes'
+            else:
+                level = 'none'
+                color = 'red'
+                message = 'No access: You do not have permission for this feature'
+            
+            return {
+                'level': level,
+                'color': color,
+                'can_create': can_create,
+                'can_read': can_read,
+                'can_update': can_update,
+                'can_delete': can_delete,
+                'message': message,
+            }
+        
+        permissions = {}
+        
+        # Containers
+        if is_system_admin or is_records_manager or is_portal_company_admin:
+            permissions['containers'] = make_perm(True, True, True, True)
+        elif is_portal_dept_admin or is_portal_dept_user or is_records_user:
+            permissions['containers'] = make_perm(True, True, True, False)
+        elif is_portal_readonly:
+            permissions['containers'] = make_perm(False, True, False, False)
+        else:
+            permissions['containers'] = make_perm(False, False, False, False)
+        
+        # Files/Folders within containers
+        if is_system_admin or is_records_manager or is_portal_company_admin:
+            permissions['files'] = make_perm(True, True, True, True)
+        elif is_portal_dept_admin or is_portal_dept_user or is_records_user:
+            permissions['files'] = make_perm(True, True, True, False)
+        elif is_portal_readonly:
+            permissions['files'] = make_perm(False, True, False, False)
+        else:
+            permissions['files'] = make_perm(False, False, False, False)
+        
+        # Inventory items
+        if is_system_admin or is_records_manager or is_portal_company_admin:
+            permissions['inventory'] = make_perm(True, True, True, True)
+        elif is_portal_dept_admin or is_portal_dept_user or is_records_user:
+            permissions['inventory'] = make_perm(True, True, True, False)
+        elif is_portal_readonly:
+            permissions['inventory'] = make_perm(False, True, False, False)
+        else:
+            permissions['inventory'] = make_perm(False, False, False, False)
+        
+        # Requests (retrieval, destruction, etc.)
+        if is_system_admin or is_records_manager or is_portal_company_admin:
+            permissions['requests'] = make_perm(True, True, True, True)
+        elif is_portal_dept_admin or is_portal_dept_user or is_records_user:
+            permissions['requests'] = make_perm(True, True, True, False)
+        elif is_portal_readonly:
+            permissions['requests'] = make_perm(False, True, False, False)
+        else:
+            permissions['requests'] = make_perm(False, False, False, False)
+        
+        # User management
+        if is_system_admin or is_records_manager or is_portal_company_admin:
+            permissions['users'] = make_perm(True, True, True, True)
+        elif is_portal_dept_admin:
+            permissions['users'] = make_perm(True, True, True, False)
+            permissions['users']['message'] = 'Partial access: You can manage users in your department only'
+        else:
+            permissions['users'] = make_perm(False, False, False, False)
+        
+        # Departments
+        if is_system_admin or is_records_manager or is_portal_company_admin:
+            permissions['departments'] = make_perm(True, True, True, True)
+        elif is_portal_dept_admin:
+            permissions['departments'] = make_perm(False, True, True, False)
+            permissions['departments']['message'] = 'Partial access: You can view and edit your department only'
+        else:
+            permissions['departments'] = make_perm(False, True, False, False)
+        
+        # Billing/Invoices (view only for most portal users)
+        if is_system_admin or is_records_manager:
+            permissions['billing'] = make_perm(True, True, True, True)
+        elif is_portal_company_admin:
+            permissions['billing'] = make_perm(False, True, False, False)
+        else:
+            permissions['billing'] = make_perm(False, True, False, False)
+        
+        # Reports/Analytics
+        if is_system_admin or is_records_manager or is_portal_company_admin:
+            permissions['reports'] = make_perm(True, True, True, True)
+        elif is_portal_dept_admin:
+            permissions['reports'] = make_perm(False, True, False, False)
+            permissions['reports']['message'] = 'Read only: You can view reports for your department'
+        else:
+            permissions['reports'] = make_perm(False, False, False, False)
+        
+        # Destruction certificates
+        if is_system_admin or is_records_manager or is_portal_company_admin:
+            permissions['certificates'] = make_perm(False, True, False, False)
+            permissions['certificates']['message'] = 'Read only: Certificates are system-generated'
+        elif is_portal_dept_admin or is_portal_dept_user:
+            permissions['certificates'] = make_perm(False, True, False, False)
+        else:
+            permissions['certificates'] = make_perm(False, True, False, False)
+        
+        # Settings/Configuration
+        if is_system_admin or is_records_manager:
+            permissions['settings'] = make_perm(True, True, True, True)
+        elif is_portal_company_admin:
+            permissions['settings'] = make_perm(False, True, True, False)
+            permissions['settings']['message'] = 'Partial access: You can view and edit company settings'
+        else:
+            permissions['settings'] = make_perm(False, False, False, False)
+        
+        # Add user role info for display
+        if is_system_admin:
+            permissions['user_role'] = 'System Administrator'
+        elif is_records_manager:
+            permissions['user_role'] = 'Records Manager'
+        elif is_records_user:
+            permissions['user_role'] = 'Records User'
+        elif is_portal_company_admin:
+            permissions['user_role'] = 'Company Administrator'
+        elif is_portal_dept_admin:
+            permissions['user_role'] = 'Department Administrator'
+        elif is_portal_dept_user:
+            permissions['user_role'] = 'Department User'
+        elif is_portal_readonly:
+            permissions['user_role'] = 'Read-Only User'
+        else:
+            permissions['user_role'] = 'Portal User'
+        
+        return permissions
+
     def _prepare_portal_layout_values(self):
         """
         Prepare common values for portal layout templates.
@@ -57,11 +233,15 @@ class RecordsManagementController(http.Controller):
             commercial_partner.id if commercial_partner else None
         )
         
+        # Get user permissions for all portal features
+        permissions = self._get_user_permissions()
+        
         return {
             'page_name': 'records_management',
             'user': request.env.user,
             'partner': partner,
             'field_labels': field_labels,  # Custom terminology for this customer
+            'permissions': permissions,     # Access rights for permission indicators
         }
 
     def _check_dashboard_access(self):

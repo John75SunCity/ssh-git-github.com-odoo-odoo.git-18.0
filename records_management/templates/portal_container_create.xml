@@ -9,11 +9,34 @@
                 <div class="container mt-4">
                     <div class="row justify-content-center">
                         <div class="col-lg-8">
+                            <!-- Permission check - show warning if no create access -->
+                            <t t-if="not permissions.get('containers', {}).get('can_create')">
+                                <div class="alert alert-danger" role="alert">
+                                    <h4 class="alert-heading">
+                                        <i class="fa fa-lock"></i> Permission Required
+                                    </h4>
+                                    <p>You don't have permission to create new containers.</p>
+                                    <hr/>
+                                    <p class="mb-0">
+                                        Your current role: <strong><t t-esc="permissions.get('user_role', 'Unknown')"/></strong>
+                                        <br/>
+                                        Please contact your company administrator if you need this access.
+                                    </p>
+                                    <a href="/my/containers" class="btn btn-secondary mt-3">
+                                        <i class="fa fa-arrow-left"></i> Back to Containers
+                                    </a>
+                                </div>
+                            </t>
+                            
+                            <t t-if="permissions.get('containers', {}).get('can_create')">
                             <div class="card shadow">
-                                <div class="card-header bg-primary text-white">
+                                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                     <h3 class="mb-0">
                                         <i class="fa fa-box"></i> Add New Container to Inventory
                                     </h3>
+                                    <t t-call="records_management.permission_badge">
+                                        <t t-set="perm_key" t-value="'containers'"/>
+                                    </t>
                                 </div>
                                 
                                 <div class="card-body">
@@ -265,6 +288,7 @@
                                     </div>
                                 </div>
                             </div>
+                            </t><!-- End permission check -->
                         </div>
                     </div>
                 </div>

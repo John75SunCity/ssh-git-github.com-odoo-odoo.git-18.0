@@ -679,6 +679,7 @@
         # TEMPLATES: Load after everything else
         # ============================================================================
         # Core Portal Templates
+        "templates/portal_permission_indicator.xml",  # Permission traffic light indicators
         "templates/portal_overview.xml",
         "templates/portal_dashboards.xml",
         # "templates/portal_home_preconfigured.xml",  # DISABLED: Duplicate portal home - using portal_my_menu.xml instead
