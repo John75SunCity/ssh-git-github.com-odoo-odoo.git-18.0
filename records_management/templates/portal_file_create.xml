@@ -40,7 +40,8 @@
                                             <select class="form-control" id="container_id" name="container_id" required="required">
                                                 <option value="">-- Select Container --</option>
                                                 <t t-foreach="containers" t-as="container">
-                                                    <option t-att-value="container.id">
+                                                    <option t-att-value="container.id"
+                                                            t-att-selected="preselect_container_id and container.id == preselect_container_id">
                                                         <t t-esc="container.name"/>
                                                         <t t-if="container.location_id"> - <t t-esc="container.location_id.name"/></t>
                                                     </option>

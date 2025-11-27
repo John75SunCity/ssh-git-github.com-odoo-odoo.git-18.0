@@ -2097,7 +2097,16 @@ class RecordsManagementController(http.Controller):
             ('container_ids', 'in', [container_id])
         ], order='timestamp desc', limit=20)
 
-        # Check permissions
+        # Get files in this container
+        files = request.env['records.file'].sudo().search([
+            ('container_id', '=', container_id),
+            ('partner_id', '=', partner.id)
+        ])
+
+        # Get user permissions for traffic light indicators
+        permissions = self._get_user_permissions()
+
+        # Legacy permission flags for backward compatibility
         can_edit = request.env.user.has_group('records_management.group_portal_department_user')
         can_delete = request.env.user.has_group('records_management.group_portal_department_admin')
 
@@ -2107,6 +2116,8 @@ class RecordsManagementController(http.Controller):
             'locations': locations,
             'container_types': container_types,
             'movements': movements,
+            'files': files,
+            'permissions': permissions,
             'can_edit': can_edit,
             'can_delete': can_delete,
             'page_name': 'container_detail',
@@ -2484,9 +2495,18 @@ class RecordsManagementController(http.Controller):
             departments = request.env['records.department'].sudo().search([('company_id', '=', partner.id)])
             containers = request.env['records.container'].sudo().search([('partner_id', '=', partner.id)])
 
+            # Pre-select container if passed via query parameter
+            preselect_container_id = post.get('container_id')
+            if preselect_container_id:
+                try:
+                    preselect_container_id = int(preselect_container_id)
+                except (ValueError, TypeError):
+                    preselect_container_id = None
+
             values = {
                 'departments': departments,
                 'containers': containers,
+                'preselect_container_id': preselect_container_id,
                 'page_name': 'file_create',
             }
             return request.render("records_management.portal_file_create", values)
@@ -4841,28 +4861,8 @@ class RecordsManagementController(http.Controller):
     # INDIVIDUAL ITEM DETAIL ROUTES
     # ============================================================================
 
-    @http.route(['/my/inventory/container/<int:container_id>'], type='http', auth="user", website=True)
-    def portal_container_detail(self, container_id, **kw):
-        """Individual container detail view with management options"""
-        container = request.env['records.container'].sudo().browse(container_id)
-
-        # Security check
-        if container.partner_id != request.env.user.partner_id.commercial_partner_id:
-            return request.not_found()
-
-        # Get files in this container
-        files_in_container = request.env['records.file'].sudo().search([
-            ('container_id', '=', container_id),
-            ('partner_id', '=', container.partner_id.id)
-        ])
-
-        values = {
-            'container': container,
-            'files_in_container': files_in_container,
-            'page_name': 'container_detail',
-        }
-
-        return request.render("records_management.portal_container_detail", values)
+    # NOTE: portal_container_detail is defined earlier in this file (around line 2066)
+    # with full CRUD support and permission handling
 
     @http.route(['/my/inventory/file/<int:file_id>'], type='http', auth="user", website=True)
     def portal_file_detail(self, file_id, **kw):

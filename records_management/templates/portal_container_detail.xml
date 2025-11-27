@@ -169,8 +169,14 @@
 
                             <!-- Files in Container -->
                             <div class="card shadow-sm mb-4">
-                                <div class="card-header">
+                                <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0"><i class="fa fa-folder"></i> Files in Container (<t t-esc="len(files or [])"/>)</h5>
+                                    <!-- Add File button - check permission for file creation -->
+                                    <t t-if="permissions.get('files', {}).get('can_create')">
+                                        <a t-attf-href="/my/inventory/files/create?container_id=#{container.id}" class="btn btn-success btn-sm">
+                                            <i class="fa fa-plus"></i> Add File
+                                        </a>
+                                    </t>
                                 </div>
                                 <div class="card-body">
                                     <t t-if="files">
@@ -204,8 +210,14 @@
                                         </div>
                                     </t>
                                     <t t-else="">
-                                        <div class="alert alert-info">
-                                            <i class="fa fa-info-circle"></i> No files in this container yet.
+                                        <div class="text-center py-4">
+                                            <i class="fa fa-folder-open fa-3x text-muted mb-3" style="display: block;"></i>
+                                            <p class="text-muted">No files in this container yet.</p>
+                                            <t t-if="permissions.get('files', {}).get('can_create')">
+                                                <a t-attf-href="/my/inventory/files/create?container_id=#{container.id}" class="btn btn-success">
+                                                    <i class="fa fa-plus"></i> Add First File
+                                                </a>
+                                            </t>
                                         </div>
                                     </t>
                                 </div>
