@@ -344,4 +344,3 @@ class PickupRequest(models.Model):
                 raise ValidationError(_("Emergency service type requires high or urgent urgency level."))
             if request.service_type == 'scheduled' and request.urgency_level == 'urgent':
                 raise ValidationError(_("Scheduled service type cannot have urgent urgency level."))
-
