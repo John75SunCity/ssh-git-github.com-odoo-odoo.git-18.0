@@ -1391,11 +1391,11 @@ class RecordsManagementController(http.Controller):
             ('partner_id', 'child_of', partner.commercial_partner_id.id)
         ])
         
-        file_folder_count = request.env['records.file.folder'].sudo().search_count([
+        file_folder_count = request.env['records.file'].sudo().search_count([
             ('partner_id', 'child_of', partner.commercial_partner_id.id)
         ])
         
-        document_count = request.env['inventory.document'].sudo().search_count([
+        document_count = request.env['records.document'].sudo().search_count([
             ('partner_id', 'child_of', partner.commercial_partner_id.id)
         ])
         
