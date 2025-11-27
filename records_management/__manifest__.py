@@ -812,6 +812,7 @@
             # NOTE: customer_portal_diagram.css remains for reports
             "records_management/static/src/css/customer_portal_diagram.css",
             "records_management/static/src/css/barcode_scanner.css",
+            "records_management/static/src/css/portal_permission_indicator.css",
             # TEMPORARILY DISABLED - Needs vanilla JS conversion (uses @web_tour/tour_manager)
             # "records_management/static/src/js/portal/portal_tour.js",
             # ✅ RE-ENABLED - Converted to vanilla JavaScript (inventory dashboard widgets)

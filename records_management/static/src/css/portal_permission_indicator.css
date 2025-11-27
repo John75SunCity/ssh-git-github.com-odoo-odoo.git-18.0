@@ -1,0 +1,65 @@
+/* Permission Indicator Styles */
+/* Used by: records_management.permission_indicator template */
+
+.permission-indicator {
+    cursor: help;
+    font-size: 0.9em;
+}
+
+.permission-indicator i {
+    transition: transform 0.2s ease;
+}
+
+.permission-indicator:hover i {
+    transform: scale(1.2);
+}
+
+.permission-icons i {
+    font-size: 1.1em;
+}
+
+.permission-icons .text-muted.opacity-50 {
+    opacity: 0.3 !important;
+}
+
+/* Pulsing animation for restricted actions */
+.permission-red .fa-circle {
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Page header permission indicator positioning */
+.page-header .permission-indicator {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+}
+
+.page-header {
+    position: relative;
+}
+
+/* Permission indicator wrapper */
+.permission-indicator-wrapper {
+    cursor: help;
+}
+
+/* Permission dot styling */
+.permission-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+}
+
+/* Permission legend card styling */
+.permission-legend .card-header {
+    background-color: #f8f9fa;
+}
+
+.permission-legend .card-body small {
+    font-size: 0.85em;
+}

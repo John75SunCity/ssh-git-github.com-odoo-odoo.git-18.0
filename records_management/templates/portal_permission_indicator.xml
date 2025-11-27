@@ -163,62 +163,11 @@
             </t>
         </template>
 
-        <!-- CSS Styles for Permission Indicators -->
-        <template id="portal_permission_assets" name="Portal Permission Assets" inherit_id="portal.portal_layout" priority="99">
-            <xpath expr="//head" position="inside">
-                <style>
-                    /* Permission Indicator Styles */
-                    .permission-indicator {
-                        cursor: help;
-                        font-size: 0.9em;
-                    }
-                    .permission-indicator i {
-                        transition: transform 0.2s ease;
-                    }
-                    .permission-indicator:hover i {
-                        transform: scale(1.2);
-                    }
-                    .permission-icons i {
-                        font-size: 1.1em;
-                    }
-                    .permission-icons .text-muted.opacity-50 {
-                        opacity: 0.3 !important;
-                    }
-
-                    /* Pulsing animation for restricted actions */
-                    .permission-red .fa-circle {
-                        animation: pulse-red 2s infinite;
-                    }
-                    @keyframes pulse-red {
-                        0%, 100% { opacity: 1; }
-                        50% { opacity: 0.5; }
-                    }
-
-                    /* Page header permission indicator positioning */
-                    .page-header .permission-indicator {
-                        position: absolute;
-                        top: 10px;
-                        right: 15px;
-                    }
-                    .page-header {
-                        position: relative;
-                    }
-                </style>
-            </xpath>
-
-            <!-- Initialize tooltips for permission indicators -->
-            <xpath expr="//body" position="inside">
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        // Initialize Bootstrap tooltips for permission indicators
-                        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                        tooltipTriggerList.forEach(function(tooltipTriggerEl) {
-                            new bootstrap.Tooltip(tooltipTriggerEl);
-                        });
-                    });
-                </script>
-            </xpath>
-        </template>
+        <!--
+        CSS Styles for Permission Indicators are loaded via:
+        records_management/static/src/css/portal_permission_indicator.css
+        in the web.assets_frontend bundle (see __manifest__.py)
+        -->
 
     </data>
 </odoo>
