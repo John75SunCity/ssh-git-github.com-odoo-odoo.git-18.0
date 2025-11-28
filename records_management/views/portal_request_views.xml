@@ -7,6 +7,7 @@
             <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_portal_request">
                     <field name="name" />
+                    <field name="display_name" />
                     <field name="request_type" />
                     <field name="partner_id" />
                     <field name="state" />
@@ -34,7 +35,7 @@
                                         <field name="partner_id" />
                                     </div>
                                 </div>
-                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                <div class="o_kanban_card_content" t-att-title="record.name.raw_value" t-att-aria-label="record.name.raw_value" role="group">
                                     <div class="mb-2">
                                         <strong>Type:</strong>
                                         <field name="request_type" />
