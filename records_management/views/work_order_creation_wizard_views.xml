@@ -116,7 +116,7 @@
                             </group>
                         </group>
                         <div class="alert alert-info" role="alert" invisible="state != 'details' or not make_recurring">
-                            <i class="fa fa-info-circle"/> <strong>Recurring Schedule:</strong> 
+                            <i class="fa fa-info-circle" title="Information"/> <strong>Recurring Schedule:</strong> 
                             A recurring schedule will be created and work orders will be automatically generated in advance.
                         </div>
 
