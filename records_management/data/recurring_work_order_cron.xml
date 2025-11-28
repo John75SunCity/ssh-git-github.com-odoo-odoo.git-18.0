@@ -13,9 +13,7 @@
             <field name="code">model._cron_generate_upcoming_orders()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="numbercall">-1</field>
             <field name="active">True</field>
-            <field name="doall">False</field>
         </record>
 
     </data>
