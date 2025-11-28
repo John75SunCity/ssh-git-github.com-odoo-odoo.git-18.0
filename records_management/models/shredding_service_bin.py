@@ -163,6 +163,12 @@ class ShreddingServiceBin(models.Model):
         help="When this bin was last serviced/tipped"
     )
 
+    next_service_date = fields.Date(
+        string="Next Service Date",
+        tracking=True,
+        help="Scheduled date for next service pickup"
+    )
+
     total_services_count = fields.Integer(
         string="Total Services (All Time)",
         compute='_compute_service_statistics',
