@@ -19,56 +19,29 @@
                         </div>
 
                         <!-- Progress Bar -->
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="progress" style="height: 30px;">
-                                    <div class="progress-bar bg-success" role="progressbar"
-                                         t-attf-style="width: #{progress_percentage}%;">
-                                        <field name="progress_percentage" widget="progressbar"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <group>
+                            <field name="progress_percentage" widget="progressbar"/>
+                        </group>
 
                         <!-- Statistics -->
-                        <div class="row text-center mb-4">
-                            <div class="col-4">
-                                <div class="border rounded p-2">
-                                    <strong>Total</strong><br/>
-                                    <span class="h3"><field name="total_items" readonly="1"/></span>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="border rounded p-2 bg-success text-white">
-                                    <strong>Scanned</strong><br/>
-                                    <span class="h3"><field name="scanned_items" readonly="1"/></span>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="border rounded p-2 bg-warning">
-                                    <strong>Remaining</strong><br/>
-                                    <span class="h3"><field name="remaining_items" readonly="1"/></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Scan Input -->
                         <group>
-                            <group>
-                                <field name="barcode_input" placeholder="Scan barcode here..." 
-                                       class="o_field_char o_input" style="font-size: 1.5em; padding: 10px;"/>
+                            <group string="Progress">
+                                <field name="total_items" readonly="1"/>
+                                <field name="scanned_items" readonly="1"/>
+                                <field name="remaining_items" readonly="1"/>
                             </group>
                         </group>
 
+                        <!-- Scan Input -->
+                        <group string="Scan Container">
+                            <field name="barcode_input" placeholder="Scan barcode here..."/>
+                        </group>
+
                         <!-- Last Scan Result -->
-                        <div class="row mb-3" invisible="not last_scan_result">
-                            <div class="col-12">
-                                <div t-attf-class="alert #{last_scan_success and 'alert-success' or 'alert-danger'}">
-                                    <field name="last_scan_result" readonly="1"/>
-                                    <field name="last_scan_success" invisible="1"/>
-                                </div>
-                            </div>
-                        </div>
+                        <group string="Last Scan Result" invisible="not last_scan_result">
+                            <field name="last_scan_result" readonly="1"/>
+                            <field name="last_scan_success" invisible="1"/>
+                        </group>
 
                         <!-- Pick List (remaining items) -->
                         <group string="Items to Pick" invisible="remaining_items == 0">
@@ -83,7 +56,7 @@
 
                         <!-- All Done Message -->
                         <div class="alert alert-success text-center" invisible="remaining_items != 0">
-                            <h4>✓ All containers scanned!</h4>
+                            <strong>✓ All containers scanned!</strong>
                             <p>Click "Complete Picking" to finish.</p>
                         </div>
                     </sheet>
