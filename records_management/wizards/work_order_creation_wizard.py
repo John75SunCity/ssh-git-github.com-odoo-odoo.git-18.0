@@ -287,24 +287,34 @@ class WorkOrderCreationWizard(models.TransientModel):
         if not self.retrieval_container_ids:
             raise ValidationError(_("Please select at least one container to retrieve."))
         
+        # Build retrieval item lines for each container
+        retrieval_item_vals = [
+            (0, 0, {
+                'box_id': container.id,
+                'item_description': container.name,
+            })
+            for container in self.retrieval_container_ids
+        ]
+        
         vals = {
             'partner_id': self.partner_id.id,
             'scheduled_date': self.scheduled_date,
             'priority': self.priority,
-            'notes': self.notes,
-            'retrieval_reason': self.retrieval_reason,
-            'container_ids': [(6, 0, self.retrieval_container_ids.ids)],
+            'special_instructions': self.notes,
+            'work_order_type': 'box_retrieval' if len(self.retrieval_container_ids) > 1 else 'document_retrieval',
+            'retrieval_item_ids': retrieval_item_vals,
+            'total_boxes': len(self.retrieval_container_ids),
         }
         return self.env['work.order.retrieval'].create(vals)
 
     def _create_delivery_order(self):
-        """Create a delivery work order (uses retrieval model with delivery flag)."""
+        """Create a delivery work order (uses retrieval model)."""
         vals = {
             'partner_id': self.partner_id.id,
             'scheduled_date': self.scheduled_date,
             'priority': self.priority,
-            'notes': self.notes,
-            'is_delivery': True,  # Flag to indicate this is a delivery
+            'special_instructions': self.notes,
+            'work_order_type': 'box_retrieval',  # Delivery is essentially a retrieval/return
         }
         return self.env['work.order.retrieval'].create(vals)
 
@@ -314,24 +324,24 @@ class WorkOrderCreationWizard(models.TransientModel):
             'partner_id': self.partner_id.id,
             'scheduled_date': self.scheduled_date,
             'priority': self.priority,
-            'notes': self.notes,
-            'pickup_location': self.pickup_location,
-            'estimated_container_count': self.estimated_container_count,
+            'special_instructions': self.notes,
+            'pickup_address': self.pickup_location,
+            'total_boxes': self.estimated_container_count,
         }
         # Check if there's a dedicated pickup model, otherwise use retrieval
         if 'work.order.pickup' in self.env:
             return self.env['work.order.pickup'].create(vals)
         else:
-            vals['is_pickup'] = True
+            vals['work_order_type'] = 'bulk_retrieval'
             return self.env['work.order.retrieval'].create(vals)
 
     def _create_container_access_order(self):
         """Create a container access work order."""
         vals = {
             'partner_id': self.partner_id.id,
-            'scheduled_date': self.scheduled_date,
+            'scheduled_access_date': self.scheduled_date,
             'priority': self.priority,
-            'notes': self.notes,
+            'access_purpose': self.notes,
         }
         return self.env['container.access.work.order'].create(vals)
 
@@ -357,6 +367,6 @@ class WorkOrderCreationWizard(models.TransientModel):
             'partner_id': self.partner_id.id,
             'scheduled_date': self.scheduled_date,
             'priority': self.priority,
-            'notes': self.notes,
+            'special_instructions': self.notes,
         }
         return self.env['work.order.shredding'].create(vals)
