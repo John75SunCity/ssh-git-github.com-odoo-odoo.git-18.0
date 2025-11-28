@@ -3,13 +3,13 @@
     <data>
 
         <!-- ============================================================================
-             DISPATCH CENTER - TOP LEVEL MENU
+             DISPATCH CENTER - SUBMENU UNDER RECORDS MANAGEMENT
              ============================================================================ -->
         
-        <!-- Main Dispatch Center Menu (appears as a top-level menu) -->
+        <!-- Dispatch Center Menu (child of Records Management root) -->
         <menuitem id="menu_dispatch_center_root"
-                  name="Dispatch Center"
-                  web_icon="records_management,static/description/icon_dispatch.png"
+                  name="🚚 Dispatch Center"
+                  parent="menu_records_management_root"
                   sequence="5"/>
 
         <!-- ============================================================================
