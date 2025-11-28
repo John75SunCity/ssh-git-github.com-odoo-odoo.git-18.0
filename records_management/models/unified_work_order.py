@@ -93,6 +93,7 @@ class UnifiedWorkOrder(models.Model):
     # ============================================================================
     portal_request_id = fields.Many2one(comodel_name='portal.request', string="Portal Request", readonly=True)
     is_portal_order = fields.Boolean(string="From Portal", readonly=True)
+    portal_visible = fields.Boolean(string="Visible in Portal", readonly=True)
 
     # ============================================================================
     # ASSIGNMENT
@@ -152,6 +153,7 @@ class UnifiedWorkOrder(models.Model):
                     wo.completion_date,
                     wo.portal_request_id,
                     CASE WHEN wo.portal_request_id IS NOT NULL THEN true ELSE false END AS is_portal_order,
+                    COALESCE(wo.portal_visible, true) AS portal_visible,
                     wo.user_id
                 FROM work_order_retrieval wo
                 WHERE wo.active = true OR wo.active IS NULL
@@ -174,6 +176,7 @@ class UnifiedWorkOrder(models.Model):
                     wo.completion_date,
                     wo.portal_request_id,
                     CASE WHEN wo.portal_request_id IS NOT NULL THEN true ELSE false END AS is_portal_order,
+                    COALESCE(wo.portal_visible, true) AS portal_visible,
                     NULL AS user_id
                 FROM work_order_shredding wo
                 WHERE wo.active = true OR wo.active IS NULL
@@ -196,6 +199,7 @@ class UnifiedWorkOrder(models.Model):
                     wo.actual_destruction_date AS completion_date,
                     wo.portal_request_id,
                     CASE WHEN wo.portal_request_id IS NOT NULL THEN true ELSE false END AS is_portal_order,
+                    COALESCE(wo.portal_visible, true) AS portal_visible,
                     wo.user_id
                 FROM container_destruction_work_order wo
                 WHERE wo.active = true OR wo.active IS NULL
@@ -218,6 +222,7 @@ class UnifiedWorkOrder(models.Model):
                     wo.actual_end_time AS completion_date,
                     wo.portal_request_id,
                     CASE WHEN wo.portal_request_id IS NOT NULL THEN true ELSE false END AS is_portal_order,
+                    COALESCE(wo.portal_visible, true) AS portal_visible,
                     wo.user_id
                 FROM container_access_work_order wo
                 WHERE wo.active = true OR wo.active IS NULL

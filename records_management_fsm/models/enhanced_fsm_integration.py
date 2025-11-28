@@ -180,11 +180,12 @@ class EnhancedFsmIntegration(models.Model):
             'partner_id': pickup_request.partner_id.id,
             'scheduled_date': pickup_request.requested_date,
             'priority': self.task_priority,
-            'assigned_user_id': pickup_request.assigned_user_id.id if pickup_request.assigned_user_id else False,
-            'work_order_type': 'pickup',
+            'user_id': pickup_request.assigned_user_id.id if pickup_request.assigned_user_id else False,
+            'work_order_type': 'bulk_retrieval',
         }
 
-        work_order = self.env['work.order.coordinator'].create(work_order_data)
+        # Use work.order.retrieval as the primary work order model
+        work_order = self.env['work.order.retrieval'].create(work_order_data)
 
         # Log alternative task creation
         self.env['ir.logging'].create({
@@ -242,7 +243,8 @@ class EnhancedFsmIntegration(models.Model):
         if is_fsm:
             tasks = self.env['fsm.task'].search(domain + [('stage_id.fold', '=', False)])
         else:
-            tasks = self.env['work.order.coordinator'].search(domain + [('state', 'not in', ['completed', 'cancelled'])])
+            # Use work.order.retrieval as fallback when FSM not available
+            tasks = self.env['work.order.retrieval'].search(domain + [('state', 'not in', ['completed', 'cancelled'])])
 
         dashboard_data = {
             'user_id': user_id,

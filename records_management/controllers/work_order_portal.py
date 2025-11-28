@@ -67,12 +67,8 @@ class WorkOrderPortal(CustomerPortal):
 
             values['work_order_count'] = work_order_count
 
-        if 'coordinator_count' in counters:
-            coordinator_count = request.env['work.order.coordinator'].search_count([
-                ('partner_id', '=', partner.id),
-                ('customer_visible', '=', True)
-            ])
-            values['coordinator_count'] = coordinator_count
+        # coordinator_count removed - work.order.coordinator model was deleted
+        # Use Dispatch Center (unified.work.order) instead
 
         return values
 
@@ -253,47 +249,8 @@ class WorkOrderPortal(CustomerPortal):
 
         return request.render("records_management.portal_work_order_detail", values)
 
-    @http.route(['/my/coordinators', '/my/coordinators/page/<int:page>'], type='http',
-                auth="user", website=True)
-    def portal_my_coordinators(self, page=1, date_begin=None, date_end=None,
-                              sortby=None, **kw):
-        """Display work order coordinators in portal"""
-        values = self._prepare_portal_layout_values()
-        partner = request.env.user.partner_id
-
-        # Domain: Only show coordinators for current customer
-        domain = [('partner_id', '=', partner.id)]
-
-        # Date filters
-        if date_begin and date_end:
-            domain += [('scheduled_date', '>=', date_begin), ('scheduled_date', '<=', date_end)]
-
-        # Sort order
-        order = 'scheduled_date desc'
-        if sortby == 'name':
-            order = 'name'
-        elif sortby == 'progress':
-            order = 'coordination_progress desc'
-
-        coordinators = request.env['work.order.coordinator'].search(domain, order=order)
-
-        # Pagination
-        pager = portal_pager(
-            url="/my/coordinators",
-            total=len(coordinators),
-            page=page,
-            step=20
-        )
-
-        coordinators = coordinators[(page-1)*20:page*20]
-
-        values.update({
-            'coordinators': coordinators,
-            'page_name': 'coordinators',
-            'pager': pager,
-        })
-
-        return request.render("records_management.portal_my_coordinators", values)
+    # Route /my/coordinators removed - work.order.coordinator model was deleted
+    # Use Dispatch Center (unified.work.order) for consolidated work order management
 
     def _check_work_order_access(self, model_name, document_id, access_token=None):
         """Check access to work order document"""

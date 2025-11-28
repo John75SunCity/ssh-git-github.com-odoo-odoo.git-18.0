@@ -92,6 +92,13 @@ class WorkOrderShredding(models.Model):
     special_instructions = fields.Text(string="Special Instructions")
     completion_notes = fields.Text(string="Completion Notes")
 
+    # Portal visibility
+    portal_visible = fields.Boolean(
+        string='Visible in Portal',
+        default=True,
+        help='If checked, this work order will be visible to the customer in their portal'
+    )
+
     certificate_required = fields.Boolean(string="Certificate Required", default=True)
     certificate_id = fields.Many2one(comodel_name='naid.certificate', string="Destruction Certificate", readonly=True, copy=False)
 

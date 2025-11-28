@@ -118,6 +118,13 @@ class WorkOrderRetrieval(models.Model):
     attachment_ids = fields.Many2many(comodel_name='ir.attachment', string='Attachments')
     technician_signature = fields.Binary(string='Technician Signature')
 
+    # Portal visibility
+    portal_visible = fields.Boolean(
+        string='Visible in Portal',
+        default=True,
+        help='If checked, this work order will be visible to the customer in their portal'
+    )
+
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================

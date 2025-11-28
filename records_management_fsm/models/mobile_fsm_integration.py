@@ -247,22 +247,23 @@ class MobileFsmIntegration(models.Model):
 
         for task_data in tasks_data:
             try:
-                # Update task status or create new task
+                # Update task status or create new task using work.order.retrieval
                 if 'task_id' in task_data:
-                    task = self.env['work.order.coordinator'].browse(task_data['task_id'])
+                    task = self.env['work.order.retrieval'].browse(task_data['task_id'])
                     if task.exists():
                         task.write({
                             'state': task_data.get('state', task.state),
-                            'notes': task_data.get('notes', ''),
+                            'special_instructions': task_data.get('notes', ''),
                         })
                         processed += 1
                 else:
-                    # Create new task
-                    self.env['work.order.coordinator'].create({
+                    # Create new work order
+                    self.env['work.order.retrieval'].create({
                         'name': task_data.get('name', 'Mobile Task'),
-                        'assigned_user_id': user_id,
-                        'description': task_data.get('description', ''),
+                        'user_id': user_id,
+                        'special_instructions': task_data.get('description', ''),
                         'scheduled_date': task_data.get('scheduled_date'),
+                        'partner_id': task_data.get('partner_id'),
                     })
                     processed += 1
             except Exception as e:

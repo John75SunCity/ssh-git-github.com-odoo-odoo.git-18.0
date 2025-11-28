@@ -741,11 +741,9 @@ class RecordsManagementPortal(CustomerPortal):
                 continue
         metrics['work_order_count'] = work_order_count
 
-        coordinator_domain = [('partner_id', '=', partner.id), ('customer_visible', '=', True)]
-        try:
-            metrics['coordinator_count'] = request.env['work.order.coordinator'].search_count(coordinator_domain)
-        except Exception:
-            metrics['coordinator_count'] = 0
+        # coordinator_count removed - work.order.coordinator model was deleted
+        # Use Dispatch Center (unified.work.order) for consolidated work order management
+        metrics['coordinator_count'] = 0
 
         # Certificates and invoices are surfaced on the portal dashboard cards
         try:
