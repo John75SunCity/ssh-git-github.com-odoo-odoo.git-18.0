@@ -334,7 +334,7 @@ lbs
             <field name="name">My Shredding Orders</field>
             <field name="res_model">work.order.shredding</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('coordinator_id.user_id', '=', uid)]</field>
+            <field name="domain">[('create_uid', '=', uid)]</field>
             <field name="context">{'search_default_in_progress': 1}</field>
         </record>
         <record id="action_work_order_shredding_urgent" model="ir.actions.act_window">

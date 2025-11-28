@@ -64,7 +64,7 @@
                         <group invisible="state != 'details' or work_order_type != 'retrieval'" string="Select Containers to Retrieve">
                             <field name="retrieval_container_ids" nolabel="1" widget="many2many_tags"
                                    options="{'no_create': True}"
-                                   domain="[('partner_id', '=', partner_id), ('state', '=', 'stored')]"/>
+                                   domain="[('partner_id', '=', partner_id), ('state', '=', 'in')]"/>
                         </group>
 
                         <!-- DELIVERY DETAILS -->

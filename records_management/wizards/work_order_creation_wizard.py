@@ -121,7 +121,7 @@ class WorkOrderCreationWizard(models.TransientModel):
         column1='wizard_id',
         column2='container_id',
         string="Containers to Retrieve",
-        domain="[('partner_id', '=', partner_id), ('state', '=', 'stored')]"
+        domain="[('partner_id', '=', partner_id), ('state', '=', 'in')]"
     )
     retrieval_reason = fields.Selection([
         ('customer_request', 'Customer Request'),
