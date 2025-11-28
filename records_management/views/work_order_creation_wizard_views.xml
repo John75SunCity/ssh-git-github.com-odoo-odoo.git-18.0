@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================================
+             WORK ORDER CREATION WIZARD - FORM VIEW
+             ============================================================================ -->
+        <record id="work_order_creation_wizard_view_form" model="ir.ui.view">
+            <field name="name">work.order.creation.wizard.form</field>
+            <field name="model">work.order.creation.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Create Work Order">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title mb-3">
+                            <h1>
+                                <span invisible="state != 'type_selection'">Step 1: Select Work Order Type</span>
+                                <span invisible="state != 'details'">Step 2: Enter Details</span>
+                            </h1>
+                        </div>
+
+                        <!-- ========== STEP 1: TYPE SELECTION ========== -->
+                        <group invisible="state != 'type_selection'">
+                            <group string="Customer">
+                                <field name="partner_id" options="{'no_create': True}"/>
+                            </group>
+                            <group string="Schedule &amp; Priority">
+                                <field name="scheduled_date"/>
+                                <field name="priority" widget="priority"/>
+                            </group>
+                        </group>
+
+                        <group invisible="state != 'type_selection'" string="Service Type">
+                            <field name="service_category" widget="radio" options="{'horizontal': true}"/>
+                        </group>
+
+                        <!-- Storage Services Options -->
+                        <div class="row" invisible="state != 'type_selection' or service_category != 'storage'">
+                            <div class="col-12">
+                                <group string="Storage Services - Select One">
+                                    <field name="work_order_type" widget="radio"
+                                           domain="[('work_order_type', 'in', ['retrieval', 'delivery', 'pickup', 'container_access'])]"/>
+                                </group>
+                            </div>
+                        </div>
+
+                        <!-- Destruction Services Options -->
+                        <div class="row" invisible="state != 'type_selection' or service_category != 'destruction'">
+                            <div class="col-12">
+                                <group string="Destruction Services - Select One">
+                                    <field name="work_order_type" widget="radio"
+                                           domain="[('work_order_type', 'in', ['container_destruction', 'shredding'])]"/>
+                                </group>
+                            </div>
+                        </div>
+
+                        <!-- ========== STEP 2: TYPE-SPECIFIC DETAILS ========== -->
+                        
+                        <!-- RETRIEVAL DETAILS -->
+                        <group invisible="state != 'details' or work_order_type != 'retrieval'" string="Retrieval Details">
+                            <field name="retrieval_reason"/>
+                            <field name="notes" placeholder="Special instructions..."/>
+                        </group>
+                        <group invisible="state != 'details' or work_order_type != 'retrieval'" string="Select Containers to Retrieve">
+                            <field name="retrieval_container_ids" nolabel="1" widget="many2many_tags"
+                                   options="{'no_create': True}"
+                                   domain="[('partner_id', '=', partner_id), ('state', '=', 'stored')]"/>
+                        </group>
+
+                        <!-- DELIVERY DETAILS -->
+                        <group invisible="state != 'details' or work_order_type != 'delivery'" string="Delivery Details">
+                            <field name="notes" placeholder="Delivery instructions, address notes..."/>
+                        </group>
+
+                        <!-- PICKUP DETAILS -->
+                        <group invisible="state != 'details' or work_order_type != 'pickup'" string="Pickup Details">
+                            <field name="pickup_location"/>
+                            <field name="estimated_container_count"/>
+                            <field name="notes" placeholder="Pickup instructions..."/>
+                        </group>
+
+                        <!-- CONTAINER ACCESS DETAILS -->
+                        <group invisible="state != 'details' or work_order_type != 'container_access'" string="Container Access Details">
+                            <field name="notes" placeholder="Which containers need to be accessed, duration needed..."/>
+                        </group>
+
+                        <!-- CONTAINER DESTRUCTION DETAILS -->
+                        <group invisible="state != 'details' or work_order_type != 'container_destruction'" string="Destruction Details">
+                            <field name="destruction_method"/>
+                            <field name="witness_required"/>
+                            <field name="notes" placeholder="Reason for destruction..."/>
+                        </group>
+                        <group invisible="state != 'details' or work_order_type != 'container_destruction'" string="Select Containers for Destruction">
+                            <field name="destruction_container_ids" nolabel="1" widget="many2many_tags"
+                                   options="{'no_create': True}"
+                                   domain="[('partner_id', '=', partner_id)]"/>
+                        </group>
+
+                        <!-- SHREDDING SERVICE DETAILS -->
+                        <group invisible="state != 'details' or work_order_type != 'shredding'" string="Shredding Service Details">
+                            <field name="shredding_service_type"/>
+                            <field name="material_type"/>
+                            <field name="estimated_weight_lbs"/>
+                            <field name="notes" placeholder="Service notes..."/>
+                        </group>
+
+                        <!-- ========== RECURRING SCHEDULE OPTIONS ========== -->
+                        <group invisible="state != 'details'" string="Recurring Schedule" class="mt-4">
+                            <group>
+                                <field name="make_recurring" widget="boolean_toggle"/>
+                            </group>
+                            <group invisible="not make_recurring">
+                                <field name="interval_type"/>
+                                <field name="day_of_week" invisible="interval_type not in ('weekly', 'biweekly')"/>
+                                <field name="recurring_end_date"/>
+                            </group>
+                        </group>
+                        <div class="alert alert-info" role="alert" invisible="state != 'details' or not make_recurring">
+                            <i class="fa fa-info-circle"/> <strong>Recurring Schedule:</strong> 
+                            A recurring schedule will be created and work orders will be automatically generated in advance.
+                        </div>
+
+                    </sheet>
+                    <footer>
+                        <button name="action_next" string="Next →" type="object" class="btn-primary"
+                                invisible="state != 'type_selection'"/>
+                        <button name="action_back" string="← Back" type="object" class="btn-secondary"
+                                invisible="state != 'details'"/>
+                        <button name="action_create_work_order" string="✓ Create Work Order" type="object" class="btn-success"
+                                invisible="state != 'details' or make_recurring"/>
+                        <button name="action_create_work_order" string="✓ Create Work Order + Schedule" type="object" class="btn-success"
+                                invisible="state != 'details' or not make_recurring"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================================================================
+             ACTION - OPEN WORK ORDER CREATION WIZARD
+             ============================================================================ -->
+        <record id="action_work_order_creation_wizard" model="ir.actions.act_window">
+            <field name="name">New Work Order</field>
+            <field name="res_model">work.order.creation.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

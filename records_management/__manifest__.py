@@ -130,6 +130,7 @@
         "data/records_retrieval_order_cron_data.xml",
         "data/records_retrieval_order_cron.xml",
         "data/records_retrieval_order_sequences.xml",
+        "data/recurring_work_order_cron.xml",
         "data/required_document_cron.xml",
         "data/scheduled_actions_data.xml",
         "data/temp_inventory_configurator_data.xml",
@@ -561,6 +562,7 @@
         "views/records_security_audit_views.xml",
         "views/records_survey_user_input_views.xml",
         "views/records_usage_tracking_views.xml",
+        "views/recurring_work_order_schedule_views.xml",
         "views/required_document_views.xml",
         "views/res_config_settings_views.xml",
         "views/res_partner_views.xml",
@@ -585,8 +587,10 @@
         "views/transitory_item_views.xml",
         "views/unlock_service_history_views.xml",
         "views/unlock_service_part_views.xml",
+        "views/unified_work_order_views.xml",
         "views/visitor_views.xml",
         "views/wizard_template_views.xml",
+        "views/work_order_creation_wizard_views.xml",
         "views/work_order_dashboard_views.xml",
         "views/work_order_retrieval_views.xml",
         "views/work_order_shredding_views.xml",
@@ -596,6 +600,8 @@
         # ROOT MENUS: Parent-only menus must load AFTER all views with actions defined
         # These define the base menu structure that child menus reference
         "views/records_management_root_menus.xml",
+        # DISPATCH CENTER: Unified work order management - load after root menus
+        "views/dispatch_center_menus.xml",
         # ============================================================================
         # VIEWS WITH MENUITEMS: Must load AFTER root_menus, BEFORE child menus
 

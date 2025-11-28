@@ -229,6 +229,7 @@ from . import records_tag
 from . import records_tag_category
 from . import records_usage_tracking
 from . import records_vehicle
+from . import recurring_work_order_schedule  # Recurring work order schedules
 from . import required_document
 from . import res_config_settings
 from . import res_partner
@@ -299,6 +300,7 @@ from . import visitor
 from . import work_order_coordinator
 from . import work_order_retrieval
 from . import work_order_shredding
+from . import unified_work_order  # Unified dispatch center view
 from . import workflow_visualization_manager
 from . import button_action_placeholders
 from . import records_container_assign_barcode_wizard

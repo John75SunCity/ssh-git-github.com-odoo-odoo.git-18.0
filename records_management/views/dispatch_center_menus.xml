@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================================
+             DISPATCH CENTER - TOP LEVEL MENU
+             ============================================================================ -->
+        
+        <!-- Main Dispatch Center Menu (appears as a top-level menu) -->
+        <menuitem id="menu_dispatch_center_root"
+                  name="Dispatch Center"
+                  web_icon="records_management,static/description/icon_dispatch.png"
+                  sequence="5"/>
+
+        <!-- ============================================================================
+             DISPATCH CENTER - DASHBOARD
+             ============================================================================ -->
+        <menuitem id="menu_dispatch_dashboard"
+                  name="📊 Dashboard"
+                  parent="menu_dispatch_center_root"
+                  action="action_dispatch_center"
+                  sequence="1"/>
+
+        <!-- New Work Order Button (prominent placement) -->
+        <menuitem id="menu_new_work_order"
+                  name="➕ New Work Order"
+                  parent="menu_dispatch_center_root"
+                  action="action_work_order_creation_wizard"
+                  sequence="2"/>
+
+        <!-- ============================================================================
+             DISPATCH CENTER - QUICK VIEWS
+             ============================================================================ -->
+        <menuitem id="menu_dispatch_views"
+                  name="Quick Views"
+                  parent="menu_dispatch_center_root"
+                  sequence="10"/>
+
+        <menuitem id="menu_todays_dispatch"
+                  name="📅 Today's Dispatch"
+                  parent="menu_dispatch_views"
+                  action="action_todays_dispatch"
+                  sequence="1"/>
+
+        <menuitem id="menu_all_work_orders"
+                  name="📋 All Work Orders"
+                  parent="menu_dispatch_views"
+                  action="action_all_work_orders"
+                  sequence="2"/>
+
+        <!-- ============================================================================
+             DISPATCH CENTER - BY SERVICE TYPE
+             ============================================================================ -->
+        <menuitem id="menu_dispatch_by_type"
+                  name="By Service Type"
+                  parent="menu_dispatch_center_root"
+                  sequence="20"/>
+
+        <!-- Storage Services Sub-menu -->
+        <menuitem id="menu_dispatch_storage"
+                  name="📦 Storage Services"
+                  parent="menu_dispatch_by_type"
+                  sequence="1"/>
+
+        <record id="action_dispatch_retrieval" model="ir.actions.act_window">
+            <field name="name">Retrieval Orders</field>
+            <field name="res_model">unified.work.order</field>
+            <field name="view_mode">list,kanban</field>
+            <field name="domain">[('work_order_type', '=', 'retrieval')]</field>
+            <field name="context">{'search_default_filter_open': 1}</field>
+        </record>
+        <menuitem id="menu_dispatch_retrieval"
+                  name="Retrieval"
+                  parent="menu_dispatch_storage"
+                  action="action_dispatch_retrieval"
+                  sequence="1"/>
+
+        <record id="action_dispatch_delivery" model="ir.actions.act_window">
+            <field name="name">Delivery Orders</field>
+            <field name="res_model">unified.work.order</field>
+            <field name="view_mode">list,kanban</field>
+            <field name="domain">[('work_order_type', '=', 'delivery')]</field>
+            <field name="context">{'search_default_filter_open': 1}</field>
+        </record>
+        <menuitem id="menu_dispatch_delivery"
+                  name="Delivery"
+                  parent="menu_dispatch_storage"
+                  action="action_dispatch_delivery"
+                  sequence="2"/>
+
+        <record id="action_dispatch_pickup" model="ir.actions.act_window">
+            <field name="name">Pickup Orders</field>
+            <field name="res_model">unified.work.order</field>
+            <field name="view_mode">list,kanban</field>
+            <field name="domain">[('work_order_type', '=', 'pickup')]</field>
+            <field name="context">{'search_default_filter_open': 1}</field>
+        </record>
+        <menuitem id="menu_dispatch_pickup"
+                  name="Pickup"
+                  parent="menu_dispatch_storage"
+                  action="action_dispatch_pickup"
+                  sequence="3"/>
+
+        <record id="action_dispatch_container_access" model="ir.actions.act_window">
+            <field name="name">Container Access</field>
+            <field name="res_model">unified.work.order</field>
+            <field name="view_mode">list,kanban</field>
+            <field name="domain">[('work_order_type', '=', 'container_access')]</field>
+            <field name="context">{'search_default_filter_open': 1}</field>
+        </record>
+        <menuitem id="menu_dispatch_container_access"
+                  name="Container Access"
+                  parent="menu_dispatch_storage"
+                  action="action_dispatch_container_access"
+                  sequence="4"/>
+
+        <!-- Destruction Services Sub-menu -->
+        <menuitem id="menu_dispatch_destruction"
+                  name="🔥 Destruction Services"
+                  parent="menu_dispatch_by_type"
+                  sequence="2"/>
+
+        <record id="action_dispatch_container_destruction" model="ir.actions.act_window">
+            <field name="name">Container Destruction</field>
+            <field name="res_model">unified.work.order</field>
+            <field name="view_mode">list,kanban</field>
+            <field name="domain">[('work_order_type', '=', 'container_destruction')]</field>
+            <field name="context">{'search_default_filter_open': 1}</field>
+        </record>
+        <menuitem id="menu_dispatch_container_destruction"
+                  name="Container Destruction"
+                  parent="menu_dispatch_destruction"
+                  action="action_dispatch_container_destruction"
+                  sequence="1"/>
+
+        <record id="action_dispatch_shredding" model="ir.actions.act_window">
+            <field name="name">Shredding Services</field>
+            <field name="res_model">unified.work.order</field>
+            <field name="view_mode">list,kanban</field>
+            <field name="domain">[('work_order_type', '=', 'shredding')]</field>
+            <field name="context">{'search_default_filter_open': 1}</field>
+        </record>
+        <menuitem id="menu_dispatch_shredding"
+                  name="Shredding Services"
+                  parent="menu_dispatch_destruction"
+                  action="action_dispatch_shredding"
+                  sequence="2"/>
+
+        <!-- ============================================================================
+             DISPATCH CENTER - LEGACY/DETAILED VIEWS
+             Access to the original individual work order menus
+             ============================================================================ -->
+        <menuitem id="menu_dispatch_detailed"
+                  name="Detailed Views"
+                  parent="menu_dispatch_center_root"
+                  groups="records_management.group_records_manager"
+                  sequence="90"/>
+
+        <!-- Link to existing work order menus for managers who need full detail -->
+        <menuitem id="menu_dispatch_retrieval_detail"
+                  name="Retrieval Work Orders (Full)"
+                  parent="menu_dispatch_detailed"
+                  action="records_management.action_work_order_retrieval"
+                  sequence="1"/>
+
+        <menuitem id="menu_dispatch_shredding_detail"
+                  name="Shredding Work Orders (Full)"
+                  parent="menu_dispatch_detailed"
+                  action="records_management.action_work_order_shredding"
+                  sequence="2"/>
+
+        <menuitem id="menu_dispatch_destruction_detail"
+                  name="Container Destruction (Full)"
+                  parent="menu_dispatch_detailed"
+                  action="records_management.action_container_destruction_work_order"
+                  sequence="3"/>
+
+    </data>
+</odoo>

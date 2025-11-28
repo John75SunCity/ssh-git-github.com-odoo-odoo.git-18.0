@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================================
+             RECURRING SCHEDULE - FORM VIEW
+             ============================================================================ -->
+        <record id="recurring_work_order_schedule_view_form" model="ir.ui.view">
+            <field name="name">recurring.work.order.schedule.view.form</field>
+            <field name="model">recurring.work.order.schedule</field>
+            <field name="arch" type="xml">
+                <form string="Recurring Work Order Schedule">
+                    <header>
+                        <button name="action_generate_next_order" string="Generate Next Order" type="object" 
+                                class="btn-primary" invisible="not active"/>
+                        <button name="action_pause_schedule" string="Pause" type="object" 
+                                class="btn-warning" invisible="not active"/>
+                        <button name="action_resume_schedule" string="Resume" type="object" 
+                                class="btn-success" invisible="active"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_generated_orders" type="object" class="oe_stat_button" icon="fa-list">
+                                <field name="generated_order_count" widget="statinfo" string="Generated"/>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Paused" bg_color="text-bg-warning" invisible="active"/>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="e.g., Weekly Bin Service - ABC Corp"/>
+                            </h1>
+                        </div>
+                        
+                        <group>
+                            <group string="Customer &amp; Service">
+                                <field name="partner_id"/>
+                                <field name="service_category" widget="radio" options="{'horizontal': true}"/>
+                                <field name="work_order_type"/>
+                                <field name="priority" widget="priority"/>
+                            </group>
+                            <group string="Schedule">
+                                <field name="interval_type"/>
+                                <field name="interval_number"/>
+                                <field name="day_of_week" invisible="interval_type not in ('weekly', 'biweekly')"/>
+                                <field name="day_of_month" invisible="interval_type not in ('monthly', 'quarterly', 'yearly')"/>
+                                <field name="preferred_time" widget="float_time"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group string="Date Range">
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="next_occurrence_date" readonly="1"/>
+                                <field name="advance_days"/>
+                            </group>
+                            <group string="Status">
+                                <field name="active"/>
+                                <field name="last_generated_date" readonly="1"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Service Details" name="service_details">
+                                <!-- Bin Service Configuration -->
+                                <group string="Bin Service Configuration" 
+                                       invisible="work_order_type != 'shredding'">
+                                    <field name="bin_count"/>
+                                    <field name="bin_ids" widget="many2many_tags"/>
+                                    <field name="shredding_service_type"/>
+                                    <field name="material_type"/>
+                                </group>
+                                
+                                <group string="Standing Instructions">
+                                    <field name="notes" nolabel="1" placeholder="Instructions that will be included in every generated work order..."/>
+                                </group>
+                            </page>
+                            <page string="History" name="history">
+                                <field name="generated_order_ids" readonly="1">
+                                    <list>
+                                        <field name="scheduled_date"/>
+                                        <field name="generated_date"/>
+                                        <field name="work_order_reference"/>
+                                        <button name="action_open_work_order" string="Open" type="object" icon="fa-external-link"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================================================================
+             RECURRING SCHEDULE - LIST VIEW
+             ============================================================================ -->
+        <record id="recurring_work_order_schedule_view_list" model="ir.ui.view">
+            <field name="name">recurring.work.order.schedule.view.list</field>
+            <field name="model">recurring.work.order.schedule</field>
+            <field name="arch" type="xml">
+                <list decoration-muted="not active">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="work_order_type" widget="badge"/>
+                    <field name="interval_type"/>
+                    <field name="next_occurrence_date"/>
+                    <field name="generated_order_count" string="Generated"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ============================================================================
+             RECURRING SCHEDULE - SEARCH VIEW
+             ============================================================================ -->
+        <record id="recurring_work_order_schedule_view_search" model="ir.ui.view">
+            <field name="name">recurring.work.order.schedule.view.search</field>
+            <field name="model">recurring.work.order.schedule</field>
+            <field name="arch" type="xml">
+                <search string="Search Recurring Schedules">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <separator/>
+                    <filter name="filter_active" string="Active" domain="[('active', '=', True)]"/>
+                    <filter name="filter_paused" string="Paused" domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <filter name="filter_storage" string="Storage Services" domain="[('service_category', '=', 'storage')]"/>
+                    <filter name="filter_destruction" string="Destruction Services" domain="[('service_category', '=', 'destruction')]"/>
+                    <separator/>
+                    <filter name="filter_weekly" string="Weekly" domain="[('interval_type', 'in', ['weekly', 'biweekly'])]"/>
+                    <filter name="filter_monthly" string="Monthly" domain="[('interval_type', '=', 'monthly')]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Customer" name="groupby_partner" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Service Type" name="groupby_type" context="{'group_by': 'work_order_type'}"/>
+                        <filter string="Frequency" name="groupby_interval" context="{'group_by': 'interval_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- ============================================================================
+             RECURRING SCHEDULE - CALENDAR VIEW
+             ============================================================================ -->
+        <record id="recurring_work_order_schedule_view_calendar" model="ir.ui.view">
+            <field name="name">recurring.work.order.schedule.view.calendar</field>
+            <field name="model">recurring.work.order.schedule</field>
+            <field name="arch" type="xml">
+                <calendar string="Upcoming Schedules" date_start="next_occurrence_date" 
+                          color="work_order_type" mode="month" quick_create="0">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="work_order_type"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- ============================================================================
+             RECURRING HISTORY - LIST VIEW
+             ============================================================================ -->
+        <record id="recurring_work_order_history_view_list" model="ir.ui.view">
+            <field name="name">recurring.work.order.history.view.list</field>
+            <field name="model">recurring.work.order.history</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="schedule_id"/>
+                    <field name="scheduled_date"/>
+                    <field name="generated_date"/>
+                    <field name="work_order_reference"/>
+                    <button name="action_open_work_order" string="Open" type="object" icon="fa-external-link"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ============================================================================
+             ACTIONS
+             ============================================================================ -->
+        <record id="action_recurring_work_order_schedule" model="ir.actions.act_window">
+            <field name="name">Recurring Schedules</field>
+            <field name="res_model">recurring.work.order.schedule</field>
+            <field name="view_mode">list,form,calendar</field>
+            <field name="search_view_id" ref="recurring_work_order_schedule_view_search"/>
+            <field name="context">{'search_default_filter_active': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a recurring work order schedule
+                </p>
+                <p>
+                    Set up automatic work order generation for regular services like weekly bin pickups or monthly shredding.
+                </p>
+            </field>
+        </record>
+
+        <!-- ============================================================================
+             MENU ITEMS (added to Dispatch Center)
+             ============================================================================ -->
+        <menuitem id="menu_recurring_schedules"
+                  name="🔄 Recurring Schedules"
+                  parent="menu_dispatch_center_root"
+                  action="action_recurring_work_order_schedule"
+                  sequence="30"/>
+
+    </data>
+</odoo>

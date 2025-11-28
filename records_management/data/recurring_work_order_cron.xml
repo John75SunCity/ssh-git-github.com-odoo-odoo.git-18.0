@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================================
+             CRON JOB: Auto-generate Recurring Work Orders
+             Runs daily at 6 AM to create work orders for upcoming scheduled services.
+             ============================================================================ -->
+        <record id="ir_cron_generate_recurring_work_orders" model="ir.cron">
+            <field name="name">Generate Recurring Work Orders</field>
+            <field name="model_id" ref="model_recurring_work_order_schedule"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_generate_upcoming_orders()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+            <field name="doall">False</field>
+        </record>
+
+    </data>
+</odoo>
