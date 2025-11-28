@@ -1089,6 +1089,7 @@ class RecordsContainer(models.Model):
     # ==========================================================================
     # SEARCH EXTENSIONS
     # ==========================================================================
+    @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=100):  # type: ignore[override]
         args = list(args or [])
         if name:
