@@ -175,5 +175,14 @@
                   action="records_management.action_container_destruction_work_order"
                   sequence="3"/>
 
+        <!-- ============================================================================
+             RECURRING SCHEDULES - Auto-generate recurring work orders
+             ============================================================================ -->
+        <menuitem id="menu_recurring_schedules"
+                  name="🔄 Recurring Schedules"
+                  parent="menu_dispatch_center_root"
+                  action="action_recurring_work_order_schedule"
+                  sequence="30"/>
+
     </data>
 </odoo>
