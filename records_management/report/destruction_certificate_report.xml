@@ -1,8 +1,308 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Note: Report action definition moved to destruction_certificate_reports.xml to avoid duplicates -->
+        <!-- ================================================================== -->
+        <!-- DESTRUCTION CERTIFICATE PDF REPORT ACTION                          -->
+        <!-- ================================================================== -->
+        <record id="action_report_destruction_certificate" model="ir.actions.report">
+            <field name="name">Certificate of Destruction</field>
+            <field name="model">destruction.certificate</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">records_management.report_destruction_certificate_document</field>
+            <field name="report_file">records_management.report_destruction_certificate_document</field>
+            <field name="print_report_name">'Certificate_of_Destruction_%s' % (object.name or 'Draft')</field>
+            <field name="binding_model_id" ref="records_management.model_destruction_certificate"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="base.paperformat_us"/>
+        </record>
 
+        <!-- ================================================================== -->
+        <!-- DESTRUCTION CERTIFICATE PDF TEMPLATE                               -->
+        <!-- Styled to match Sun City Shredding branded certificate             -->
+        <!-- ================================================================== -->
+        <template id="report_destruction_certificate_document">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="article" style="font-family: Arial, sans-serif; padding: 20px;">
+                        <style>
+                            .certificate-header {
+                                text-align: center;
+                                border: 3px double #333;
+                                padding: 10px;
+                                margin-bottom: 20px;
+                            }
+                            .certificate-header .naid-banner {
+                                font-size: 10px;
+                                color: #666;
+                                margin-bottom: 10px;
+                            }
+                            .certificate-header h1 {
+                                font-size: 28px;
+                                font-weight: bold;
+                                margin: 10px 0 5px 0;
+                                color: #000;
+                            }
+                            .certificate-header .address {
+                                font-size: 14px;
+                                margin: 5px 0;
+                            }
+                            .certificate-header .phone {
+                                font-size: 16px;
+                                font-weight: bold;
+                            }
+                            .certificate-body {
+                                margin: 20px 0;
+                            }
+                            .certificate-body p {
+                                margin: 10px 0;
+                                font-size: 13px;
+                                line-height: 1.6;
+                            }
+                            .certificate-body .label {
+                                font-weight: bold;
+                                color: #c00;
+                            }
+                            .certificate-body .date-line {
+                                font-weight: bold;
+                                color: #c00;
+                                font-size: 14px;
+                            }
+                            .material-types {
+                                margin: 20px 0;
+                            }
+                            .material-types table {
+                                width: 100%;
+                            }
+                            .material-types td {
+                                padding: 5px 20px;
+                                font-size: 14px;
+                                font-weight: bold;
+                            }
+                            .material-types .checkbox {
+                                display: inline-block;
+                                width: 15px;
+                                height: 15px;
+                                border: 2px solid #000;
+                                margin-right: 8px;
+                                vertical-align: middle;
+                                text-align: center;
+                                line-height: 12px;
+                            }
+                            .material-types .checkbox.checked {
+                                background-color: #ff0;
+                            }
+                            .signature-section {
+                                margin-top: 30px;
+                                border-top: 1px solid #000;
+                                padding-top: 15px;
+                            }
+                            .signature-section table {
+                                width: 100%;
+                            }
+                            .signature-section td {
+                                padding: 10px;
+                                vertical-align: bottom;
+                            }
+                            .signature-line {
+                                border-bottom: 1px solid #000;
+                                height: 40px;
+                            }
+                            .watermark {
+                                position: absolute;
+                                top: 40%;
+                                left: 15%;
+                                font-size: 60px;
+                                color: rgba(200, 200, 200, 0.3);
+                                transform: rotate(-30deg);
+                                z-index: -1;
+                                white-space: nowrap;
+                            }
+                        </style>
+                        
+                        <!-- Watermark -->
+                        <div class="watermark">RECORDS MANAGEMENT</div>
+                        
+                        <!-- Header with Company Info -->
+                        <div class="certificate-header">
+                            <div class="naid-banner">
+                                <t t-if="doc.company_id">
+                                    <t t-esc="doc.company_id.name"/> IS NAID CERTIFIED FOR PLANT BASED DESTRUCTION AND IS CERTIFIED TO SHRED PAPER, UNIFORMS AND HARD DRIVES
+                                </t>
+                            </div>
+                            
+                            <!-- NAID Logo placeholder -->
+                            <div style="margin: 10px 0;">
+                                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height: 60px;"/>
+                                <span style="font-size: 18px; font-weight: bold; border: 2px solid #000; padding: 5px 10px; margin-left: 10px;">NAID®</span>
+                            </div>
+                            
+                            <h1><t t-esc="doc.company_id.name or 'SUN CITY SHREDDING'"/></h1>
+                            <div class="address">
+                                <t t-if="doc.company_id.street"><t t-esc="doc.company_id.street"/><br/></t>
+                                <t t-if="doc.company_id.city">
+                                    <t t-esc="doc.company_id.city"/>
+                                    <t t-if="doc.company_id.state_id"> <t t-esc="doc.company_id.state_id.code"/></t>
+                                    <t t-if="doc.company_id.zip"> <t t-esc="doc.company_id.zip"/></t>
+                                </t>
+                            </div>
+                            <div class="phone">
+                                <t t-if="doc.company_id.phone"><t t-esc="doc.company_id.phone"/></t>
+                            </div>
+                        </div>
+                        
+                        <!-- Certificate Body -->
+                        <div class="certificate-body">
+                            <p>
+                                <strong>This is to certify the following records were shred for:</strong>
+                                <span style="text-transform: uppercase;">
+                                    <t t-esc="doc.partner_id.name"/>
+                                    <t t-if="doc.partner_id.street">; <t t-esc="doc.partner_id.street"/></t>
+                                    <t t-if="doc.partner_id.street2"> <t t-esc="doc.partner_id.street2"/></t>
+                                    <t t-if="doc.partner_id.city"> <t t-esc="doc.partner_id.city"/></t>
+                                    <t t-if="doc.partner_id.state_id"> <t t-esc="doc.partner_id.state_id.code"/></t>
+                                    <t t-if="doc.partner_id.zip"> <t t-esc="doc.partner_id.zip"/></t>
+                                </span>
+                            </p>
+                            
+                            <p class="date-line">
+                                <span class="label">DATE:</span> 
+                                <span t-field="doc.certificate_date" t-options='{"format": "MM/dd/yyyy"}'/>
+                            </p>
+                            
+                            <p>
+                                <strong>The destruction occurred by 
+                                <t t-if="doc.destruction_type == 'on_site'">mobile shredding</t>
+                                <t t-elif="doc.destruction_type == 'off_site'">off-site destruction</t>
+                                <t t-elif="doc.destruction_type == 'media_destruction'">media destruction</t>
+                                <t t-elif="doc.destruction_type == 'hard_drive'">hard drive destruction</t>
+                                <t t-else="">mechanical shredding</t>
+                                at:</strong>
+                            </p>
+                            
+                            <p style="margin-left: 20px;">
+                                <strong><t t-esc="doc.company_id.name or 'SUN CITY SHREDDING'"/></strong><br/>
+                                <t t-if="doc.company_id.street"><t t-esc="doc.company_id.street"/><br/></t>
+                                <t t-if="doc.company_id.city">
+                                    <t t-esc="doc.company_id.city"/>
+                                    <t t-if="doc.company_id.state_id"> <t t-esc="doc.company_id.state_id.name"/></t>
+                                    <t t-if="doc.company_id.zip"> <t t-esc="doc.company_id.zip"/></t>
+                                </t>
+                            </p>
+                            
+                            <p class="label" style="margin-top: 20px;">TOTAL WEIGHT:</p>
+                            <p style="color: #c00; font-weight: bold;">
+                                <t t-if="doc.containers_processed">
+                                    <t t-esc="doc.containers_processed"/> CONTAINERS
+                                </t>
+                                <t t-if="doc.weight_processed">
+                                    - <t t-esc="'%.2f' % doc.weight_processed"/> KG
+                                </t>
+                                <t t-if="doc.sale_order_name">
+                                    - PO#<t t-esc="doc.sale_order_name"/>
+                                </t>
+                            </p>
+                            
+                            <!-- Material Type Checkboxes -->
+                            <div class="material-types">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <span t-attf-class="checkbox #{('on_site' in (doc.destruction_type or '') or 'off_site' in (doc.destruction_type or '')) and 'checked' or ''}">
+                                                <t t-if="doc.destruction_type in ['on_site', 'off_site']">X</t>
+                                            </span>
+                                            PAPER
+                                        </td>
+                                        <td>
+                                            <span t-attf-class="checkbox #{doc.destruction_type == 'media_destruction' and 'checked' or ''}">
+                                                <t t-if="doc.destruction_type == 'media_destruction'">X</t>
+                                            </span>
+                                            TAPES
+                                        </td>
+                                        <td>
+                                            <span class="checkbox">&#160;</span>
+                                            UNIFORMS
+                                        </td>
+                                        <td>
+                                            <span t-attf-class="checkbox #{doc.destruction_type == 'hard_drive' and 'checked' or ''}">
+                                                <t t-if="doc.destruction_type == 'hard_drive'">X</t>
+                                            </span>
+                                            HARD DRIVES
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- NAID Certificate Number if available -->
+                        <t t-if="doc.naid_certificate_number">
+                            <p style="margin-top: 15px;">
+                                <strong>NAID Certificate #:</strong> <t t-esc="doc.naid_certificate_number"/>
+                            </p>
+                        </t>
+                        
+                        <!-- Certificate Number -->
+                        <p style="margin-top: 15px;">
+                            <strong>Certificate #:</strong> <t t-esc="doc.name"/>
+                        </p>
+                        
+                        <!-- Signature Section -->
+                        <div class="signature-section">
+                            <table>
+                                <tr>
+                                    <td style="width: 50%;">
+                                        <strong>WITNESSED BY 
+                                        <t t-esc="(doc.company_id.name or 'COMPANY')[:20]"/> REPRESENTATIVE:</strong>
+                                    </td>
+                                    <td style="width: 50%;">
+                                        <t t-esc="doc.witness_id.name or doc.compliance_officer_id.name or ''"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="signature-line"></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- Event Details Table (if events exist) -->
+                        <t t-if="doc.event_ids">
+                            <div style="margin-top: 30px; page-break-inside: avoid;">
+                                <h3 style="border-bottom: 2px solid #000; padding-bottom: 5px;">DESTRUCTION EVENTS</h3>
+                                <table class="table table-sm" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                    <thead>
+                                        <tr style="background-color: #f0f0f0;">
+                                            <th style="border: 1px solid #000; padding: 5px;">Event Reference</th>
+                                            <th style="border: 1px solid #000; padding: 5px;">Date</th>
+                                            <th style="border: 1px solid #000; padding: 5px;">Technician</th>
+                                            <th style="border: 1px solid #000; padding: 5px;">Location</th>
+                                            <th style="border: 1px solid #000; padding: 5px; text-align: right;">Quantity</th>
+                                            <th style="border: 1px solid #000; padding: 5px;">Unit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="doc.event_ids" t-as="event">
+                                            <td style="border: 1px solid #000; padding: 5px;"><t t-esc="event.name or '-'"/></td>
+                                            <td style="border: 1px solid #000; padding: 5px;"><t t-esc="event.destruction_date or '-'"/></td>
+                                            <td style="border: 1px solid #000; padding: 5px;"><t t-esc="event.technician_id.name if event.technician_id else '-'"/></td>
+                                            <td style="border: 1px solid #000; padding: 5px;"><t t-esc="event.location_type or '-'"/></td>
+                                            <td style="border: 1px solid #000; padding: 5px; text-align: right;"><t t-esc="event.quantity_destroyed or 0"/></td>
+                                            <td style="border: 1px solid #000; padding: 5px;"><t t-esc="event.uom_id.name if event.uom_id else '-'"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </t>
+                        
+                    </div>
+                    
+                    <!-- Page break between certificates if multiple -->
+                    <p style="page-break-after: always;"></p>
+                </t>
+            </t>
+        </template>
+
+        <!-- Keep alternative template for backwards compatibility -->
         <template id="report_destruction_certificate_template_alternative">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="doc">
@@ -46,57 +346,6 @@
                                 <div t-if="doc.notes">
                                     <p><strong>Notes:</strong></p>
                                     <p t-field="doc.notes"/>
-                                </div>
-                                <!--
-                                    doc._get_aggregated_events() is expected to return a list of dictionaries with keys:
-                                    'name', 'date', 'technician', 'location_type', 'items', 'quantity', 'uom'.
-                                    Each dictionary represents a destruction event to be displayed in the table below.
-                                -->
-                                <t t-set="events" t-value="doc._get_aggregated_events()"/>
-                                <t t-if="events">
-                                    <h3 class="mt32">Event Details</h3>
-                                    <table class="table table-sm o_destruction_events">
-                                        <thead>
-                                            <tr>
-                                                <th>Ref</th>
-                                                <th>Date</th>
-                                                <th>Technician</th>
-                                                <th>Location</th>
-                                                <th>Items</th>
-                                                <th class="text-end">Quantity</th>
-                                                <th>UoM</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr t-foreach="events" t-as="ev">
-                                                <td><span t-esc="ev['name']"/></td>
-                                                <td><span t-esc="ev['date']"/></td>
-                                                <td><span t-esc="ev['technician']"/></td>
-                                                <td><span t-esc="ev['location_type']"/></td>
-                                                <td><span t-esc="ev['items']"/></td>
-                                                <td class="text-end"><span t-esc="ev['quantity']"/></td>
-                                                <td><span t-esc="ev['uom']"/></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </t>
-                                <t t-set="sign_ctx" t-value="doc._signature_block_context()"/>
-                                <div class="row mt32" t-if="sign_ctx['compliance_officer'] or sign_ctx['witness'] or sign_ctx['operator']">
-                                    <div class="col-4">
-                                        <p class="mb4"><strong>Compliance Officer</strong></p>
-                                        <div class="o_signature_placeholder"></div>
-                                        <p class="mt4"><span t-esc="sign_ctx['compliance_officer']"/></p>
-                                    </div>
-                                    <div class="col-4">
-                                        <p class="mb4"><strong>Witness</strong></p>
-                                        <div class="o_signature_placeholder"></div>
-                                        <p class="mt4"><span t-esc="sign_ctx['witness']"/></p>
-                                    </div>
-                                    <div class="col-4">
-                                        <p class="mb4"><strong>Operator</strong></p>
-                                        <div class="o_signature_placeholder"></div>
-                                        <p class="mt4"><span t-esc="sign_ctx['operator']"/></p>
-                                    </div>
                                 </div>
                             </article>
                         </div>

@@ -258,51 +258,31 @@ class DestructionCertificate(models.Model):
     # ============================================================================
     # NAME GENERATION
     # ============================================================================
-    def _generate_certificate_number(self, work_order):
-        """Generate formatted certificate number.
-
-        New Pattern:
-            COD/<work order name>/<RANDOM6>
-            or COD/<mmddyy>/<RANDOM6> if no work order.
-
-        RANDOM6 = 6-character uppercase alphanumeric, regenerated until unique
-        (collision-checked up to a small bounded number of attempts).
+    def _generate_certificate_number(self, work_order=None):
+        """Generate formatted certificate number using ir.sequence.
+        
+        Uses the destruction.certificate sequence (COD-000001, COD-000002, etc.)
+        Falls back to date-based format if sequence not found.
         """
-        attempts = 0
-        max_attempts = 5
-        if work_order and work_order.name:
-            prefix_token = work_order.name.replace("/", "-")
-        else:
-            prefix_token = date.today().strftime("%m%d%y")
-
-        while attempts < max_attempts:
-            rand_part = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
-            candidate = f"COD/{prefix_token}/{rand_part}"
-            if not self.search_count([("name", "=", candidate)]):
-                return candidate
-            attempts += 1
-
-        # Fallback (very unlikely) - append attempt counter for traceability
+        # Try to use the proper sequence first
+        sequence_code = 'destruction.certificate'
+        certificate_number = self.env['ir.sequence'].next_by_code(sequence_code)
+        
+        if certificate_number:
+            return certificate_number
+        
+        # Fallback: Generate with date prefix if sequence doesn't exist
+        prefix_token = date.today().strftime("%m%d%y")
         rand_part = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
-        return f"COD/{prefix_token}/{rand_part}-{attempts}"
+        return f"COD/{prefix_token}/{rand_part}"
 
     @api.model_create_multi
     def create(self, vals_list):
-        records_to_name = []
-        # Prefetch work orders for performance (collect ids first)
-        work_order_map = {}
-        work_order_ids = [vals.get("work_order_id") for vals in vals_list if vals.get("work_order_id")]
-        if work_order_ids:
-            wo_records = self.env["work.order.shredding"].browse(work_order_ids)
-            work_order_map = {wo.id: wo for wo in wo_records}
-
+        # Generate certificate numbers for new records
         for vals in vals_list:
             current_name = vals.get("name")
             if not current_name or current_name == _("New"):
-                wo = False
-                if vals.get("work_order_id"):
-                    wo = work_order_map.get(vals["work_order_id"])
-                vals["name"] = self._generate_certificate_number(wo)
+                vals["name"] = self._generate_certificate_number()
         records = super().create(vals_list)
         return records
 
