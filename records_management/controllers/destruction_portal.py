@@ -34,7 +34,7 @@ class DestructionPortalController(CustomerPortal):
         - stats: Summary statistics
         """
         user = request.env.user
-        
+
         # =====================================================================
         # 1. SHREDDING BINS (Recurring Service)
         # =====================================================================
@@ -43,7 +43,7 @@ class DestructionPortalController(CustomerPortal):
             ('current_customer_id', '=', partner.commercial_partner_id.id),
             ('active', '=', True)
         ], order='next_service_date asc')
-        
+
         bins_data = []
         for bin in bins:
             bins_data.append({
@@ -57,7 +57,7 @@ class DestructionPortalController(CustomerPortal):
                 'last_service_date': bin.last_service_date,
                 'status': 'due' if bin.next_service_date and bin.next_service_date <= datetime.now().date() else 'scheduled',
             })
-        
+
         # =====================================================================
         # 2. PENDING DESTRUCTION REQUESTS
         # =====================================================================
@@ -67,7 +67,7 @@ class DestructionPortalController(CustomerPortal):
             ('request_type', 'in', ['destruction', 'shredding', 'purge']),
             ('state', 'in', ['draft', 'submitted', 'approved', 'scheduled'])
         ], order='create_date desc', limit=20)
-        
+
         # =====================================================================
         # 3. SHREDDING WORK ORDERS
         # =====================================================================
@@ -75,10 +75,10 @@ class DestructionPortalController(CustomerPortal):
         work_orders = WorkOrderShredding.search([
             ('partner_id', '=', partner.commercial_partner_id.id)
         ], order='scheduled_date desc', limit=20)
-        
+
         active_work_orders = work_orders.filtered(lambda w: w.state not in ['completed', 'verified', 'invoiced', 'cancelled'])
         completed_work_orders = work_orders.filtered(lambda w: w.state in ['completed', 'verified', 'invoiced'])
-        
+
         # =====================================================================
         # 4. DESTRUCTION CERTIFICATES
         # =====================================================================
@@ -86,7 +86,7 @@ class DestructionPortalController(CustomerPortal):
         certificates = NaidCertificate.search([
             ('partner_id', '=', partner.commercial_partner_id.id)
         ], order='destruction_date desc', limit=50)
-        
+
         # Also check destruction.certificate model if different
         DestructionCertificate = request.env['destruction.certificate'].sudo()
         if DestructionCertificate._name != NaidCertificate._name:
@@ -95,7 +95,7 @@ class DestructionPortalController(CustomerPortal):
             ], order='destruction_date desc', limit=50)
         else:
             destruction_certs = request.env['destruction.certificate'].browse()
-        
+
         # Combine and format certificates
         all_certificates = []
         for cert in certificates:
@@ -110,7 +110,7 @@ class DestructionPortalController(CustomerPortal):
                 'fsm_task_name': cert.fsm_task_id.name if cert.fsm_task_id else None,
                 'has_pdf': True,  # Assume downloadable
             })
-        
+
         for cert in destruction_certs:
             all_certificates.append({
                 'id': cert.id,
@@ -121,15 +121,15 @@ class DestructionPortalController(CustomerPortal):
                 'state': cert.state if hasattr(cert, 'state') else 'issued',
                 'has_pdf': True,
             })
-        
+
         # Sort by date descending
         all_certificates.sort(key=lambda x: x['destruction_date'] or datetime.min, reverse=True)
-        
+
         # =====================================================================
         # 5. SERVICE HISTORY (with Invoice Links)
         # =====================================================================
         service_history = []
-        
+
         # From work orders
         for wo in completed_work_orders:
             service_history.append({
@@ -147,7 +147,7 @@ class DestructionPortalController(CustomerPortal):
                 'certificate_id': wo.certificate_id.id if wo.certificate_id else None,
                 'certificate_number': wo.certificate_id.certificate_number if wo.certificate_id else None,
             })
-        
+
         # From FSM tasks tagged as shredding
         FsmTask = request.env['project.task'].sudo()
         shredding_tasks = FsmTask.search([
@@ -158,7 +158,7 @@ class DestructionPortalController(CustomerPortal):
             ('name', 'ilike', 'shred'),
             ('name', 'ilike', 'destruction')
         ], order='date_deadline desc', limit=30)
-        
+
         for task in shredding_tasks:
             # Check if already added via work order
             if not any(h.get('fsm_task_id') == task.id for h in service_history):
@@ -167,7 +167,7 @@ class DestructionPortalController(CustomerPortal):
                 if hasattr(task, 'sale_order_id') and task.sale_order_id:
                     invoices = task.sale_order_id.invoice_ids.filtered(lambda i: i.state == 'posted')
                     invoice = invoices[0] if invoices else None
-                
+
                 service_history.append({
                     'id': task.id,
                     'type': 'fsm_task',
@@ -179,10 +179,10 @@ class DestructionPortalController(CustomerPortal):
                     'invoice_name': invoice.name if invoice else None,
                     'fsm_task_id': task.id,
                 })
-        
+
         # Sort service history by date
         service_history.sort(key=lambda x: x['date'] or datetime.min, reverse=True)
-        
+
         # =====================================================================
         # 6. STATISTICS
         # =====================================================================
@@ -191,15 +191,15 @@ class DestructionPortalController(CustomerPortal):
             'bins_due_soon': len([b for b in bins_data if b['status'] == 'due']),
             'pending_requests': len(pending_requests),
             'active_work_orders': len(active_work_orders),
-            'certificates_ytd': len([c for c in all_certificates 
-                                    if c['destruction_date'] and 
+            'certificates_ytd': len([c for c in all_certificates
+                                    if c['destruction_date'] and
                                     c['destruction_date'].year == datetime.now().year]),
             'total_certificates': len(all_certificates),
-            'completed_services_30d': len([s for s in service_history 
-                                          if s['date'] and 
+            'completed_services_30d': len([s for s in service_history
+                                          if s['date'] and
                                           s['date'] > datetime.now() - timedelta(days=30)]),
         }
-        
+
         return {
             'bins': bins_data,
             'bins_records': bins,
@@ -229,10 +229,10 @@ class DestructionPortalController(CustomerPortal):
         """
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         # Get all destruction data
         data = self._get_destruction_dashboard_data(partner)
-        
+
         values.update({
             'page_name': 'shredding_dashboard',
             'active_tab': tab,
@@ -240,7 +240,7 @@ class DestructionPortalController(CustomerPortal):
             'can_request_service': True,  # Permission check could go here
             'partner': partner,
         })
-        
+
         return request.render("records_management.portal_shredding_dashboard", values)
 
     # =========================================================================
@@ -251,19 +251,19 @@ class DestructionPortalController(CustomerPortal):
         """List all shredding bins for this customer"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         ShreddingBin = request.env['shredding.service.bin'].sudo()
         bins = ShreddingBin.search([
             ('current_customer_id', '=', partner.commercial_partner_id.id),
             ('active', '=', True)
         ], order='next_service_date asc')
-        
+
         values.update({
             'page_name': 'shredding_bins',
             'bins': bins,
             'partner': partner,
         })
-        
+
         return request.render("records_management.portal_shredding_bins", values)
 
     @http.route(['/my/shredding/bin/<int:bin_id>'], type='http', auth='user', website=True)
@@ -271,42 +271,42 @@ class DestructionPortalController(CustomerPortal):
         """View single bin details and service history"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         ShreddingBin = request.env['shredding.service.bin'].sudo()
         bin_record = ShreddingBin.browse(bin_id)
-        
+
         # Security check
         if not bin_record.exists() or bin_record.current_customer_id.id != partner.commercial_partner_id.id:
             return request.redirect('/my/shredding/bins')
-        
+
         # Get service events for this bin
         service_events = []
         if hasattr(bin_record, 'service_event_ids'):
             service_events = bin_record.service_event_ids.sorted(key=lambda e: e.service_date, reverse=True)
-        
+
         values.update({
             'page_name': 'shredding_bin_detail',
             'bin': bin_record,
             'service_events': service_events,
             'partner': partner,
         })
-        
+
         return request.render("records_management.portal_shredding_bin_detail", values)
 
-    @http.route(['/my/shredding/bin/<int:bin_id>/request-service'], type='http', 
+    @http.route(['/my/shredding/bin/<int:bin_id>/request-service'], type='http',
                 auth='user', website=True, methods=['GET', 'POST'], csrf=True)
     def portal_request_bin_service(self, bin_id, **post):
         """Request extra/emergency bin service"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         ShreddingBin = request.env['shredding.service.bin'].sudo()
         bin_record = ShreddingBin.browse(bin_id)
-        
+
         # Security check
         if not bin_record.exists() or bin_record.current_customer_id.id != partner.commercial_partner_id.id:
             return request.redirect('/my/shredding/bins')
-        
+
         if request.httprequest.method == 'POST':
             # Create service request
             PortalRequest = request.env['portal.request'].sudo()
@@ -318,21 +318,21 @@ class DestructionPortalController(CustomerPortal):
                 'requested_date': post.get('preferred_date') or False,
                 'state': 'submitted',
             })
-            
+
             return request.redirect('/my/shredding/dashboard?tab=requests&success=1')
-        
+
         values.update({
             'page_name': 'request_bin_service',
             'bin': bin_record,
             'partner': partner,
         })
-        
+
         return request.render("records_management.portal_request_bin_service", values)
 
     # =========================================================================
     # SHREDDING REQUEST ROUTES
     # =========================================================================
-    @http.route(['/my/shredding/request/new'], type='http', auth='user', website=True, 
+    @http.route(['/my/shredding/request/new'], type='http', auth='user', website=True,
                 methods=['GET', 'POST'], csrf=True)
     def portal_new_shredding_request(self, **post):
         """
@@ -344,15 +344,15 @@ class DestructionPortalController(CustomerPortal):
         """
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         if request.httprequest.method == 'POST':
             # Create shredding request
             PortalRequest = request.env['portal.request'].sudo()
-            
+
             material_type = post.get('material_type', 'paper')
             container_type = post.get('container_type', 'boxes')
             quantity = int(post.get('quantity', 1))
-            
+
             new_request = PortalRequest.create({
                 'partner_id': partner.commercial_partner_id.id,
                 'request_type': 'shredding',
@@ -363,9 +363,9 @@ class DestructionPortalController(CustomerPortal):
                 'requested_date': post.get('preferred_date') or False,
                 'state': 'submitted',
             })
-            
+
             return request.redirect('/my/shredding/dashboard?tab=requests&success=1')
-        
+
         values.update({
             'page_name': 'new_shredding_request',
             'partner': partner,
@@ -382,7 +382,7 @@ class DestructionPortalController(CustomerPortal):
                 ('purge', _('Purge / Cleanout')),
             ],
         })
-        
+
         return request.render("records_management.portal_new_shredding_request", values)
 
     # =========================================================================
@@ -393,13 +393,13 @@ class DestructionPortalController(CustomerPortal):
         """List all destruction certificates with filtering"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         NaidCertificate = request.env['naid.certificate'].sudo()
         domain = [('partner_id', '=', partner.commercial_partner_id.id)]
-        
+
         if search:
             domain += ['|', ('name', 'ilike', search), ('certificate_number', 'ilike', search)]
-        
+
         cert_count = NaidCertificate.search_count(domain)
         pager = request.website.pager(
             url="/my/shredding/certificates",
@@ -408,14 +408,14 @@ class DestructionPortalController(CustomerPortal):
             page=page,
             step=20,
         )
-        
+
         certificates = NaidCertificate.search(
             domain,
             order='destruction_date desc',
             limit=20,
             offset=pager['offset']
         )
-        
+
         values.update({
             'page_name': 'shredding_certificates',
             'certificates': certificates,
@@ -424,7 +424,7 @@ class DestructionPortalController(CustomerPortal):
             'cert_count': cert_count,
             'partner': partner,
         })
-        
+
         return request.render("records_management.portal_shredding_certificates", values)
 
     @http.route(['/my/shredding/certificate/<int:cert_id>'], type='http', auth='user', website=True)
@@ -432,14 +432,14 @@ class DestructionPortalController(CustomerPortal):
         """View certificate details with linked job/invoice"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         NaidCertificate = request.env['naid.certificate'].sudo()
         certificate = NaidCertificate.browse(cert_id)
-        
+
         # Security check
         if not certificate.exists() or certificate.partner_id.id != partner.commercial_partner_id.id:
             return request.redirect('/my/shredding/certificates')
-        
+
         # Get linked records
         linked_records = {
             'fsm_task': certificate.fsm_task_id if certificate.fsm_task_id else None,
@@ -447,7 +447,7 @@ class DestructionPortalController(CustomerPortal):
             'invoice': None,
             'quote': None,
         }
-        
+
         # Find linked work order
         WorkOrderShredding = request.env['work.order.shredding'].sudo()
         linked_wo = WorkOrderShredding.search([
@@ -456,7 +456,7 @@ class DestructionPortalController(CustomerPortal):
         if linked_wo:
             linked_records['work_order'] = linked_wo
             linked_records['invoice'] = linked_wo.invoice_id
-        
+
         # If FSM task, try to get sale order/invoice
         if certificate.fsm_task_id:
             task = certificate.fsm_task_id
@@ -465,36 +465,36 @@ class DestructionPortalController(CustomerPortal):
                 invoices = task.sale_order_id.invoice_ids.filtered(lambda i: i.state == 'posted')
                 if invoices:
                     linked_records['invoice'] = invoices[0]
-        
+
         values.update({
             'page_name': 'shredding_certificate_detail',
             'certificate': certificate,
             'linked_records': linked_records,
             'partner': partner,
         })
-        
+
         return request.render("records_management.portal_shredding_certificate_detail", values)
 
     @http.route(['/my/shredding/certificate/<int:cert_id>/download'], type='http', auth='user')
     def portal_download_certificate(self, cert_id, **kw):
         """Download certificate PDF"""
         partner = request.env.user.partner_id
-        
+
         NaidCertificate = request.env['naid.certificate'].sudo()
         certificate = NaidCertificate.browse(cert_id)
-        
+
         # Security check
         if not certificate.exists() or certificate.partner_id.id != partner.commercial_partner_id.id:
             return request.redirect('/my/shredding/certificates')
-        
+
         # Generate PDF
         try:
             pdf_content, _ = request.env['ir.actions.report'].sudo()._render_qweb_pdf(
                 'records_management.report_naid_certificate', [certificate.id]
             )
-            
+
             filename = "Certificate_%s.pdf" % certificate.certificate_number
-            
+
             return request.make_response(
                 pdf_content,
                 headers=[
@@ -513,14 +513,14 @@ class DestructionPortalController(CustomerPortal):
         """View complete shredding service history"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         data = self._get_destruction_dashboard_data(partner)
-        
+
         values.update({
             'page_name': 'shredding_history',
             'service_history': data['service_history'],
             'filterby': filterby,
             'partner': partner,
         })
-        
+
         return request.render("records_management.portal_shredding_history", values)

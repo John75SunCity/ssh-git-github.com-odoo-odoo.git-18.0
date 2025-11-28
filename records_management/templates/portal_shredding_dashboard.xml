@@ -37,13 +37,13 @@
                     <!-- Navigation Tabs -->
                     <ul class="nav nav-tabs mb-4" role="tablist">
                         <li class="nav-item">
-                            <a t-attf-class="nav-link #{active_tab == 'overview' and 'active' or ''}" 
+                            <a t-attf-class="nav-link #{active_tab == 'overview' and 'active' or ''}"
                                href="/my/shredding/dashboard?tab=overview">
                                 <i class="fa fa-dashboard me-1"/> Overview
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a t-attf-class="nav-link #{active_tab == 'bins' and 'active' or ''}" 
+                            <a t-attf-class="nav-link #{active_tab == 'bins' and 'active' or ''}"
                                href="/my/shredding/bins">
                                 <i class="fa fa-trash me-1"/> Shredding Bins
                                 <span class="badge bg-secondary ms-1" t-if="stats.get('active_bins')">
@@ -52,7 +52,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a t-attf-class="nav-link #{active_tab == 'requests' and 'active' or ''}" 
+                            <a t-attf-class="nav-link #{active_tab == 'requests' and 'active' or ''}"
                                href="/my/shredding/dashboard?tab=requests">
                                 <i class="fa fa-clipboard me-1"/> Requests
                                 <span class="badge bg-warning ms-1" t-if="stats.get('pending_requests')">
@@ -61,13 +61,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a t-attf-class="nav-link #{active_tab == 'certificates' and 'active' or ''}" 
+                            <a t-attf-class="nav-link #{active_tab == 'certificates' and 'active' or ''}"
                                href="/my/shredding/certificates">
                                 <i class="fa fa-certificate me-1"/> Certificates
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a t-attf-class="nav-link #{active_tab == 'history' and 'active' or ''}" 
+                            <a t-attf-class="nav-link #{active_tab == 'history' and 'active' or ''}"
                                href="/my/shredding/history">
                                 <i class="fa fa-history me-1"/> History
                             </a>
@@ -247,7 +247,7 @@
                                                                 <t t-out="cert.get('destruction_date')" t-options="{'widget': 'date'}"/>
                                                             </small>
                                                         </div>
-                                                        <a t-attf-href="/my/shredding/certificate/#{cert.get('id')}/download" 
+                                                        <a t-attf-href="/my/shredding/certificate/#{cert.get('id')}/download"
                                                            class="btn btn-sm btn-outline-success">
                                                             <i class="fa fa-download"/>
                                                         </a>
@@ -499,7 +499,7 @@
                                                 <t t-foreach="material_types" t-as="mt">
                                                     <div class="col-md-6">
                                                         <div class="form-check card p-3">
-                                                            <input class="form-check-input" type="radio" 
+                                                            <input class="form-check-input" type="radio"
                                                                    name="material_type" t-att-id="'mt_' + mt[0]"
                                                                    t-att-value="mt[0]"
                                                                    t-att-checked="mt[0] == 'paper' and 'checked' or None"/>
@@ -519,7 +519,7 @@
                                                 <t t-foreach="container_types" t-as="ct">
                                                     <div class="col-md-6">
                                                         <div class="form-check card p-3">
-                                                            <input class="form-check-input" type="radio" 
+                                                            <input class="form-check-input" type="radio"
                                                                    name="container_type" t-att-id="'ct_' + ct[0]"
                                                                    t-att-value="ct[0]"
                                                                    t-att-checked="ct[0] == 'boxes' and 'checked' or None"/>
@@ -535,7 +535,7 @@
                                         <!-- Quantity -->
                                         <div class="mb-3">
                                             <label for="quantity" class="form-label fw-bold">Quantity *</label>
-                                            <input type="number" class="form-control" id="quantity" name="quantity" 
+                                            <input type="number" class="form-control" id="quantity" name="quantity"
                                                    min="1" value="1" required="required"/>
                                             <small class="text-muted">Estimated number of boxes/bags/totes</small>
                                         </div>
@@ -550,7 +550,7 @@
                                         <!-- Notes -->
                                         <div class="mb-3">
                                             <label for="notes" class="form-label fw-bold">Special Instructions</label>
-                                            <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                            <textarea class="form-control" id="notes" name="notes" rows="3"
                                                       placeholder="Any special requirements or access instructions..."/>
                                         </div>
 
@@ -577,7 +577,7 @@
                                     </ol>
                                     <hr/>
                                     <p class="text-muted small mb-0">
-                                        <i class="fa fa-shield me-1"/> All services are NAID AAA certified with 
+                                        <i class="fa fa-shield me-1"/> All services are NAID AAA certified with
                                         complete chain of custody documentation.
                                     </p>
                                 </div>
@@ -612,7 +612,7 @@
                     <!-- Search -->
                     <form action="/my/shredding/certificates" method="get" class="mb-4">
                         <div class="input-group">
-                            <input type="text" name="search" class="form-control" 
+                            <input type="text" name="search" class="form-control"
                                    placeholder="Search by certificate number..." t-att-value="search"/>
                             <button type="submit" class="btn btn-outline-secondary">
                                 <i class="fa fa-search"/>
@@ -649,11 +649,11 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
-                                                    <a t-attf-href="/my/shredding/certificate/#{cert.id}" 
+                                                    <a t-attf-href="/my/shredding/certificate/#{cert.id}"
                                                        class="btn btn-outline-primary">
                                                         <i class="fa fa-eye"/>
                                                     </a>
-                                                    <a t-attf-href="/my/shredding/certificate/#{cert.id}/download" 
+                                                    <a t-attf-href="/my/shredding/certificate/#{cert.id}/download"
                                                        class="btn btn-outline-success">
                                                         <i class="fa fa-download"/>
                                                     </a>
