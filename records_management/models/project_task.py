@@ -54,14 +54,6 @@ class ProjectTask(models.Model):
         help="The shredding team assigned to this task"
     )
 
-    # Coordinator inverse for work.order.coordinator.fsm_task_ids
-    coordinator_id = fields.Many2one(
-        comodel_name='work.order.coordinator',
-        string='Coordinator',
-        index=True,
-        help="Work Order Coordinator linked to this FSM task."
-    )
-
     # --- Scheduling ---
     scheduled_start_time = fields.Datetime(string="Scheduled Start")
     scheduled_end_time = fields.Datetime(string="Scheduled End")

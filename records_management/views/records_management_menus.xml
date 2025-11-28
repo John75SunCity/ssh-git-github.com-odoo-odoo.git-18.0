@@ -211,37 +211,6 @@
                 </p>
             </field>
         </record>
-        <record id="action_work_order_coordinator" model="ir.actions.act_window">
-            <field name="name">Work Order Coordinators</field>
-            <field name="res_model">work.order.coordinator</field>
-            <field name="view_mode">list,form,kanban</field>
-            <field name="context">{
-            'search_default_draft': 1,
-            'search_default_in_progress': 1,
-            'search_default_active': 1
-        }</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-users"/> No work order coordinators yet!
-                </p>
-                <p>
-                    <b>👥 Work Order Coordination:</b>
-                </p>
-                <ul>
-                    <li>Manage complex multi-step work orders</li>
-                    <li>Coordinate retrieval and destruction operations</li>
-                    <li>Assign employees and track progress</li>
-                    <li>Monitor completion rates and scheduling</li>
-                </ul>
-                <p>
-                    <b>🚀 Key Features:</b><br/>
-                    • Unified coordination of multiple work types<br/>
-                    • Resource allocation and scheduling<br/>
-                    • Progress tracking and metrics<br/>
-                    • Priority-based task management
-                </p>
-            </field>
-        </record>
         <record id="action_workflow_visualization_manager" model="ir.actions.act_window">
             <field name="name">Workflow Visualizations</field>
             <field name="res_model">workflow.visualization.manager</field>

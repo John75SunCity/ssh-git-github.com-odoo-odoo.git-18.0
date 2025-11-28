@@ -176,6 +176,7 @@ class UnifiedWorkOrder(models.Model):
                     CASE WHEN wo.portal_request_id IS NOT NULL THEN true ELSE false END AS is_portal_order,
                     NULL AS user_id
                 FROM work_order_shredding wo
+                WHERE wo.active = true OR wo.active IS NULL
                 
                 UNION ALL
                 
@@ -213,8 +214,8 @@ class UnifiedWorkOrder(models.Model):
                     wo.state,
                     COALESCE(wo.priority, '0') AS priority,
                     wo.partner_id,
-                    wo.scheduled_date,
-                    wo.completion_date,
+                    wo.scheduled_access_date AS scheduled_date,
+                    wo.actual_end_time AS completion_date,
                     wo.portal_request_id,
                     CASE WHEN wo.portal_request_id IS NOT NULL THEN true ELSE false END AS is_portal_order,
                     wo.user_id

@@ -297,7 +297,6 @@ from . import transitory_field_config
 from . import transitory_item
 from . import unlock_service_part
 from . import visitor
-from . import work_order_coordinator
 from . import work_order_retrieval
 from . import work_order_shredding
 from . import unified_work_order  # Unified dispatch center view

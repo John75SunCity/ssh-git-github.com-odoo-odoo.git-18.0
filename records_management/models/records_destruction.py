@@ -90,15 +90,6 @@ class RecordsDestruction(models.Model):
         string='Destruction Items'
     )
 
-    # Coordinator link (inverse of work.order.coordinator.destruction_ids)
-    coordinator_id = fields.Many2one(
-        comodel_name='work.order.coordinator',
-        string='Coordinator',
-        ondelete='set null',
-        index=True,
-        help='Work Order Coordinator responsible for this destruction.'
-    )
-
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================

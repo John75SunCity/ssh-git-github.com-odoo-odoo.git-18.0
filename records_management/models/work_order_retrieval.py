@@ -101,9 +101,6 @@ class WorkOrderRetrieval(models.Model):
                                   default=lambda self: self.env.company.currency_id)
     billable = fields.Boolean(string='Billable', default=True)
 
-    # Related Records
-    coordinator_id = fields.Many2one(comodel_name='work.order.coordinator', string='Work Order Coordinator')
-
     # Retrieval-specific fields
     retrieval_date = fields.Date(string='Retrieval Date', tracking=True)
     assigned_technician_id = fields.Many2one(comodel_name='res.users', string='Assigned Technician')

@@ -329,7 +329,6 @@
         # Visitor Reports
         "report/visitor_reports.xml",
         # Work Order Reports
-        "report/work_order_coordinator_reports.xml",
         "report/work_order_retrieval_reports.xml",
         "report/work_order_shredding_reports.xml",
         # Master Customer Inventory Report
@@ -471,7 +470,6 @@
         "views/stock_lot_views.xml",
         "views/survey_feedback_theme_views.xml",
         "views/survey_improvement_action_views.xml",
-        "views/work_order_coordinator_views.xml",
         "views/workflow_visualization_manager_views.xml",
         "views/records_container_views.xml",
         "views/records_container_calendar_view.xml",
