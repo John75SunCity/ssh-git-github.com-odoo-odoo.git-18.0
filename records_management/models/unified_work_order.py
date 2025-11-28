@@ -135,11 +135,13 @@ class UnifiedWorkOrder(models.Model):
         self.env.cr.execute("DROP VIEW IF EXISTS unified_work_order CASCADE")
 
         # Create the unified view
+        # Use numeric IDs: type_offset + source_id
+        # Offsets: retrieval=1000000, shredding=2000000, destruction=3000000, access=4000000
         self.env.cr.execute("""
             CREATE OR REPLACE VIEW unified_work_order AS (
-                -- Retrieval Work Orders
+                -- Retrieval Work Orders (IDs: 1,000,001 - 1,999,999)
                 SELECT 
-                    'retrieval_' || wo.id::text AS id,
+                    (1000000 + wo.id)::bigint AS id,
                     wo.name,
                     COALESCE(wo.name, 'Retrieval #' || wo.id::text) AS display_name,
                     'work.order.retrieval' AS source_model,
@@ -160,9 +162,9 @@ class UnifiedWorkOrder(models.Model):
                 
                 UNION ALL
                 
-                -- Shredding Work Orders
+                -- Shredding Work Orders (IDs: 2,000,001 - 2,999,999)
                 SELECT 
-                    'shredding_' || wo.id::text AS id,
+                    (2000000 + wo.id)::bigint AS id,
                     wo.name,
                     COALESCE(wo.display_name, wo.name, 'Shredding #' || wo.id::text) AS display_name,
                     'work.order.shredding' AS source_model,
@@ -177,15 +179,15 @@ class UnifiedWorkOrder(models.Model):
                     wo.portal_request_id,
                     CASE WHEN wo.portal_request_id IS NOT NULL THEN true ELSE false END AS is_portal_order,
                     COALESCE(wo.portal_visible, true) AS portal_visible,
-                    NULL AS user_id
+                    NULL::integer AS user_id
                 FROM work_order_shredding wo
                 WHERE wo.active = true OR wo.active IS NULL
                 
                 UNION ALL
                 
-                -- Container Destruction Work Orders
+                -- Container Destruction Work Orders (IDs: 3,000,001 - 3,999,999)
                 SELECT 
-                    'destruction_' || wo.id::text AS id,
+                    (3000000 + wo.id)::bigint AS id,
                     wo.name,
                     COALESCE(wo.display_name, wo.name, 'Destruction #' || wo.id::text) AS display_name,
                     'container.destruction.work.order' AS source_model,
@@ -206,9 +208,9 @@ class UnifiedWorkOrder(models.Model):
                 
                 UNION ALL
                 
-                -- Container Access Work Orders
+                -- Container Access Work Orders (IDs: 4,000,001 - 4,999,999)
                 SELECT 
-                    'access_' || wo.id::text AS id,
+                    (4000000 + wo.id)::bigint AS id,
                     wo.name,
                     COALESCE(wo.name, 'Access #' || wo.id::text) AS display_name,
                     'container.access.work.order' AS source_model,
