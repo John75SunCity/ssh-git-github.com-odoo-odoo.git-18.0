@@ -592,6 +592,7 @@
         "views/work_order_dashboard_views.xml",
         "views/work_order_retrieval_views.xml",
         "views/work_order_shredding_views.xml",
+        "wizards/retrieval_scan_wizard_views.xml",
         # ============================================================================
         # ============================================================================
 

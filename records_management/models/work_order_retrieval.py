@@ -293,6 +293,82 @@ class WorkOrderRetrieval(models.Model):
         self.actual_duration = 0.0
         self.message_post(body=_("Work order reset to draft."))
 
+    def action_open_picklist_scanner(self):
+        """Open the barcode scanning interface for this work order's pick list."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Scan Containers - %s') % self.name,
+            'res_model': 'retrieval.scan.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_work_order_id': self.id,
+                'default_partner_id': self.partner_id.id,
+            },
+        }
+
+    def action_scan_container(self, barcode):
+        """
+        Process a scanned barcode during retrieval.
+        Marks the corresponding item as retrieved if found in the pick list.
+        """
+        self.ensure_one()
+        
+        if self.state not in ('in_progress', 'assigned'):
+            raise UserError(_("Work order must be in progress to scan containers."))
+        
+        # Find the container by barcode
+        container = self.env['records.container'].search([
+            '|',
+            ('barcode', '=', barcode),
+            ('temp_barcode', '=', barcode)
+        ], limit=1)
+        
+        if not container:
+            return {
+                'success': False,
+                'message': _('Container not found: %s') % barcode
+            }
+        
+        # Check if container is in the pick list
+        item_line = self.retrieval_item_ids.filtered(lambda l: l.box_id.id == container.id)
+        
+        if not item_line:
+            return {
+                'success': False,
+                'message': _('Container %s is not on this pick list') % container.name
+            }
+        
+        if item_line.retrieved:
+            return {
+                'success': False,
+                'message': _('Container %s already scanned') % container.name
+            }
+        
+        # Mark as retrieved
+        item_line.write({
+            'retrieved': True,
+            'retrieval_time': fields.Datetime.now(),
+        })
+        
+        # Update progress
+        self.completed_boxes = len(self.retrieval_item_ids.filtered('retrieved'))
+        
+        # Log the scan
+        self.message_post(body=_('Scanned container: %s at location %s') % (
+            container.name,
+            container.location_id.name if container.location_id else 'Unknown'
+        ))
+        
+        return {
+            'success': True,
+            'message': _('✓ Container %s verified') % container.name,
+            'container_name': container.name,
+            'location': container.location_id.name if container.location_id else 'Unknown',
+            'remaining': len(self.retrieval_item_ids.filtered(lambda l: not l.retrieved))
+        }
+
     @api.model
     def get_priority_work_orders(self, limit=100):
         """Get high priority work orders requiring attention (limited for performance)"""
