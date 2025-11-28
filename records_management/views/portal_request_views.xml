@@ -238,16 +238,12 @@
             </field>
         </record>
         <record id="action_portal_request" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model portal.request has state field - consider using default search filters -->
+            <!-- Shows all portal requests - shredding, destruction, pickup, retrieval -->
             <field name="name">Portal Requests</field>
             <field name="res_model">portal.request</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode">kanban,list,form</field>
             <field name="domain">[]</field>
-            <field name="context">{
-        'default_user_id': uid,
-        'search_default_active': 1,
-        'search_default_my_requests': 1
-    }</field>
+            <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     <i class="fa fa-globe"/> No portal requests yet!

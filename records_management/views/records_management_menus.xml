@@ -460,8 +460,8 @@
               action="action_pickup_request"
               sequence="30"/>
 
-        <!-- Destruction Requests -->
-        <menuitem id="menu_destruction_requests" name="Destruction Requests" parent="records_management.menu_records_operations" action="action_portal_request" sequence="35" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
+        <!-- All Portal Requests (Shredding, Destruction, Pickup, Retrieval) - Single unified view -->
+        <menuitem id="menu_portal_requests" name="Portal Requests" parent="records_management.menu_records_operations" action="action_portal_request" sequence="35" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
 
         <!-- Shredding Operations (folder) -->
     <menuitem id="menu_shredding_service"
@@ -480,7 +480,6 @@
         <menuitem id="menu_workflow_visualizations" name="Workflow Visualizations" parent="records_management.menu_records_operations" action="action_workflow_visualization_manager" sequence="65" groups="records_management.group_records_manager,records_management.group_records_admin" />
 
         <!-- Customer Portal Integration -->
-        <menuitem id="menu_portal_requests" name="Portal Requests" parent="records_management.menu_records_operations" action="action_portal_request" sequence="70" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
         <menuitem id="menu_customer_feedback" name="Customer Feedback" parent="records_management.menu_records_operations" action="customer_feedback_action" sequence="75" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
         <record id="action_feedback_responses" model="ir.actions.act_window">
             <field name="name">Portal Feedback</field>
