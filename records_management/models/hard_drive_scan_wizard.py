@@ -18,14 +18,64 @@ class HardDriveScanWizard(models.TransientModel):
     # ============================================================================
     # WIZARD FIELDS
     # ============================================================================
+    # FSM Task (Odoo's Field Service module)
     fsm_task_id = fields.Many2one(
-        'project.task',
-        string="Work Order",
-        required=True,
+        comodel_name='project.task',
+        string="FSM Task",
         domain="[('is_fsm', '=', True)]",
         help="The Field Service work order for hard drive destruction."
     )
-    partner_id = fields.Many2one(related='fsm_task_id.partner_id', string="Customer", readonly=True)
+    
+    # Records Management Work Orders
+    shredding_work_order_id = fields.Many2one(
+        comodel_name='work.order.shredding',
+        string="Shredding Work Order",
+        help="Records Management shredding work order."
+    )
+    destruction_work_order_id = fields.Many2one(
+        comodel_name='container.destruction.work.order',
+        string="Destruction Work Order",
+        help="Records Management container destruction work order."
+    )
+    
+    # Computed partner from any source
+    partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        string="Customer",
+        compute='_compute_partner_id',
+        store=True,
+        readonly=True
+    )
+    
+    # Display field for the work order name
+    work_order_display = fields.Char(
+        string="Work Order",
+        compute='_compute_work_order_display'
+    )
+
+    @api.depends('fsm_task_id', 'shredding_work_order_id', 'destruction_work_order_id')
+    def _compute_partner_id(self):
+        for wizard in self:
+            if wizard.fsm_task_id:
+                wizard.partner_id = wizard.fsm_task_id.partner_id
+            elif wizard.shredding_work_order_id:
+                wizard.partner_id = wizard.shredding_work_order_id.partner_id
+            elif wizard.destruction_work_order_id:
+                wizard.partner_id = wizard.destruction_work_order_id.partner_id
+            else:
+                wizard.partner_id = False
+
+    @api.depends('fsm_task_id', 'shredding_work_order_id', 'destruction_work_order_id')
+    def _compute_work_order_display(self):
+        for wizard in self:
+            if wizard.fsm_task_id:
+                wizard.work_order_display = wizard.fsm_task_id.name
+            elif wizard.shredding_work_order_id:
+                wizard.work_order_display = wizard.shredding_work_order_id.name
+            elif wizard.destruction_work_order_id:
+                wizard.work_order_display = wizard.destruction_work_order_id.name
+            else:
+                wizard.work_order_display = _("No Work Order")
 
     # Workflow control
     scan_step = fields.Selection([
@@ -113,24 +163,40 @@ class HardDriveScanWizard(models.TransientModel):
     def action_confirm_destruction(self):
         """
         Confirms the destruction of all scanned hard drives, creates the
-        shredding.hard_drive records, links them to the FSM task, and
+        shredding.hard_drive records, links them to the work order, and
         generates a Certificate of Destruction.
+        
+        Works with:
+        - FSM Tasks (from Odoo Field Service module)
+        - Shredding Work Orders (from Records Management)
+        - Destruction Work Orders (from Records Management)
         """
         self.ensure_one()
         if not self.scan_line_ids:
             raise UserError(_("You must scan at least one hard drive serial number."))
+        
+        # Validate we have at least one work order source
+        if not (self.fsm_task_id or self.shredding_work_order_id or self.destruction_work_order_id):
+            raise UserError(_("Please select a work order before confirming destruction."))
 
         hard_drive_vals_list = []
         for line in self.scan_line_ids:
-            hard_drive_vals_list.append({
+            vals = {
                 'serial_number': line.serial_number,
-                'fsm_task_id': self.fsm_task_id.id,
                 'partner_id': self.partner_id.id,
                 'destruction_method': self.destruction_method,
-                'state': 'destroyed', # Mark as destroyed immediately
+                'state': 'destroyed',
                 'destruction_date': fields.Datetime.now(),
                 'destruction_technician_id': self.env.user.id,
-            })
+            }
+            # Link to the appropriate work order
+            if self.fsm_task_id:
+                vals['fsm_task_id'] = self.fsm_task_id.id
+            if self.shredding_work_order_id:
+                vals['shredding_work_order_id'] = self.shredding_work_order_id.id
+            if self.destruction_work_order_id:
+                vals['destruction_work_order_id'] = self.destruction_work_order_id.id
+            hard_drive_vals_list.append(vals)
 
         if not hard_drive_vals_list:
             raise UserError(_("No valid hard drives to process."))
@@ -139,31 +205,42 @@ class HardDriveScanWizard(models.TransientModel):
         hard_drives = self.env['shredding.hard_drive'].create(hard_drive_vals_list)
 
         # Generate Certificate of Destruction
-        certificate = self.env['shredding.certificate'].create({
+        cert_vals = {
             'partner_id': self.partner_id.id,
-            'fsm_task_id': self.fsm_task_id.id,
             'destruction_date': fields.Datetime.now(),
             'hard_drive_ids': [(6, 0, hard_drives.ids)],
-        })
+        }
+        # Link certificate to appropriate work order
+        if self.fsm_task_id:
+            cert_vals['fsm_task_id'] = self.fsm_task_id.id
+        if self.shredding_work_order_id:
+            cert_vals['shredding_work_order_id'] = self.shredding_work_order_id.id
+        if self.destruction_work_order_id:
+            cert_vals['destruction_work_order_id'] = self.destruction_work_order_id.id
+            
+        certificate = self.env['shredding.certificate'].create(cert_vals)
 
         # Link certificate back to hard drives
         hard_drives.write({'certificate_id': certificate.id, 'state': 'certified'})
 
-        # Post a message on the FSM task chatter
-        cert_url = certificate.get_portal_url()
-        body = _(
-            'Successfully destroyed and certified %(drive_count)s hard drives. Certificate: <a href="%(url)s">%(name)s</a>',
-            drive_count=len(hard_drives),
-            url=cert_url,
-            name=certificate.name
+        # Post a message on the work order chatter
+        cert_url = certificate.get_portal_url() if hasattr(certificate, 'get_portal_url') else '#'
+        body = _("Successfully destroyed and certified %s hard drives. Certificate: %s") % (
+            len(hard_drives),
+            certificate.name
         )
-        self.fsm_task_id.message_post(
-            body=body,
-            subject=_("Hard Drive Destruction Complete")
-        )
+        
+        # Post message to the appropriate work order
+        work_order = self.fsm_task_id or self.shredding_work_order_id or self.destruction_work_order_id
+        if work_order and hasattr(work_order, 'message_post'):
+            work_order.message_post(
+                body=body,
+                subject=_("Hard Drive Destruction Complete")
+            )
 
-        # Mark the FSM task as done
-        self.fsm_task_id.action_fsm_validate()
+        # Mark the FSM task as done if it exists
+        if self.fsm_task_id and hasattr(self.fsm_task_id, 'action_fsm_validate'):
+            self.fsm_task_id.action_fsm_validate()
 
         # Return an action to view the generated certificate
         return {

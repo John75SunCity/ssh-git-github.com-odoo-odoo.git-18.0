@@ -21,9 +21,13 @@
                             <span invisible="scan_step != 'single_step'">⚡ Single Step (Manager)</span>
                         </h1>
                         <div class="o_row">
-                            <label for="fsm_task_id" string="Work Order:"/>
-                            <field name="fsm_task_id" options="{'no_create': True}"/>
+                            <label for="work_order_display" string="Work Order:"/>
+                            <field name="work_order_display" readonly="1"/>
                         </div>
+                        <!-- Hidden fields to receive context from different work order types -->
+                        <field name="fsm_task_id" invisible="1"/>
+                        <field name="shredding_work_order_id" invisible="1"/>
+                        <field name="destruction_work_order_id" invisible="1"/>
                         <div class="o_row">
                             <label for="partner_id" string="Customer:"/>
                             <field name="partner_id" readonly="1"/>
@@ -79,7 +83,7 @@
                 </footer>
             </form>
         </field>
-    </record>    <!-- Action to open the hard drive scan wizard -->
+    </record>    <!-- Action to open the hard drive scan wizard from FSM Tasks -->
     <record id="action_hard_drive_scan_wizard" model="ir.actions.act_window">
         <field name="name">Scan Hard Drives</field>
         <field name="res_model">hard.drive.scan.wizard</field>
@@ -87,6 +91,29 @@
         <field name="target">new</field>
         <field name="binding_model_id" ref="project.model_project_task"/>
         <field name="binding_view_types">form</field>
+        <field name="context">{'default_fsm_task_id': active_id}</field>
+    </record>
+
+    <!-- Action to open the hard drive scan wizard from Shredding Work Orders -->
+    <record id="action_hard_drive_scan_wizard_shredding" model="ir.actions.act_window">
+        <field name="name">Scan Hard Drives</field>
+        <field name="res_model">hard.drive.scan.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_work_order_shredding"/>
+        <field name="binding_view_types">form</field>
+        <field name="context">{'default_shredding_work_order_id': active_id}</field>
+    </record>
+
+    <!-- Action to open the hard drive scan wizard from Destruction Work Orders -->
+    <record id="action_hard_drive_scan_wizard_destruction" model="ir.actions.act_window">
+        <field name="name">Scan Hard Drives</field>
+        <field name="res_model">hard.drive.scan.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_container_destruction_work_order"/>
+        <field name="binding_view_types">form</field>
+        <field name="context">{'default_destruction_work_order_id': active_id}</field>
     </record>
     </data>
 </odoo>

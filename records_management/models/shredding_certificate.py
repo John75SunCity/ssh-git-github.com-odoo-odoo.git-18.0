@@ -125,13 +125,32 @@ class ShreddingCertificate(models.Model):
     witness_title = fields.Char(string="Witness Title", tracking=True)
 
     # ============================================================================
+    # WORK ORDER REFERENCES
+    # ============================================================================
+    fsm_task_id = fields.Many2one(
+        comodel_name='project.task',
+        string="FSM Task",
+        help="The Field Service task this certificate is associated with."
+    )
+    shredding_work_order_id = fields.Many2one(
+        comodel_name='work.order.shredding',
+        string="Shredding Work Order",
+        help="Records Management shredding work order."
+    )
+    destruction_work_order_id = fields.Many2one(
+        comodel_name='container.destruction.work.order',
+        string="Destruction Work Order",
+        help="Records Management container destruction work order."
+    )
+
+    # ============================================================================
     # MATERIALS & TOTALS
     # ============================================================================
     shredding_service_ids = fields.Many2many(
-        'project.task',
-        'shredding_certificate_task_rel',
-        'certificate_id',
-        'task_id',
+        comodel_name='project.task',
+        relation='shredding_certificate_task_rel',
+        column1='certificate_id',
+        column2='task_id',
         string="Shredding Services",
         domain="[('project_id.name', 'ilike', 'shredding')]",
         tracking=True

@@ -20,18 +20,43 @@ class ShreddingHardDrive(models.Model):
     )
     serial_number = fields.Char(string="Serial Number", required=True, copy=False, index=True)
 
+    # Work Order References (FSM or Records Management)
     fsm_task_id = fields.Many2one(
-        'project.task',
+        comodel_name='project.task',
         string="FSM Task",
         help="The Field Service task this hard drive is associated with."
     )
-    partner_id = fields.Many2one(
-        'res.partner',
-        string="Customer",
-        related='fsm_task_id.partner_id',
-        store=True,
-        readonly=True
+    shredding_work_order_id = fields.Many2one(
+        comodel_name='work.order.shredding',
+        string="Shredding Work Order",
+        help="Records Management shredding work order."
     )
+    destruction_work_order_id = fields.Many2one(
+        comodel_name='container.destruction.work.order',
+        string="Destruction Work Order",
+        help="Records Management container destruction work order."
+    )
+    
+    # Partner computed from any work order source
+    partner_id = fields.Many2one(
+        comodel_name='res.partner',
+        string="Customer",
+        compute='_compute_partner_id',
+        store=True,
+        readonly=False
+    )
+
+    @api.depends('fsm_task_id', 'shredding_work_order_id', 'destruction_work_order_id')
+    def _compute_partner_id(self):
+        for record in self:
+            if record.fsm_task_id and record.fsm_task_id.partner_id:
+                record.partner_id = record.fsm_task_id.partner_id
+            elif record.shredding_work_order_id and record.shredding_work_order_id.partner_id:
+                record.partner_id = record.shredding_work_order_id.partner_id
+            elif record.destruction_work_order_id and record.destruction_work_order_id.partner_id:
+                record.partner_id = record.destruction_work_order_id.partner_id
+            elif not record.partner_id:
+                record.partner_id = False
 
     state = fields.Selection([
         ('draft', 'Draft'),
