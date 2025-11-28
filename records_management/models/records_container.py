@@ -41,6 +41,11 @@ class RecordsContainer(models.Model):
         default=True,
         help="Uncheck to archive (mark as Destroyed). Archived containers are read-only and represent physically destroyed records."
     )
+    color = fields.Integer(
+        string="Color Index",
+        default=0,
+        help="Color index for kanban view and tags (0-11)"
+    )
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company, required=True, readonly=True
     )

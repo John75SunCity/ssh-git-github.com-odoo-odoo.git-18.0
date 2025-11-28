@@ -38,6 +38,16 @@ class ShreddingServiceBin(models.Model):
     _rec_name = 'display_name'
 
     # ============================================================================
+    # CORE FIELDS
+    # ============================================================================
+    active = fields.Boolean(
+        string="Active",
+        default=True,
+        tracking=True,
+        help="Uncheck to archive/deactivate this bin. Inactive bins are excluded from normal searches."
+    )
+
+    # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
     shredding_service_id = fields.Many2one(
@@ -938,10 +948,24 @@ class ShreddingServiceBin(models.Model):
     # UTILITY AND REPORTING METHODS
     # ============================================================================
     def get_billing_line_items(self, date_from=None, date_to=None):
-        """Get billing line items for this bin within date range."""
+        """
+        Get BILLABLE line items for this bin within date range.
+        
+        Only returns events where is_billable=True:
+        - tip: Bin emptied in place
+        - swap_out: Full bin picked up (the billable part of a swap)
+        
+        Does NOT include:
+        - swap_in: Just inventory tracking
+        - delivery: Just equipment placement
+        - maintenance: Internal operations
+        """
         self.ensure_one()
 
-        domain = [('bin_id', '=', self.id)]
+        domain = [
+            ('bin_id', '=', self.id),
+            ('is_billable', '=', True),  # Only billable events!
+        ]
         if date_from:
             domain.append(('service_date', '>=', date_from))
         if date_to:
@@ -951,14 +975,26 @@ class ShreddingServiceBin(models.Model):
 
         line_items = []
         for event in service_events:
+            # Determine description based on service type
+            if event.service_type == 'tip':
+                desc = _("Bin Service (Tip) - %s") % self.barcode
+            elif event.service_type == 'swap_out':
+                desc = _("Bin Service (Swap) - %s") % self.barcode
+            else:
+                desc = _("Bin Service - %s") % self.barcode
+            
             line_items.append({
                 'date': event.service_date,
-                'description': _("Bin %s - %s Service") % (self.barcode, event.service_type.title()),
+                'description': desc,
+                'service_type': event.service_type,
+                'bin_size': self.bin_size,
+                'bin_size_display': dict(self._fields['bin_size'].selection).get(self.bin_size, ''),
                 'quantity': 1,
                 'unit_price': event.billable_amount,
                 'total': event.billable_amount,
                 'weight_lbs': event.actual_weight_lbs,
                 'work_order': event.work_order_id.name if event.work_order_id else '',
+                'event_id': event.id,
             })
 
         return line_items

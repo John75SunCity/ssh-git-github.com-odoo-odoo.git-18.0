@@ -39,7 +39,7 @@ class WorkOrderShredding(models.Model):
         tracking=True,
         copy=False
     )
-    fsm_task_state = fields.Selection(
+    fsm_task_state = fields.Char(
         related='fsm_task_id.stage_id.name',
         string="FSM Status",
         readonly=True
@@ -130,6 +130,34 @@ class WorkOrderShredding(models.Model):
     )
 
     # ============================================================================
+    # SERVICE EVENT TRACKING
+    # ============================================================================
+    service_event_ids = fields.One2many(
+        comodel_name='shredding.service.event',
+        inverse_name='shredding_work_order_id',
+        string="Service Events"
+    )
+    billable_event_count = fields.Integer(
+        string="Billable Services",
+        compute='_compute_service_event_stats',
+        store=True,
+        help="Number of billable service events (tips + swaps)"
+    )
+    total_billable_amount = fields.Monetary(
+        string="Total Billable",
+        compute='_compute_service_event_stats',
+        store=True,
+        currency_field='currency_id',
+        help="Total amount to bill for all services"
+    )
+    total_scans = fields.Integer(
+        string="Total Scans",
+        compute='_compute_service_event_stats',
+        store=True,
+        help="Total barcode scans performed (including non-billable)"
+    )
+
+    # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
     @api.depends('name', 'partner_id.name', 'state')
@@ -180,6 +208,24 @@ class WorkOrderShredding(models.Model):
         }
         for order in self:
             order.completion_percentage = state_completion.get(order.state, 0)
+
+    @api.depends('service_event_ids', 'service_event_ids.is_billable', 'service_event_ids.billable_amount')
+    def _compute_service_event_stats(self):
+        """
+        Compute billing statistics from service events.
+        
+        Billing Logic:
+        - TIP: 1 scan = 1 billable event
+        - SWAP: 2 scans (swap_out + swap_in) = 1 billable event (only swap_out is billable)
+        - Deliveries, pickups, maintenance are NOT billable (logistics/internal)
+        """
+        for order in self:
+            all_events = order.service_event_ids
+            billable_events = all_events.filtered(lambda e: e.is_billable)
+            
+            order.total_scans = len(all_events)
+            order.billable_event_count = len(billable_events)
+            order.total_billable_amount = sum(billable_events.mapped('billable_amount'))
 
     # ============================================================================
     # ORM OVERRIDES
@@ -481,3 +527,105 @@ class WorkOrderShredding(models.Model):
                 raise ValidationError(_("Estimated weight cannot be negative."))
             if order.actual_weight and order.actual_weight < 0:
                 raise ValidationError(_("Actual weight cannot be negative."))
+
+    # ============================================================================
+    # BILLING METHODS
+    # ============================================================================
+    def get_billable_summary(self):
+        """
+        Get a summary of billable events from this work order.
+        
+        Billing Logic:
+        - TIP: 1 scan = 1 billable event = 1 charge
+        - SWAP: 2 scans (swap_out + swap_in) = 1 billable event = 1 charge
+        - Deliveries, pickups, maintenance are NOT billable
+        
+        Returns:
+            dict with billing summary
+        """
+        self.ensure_one()
+        
+        billable_events = self.service_event_ids.filtered(lambda e: e.is_billable)
+        
+        # Group by service type
+        tips = billable_events.filtered(lambda e: e.service_type == 'tip')
+        swaps = billable_events.filtered(lambda e: e.service_type == 'swap_out')
+        
+        return {
+            'total_scans': len(self.service_event_ids),
+            'billable_events': len(billable_events),
+            'tip_count': len(tips),
+            'swap_count': len(swaps),
+            'tip_total': sum(tips.mapped('billable_amount')),
+            'swap_total': sum(swaps.mapped('billable_amount')),
+            'grand_total': self.total_billable_amount,
+        }
+    
+    def action_create_invoice(self):
+        """Create an invoice for this work order based on billable events."""
+        self.ensure_one()
+        
+        if self.invoice_id:
+            raise UserError(_("An invoice already exists for this work order."))
+        
+        if not self.service_event_ids.filtered(lambda e: e.is_billable):
+            raise UserError(_("No billable services on this work order."))
+        
+        # Get billing summary
+        summary = self.get_billable_summary()
+        
+        # Create invoice
+        invoice_vals = {
+            'partner_id': self.partner_id.id,
+            'move_type': 'out_invoice',
+            'invoice_origin': self.name,
+            'invoice_date': fields.Date.today(),
+            'ref': _("Shredding Services - %s") % self.name,
+        }
+        
+        invoice = self.env['account.move'].create(invoice_vals)
+        
+        # Get the default shredding service product
+        shredding_product = self.env.ref(
+            'records_management.product_shredding_service', 
+            raise_if_not_found=False
+        )
+        
+        # Create invoice lines for each billable event
+        for event in self.service_event_ids.filtered(lambda e: e.is_billable):
+            line_vals = {
+                'move_id': invoice.id,
+                'name': _("%s - Bin %s") % (
+                    dict(event._fields['service_type'].selection).get(event.service_type),
+                    event.bin_id.barcode
+                ),
+                'quantity': 1,
+                'price_unit': event.billable_amount,
+            }
+            if shredding_product:
+                line_vals['product_id'] = shredding_product.id
+            
+            self.env['account.move.line'].create(line_vals)
+        
+        # Link invoice to work order
+        self.write({
+            'invoice_id': invoice.id,
+            'state': 'invoiced',
+        })
+        
+        self.message_post(
+            body=_("Invoice %s created with %d billable services, total: %s") % (
+                invoice.name or invoice.id,
+                summary['billable_events'],
+                summary['grand_total']
+            ),
+            subtype_xmlid='mail.mt_note'
+        )
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Invoice'),
+            'res_model': 'account.move',
+            'res_id': invoice.id,
+            'view_mode': 'form',
+        }

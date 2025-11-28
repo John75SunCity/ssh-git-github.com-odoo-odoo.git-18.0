@@ -7,8 +7,12 @@ Users select containers and choose an operation - the wizard emits the
 appropriate barcode value for all selected containers.
 """
 
+import logging
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class BatchBarcodeOperations(models.TransientModel):
@@ -116,18 +120,25 @@ class BatchBarcodeOperations(models.TransientModel):
             'queue_shred': 'action_barcode_queue_for_shredding',
             'complete_shred': 'action_barcode_complete_shredding',
             'add_inventory': 'action_barcode_add_to_inventory',
+            'transfer': 'action_barcode_transfer_location',
         }
         
         method_name = operation_methods.get(self.operation_type)
         if not method_name:
+            _logger.warning(_('Invalid operation type selected: %s') % self.operation_type)
             raise UserError(_('Invalid operation type selected.'))
         
         # Process containers with error handling per operation
         processed = []
         failed = []
         
+        # Prepare context for transfer operations
+        ctx = dict(self.env.context)
+        if self.operation_type == 'transfer' and self.target_location_id:
+            ctx['target_location_id'] = self.target_location_id.id
+        
         # Use self.env.cr.savepoint() for transactional safety
-        for container in self.container_ids:
+        for container in self.container_ids.with_context(ctx):
             try:
                 # Use savepoint to rollback individual container failures
                 with self.env.cr.savepoint():

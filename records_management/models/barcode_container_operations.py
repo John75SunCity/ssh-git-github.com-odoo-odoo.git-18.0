@@ -217,6 +217,53 @@ class RecordsContainerBarcodeOperations(models.Model):
         transfer.button_validate()
         
         return self._open_barcode_transfer(transfer)
+
+    def action_barcode_transfer_location(self):
+        """
+        Transfer container to a different stock location via barcode operation.
+        
+        This method is called from batch operations wizard when 'transfer' type is selected.
+        Uses the target_location_id from the wizard context.
+        """
+        self.ensure_one()
+        
+        # Get target location from context (set by batch wizard)
+        target_location_id = self.env.context.get('target_location_id')
+        if not target_location_id:
+            # If no context, use current location (no-op for safety)
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Transfer Skipped'),
+                    'message': _('No target location specified for container %s') % (self.barcode or self.name),
+                    'type': 'warning',
+                    'sticky': False,
+                }
+            }
+        
+        target_location = self.env['stock.location'].browse(target_location_id)
+        if not target_location.exists():
+            raise UserError(_('Target location not found.'))
+        
+        # Create internal transfer
+        transfer = self._create_barcode_transfer(
+            operation_type='transfer_location',
+            source_location_barcode=self.location_id.barcode or 'WH/STOCK',
+            dest_location_barcode=target_location.barcode or target_location.complete_name,
+            notes=_('Transfer container to %s') % target_location.display_name
+        )
+        
+        self._log_barcode_operation('barcode_transfer', target_location.barcode or 'WH/TRANSFER', transfer.id)
+        
+        self.write({
+            'location_id': target_location.id,
+            'last_barcode_operation': _('Transferred to %s') % target_location.display_name,
+            'last_barcode_operation_date': fields.Datetime.now(),
+            'pending_transfer_id': transfer.id,
+        })
+        
+        return self._open_barcode_transfer(transfer)
     
     def action_barcode_destroy(self):
         """
