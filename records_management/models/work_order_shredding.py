@@ -28,6 +28,30 @@ class WorkOrderShredding(models.Model):
     partner_id = fields.Many2one(comodel_name='res.partner', string="Customer", required=True, tracking=True)
     portal_request_id = fields.Many2one(comodel_name='portal.request', string="Portal Request", ondelete='set null')
 
+    # ============================================================================
+    # FSM INTEGRATION - All services are scheduled via FSM tasks
+    # ============================================================================
+    fsm_task_id = fields.Many2one(
+        comodel_name='project.task',
+        string="FSM Task",
+        domain="[('is_fsm', '=', True)]",
+        help="Linked Field Service task for scheduling, technician assignment, and mobile workflow",
+        tracking=True,
+        copy=False
+    )
+    fsm_task_state = fields.Selection(
+        related='fsm_task_id.stage_id.name',
+        string="FSM Status",
+        readonly=True
+    )
+    sale_order_id = fields.Many2one(
+        comodel_name='sale.order',
+        string="Sales Order",
+        help="Linked sales order for invoicing",
+        tracking=True,
+        copy=False
+    )
+
     scheduled_date = fields.Datetime(string="Scheduled Date", required=True, tracking=True)
     start_date = fields.Datetime(string='Start Time', readonly=True, copy=False)
     completion_date = fields.Datetime(string='Completion Time', readonly=True, copy=False)
@@ -178,11 +202,84 @@ class WorkOrderShredding(models.Model):
     # ACTION METHODS
     # ============================================================================
     def action_confirm(self):
+        """Confirm the work order and optionally create linked FSM task."""
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft work orders can be confirmed."))
+        
+        # Create FSM task if not already linked
+        if not self.fsm_task_id:
+            self._create_fsm_task()
+        
         self.write({'state': 'confirmed'})
         self.message_post(body=_("Work order confirmed."))
+
+    def _create_fsm_task(self):
+        """
+        Create a linked FSM task for this shredding work order.
+        Uses Odoo's Field Service infrastructure for scheduling.
+        """
+        self.ensure_one()
+        
+        # Get or create the FSM project for shredding services
+        fsm_project = self.env['project.project'].search([
+            ('is_fsm', '=', True),
+            ('name', 'ilike', 'shredding')
+        ], limit=1)
+        
+        if not fsm_project:
+            # Use default FSM project
+            fsm_project = self.env['project.project'].search([
+                ('is_fsm', '=', True)
+            ], limit=1)
+        
+        if not fsm_project:
+            # FSM module not properly configured, skip FSM task creation
+            return
+        
+        # Map material type to service type for FSM
+        service_type_map = {
+            'paper': 'on_site_shredding',
+            'hard_drive': 'hard_drive_destruction',
+            'mixed_media': 'off_site_shredding',
+        }
+        
+        task_vals = {
+            'name': _("Shredding Service: %s") % self.name,
+            'project_id': fsm_project.id,
+            'partner_id': self.partner_id.id,
+            'is_fsm': True,
+            'date_deadline': self.scheduled_date.date() if self.scheduled_date else False,
+            'description': self.special_instructions or '',
+            'shredding_work_order_id': self.id,  # Link back to this work order
+        }
+        
+        # Add FSM-specific fields if they exist on project.task
+        if 'service_type' in self.env['project.task']._fields:
+            task_vals['service_type'] = service_type_map.get(self.material_type, 'on_site_shredding')
+        if 'material_type' in self.env['project.task']._fields:
+            task_vals['material_type'] = self.material_type
+        
+        fsm_task = self.env['project.task'].create(task_vals)
+        self.fsm_task_id = fsm_task
+        
+        self.message_post(
+            body=_("FSM Task %s created for scheduling and technician assignment.") % fsm_task.name
+        )
+
+    def action_open_fsm_task(self):
+        """Open the linked FSM task for scheduling and management."""
+        self.ensure_one()
+        if not self.fsm_task_id:
+            raise UserError(_("No FSM task linked. Confirm the work order first."))
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('FSM Task'),
+            'res_model': 'project.task',
+            'res_id': self.fsm_task_id.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     def action_start_work(self):
         self.ensure_one()

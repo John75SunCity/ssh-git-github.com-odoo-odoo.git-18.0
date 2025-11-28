@@ -69,7 +69,42 @@ class DestructionPortalController(CustomerPortal):
         ], order='create_date desc', limit=20)
 
         # =====================================================================
-        # 3. SHREDDING WORK ORDERS
+        # 3. FSM TASKS (Scheduled Services via Odoo FSM)
+        # All services are scheduled through FSM - this is the source of truth
+        # =====================================================================
+        FsmTask = request.env['project.task'].sudo()
+        
+        # Get all shredding/destruction FSM tasks for this customer
+        fsm_domain = [
+            ('partner_id', '=', partner.commercial_partner_id.id),
+            ('is_fsm', '=', True),
+            '|', '|', '|', '|',
+            ('name', 'ilike', 'shred'),
+            ('name', 'ilike', 'destruction'),
+            ('service_type', 'in', ['on_site_shredding', 'off_site_shredding', 'hard_drive_destruction', 'product_destruction']),
+            ('shredding_work_order_id', '!=', False),
+            ('destruction_work_order_id', '!=', False)
+        ]
+        
+        # Check if service_type field exists
+        if 'service_type' not in FsmTask._fields:
+            fsm_domain = [
+                ('partner_id', '=', partner.commercial_partner_id.id),
+                ('is_fsm', '=', True),
+                '|', '|',
+                ('name', 'ilike', 'shred'),
+                ('name', 'ilike', 'destruction'),
+                ('shredding_work_order_id', '!=', False),
+            ]
+        
+        fsm_tasks = FsmTask.search(fsm_domain, order='date_deadline desc', limit=50)
+        
+        # Split into scheduled vs completed
+        scheduled_fsm_tasks = fsm_tasks.filtered(lambda t: not t.stage_id.is_closed)
+        completed_fsm_tasks = fsm_tasks.filtered(lambda t: t.stage_id.is_closed)
+
+        # =====================================================================
+        # 3b. SHREDDING WORK ORDERS (Supplemental data linked to FSM)
         # =====================================================================
         WorkOrderShredding = request.env['work.order.shredding'].sudo()
         work_orders = WorkOrderShredding.search([
@@ -126,12 +161,65 @@ class DestructionPortalController(CustomerPortal):
         all_certificates.sort(key=lambda x: x['destruction_date'] or datetime.min, reverse=True)
 
         # =====================================================================
-        # 5. SERVICE HISTORY (with Invoice Links)
+        # 5. SERVICE HISTORY (FSM Tasks + Work Orders with Invoice Links)
+        # FSM tasks are the primary source; work orders provide extra detail
         # =====================================================================
         service_history = []
+        processed_task_ids = set()  # Track which FSM tasks we've already added
 
-        # From work orders
+        # First, add completed FSM tasks with their linked work order data
+        for task in completed_fsm_tasks:
+            # Find linked work order for additional details
+            wo = None
+            if hasattr(task, 'shredding_work_order_id') and task.shredding_work_order_id:
+                wo = task.shredding_work_order_id
+            else:
+                # Try to find via reverse lookup
+                wo = work_orders.filtered(lambda w: w.fsm_task_id.id == task.id)[:1]
+            
+            # Find linked invoice via sale order or work order
+            invoice = None
+            invoice_name = None
+            if hasattr(task, 'sale_order_id') and task.sale_order_id:
+                invoices = task.sale_order_id.invoice_ids.filtered(lambda i: i.state == 'posted')
+                if invoices:
+                    invoice = invoices[0]
+                    invoice_name = invoice.name
+            elif wo and wo.invoice_id:
+                invoice = wo.invoice_id
+                invoice_name = invoice.name
+            
+            # Get certificate
+            certificate = None
+            if wo and wo.certificate_id:
+                certificate = wo.certificate_id
+            elif hasattr(task, 'destruction_certificate_id') and task.destruction_certificate_id:
+                certificate = task.destruction_certificate_id
+            
+            service_history.append({
+                'id': task.id,
+                'type': 'fsm_task',
+                'model': 'project.task',
+                'name': task.name,
+                'date': task.date_deadline or task.create_date,
+                'material_type': wo.material_type if wo else (task.material_type if hasattr(task, 'material_type') else None),
+                'weight': wo.actual_weight or wo.estimated_weight if wo else (task.weight_processed if hasattr(task, 'weight_processed') else None),
+                'boxes_count': wo.boxes_count if wo else None,
+                'state': 'completed',
+                'invoice_id': invoice.id if invoice else None,
+                'invoice_name': invoice_name,
+                'certificate_id': certificate.id if certificate else None,
+                'certificate_number': certificate.certificate_number if certificate else None,
+                'fsm_task_id': task.id,
+                'work_order_id': wo.id if wo else None,
+            })
+            processed_task_ids.add(task.id)
+
+        # Add any completed work orders that aren't linked to FSM tasks (legacy data)
         for wo in completed_work_orders:
+            if wo.fsm_task_id and wo.fsm_task_id.id in processed_task_ids:
+                continue  # Already added via FSM task
+            
             service_history.append({
                 'id': wo.id,
                 'type': 'work_order',
@@ -146,39 +234,9 @@ class DestructionPortalController(CustomerPortal):
                 'invoice_name': wo.invoice_id.name if wo.invoice_id else None,
                 'certificate_id': wo.certificate_id.id if wo.certificate_id else None,
                 'certificate_number': wo.certificate_id.certificate_number if wo.certificate_id else None,
+                'fsm_task_id': wo.fsm_task_id.id if wo.fsm_task_id else None,
+                'work_order_id': wo.id,
             })
-
-        # From FSM tasks tagged as shredding
-        FsmTask = request.env['project.task'].sudo()
-        shredding_tasks = FsmTask.search([
-            ('partner_id', '=', partner.commercial_partner_id.id),
-            ('is_fsm', '=', True),
-            ('stage_id.is_closed', '=', True),
-            '|',
-            ('name', 'ilike', 'shred'),
-            ('name', 'ilike', 'destruction')
-        ], order='date_deadline desc', limit=30)
-
-        for task in shredding_tasks:
-            # Check if already added via work order
-            if not any(h.get('fsm_task_id') == task.id for h in service_history):
-                # Try to find linked invoice
-                invoice = None
-                if hasattr(task, 'sale_order_id') and task.sale_order_id:
-                    invoices = task.sale_order_id.invoice_ids.filtered(lambda i: i.state == 'posted')
-                    invoice = invoices[0] if invoices else None
-
-                service_history.append({
-                    'id': task.id,
-                    'type': 'fsm_task',
-                    'model': 'project.task',
-                    'name': task.name,
-                    'date': task.date_deadline or task.create_date,
-                    'state': 'completed',
-                    'invoice_id': invoice.id if invoice else None,
-                    'invoice_name': invoice.name if invoice else None,
-                    'fsm_task_id': task.id,
-                })
 
         # Sort service history by date
         service_history.sort(key=lambda x: x['date'] or datetime.min, reverse=True)
@@ -190,6 +248,7 @@ class DestructionPortalController(CustomerPortal):
             'active_bins': len(bins),
             'bins_due_soon': len([b for b in bins_data if b['status'] == 'due']),
             'pending_requests': len(pending_requests),
+            'scheduled_services': len(scheduled_fsm_tasks),  # FSM tasks waiting to be done
             'active_work_orders': len(active_work_orders),
             'certificates_ytd': len([c for c in all_certificates
                                     if c['destruction_date'] and
@@ -204,6 +263,7 @@ class DestructionPortalController(CustomerPortal):
             'bins': bins_data,
             'bins_records': bins,
             'pending_requests': pending_requests,
+            'scheduled_fsm_tasks': scheduled_fsm_tasks,  # NEW: Scheduled FSM services
             'active_work_orders': active_work_orders,
             'completed_work_orders': completed_work_orders,
             'certificates': all_certificates[:20],  # Limit for dashboard
@@ -504,6 +564,77 @@ class DestructionPortalController(CustomerPortal):
             )
         except Exception:
             return request.redirect('/my/shredding/certificate/%s?error=pdf' % cert_id)
+
+    # =========================================================================
+    # SCHEDULED SERVICES ROUTES (FSM Tasks)
+    # =========================================================================
+    @http.route(['/my/shredding/scheduled'], type='http', auth='user', website=True)
+    def portal_scheduled_services(self, **kw):
+        """View all scheduled shredding/destruction services (FSM Tasks)"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+
+        data = self._get_destruction_dashboard_data(partner)
+
+        values.update({
+            'page_name': 'shredding_scheduled',
+            'scheduled_tasks': data.get('scheduled_fsm_tasks', []),
+            'active_work_orders': data.get('active_work_orders', []),
+            'partner': partner,
+        })
+
+        return request.render("records_management.portal_scheduled_services", values)
+
+    @http.route(['/my/shredding/service/<int:task_id>'], type='http', auth='user', website=True)
+    def portal_service_detail(self, task_id, **kw):
+        """View details of a scheduled or completed FSM service"""
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+
+        FsmTask = request.env['project.task'].sudo()
+        task = FsmTask.browse(task_id)
+
+        # Security check
+        if not task.exists() or task.partner_id.id != partner.commercial_partner_id.id:
+            return request.redirect('/my/shredding/scheduled')
+
+        # Get linked work order
+        work_order = None
+        WorkOrderShredding = request.env['work.order.shredding'].sudo()
+        if hasattr(task, 'shredding_work_order_id') and task.shredding_work_order_id:
+            work_order = task.shredding_work_order_id
+        else:
+            work_order = WorkOrderShredding.search([('fsm_task_id', '=', task.id)], limit=1)
+
+        # Get linked invoice/quote
+        invoice = None
+        quote = None
+        if hasattr(task, 'sale_order_id') and task.sale_order_id:
+            quote = task.sale_order_id
+            invoices = quote.invoice_ids.filtered(lambda i: i.state == 'posted')
+            if invoices:
+                invoice = invoices[0]
+        elif work_order and work_order.invoice_id:
+            invoice = work_order.invoice_id
+
+        # Get certificate
+        certificate = None
+        if work_order and work_order.certificate_id:
+            certificate = work_order.certificate_id
+        elif hasattr(task, 'destruction_certificate_id') and task.destruction_certificate_id:
+            certificate = task.destruction_certificate_id
+
+        values.update({
+            'page_name': 'shredding_service_detail',
+            'task': task,
+            'work_order': work_order,
+            'invoice': invoice,
+            'quote': quote,
+            'certificate': certificate,
+            'partner': partner,
+        })
+
+        return request.render("records_management.portal_service_detail", values)
 
     # =========================================================================
     # SERVICE HISTORY ROUTES

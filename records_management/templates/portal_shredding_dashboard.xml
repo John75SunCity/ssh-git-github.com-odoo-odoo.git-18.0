@@ -61,6 +61,15 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a t-attf-class="nav-link #{active_tab == 'scheduled' and 'active' or ''}"
+                               href="/my/shredding/scheduled">
+                                <i class="fa fa-calendar me-1"/> Scheduled
+                                <span class="badge bg-info ms-1" t-if="stats.get('scheduled_services')">
+                                    <t t-out="stats.get('scheduled_services', 0)"/>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a t-attf-class="nav-link #{active_tab == 'certificates' and 'active' or ''}"
                                href="/my/shredding/certificates">
                                 <i class="fa fa-certificate me-1"/> Certificates
@@ -110,6 +119,13 @@
                                         </div>
                                         <h3 class="mb-0"><t t-out="stats.get('pending_requests', 0)"/></h3>
                                         <small class="text-muted">Pending Requests</small>
+                                        <t t-if="stats.get('scheduled_services')">
+                                            <div class="mt-2">
+                                                <a href="/my/shredding/scheduled" class="badge bg-info text-decoration-none">
+                                                    <t t-out="stats.get('scheduled_services')"/> scheduled
+                                                </a>
+                                            </div>
+                                        </t>
                                     </div>
                                 </div>
                             </div>
@@ -679,6 +695,271 @@
                             </t>
                         </div>
                     </t>
+                </div>
+            </t>
+        </template>
+
+        <!-- ================================================================== -->
+        <!-- SCHEDULED SERVICES (FSM Tasks)                                     -->
+        <!-- Shows all scheduled shredding/destruction services via FSM        -->
+        <!-- ================================================================== -->
+        <template id="portal_scheduled_services" name="Scheduled Shredding Services">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Scheduled Services</t>
+                </t>
+
+                <div class="o_portal_scheduled_services">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="mb-0">
+                            <i class="fa fa-calendar text-info me-2"/>
+                            Scheduled Services
+                        </h2>
+                        <a href="/my/shredding" class="btn btn-outline-secondary">
+                            <i class="fa fa-arrow-left me-1"/> Back to Dashboard
+                        </a>
+                    </div>
+
+                    <div class="alert alert-info" role="status">
+                        <i class="fa fa-info-circle me-2"/>
+                        These are your scheduled shredding and destruction services. Our technicians will arrive on the scheduled date.
+                    </div>
+
+                    <t t-if="scheduled_tasks">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Service</th>
+                                        <th>Scheduled Date</th>
+                                        <th>Status</th>
+                                        <th>Technician</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="scheduled_tasks" t-as="task">
+                                        <tr>
+                                            <td>
+                                                <strong><t t-out="task.name"/></strong>
+                                                <t t-if="task.service_type">
+                                                    <br/>
+                                                    <small class="text-muted">
+                                                        <t t-out="dict(task._fields['service_type'].selection).get(task.service_type, task.service_type)"/>
+                                                    </small>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-if="task.date_deadline">
+                                                    <i class="fa fa-calendar me-1"/>
+                                                    <t t-out="task.date_deadline" t-options="{'widget': 'date'}"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="text-muted">To be scheduled</span>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <span t-attf-class="badge bg-#{task.stage_id.name == 'In Progress' and 'primary' or 'secondary'}">
+                                                    <t t-out="task.stage_id.name"/>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <t t-if="task.user_ids">
+                                                    <t t-foreach="task.user_ids[:2]" t-as="tech">
+                                                        <span class="badge bg-light text-dark me-1">
+                                                            <t t-out="tech.name"/>
+                                                        </span>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="text-muted">Pending assignment</span>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <a t-attf-href="/my/shredding/service/#{task.id}"
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fa fa-eye me-1"/> Details
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="text-center text-muted py-5">
+                            <i class="fa fa-calendar-check-o fa-3x mb-3"/><br/>
+                            <p>No scheduled services at this time.</p>
+                            <a href="/my/shredding/request/new" class="btn btn-danger mt-2">
+                                <i class="fa fa-plus me-1"/> Request New Service
+                            </a>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+        <!-- ================================================================== -->
+        <!-- SERVICE DETAIL (FSM Task Detail)                                   -->
+        <!-- Full details of a scheduled or completed service                   -->
+        <!-- ================================================================== -->
+        <template id="portal_service_detail" name="Service Detail">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Service Details</t>
+                </t>
+
+                <div class="o_portal_service_detail">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="mb-0">
+                            <i class="fa fa-truck text-primary me-2"/>
+                            <t t-out="task.name"/>
+                        </h2>
+                        <a href="/my/shredding/scheduled" class="btn btn-outline-secondary">
+                            <i class="fa fa-arrow-left me-1"/> Back to Scheduled
+                        </a>
+                    </div>
+
+                    <div class="row">
+                        <!-- Main Info -->
+                        <div class="col-lg-8">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fa fa-info-circle me-2"/> Service Information
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <dl class="mb-0">
+                                                <dt>Status</dt>
+                                                <dd>
+                                                    <span t-attf-class="badge bg-#{task.stage_id.is_closed and 'success' or 'primary'}">
+                                                        <t t-out="task.stage_id.name"/>
+                                                    </span>
+                                                </dd>
+                                                <dt>Scheduled Date</dt>
+                                                <dd>
+                                                    <t t-if="task.date_deadline">
+                                                        <t t-out="task.date_deadline" t-options="{'widget': 'datetime'}"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted">To be scheduled</span>
+                                                    </t>
+                                                </dd>
+                                                <dt t-if="task.service_type">Service Type</dt>
+                                                <dd t-if="task.service_type">
+                                                    <t t-out="dict(task._fields['service_type'].selection).get(task.service_type, task.service_type)"/>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <dl class="mb-0">
+                                                <dt>Assigned Technician(s)</dt>
+                                                <dd>
+                                                    <t t-if="task.user_ids">
+                                                        <t t-foreach="task.user_ids" t-as="tech">
+                                                            <span class="badge bg-light text-dark me-1">
+                                                                <i class="fa fa-user me-1"/><t t-out="tech.name"/>
+                                                            </span>
+                                                        </t>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted">Pending assignment</span>
+                                                    </t>
+                                                </dd>
+                                                <dt t-if="work_order">Weight</dt>
+                                                <dd t-if="work_order">
+                                                    <t t-out="work_order.actual_weight or work_order.estimated_weight or 0"/> kg
+                                                    <t t-if="not work_order.actual_weight and work_order.estimated_weight">
+                                                        <small class="text-muted">(estimated)</small>
+                                                    </t>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+
+                                    <t t-if="task.description">
+                                        <hr/>
+                                        <dt>Notes</dt>
+                                        <dd class="mt-2">
+                                            <t t-out="task.description"/>
+                                        </dd>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Linked Documents -->
+                        <div class="col-lg-4">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fa fa-link me-2"/> Linked Documents
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <t t-if="certificate">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <i class="fa fa-certificate text-success me-2"/>
+                                                Certificate of Destruction
+                                            </span>
+                                            <a t-attf-href="/my/shredding/certificate/#{certificate.id}/download"
+                                               class="btn btn-sm btn-outline-success">
+                                                <i class="fa fa-download"/>
+                                            </a>
+                                        </li>
+                                    </t>
+                                    <t t-if="quote">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <i class="fa fa-file-text text-primary me-2"/>
+                                                Quote: <t t-out="quote.name"/>
+                                            </span>
+                                            <a t-attf-href="/my/orders/#{quote.id}"
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fa fa-eye"/>
+                                            </a>
+                                        </li>
+                                    </t>
+                                    <t t-if="invoice">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <i class="fa fa-file-invoice text-info me-2"/>
+                                                Invoice: <t t-out="invoice.name"/>
+                                            </span>
+                                            <a t-attf-href="/my/invoices/#{invoice.id}"
+                                               class="btn btn-sm btn-outline-info">
+                                                <i class="fa fa-eye"/>
+                                            </a>
+                                        </li>
+                                    </t>
+                                    <t t-if="not certificate and not quote and not invoice">
+                                        <li class="list-group-item text-muted text-center">
+                                            <i class="fa fa-inbox me-2"/>
+                                            No linked documents yet
+                                        </li>
+                                    </t>
+                                </ul>
+                            </div>
+
+                            <!-- Contact Support -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fa fa-phone me-2"/> Need Help?
+                                </div>
+                                <div class="card-body text-center">
+                                    <p class="card-text small text-muted">
+                                        Questions about this service? Contact our support team.
+                                    </p>
+                                    <a href="/contactus" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fa fa-envelope me-1"/> Contact Support
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </t>
         </template>
