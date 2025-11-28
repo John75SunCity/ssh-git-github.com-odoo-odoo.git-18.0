@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ================================================================== -->
+        <!-- SHREDDING & DESTRUCTION DASHBOARD                                  -->
+        <!-- Comprehensive portal for all destruction/shredding services       -->
+        <!-- ================================================================== -->
+
+        <template id="portal_shredding_dashboard" name="Shredding &amp; Destruction Dashboard">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Shredding &amp; Destruction</t>
+                </t>
+
+                <div class="o_portal_shredding_dashboard">
+                    <!-- Page Header -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="mb-0">
+                                    <i class="fa fa-recycle text-danger me-2"/>
+                                    Shredding &amp; Destruction Services
+                                </h2>
+                                <div class="btn-group">
+                                    <a href="/my/shredding/request/new" class="btn btn-danger">
+                                        <i class="fa fa-plus me-1"/> New Shredding Request
+                                    </a>
+                                </div>
+                            </div>
+                            <p class="text-muted mt-2">
+                                Manage your shredding bins, request destruction services, and download certificates of destruction.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <ul class="nav nav-tabs mb-4" role="tablist">
+                        <li class="nav-item">
+                            <a t-attf-class="nav-link #{active_tab == 'overview' and 'active' or ''}" 
+                               href="/my/shredding/dashboard?tab=overview">
+                                <i class="fa fa-dashboard me-1"/> Overview
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a t-attf-class="nav-link #{active_tab == 'bins' and 'active' or ''}" 
+                               href="/my/shredding/bins">
+                                <i class="fa fa-trash me-1"/> Shredding Bins
+                                <span class="badge bg-secondary ms-1" t-if="stats.get('active_bins')">
+                                    <t t-out="stats.get('active_bins', 0)"/>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a t-attf-class="nav-link #{active_tab == 'requests' and 'active' or ''}" 
+                               href="/my/shredding/dashboard?tab=requests">
+                                <i class="fa fa-clipboard me-1"/> Requests
+                                <span class="badge bg-warning ms-1" t-if="stats.get('pending_requests')">
+                                    <t t-out="stats.get('pending_requests', 0)"/>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a t-attf-class="nav-link #{active_tab == 'certificates' and 'active' or ''}" 
+                               href="/my/shredding/certificates">
+                                <i class="fa fa-certificate me-1"/> Certificates
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a t-attf-class="nav-link #{active_tab == 'history' and 'active' or ''}" 
+                               href="/my/shredding/history">
+                                <i class="fa fa-history me-1"/> History
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- SUCCESS MESSAGE -->
+                    <div class="alert alert-success alert-dismissible" role="status" t-if="request.params.get('success')">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"/>
+                        <i class="fa fa-check-circle me-2"/> Your request has been submitted successfully!
+                    </div>
+
+                    <!-- OVERVIEW TAB -->
+                    <t t-if="active_tab == 'overview'">
+                        <!-- Statistics Cards -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <div class="display-6 text-danger mb-2">
+                                            <i class="fa fa-trash"/>
+                                        </div>
+                                        <h3 class="mb-0"><t t-out="stats.get('active_bins', 0)"/></h3>
+                                        <small class="text-muted">Active Bins</small>
+                                        <t t-if="stats.get('bins_due_soon')">
+                                            <div class="mt-2">
+                                                <span class="badge bg-warning">
+                                                    <t t-out="stats.get('bins_due_soon')"/> due soon
+                                                </span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <div class="display-6 text-warning mb-2">
+                                            <i class="fa fa-clipboard"/>
+                                        </div>
+                                        <h3 class="mb-0"><t t-out="stats.get('pending_requests', 0)"/></h3>
+                                        <small class="text-muted">Pending Requests</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <div class="display-6 text-success mb-2">
+                                            <i class="fa fa-certificate"/>
+                                        </div>
+                                        <h3 class="mb-0"><t t-out="stats.get('certificates_ytd', 0)"/></h3>
+                                        <small class="text-muted">Certificates (YTD)</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <div class="display-6 text-info mb-2">
+                                            <i class="fa fa-check-circle"/>
+                                        </div>
+                                        <h3 class="mb-0"><t t-out="stats.get('completed_services_30d', 0)"/></h3>
+                                        <small class="text-muted">Services (30 days)</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <div class="card h-100 border-danger">
+                                    <div class="card-header bg-danger text-white">
+                                        <i class="fa fa-fire me-2"/> Request Destruction
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            Schedule pickup for boxes, bags, or totes of documents to be securely destroyed.
+                                        </p>
+                                        <a href="/my/shredding/request/new" class="btn btn-outline-danger btn-sm">
+                                            <i class="fa fa-plus me-1"/> New Request
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100 border-primary">
+                                    <div class="card-header bg-primary text-white">
+                                        <i class="fa fa-trash me-2"/> Bin Service
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            Request extra bin service or report an issue with your shredding bins.
+                                        </p>
+                                        <a href="/my/shredding/bins" class="btn btn-outline-primary btn-sm">
+                                            <i class="fa fa-list me-1"/> View Bins
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card h-100 border-success">
+                                    <div class="card-header bg-success text-white">
+                                        <i class="fa fa-certificate me-2"/> Certificates
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            Download certificates of destruction for compliance and auditing purposes.
+                                        </p>
+                                        <a href="/my/shredding/certificates" class="btn btn-outline-success btn-sm">
+                                            <i class="fa fa-download me-1"/> View Certificates
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity Section -->
+                        <div class="row">
+                            <!-- Pending Requests -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span><i class="fa fa-clipboard me-2"/> Pending Requests</span>
+                                        <a href="/my/shredding/dashboard?tab=requests" class="btn btn-link btn-sm p-0">
+                                            View All
+                                        </a>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <t t-if="pending_requests">
+                                            <ul class="list-group list-group-flush">
+                                                <t t-foreach="pending_requests[:5]" t-as="req">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <strong><t t-out="req.name"/></strong>
+                                                            <br/>
+                                                            <small class="text-muted">
+                                                                <t t-out="req.create_date" t-options="{'widget': 'date'}"/>
+                                                            </small>
+                                                        </div>
+                                                        <span t-attf-class="badge bg-#{req.state == 'submitted' and 'warning' or req.state == 'approved' and 'success' or 'secondary'}">
+                                                            <t t-out="req.state"/>
+                                                        </span>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="text-center text-muted py-4">
+                                                <i class="fa fa-inbox fa-2x mb-2"/><br/>
+                                                No pending requests
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent Certificates -->
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span><i class="fa fa-certificate me-2"/> Recent Certificates</span>
+                                        <a href="/my/shredding/certificates" class="btn btn-link btn-sm p-0">
+                                            View All
+                                        </a>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <t t-if="certificates">
+                                            <ul class="list-group list-group-flush">
+                                                <t t-foreach="certificates[:5]" t-as="cert">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <strong><t t-out="cert.get('certificate_number')"/></strong>
+                                                            <br/>
+                                                            <small class="text-muted">
+                                                                <t t-out="cert.get('destruction_date')" t-options="{'widget': 'date'}"/>
+                                                            </small>
+                                                        </div>
+                                                        <a t-attf-href="/my/shredding/certificate/#{cert.get('id')}/download" 
+                                                           class="btn btn-sm btn-outline-success">
+                                                            <i class="fa fa-download"/>
+                                                        </a>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="text-center text-muted py-4">
+                                                <i class="fa fa-certificate fa-2x mb-2"/><br/>
+                                                No certificates yet
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shredding Bins Section -->
+                        <t t-if="bins">
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span><i class="fa fa-trash me-2"/> Your Shredding Bins</span>
+                                    <a href="/my/shredding/bins" class="btn btn-link btn-sm p-0">
+                                        Manage Bins
+                                    </a>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <t t-foreach="bins[:4]" t-as="bin">
+                                            <div class="col-md-3 col-sm-6">
+                                                <div t-attf-class="card h-100 #{bin.get('status') == 'due' and 'border-warning' or 'border-light'}">
+                                                    <div class="card-body text-center">
+                                                        <div class="mb-2">
+                                                            <i t-attf-class="fa fa-trash fa-2x #{bin.get('status') == 'due' and 'text-warning' or 'text-muted'}"/>
+                                                        </div>
+                                                        <h6 class="mb-1"><t t-out="bin.get('bin_size_display')"/></h6>
+                                                        <small class="text-muted"><t t-out="bin.get('location')"/></small>
+                                                        <div class="mt-2">
+                                                            <t t-if="bin.get('next_service_date')">
+                                                                <span t-attf-class="badge bg-#{bin.get('status') == 'due' and 'warning' or 'info'}">
+                                                                    Next: <t t-out="bin.get('next_service_date')" t-options="{'widget': 'date'}"/>
+                                                                </span>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+
+                    <!-- REQUESTS TAB -->
+                    <t t-if="active_tab == 'requests'">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>Shredding Requests</span>
+                                <a href="/my/shredding/request/new" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-plus me-1"/> New Request
+                                </a>
+                            </div>
+                            <div class="card-body p-0">
+                                <t t-if="pending_requests">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Request</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="pending_requests" t-as="req">
+                                                    <tr>
+                                                        <td>
+                                                            <strong><t t-out="req.name"/></strong>
+                                                            <t t-if="req.description">
+                                                                <br/>
+                                                                <small class="text-muted">
+                                                                    <t t-out="req.description[:100]"/>...
+                                                                </small>
+                                                            </t>
+                                                        </td>
+                                                        <td>
+                                                            <t t-out="req.create_date" t-options="{'widget': 'date'}"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-attf-class="badge bg-#{req.state == 'draft' and 'secondary' or req.state == 'submitted' and 'warning' or req.state == 'approved' and 'success' or req.state == 'scheduled' and 'info' or 'primary'}">
+                                                                <t t-out="req.state"/>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <a t-attf-href="/my/requests/#{req.id}" class="btn btn-sm btn-outline-primary">
+                                                                View
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="text-center text-muted py-5">
+                                        <i class="fa fa-inbox fa-3x mb-3"/><br/>
+                                        <p>No shredding requests yet.</p>
+                                        <a href="/my/shredding/request/new" class="btn btn-danger">
+                                            <i class="fa fa-plus me-1"/> Create Your First Request
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+
+                </div>
+            </t>
+        </template>
+
+        <!-- ================================================================== -->
+        <!-- SHREDDING BINS LIST                                                -->
+        <!-- ================================================================== -->
+        <template id="portal_shredding_bins" name="Shredding Bins">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Shredding Bins</t>
+                </t>
+
+                <div class="o_portal_shredding_bins">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>
+                            <i class="fa fa-trash text-danger me-2"/>
+                            Your Shredding Bins
+                        </h2>
+                        <a href="/my/shredding/dashboard" class="btn btn-outline-secondary">
+                            <i class="fa fa-arrow-left me-1"/> Back to Dashboard
+                        </a>
+                    </div>
+
+                    <t t-if="bins">
+                        <div class="row g-4">
+                            <t t-foreach="bins" t-as="bin">
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="card h-100">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <span>
+                                                <i class="fa fa-barcode me-1"/>
+                                                <t t-out="bin.barcode"/>
+                                            </span>
+                                            <span t-attf-class="badge bg-#{bin.next_service_date and bin.next_service_date &lt;= datetime.now().date() and 'warning' or 'success'}">
+                                                <t t-if="bin.next_service_date and bin.next_service_date &lt;= datetime.now().date()">
+                                                    Service Due
+                                                </t>
+                                                <t t-else="">
+                                                    Active
+                                                </t>
+                                            </span>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                <t t-out="dict(bin._fields['bin_size'].selection).get(bin.bin_size, bin.bin_size)"/>
+                                            </h5>
+                                            <p class="card-text">
+                                                <i class="fa fa-map-marker text-muted me-1"/>
+                                                <t t-out="bin.current_department_id.name if bin.current_department_id else 'Main Office'"/>
+                                            </p>
+                                            <t t-if="bin.next_service_date">
+                                                <p class="card-text">
+                                                    <i class="fa fa-calendar text-muted me-1"/>
+                                                    Next Service: <strong><t t-out="bin.next_service_date" t-options="{'widget': 'date'}"/></strong>
+                                                </p>
+                                            </t>
+                                            <t t-if="bin.last_service_date">
+                                                <p class="card-text text-muted small">
+                                                    Last Service: <t t-out="bin.last_service_date" t-options="{'widget': 'date'}"/>
+                                                </p>
+                                            </t>
+                                        </div>
+                                        <div class="card-footer bg-transparent">
+                                            <div class="btn-group w-100">
+                                                <a t-attf-href="/my/shredding/bin/#{bin.id}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fa fa-eye me-1"/> Details
+                                                </a>
+                                                <a t-attf-href="/my/shredding/bin/#{bin.id}/request-service" class="btn btn-outline-danger btn-sm">
+                                                    <i class="fa fa-bell me-1"/> Request Service
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="text-center text-muted py-5">
+                            <i class="fa fa-trash fa-3x mb-3"/><br/>
+                            <p>No shredding bins assigned to your locations.</p>
+                            <p>Contact us to set up recurring shredding service.</p>
+                            <a href="/contactus" class="btn btn-primary">
+                                <i class="fa fa-phone me-1"/> Contact Us
+                            </a>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+        <!-- ================================================================== -->
+        <!-- NEW SHREDDING REQUEST FORM                                         -->
+        <!-- ================================================================== -->
+        <template id="portal_new_shredding_request" name="New Shredding Request">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">New Shredding Request</t>
+                </t>
+
+                <div class="o_portal_new_shredding_request">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>
+                            <i class="fa fa-fire text-danger me-2"/>
+                            New Shredding Request
+                        </h2>
+                        <a href="/my/shredding/dashboard" class="btn btn-outline-secondary">
+                            <i class="fa fa-arrow-left me-1"/> Cancel
+                        </a>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Request Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form action="/my/shredding/request/new" method="post" class="needs-validation">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                        <!-- Material Type -->
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Material Type *</label>
+                                            <div class="row g-2">
+                                                <t t-foreach="material_types" t-as="mt">
+                                                    <div class="col-md-6">
+                                                        <div class="form-check card p-3">
+                                                            <input class="form-check-input" type="radio" 
+                                                                   name="material_type" t-att-id="'mt_' + mt[0]"
+                                                                   t-att-value="mt[0]"
+                                                                   t-att-checked="mt[0] == 'paper' and 'checked' or None"/>
+                                                            <label class="form-check-label" t-att-for="'mt_' + mt[0]">
+                                                                <t t-out="mt[1]"/>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+
+                                        <!-- Container Type -->
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Container Type *</label>
+                                            <div class="row g-2">
+                                                <t t-foreach="container_types" t-as="ct">
+                                                    <div class="col-md-6">
+                                                        <div class="form-check card p-3">
+                                                            <input class="form-check-input" type="radio" 
+                                                                   name="container_type" t-att-id="'ct_' + ct[0]"
+                                                                   t-att-value="ct[0]"
+                                                                   t-att-checked="ct[0] == 'boxes' and 'checked' or None"/>
+                                                            <label class="form-check-label" t-att-for="'ct_' + ct[0]">
+                                                                <t t-out="ct[1]"/>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+
+                                        <!-- Quantity -->
+                                        <div class="mb-3">
+                                            <label for="quantity" class="form-label fw-bold">Quantity *</label>
+                                            <input type="number" class="form-control" id="quantity" name="quantity" 
+                                                   min="1" value="1" required="required"/>
+                                            <small class="text-muted">Estimated number of boxes/bags/totes</small>
+                                        </div>
+
+                                        <!-- Preferred Date -->
+                                        <div class="mb-3">
+                                            <label for="preferred_date" class="form-label fw-bold">Preferred Pickup Date</label>
+                                            <input type="date" class="form-control" id="preferred_date" name="preferred_date"/>
+                                            <small class="text-muted">Leave blank for next available date</small>
+                                        </div>
+
+                                        <!-- Notes -->
+                                        <div class="mb-3">
+                                            <label for="notes" class="form-label fw-bold">Special Instructions</label>
+                                            <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                                      placeholder="Any special requirements or access instructions..."/>
+                                        </div>
+
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-danger btn-lg">
+                                                <i class="fa fa-check me-1"/> Submit Request
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <i class="fa fa-info-circle text-info me-2"/> What to Expect
+                                    </h5>
+                                    <ol class="ps-3">
+                                        <li class="mb-2">Submit your request with details about materials</li>
+                                        <li class="mb-2">We'll contact you to confirm pickup date</li>
+                                        <li class="mb-2">Our certified team picks up and destroys materials</li>
+                                        <li class="mb-2">Receive Certificate of Destruction for your records</li>
+                                    </ol>
+                                    <hr/>
+                                    <p class="text-muted small mb-0">
+                                        <i class="fa fa-shield me-1"/> All services are NAID AAA certified with 
+                                        complete chain of custody documentation.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- ================================================================== -->
+        <!-- CERTIFICATES LIST                                                  -->
+        <!-- ================================================================== -->
+        <template id="portal_shredding_certificates" name="Destruction Certificates">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Destruction Certificates</t>
+                </t>
+
+                <div class="o_portal_shredding_certificates">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>
+                            <i class="fa fa-certificate text-success me-2"/>
+                            Certificates of Destruction
+                        </h2>
+                        <a href="/my/shredding/dashboard" class="btn btn-outline-secondary">
+                            <i class="fa fa-arrow-left me-1"/> Back to Dashboard
+                        </a>
+                    </div>
+
+                    <!-- Search -->
+                    <form action="/my/shredding/certificates" method="get" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" 
+                                   placeholder="Search by certificate number..." t-att-value="search"/>
+                            <button type="submit" class="btn btn-outline-secondary">
+                                <i class="fa fa-search"/>
+                            </button>
+                        </div>
+                    </form>
+
+                    <t t-if="certificates">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Certificate #</th>
+                                        <th>Destruction Date</th>
+                                        <th>Issue Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="certificates" t-as="cert">
+                                        <tr>
+                                            <td>
+                                                <strong><t t-out="cert.certificate_number"/></strong>
+                                            </td>
+                                            <td>
+                                                <t t-out="cert.destruction_date" t-options="{'widget': 'date'}"/>
+                                            </td>
+                                            <td>
+                                                <t t-out="cert.issue_date" t-options="{'widget': 'date'}"/>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-success">Issued</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a t-attf-href="/my/shredding/certificate/#{cert.id}" 
+                                                       class="btn btn-outline-primary">
+                                                        <i class="fa fa-eye"/>
+                                                    </a>
+                                                    <a t-attf-href="/my/shredding/certificate/#{cert.id}/download" 
+                                                       class="btn btn-outline-success">
+                                                        <i class="fa fa-download"/>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pager -->
+                        <t t-call="portal.pager"/>
+                    </t>
+                    <t t-else="">
+                        <div class="text-center text-muted py-5">
+                            <i class="fa fa-certificate fa-3x mb-3"/><br/>
+                            <p>No certificates found.</p>
+                            <t t-if="search">
+                                <a href="/my/shredding/certificates" class="btn btn-outline-secondary">
+                                    Clear Search
+                                </a>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

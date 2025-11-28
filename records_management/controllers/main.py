@@ -137,6 +137,38 @@ PORTAL_CARD_METADATA = [
         ],
     },
     {
+        'key': 'shredding',
+        'menu_xml_id': 'records_management.portal_menu_shredding',
+        'icon_class': 'fa fa-recycle text-danger fa-2x',
+        'description': 'Manage shredding bins, request destruction, and download certificates',
+        'fallback_name': 'Shredding & Destruction',
+        'default_url': '/my/shredding',
+        'type': 'button_group',
+        'buttons': [
+            {
+                'menu_xml_id': 'records_management.portal_menu_shredding',
+                'classes': 'btn btn-sm btn-outline-danger',
+                'label': 'Shredding Dashboard',
+                'icon_class': 'fa fa-dashboard',
+                'fallback_url': '/my/shredding',
+            },
+            {
+                'menu_xml_id': 'records_management.portal_menu_shredding',
+                'classes': 'btn btn-sm btn-outline-primary',
+                'label': 'Request Shredding',
+                'icon_class': 'fa fa-fire',
+                'fallback_url': '/my/shredding/request/new',
+            },
+            {
+                'menu_xml_id': 'records_management.portal_menu_shredding',
+                'classes': 'btn btn-sm btn-outline-success',
+                'label': 'Certificates',
+                'icon_class': 'fa fa-certificate',
+                'fallback_url': '/my/shredding/certificates',
+            },
+        ],
+    },
+    {
         'key': 'help',
         'menu_xml_id': 'records_management.portal_menu_help',
         'icon_class': 'fa fa-question-circle text-secondary fa-2x',

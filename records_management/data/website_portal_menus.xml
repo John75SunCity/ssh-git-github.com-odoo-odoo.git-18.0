@@ -36,6 +36,14 @@
             <field name="sequence">40</field>
         </record>
 
+        <!-- Shredding & Destruction Dashboard - Comprehensive destruction services hub -->
+        <record id="portal_menu_shredding" model="website.menu">
+            <field name="name">Shredding</field>
+            <field name="url">/my/shredding</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">45</field>
+        </record>
+
         <record id="portal_menu_certificates" model="website.menu">
             <field name="name">Certificates</field>
             <field name="url">/my/certificates</field>
