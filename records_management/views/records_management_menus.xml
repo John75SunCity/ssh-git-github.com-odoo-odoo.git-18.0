@@ -446,7 +446,7 @@
         <menuitem id="menu_paper_model_bales" name="Bales" parent="menu_paper_recycling" action="action_paper_model_bale" sequence="10" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
         <!-- menu_load_shipments removed - defined in paper_load_shipment_views.xml -->
 
-        <menuitem id="menu_work_order_coordinators" name="Work Order Coordinators" parent="records_management.menu_records_operations" action="action_work_order_coordinator" sequence="60" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
+        <!-- menu_work_order_coordinators removed - model deleted, use Dispatch Center instead -->
         <menuitem id="menu_workflow_visualizations" name="Workflow Visualizations" parent="records_management.menu_records_operations" action="action_workflow_visualization_manager" sequence="65" groups="records_management.group_records_manager,records_management.group_records_admin" />
 
         <!-- Customer Portal Integration -->
