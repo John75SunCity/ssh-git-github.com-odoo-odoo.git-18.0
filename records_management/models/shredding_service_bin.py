@@ -263,7 +263,7 @@ class ShreddingServiceBin(models.Model):
     )
     last_maintenance_date = fields.Date(
         string="Last Maintenance",
-        compute='_compute_maintenance_count',
+        compute='_compute_last_maintenance_date',
         store=True
     )
 
@@ -529,9 +529,14 @@ class ShreddingServiceBin(models.Model):
 
     @api.depends('maintenance_request_ids')
     def _compute_maintenance_count(self):
-        """Compute maintenance statistics for this bin."""
+        """Compute maintenance count for this bin."""
         for record in self:
             record.maintenance_count = len(record.maintenance_request_ids)
+
+    @api.depends('maintenance_request_ids', 'maintenance_request_ids.close_date', 'maintenance_request_ids.schedule_date')
+    def _compute_last_maintenance_date(self):
+        """Compute last maintenance date for this bin."""
+        for record in self:
             if record.maintenance_request_ids:
                 completed = record.maintenance_request_ids.filtered(
                     lambda r: r.stage_id.done if hasattr(r.stage_id, 'done') else False
