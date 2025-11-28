@@ -158,7 +158,7 @@ class RecurringWorkOrderSchedule(models.Model):
         column1='schedule_id',
         column2='bin_id',
         string="Specific Bins",
-        domain="[('partner_id', '=', partner_id)]",
+        domain="[('current_customer_id', '=', partner_id)]",
         help="Specific bins to service. Leave empty to service all customer bins."
     )
     
