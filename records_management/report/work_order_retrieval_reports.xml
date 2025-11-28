@@ -1,45 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Report Action -->
         <record id="report_work_order_retrieval" model="ir.actions.report">
-            <field name="name">Work Order Retrieval Report</field>
+            <field name="name">Retrieval Work Order</field>
             <field name="model">work.order.retrieval</field>
-            <field name="report_type">qweb-html</field>
-            <field name="report_name">records_management.report_work_order_retrieval_view</field>
-            <field name="report_file">records_management.report_work_order_retrieval</field>
-            <field name="print_report_name">"Work Order Retrieval Report - %s" % (object.name or object.id)</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">records_management.report_work_order_retrieval_document</field>
+            <field name="report_file">records_management.report_work_order_retrieval_document</field>
+            <field name="print_report_name">'Retrieval_WO_%s' % (object.name or 'Draft')</field>
             <field name="binding_model_id" ref="records_management.model_work_order_retrieval"/>
             <field name="binding_type">report</field>
         </record>
 
-        <template id="report_work_order_retrieval_view">
+        <!-- Main Report Template -->
+        <template id="report_work_order_retrieval_document">
             <t t-call="web.html_container">
                 <t t-foreach="docs" t-as="doc">
                     <t t-call="web.external_layout">
                         <div class="page">
-                            <h2>Work Order Retrieval Report</h2>
-                            <div class="row">
-                                <div class="col-12">
-                                    <table class="table table-sm">
-                                        <tbody>
-                                            <tr>
-                                                <td><strong>ID:</strong></td>
-                                                <td><span t-esc="doc.id"/></td>
-                                            </tr>
-                                            <t t-if="hasattr(doc, 'name')">
-                                            <tr>
-                                                <td><strong>Name:</strong></td>
-                                                <td><span t-esc="doc.name"/></td>
-                                            </tr>
-                                            </t>
-                                            <t t-if="hasattr(doc, 'create_date')">
-                                            <tr>
-                                                <td><strong>Created:</strong></td>
-                                                <td><span t-esc="doc.create_date"/></td>
-                                            </tr>
-                                            </t>
-                                        </tbody>
+                            <!-- Header -->
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <h2>Retrieval Work Order</h2>
+                                    <h3 t-field="doc.name"/>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <div class="badge bg-primary fs-5" t-field="doc.state"/>
+                                    <div class="mt-2">
+                                        <strong>Priority:</strong>
+                                        <span t-if="doc.priority == '0'">Normal</span>
+                                        <span t-if="doc.priority == '1'" class="text-warning">High</span>
+                                        <span t-if="doc.priority == '2'" class="text-danger">Urgent</span>
+                                        <span t-if="doc.priority == '3'" class="text-danger fw-bold">Critical</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Customer &amp; Schedule Info -->
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <h5>Customer Information</h5>
+                                    <table class="table table-sm table-borderless">
+                                        <tr>
+                                            <td class="fw-bold" style="width: 40%;">Customer:</td>
+                                            <td t-field="doc.partner_id.name"/>
+                                        </tr>
+                                        <tr t-if="doc.contact_person">
+                                            <td class="fw-bold">Contact:</td>
+                                            <td t-field="doc.contact_person"/>
+                                        </tr>
+                                        <tr t-if="doc.contact_phone">
+                                            <td class="fw-bold">Phone:</td>
+                                            <td t-field="doc.contact_phone"/>
+                                        </tr>
+                                        <tr t-if="doc.pickup_address">
+                                            <td class="fw-bold">Pickup Address:</td>
+                                            <td t-field="doc.pickup_address"/>
+                                        </tr>
                                     </table>
+                                </div>
+                                <div class="col-6">
+                                    <h5>Schedule</h5>
+                                    <table class="table table-sm table-borderless">
+                                        <tr>
+                                            <td class="fw-bold" style="width: 40%;">Scheduled:</td>
+                                            <td t-field="doc.scheduled_date" t-options="{'widget': 'datetime'}"/>
+                                        </tr>
+                                        <tr t-if="doc.user_id">
+                                            <td class="fw-bold">Assigned To:</td>
+                                            <td t-field="doc.user_id.name"/>
+                                        </tr>
+                                        <tr t-if="doc.work_order_type">
+                                            <td class="fw-bold">Type:</td>
+                                            <td t-field="doc.work_order_type"/>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Total Boxes:</td>
+                                            <td t-field="doc.total_boxes"/>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Items to Retrieve (Pick List) -->
+                            <div class="mb-4" t-if="doc.retrieval_item_ids">
+                                <h5>Items to Retrieve (Pick List)</h5>
+                                <table class="table table-sm table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 5%;">☐</th>
+                                            <th style="width: 20%;">Container</th>
+                                            <th style="width: 25%;">Location</th>
+                                            <th style="width: 15%;">Barcode</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="doc.retrieval_item_ids" t-as="item">
+                                            <tr>
+                                                <td class="text-center">☐</td>
+                                                <td t-if="item.box_id" t-field="item.box_id.name"/>
+                                                <td t-else="">-</td>
+                                                <td t-if="item.box_id and item.box_id.location_id" t-field="item.box_id.location_id.name"/>
+                                                <td t-else="">-</td>
+                                                <td t-if="item.box_id and item.box_id.barcode" t-field="item.box_id.barcode"/>
+                                                <td t-else="">-</td>
+                                                <td t-field="item.item_description"/>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Special Instructions -->
+                            <div class="mb-4" t-if="doc.special_instructions">
+                                <h5>Special Instructions</h5>
+                                <div class="border p-2" t-field="doc.special_instructions"/>
+                            </div>
+
+                            <!-- Access Requirements -->
+                            <div class="mb-4" t-if="doc.access_requirements">
+                                <h5>Access Requirements</h5>
+                                <div class="border p-2" t-field="doc.access_requirements"/>
+                            </div>
+
+                            <!-- Signature Section -->
+                            <div class="row mt-5">
+                                <div class="col-6">
+                                    <p class="mb-0"><strong>Technician Signature:</strong></p>
+                                    <div style="border-bottom: 1px solid #000; height: 40px; margin-top: 30px;"/>
+                                    <p class="mt-1">Date: _______________</p>
+                                </div>
+                                <div class="col-6">
+                                    <p class="mb-0"><strong>Customer Signature:</strong></p>
+                                    <div style="border-bottom: 1px solid #000; height: 40px; margin-top: 30px;"/>
+                                    <p class="mt-1">Date: _______________</p>
                                 </div>
                             </div>
                         </div>
