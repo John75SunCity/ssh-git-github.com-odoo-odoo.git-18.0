@@ -18,26 +18,61 @@
                 <t t-call="web.external_layout">
                     <div class="page">
                         <h2>Portal Request Report</h2>
-                        <table class="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-if="doc.field_ids">
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
-                                </tr>
-                            </t>
-                            </tbody>
-                        </table>
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <strong>Request:</strong> <span t-field="doc.name"/><br/>
+                                <strong>Customer:</strong> <span t-field="doc.partner_id"/><br/>
+                                <strong>Type:</strong> <span t-field="doc.request_type"/><br/>
+                                <strong>Status:</strong> <span t-field="doc.state"/><br/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Requested Date:</strong> <span t-field="doc.requested_date"/><br/>
+                                <strong>Deadline:</strong> <span t-field="doc.deadline"/><br/>
+                                <strong>Priority:</strong> <span t-field="doc.priority"/><br/>
+                                <strong>Assigned To:</strong> <span t-field="doc.user_id"/><br/>
+                            </div>
+                        </div>
+                        
+                        <t t-if="doc.description">
+                            <h4>Description</h4>
+                            <p t-field="doc.description"/>
+                        </t>
+
+                        <t t-if="doc.file_ids">
+                            <h4>Related Files</h4>
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                        <th>Barcode</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.file_ids" t-as="file">
+                                        <td><span t-field="file.name"/></td>
+                                        <td><span t-field="file.barcode"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <t t-if="doc.container_ids">
+                            <h4>Related Containers</h4>
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Container</th>
+                                        <th>Barcode</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.container_ids" t-as="container">
+                                        <td><span t-field="container.name"/></td>
+                                        <td><span t-field="container.barcode"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
                     </div>
                 </t>
             </t>
