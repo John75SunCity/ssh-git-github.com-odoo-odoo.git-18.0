@@ -265,6 +265,7 @@ from . import shredding_service
 from . import shredding_service_actions
 from . import shredding_service_bin
 from . import shredding_service_bin_actions
+from . import shredding_bin_movement
 from . import shredding_service_event
 from . import shredding_service_log
 from . import shredding_service_photo

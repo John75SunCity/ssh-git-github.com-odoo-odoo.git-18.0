@@ -71,6 +71,12 @@ class MaintenanceRequest(models.Model):
         string="Related Container",
         help="Records container associated with this maintenance",
     )
+    shredding_bin_id = fields.Many2one(
+        comodel_name="shredding.service.bin",
+        string="Shredding Bin",
+        help="Shredding bin requiring repair/maintenance",
+        tracking=True,
+    )
     priority = fields.Selection(
         [("0", "Very Low"), ("1", "Low"), ("2", "Normal"), ("3", "High")],
         string="Priority",

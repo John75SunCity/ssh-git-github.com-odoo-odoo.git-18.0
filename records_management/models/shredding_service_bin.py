@@ -211,6 +211,7 @@ class ShreddingServiceBin(models.Model):
         ('in_transit', 'In Transit'),
         ('being_serviced', 'Being Serviced'),
         ('maintenance', 'Maintenance'),
+        ('lost', 'Lost/Written Off'),
         ('retired', 'Retired')
     ], string="Status", default='available', tracking=True)
 
@@ -219,6 +220,74 @@ class ShreddingServiceBin(models.Model):
         string="Current Location",
         tracking=True,
         help="Current physical location of the bin"
+    )
+
+    # ============================================================================
+    # INVENTORY TRACKING (Virtual Locations for Bins)
+    # Bins are tracked like assets, not consumable inventory
+    # ============================================================================
+    warehouse_location_id = fields.Many2one(
+        comodel_name='stock.location',
+        string="Home Warehouse",
+        help="The warehouse where this bin is stored when not in service",
+        tracking=True
+    )
+
+    # ============================================================================
+    # MAINTENANCE INTEGRATION
+    # ============================================================================
+    maintenance_request_id = fields.Many2one(
+        comodel_name='maintenance.request',
+        string="Active Maintenance Request",
+        tracking=True,
+        help="Current maintenance request for damaged bin"
+    )
+    maintenance_request_ids = fields.One2many(
+        comodel_name='maintenance.request',
+        inverse_name='shredding_bin_id',
+        string="Maintenance History"
+    )
+    maintenance_count = fields.Integer(
+        string="Maintenance Count",
+        compute='_compute_maintenance_count'
+    )
+    last_maintenance_date = fields.Date(
+        string="Last Maintenance",
+        compute='_compute_maintenance_count',
+        store=True
+    )
+
+    # ============================================================================
+    # MOVEMENT TRACKING
+    # ============================================================================
+    movement_ids = fields.One2many(
+        comodel_name='shredding.bin.movement',
+        inverse_name='bin_id',
+        string="Movement History"
+    )
+    movement_count = fields.Integer(
+        string="Movement Count",
+        compute='_compute_movement_count'
+    )
+
+    # ============================================================================
+    # LOSS TRACKING
+    # ============================================================================
+    loss_date = fields.Date(
+        string="Loss Date",
+        tracking=True,
+        help="Date when bin was marked as lost or written off"
+    )
+    loss_reason = fields.Text(
+        string="Loss Reason",
+        tracking=True,
+        help="Explanation for bin loss"
+    )
+    loss_stock_move_id = fields.Many2one(
+        comodel_name='stock.move',
+        string="Inventory Loss Move",
+        readonly=True,
+        help="Stock move recording the inventory loss"
     )
 
     # ============================================================================
@@ -448,6 +517,31 @@ class ShreddingServiceBin(models.Model):
 
             record.service_summary = " | ".join(summary_parts)
 
+    @api.depends('maintenance_request_ids')
+    def _compute_maintenance_count(self):
+        """Compute maintenance statistics for this bin."""
+        for record in self:
+            record.maintenance_count = len(record.maintenance_request_ids)
+            if record.maintenance_request_ids:
+                completed = record.maintenance_request_ids.filtered(
+                    lambda r: r.stage_id.done if hasattr(r.stage_id, 'done') else False
+                )
+                if completed:
+                    record.last_maintenance_date = max(
+                        r.close_date or r.schedule_date for r in completed
+                        if r.close_date or r.schedule_date
+                    ) if any(r.close_date or r.schedule_date for r in completed) else False
+                else:
+                    record.last_maintenance_date = False
+            else:
+                record.last_maintenance_date = False
+
+    @api.depends('movement_ids')
+    def _compute_movement_count(self):
+        """Compute movement count for this bin."""
+        for record in self:
+            record.movement_count = len(record.movement_ids)
+
     # ============================================================================
     # BUSINESS METHODS - Barcode Handling
     # ============================================================================
@@ -530,6 +624,207 @@ class ShreddingServiceBin(models.Model):
                 'default_issue_type': 'damage',  # Default to damage
             }
         }
+
+    # ============================================================================
+    # MAINTENANCE AND STATUS MANAGEMENT
+    # ============================================================================
+    def action_send_to_maintenance(self):
+        """Send bin to maintenance - creates maintenance request."""
+        self.ensure_one()
+        
+        if self.status == 'maintenance':
+            raise UserError(_("Bin is already in maintenance."))
+        
+        # Get or create maintenance equipment category for bins
+        equipment_category = self.env['maintenance.equipment.category'].search([
+            ('name', 'ilike', 'Shredding Bin')
+        ], limit=1)
+        
+        if not equipment_category:
+            equipment_category = self.env['maintenance.equipment.category'].create({
+                'name': 'Shredding Bins',
+            })
+        
+        # Create maintenance request
+        maintenance_request = self.env['maintenance.request'].create({
+            'name': _('Bin Repair: %s') % self.barcode,
+            'shredding_bin_id': self.id,
+            'request_date': fields.Date.today(),
+            'description': _("Shredding bin requires maintenance.\nBarcode: %s\nSize: %s\nPrevious Status: %s") % (
+                self.barcode,
+                dict(self._fields['bin_size'].selection).get(self.bin_size, 'Unknown'),
+                dict(self._fields['status'].selection).get(self.status, 'Unknown')
+            ),
+            'priority': '1',  # Normal priority
+        })
+        
+        # Record movement to maintenance
+        self._record_movement('maintenance', reason=_("Sent to maintenance"))
+        
+        # Update bin status
+        self.write({
+            'status': 'maintenance',
+            'maintenance_request_id': maintenance_request.id,
+        })
+        
+        self.message_post(body=_("Bin sent to maintenance. Request #%s created.") % maintenance_request.id)
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'maintenance.request',
+            'res_id': maintenance_request.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+    def action_return_from_maintenance(self):
+        """Return bin from maintenance to available status."""
+        self.ensure_one()
+        
+        if self.status != 'maintenance':
+            raise UserError(_("Bin is not in maintenance status."))
+        
+        # Record movement back to available
+        self._record_movement('available', reason=_("Returned from maintenance"))
+        
+        # Update status
+        self.write({
+            'status': 'available',
+            'maintenance_request_id': False,
+        })
+        
+        self.message_post(body=_("Bin returned from maintenance and is now available."))
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': _('Bin %s returned from maintenance.') % self.barcode,
+                'type': 'success',
+            }
+        }
+
+    def action_mark_as_lost(self):
+        """Mark bin as lost and record inventory loss."""
+        self.ensure_one()
+        
+        if self.status in ['lost', 'retired']:
+            raise UserError(_("Bin is already marked as lost or retired."))
+        
+        # Record movement to lost
+        self._record_movement('lost', reason=_("Marked as lost/missing"))
+        
+        # Update status
+        self.write({
+            'status': 'lost',
+            'loss_date': fields.Date.today(),
+            'active': False,  # Archive the bin
+        })
+        
+        self.message_post(body=_("Bin marked as lost. Record has been archived."))
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': _('Bin %s marked as lost and archived.') % self.barcode,
+                'type': 'warning',
+            }
+        }
+
+    def action_deploy_to_customer(self):
+        """Deploy bin to a customer location."""
+        self.ensure_one()
+        
+        if self.status not in ['available']:
+            raise UserError(_("Only available bins can be deployed to customers."))
+        
+        return {
+            'name': _('Deploy Bin to Customer'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'shredding.bin.deploy.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_bin_id': self.id,
+            }
+        }
+
+    def action_return_to_warehouse(self):
+        """Return bin from customer to warehouse."""
+        self.ensure_one()
+        
+        if self.status == 'available' and not self.current_customer_id:
+            raise UserError(_("Bin is already at warehouse."))
+        
+        # Record movement
+        self._record_movement('warehouse', reason=_("Returned to warehouse from %s") % (
+            self.current_customer_id.name if self.current_customer_id else 'field'
+        ))
+        
+        self.write({
+            'status': 'available',
+            'current_customer_id': False,
+            'current_department_id': False,
+            'location_id': self.warehouse_location_id.id if self.warehouse_location_id else False,
+        })
+        
+        self.message_post(body=_("Bin returned to warehouse."))
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': _('Bin %s returned to warehouse.') % self.barcode,
+                'type': 'success',
+            }
+        }
+
+    def action_view_movements(self):
+        """View bin movement history."""
+        self.ensure_one()
+        
+        return {
+            'name': _('Movement History - %s') % self.barcode,
+            'type': 'ir.actions.act_window',
+            'res_model': 'shredding.bin.movement',
+            'view_mode': 'tree,form',
+            'domain': [('bin_id', '=', self.id)],
+            'context': {
+                'default_bin_id': self.id,
+            }
+        }
+
+    def action_view_maintenance_history(self):
+        """View maintenance history for this bin."""
+        self.ensure_one()
+        
+        return {
+            'name': _('Maintenance History - %s') % self.barcode,
+            'type': 'ir.actions.act_window',
+            'res_model': 'maintenance.request',
+            'view_mode': 'tree,form',
+            'domain': [('shredding_bin_id', '=', self.id)],
+        }
+
+    def _record_movement(self, new_status, reason=None):
+        """Record a bin movement in the movement history."""
+        self.ensure_one()
+        
+        # Check if movement model exists
+        if 'shredding.bin.movement' not in self.env:
+            return
+        
+        self.env['shredding.bin.movement'].create({
+            'bin_id': self.id,
+            'movement_date': fields.Datetime.now(),
+            'from_status': self.status,
+            'to_status': new_status,
+            'from_location_id': self.location_id.id if self.location_id else False,
+            'from_customer_id': self.current_customer_id.id if self.current_customer_id else False,
+            'performed_by_id': self.env.user.id,
+            'reason': reason or '',
+        })
 
     # ============================================================================
     # ONCHANGE METHODS
