@@ -40,8 +40,7 @@
                         <div class="row" invisible="state != 'type_selection' or service_category != 'storage'">
                             <div class="col-12">
                                 <group string="Storage Services - Select One">
-                                    <field name="work_order_type" widget="radio"
-                                           domain="[('work_order_type', 'in', ['retrieval', 'delivery', 'pickup', 'container_access'])]"/>
+                                    <field name="work_order_type" widget="radio"/>
                                 </group>
                             </div>
                         </div>
@@ -50,8 +49,7 @@
                         <div class="row" invisible="state != 'type_selection' or service_category != 'destruction'">
                             <div class="col-12">
                                 <group string="Destruction Services - Select One">
-                                    <field name="work_order_type" widget="radio"
-                                           domain="[('work_order_type', 'in', ['container_destruction', 'shredding'])]"/>
+                                    <field name="work_order_type" widget="radio"/>
                                 </group>
                             </div>
                         </div>

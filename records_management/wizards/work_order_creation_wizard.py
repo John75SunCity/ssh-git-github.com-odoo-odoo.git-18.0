@@ -59,15 +59,14 @@ class WorkOrderCreationWizard(models.TransientModel):
         ('shredding', 'Shredding Service - On-site/mobile shredding'),
     ], string="Work Order Type", required=True)
     
-    # Dynamic domain for type based on category
     @api.onchange('service_category')
     def _onchange_service_category(self):
-        """Update work order type based on selected category."""
+        """Reset work order type when category changes."""
+        # Set a default type based on category
         if self.service_category == 'storage':
-            return {'domain': {'work_order_type': [('work_order_type', 'in', ['retrieval', 'delivery', 'pickup', 'container_access'])]}}
+            self.work_order_type = 'retrieval'
         elif self.service_category == 'destruction':
-            return {'domain': {'work_order_type': [('work_order_type', 'in', ['container_destruction', 'shredding'])]}}
-        return {}
+            self.work_order_type = 'container_destruction'
 
     priority = fields.Selection([
         ('0', 'Normal'),
