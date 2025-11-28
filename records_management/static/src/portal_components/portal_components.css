@@ -274,3 +274,227 @@
         animation: none;
     }
 }
+
+/* ============================================================================
+ * THEME-SAFE PORTAL STYLING
+ * Ensures readability regardless of Odoo theme (light or dark)
+ * ============================================================================ */
+
+/* All portal cards get explicit light backgrounds for readability */
+.o_portal .card,
+.o_portal_wrap .card,
+[class*="portal"] .card {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+.o_portal .card-header,
+.o_portal_wrap .card-header,
+[class*="portal"] .card-header {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+.o_portal .card-body,
+.o_portal_wrap .card-body,
+[class*="portal"] .card-body {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+/* Preserve colored headers (primary, success, danger, etc.) */
+.o_portal .card-header.bg-primary,
+.o_portal_wrap .card-header.bg-primary,
+[class*="portal"] .card-header.bg-primary {
+    background-color: #007bff !important;
+    color: #ffffff !important;
+}
+
+.o_portal .card-header.bg-success,
+.o_portal_wrap .card-header.bg-success,
+[class*="portal"] .card-header.bg-success {
+    background-color: #28a745 !important;
+    color: #ffffff !important;
+}
+
+.o_portal .card-header.bg-danger,
+.o_portal_wrap .card-header.bg-danger,
+[class*="portal"] .card-header.bg-danger {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+.o_portal .card-header.bg-warning,
+.o_portal_wrap .card-header.bg-warning,
+[class*="portal"] .card-header.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.o_portal .card-header.bg-info,
+.o_portal_wrap .card-header.bg-info,
+[class*="portal"] .card-header.bg-info {
+    background-color: #17a2b8 !important;
+    color: #ffffff !important;
+}
+
+/* Info cards with bg-light should remain light */
+.o_portal .card.bg-light,
+.o_portal_wrap .card.bg-light,
+[class*="portal"] .card.bg-light {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+/* Form controls - ensure inputs are always readable */
+.o_portal .form-control,
+.o_portal_wrap .form-control,
+[class*="portal"] .form-control {
+    background-color: #ffffff !important;
+    color: #495057 !important;
+    border: 1px solid #ced4da !important;
+}
+
+.o_portal .form-control:focus,
+.o_portal_wrap .form-control:focus,
+[class*="portal"] .form-control:focus {
+    background-color: #ffffff !important;
+    color: #495057 !important;
+    border-color: #80bdff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+
+/* Form select dropdowns */
+.o_portal .form-select,
+.o_portal_wrap .form-select,
+[class*="portal"] .form-select {
+    background-color: #ffffff !important;
+    color: #495057 !important;
+    border: 1px solid #ced4da !important;
+}
+
+/* Form check boxes/radios with card styling */
+.o_portal .form-check.card,
+.o_portal_wrap .form-check.card,
+[class*="portal"] .form-check.card {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+.o_portal .form-check-label,
+.o_portal_wrap .form-check-label,
+[class*="portal"] .form-check-label {
+    color: #212529 !important;
+}
+
+/* Tables in portal */
+.o_portal .table,
+.o_portal_wrap .table,
+[class*="portal"] .table {
+    color: #212529 !important;
+}
+
+.o_portal .table th,
+.o_portal .table td,
+.o_portal_wrap .table th,
+.o_portal_wrap .table td,
+[class*="portal"] .table th,
+[class*="portal"] .table td {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #dee2e6 !important;
+}
+
+.o_portal .table-striped tbody tr:nth-of-type(odd),
+.o_portal_wrap .table-striped tbody tr:nth-of-type(odd),
+[class*="portal"] .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* List groups */
+.o_portal .list-group-item,
+.o_portal_wrap .list-group-item,
+[class*="portal"] .list-group-item {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border: 1px solid rgba(0, 0, 0, 0.125) !important;
+}
+
+/* Text helpers - ensure text is readable */
+.o_portal .text-muted,
+.o_portal_wrap .text-muted,
+[class*="portal"] .text-muted {
+    color: #6c757d !important;
+}
+
+/* Labels */
+.o_portal label,
+.o_portal_wrap label,
+[class*="portal"] label {
+    color: #212529 !important;
+}
+
+.o_portal .form-label,
+.o_portal_wrap .form-label,
+[class*="portal"] .form-label {
+    color: #212529 !important;
+}
+
+/* Modal content - ensure modals are readable */
+.o_portal .modal-content,
+.o_portal_wrap .modal-content,
+[class*="portal"] .modal-content {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+}
+
+.o_portal .modal-header,
+.o_portal_wrap .modal-header,
+[class*="portal"] .modal-header {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.o_portal .modal-footer,
+.o_portal_wrap .modal-footer,
+[class*="portal"] .modal-footer {
+    background-color: #f8f9fa !important;
+    border-top: 1px solid #dee2e6 !important;
+}
+
+/* Alert boxes - preserve their colors */
+.o_portal .alert-info,
+.o_portal_wrap .alert-info,
+[class*="portal"] .alert-info {
+    background-color: #d1ecf1 !important;
+    color: #0c5460 !important;
+    border-color: #bee5eb !important;
+}
+
+.o_portal .alert-success,
+.o_portal_wrap .alert-success,
+[class*="portal"] .alert-success {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border-color: #c3e6cb !important;
+}
+
+.o_portal .alert-warning,
+.o_portal_wrap .alert-warning,
+[class*="portal"] .alert-warning {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+    border-color: #ffeeba !important;
+}
+
+.o_portal .alert-danger,
+.o_portal_wrap .alert-danger,
+[class*="portal"] .alert-danger {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    border-color: #f5c6cb !important;
+}

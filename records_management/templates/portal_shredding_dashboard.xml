@@ -514,7 +514,7 @@
                                             <div class="row g-2">
                                                 <t t-foreach="material_types" t-as="mt">
                                                     <div class="col-md-6">
-                                                        <div class="form-check card p-3">
+                                                        <div class="form-check card p-3 bg-white text-dark border">
                                                             <input class="form-check-input" type="radio"
                                                                    name="material_type" t-att-id="'mt_' + mt[0]"
                                                                    t-att-value="mt[0]"
@@ -534,7 +534,7 @@
                                             <div class="row g-2">
                                                 <t t-foreach="container_types" t-as="ct">
                                                     <div class="col-md-6">
-                                                        <div class="form-check card p-3">
+                                                        <div class="form-check card p-3 bg-white text-dark border">
                                                             <input class="form-check-input" type="radio"
                                                                    name="container_type" t-att-id="'ct_' + ct[0]"
                                                                    t-att-value="ct[0]"
