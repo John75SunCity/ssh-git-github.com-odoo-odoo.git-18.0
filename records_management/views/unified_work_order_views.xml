@@ -12,8 +12,7 @@
                 <list decoration-danger="priority == '2'" 
                       decoration-warning="state == 'in_progress'"
                       decoration-muted="state == 'cancelled'"
-                      decoration-success="state in ('completed', 'certified', 'invoiced')"
-                      open="action_open_source_record">
+                      decoration-success="state in ('completed', 'certified', 'invoiced')">
                     <field name="scheduled_date" widget="datetime"/>
                     <field name="name"/>
                     <field name="partner_id"/>
@@ -31,6 +30,9 @@
                     <field name="is_portal_order" widget="boolean"/>
                     <field name="source_model" column_invisible="1"/>
                     <field name="source_id" column_invisible="1"/>
+                    <button name="action_open_source_record" type="object" 
+                            string="Open" icon="fa-external-link" 
+                            class="btn-link"/>
                 </list>
             </field>
         </record>
