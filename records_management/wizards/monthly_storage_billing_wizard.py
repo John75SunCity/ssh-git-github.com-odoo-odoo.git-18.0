@@ -102,7 +102,7 @@ class MonthlyStorageBillingWizard(models.TransientModel):
         domain=[('is_company', '=', True)],
         help='Leave empty to bill all customers with active containers'
     )
-    
+
     include_pending_work_orders = fields.Boolean(
         string='Include Pending Work Orders',
         default=True,
@@ -288,7 +288,7 @@ class MonthlyStorageBillingWizard(models.TransientModel):
         # Calculate pending work order charges (for consolidated billing)
         pending_work_orders = 0
         work_order_total = 0.0
-        
+
         if self.include_pending_work_orders and partner.consolidated_billing:
             # Find pending shredding work orders
             shredding_orders = self.env['work.order.shredding'].search([
@@ -299,7 +299,7 @@ class MonthlyStorageBillingWizard(models.TransientModel):
             for wo in shredding_orders:
                 pending_work_orders += 1
                 work_order_total += wo.subtotal or 0.0
-            
+
             # Find pending retrieval work orders
             retrieval_orders = self.env['work.order.retrieval'].search([
                 ('partner_id', '=', partner.id),
@@ -443,7 +443,7 @@ class MonthlyStorageBillingWizard(models.TransientModel):
                 ('invoice_id', '=', False),
             ])
             pending_work_orders.extend(shredding_orders)
-            
+
             for wo in shredding_orders:
                 wo_product = wo.service_product_id or self._get_work_order_product('shredding')
                 line_vals.append((0, 0, {
@@ -452,7 +452,7 @@ class MonthlyStorageBillingWizard(models.TransientModel):
                     'quantity': wo.quantity or 1,
                     'price_unit': wo.unit_price or wo_product.list_price,
                 }))
-            
+
             # Retrieval work orders
             retrieval_orders = self.env['work.order.retrieval'].search([
                 ('partner_id', '=', preview.partner_id.id),
@@ -460,7 +460,7 @@ class MonthlyStorageBillingWizard(models.TransientModel):
                 ('invoice_id', '=', False),
             ])
             pending_work_orders.extend(retrieval_orders)
-            
+
             for wo in retrieval_orders:
                 wo_product = wo.service_product_id or self._get_work_order_product('retrieval')
                 line_vals.append((0, 0, {
@@ -474,7 +474,7 @@ class MonthlyStorageBillingWizard(models.TransientModel):
 
         # Create invoice
         invoice = self.env['account.move'].create(invoice_vals)
-        
+
         # Link work orders to this invoice and clear pending flag
         for wo in pending_work_orders:
             wo.write({
@@ -568,7 +568,7 @@ class MonthlyStorageBillingWizard(models.TransientModel):
             code = 'RM-SERVICE'
             name = 'Records Management Service'
             price = 0.00
-        
+
         product = self.env['product.product'].search([
             ('default_code', '=', code),
         ], limit=1)
@@ -644,14 +644,14 @@ class MonthlyStorageBillingPreview(models.TransientModel):
         string='Min. Adjustment',
         currency_field='currency_id'
     )
-    
+
     # Work order charges (for consolidated billing customers)
     pending_work_orders = fields.Integer(string='Pending Work Orders')
     work_order_total = fields.Monetary(
         string='Work Order Charges',
         currency_field='currency_id'
     )
-    
+
     total_amount = fields.Monetary(
         string='Total',
         currency_field='currency_id'
