@@ -51,15 +51,17 @@
                         <group string="Enter Barcode Manually">
                             <div class="d-flex align-items-center">
                                 <field name="manual_barcode" 
-                                       placeholder="Type or paste barcode here..."
+                                       placeholder="Type barcode and press Enter..."
                                        class="o_input flex-grow-1"
                                        style="font-size: 1.2em;"/>
                                 <button name="action_manual_scan" 
-                                        string="Scan" 
+                                        string="Submit" 
                                         type="object" 
-                                        class="btn-primary ms-2"
-                                        icon="fa-search"/>
+                                        class="btn-primary ms-2 oe_highlight"
+                                        icon="fa-arrow-right"
+                                        default_focus="1"/>
                             </div>
+                            <p class="text-muted small mt-1">Type barcode and click Submit (or use hardware scanner)</p>
                         </group>
 
                         <!-- Last Scan Info - Prominent Display -->
