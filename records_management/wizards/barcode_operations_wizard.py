@@ -75,6 +75,12 @@ class BarcodeOperationsWizard(models.TransientModel):
         readonly=True
     )
 
+    # Manual input field
+    manual_barcode = fields.Char(
+        string='Enter Barcode',
+        help='Manually type or paste a barcode'
+    )
+
     # Status Display
     last_barcode = fields.Char(string='Last Scanned', readonly=True)
     scan_result = fields.Text(string='Result', readonly=True)
@@ -88,6 +94,15 @@ class BarcodeOperationsWizard(models.TransientModel):
         ('scrap', 'Pending Destruction'),
         ('return', 'Pending Retrieval'),
     ], string='Pending Action', default='none')
+
+    def action_manual_scan(self):
+        """Process manually entered barcode."""
+        self.ensure_one()
+        if not self.manual_barcode:
+            return
+        barcode = self.manual_barcode.strip()
+        self.manual_barcode = ''  # Clear input
+        return self.on_barcode_scanned(barcode)
 
     def on_barcode_scanned(self, barcode):
         """

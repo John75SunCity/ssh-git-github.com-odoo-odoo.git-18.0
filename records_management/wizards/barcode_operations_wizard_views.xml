@@ -47,6 +47,21 @@
                                    invisible="pending_operation == 'none'"/>
                         </group>
 
+                        <!-- Manual Barcode Entry -->
+                        <group string="Enter Barcode Manually">
+                            <div class="d-flex align-items-center">
+                                <field name="manual_barcode" 
+                                       placeholder="Type or paste barcode here..."
+                                       class="o_input flex-grow-1"
+                                       style="font-size: 1.2em;"/>
+                                <button name="action_manual_scan" 
+                                        string="Scan" 
+                                        type="object" 
+                                        class="btn-primary ms-2"
+                                        icon="fa-search"/>
+                            </div>
+                        </group>
+
                         <!-- Last Scan Info - Prominent Display -->
                         <group string="📷 Last Scan" invisible="not last_barcode">
                             <div class="text-center" style="font-size: 1.3em; padding: 10px;">
