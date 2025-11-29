@@ -129,7 +129,7 @@ class WorkOrderShredding(models.Model):
     invoiced = fields.Boolean(string="Invoiced", compute='_compute_invoiced', store=True)
 
     company_id = fields.Many2one(comodel_name='res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    currency_id = fields.Many2one(comodel_name='res.currency', related='company_id.currency_id')
+    # currency_id provided by work.order.invoice.mixin
     active = fields.Boolean(default=True)
 
     # Computed count fields for stat buttons

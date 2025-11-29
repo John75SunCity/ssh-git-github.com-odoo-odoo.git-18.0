@@ -97,9 +97,8 @@ class WorkOrderRetrieval(models.Model):
     # Financial
     estimated_cost = fields.Monetary(string="Estimated Cost", currency_field="currency_id")
     actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
-    currency_id = fields.Many2one(comodel_name='res.currency', string='Currency',
-                                  default=lambda self: self.env.company.currency_id)
-    billable = fields.Boolean(string='Billable', default=True)
+    # currency_id provided by work.order.invoice.mixin
+    # billable provided by work.order.invoice.mixin
 
     # Retrieval-specific fields
     retrieval_date = fields.Date(string='Retrieval Date', tracking=True)

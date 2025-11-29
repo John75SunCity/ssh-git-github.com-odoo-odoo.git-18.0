@@ -27,7 +27,14 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
     _name = 'work.order.invoice.mixin'
     _description = 'Work Order Invoice Mixin'
 
-    # NOTE: Inheriting models MUST provide currency_id field for Monetary fields
+    # ============================================================================
+    # CURRENCY (Required for Monetary fields)
+    # ============================================================================
+    currency_id = fields.Many2one(
+        comodel_name='res.currency',
+        string='Currency',
+        default=lambda self: self.env.company.currency_id
+    )
 
     # ============================================================================
     # INVOICE FIELDS
