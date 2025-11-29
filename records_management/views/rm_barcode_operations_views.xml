@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================================================
+             RECORDS MANAGEMENT BARCODE OPERATIONS CENTER
+             Mobile-friendly barcode scanning interface for technicians
+             ============================================================================ -->
+
+        <!-- Main Barcode Operations Dashboard -->
+        <record id="rm_barcode_operations_dashboard" model="ir.actions.client">
+            <field name="name">Barcode Operations</field>
+            <field name="tag">rm_barcode_operations</field>
+            <field name="target">fullscreen</field>
+        </record>
+
+        <!-- ============================================================================
+             BARCODE OPERATION TYPE MODEL
+             Defines available barcode operations for the mobile interface
+             ============================================================================ -->
+
+        <!-- Container Retrieval Barcode Action -->
+        <record id="action_barcode_container_retrieval" model="ir.actions.act_window">
+            <field name="name">📦 Container Retrieval</field>
+            <field name="res_model">work.order.retrieval</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('state', 'in', ['draft', 'in_progress', 'assigned'])]</field>
+            <field name="context">{'default_state': 'draft', 'search_default_my_orders': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No container retrieval work orders ready for scanning.
+                </p>
+                <p>Create a retrieval work order to start scanning containers.</p>
+            </field>
+        </record>
+
+        <!-- Shredding/Bin Services Barcode Action -->
+        <record id="action_barcode_shredding_services" model="ir.actions.act_window">
+            <field name="name">🗑️ Shredding &amp; Bin Services</field>
+            <field name="res_model">work.order.shredding</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('state', 'in', ['draft', 'confirmed', 'assigned', 'in_progress'])]</field>
+            <field name="context">{'search_default_today': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No shredding work orders ready for scanning.
+                </p>
+                <p>Create a shredding work order to start bin service scanning.</p>
+            </field>
+        </record>
+
+        <!-- Container Destruction Barcode Action -->
+        <record id="action_barcode_destruction" model="ir.actions.act_window">
+            <field name="name">⚠️ Container Destruction</field>
+            <field name="res_model">container.destruction.work.order</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('state', 'in', ['draft', 'confirmed', 'authorized', 'scheduled', 'in_progress'])]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No destruction work orders ready for scanning.
+                </p>
+            </field>
+        </record>
+
+        <!-- Container Access Barcode Action -->
+        <record id="action_barcode_container_access" model="ir.actions.act_window">
+            <field name="name">🔓 Container Access</field>
+            <field name="res_model">container.access.work.order</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No container access work orders.
+                </p>
+            </field>
+        </record>
+
+        <!-- Quick Container Lookup by Barcode -->
+        <record id="action_barcode_container_lookup" model="ir.actions.act_window">
+            <field name="name">🔍 Container Lookup</field>
+            <field name="res_model">records.container</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_group_by_state': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Scan or search for any container.
+                </p>
+            </field>
+        </record>
+
+        <!-- Shredding Bin Lookup -->
+        <record id="action_barcode_bin_lookup" model="ir.actions.act_window">
+            <field name="name">🗑️ Bin Lookup</field>
+            <field name="res_model">shredding.service.bin</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Scan or search for shredding bins.
+                </p>
+            </field>
+        </record>
+
+        <!-- File/Document Lookup -->
+        <record id="action_barcode_file_lookup" model="ir.actions.act_window">
+            <field name="name">📄 File/Document Lookup</field>
+            <field name="res_model">records.file</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Scan or search for files/documents.
+                </p>
+            </field>
+        </record>
+
+        <!-- ============================================================================
+             BARCODE OPERATIONS MENU STRUCTURE
+             Accessible from main Records Management menu
+             ============================================================================ -->
+
+        <!-- Top-level Barcode Operations Menu -->
+        <menuitem id="menu_rm_barcode_operations"
+                  name="📱 Barcode Operations"
+                  parent="records_management.menu_records_management"
+                  sequence="5"
+                  groups="records_management.group_records_user"/>
+
+        <!-- Work Orders Sub-menu -->
+        <menuitem id="menu_barcode_work_orders"
+                  name="Work Orders"
+                  parent="menu_rm_barcode_operations"
+                  sequence="10"/>
+
+        <menuitem id="menu_barcode_retrieval"
+                  name="📦 Container Retrieval"
+                  parent="menu_barcode_work_orders"
+                  action="action_barcode_container_retrieval"
+                  sequence="10"/>
+
+        <menuitem id="menu_barcode_shredding"
+                  name="🗑️ Shredding &amp; Bin Services"
+                  parent="menu_barcode_work_orders"
+                  action="action_barcode_shredding_services"
+                  sequence="20"/>
+
+        <menuitem id="menu_barcode_destruction"
+                  name="⚠️ Container Destruction"
+                  parent="menu_barcode_work_orders"
+                  action="action_barcode_destruction"
+                  sequence="30"/>
+
+        <menuitem id="menu_barcode_access"
+                  name="🔓 Container Access"
+                  parent="menu_barcode_work_orders"
+                  action="action_barcode_container_access"
+                  sequence="40"/>
+
+        <!-- Quick Lookup Sub-menu -->
+        <menuitem id="menu_barcode_lookup"
+                  name="Quick Lookup"
+                  parent="menu_rm_barcode_operations"
+                  sequence="20"/>
+
+        <menuitem id="menu_barcode_lookup_container"
+                  name="🔍 Container Lookup"
+                  parent="menu_barcode_lookup"
+                  action="action_barcode_container_lookup"
+                  sequence="10"/>
+
+        <menuitem id="menu_barcode_lookup_bin"
+                  name="🗑️ Bin Lookup"
+                  parent="menu_barcode_lookup"
+                  action="action_barcode_bin_lookup"
+                  sequence="20"/>
+
+        <menuitem id="menu_barcode_lookup_file"
+                  name="📄 File/Document Lookup"
+                  parent="menu_barcode_lookup"
+                  action="action_barcode_file_lookup"
+                  sequence="30"/>
+
+        <!-- New Work Order Quick Action -->
+        <menuitem id="menu_barcode_new_work_order"
+                  name="➕ New Work Order"
+                  parent="menu_rm_barcode_operations"
+                  action="records_management.action_work_order_creation_wizard"
+                  sequence="5"/>
+
+    </data>
+</odoo>

@@ -609,6 +609,7 @@
         "views/advanced_billing_line_actions_menus.xml",
         "views/advanced_billing_profile_views.xml",
         "views/barcode_menus.xml",
+        "views/rm_barcode_operations_views.xml",  # Barcode Operations Center - mobile-friendly
         "views/base_rates_views.xml",
         "views/bin_barcode_inventory_views.xml",
         "views/bin_issue_report_wizard_views.xml",
