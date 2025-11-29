@@ -37,13 +37,13 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         copy=False,
         help='Invoice generated for this work order'
     )
-    
+
     invoice_status = fields.Selection([
         ('not_invoiced', 'Not Invoiced'),
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid'),
     ], string='Invoice Status', compute='_compute_invoice_status', store=True)
-    
+
     invoiced_amount = fields.Monetary(
         string='Invoiced Amount',
         compute='_compute_invoice_status',
@@ -55,26 +55,26 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
     # BILLING CONFIGURATION
     # ============================================================================
     billable = fields.Boolean(string='Billable', default=True)
-    
+
     service_product_id = fields.Many2one(
         comodel_name='product.product',
         string='Service Product',
         domain=[('type', '=', 'service')],
         help='Product to use for invoicing this service'
     )
-    
+
     unit_price = fields.Monetary(
         string='Unit Price',
         currency_field='currency_id',
         help='Price per unit for this service'
     )
-    
+
     quantity = fields.Float(
         string='Quantity',
         default=1.0,
         help='Quantity of service units'
     )
-    
+
     subtotal = fields.Monetary(
         string='Subtotal',
         compute='_compute_subtotal',
@@ -114,10 +114,10 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         Override in specific work order models to customize.
         """
         self.ensure_one()
-        
+
         if not self.partner_id:
             raise UserError(_("Cannot create invoice: No customer set on work order."))
-        
+
         return {
             'move_type': 'out_invoice',
             'partner_id': self.partner_id.id,
@@ -133,21 +133,21 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         Override in specific work order models to customize.
         """
         self.ensure_one()
-        
+
         # Get product - use service_product_id if set, otherwise find/create a default
         product = self.service_product_id
         if not product:
             product = self._get_default_service_product()
-        
+
         # Get the description
         name = self._get_invoice_line_description()
-        
+
         # Determine price - use unit_price if set, otherwise use product price
         price = self.unit_price or (product.lst_price if product else 0.0)
-        
+
         # Get quantity
         qty = self.quantity or 1.0
-        
+
         values = {
             'move_id': invoice.id,
             'product_id': product.id if product else False,
@@ -159,12 +159,12 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
             'work_order_reference': self.name,
             'work_order_date': self.scheduled_date.date() if hasattr(self, 'scheduled_date') and self.scheduled_date else fields.Date.today(),
         }
-        
+
         # Add service type based on model
         service_type = self._get_service_type()
         if service_type:
             values['records_service_type'] = service_type
-        
+
         return values
 
     def _get_default_service_product(self):
@@ -175,7 +175,7 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
             ('name', '=', product_name),
             ('type', '=', 'service')
         ], limit=1)
-        
+
         if not product:
             # Create the product
             product = self.env['product.product'].create({
@@ -185,7 +185,7 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
                 'list_price': self._get_default_price(),
                 'categ_id': self.env.ref('product.product_category_all').id,
             })
-        
+
         return product
 
     def _get_default_product_name(self):
@@ -212,47 +212,47 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
     def action_create_invoice(self):
         """Create invoice for this work order"""
         self.ensure_one()
-        
+
         # Validation
         if not self.billable:
             raise UserError(_("This work order is marked as non-billable."))
-        
+
         if self.invoice_id:
             raise UserError(_("Invoice already exists for this work order: %s") % self.invoice_id.name)
-        
+
         # Check state - only completed/verified work orders should be invoiced
         valid_states = ['completed', 'verified', 'certified']
         if hasattr(self, 'state') and self.state not in valid_states:
             raise UserError(_("Only completed or verified work orders can be invoiced. Current state: %s") % self.state)
-        
+
         # Create invoice
         invoice_vals = self._prepare_invoice_values()
         invoice = self.env['account.move'].create(invoice_vals)
-        
+
         # Create invoice line
         line_vals = self._prepare_invoice_line_values(invoice)
         self.env['account.move.line'].create(line_vals)
-        
+
         # Link invoice to work order
         self.invoice_id = invoice.id
-        
+
         # Update state if applicable
         if hasattr(self, 'state'):
             self.write({'state': 'invoiced'})
-        
+
         # Log message
         self.message_post(body=_('Invoice %s created') % invoice.name)
-        
+
         # Return action to view invoice
         return self.action_view_invoice()
 
     def action_view_invoice(self):
         """View the linked invoice"""
         self.ensure_one()
-        
+
         if not self.invoice_id:
             raise UserError(_("No invoice exists for this work order."))
-        
+
         return {
             'type': 'ir.actions.act_window',
             'name': _('Invoice'),
@@ -269,7 +269,7 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         """Create invoices for multiple work orders (batch operation)"""
         invoices = self.env['account.move']
         errors = []
-        
+
         for record in self:
             try:
                 if record.billable and not record.invoice_id:
@@ -277,12 +277,12 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
                     invoices |= record.invoice_id
             except UserError as e:
                 errors.append(_('%s: %s') % (record.name, str(e)))
-        
+
         if errors:
             message = _('Invoices created: %s\n\nErrors:\n%s') % (len(invoices), '\n'.join(errors))
         else:
             message = _('Created %s invoice(s)') % len(invoices)
-        
+
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
