@@ -80,11 +80,33 @@ class WorkOrderShredding(models.Model):
     )
     vehicle_id = fields.Many2one(comodel_name='fleet.vehicle', string="Assigned Vehicle")
 
+    # ============================================================================
+    # SERVICE TYPE AND BILLING
+    # ============================================================================
+    shredding_service_type = fields.Selection([
+        ('onsite', 'On-Site Shredding'),
+        ('offsite', 'Off-Site Shredding'),
+        ('mobile', 'Mobile Shredding Truck'),
+        ('bin_onetime', 'One-Time Bin Service'),
+        ('bin_recurring', 'Recurring Bin Service'),
+        ('bin_mobile', 'Mobile Bin Service'),
+    ], string="Service Type", default='onsite', tracking=True)
+
     material_type = fields.Selection([
         ('paper', 'Paper'),
         ('hard_drive', 'Hard Drives'),
         ('mixed_media', 'Mixed Media'),
     ], string="Material Type", default='paper')
+
+    # Quantity-based billing (per unit, not weight)
+    bin_quantity = fields.Integer(
+        string="Number of Bins",
+        default=1,
+        tracking=True,
+        help="Quantity of bins for the service (billed per unit)"
+    )
+
+    # Weight fields kept for reference/reporting only
     estimated_weight = fields.Float(string="Estimated Weight (kg)")
     actual_weight = fields.Float(string="Actual Weight (kg)", tracking=True)
     boxes_count = fields.Integer(string="Number of Boxes Picked Up", default=0, tracking=True)

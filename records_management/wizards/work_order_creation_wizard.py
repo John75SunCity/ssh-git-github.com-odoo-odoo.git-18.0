@@ -161,6 +161,9 @@ class WorkOrderCreationWizard(models.TransientModel):
         ('onsite', 'On-Site Shredding'),
         ('offsite', 'Off-Site Shredding'),
         ('mobile', 'Mobile Shredding Truck'),
+        ('bin_onetime', 'One-Time Bin Service'),
+        ('bin_recurring', 'Recurring Bin Service'),
+        ('bin_mobile', 'Mobile Bin Service'),
     ], string="Shredding Service Type", default='onsite')
     material_type = fields.Selection([
         ('paper', 'Paper Documents'),
@@ -168,7 +171,7 @@ class WorkOrderCreationWizard(models.TransientModel):
         ('media', 'Media (Tapes, CDs, etc.)'),
         ('mixed', 'Mixed Materials'),
     ], string="Material Type", default='paper')
-    estimated_weight_lbs = fields.Float(string="Estimated Weight (lbs)")
+    bin_quantity = fields.Integer(string="Number of Bins", default=1, help="Quantity of bins for the service")
 
     # ============================================================================
     # WIZARD ACTIONS
@@ -367,6 +370,9 @@ class WorkOrderCreationWizard(models.TransientModel):
             'partner_id': self.partner_id.id,
             'scheduled_date': self.scheduled_date,
             'priority': self.priority,
+            'shredding_service_type': self.shredding_service_type,
+            'material_type': self.material_type,
+            'bin_quantity': self.bin_quantity,
             'special_instructions': self.notes,
         }
         return self.env['work.order.shredding'].create(vals)

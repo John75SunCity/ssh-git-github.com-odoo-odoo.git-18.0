@@ -62,8 +62,11 @@
                             <field name="notes" placeholder="Special instructions..."/>
                         </group>
                         <group invisible="state != 'details' or work_order_type != 'retrieval'" string="Select Containers to Retrieve">
+                            <label for="retrieval_container_ids" string="Type container number to search..."/>
                             <field name="retrieval_container_ids" nolabel="1" widget="many2many_tags"
-                                   options="{'no_create': True}"
+                                   placeholder="Start typing container number..."
+                                   options="{'no_create': True, 'no_quick_create': True, 'create_name_field': false}"
+                                   autocomplete="off"
                                    domain="[('partner_id', '=', partner_id), ('state', '=', 'in')]"/>
                         </group>
 
@@ -91,16 +94,19 @@
                             <field name="notes" placeholder="Reason for destruction..."/>
                         </group>
                         <group invisible="state != 'details' or work_order_type != 'container_destruction'" string="Select Containers for Destruction">
+                            <label for="destruction_container_ids" string="Type container number to search..."/>
                             <field name="destruction_container_ids" nolabel="1" widget="many2many_tags"
-                                   options="{'no_create': True}"
+                                   placeholder="Start typing container number..."
+                                   options="{'no_create': True, 'no_quick_create': True, 'create_name_field': false}"
+                                   autocomplete="off"
                                    domain="[('partner_id', '=', partner_id)]"/>
                         </group>
 
                         <!-- SHREDDING SERVICE DETAILS -->
                         <group invisible="state != 'details' or work_order_type != 'shredding'" string="Shredding Service Details">
-                            <field name="shredding_service_type"/>
+                            <field name="shredding_service_type" widget="radio"/>
                             <field name="material_type"/>
-                            <field name="estimated_weight_lbs"/>
+                            <field name="bin_quantity" invisible="shredding_service_type not in ('bin_onetime', 'bin_recurring', 'bin_mobile')"/>
                             <field name="notes" placeholder="Service notes..."/>
                         </group>
 
