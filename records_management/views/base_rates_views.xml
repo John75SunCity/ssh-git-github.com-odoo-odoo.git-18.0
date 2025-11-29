@@ -1,163 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Base Rates Form View -->
-    <record id="base_rates_view_form" model="ir.ui.view">
-        <field name="name">base.rates.view.form</field>
-        <field name="model">base.rates</field>
-        <field name="arch" type="xml">
-            <form string="Base Rate">
-                <header>
-        <field name="active" widget="boolean_toggle"/>
-                </header>
-                <sheet>
-                    <group>
+        <!-- ============================================================================
+             BASE RATES (base.rates) - Individual Rate Line Items
+             Each record is ONE rate entry (used for specific rate lookups by type)
+             ============================================================================ -->
+        
+        <!-- List View -->
+        <record id="base_rates_view_tree" model="ir.ui.view">
+            <field name="name">base.rates.view.tree</field>
+            <field name="model">base.rates</field>
+            <field name="arch" type="xml">
+                <list string="Rate Items" editable="bottom">
+                    <field name="name"/>
+                    <field name="rate_type"/>
+                    <field name="base_rate"/>
+                    <field name="currency_id"/>
+                    <field name="unit_type"/>
+                    <field name="effective_date"/>
+                    <field name="expiry_date"/>
+                    <field name="minimum_charge"/>
+                    <field name="active"/>
+                    <field name="company_id" optional="hide"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="base_rates_view_form" model="ir.ui.view">
+            <field name="name">base.rates.view.form</field>
+            <field name="model">base.rates</field>
+            <field name="arch" type="xml">
+                <form string="Rate Item">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="e.g., Storage Rate - Standard Box"/>
+                            </h1>
+                        </div>
                         <group>
-        <field name="name"/>
-        <field name="rate_type"/>
-        <field name="company_id"/>
+                            <group string="Rate Configuration">
+                                <field name="rate_type"/>
+                                <field name="base_rate"/>
+                                <field name="currency_id"/>
+                                <field name="unit_type"/>
+                            </group>
+                            <group string="Validity &amp; Limits">
+                                <field name="effective_date"/>
+                                <field name="expiry_date"/>
+                                <field name="minimum_charge"/>
+                                <field name="maximum_charge"/>
+                            </group>
                         </group>
                         <group>
-        <field name="base_rate"/>
-        <field name="currency_id"/>
-        <field name="unit_type"/>
+                            <group string="Company">
+                                <field name="company_id"/>
+                                <field name="active" widget="boolean_toggle"/>
+                            </group>
                         </group>
+                        <group string="Description">
+                            <field name="description" nolabel="1" 
+                                   placeholder="Additional details about this rate..."/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="base_rates_view_search" model="ir.ui.view">
+            <field name="name">base.rates.view.search</field>
+            <field name="model">base.rates</field>
+            <field name="arch" type="xml">
+                <search string="Search Rate Items">
+                    <field name="name"/>
+                    <field name="rate_type"/>
+                    <field name="company_id"/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                    <filter string="Current" name="current" 
+                            domain="['|', ('expiry_date', '=', False), ('expiry_date', '>=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <filter string="Storage" name="storage" domain="[('rate_type', '=', 'storage')]"/>
+                    <filter string="Retrieval" name="retrieval" domain="[('rate_type', '=', 'retrieval')]"/>
+                    <filter string="Destruction" name="destruction" domain="[('rate_type', '=', 'destruction')]"/>
+                    <filter string="Transportation" name="transportation" domain="[('rate_type', '=', 'transportation')]"/>
+                    <filter string="Scanning" name="scanning" domain="[('rate_type', '=', 'scanning')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Rate Type" name="group_rate_type" context="{'group_by': 'rate_type'}"/>
+                        <filter string="Unit Type" name="group_unit_type" context="{'group_by': 'unit_type'}"/>
+                        <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
                     </group>
-                    <group string="Validity Period">
-                        <group>
-        <field name="effective_date"/>
-        <field name="expiry_date"/>
-                        </group>
-                        <group>
-        <field name="minimum_charge"/>
-        <field name="maximum_charge"/>
-                        </group>
-                    </group>
-        <field name="description" placeholder="Additional details about this rate..."/>
-                </sheet>
-                <div class="oe_chatter">
-        <field name="message_follower_ids"/>
-        <field name="activity_ids"/>
-        <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
+                </search>
+            </field>
+        </record>
 
-    <!-- Base Rates List View -->
-    <record id="base_rates_view_tree" model="ir.ui.view">
-        <field name="name">base.rates.view.tree</field>
-        <field name="model">base.rates</field>
-        <field name="arch" type="xml">
-            <list string="Base Rates">
-        <field name="name"/>
-        <field name="rate_type"/>
-        <field name="base_rate"/>
-        <field name="currency_id"/>
-        <field name="unit_type"/>
-        <field name="effective_date"/>
-        <field name="expiry_date"/>
-        <field name="active"/>
-            </list>
-        </field>
-    </record>
+        <!-- Action for Rate Items -->
+        <record id="action_base_rates_items" model="ir.actions.act_window">
+            <field name="name">Rate Items</field>
+            <field name="res_model">base.rates</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_active': 1, 'search_default_current': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create individual rate items!
+                </p>
+                <p>
+                    Rate items are used for specific rate lookups by service type. 
+                    Each record represents one rate (e.g., "Storage Rate per Box").
+                </p>
+            </field>
+        </record>
 
-    <!-- Base Rates Search View -->
-    <record id="base_rates_view_search" model="ir.ui.view">
-        <field name="name">base.rates.view.search</field>
-        <field name="model">base.rates</field>
-        <field name="arch" type="xml">
-            <search string="Search Base Rates">
-        <field name="name"/>
-        <field name="rate_type"/>
-        <field name="company_id"/>
-                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
-                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
-                <filter string="Current" name="current" domain="[('effective_date', '!=', False)]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Rate Type" name="group_rate_type" context="{'group_by': 'rate_type'}"/>
-                    <filter string="Unit Type" name="group_unit_type" context="{'group_by': 'unit_type'}"/>
-                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- Base Rates Action -->
-    <record id="base_rates_action" model="ir.actions.act_window">
-        <field name="name">Base Rates</field>
-        <field name="res_model">base.rates</field>
-        <field name="view_mode">list,form</field>
-        <field name="context">{'search_default_active': 1, 'search_default_current': 1}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                <i class="fa fa-usd"/> No base rates defined yet!
-            </p>
-            <p>
-                <b>⚠️ IMPORTANT:</b> Base rates are the foundation of your billing system. Set these up BEFORE creating billing configurations.
-            </p>
-            <p>
-                <b>📋 To create base rates:</b>
-            </p>
-            <ol>
-                <li>Click <b>New</b> button above</li>
-                <li>Enter <b>Rate Name</b> (e.g., "Standard Storage - Per Container")</li>
-                <li>Select <b>Service Type</b>:
-                    <ul>
-                        <li><b>Storage:</b> Monthly container storage fee</li>
-                        <li><b>Retrieval:</b> Document retrieval/delivery charge</li>
-                        <li><b>Destruction:</b> Shredding and certificate fee</li>
-                        <li><b>Pickup:</b> Pickup service charge</li>
-                        <li><b>Special Handling:</b> Climate control, oversized, etc.</li>
-                    </ul>
-                </li>
-                <li>Choose <b>Rate Type</b>:
-                    <ul>
-                        <li><b>Per Container:</b> $X.XX per box per month</li>
-                        <li><b>Per Cubic Foot:</b> $X.XX per cubic foot per month</li>
-                        <li><b>Per Item:</b> $X.XX per document/item</li>
-                        <li><b>Flat Fee:</b> One-time charge</li>
-                        <li><b>Hourly:</b> $X.XX per hour (labor)</li>
-                    </ul>
-                </li>
-                <li>Set <b>Rate Amount</b> (dollar value)</li>
-                <li>Set <b>Effective Date</b> (when rate becomes active)</li>
-                <li>Add <b>End Date</b> (optional - for rate changes)</li>
-                <li>Click <b>Save</b></li>
-            </ol>
-            <p>
-                <b>💰 Example Standard Rates:</b><br/>
-                • <b>Container Storage:</b> $0.50 per container per month<br/>
-                • <b>Document Retrieval:</b> $15.00 per retrieval request<br/>
-                • <b>On-Site Shredding:</b> $75.00 per hour<br/>
-                • <b>Destruction Certificate:</b> $25.00 per certificate<br/>
-                • <b>Pickup Service:</b> $50.00 per pickup trip
-            </p>
-            <p>
-                <b>🔄 Rate Management:</b><br/>
-                • Create <b>new rate</b> with future effective date for rate increases<br/>
-                • Old rates remain in system for historical billing<br/>
-                • Use <b>Filters</b> to see current vs. historical rates<br/>
-                • <b>Duplicate</b> existing rates to create new versions
-            </p>
-            <p>
-                <b>💡 Quick Tips:</b><br/>
-                • Set up ALL service types you'll bill for<br/>
-                • Use <b>Rate Codes</b> for easy reference (e.g., "STOR-STD", "RETR-DOC")<br/>
-                • Document your <b>Rate Calculation</b> in notes field<br/>
-                • Customer-specific rates go in <b>Billing Config</b>, not here
-            </p>
-        </field>
-    </record>
-
-    <!-- Menu Item -->
-
-    <menuitem id="base_rates_menu"
-            name="Base Rates"
-            parent="records_management.menu_records_configuration"
-            action="base_rates_action"
-            sequence="30"/>
-
-    
     </data>
 </odoo>
