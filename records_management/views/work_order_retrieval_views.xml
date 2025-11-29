@@ -25,11 +25,20 @@
                         <button name="action_start_retrieval" type="object" string="Start Retrieval" class="oe_highlight" invisible="state != 'draft'"/>
                         <button name="action_open_picklist_scanner" type="object" string="📱 Scan Containers" class="btn-success" invisible="state not in ('in_progress', 'assigned')"/>
                         <button name="action_complete_retrieval" type="object" string="Complete Retrieval" class="oe_highlight" invisible="state != 'in_progress'"/>
+                        <button name="action_create_invoice" type="object" string="Create Invoice" 
+                                class="btn-primary" invisible="state != 'completed' or invoice_id"
+                                groups="records_management.group_records_manager"/>
+                        <button name="action_view_invoice" type="object" string="View Invoice" 
+                                class="btn-secondary" invisible="not invoice_id"/>
                         <button name="action_cancel_retrieval" type="object" string="Cancel" invisible="state in ('completed', 'cancelled')"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
+                            <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-money"
+                                    invisible="not invoice_id">
+                                <field name="invoice_status" widget="badge" string="Invoice"/>
+                            </button>
                         </div>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
                         <div class="oe_title">

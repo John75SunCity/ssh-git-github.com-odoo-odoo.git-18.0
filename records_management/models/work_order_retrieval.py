@@ -6,7 +6,7 @@ from odoo.exceptions import ValidationError, UserError
 class WorkOrderRetrieval(models.Model):
     _name = 'work.order.retrieval'
     _description = 'Work Order Retrieval'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'work.order.invoice.mixin']
     _order = 'priority desc, scheduled_date asc, name'
     _rec_name = 'display_name'
 
@@ -408,3 +408,47 @@ class WorkOrderRetrieval(models.Model):
         for record in self:
             if record.state == 'assigned':
                 record.action_start()
+
+    # ============================================================================
+    # INVOICE MIXIN OVERRIDES
+    # ============================================================================
+    def _get_default_product_name(self):
+        """Return default product name for retrieval services"""
+        return _('Records Retrieval Service')
+
+    def _get_default_price(self):
+        """Return default price for retrieval - based on boxes"""
+        return 25.0  # Default $25 per retrieval
+
+    def _get_service_type(self):
+        """Return service type for invoice line tracking"""
+        return 'retrieval'
+
+    def _get_invoice_line_description(self):
+        """Custom invoice line description for retrieval"""
+        parts = [_('Records Retrieval Service')]
+        parts.append(_('Work Order: %s') % self.name)
+        if self.partner_id:
+            parts.append(_('Customer: %s') % self.partner_id.name)
+        if self.total_boxes:
+            parts.append(_('Boxes Retrieved: %d') % self.total_boxes)
+        if self.scheduled_date:
+            parts.append(_('Date: %s') % self.scheduled_date.strftime('%Y-%m-%d'))
+        return '\n'.join(parts)
+
+    def _prepare_invoice_line_values(self, invoice):
+        """Override to add retrieval-specific data"""
+        values = super()._prepare_invoice_line_values(invoice)
+        
+        # Use total_boxes as quantity if set
+        if self.total_boxes:
+            values['quantity'] = self.total_boxes
+        
+        # Add container tracking
+        if self.retrieval_item_ids:
+            container_ids = self.retrieval_item_ids.mapped('box_id').ids
+            if container_ids:
+                values['container_ids'] = [(6, 0, container_ids)]
+                values['container_count'] = len(container_ids)
+        
+        return values

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ================================================================
+             Bulk Invoice Generation Wizard Form View
+             ================================================================ -->
+        <record id="bulk_invoice_wizard_view_form" model="ir.ui.view">
+            <field name="name">bulk.invoice.wizard.form</field>
+            <field name="model">bulk.invoice.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Generate Invoices">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <i class="fa fa-file-invoice-dollar"/> Bulk Invoice Generation
+                            </h1>
+                        </div>
+                        
+                        <!-- Configuration Section -->
+                        <group string="Invoice Configuration" col="4">
+                            <field name="invoice_mode" widget="radio" options="{'horizontal': true}"/>
+                            <field name="invoice_date"/>
+                            <field name="include_storage_fees"/>
+                            <field name="billing_period_id" invisible="not include_storage_fees"/>
+                        </group>
+                        
+                        <!-- Customer Filter -->
+                        <group string="Filter by Customer (Optional)">
+                            <field name="partner_ids" widget="many2many_tags" 
+                                   placeholder="Leave empty to include all customers..."
+                                   options="{'no_create': True}"/>
+                            <button name="action_load_billable_orders" 
+                                    string="Load Billable Orders" 
+                                    type="object" 
+                                    class="btn-secondary"
+                                    icon="fa-refresh"/>
+                        </group>
+                        
+                        <notebook>
+                            <!-- Retrieval Orders Tab -->
+                            <page string="Retrieval Orders" name="retrieval">
+                                <field name="retrieval_order_ids" nolabel="1">
+                                    <list create="false" delete="false">
+                                        <field name="name"/>
+                                        <field name="partner_id"/>
+                                        <field name="scheduled_date"/>
+                                        <field name="total_boxes"/>
+                                        <field name="state" widget="badge"/>
+                                        <field name="subtotal" optional="show"/>
+                                        <field name="actual_cost" optional="hide"/>
+                                    </list>
+                                </field>
+                            </page>
+                            
+                            <!-- Shredding Orders Tab -->
+                            <page string="Shredding Orders" name="shredding">
+                                <field name="shredding_order_ids" nolabel="1">
+                                    <list create="false" delete="false">
+                                        <field name="name"/>
+                                        <field name="partner_id"/>
+                                        <field name="scheduled_date"/>
+                                        <field name="state" widget="badge"/>
+                                        <field name="total_billable_amount" string="Amount" optional="show"/>
+                                    </list>
+                                </field>
+                            </page>
+                            
+                            <!-- Preview Tab -->
+                            <page string="Preview" name="preview">
+                                <field name="preview_html" nolabel="1"/>
+                            </page>
+                        </notebook>
+                        
+                        <!-- Summary -->
+                        <group col="4" class="oe_subtotal_footer">
+                            <field name="total_work_orders" class="oe_subtotal_footer_separator"/>
+                            <field name="total_amount" widget="monetary" class="oe_subtotal_footer_separator"/>
+                        </group>
+                    </sheet>
+                    
+                    <footer>
+                        <button name="action_generate_invoices" 
+                                string="Generate Invoices" 
+                                type="object" 
+                                class="btn-primary"
+                                invisible="total_work_orders == 0"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <!-- ================================================================
+             Action to Open Wizard
+             ================================================================ -->
+        <record id="action_bulk_invoice_wizard" model="ir.actions.act_window">
+            <field name="name">Generate Invoices</field>
+            <field name="res_model">bulk.invoice.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <!-- ================================================================
+             Menu Item in Billing & Finance
+             ================================================================ -->
+        <menuitem id="menu_bulk_invoice_wizard"
+                  name="Generate Invoices"
+                  parent="records_management.menu_records_billing"
+                  action="action_bulk_invoice_wizard"
+                  sequence="5"
+                  groups="records_management.group_records_manager"/>
+                  
+    </data>
+</odoo>

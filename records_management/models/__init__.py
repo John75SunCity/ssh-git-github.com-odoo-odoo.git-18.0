@@ -7,6 +7,8 @@ from . import hr_timesheet_compat
 from . import ir_rule
 from . import retrieval_item_base
 from . import scan_retrieval_item
+# Work Order Invoice Mixin (must be before work order models)
+from . import work_order_invoice_mixin
 # Account integration
 from . import account_move
 from . import account_move_line

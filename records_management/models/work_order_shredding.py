@@ -4,7 +4,7 @@ from odoo.exceptions import UserError, ValidationError
 class WorkOrderShredding(models.Model):
     _name = "work.order.shredding"
     _description = 'Shredding Work Order Management'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'work.order.invoice.mixin']
     _order = 'priority desc, scheduled_date asc, name'
     _rec_name = 'display_name'
 

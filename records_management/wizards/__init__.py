@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from . import bin_issue_report_wizard
+from . import bulk_invoice_wizard
 from . import container_quick_add_wizard
 from . import customer_inventory_report_wizard
 from . import custom_box_volume_calculator
