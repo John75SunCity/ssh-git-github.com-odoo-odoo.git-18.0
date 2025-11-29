@@ -346,17 +346,21 @@ class RecurringWorkOrderSchedule(models.Model):
         minutes = int((self.preferred_time - hours) * 60)
         scheduled_datetime = scheduled_datetime.replace(hour=hours, minute=minutes)
         
-        # Base values for all types
+        # Base values common to all types (only partner_id and priority)
+        # NOTE: Different work order types use different field names for notes:
+        # - work.order.shredding uses 'special_instructions'
+        # - container.destruction.work.order uses 'destruction_reason'
+        # - work.order.retrieval and container.access.work.order don't have notes field
         base_vals = {
             'partner_id': self.partner_id.id,
             'priority': self.priority,
-            'notes': self.notes or '',
         }
         
         if self.work_order_type == 'shredding':
             vals = {
                 **base_vals,
                 'scheduled_date': scheduled_datetime,
+                'special_instructions': self.notes or '',
             }
             return self.env['work.order.shredding'].create(vals)
         
@@ -364,7 +368,7 @@ class RecurringWorkOrderSchedule(models.Model):
             vals = {
                 **base_vals,
                 'scheduled_destruction_date': scheduled_datetime,
-                'destruction_reason': self.notes,
+                'destruction_reason': self.notes or '',
             }
             return self.env['container.destruction.work.order'].create(vals)
         
