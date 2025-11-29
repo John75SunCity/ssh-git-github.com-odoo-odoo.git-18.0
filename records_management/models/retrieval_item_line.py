@@ -28,6 +28,21 @@ class RetrievalItemLine(models.Model):
     )
     item_description = fields.Char(string='Item Description')
     
+    # Location from container (for pick list display)
+    location_id = fields.Many2one(
+        comodel_name='stock.location',
+        string='Location',
+        related='box_id.location_id',
+        store=True,
+        readonly=True
+    )
+    barcode = fields.Char(
+        string='Barcode',
+        related='box_id.barcode',
+        store=True,
+        readonly=True
+    )
+    
     # Retrieval status
     retrieved = fields.Boolean(string='Retrieved', default=False)
     retrieval_time = fields.Datetime(string='Retrieval Time')

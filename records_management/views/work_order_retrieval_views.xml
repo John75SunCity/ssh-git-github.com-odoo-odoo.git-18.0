@@ -83,6 +83,8 @@
                                 <field name="retrieval_item_ids">
                                     <list editable="bottom">
                                         <field name="box_id"/>
+                                        <field name="location_id" optional="show"/>
+                                        <field name="barcode" optional="show"/>
                                         <field name="item_description"/>
                                         <field name="retrieved" widget="boolean_toggle"/>
                                         <field name="retrieval_time"/>

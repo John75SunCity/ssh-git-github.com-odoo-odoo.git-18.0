@@ -229,8 +229,28 @@ class WorkOrderRetrieval(models.Model):
         self.message_post(body=_("Work order started."))
 
     def action_start_retrieval(self):
-        """Start retrieval - alias for action_start"""
-        return self.action_start()
+        """Start retrieval - simplified workflow for technicians.
+        
+        Automatically moves through confirm/assign states if needed,
+        so technicians can start directly from any pre-started state.
+        """
+        self.ensure_one()
+        
+        # Auto-progress through states if not already in_progress
+        if self.state == 'draft':
+            self.state = 'confirmed'
+        if self.state == 'confirmed':
+            # Auto-assign to current user if not assigned
+            if not self.user_id:
+                self.user_id = self.env.user
+            self.state = 'assigned'
+        if self.state == 'assigned':
+            self.state = 'in_progress'
+            self.start_date = fields.Datetime.now()
+            self.start_time = fields.Datetime.now()
+            self.message_post(body=_('Retrieval started by %s') % self.env.user.name)
+        
+        return True
 
     def action_complete(self):
         """Complete the work order"""
