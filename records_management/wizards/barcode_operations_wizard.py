@@ -95,14 +95,55 @@ class BarcodeOperationsWizard(models.TransientModel):
         ('return', 'Pending Retrieval'),
     ], string='Pending Action', default='none')
 
+    @api.onchange('manual_barcode')
+    def _onchange_manual_barcode(self):
+        """Process barcode when Enter is pressed (field change triggers this)."""
+        if self.manual_barcode and self.manual_barcode.strip():
+            barcode = self.manual_barcode.strip()
+            self.manual_barcode = ''  # Clear input
+            self._process_barcode(barcode)
+
     def action_manual_scan(self):
-        """Process manually entered barcode."""
+        """Process manually entered barcode via button click."""
         self.ensure_one()
         if not self.manual_barcode:
-            return
+            return self._stay_open()
         barcode = self.manual_barcode.strip()
         self.manual_barcode = ''  # Clear input
-        return self.on_barcode_scanned(barcode)
+        self._process_barcode(barcode)
+        return self._stay_open()
+
+    def _stay_open(self):
+        """Return action to keep wizard open."""
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': self._name,
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
+
+    def _process_barcode(self, barcode):
+        """Process barcode and update wizard state (no return action)."""
+        self.last_barcode = barcode
+        self.scan_count += 1
+
+        # Handle standard Odoo commands first
+        if self._handle_standard_commands(barcode):
+            return
+
+        # Route to appropriate handler based on operation mode
+        handlers = {
+            'lookup': self._handle_container_lookup,
+            'retrieval': self._handle_retrieval_scan,
+            'shredding': self._handle_shredding_scan,
+            'bin': self._handle_bin_scan,
+            'file': self._handle_file_scan,
+            'location': self._handle_location_scan,
+        }
+        
+        handler = handlers.get(self.operation_mode, self._handle_container_lookup)
+        handler(barcode)
 
     def on_barcode_scanned(self, barcode):
         """
@@ -139,41 +180,46 @@ class BarcodeOperationsWizard(models.TransientModel):
         }
         
         handler = handlers.get(self.operation_mode, self._handle_container_lookup)
-        return handler(barcode)
+        handler(barcode)
+        # Hardware scanner - stay open
+        return None
 
     def _handle_standard_commands(self, barcode):
-        """Process standard Odoo barcode commands."""
+        """Process standard Odoo barcode commands. Returns True if handled."""
         # Validate operation
         if barcode == 'O-BTN.validate':
-            return self._execute_validate()
+            self._execute_validate()
+            return True
         
         # Cancel/Discard
         if barcode in ['O-BTN.cancel', 'O-BTN.discard']:
-            return self._execute_cancel()
+            self._execute_cancel()
+            return True
         
         # Print command
         if barcode == 'O-CMD.PRINT':
-            return self._execute_print()
+            self._execute_print()
+            return True
         
         # Scrap/Destruction
         if barcode == 'O-BTN.scrap':
             self.pending_operation = 'scrap'
             self.scan_result = _('Destruction queued. Scan container barcode to confirm.')
             self.scan_success = True
-            return None
+            return True
         
         # Return/Retrieval
         if barcode == 'O-CMD.RETURN':
             self.pending_operation = 'return'
             self.scan_result = _('Retrieval mode. Scan container barcode to create request.')
             self.scan_success = True
-            return None
+            return True
         
-        # Main menu
+        # Main menu - close wizard
         if barcode == 'O-CMD.MAIN-MENU':
-            return {'type': 'ir.actions.act_window_close'}
+            return True
         
-        return None
+        return False
 
     def _handle_container_lookup(self, barcode):
         """Lookup container by barcode."""
