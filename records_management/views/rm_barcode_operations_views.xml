@@ -118,7 +118,7 @@
         <!-- Top-level Barcode Operations Menu -->
         <menuitem id="menu_rm_barcode_operations"
                   name="📱 Barcode Operations"
-                  parent="records_management.menu_records_management"
+                  parent="records_management.menu_records_management_root"
                   sequence="5"
                   groups="records_management.group_records_user"/>
 
