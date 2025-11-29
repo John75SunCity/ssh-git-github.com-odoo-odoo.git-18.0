@@ -143,7 +143,7 @@
 
         <!-- Action to Open Barcode Scanner Wizard -->
         <record id="action_barcode_operations_wizard" model="ir.actions.act_window">
-            <field name="name">🔲 Barcode Scanner</field>
+            <field name="name">Barcode Scanner</field>
             <field name="res_model">barcode.operations.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
