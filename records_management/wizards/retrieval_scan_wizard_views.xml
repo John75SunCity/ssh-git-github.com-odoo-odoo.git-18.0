@@ -7,6 +7,9 @@
             <field name="model">retrieval.scan.wizard</field>
             <field name="arch" type="xml">
                 <form string="Container Scanner">
+                    <!-- Hidden barcode handler - captures hardware scanner input -->
+                    <field name="barcode_input" widget="barcode_handler"/>
+                    
                     <sheet>
                         <!-- Header with Work Order Info -->
                         <div class="oe_title">

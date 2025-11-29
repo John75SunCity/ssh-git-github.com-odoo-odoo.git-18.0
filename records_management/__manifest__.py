@@ -593,6 +593,7 @@
         "views/work_order_retrieval_views.xml",
         "views/work_order_shredding_views.xml",
         "wizards/retrieval_scan_wizard_views.xml",
+        "wizards/barcode_operations_wizard_views.xml",
         # ============================================================================
         # ============================================================================
 

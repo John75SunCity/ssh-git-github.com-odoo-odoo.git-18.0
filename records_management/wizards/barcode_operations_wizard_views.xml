@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ================================================================
+             Barcode Operations Wizard Form View
+             Uses barcode_handler widget for real-time scanning
+             ================================================================ -->
+        <record id="barcode_operations_wizard_view_form" model="ir.ui.view">
+            <field name="name">barcode.operations.wizard.form</field>
+            <field name="model">barcode.operations.wizard</field>
+            <field name="arch" type="xml">
+                <form string="📱 Barcode Scanner">
+                    <!-- Hidden barcode handler - captures hardware scanner input -->
+                    <field name="_barcode_scanned" widget="barcode_handler"/>
+                    
+                    <sheet>
+                        <!-- Header with Mode Selection -->
+                        <div class="oe_title mb-3">
+                            <h1>
+                                <i class="fa fa-barcode"/> Records Management Scanner
+                            </h1>
+                        </div>
+
+                        <!-- Operation Mode - Large Radio Buttons for Touch -->
+                        <group string="Select Operation Mode" col="6">
+                            <field name="operation_mode" widget="radio" 
+                                   options="{'horizontal': false}"
+                                   class="o_field_radio_vertical"/>
+                        </group>
+
+                        <!-- Context Work Orders (shown based on mode) -->
+                        <group invisible="operation_mode != 'retrieval'">
+                            <field name="work_order_id" 
+                                   placeholder="Select retrieval work order..."
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group invisible="operation_mode != 'shredding'">
+                            <field name="shredding_order_id" 
+                                   placeholder="Select shredding work order..."
+                                   options="{'no_create': True}"/>
+                        </group>
+
+                        <!-- Scan Statistics -->
+                        <group col="4">
+                            <field name="scan_count" readonly="1"/>
+                            <field name="pending_operation" readonly="1" 
+                                   invisible="pending_operation == 'none'"/>
+                        </group>
+
+                        <!-- Last Scan Info - Prominent Display -->
+                        <group string="📷 Last Scan" invisible="not last_barcode">
+                            <div class="text-center" style="font-size: 1.3em; padding: 10px;">
+                                <strong>Barcode:</strong> 
+                                <code><field name="last_barcode" readonly="1" class="d-inline"/></code>
+                            </div>
+                        </group>
+
+                        <!-- Scan Result Feedback -->
+                        <div class="alert alert-success text-center" role="status" 
+                             style="font-size: 1.1em; margin: 15px 0;"
+                             invisible="not scan_success or not scan_result">
+                            <i class="fa fa-check-circle fa-lg" title="Success"/>
+                            <pre style="white-space: pre-wrap; margin: 10px 0; text-align: left; background: transparent; border: none;">
+                                <field name="scan_result" readonly="1"/>
+                            </pre>
+                        </div>
+                        <div class="alert alert-danger text-center" role="alert" 
+                             style="font-size: 1.1em; margin: 15px 0;"
+                             invisible="scan_success or not scan_result">
+                            <i class="fa fa-times-circle fa-lg" title="Error"/>
+                            <pre style="white-space: pre-wrap; margin: 10px 0; text-align: left; background: transparent; border: none;">
+                                <field name="scan_result" readonly="1"/>
+                            </pre>
+                        </div>
+
+                        <!-- Placeholder when no scan yet -->
+                        <div class="alert alert-info text-center" role="status" 
+                             style="font-size: 1.2em; padding: 30px; margin: 20px 0;"
+                             invisible="scan_result">
+                            <i class="fa fa-barcode fa-3x" title="Ready to scan" style="display: block; margin-bottom: 15px;"/>
+                            <h3>Ready to Scan</h3>
+                            <p>Use your barcode scanner or enter barcode manually</p>
+                            <p><small>Supports container, bin, document, and location barcodes</small></p>
+                        </div>
+
+                        <!-- Found Records Display -->
+                        <notebook invisible="not container_id and not bin_id and not document_id and not location_id">
+                            <page string="Container" invisible="not container_id">
+                                <group>
+                                    <field name="container_id" readonly="1" 
+                                           options="{'no_open': False}"/>
+                                </group>
+                            </page>
+                            <page string="Bin" invisible="not bin_id">
+                                <group>
+                                    <field name="bin_id" readonly="1"/>
+                                </group>
+                            </page>
+                            <page string="Document" invisible="not document_id">
+                                <group>
+                                    <field name="document_id" readonly="1"/>
+                                </group>
+                            </page>
+                            <page string="Location" invisible="not location_id">
+                                <group>
+                                    <field name="location_id" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+
+                        <!-- Standard Commands Reference -->
+                        <group string="🎯 Quick Commands" name="commands_help">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Command</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td><code>O-BTN.scrap</code></td><td>Queue for destruction</td></tr>
+                                        <tr><td><code>O-CMD.RETURN</code></td><td>Create retrieval request</td></tr>
+                                        <tr><td><code>O-CMD.PRINT</code></td><td>Print container label</td></tr>
+                                        <tr><td><code>O-BTN.validate</code></td><td>Confirm operation</td></tr>
+                                        <tr><td><code>O-BTN.cancel</code></td><td>Cancel pending</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </group>
+                    </sheet>
+
+                    <footer>
+                        <button name="action_open_container" string="Open Container" type="object" 
+                                class="btn-primary" invisible="not container_id"/>
+                        <button name="action_reset" string="🔄 Reset" type="object" 
+                                class="btn-warning"/>
+                        <button string="Close" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action to Open Barcode Scanner Wizard -->
+        <record id="action_barcode_operations_wizard" model="ir.actions.act_window">
+            <field name="name">📱 Barcode Scanner</field>
+            <field name="res_model">barcode.operations.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_operation_mode': 'lookup'}</field>
+        </record>
+
+        <!-- Container Lookup Mode Action -->
+        <record id="action_barcode_container_lookup" model="ir.actions.act_window">
+            <field name="name">🔍 Container Lookup</field>
+            <field name="res_model">barcode.operations.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_operation_mode': 'lookup'}</field>
+        </record>
+
+        <!-- Retrieval Scan Mode Action -->
+        <record id="action_barcode_retrieval_scan" model="ir.actions.act_window">
+            <field name="name">📦 Retrieval Scanner</field>
+            <field name="res_model">barcode.operations.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_operation_mode': 'retrieval'}</field>
+        </record>
+
+        <!-- Shredding/Destruction Mode Action -->
+        <record id="action_barcode_shredding_scan" model="ir.actions.act_window">
+            <field name="name">🗑️ Destruction Scanner</field>
+            <field name="res_model">barcode.operations.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_operation_mode': 'shredding'}</field>
+        </record>
+
+        <!-- Bin Service Mode Action -->
+        <record id="action_barcode_bin_scan" model="ir.actions.act_window">
+            <field name="name">🗂️ Bin Scanner</field>
+            <field name="res_model">barcode.operations.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_operation_mode': 'bin'}</field>
+        </record>
+
+        <!-- File/Document Mode Action -->
+        <record id="action_barcode_file_scan" model="ir.actions.act_window">
+            <field name="name">📄 Document Scanner</field>
+            <field name="res_model">barcode.operations.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_operation_mode': 'file'}</field>
+        </record>
+
+        <!-- Location Scan Mode Action -->
+        <record id="action_barcode_location_scan" model="ir.actions.act_window">
+            <field name="name">📍 Location Scanner</field>
+            <field name="res_model">barcode.operations.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_operation_mode': 'location'}</field>
+        </record>
+
+    </data>
+</odoo>

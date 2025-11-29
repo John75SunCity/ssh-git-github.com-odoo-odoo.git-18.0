@@ -5,6 +5,8 @@ Retrieval Scan Wizard
 Provides a mobile-friendly interface for scanning containers during
 the retrieval/picking process. Shows pick list and allows barcode scanning.
 
+Uses Odoo's barcodes.barcode_events_mixin for real-time hardware scanner support.
+
 Author: Records Management System
 Version: 18.0.1.0.0
 License: LGPL-3
@@ -15,9 +17,15 @@ from odoo.exceptions import UserError
 
 
 class RetrievalScanWizard(models.TransientModel):
-    """Wizard for scanning containers during retrieval work order execution."""
+    """
+    Wizard for scanning containers during retrieval work order execution.
+    
+    Inherits from barcodes.barcode_events_mixin to enable real-time
+    barcode scanning via the barcode_handler widget.
+    """
     _name = 'retrieval.scan.wizard'
     _description = 'Retrieval Container Scanner'
+    _inherit = ['barcodes.barcode_events_mixin']
 
     work_order_id = fields.Many2one(
         comodel_name='work.order.retrieval',
@@ -32,7 +40,7 @@ class RetrievalScanWizard(models.TransientModel):
         readonly=True
     )
     
-    # Scanning interface
+    # Scanning interface - also used by barcode_handler widget
     barcode_input = fields.Char(
         string='Scan Barcode',
         help='Scan or enter container barcode'
@@ -134,6 +142,20 @@ class RetrievalScanWizard(models.TransientModel):
         self.work_order_id.completed_boxes = self.scanned_items
         
         return {'type': 'ir.actions.act_window_close'}
+
+    def on_barcode_scanned(self, barcode):
+        """
+        Handle barcode scanning from hardware scanner.
+        
+        This method is automatically called by barcodes.barcode_events_mixin
+        when a barcode is scanned via the barcode_handler widget.
+        
+        Args:
+            barcode (str): The scanned barcode value
+        """
+        self.ensure_one()
+        self.barcode_input = barcode
+        return self.action_process_scan()
 
     def action_mark_all_scanned(self):
         """Mark all remaining items as scanned (supervisor override)."""

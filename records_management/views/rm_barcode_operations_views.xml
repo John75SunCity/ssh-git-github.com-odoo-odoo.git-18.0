@@ -122,6 +122,13 @@
                   sequence="5"
                   groups="records_management.group_records_user"/>
 
+        <!-- Universal Barcode Scanner - Top Item -->
+        <menuitem id="menu_barcode_universal_scanner"
+                  name="📷 Universal Scanner"
+                  parent="menu_rm_barcode_operations"
+                  action="records_management.action_barcode_operations_wizard"
+                  sequence="1"/>
+
         <!-- Work Orders Sub-menu -->
         <menuitem id="menu_barcode_work_orders"
                   name="Work Orders"
