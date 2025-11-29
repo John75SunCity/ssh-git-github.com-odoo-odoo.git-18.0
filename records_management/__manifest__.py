@@ -595,6 +595,7 @@
         "wizards/retrieval_scan_wizard_views.xml",
         "wizards/barcode_operations_wizard_views.xml",
         "wizards/bulk_invoice_wizard_views.xml",
+        "wizards/monthly_storage_billing_wizard_views.xml",
         # ============================================================================
         # ============================================================================
 

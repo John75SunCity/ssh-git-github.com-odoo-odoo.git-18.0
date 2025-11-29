@@ -307,6 +307,45 @@ class RecordsContainer(models.Model):
         store=True,
         help="The effective storage monthly rate charge for this container. Prefers approved negotiated rate; falls back to container type's standard rate.",
     )
+    
+    # Setup Fee Tracking - charged only once per container (tied to database ID)
+    setup_fee_charged = fields.Boolean(
+        string="Setup Fee Charged",
+        default=False,
+        copy=False,
+        tracking=True,
+        help="Indicates if the one-time initial setup fee has been invoiced for this container. "
+             "Once charged, this is set to True and the fee will never be charged again, "
+             "even if the container moves between temp inventory and stock locations."
+    )
+    setup_fee_invoice_id = fields.Many2one(
+        comodel_name="account.move",
+        string="Setup Fee Invoice",
+        readonly=True,
+        copy=False,
+        help="The invoice on which this container's setup fee was charged."
+    )
+    setup_fee_date = fields.Date(
+        string="Setup Fee Date",
+        readonly=True,
+        copy=False,
+        help="Date when the setup fee was invoiced."
+    )
+    
+    # Monthly Storage Fee Tracking
+    last_storage_billing_date = fields.Date(
+        string="Last Storage Billing Date",
+        readonly=True,
+        copy=False,
+        help="Date of the last monthly storage fee billing for this container."
+    )
+    last_storage_billing_period_id = fields.Many2one(
+        comodel_name="billing.period",
+        string="Last Billing Period",
+        readonly=True,
+        copy=False,
+        help="The last billing period for which storage fees were charged."
+    )
 
     # ============================================================================
     # DATES & RETENTION

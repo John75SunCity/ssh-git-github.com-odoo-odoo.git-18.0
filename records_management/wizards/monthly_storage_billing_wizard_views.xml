@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================================
+         MONTHLY STORAGE BILLING WIZARD VIEWS
+         ============================================================================ -->
+    
+    <!-- Wizard Form View -->
+    <record id="monthly_storage_billing_wizard_view_form" model="ir.ui.view">
+        <field name="name">monthly.storage.billing.wizard.view.form</field>
+        <field name="model">monthly.storage.billing.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Monthly Storage Billing">
+                <sheet>
+                    <!-- Header with state indicator -->
+                    <div class="oe_title">
+                        <h1>
+                            <span invisible="state != 'draft'">Configure Billing</span>
+                            <span invisible="state != 'preview'">Review &amp; Generate</span>
+                            <span invisible="state != 'done'">Billing Complete</span>
+                        </h1>
+                    </div>
+                    
+                    <!-- STEP 1: Configuration -->
+                    <group invisible="state != 'draft'" string="Billing Configuration">
+                        <group>
+                            <field name="billing_period_id"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group>
+                            <field name="base_rate_id"/>
+                            <field name="setup_fee"/>
+                            <field name="minimum_monthly_charge"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                    <group invisible="state != 'draft'" string="Customer Filter (leave empty for all)">
+                        <field name="partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                    </group>
+                    
+                    <!-- STEP 2: Preview -->
+                    <group invisible="state != 'preview'" string="Billing Summary">
+                        <group>
+                            <field name="customer_count"/>
+                            <field name="container_count"/>
+                        </group>
+                        <group>
+                            <field name="total_setup_fees"/>
+                            <field name="total_storage_fees"/>
+                            <field name="total_minimum_adjustments"/>
+                            <field name="grand_total" class="oe_subtotal_footer_separator"/>
+                        </group>
+                    </group>
+                    
+                    <field name="preview_line_ids" invisible="state != 'preview'" nolabel="1">
+                        <list editable="bottom" create="false" delete="false">
+                            <field name="partner_id" readonly="1"/>
+                            <field name="total_containers" readonly="1"/>
+                            <field name="new_containers" readonly="1"/>
+                            <field name="setup_fees_total" readonly="1"/>
+                            <field name="storage_fees_total" readonly="1"/>
+                            <field name="minimum_adjustment" readonly="1"/>
+                            <field name="total_amount" readonly="1" sum="Total"/>
+                        </list>
+                    </field>
+                    
+                    <!-- STEP 3: Done -->
+                    <group invisible="state != 'done'" string="Generation Complete">
+                        <group>
+                            <field name="invoices_created"/>
+                        </group>
+                    </group>
+                    
+                    <field name="state" invisible="1"/>
+                </sheet>
+                
+                <footer>
+                    <!-- Draft state buttons -->
+                    <button string="Generate Preview" name="action_generate_preview" 
+                            type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" invisible="state == 'done'"/>
+                    
+                    <!-- Preview state buttons -->
+                    <button string="← Back" name="action_back_to_config" 
+                            type="object" class="btn-secondary" invisible="state != 'preview'"/>
+                    <button string="Generate Invoices" name="action_generate_invoices" 
+                            type="object" class="btn-primary" invisible="state != 'preview'"/>
+                    
+                    <!-- Done state buttons -->
+                    <button string="View Invoices" name="action_view_invoices" 
+                            type="object" class="btn-primary" invisible="state != 'done'"/>
+                    <button string="Close" class="btn-secondary" special="cancel" invisible="state != 'done'"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Wizard Action -->
+    <record id="action_monthly_storage_billing_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Monthly Storage Invoices</field>
+        <field name="res_model">monthly.storage.billing.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+</odoo>

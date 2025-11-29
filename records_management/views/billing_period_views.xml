@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Updated XML ID to follow convention: {model_name}_view_{type} -->
+    
+    <!-- ============================================================================
+         BILLING PERIOD VIEWS - Monthly Storage Billing
+         ============================================================================ -->
+    
+    <!-- List View -->
     <record id="billing_period_view_tree" model="ir.ui.view">
         <field name="name">billing.period.tree</field>
         <field name="model">billing.period</field>
@@ -10,71 +15,121 @@
                 <field name="name"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
-                <field name="active"/>
-                <!-- Added note field for completeness, matching form view -->
-                <field name="note"/>
+                <field name="invoice_date"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" 
+                       decoration-warning="state == 'open'" decoration-success="state == 'invoiced'"
+                       decoration-muted="state == 'closed'"/>
+                <field name="invoice_count"/>
+                <field name="total_invoiced" sum="Total"/>
+                <field name="active" optional="hide"/>
             </list>
         </field>
     </record>
-    <!-- Updated XML ID to follow convention -->
+    
+    <!-- Form View -->
     <record id="billing_period_view_form" model="ir.ui.view">
         <field name="name">billing.period.form</field>
         <field name="model">billing.period</field>
         <field name="arch" type="xml">
             <form string="Billing Period">
+                <header>
+                    <button name="action_open" string="Open Period" type="object"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_generate_invoices" string="Generate Invoices" type="object"
+                            class="btn-primary" invisible="state not in ('open', 'processing')"/>
+                    <button name="action_close" string="Close Period" type="object"
+                            class="btn-secondary" invisible="state != 'invoiced'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,open,invoiced,closed"/>
+                </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="e.g., November 2025"/>
+                        </h1>
+                    </div>
                     <group>
-                        <field name="name"/>
-                        <field name="start_date"/>
-                        <field name="end_date"/>
-                        <field name="active"/>
-                        <field name="note"/>
+                        <group string="Period Dates">
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="invoice_date"/>
+                        </group>
+                        <group string="Billing Statistics">
+                            <field name="containers_billed"/>
+                            <field name="new_containers"/>
+                            <field name="customers_billed"/>
+                            <field name="total_invoiced"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note" placeholder="Notes about this billing period..."/>
+                    </group>
+                    <group>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="active" widget="boolean_toggle"/>
+                        <field name="currency_id" invisible="1"/>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
-    <!-- Updated for Odoo 18+ using view_mode list,form -->
+    
+    <!-- Search View -->
+    <record id="billing_period_view_search" model="ir.ui.view">
+        <field name="name">billing.period.search</field>
+        <field name="model">billing.period</field>
+        <field name="arch" type="xml">
+            <search string="Billing Periods">
+                <field name="name"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_open" string="Open" domain="[('state', '=', 'open')]"/>
+                <filter name="filter_invoiced" string="Invoiced" domain="[('state', '=', 'invoiced')]"/>
+                <separator/>
+                <filter name="filter_active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="filter_archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_year" string="Year" context="{'group_by': 'start_date:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <!-- Action -->
     <record id="billing_period_action" model="ir.actions.act_window">
         <field name="name">Billing Periods</field>
         <field name="res_model">billing.period</field>
         <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 <i class="fa fa-calendar"/> Create your first billing period
             </p>
-            <p><b>⚠️ Prerequisites:</b></p>
-            <ul>
-                <li>✓ <b>Billing module active</b> - Go to: <i>Records Management &gt; Billing</i></li>
-                <li>✓ <b>Date ranges defined</b> - Determine monthly, quarterly, or annual periods</li>
-            </ul>
-            <p><b>📋 To create a billing period:</b></p>
+            <p><b>Monthly Storage Billing Workflow:</b></p>
             <ol>
-                <li>Click <b>New</b> to create a period</li>
-                <li>Enter a <b>Period Name</b> (e.g., "January 2024", "Q1 2024")</li>
-                <li>Set <b>Start Date</b> (first day of billing period)</li>
-                <li>Set <b>End Date</b> (last day of billing period)</li>
-                <li>Mark as <b>Active</b> (uncheck to close period)</li>
-                <li>Add <b>Notes</b> (special billing instructions or exceptions)</li>
-                <li>Click <b>Save</b> to create the billing period</li>
+                <li>Create a billing period (e.g., "November 2025")</li>
+                <li>Click <b>Open Period</b> when ready to bill</li>
+                <li>Click <b>Generate Invoices</b> to create customer invoices</li>
+                <li>Review and send invoices from Accounting app</li>
+                <li>Click <b>Close Period</b> when complete</li>
             </ol>
-            <p><b>🚀 Key Features:</b><br/>
-            • <b>Date range tracking:</b> Define billing start and end dates<br/>
-            • <b>Active/inactive status:</b> Close completed periods<br/>
-            • <b>Notes system:</b> Document billing exceptions or adjustments<br/>
-            • <b>Period naming:</b> Consistent identification (month/quarter/year)<br/>
-            </p>
-            <p><b>💡 Pro Tips:</b><br/>
-            • Use consistent naming: "YYYY-MM MonthName" (e.g., "2024-01 January")<br/>
-            • Create periods in advance (quarterly planning)<br/>
-            • Mark as inactive after closing to prevent new charges<br/>
-            • Use notes for holiday schedules or special rates<br/>
+            <p><b>Invoice Components:</b><br/>
+            • <b>Setup Fees:</b> One-time fee for NEW containers (charged once per container)<br/>
+            • <b>Storage Fees:</b> Monthly rate × container count by type<br/>
+            • <b>Minimum Charge:</b> Applied when storage fees are below minimum<br/>
             </p>
         </field>
     </record>
-    <!-- Updated XML ID to follow convention -->
-
-    <!-- Duplicate menu removed - defined in records_management_menus.xml -->
     
     </data>
 </odoo>

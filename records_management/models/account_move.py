@@ -26,6 +26,22 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     # ============================================================================
+    # BILLING PERIOD TRACKING
+    # ============================================================================
+    billing_period_id = fields.Many2one(
+        comodel_name='billing.period',
+        string='Billing Period',
+        tracking=True,
+        help='The billing period this invoice was generated for (monthly storage billing)'
+    )
+    
+    is_storage_invoice = fields.Boolean(
+        string='Storage Invoice',
+        default=False,
+        help='Indicates this invoice was generated for monthly storage fees'
+    )
+
+    # ============================================================================
     # DESTRUCTION CERTIFICATE TRACKING
     # ============================================================================
     destruction_certificate_ids = fields.One2many(
