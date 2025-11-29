@@ -35,6 +35,10 @@
                         </group>
                     </group>
                     
+                    <group invisible="state != 'draft'" string="Options">
+                        <field name="include_pending_work_orders" widget="boolean_toggle"/>
+                    </group>
+                    
                     <group invisible="state != 'draft'" string="Customer Filter (leave empty for all)">
                         <field name="partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
                     </group>
@@ -61,6 +65,8 @@
                             <field name="setup_fees_total" readonly="1"/>
                             <field name="storage_fees_total" readonly="1"/>
                             <field name="minimum_adjustment" readonly="1"/>
+                            <field name="pending_work_orders" readonly="1" optional="show"/>
+                            <field name="work_order_total" readonly="1" optional="show"/>
                             <field name="total_amount" readonly="1" sum="Total"/>
                         </list>
                     </field>

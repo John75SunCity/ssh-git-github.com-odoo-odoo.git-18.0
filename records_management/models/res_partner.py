@@ -28,6 +28,23 @@ class ResPartner(models.Model):
         default=False,
         help="Check this box if this partner is a customer of the records management services."
     )
+    
+    # ============================================================================
+    # BILLING MODE CONFIGURATION
+    # ============================================================================
+    consolidated_billing = fields.Boolean(
+        string="Consolidated Billing",
+        default=False,
+        help="When OFF: Invoices are created immediately when work orders are completed.\n"
+             "When ON: Work orders and storage fees accumulate and are invoiced together "
+             "during the monthly billing period cycle."
+    )
+    billing_period_id = fields.Many2one(
+        comodel_name='billing.period',
+        string='Current Billing Period',
+        domain=[('state', 'in', ['open', 'processing'])],
+        help="The billing period for accumulating consolidated invoices"
+    )
 
     # Portal Access Level - Auto-assigns correct portal groups (Grok 2025 Best Practice)
     portal_access_level = fields.Selection([

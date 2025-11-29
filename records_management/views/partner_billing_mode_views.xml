@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Add Billing Mode toggle to Partner form -->
+        <record id="res_partner_form_billing_mode" model="ir.ui.view">
+            <field name="name">res.partner.form.billing.mode</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority">50</field>
+            <field name="arch" type="xml">
+                <!-- Add Billing Mode tab to notebook -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="Billing Settings" name="billing_settings"
+                          groups="records_management.group_records_manager">
+                        <group>
+                            <group string="Work Order Billing Mode">
+                                <field name="billing_mode" widget="radio"/>
+                                <field name="consolidated_billing_enabled" 
+                                       widget="boolean_toggle"
+                                       string="Use Consolidated Billing"/>
+                            </group>
+                            <group string="Billing Information">
+                                <div class="text-muted" colspan="2">
+                                    <p><strong>Immediate Billing:</strong> An invoice is created 
+                                       automatically when each work order is completed.</p>
+                                    <p><strong>Consolidated Monthly Billing:</strong> Work order 
+                                       charges accumulate and are included in the monthly 
+                                       billing period invoice along with storage fees.</p>
+                                </div>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

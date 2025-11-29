@@ -564,6 +564,7 @@
         "views/required_document_views.xml",
         "views/res_config_settings_views.xml",
         "views/res_partner_views.xml",
+        "views/partner_billing_mode_views.xml",
         "views/retrieval_item_base_views.xml",
         "views/retrieval_metric_views.xml",
         "views/revenue_analytic_views.xml",

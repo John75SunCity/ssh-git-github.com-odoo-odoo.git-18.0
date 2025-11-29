@@ -64,6 +64,21 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
     # BILLING CONFIGURATION
     # ============================================================================
     billable = fields.Boolean(string='Billable', default=True)
+    
+    pending_consolidated_billing = fields.Boolean(
+        string='Pending Consolidated Billing',
+        default=False,
+        copy=False,
+        help='Work order is completed and waiting for consolidated billing cycle'
+    )
+    
+    billing_period_id = fields.Many2one(
+        comodel_name='billing.period',
+        string='Billing Period',
+        readonly=True,
+        copy=False,
+        help='The billing period in which this work order was invoiced'
+    )
 
     service_product_id = fields.Many2one(
         comodel_name='product.product',
@@ -219,7 +234,13 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         return False
 
     def action_create_invoice(self):
-        """Create invoice for this work order"""
+        """
+        Create invoice for this work order.
+        
+        Billing Mode Behavior:
+        - Immediate Billing (consolidated_billing=False): Creates invoice immediately
+        - Consolidated Billing (consolidated_billing=True): Marks as pending for billing period
+        """
         self.ensure_one()
 
         # Validation
@@ -233,6 +254,32 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         valid_states = ['completed', 'verified', 'certified']
         if hasattr(self, 'state') and self.state not in valid_states:
             raise UserError(_("Only completed or verified work orders can be invoiced. Current state: %s") % self.state)
+
+        # Check customer's billing mode
+        if hasattr(self, 'partner_id') and self.partner_id and self.partner_id.consolidated_billing:
+            # Consolidated billing - mark as pending instead of creating invoice
+            self.pending_consolidated_billing = True
+            self.message_post(
+                body=_('Work order marked for consolidated billing. '
+                       'Invoice will be generated during the next billing period.')
+            )
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Consolidated Billing'),
+                    'message': _('This customer uses consolidated billing. Work order will be invoiced during the next billing period.'),
+                    'type': 'info',
+                    'sticky': False,
+                }
+            }
+
+        # Immediate billing - create invoice now
+        return self._create_invoice_immediate()
+    
+    def _create_invoice_immediate(self):
+        """Create invoice immediately (used for immediate billing mode)"""
+        self.ensure_one()
 
         # Create invoice
         invoice_vals = self._prepare_invoice_values()
@@ -254,6 +301,23 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
 
         # Return action to view invoice
         return self.action_view_invoice()
+    
+    def action_force_immediate_invoice(self):
+        """
+        Force immediate invoice creation even if customer has consolidated billing.
+        Use for urgent billing situations.
+        """
+        self.ensure_one()
+        
+        if not self.billable:
+            raise UserError(_("This work order is marked as non-billable."))
+        
+        if self.invoice_id:
+            raise UserError(_("Invoice already exists for this work order: %s") % self.invoice_id.name)
+        
+        # Clear pending flag and create invoice immediately
+        self.pending_consolidated_billing = False
+        return self._create_invoice_immediate()
 
     def action_view_invoice(self):
         """View the linked invoice"""
