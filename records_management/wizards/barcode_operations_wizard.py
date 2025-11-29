@@ -70,7 +70,7 @@ class BarcodeOperationsWizard(models.TransientModel):
         readonly=True
     )
     location_id = fields.Many2one(
-        comodel_name='records.location',
+        comodel_name='stock.location',
         string='Found Location',
         readonly=True
     )
@@ -312,7 +312,7 @@ class BarcodeOperationsWizard(models.TransientModel):
 
     def _handle_location_scan(self, barcode):
         """Handle location barcode scanning."""
-        Location = self.env['records.location']
+        Location = self.env['stock.location']
         
         location = Location.search([('barcode', '=', barcode)], limit=1)
         
@@ -323,10 +323,9 @@ class BarcodeOperationsWizard(models.TransientModel):
         
         self.location_id = location.id
         self.scan_success = True
-        self.scan_result = _('Found Location: %s\nFull Path: %s\nCapacity: %s') % (
+        self.scan_result = _('Found Location: %s\nFull Path: %s') % (
             location.name,
-            location.complete_name if hasattr(location, 'complete_name') else location.name,
-            location.capacity if hasattr(location, 'capacity') else _('N/A')
+            location.complete_name if hasattr(location, 'complete_name') else location.name
         )
         
         return None
