@@ -12,7 +12,8 @@
                 <list decoration-danger="priority == '2'" 
                       decoration-warning="state == 'in_progress'"
                       decoration-muted="state == 'cancelled'"
-                      decoration-success="state in ('completed', 'certified', 'invoiced')">
+                      decoration-success="state in ('completed', 'certified', 'invoiced')"
+                      open="action_open_source_record">
                     <field name="scheduled_date" widget="datetime"/>
                     <field name="name"/>
                     <field name="partner_id"/>
@@ -250,11 +251,52 @@
             </field>
         </record>
 
+        <!-- ============================================================================
+             UNIFIED WORK ORDER - FORM VIEW (Redirect to Source)
+             ============================================================================ -->
+        <record id="unified_work_order_view_form" model="ir.ui.view">
+            <field name="name">unified.work.order.view.form</field>
+            <field name="model">unified.work.order</field>
+            <field name="arch" type="xml">
+                <form string="Work Order" create="false" edit="false">
+                    <header>
+                        <button name="action_open_source_record" 
+                                string="Open Full Work Order" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="display_name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="work_order_type" widget="badge"/>
+                                <field name="scheduled_date"/>
+                            </group>
+                            <group>
+                                <field name="user_id"/>
+                                <field name="priority" widget="priority"/>
+                                <field name="is_portal_order"/>
+                            </group>
+                        </group>
+                        <div class="alert alert-info text-center" role="alert">
+                            <i class="fa fa-info-circle"/> 
+                            Click <b>"Open Full Work Order"</b> above to view and edit all details.
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
         <!-- All Work Orders (includes completed) -->
         <record id="action_all_work_orders" model="ir.actions.act_window">
             <field name="name">All Work Orders</field>
             <field name="res_model">unified.work.order</field>
-            <field name="view_mode">list,kanban,calendar</field>
+            <field name="view_mode">list,kanban,calendar,form</field>
+            <field name="view_id" ref="unified_work_order_view_list"/>
             <field name="search_view_id" ref="unified_work_order_view_search"/>
             <field name="context">{}</field>
         </record>
