@@ -14,16 +14,17 @@
                           groups="records_management.group_records_manager">
                         <group>
                             <group string="Work Order Billing Mode">
-                                <field name="billing_mode" widget="radio"/>
-                                <field name="consolidated_billing_enabled" 
+                                <field name="consolidated_billing" 
                                        widget="boolean_toggle"
                                        string="Use Consolidated Billing"/>
+                                <field name="billing_period_id" 
+                                       invisible="not consolidated_billing"/>
                             </group>
                             <group string="Billing Information">
                                 <div class="text-muted" colspan="2">
-                                    <p><strong>Immediate Billing:</strong> An invoice is created 
+                                    <p><strong>Toggle OFF (Immediate Billing):</strong> An invoice is created 
                                        automatically when each work order is completed.</p>
-                                    <p><strong>Consolidated Monthly Billing:</strong> Work order 
+                                    <p><strong>Toggle ON (Consolidated Monthly Billing):</strong> Work order 
                                        charges accumulate and are included in the monthly 
                                        billing period invoice along with storage fees.</p>
                                 </div>
