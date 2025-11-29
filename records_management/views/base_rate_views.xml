@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- NOTE: Legacy basic views kept for backward compatibility but with lower priority -->
         <record id="base_rate_view_tree" model="ir.ui.view">
-            <field name="name">base.rate.view.tree</field>
+            <field name="name">base.rate.view.tree.legacy</field>
             <field name="model">base.rate</field>
+            <field name="priority">100</field>
             <field name="arch" type="xml">
                 <list>
                     <field name="name" />
@@ -11,8 +13,9 @@
             </field>
         </record>
         <record id="base_rate_view_form" model="ir.ui.view">
-            <field name="name">base.rate.view.form</field>
+            <field name="name">base.rate.view.form.legacy</field>
             <field name="model">base.rate</field>
+            <field name="priority">100</field>
             <field name="arch" type="xml">
                 <form string="Base Rate">
                     <sheet>
@@ -51,8 +54,9 @@
             </field>
         </record>
         <record id="base_rates_view_tree" model="ir.ui.view">
-            <field name="name">base.rate.view.tree</field>
+            <field name="name">base.rate.view.tree.complete</field>
             <field name="model">base.rate</field>
+            <field name="priority">10</field>
             <field name="arch" type="xml">
                 <list decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-muted="state == 'archived'">
                     <field name="name"/>
@@ -70,8 +74,9 @@
             </field>
         </record>
         <record id="base_rates_view_form" model="ir.ui.view">
-            <field name="name">base.rate.view.form</field>
+            <field name="name">base.rate.view.form.complete</field>
             <field name="model">base.rate</field>
+            <field name="priority">10</field>
             <field name="arch" type="xml">
                 <form string="Base Rates">
                     <header>
@@ -376,10 +381,10 @@
             </field>
         </record>
         <record id="action_base_rates" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model base.rate has state field - consider using default search filters -->
             <field name="name">Base Service Rates</field>
             <field name="res_model">base.rate</field>
             <field name="view_mode">list,form</field>
+            <field name="view_id" ref="base_rates_view_tree"/>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="help" type="html">
@@ -391,6 +396,15 @@
                 </p>
             </field>
         </record>
+        
+        <!-- Specify form view for base rates action -->
+        <record id="action_base_rates_view_form" model="ir.actions.act_window.view">
+            <field name="sequence">2</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="base_rates_view_form"/>
+            <field name="act_window_id" ref="action_base_rates"/>
+        </record>
+        
         <!-- Ensure this action exists before any menus reference it -->
         <record id="action_customer_negotiated_rate" model="ir.actions.act_window">
             <field name="name">Customer Negotiated Rate</field>
