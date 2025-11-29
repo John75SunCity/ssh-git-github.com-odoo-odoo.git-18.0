@@ -124,7 +124,7 @@
 
         <!-- Universal Barcode Scanner - Top Item -->
         <menuitem id="menu_barcode_universal_scanner"
-                  name="📷 Universal Scanner"
+                  name="🔲 Barcode Scanner"
                   parent="menu_rm_barcode_operations"
                   action="records_management.action_barcode_operations_wizard"
                   sequence="1"/>

@@ -60,7 +60,7 @@ class BarcodeOperationsWizard(models.TransientModel):
         readonly=True
     )
     bin_id = fields.Many2one(
-        comodel_name='shredding.bin',
+        comodel_name='shredding.service.bin',
         string='Found Bin',
         readonly=True
     )
@@ -261,7 +261,7 @@ class BarcodeOperationsWizard(models.TransientModel):
 
     def _handle_bin_scan(self, barcode):
         """Handle bin barcode scanning."""
-        Bin = self.env.get('shredding.bin')
+        Bin = self.env.get('shredding.service.bin')
         
         if not Bin:
             self.scan_success = False
@@ -279,7 +279,7 @@ class BarcodeOperationsWizard(models.TransientModel):
         self.scan_success = True
         self.scan_result = _('Found Bin: %s\nCustomer: %s\nService Type: %s') % (
             bin_record.name,
-            bin_record.partner_id.name if hasattr(bin_record, 'partner_id') else _('N/A'),
+            bin_record.partner_id.name if hasattr(bin_record, 'partner_id') and bin_record.partner_id else _('N/A'),
             bin_record.service_type if hasattr(bin_record, 'service_type') else _('N/A')
         )
         
