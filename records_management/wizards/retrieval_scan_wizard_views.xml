@@ -20,7 +20,7 @@
 
                         <!-- Progress Bar - Large for mobile visibility -->
                         <group>
-                            <div class="alert alert-info text-center" style="font-size: 1.2em;">
+                            <div class="alert alert-info text-center" role="status" style="font-size: 1.2em;">
                                 <strong>Scanned: <field name="scanned_items" readonly="1" class="d-inline"/> / <field name="total_items" readonly="1" class="d-inline"/></strong>
                             </div>
                             <field name="progress_percentage" widget="progressbar"/>
@@ -35,11 +35,11 @@
                         </group>
 
                         <!-- Last Scan Result - Prominent feedback -->
-                        <div class="alert alert-success text-center" style="font-size: 1.1em;" invisible="not last_scan_success">
-                            <i class="fa fa-check-circle"/> <field name="last_scan_result" readonly="1" class="d-inline"/>
+                        <div class="alert alert-success text-center" role="status" style="font-size: 1.1em;" invisible="not last_scan_success">
+                            <i class="fa fa-check-circle" title="Success"/> <field name="last_scan_result" readonly="1" class="d-inline"/>
                         </div>
-                        <div class="alert alert-danger text-center" style="font-size: 1.1em;" invisible="last_scan_success or not last_scan_result">
-                            <i class="fa fa-times-circle"/> <field name="last_scan_result" readonly="1" class="d-inline"/>
+                        <div class="alert alert-danger text-center" role="alert" style="font-size: 1.1em;" invisible="last_scan_success or not last_scan_result">
+                            <i class="fa fa-times-circle" title="Error"/> <field name="last_scan_result" readonly="1" class="d-inline"/>
                         </div>
 
                         <!-- Remaining items count -->
@@ -60,8 +60,8 @@
                         </group>
 
                         <!-- All Done Message -->
-                        <div class="alert alert-success text-center" style="font-size: 1.2em; padding: 20px;" invisible="remaining_items != 0">
-                            <i class="fa fa-check-circle fa-2x"/>
+                        <div class="alert alert-success text-center" role="status" style="font-size: 1.2em; padding: 20px;" invisible="remaining_items != 0">
+                            <i class="fa fa-check-circle fa-2x" title="Complete"/>
                             <h3>✓ All containers scanned!</h3>
                             <p>Tap "Complete Picking" to finish.</p>
                         </div>
