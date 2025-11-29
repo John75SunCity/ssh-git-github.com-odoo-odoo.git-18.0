@@ -28,6 +28,16 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
     _description = 'Work Order Invoice Mixin'
 
     # ============================================================================
+    # CURRENCY (Required for Monetary fields in mixin)
+    # ============================================================================
+    currency_id = fields.Many2one(
+        comodel_name='res.currency',
+        string='Currency',
+        default=lambda self: self.env.company.currency_id,
+        required=True
+    )
+
+    # ============================================================================
     # INVOICE FIELDS
     # ============================================================================
     invoice_id = fields.Many2one(
