@@ -24,7 +24,10 @@
                         <!-- ========== STEP 1: TYPE SELECTION ========== -->
                         <group invisible="state != 'type_selection'">
                             <group string="Customer">
-                                <field name="partner_id" options="{'no_create': True}"/>
+                                <field name="partner_id" 
+                                       placeholder="Type customer name to search..."
+                                       options="{'no_create': True, 'no_quick_create': True}"
+                                       autocomplete="off"/>
                             </group>
                             <group string="Schedule &amp; Priority">
                                 <field name="scheduled_date"/>
@@ -33,7 +36,7 @@
                         </group>
 
                         <group invisible="state != 'type_selection'" string="Service Type">
-                            <field name="service_category" widget="radio" options="{'horizontal': true}"/>
+                            <field name="service_category" widget="radio"/>
                         </group>
 
                         <!-- Storage Services Options -->
@@ -105,7 +108,7 @@
                         <!-- SHREDDING SERVICE DETAILS -->
                         <group invisible="state != 'details' or work_order_type != 'shredding'" string="Shredding Service Details">
                             <field name="shredding_service_type" widget="radio"/>
-                            <field name="material_type"/>
+                            <field name="material_type" widget="radio"/>
                             <field name="bin_quantity" invisible="shredding_service_type not in ('bin_onetime', 'bin_recurring', 'bin_mobile')"/>
                             <field name="notes" placeholder="Service notes..."/>
                         </group>

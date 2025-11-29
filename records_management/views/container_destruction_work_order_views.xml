@@ -136,9 +136,15 @@
                         </div>
                         <group>
                             <group string="Customer Information">
-                                <field name="partner_id"/>
+                                <field name="partner_id"
+                                       placeholder="Type customer name..."
+                                       options="{'no_create': True, 'no_quick_create': True}"
+                                       autocomplete="off"/>
                                 <field name="portal_request_id"/>
-                                <field name="user_id"/>
+                                <field name="user_id"
+                                       placeholder="Type user name..."
+                                       options="{'no_create': True}"
+                                       autocomplete="off"/>
                             </group>
                             <group string="Status &amp; Visibility">
                                 <field name="portal_visible" widget="boolean_toggle"/>
@@ -150,12 +156,15 @@
                             <group>
                                 <field name="scheduled_destruction_date"/>
                                 <field name="actual_destruction_date"/>
-                                <field name="destruction_method"/>
+                                <field name="destruction_method" widget="radio"/>
                             </group>
                             <group>
                                 <field name="customer_authorized"/>
                                 <field name="customer_authorization_date"/>
-                                <field name="authorized_by"/>
+                                <field name="authorized_by"
+                                       placeholder="Type name..."
+                                       options="{'no_create': True}"
+                                       autocomplete="off"/>
                             </group>
                         </group>
                         <notebook>

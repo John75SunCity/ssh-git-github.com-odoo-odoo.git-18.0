@@ -18,53 +18,59 @@
                             </h3>
                         </div>
 
-                        <!-- Progress Bar -->
+                        <!-- Progress Bar - Large for mobile visibility -->
                         <group>
+                            <div class="alert alert-info text-center" style="font-size: 1.2em;">
+                                <strong>Scanned: <field name="scanned_items" readonly="1" class="d-inline"/> / <field name="total_items" readonly="1" class="d-inline"/></strong>
+                            </div>
                             <field name="progress_percentage" widget="progressbar"/>
                         </group>
 
-                        <!-- Statistics -->
-                        <group>
-                            <group string="Progress">
-                                <field name="total_items" readonly="1"/>
-                                <field name="scanned_items" readonly="1"/>
-                                <field name="remaining_items" readonly="1"/>
-                            </group>
+                        <!-- Scan Input - Large touch-friendly input -->
+                        <group string="📷 Scan Container Barcode">
+                            <field name="barcode_input" 
+                                   placeholder="Tap here and scan barcode..."
+                                   class="o_input_lg"
+                                   autocomplete="off"/>
                         </group>
 
-                        <!-- Scan Input -->
-                        <group string="Scan Container">
-                            <field name="barcode_input" placeholder="Scan barcode here..."/>
+                        <!-- Last Scan Result - Prominent feedback -->
+                        <div class="alert alert-success text-center" style="font-size: 1.1em;" invisible="not last_scan_success">
+                            <i class="fa fa-check-circle"/> <field name="last_scan_result" readonly="1" class="d-inline"/>
+                        </div>
+                        <div class="alert alert-danger text-center" style="font-size: 1.1em;" invisible="last_scan_success or not last_scan_result">
+                            <i class="fa fa-times-circle"/> <field name="last_scan_result" readonly="1" class="d-inline"/>
+                        </div>
+
+                        <!-- Remaining items count -->
+                        <group invisible="remaining_items == 0">
+                            <div class="text-center" style="font-size: 1.1em;">
+                                <strong><field name="remaining_items" readonly="1" class="d-inline"/> containers remaining</strong>
+                            </div>
                         </group>
 
-                        <!-- Last Scan Result -->
-                        <group string="Last Scan Result" invisible="not last_scan_result">
-                            <field name="last_scan_result" readonly="1"/>
-                            <field name="last_scan_success" invisible="1"/>
-                        </group>
-
-                        <!-- Pick List (remaining items) -->
-                        <group string="Items to Pick" invisible="remaining_items == 0">
+                        <!-- Pick List (remaining items) - Simplified for mobile -->
+                        <group string="📦 Items to Pick" invisible="remaining_items == 0">
                             <field name="item_ids" nolabel="1" readonly="1">
                                 <list decoration-success="retrieved" decoration-muted="retrieved">
                                     <field name="box_id"/>
-                                    <field name="item_description"/>
                                     <field name="retrieved" widget="boolean_toggle" readonly="1"/>
                                 </list>
                             </field>
                         </group>
 
                         <!-- All Done Message -->
-                        <div class="alert alert-success text-center" invisible="remaining_items != 0">
-                            <strong>✓ All containers scanned!</strong>
-                            <p>Click "Complete Picking" to finish.</p>
+                        <div class="alert alert-success text-center" style="font-size: 1.2em; padding: 20px;" invisible="remaining_items != 0">
+                            <i class="fa fa-check-circle fa-2x"/>
+                            <h3>✓ All containers scanned!</h3>
+                            <p>Tap "Complete Picking" to finish.</p>
                         </div>
                     </sheet>
                     <footer>
-                        <button name="action_process_scan" string="Scan" type="object" class="btn-primary"/>
-                        <button name="action_complete_picking" string="Complete Picking" type="object" 
-                                class="btn-success" invisible="remaining_items != 0"/>
-                        <button name="action_mark_all_scanned" string="Mark All Scanned (Override)" type="object" 
+                        <button name="action_process_scan" string="📷 Scan" type="object" class="btn-primary btn-lg"/>
+                        <button name="action_complete_picking" string="✓ Complete Picking" type="object" 
+                                class="btn-success btn-lg" invisible="remaining_items != 0"/>
+                        <button name="action_mark_all_scanned" string="Override: Mark All" type="object" 
                                 class="btn-warning" invisible="remaining_items == 0"
                                 groups="records_management.group_records_manager"/>
                         <button string="Close" class="btn-secondary" special="cancel"/>

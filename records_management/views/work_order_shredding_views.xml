@@ -51,11 +51,14 @@
                         </div>
                         <group>
                             <group name="order_info" string="Order Information">
-                                <field name="partner_id" options="{'no_create': True}" />
+                                <field name="partner_id" 
+                                       placeholder="Type customer name..."
+                                       options="{'no_create': True, 'no_quick_create': True}"
+                                       autocomplete="off"/>
                                 <field name="portal_request_id" />
                                 <field name="scheduled_date" />
-                                <field name="shredding_service_type" />
-                                <field name="material_type" />
+                                <field name="shredding_service_type" widget="radio"/>
+                                <field name="material_type" widget="radio"/>
                                 <field name="bin_quantity" invisible="shredding_service_type not in ('bin_onetime', 'bin_recurring', 'bin_mobile')"/>
                                 <field name="active" />
                             </group>

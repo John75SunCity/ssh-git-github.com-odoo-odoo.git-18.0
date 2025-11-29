@@ -40,10 +40,17 @@
                         </div>
                         <group>
                             <group name="main_info">
-                                <field name="partner_id" required="1"/>
+                                <field name="partner_id" required="1"
+                                       placeholder="Type customer name..."
+                                       options="{'no_create': True, 'no_quick_create': True}"
+                                       autocomplete="off"/>
                                 <field name="scheduled_date" required="1"/>
-                                <field name="priority"/>
-                                <field name="user_id" domain="[('share', '=', False)]"/>
+                                <field name="priority" widget="priority"/>
+                                <field name="user_id" 
+                                       placeholder="Type technician name..."
+                                       domain="[('share', '=', False)]"
+                                       options="{'no_create': True}"
+                                       autocomplete="off"/>
                             </group>
                             <group name="location_info">
                                 <field name="company_id"/>
