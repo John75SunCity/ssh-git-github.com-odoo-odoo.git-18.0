@@ -245,8 +245,8 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
         # Link invoice to work order
         self.invoice_id = invoice.id
 
-        # Update state if applicable
-        if hasattr(self, 'state'):
+        # Update state if model has 'invoiced' state option
+        if hasattr(self, 'state') and 'invoiced' in dict(self._fields['state'].selection):
             self.write({'state': 'invoiced'})
 
         # Log message
