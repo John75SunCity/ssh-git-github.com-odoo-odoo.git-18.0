@@ -7,8 +7,8 @@
              ============================================================================ -->
         
         <!-- List View -->
-        <record id="base_rates_view_tree" model="ir.ui.view">
-            <field name="name">base.rates.view.tree</field>
+        <record id="base_rates_item_view_tree" model="ir.ui.view">
+            <field name="name">base.rates.item.view.tree</field>
             <field name="model">base.rates</field>
             <field name="arch" type="xml">
                 <list string="Rate Items" editable="bottom">
@@ -27,8 +27,8 @@
         </record>
 
         <!-- Form View -->
-        <record id="base_rates_view_form" model="ir.ui.view">
-            <field name="name">base.rates.view.form</field>
+        <record id="base_rates_item_view_form" model="ir.ui.view">
+            <field name="name">base.rates.item.view.form</field>
             <field name="model">base.rates</field>
             <field name="arch" type="xml">
                 <form string="Rate Item">
@@ -74,8 +74,8 @@
         </record>
 
         <!-- Search View -->
-        <record id="base_rates_view_search" model="ir.ui.view">
-            <field name="name">base.rates.view.search</field>
+        <record id="base_rates_item_view_search" model="ir.ui.view">
+            <field name="name">base.rates.item.view.search</field>
             <field name="model">base.rates</field>
             <field name="arch" type="xml">
                 <search string="Search Rate Items">
