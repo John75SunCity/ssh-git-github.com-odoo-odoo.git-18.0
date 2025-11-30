@@ -200,7 +200,7 @@ from . import records_department_sharing
 from . import records_description
 from . import records_destruction
 from . import records_destruction_job
-from . import records_digital_scan
+# records_digital_scan removed - fields moved directly to records.document
 from . import records_document
 from . import records_document_type
 from . import records_file  # File folders (hierarchical inventory)

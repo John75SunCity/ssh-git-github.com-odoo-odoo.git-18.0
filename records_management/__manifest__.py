@@ -210,8 +210,8 @@
         # Destruction Reports
         "report/destruction_event_reports.xml",
         "report/destruction_item_reports.xml",
-        # File & Digital Scan Reports
-        "report/file_retrieval_item_reports.xml",        "report/records_digital_scan_reports.xml",
+        # File & Scan Reports
+        "report/file_retrieval_item_reports.xml",
         "report/scan_digital_asset_reports.xml",
         "report/scan_retrieval_item_reports.xml",
         "report/scan_retrieval_reports.xml",
@@ -373,7 +373,6 @@
         # ============================================================================
         # CRITICAL EARLY VIEWS: Actions that must be defined before menus reference them
         # ============================================================================
-        "views/records_digital_scan_views.xml",
         "views/pickup_request_views.xml",
         "views/naid_audit_log_views.xml",
         "views/naid_audit_verification_wizard_views.xml",

@@ -420,8 +420,6 @@
 
         <menuitem id="menu_records_retrieval_orders" name="File Retrieval Requests" parent="records_management.menu_records_operations" action="action_records_retrieval_order" sequence="25" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
 
-        <menuitem id="menu_records_boxes" name="Scans PDF" parent="records_management.menu_records_operations" action="action_records_digital_scan" sequence="28" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
-
             <!-- Pickup Requests Menu -->
     <menuitem id="menu_pickup_request"
               name="Pickup Requests"
@@ -485,9 +483,6 @@
               action="action_inventory_snapshots"
               sequence="12"
               groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin"/>
-
-        <!-- Digital Scans - MASTER VIEW of ALL scanned documents -->
-        <menuitem id="menu_records_digital_scan" name="Digital Scans" parent="records_management.menu_records_inventory" action="action_records_digital_scan" sequence="20" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
 
         <!-- ========================================== -->
         <!-- BILLING & FINANCE MENU                    -->

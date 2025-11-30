@@ -251,23 +251,63 @@ class RecordsDocument(models.Model):
     media_type = fields.Char("Media Type", tracking=True)
     original_format = fields.Char("Original Format", tracking=True)
     digitized = fields.Boolean("Digitized")
-    # Toggle for enabling Digital Scans tab (referenced in view)
-    digital_scanning_enabled = fields.Boolean(
-        string="Digital Scanning Enabled",
+    
+    # ============================================================================
+    # DIRECT ATTACHMENT FIELDS (Simplified from records.digital.scan)
+    # ============================================================================
+    # Toggle for enabling attachment section (referenced in view)
+    attachment_enabled = fields.Boolean(
+        string="Attachments Enabled",
         default=True,
-        help="Controls visibility and access to the Digital Scans tab in the document form."
+        help="Controls visibility and access to the Attachments tab in the document form."
     )
-    digital_scan_ids = fields.One2many('records.digital.scan', 'document_id', string="Digital Scans")
-    scan_count = fields.Integer(string="Scan Count", compute='_compute_scan_count', store=True)
-    total_scan_size_kb = fields.Integer(
-        string="Total Scan Size (KB)",
-        compute="_compute_total_scan_size",
-        help="Total size of all digital scans for this document in kilobytes",
+    # Direct file attachment using Odoo's native attachment handling
+    file_data = fields.Binary(
+        string="Attached File",
+        attachment=True,
+        help="Scanned document or any attached file. Uses Odoo's native attachment system."
     )
-    total_scan_size_visible = fields.Boolean(
-        string="Show Total Scan Size",
+    file_name = fields.Char(
+        string="File Name",
+        help="Name of the attached file for download purposes."
+    )
+    page_count = fields.Integer(
+        string="Page Count",
+        default=1,
+        help="Number of pages in this document."
+    )
+    attachment_tracking_number = fields.Char(
+        string="Attachment Tracking Number",
+        copy=False,
+        index=True,
+        readonly=True,
+        help="Auto-generated tracking number for the attachment, similar to temp_barcode."
+    )
+    attachment_date = fields.Datetime(
+        string="Attachment Date",
+        default=fields.Datetime.now,
+        help="Date when the file was attached."
+    )
+    attachment_notes = fields.Text(
+        string="Attachment Notes",
+        help="Additional notes about the attachment."
+    )
+    # Computed field for attachment count (for smart button)
+    attachment_count = fields.Integer(
+        string="Attachment Count",
+        compute='_compute_attachment_count',
+        help="Number of attachments linked to this document."
+    )
+    # Keep total size field for compatibility but compute from ir.attachment
+    total_attachment_size_kb = fields.Integer(
+        string="Total Attachment Size (KB)",
+        compute="_compute_total_attachment_size",
+        help="Total size of all attachments for this document in kilobytes",
+    )
+    total_attachment_size_visible = fields.Boolean(
+        string="Show Total Attachment Size",
         default=True,
-        help="Controls whether the Total Scan Size field is visible; referenced by form view invisible domain.",
+        help="Controls whether the Total Attachment Size field is visible; referenced by form view invisible domain.",
     )
     audit_log_ids = fields.One2many('naid.audit.log', 'document_id', string="Audit Logs")
     audit_log_count = fields.Integer(string="Audit Log Count", compute='_compute_audit_log_count', store=True)
@@ -404,6 +444,11 @@ class RecordsDocument(models.Model):
         docs = super().create(vals_list)
         for doc in docs:
             doc.message_post(body=_('Document "%s" created') % doc.name)
+            # Auto-generate attachment tracking number if file is attached
+            if doc.file_data and not doc.attachment_tracking_number:
+                doc.attachment_tracking_number = self.env['ir.sequence'].next_by_code('records.document.attachment') or (
+                    'ATT-%s' % doc.id
+                )
         return docs
 
     def write(self, vals):
@@ -412,6 +457,15 @@ class RecordsDocument(models.Model):
                 'permanent_user_id': self.env.user.id,
                 'permanent_date': fields.Datetime.now(),
             })
+        # Auto-generate attachment tracking number when file is attached
+        if vals.get('file_data') and not vals.get('attachment_tracking_number'):
+            for record in self:
+                if not record.attachment_tracking_number:
+                    vals['attachment_tracking_number'] = self.env['ir.sequence'].next_by_code('records.document.attachment') or (
+                        'ATT-%s' % record.id
+                    )
+                    vals['attachment_date'] = fields.Datetime.now()
+                    break  # Only generate one for all records in batch
         if 'state' in vals:
             for record in self:
                 record.message_post(
@@ -485,24 +539,32 @@ class RecordsDocument(models.Model):
             except Exception:
                 record.days_until_destruction = False
 
-    @api.depends('digital_scan_ids')
-    def _compute_scan_count(self):
+    def _compute_attachment_count(self):
+        """Compute attachment count from ir.attachment records."""
+        Attachment = self.env['ir.attachment']
         for record in self:
             try:
-                record.scan_count = len(record.digital_scan_ids) if record.digital_scan_ids else 0
+                record.attachment_count = Attachment.search_count([
+                    ('res_model', '=', 'records.document'),
+                    ('res_id', '=', record.id)
+                ])
             except Exception:
-                record.scan_count = 0
+                record.attachment_count = 0
 
-    @api.depends("digital_scan_ids.file_size")
-    def _compute_total_scan_size(self):
-        """Compute total file size of all digital scans for this document."""
+    def _compute_total_attachment_size(self):
+        """Compute total file size of all attachments for this document."""
+        Attachment = self.env['ir.attachment']
         for record in self:
             try:
-                # Sum all scan file sizes (in MB) and convert to KB
-                total_mb = sum(record.digital_scan_ids.mapped("file_size") or [0])
-                record.total_scan_size_kb = int(total_mb * 1024)  # Convert MB to KB
+                attachments = Attachment.search([
+                    ('res_model', '=', 'records.document'),
+                    ('res_id', '=', record.id)
+                ])
+                # Sum all attachment file sizes (in bytes) and convert to KB
+                total_bytes = sum(attachments.mapped('file_size') or [0])
+                record.total_attachment_size_kb = int(total_bytes / 1024)
             except Exception:
-                record.total_scan_size_kb = 0
+                record.total_attachment_size_kb = 0
 
     @api.depends('audit_log_ids')
     def _compute_audit_log_count(self):
@@ -869,15 +931,19 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_view_scans(self):
+    def action_view_attachments(self):
+        """Smart button action to view document attachments"""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Digital Scans'),
-            'res_model': 'records.digital.scan',
-            'view_mode': 'tree,form',
-            'domain': [('document_id', '=', self.id)],
-            'context': {'default_document_id': self.id},
+            'name': _('Attachments'),
+            'res_model': 'ir.attachment',
+            'view_mode': 'kanban,tree,form',
+            'domain': [('res_model', '=', 'records.document'), ('res_id', '=', self.id)],
+            'context': {
+                'default_res_model': 'records.document',
+                'default_res_id': self.id,
+            },
         }
 
     def action_view_audit_logs(self):
@@ -1317,22 +1383,14 @@ class RecordsDocument(models.Model):
         except Exception as e:
             raise ValidationError(_('Error viewing attachments: %s') % str(e))
 
-    def action_view_digital_scans(self):
-        """Smart button action to view digital scans"""
+    def action_generate_attachment_tracking(self):
+        """Generate a tracking number for the document attachment if not already set."""
         self.ensure_one()
-        try:
-            return {
-                'name': _('Digital Scans'),
-                'type': 'ir.actions.act_window',
-                'view_mode': 'tree,form',
-                'res_model': 'records.digital.scan',
-                'domain': [('document_id', '=', self.id)],
-                'context': {
-                    'default_document_id': self.id,
-                }
-            }
-        except Exception as e:
-            raise ValidationError(_('Error viewing digital scans: %s') % str(e))
+        if not self.attachment_tracking_number:
+            self.attachment_tracking_number = self.env['ir.sequence'].next_by_code('records.document.attachment') or (
+                'ATT-%s' % self.id
+            )
+        return True
 
     def action_toggle_favorite(self):
         """Action to toggle favorite status"""
@@ -1358,7 +1416,7 @@ class RecordsDocument(models.Model):
             # Trigger recomputation of key fields
             self._compute_destruction_eligible_date()
             self._compute_days_until_destruction()
-            self._compute_scan_count()
+            self._compute_attachment_count()
             self._compute_audit_log_count()
             self._compute_chain_of_custody_count()
             self._compute_related_records_count()

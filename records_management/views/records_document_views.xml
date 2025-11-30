@@ -292,16 +292,24 @@
                                 </group>
                                 <field name="destruction_notes" placeholder="Destruction process notes and compliance verification..." />
                             </page>
-                            <page string="Digital Scans" name="digital" invisible="digital_scanning_enabled == False">
-                                <field name="digital_scan_ids" mode="list">
-                                    <list>
-                                        <field name="scan_date" />
-                                        <field name="file_format" />
-                                        <field name="resolution" />
-                                        <field name="file_size" />
-                                        <field name="storage_location_id" />
-                                    </list>
-                                </field>
+                            <page string="Attachments" name="attachments" invisible="attachment_enabled == False">
+                                <group>
+                                    <group string="Document Attachment">
+                                        <field name="file_data" filename="file_name" widget="binary"/>
+                                        <field name="file_name"/>
+                                        <field name="page_count"/>
+                                        <field name="attachment_tracking_number"/>
+                                    </group>
+                                    <group string="Attachment Info">
+                                        <field name="attachment_date"/>
+                                        <field name="attachment_count"/>
+                                        <field name="total_attachment_size_kb" invisible="total_attachment_size_visible == False"/>
+                                    </group>
+                                </group>
+                                <field name="attachment_notes" placeholder="Notes about this attachment..."/>
+                                <div class="text-muted mt-2">
+                                    <p><i class="fa fa-info-circle"/> Additional attachments can be added via the Attachments button or by dragging files into the chatter.</p>
+                                </div>
                             </page>
                         </notebook>
                     </sheet>
