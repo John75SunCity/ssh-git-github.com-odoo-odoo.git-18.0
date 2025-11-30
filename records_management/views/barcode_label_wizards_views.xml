@@ -216,8 +216,8 @@
                     </div>
                     
                     <group string="Electronic Signature">
-                        <field name="signature" widget="signature" options="{'type': 'sign_request', 'full_name': signature_name}"/>
                         <field name="signature_name" invisible="1"/>
+                        <field name="signature" widget="signature" options="{'type': 'sign_request', 'full_name': signature_name}"/>
                     </group>
                 </sheet>
                 <footer>
