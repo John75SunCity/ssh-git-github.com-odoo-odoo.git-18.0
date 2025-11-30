@@ -48,9 +48,9 @@
                                                 <i class="fa fa-calendar-times" aria-hidden="true" />
                                                 <field name="destruction_eligible_date" />
                                             </div>
-                                            <div t-if="record.total_scan_size_kb.raw_value and record.total_scan_size_visible.raw_value">
+                                            <div t-if="record.total_attachment_size_kb.raw_value and record.total_attachment_size_visible.raw_value">
                                                 <i class="fa fa-file" aria-hidden="true" />
-                                                <field name="total_scan_size_kb" /> KB
+                                                <field name="total_attachment_size_kb" /> KB
                                         </div>
                                         </div>
                                         <div class="col-4">
@@ -145,7 +145,7 @@
                 <form>
                     <header>
                         <button name="action_view_chain_of_custody" type="object" string="View Chain of Custody" class="btn-primary" />
-                        <button name="action_scan_document" type="object" string="Scan/Image Document" class="btn-secondary" invisible="digital_scanning_enabled == False" />
+                        <button name="action_view_attachments" type="object" string="View Attachments" class="btn-secondary" invisible="attachment_enabled == False" />
                         <button name="action_generate_document_barcode" type="object" string="Generate Barcode" class="btn-info" />
                         <button name="action_generate_document_qr" type="object" string="Generate QR Code" class="btn-success" />
                         <button name="action_mark_permanent" type="object" string="Mark as Permanent" class="btn-success" invisible="is_permanent" groups="records_management.group_records_user" />
@@ -247,8 +247,8 @@
                                         <field name="media_type" />
                                         <field name="original_format" />
                                         <field name="digitized" />
-                                        <field name="scan_count" readonly="1" />
-                                        <field name="total_scan_size_kb" readonly="1" widget="integer" invisible="(scan_count == 0) or (total_scan_size_visible == False)" />
+                                        <field name="attachment_count" readonly="1" />
+                                        <field name="total_attachment_size_kb" readonly="1" widget="integer" invisible="(attachment_count == 0) or (total_attachment_size_visible == False)" />
                                     </group>
                                 </group>
                                 <field name="description" placeholder="Document description, contents, and special handling notes..." />

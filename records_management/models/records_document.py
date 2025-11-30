@@ -809,11 +809,11 @@ class RecordsDocument(models.Model):
             except Exception:
                 record.location_status = 'unknown'
 
-    @api.depends('digitized', 'scan_count')
+    @api.depends('digitized', 'file_data')
     def _compute_digitization_status(self):
         for record in self:
             try:
-                if record.digitized and record.scan_count > 0:
+                if record.digitized and record.file_data:
                     record.digitization_status = 'complete'
                 elif record.digitized:
                     record.digitization_status = 'in_progress'
