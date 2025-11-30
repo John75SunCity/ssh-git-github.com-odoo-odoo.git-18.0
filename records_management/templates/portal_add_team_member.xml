@@ -101,12 +101,38 @@
                                                 <label for="department_id" class="form-label">
                                                     Department (Optional)
                                                 </label>
-                                                <select class="form-select" id="department_id" name="department_id">
-                                                    <option value="">No Department</option>
-                                                    <t t-foreach="departments" t-as="dept">
-                                                        <option t-att-value="dept.id" t-esc="dept.name"/>
+                                                
+                                                <!-- Smart Department Selection -->
+                                                <t t-if="has_departments">
+                                                    <!-- Case 1: User has exactly one department - show read-only -->
+                                                    <t t-if="default_department and not show_department_selector">
+                                                        <input type="text" class="form-control" readonly="readonly"
+                                                               t-att-value="default_department.name"/>
+                                                        <input type="hidden" name="department_id" t-att-value="default_department.id"/>
                                                     </t>
-                                                </select>
+                                                    
+                                                    <!-- Case 2: User has multiple departments - show dropdown -->
+                                                    <t t-elif="show_department_selector">
+                                                        <select class="form-select" id="department_id" name="department_id">
+                                                            <option value="">No Department</option>
+                                                            <t t-foreach="departments" t-as="dept">
+                                                                <option t-att-value="dept.id" t-esc="dept.name"/>
+                                                            </t>
+                                                        </select>
+                                                    </t>
+                                                    
+                                                    <!-- Case 3: Company has departments but user has no access -->
+                                                    <t t-else="">
+                                                        <input type="text" class="form-control text-muted" readonly="readonly"
+                                                               value="Company Level"/>
+                                                        <input type="hidden" name="department_id" value=""/>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <input type="text" class="form-control text-muted" readonly="readonly"
+                                                           value="No departments configured"/>
+                                                    <input type="hidden" name="department_id" value=""/>
+                                                </t>
                                             </div>
                                         </div>
 

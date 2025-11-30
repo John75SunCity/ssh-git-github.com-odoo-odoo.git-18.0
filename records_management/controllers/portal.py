@@ -2163,10 +2163,9 @@ class RecordsManagementController(http.Controller):
             if container.department_id and container.department_id.id not in accessible_depts:
                 return request.redirect('/my/home?error=unauthorized_dept')
 
-        # Get available departments for editing
-        departments = request.env['records.department'].sudo().search([
-            ('company_id', '=', partner.id)
-        ])
+        # Get smart department context for editing
+        user = request.env.user
+        dept_context = self._get_smart_department_context(user, user.partner_id)
 
         # Get container types
         container_types = request.env['records.container.type'].search([])
@@ -2191,7 +2190,6 @@ class RecordsManagementController(http.Controller):
 
         values = {
             'container': container,
-            'departments': departments,
             'container_types': container_types,
             'movements': movements,
             'files': files,
@@ -2199,6 +2197,7 @@ class RecordsManagementController(http.Controller):
             'can_edit': can_edit,
             'can_delete': can_delete,
             'page_name': 'container_detail',
+            **dept_context,  # departments, default_department, has_departments, show_department_selector
         }
 
         return request.render("records_management.portal_container_detail", values)
@@ -2902,8 +2901,9 @@ class RecordsManagementController(http.Controller):
             if doc_record.department_id and doc_record.department_id.id not in accessible_depts:
                 return request.redirect('/my/home?error=unauthorized_dept')
 
-        # Get related data
-        departments = request.env['records.department'].sudo().search([('company_id', '=', partner.id)])
+        # Get related data with smart department context
+        user = request.env.user
+        dept_context = self._get_smart_department_context(user, user.partner_id)
         files = request.env['records.file'].sudo().search([('partner_id', '=', partner.id)])
         containers = request.env['records.container'].sudo().search([('partner_id', '=', partner.id)])
 
@@ -2921,13 +2921,13 @@ class RecordsManagementController(http.Controller):
         values = {
             'document': doc_record,
             'attachments': attachments,
-            'departments': departments,
             'files': files,
             'containers': containers,
             'can_edit': can_edit,
             'can_delete': can_delete,
             'permissions': permissions,
             'page_name': 'document_detail',
+            **dept_context,  # departments, default_department, has_departments, show_department_selector
         }
 
         return request.render("records_management.portal_document_detail", values)
@@ -2935,7 +2935,8 @@ class RecordsManagementController(http.Controller):
     @http.route(['/my/inventory/documents/create'], type='http', auth='user', website=True, methods=['GET', 'POST'], csrf=True)
     def portal_document_create(self, **post):
         """Create new document (department user+)."""
-        if not request.env.user.has_group('records_management.group_portal_department_user'):
+        user = request.env.user
+        if not user.has_group('records_management.group_portal_department_user'):
             if request.httprequest.method == 'GET':
                 return request.redirect('/my/home?error=unauthorized')
             return request.render('records_management.portal_error', {
@@ -2943,19 +2944,20 @@ class RecordsManagementController(http.Controller):
                 'error_message': _('You do not have permission to create documents.'),
             })
 
-        partner = request.env.user.partner_id.commercial_partner_id
+        partner = user.partner_id.commercial_partner_id
 
         if request.httprequest.method == 'GET':
-            departments = request.env['records.department'].sudo().search([('company_id', '=', partner.id)])
+            # Use smart department context
+            dept_context = self._get_smart_department_context(user, user.partner_id)
             files = request.env['records.file'].sudo().search([('partner_id', '=', partner.id)])
             containers = request.env['records.container'].sudo().search([('partner_id', '=', partner.id)])
 
             values = {
-                'departments': departments,
                 'files': files,
                 'containers': containers,
                 'permissions': self._get_user_permissions(),
                 'page_name': 'document_create',
+                **dept_context,  # departments, default_department, has_departments, show_department_selector
             }
             return request.render("records_management.portal_document_create", values)
 
@@ -2964,19 +2966,21 @@ class RecordsManagementController(http.Controller):
             file_id = post.get('file_id')
             department_id = post.get('department_id')
 
-            if not all([name, file_id, department_id]):
+            # Department is now optional
+            if not all([name, file_id]):
                 return request.render('records_management.portal_error', {
                     'error_title': _('Missing Required Fields'),
-                    'error_message': _('Please provide document name, file, and department.'),
+                    'error_message': _('Please provide document name and file.'),
                 })
 
-            # Department validation
-            department = request.env['records.department'].sudo().browse(int(department_id))
-            if department.company_id.id != partner.id:
-                return request.render('records_management.portal_error', {
-                    'error_title': _('Invalid Department'),
-                    'error_message': _('The selected department is invalid.'),
-                })
+            # Department validation (if provided)
+            if department_id:
+                department = request.env['records.department'].sudo().browse(int(department_id))
+                if department.company_id.id != partner.id:
+                    return request.render('records_management.portal_error', {
+                        'error_title': _('Invalid Department'),
+                        'error_message': _('The selected department is invalid.'),
+                    })
 
             # Department access check
             if not request.env.user.has_group('records_management.group_portal_company_admin'):
@@ -6050,15 +6054,14 @@ class RecordsManagementController(http.Controller):
             ('partner_id', '=', partner.id)
         ], order='complete_name asc')
         
-        # Get departments
-        departments = request.env['records.department'].search([
-            ('partner_id', '=', partner.id)
-        ])
+        # Get smart department context
+        user = request.env.user
+        dept_context = self._get_smart_department_context(user, user.partner_id)
         
         values.update({
             'parent_locations': parent_locations,
-            'departments': departments,
             'page_name': 'create_staging_location',
+            **dept_context,  # departments, default_department, has_departments, show_department_selector
         })
         
         return request.render("records_management.portal_staging_location_create", values)
@@ -7331,17 +7334,16 @@ class RecordsManagementController(http.Controller):
 
         # GET request - show form
         if request.httprequest.method == 'GET':
-            # Get departments for dropdown
-            departments = request.env['records.department'].sudo().search([
-                ('company_id', '=', company.id)
-            ])
+            # Get smart department context (company admins see all departments)
+            user = request.env.user
+            dept_context = self._get_smart_department_context(user, user.partner_id)
 
             values = {
                 'page_name': 'add_team_member',
                 'partner': partner,
                 'company': company,
-                'departments': departments,
                 'success': post.get('success'),
+                **dept_context,  # departments, default_department, has_departments, show_department_selector
             }
             return request.render("records_management.portal_add_team_member_form", values)
 
