@@ -66,44 +66,69 @@
 
                                     <!-- Company and Department Selection -->
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <!-- Company Field - Full width if no department, half width if department visible -->
+                                        <t t-set="company_col_class" t-value="'col-md-6' if has_departments else 'col-md-12'"/>
+                                        <div t-att-class="company_col_class">
                                             <div class="form-group">
                                                 <label for="company_id" class="font-weight-bold">
                                                     <i class="fa fa-building"></i> Company
                                                     <span class="text-danger">*</span>
                                                 </label>
-                                                <select name="company_id" id="company_id" class="form-control" required="required">
-                                                    <option value="" t-att-selected="not partner.commercial_partner_id">Select Company...</option>
-                                                    <t t-if="partner.commercial_partner_id">
-                                                        <option t-att-value="partner.commercial_partner_id.id" selected="selected">
-                                                            <t t-esc="partner.commercial_partner_id.name"/>
-                                                        </option>
-                                                    </t>
-                                                </select>
+                                                <input type="text" class="form-control" readonly="readonly"
+                                                       t-att-value="partner.commercial_partner_id.name"/>
+                                                <input type="hidden" name="company_id" t-att-value="partner.commercial_partner_id.id"/>
                                                 <small class="form-text text-muted">
                                                     Your company account
                                                 </small>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="department_id" class="font-weight-bold">
-                                                    <i class="fa fa-sitemap"></i> Department
-                                                    <span class="text-danger">*</span>
-                                                </label>
-                                                <select name="department_id" id="department_id" class="form-control" required="required">
-                                                    <option value="">Select Department...</option>
-                                                    <t t-foreach="departments or []" t-as="dept">
-                                                        <option t-att-value="dept.id">
-                                                            <t t-esc="dept.name"/>
-                                                        </option>
+                                        
+                                        <!-- Department Field - Only visible if company has departments -->
+                                        <t t-if="has_departments">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="department_id" class="font-weight-bold">
+                                                        <i class="fa fa-sitemap"></i> Department
+                                                    </label>
+                                                    
+                                                    <!-- Case 1: User has exactly one department - show read-only -->
+                                                    <t t-if="default_department and not show_department_selector">
+                                                        <input type="text" class="form-control" readonly="readonly"
+                                                               t-att-value="default_department.name"/>
+                                                        <input type="hidden" name="department_id" t-att-value="default_department.id"/>
+                                                        <small class="form-text text-muted">
+                                                            Your assigned department
+                                                        </small>
                                                     </t>
-                                                </select>
-                                                <small class="form-text text-muted">
-                                                    Select your department for billing and tracking
-                                                </small>
+                                                    
+                                                    <!-- Case 2: User has multiple departments - show dropdown -->
+                                                    <t t-elif="show_department_selector">
+                                                        <select name="department_id" id="department_id" class="form-control">
+                                                            <option value="">Select Department...</option>
+                                                            <t t-foreach="departments or []" t-as="dept">
+                                                                <option t-att-value="dept.id"
+                                                                        t-att-selected="default_department and dept.id == default_department.id">
+                                                                    <t t-esc="dept.name"/>
+                                                                </option>
+                                                            </t>
+                                                        </select>
+                                                        <small class="form-text text-muted">
+                                                            Select your department for billing and tracking
+                                                        </small>
+                                                    </t>
+                                                    
+                                                    <!-- Case 3: Company has departments but user has no access - show info -->
+                                                    <t t-else="">
+                                                        <input type="text" class="form-control text-muted" readonly="readonly"
+                                                               value="Company Level (No Department)"/>
+                                                        <input type="hidden" name="department_id" value=""/>
+                                                        <small class="form-text text-muted">
+                                                            Request will be billed at company level
+                                                        </small>
+                                                    </t>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </t>
                                     </div>
 
                                     <!-- Contact Information -->

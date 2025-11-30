@@ -1454,18 +1454,52 @@ class RecordsManagementPortal(CustomerPortal):
     def portal_pickup_request_form(self, **kw):
         """Display pickup request creation form"""
         values = self._prepare_portal_layout_values()
-        partner = request.env.user.partner_id
+        user = request.env.user
+        partner = user.partner_id
 
-        # Get departments for user's company
-        departments = request.env['records.department'].sudo().search([
+        # Smart department handling:
+        # 1. Get user's assigned departments via records.storage.department.user
+        user_dept_assignments = request.env['records.storage.department.user'].sudo().search([
+            ('user_id', '=', user.id),
+            ('state', '=', 'active'),
+            ('active', '=', True),
+        ])
+        user_departments = user_dept_assignments.mapped('department_id')
+        
+        # 2. Also get all departments for the company (fallback for company admins)
+        company_departments = request.env['records.department'].sudo().search([
             ('partner_id', '=', partner.commercial_partner_id.id),
         ])
-
+        
+        # Determine which departments to show:
+        # - If user has specific department assignments, use those
+        # - If user is company admin with no specific assignments, show all company departments
+        is_company_admin = user.has_group('records_management.group_portal_company_admin')
+        
+        if user_departments:
+            # User has specific department assignments - include child departments too
+            all_user_depts = user_departments
+            for dept in user_departments:
+                all_user_depts |= dept.child_ids  # Include child departments
+            departments = all_user_depts
+        elif is_company_admin:
+            # Company admin with no specific dept assignment - show all
+            departments = company_departments
+        else:
+            # Regular user with no department assignment - show none (company-level only)
+            departments = request.env['records.department'].sudo().browse()
+        
+        # Determine default department (first one if user has exactly one)
+        default_department = departments[0] if len(departments) == 1 else False
+        
         values.update({
             'partner': partner,
             'page_name': 'new_pickup_request',
             'error': kw.get('error'),
             'departments': departments,
+            'default_department': default_department,
+            'has_departments': bool(company_departments),  # Company has departments configured
+            'show_department_selector': len(departments) > 1,  # Multiple options to choose from
         })
 
         return request.render('records_management.portal_pickup_request_create', values)
