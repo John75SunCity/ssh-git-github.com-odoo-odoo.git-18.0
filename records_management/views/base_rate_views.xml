@@ -285,5 +285,14 @@
             </field>
         </record>
 
+        <!-- Rate Analysis Wizard Action (referenced by menu) -->
+        <record id="action_rate_analysis_wizard" model="ir.actions.act_window">
+            <field name="name">Rate Analysis</field>
+            <field name="res_model">rate.change.confirmation.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{}</field>
+        </record>
+
     </data>
 </odoo>
