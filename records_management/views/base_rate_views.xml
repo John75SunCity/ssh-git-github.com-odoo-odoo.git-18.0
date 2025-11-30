@@ -54,11 +54,6 @@
                                 <field name="customers_using_rates" widget="statinfo" 
                                        string="Customers"/>
                             </button>
-                            <button name="action_view_containers_at_rate" type="object" 
-                                    class="oe_stat_button" icon="fa-archive">
-                                <field name="containers_at_base_rates" widget="statinfo" 
-                                       string="Containers"/>
-                            </button>
                         </div>
                         <div class="oe_title">
                             <label for="name"/>
