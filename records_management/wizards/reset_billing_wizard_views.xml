@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================================ -->
+        <!-- Reset Billing Wizard Form View -->
+        <!-- ============================================================ -->
+        <record id="reset_billing_wizard_view_form" model="ir.ui.view">
+            <field name="name">reset.billing.wizard.view.form</field>
+            <field name="model">reset.billing.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Reset Billing Status">
+                    <group>
+                        <group>
+                            <field name="work_order_type"/>
+                            <field name="delete_draft_invoices"/>
+                        </group>
+                        <group>
+                            <field name="total_orders" readonly="1"/>
+                            <field name="total_invoices" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Retrieval Work Orders" name="retrieval" 
+                              invisible="work_order_type == 'shredding'">
+                            <field name="retrieval_order_ids" nolabel="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="scheduled_date"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="invoice_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Shredding Work Orders" name="shredding"
+                              invisible="work_order_type == 'retrieval'">
+                            <field name="shredding_order_ids" nolabel="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="scheduled_date"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="invoice_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Preview" name="preview">
+                            <field name="preview_html" nolabel="1"/>
+                        </page>
+                    </notebook>
+                    
+                    <footer>
+                        <button name="action_load_all_billed" type="object" 
+                                string="Load All Billed" class="btn-secondary"
+                                help="Load all work orders that have been billed"/>
+                        <button name="action_reset_billing" type="object" 
+                                string="Reset for Re-billing" class="btn-primary"
+                                confirm="Are you sure you want to reset billing status on these work orders? This will allow them to be billed again."/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Action to Open Reset Billing Wizard -->
+        <!-- ============================================================ -->
+        <record id="action_reset_billing_wizard" model="ir.actions.act_window">
+            <field name="name">Reset Billing Status</field>
+            <field name="res_model">reset.billing.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="records_management.model_work_order_retrieval"/>
+            <field name="binding_view_types">list,form</field>
+        </record>
+
+        <record id="action_reset_billing_wizard_shredding" model="ir.actions.act_window">
+            <field name="name">Reset Billing Status</field>
+            <field name="res_model">reset.billing.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="records_management.model_work_order_shredding"/>
+            <field name="binding_view_types">list,form</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Menu Item for Reset Billing Wizard -->
+        <!-- ============================================================ -->
+        <record id="action_reset_billing_wizard_menu" model="ir.actions.act_window">
+            <field name="name">Reset Billing Status</field>
+            <field name="res_model">reset.billing.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

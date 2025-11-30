@@ -366,3 +366,87 @@ class WorkOrderInvoiceMixin(models.AbstractModel):
                 'sticky': bool(errors),
             }
         }
+
+    # ============================================================================
+    # RESET BILLING
+    # ============================================================================
+    def action_reset_for_rebilling(self):
+        """
+        Reset billing status so work order can be billed again.
+        
+        Use this when:
+        - An invoice was created by mistake
+        - The invoice needs to be regenerated with different values
+        - Testing billing functionality
+        
+        Note: This does NOT delete the linked invoice - only unlinks it.
+        """
+        self.ensure_one()
+        
+        if not self.invoice_id:
+            raise UserError(_("This work order has not been invoiced yet."))
+        
+        invoice_name = self.invoice_id.name
+        invoice_state = self.invoice_id.state
+        
+        # Clear billing fields
+        self.write({
+            'invoice_id': False,
+            'billing_period_id': False,
+            'pending_consolidated_billing': False,
+        })
+        
+        # Log the reset in chatter
+        self.message_post(
+            body=_('Billing status reset for re-billing. '
+                   'Previously linked invoice: %s (status: %s)') % (invoice_name, invoice_state)
+        )
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Billing Reset'),
+                'message': _('Work order %s has been reset and can now be billed again.') % self.name,
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+    
+    def action_reset_for_rebilling_batch(self):
+        """Reset billing status for multiple work orders"""
+        reset_count = 0
+        skipped = []
+        
+        for record in self:
+            if record.invoice_id:
+                invoice_name = record.invoice_id.name
+                record.write({
+                    'invoice_id': False,
+                    'billing_period_id': False,
+                    'pending_consolidated_billing': False,
+                })
+                record.message_post(
+                    body=_('Billing status reset for re-billing (batch operation). '
+                           'Previously linked invoice: %s') % invoice_name
+                )
+                reset_count += 1
+            else:
+                skipped.append(record.name)
+        
+        message = _('Reset %d work order(s) for re-billing.') % reset_count
+        if skipped:
+            message += _(' Skipped %d (not billed): %s') % (len(skipped), ', '.join(skipped[:5]))
+            if len(skipped) > 5:
+                message += '...'
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Batch Billing Reset'),
+                'message': message,
+                'type': 'success',
+                'sticky': False,
+            }
+        }

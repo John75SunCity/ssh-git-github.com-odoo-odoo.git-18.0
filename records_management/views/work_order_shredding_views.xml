@@ -28,6 +28,15 @@
                         <button name="action_start_work" string="Start Shredding" type="object" class="btn-warning" invisible="state != 'confirmed'" />
                         <button name="action_open_scanner" string="📷 Scan Barcodes" type="object" class="btn-primary" invisible="state not in ['confirmed','assigned','in_progress']" icon="fa-barcode"/>
                         <button name="action_complete_work" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'" />
+                        <button name="action_create_invoice" type="object" string="Create Invoice" 
+                                class="btn-primary" invisible="state not in ('completed', 'verified') or invoice_id"
+                                groups="records_management.group_records_manager"/>
+                        <button name="action_view_invoice" type="object" string="View Invoice" 
+                                class="btn-secondary" invisible="not invoice_id"/>
+                        <button name="action_reset_for_rebilling" type="object" string="Reset for Re-billing" 
+                                class="btn-warning" invisible="not invoice_id"
+                                groups="records_management.group_records_manager"
+                                confirm="This will unlink the invoice from this work order, allowing it to be billed again. Continue?"/>
                         <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['draft','confirmed']" />
                         <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'" />
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed" />

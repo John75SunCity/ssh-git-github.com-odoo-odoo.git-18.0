@@ -604,6 +604,7 @@
         # WIZARD VIEWS WITH BILLING MENUS: Must load AFTER root_menus
         "wizards/bulk_invoice_wizard_views.xml",
         "wizards/monthly_storage_billing_wizard_views.xml",
+        "wizards/reset_billing_wizard_views.xml",
         # DISPATCH CENTER: Unified work order management - load after root menus
         "views/dispatch_center_menus.xml",
         # ============================================================================

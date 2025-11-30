@@ -30,6 +30,10 @@
                                 groups="records_management.group_records_manager"/>
                         <button name="action_view_invoice" type="object" string="View Invoice" 
                                 class="btn-secondary" invisible="not invoice_id"/>
+                        <button name="action_reset_for_rebilling" type="object" string="Reset for Re-billing" 
+                                class="btn-warning" invisible="not invoice_id"
+                                groups="records_management.group_records_manager"
+                                confirm="This will unlink the invoice from this work order, allowing it to be billed again. Continue?"/>
                         <button name="action_cancel_retrieval" type="object" string="Cancel" invisible="state in ('completed', 'cancelled')"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
                     </header>
