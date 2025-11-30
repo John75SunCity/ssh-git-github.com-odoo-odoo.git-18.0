@@ -52,15 +52,38 @@
                                             </small>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="department_id">Department *</label>
-                                            <select class="form-control" id="department_id" name="department_id" required="required">
-                                                <option value="">-- Select Department --</option>
-                                                <t t-foreach="departments" t-as="dept">
-                                                    <option t-att-value="dept.id"><t t-esc="dept.name"/></option>
+                                        <!-- Smart Department Selection -->
+                                        <t t-if="has_departments">
+                                            <div class="form-group">
+                                                <label for="department_id">Department</label>
+                                                
+                                                <!-- Case 1: User has exactly one department - show read-only -->
+                                                <t t-if="default_department and not show_department_selector">
+                                                    <input type="text" class="form-control" readonly="readonly"
+                                                           t-att-value="default_department.name"/>
+                                                    <input type="hidden" name="department_id" t-att-value="default_department.id"/>
+                                                    <small class="form-text text-muted">Your assigned department</small>
                                                 </t>
-                                            </select>
-                                        </div>
+                                                
+                                                <!-- Case 2: User has multiple departments - show dropdown -->
+                                                <t t-elif="show_department_selector">
+                                                    <select class="form-control" id="department_id" name="department_id">
+                                                        <option value="">-- Select Department --</option>
+                                                        <t t-foreach="departments" t-as="dept">
+                                                            <option t-att-value="dept.id"><t t-esc="dept.name"/></option>
+                                                        </t>
+                                                    </select>
+                                                </t>
+                                                
+                                                <!-- Case 3: Company has departments but user has no access -->
+                                                <t t-else="">
+                                                    <input type="text" class="form-control text-muted" readonly="readonly"
+                                                           value="Company Level"/>
+                                                    <input type="hidden" name="department_id" value=""/>
+                                                    <small class="form-text text-muted">File will be at company level</small>
+                                                </t>
+                                            </div>
+                                        </t>
 
                                         <div class="form-group">
                                             <label for="file_category">File Category</label>
