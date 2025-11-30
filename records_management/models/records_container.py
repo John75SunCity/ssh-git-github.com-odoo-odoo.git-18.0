@@ -530,10 +530,28 @@ class RecordsContainer(models.Model):
         result = super().write(vals)
 
         # ✅ Create stock.quant when container is scanned IN (state changes to 'in')
+        # ✅ Also update child file folder states to match container state
         if 'state' in vals:
             for record in self:
                 if record.state == 'in' and not record.quant_id:
                     record._create_stock_quant()
+                
+                # Sync file folder states with container state
+                # When container goes IN, files should also be IN
+                # When container goes OUT, files should also be OUT
+                # When container is DESTROYED, files should also be DESTROYED
+                if record.file_ids:
+                    files_to_update = record.file_ids.filtered(
+                        lambda f: f.state != record.state and f.state not in ('perm_out', 'destroyed')
+                    )
+                    if files_to_update:
+                        files_to_update.write({'state': record.state})
+                        record.message_post(
+                            body=_('Updated %d file folder(s) to status: %s') % (
+                                len(files_to_update), 
+                                dict(record._fields['state'].selection).get(record.state, record.state)
+                            )
+                        )
         
         # Update location counts if location changed
         if 'location_id' in vals:
