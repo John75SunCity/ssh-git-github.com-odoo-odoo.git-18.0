@@ -413,7 +413,11 @@
 
         <menuitem id="menu_container_field_label_helper" name="Container Field Labels" parent="records_management.menu_records_operations" action="action_field_label_helper_wizard" sequence="12" groups="records_management.group_records_manager,records_management.group_records_admin" />
 
-        <menuitem id="menu_records_documents" name="Files" parent="records_management.menu_records_operations" action="action_records_document" sequence="15" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
+        <!-- File Folders - records stored inside containers -->
+        <menuitem id="menu_records_files" name="File Folders" parent="records_management.menu_records_operations" action="action_records_file" sequence="14" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
+
+        <!-- Individual Documents within file folders -->
+        <menuitem id="menu_records_documents" name="Documents" parent="records_management.menu_records_operations" action="action_records_document" sequence="15" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
 
         <!-- Container & File Retrieval (Customer Checkout) -->
         <menuitem id="menu_container_retrieval" name="Container Retrieval Requests" parent="records_management.menu_records_operations" action="action_container_retrieval" sequence="20" groups="records_management.group_records_user,records_management.group_records_manager,records_management.group_records_admin" />
