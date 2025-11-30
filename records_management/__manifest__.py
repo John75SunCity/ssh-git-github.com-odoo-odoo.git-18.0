@@ -595,14 +595,15 @@
         "views/work_order_shredding_views.xml",
         "wizards/retrieval_scan_wizard_views.xml",
         "wizards/barcode_operations_wizard_views.xml",
-        "wizards/bulk_invoice_wizard_views.xml",
-        "wizards/monthly_storage_billing_wizard_views.xml",
         # ============================================================================
         # ============================================================================
 
         # ROOT MENUS: Parent-only menus must load AFTER all views with actions defined
         # These define the base menu structure that child menus reference
         "views/records_management_root_menus.xml",
+        # WIZARD VIEWS WITH BILLING MENUS: Must load AFTER root_menus
+        "wizards/bulk_invoice_wizard_views.xml",
+        "wizards/monthly_storage_billing_wizard_views.xml",
         # DISPATCH CENTER: Unified work order management - load after root menus
         "views/dispatch_center_menus.xml",
         # ============================================================================
