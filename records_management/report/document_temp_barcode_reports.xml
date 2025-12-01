@@ -31,7 +31,7 @@
         <field name="print_report_name">'temp_file_barcodes'</field>
         <field name="binding_model_id" ref="model_records_document"/>
         <field name="binding_type">report</field>
-        <field name="paperformat_id" ref="file_barcode_reports.paperformat_file_folder_label"/>
+        <field name="paperformat_id" ref="container_barcode_reports.paperformat_container_barcode_label"/>
     </record>
     </data>
 </odoo>
