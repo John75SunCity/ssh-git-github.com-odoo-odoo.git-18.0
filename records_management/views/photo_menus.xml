@@ -1,12 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-    <!-- Photos Menu (Under Operations) -->
+    <!-- ============================================================ -->
+    <!-- PHOTOS &amp; ATTACHMENTS HUB - Main Menu                        -->
+    <!-- Centralized access to all job photos and documents          -->
+    <!-- ============================================================ -->
+    
+    <!-- Photos Root Menu (Under Operations) -->
     <menuitem id="menu_photos_root"
-              name="Photos"
+              name="Photos &amp; Attachments"
               parent="records_management.menu_records_operations"
-              sequence="60"/>
-    <menuitem id="photo_menu_list" name="All Photos" parent="records_management.menu_photos_root" action="action_photo" sequence="1"/>
+              sequence="60"
+              groups="records_management.group_records_user"/>
+
+    <!-- All Photos - Main Hub -->
+    <menuitem id="photo_menu_all" 
+              name="📷 All Photos &amp; Attachments" 
+              parent="records_management.menu_photos_root" 
+              action="action_photo" 
+              sequence="1"/>
+
+    <!-- Today's Uploads - Quick access for supervisors -->
+    <menuitem id="photo_menu_today" 
+              name="📅 Today's Uploads" 
+              parent="records_management.menu_photos_root" 
+              action="action_photo_today" 
+              sequence="5"/>
+
+    <menuitem id="photo_menu_separator" 
+              name="" 
+              parent="records_management.menu_photos_root"
+              sequence="9"/>
+
+    <!-- By File Type Submenus -->
+    <menuitem id="photo_menu_images" 
+              name="🖼️ Photos (Images)" 
+              parent="records_management.menu_photos_root" 
+              action="action_photo_images_only" 
+              sequence="10"/>
+
+    <menuitem id="photo_menu_documents" 
+              name="📄 Documents (PDFs)" 
+              parent="records_management.menu_photos_root" 
+              action="action_photo_documents_only" 
+              sequence="20"/>
+
+    <menuitem id="photo_menu_certificates" 
+              name="📜 Certificates" 
+              parent="records_management.menu_photos_root" 
+              action="action_photo_certificates" 
+              sequence="30"/>
 
     
     </data>

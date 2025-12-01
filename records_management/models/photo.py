@@ -39,14 +39,47 @@ class Photo(models.Model):
     )
     active = fields.Boolean(default=True, string="Active")
 
-    # Related records
-    partner_id = fields.Many2one("res.partner", string="Customer")
-    task_id = fields.Many2one("project.task", string="Related Task")
-    invoice_id = fields.Many2one("account.move", string="Related Invoice")
-    sale_order_id = fields.Many2one("sale.order", string="Related Sale Order")
-    maintenance_request_id = fields.Many2one("maintenance.request", string="Related Maintenance Request")
+    # Related records - Core relationships
+    partner_id = fields.Many2one(comodel_name="res.partner", string="Customer")
+    task_id = fields.Many2one(comodel_name="project.task", string="Related Task")
+    invoice_id = fields.Many2one(comodel_name="account.move", string="Related Invoice")
+    sale_order_id = fields.Many2one(comodel_name="sale.order", string="Related Sale Order")
+    maintenance_request_id = fields.Many2one(comodel_name="maintenance.request", string="Related Maintenance Request")
     reference_model = fields.Char(string="Reference Model")
     mobile_wizard_reference = fields.Char(string="Mobile Wizard Reference", help="Reference to the mobile wizard")
+
+    # Work Order References - For Centralized Photo Hub
+    container_id = fields.Many2one(comodel_name="records.container", string="Related Container")
+    destruction_request_id = fields.Many2one(comodel_name="records.destruction", string="Destruction Request")
+    destruction_certificate_id = fields.Many2one(comodel_name="destruction.certificate", string="Destruction Certificate")
+    shredding_work_order_id = fields.Many2one(comodel_name="work.order.shredding", string="Shredding Work Order")
+    pickup_request_id = fields.Many2one(comodel_name="pickup.request", string="Pickup Request")
+    retrieval_order_id = fields.Many2one(comodel_name="records.retrieval.order", string="Retrieval Order")
+
+    # File Type Classification - For grouping in views
+    file_category = fields.Selection([
+        ('photo', 'Photo (Image)'),
+        ('document', 'Document (PDF/DOC)'),
+        ('certificate', 'Certificate'),
+        ('other', 'Other Attachment'),
+    ], string="File Category", default='photo', compute='_compute_file_category', store=True)
+
+    # Source Document Reference - For dynamic linking
+    source_document = fields.Reference(
+        selection=[
+            ('project.task', 'Task/Work Order'),
+            ('account.move', 'Invoice'),
+            ('sale.order', 'Sale Order'),
+            ('records.container', 'Container'),
+            ('records.destruction', 'Destruction Request'),
+            ('destruction.certificate', 'Destruction Certificate'),
+            ('work.order.shredding', 'Shredding Work Order'),
+            ('pickup.request', 'Pickup Request'),
+            ('records.retrieval.order', 'Retrieval Order'),
+        ],
+        string="Source Document",
+        help="The primary document this photo is attached to"
+    )
 
     # Friendly label used across the UI
     display_name = fields.Char(
@@ -75,6 +108,26 @@ class Photo(models.Model):
             else:
                 record.file_size = 0
                 record.file_type = False
+
+    @api.depends('image_filename', 'category')
+    def _compute_file_category(self):
+        """Compute file category based on filename extension"""
+        image_extensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff', 'heic']
+        document_extensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'rtf', 'odt']
+        for record in self:
+            if record.image_filename:
+                ext = record.image_filename.lower().split('.')[-1] if '.' in record.image_filename else ''
+                if ext in image_extensions:
+                    record.file_category = 'photo'
+                elif ext in document_extensions:
+                    record.file_category = 'document'
+                elif 'certificate' in record.name.lower() if record.name else False:
+                    record.file_category = 'certificate'
+                else:
+                    record.file_category = 'other'
+            else:
+                # Default to photo since this is primarily an image model
+                record.file_category = 'photo'
 
     @api.depends("image")
     def _compute_resolution(self):

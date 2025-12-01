@@ -1,65 +1,327 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- ============================================================ -->
+        <!-- CENTRALIZED PHOTO &amp; ATTACHMENT HUB                         -->
+        <!-- Search by work orders, invoices, certificates, customers    -->
+        <!-- ============================================================ -->
+
+        <!-- KANBAN VIEW - Visual Photo Gallery -->
+        <record id="photo_view_kanban" model="ir.ui.view">
+            <field name="name">photo.view.kanban</field>
+            <field name="model">photo</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="file_category" class="o_kanban_small_column">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="image"/>
+                    <field name="date"/>
+                    <field name="user_id"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                    <field name="file_category"/>
+                    <field name="category"/>
+                    <field name="source_document"/>
+                    <templates>
+                        <t t-name="card" class="o_kanban_card flex-row">
+                            <aside class="o_kanban_aside_full">
+                                <field name="image" widget="image" options="{'size': [120, 120]}"/>
+                            </aside>
+                            <main class="ms-2">
+                                <field name="name" class="fw-bold d-block text-truncate"/>
+                                <field name="partner_id" class="text-muted d-block"/>
+                                <div class="d-flex justify-content-between mt-1">
+                                    <span class="text-muted small">
+                                        <i class="fa fa-calendar me-1"/><field name="date" widget="date"/>
+                                    </span>
+                                </div>
+                                <div class="mt-1">
+                                    <field name="state" widget="badge" 
+                                           decoration-success="state == 'validated'"
+                                           decoration-info="state == 'draft'"
+                                           decoration-muted="state == 'archived'"/>
+                                </div>
+                                <div class="mt-1 small text-muted" t-if="record.source_document.value">
+                                    <i class="fa fa-link me-1"/>
+                                    <field name="source_document"/>
+                                </div>
+                            </main>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- LIST VIEW - Enhanced with grouping -->
         <record id="photo_view_tree" model="ir.ui.view">
             <field name="name">photo.view.tree</field>
             <field name="model">photo</field>
             <field name="arch" type="xml">
-                <list>
-                    <field name="name" />
-                    <field name="state" />
-                    <field name="company_id" />
-                    <field name="user_id" />
+                <list default_order="date desc">
+                    <field name="image" widget="image" options="{'size': [40, 40]}"/>
+                    <field name="name"/>
+                    <field name="date" string="Date"/>
+                    <field name="file_category" optional="show"/>
+                    <field name="category" optional="hide"/>
+                    <field name="partner_id" optional="show"/>
+                    <field name="source_document" optional="show"/>
+                    <field name="task_id" optional="hide"/>
+                    <field name="invoice_id" optional="hide"/>
+                    <field name="destruction_certificate_id" optional="hide"/>
+                    <field name="shredding_work_order_id" optional="hide"/>
+                    <field name="pickup_request_id" optional="hide"/>
+                    <field name="user_id" optional="show"/>
+                    <field name="file_size" optional="hide"/>
+                    <field name="state" widget="badge" 
+                           decoration-success="state == 'validated'"
+                           decoration-info="state == 'draft'"
+                           decoration-muted="state == 'archived'"/>
+                    <field name="company_id" column_invisible="True"/>
                 </list>
             </field>
         </record>
+
+        <!-- CALENDAR VIEW - See photos by date -->
+        <record id="photo_view_calendar" model="ir.ui.view">
+            <field name="name">photo.view.calendar</field>
+            <field name="model">photo</field>
+            <field name="arch" type="xml">
+                <calendar date_start="date" color="file_category" mode="month" quick_create="0">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="state"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- FORM VIEW - Comprehensive photo details -->
         <record id="photo_view_form" model="ir.ui.view">
             <field name="name">photo.view.form</field>
             <field name="model">photo</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <button name="action_archive_photo" string="Archive" type="object" 
+                                invisible="state != 'validated'" class="btn-secondary"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,validated,archived"/>
+                    </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_metadata"
+                                    icon="fa-info-circle">
+                                <span class="o_stat_text">Metadata</span>
+                            </button>
+                        </div>
+                        <field name="image" widget="image" class="oe_avatar" options="{'size': [200, 200]}"/>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1><field name="name" placeholder="Photo Name"/></h1>
+                        </div>
                         <group>
-                            <field name="name" />
-                            <field name="state" />
-                            <field name="company_id" />
-                            <field name="user_id" />
-                            <field name="task_id" />
-                            <field name="invoice_id" />
-                            <field name="sale_order_id" />
-                            <field name="maintenance_request_id" />
-                            <field name="reference_model" />
-                            <field name="image" widget="image" />
+                            <group string="Photo Details">
+                                <field name="image_filename"/>
+                                <field name="file_category"/>
+                                <field name="category"/>
+                                <field name="date"/>
+                                <field name="user_id"/>
+                                <field name="location"/>
+                                <field name="tags"/>
+                            </group>
+                            <group string="File Information">
+                                <field name="file_size"/>
+                                <field name="file_type"/>
+                                <field name="resolution"/>
+                                <field name="company_id"/>
+                            </group>
                         </group>
+                        <notebook>
+                            <page string="Source Document" name="source_doc">
+                                <group>
+                                    <group string="Primary Reference">
+                                        <field name="source_document"/>
+                                        <field name="partner_id"/>
+                                    </group>
+                                    <group string="Work Orders">
+                                        <field name="task_id"/>
+                                        <field name="shredding_work_order_id"/>
+                                        <field name="pickup_request_id"/>
+                                        <field name="retrieval_order_id"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Financial Documents">
+                                        <field name="invoice_id"/>
+                                        <field name="sale_order_id"/>
+                                    </group>
+                                    <group string="Compliance">
+                                        <field name="destruction_request_id"/>
+                                        <field name="destruction_certificate_id"/>
+                                        <field name="container_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Description" name="description">
+                                <field name="description" placeholder="Add notes or description..."/>
+                            </page>
+                            <page string="Legacy References" name="legacy">
+                                <group>
+                                    <field name="maintenance_request_id"/>
+                                    <field name="reference_model"/>
+                                    <field name="mobile_wizard_reference"/>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
+                    <chatter/>
                 </form>
             </field>
         </record>
+
+        <!-- SEARCH VIEW - Comprehensive filters for finding photos -->
         <record id="photo_view_search" model="ir.ui.view">
             <field name="name">photo.view.search</field>
             <field name="model">photo</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name" />
-                    <field name="state" />
-                    <field name="company_id" />
-                    <field name="user_id" />
-                    <filter name="validated" string="Validated" domain="[('state', '=', 'validated')]" />
+                    <!-- Quick Search Fields -->
+                    <field name="name" string="Photo Name"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="user_id" string="Uploaded By"/>
+                    <field name="task_id" string="Task/Work Order"/>
+                    <field name="invoice_id" string="Invoice"/>
+                    <field name="destruction_certificate_id" string="Certificate"/>
+                    <field name="shredding_work_order_id" string="Shredding WO"/>
+                    <field name="container_id" string="Container"/>
+                    <field name="tags"/>
+                    
+                    <!-- State Filters -->
+                    <separator/>
+                    <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                    <filter name="filter_validated" string="Validated" domain="[('state', '=', 'validated')]"/>
+                    <filter name="filter_archived" string="Archived" domain="[('state', '=', 'archived')]"/>
+                    
+                    <!-- File Type Filters -->
+                    <separator/>
+                    <filter name="filter_photos" string="📷 Photos Only" domain="[('file_category', '=', 'photo')]"/>
+                    <filter name="filter_documents" string="📄 Documents (PDF)" domain="[('file_category', '=', 'document')]"/>
+                    <filter name="filter_certificates" string="📜 Certificates" domain="[('file_category', '=', 'certificate')]"/>
+                    <filter name="filter_other" string="📎 Other" domain="[('file_category', '=', 'other')]"/>
+                    
+                    <!-- Date Filters -->
+                    <separator/>
+                    <filter name="filter_today" string="Today" domain="[('date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('date', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
+                    <filter name="filter_this_week" string="This Week" domain="[('date', '>=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    <filter name="filter_this_month" string="This Month" domain="[('date', '>=', context_today().strftime('%Y-%m-01'))]"/>
+                    
+                    <!-- Has Source Document Filters -->
+                    <separator/>
+                    <filter name="has_work_order" string="Has Work Order" domain="['|', '|', '|', ('task_id', '!=', False), ('shredding_work_order_id', '!=', False), ('pickup_request_id', '!=', False), ('retrieval_order_id', '!=', False)]"/>
+                    <filter name="has_invoice" string="Has Invoice" domain="[('invoice_id', '!=', False)]"/>
+                    <filter name="has_certificate" string="Has Certificate" domain="[('destruction_certificate_id', '!=', False)]"/>
+                    <filter name="has_container" string="Has Container" domain="[('container_id', '!=', False)]"/>
+                    
+                    <!-- Group By -->
+                    <group expand="0" string="Group By">
+                        <filter name="group_file_category" string="File Type" context="{'group_by': 'file_category'}"/>
+                        <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                        <filter name="group_category" string="Category" context="{'group_by': 'category'}"/>
+                        <filter name="group_user" string="Uploaded By" context="{'group_by': 'user_id'}"/>
+                        <filter name="group_partner" string="Customer" context="{'group_by': 'partner_id'}"/>
+                        <filter name="group_date_day" string="Date (Day)" context="{'group_by': 'date:day'}"/>
+                        <filter name="group_date_week" string="Date (Week)" context="{'group_by': 'date:week'}"/>
+                        <filter name="group_date_month" string="Date (Month)" context="{'group_by': 'date:month'}"/>
+                    </group>
                 </search>
             </field>
         </record>
+
+        <!-- MAIN ACTION - Centralized Photo Hub -->
         <record id="action_photo" model="ir.actions.act_window">
-            <!-- OPTIMIZATION: Model photo has state field - consider using default search filters -->
-            <field name="name">Photo</field>
+            <field name="name">Photo &amp; Attachment Hub</field>
             <field name="res_model">photo</field>
-            <field name="view_mode">list,form</field>
-            <field name="domain">[]</field>
-            <field name="context">{}</field>
+            <field name="view_mode">kanban,list,calendar,form</field>
+            <field name="search_view_id" ref="photo_view_search"/>
+            <field name="context">{'search_default_filter_photos': 0}</field>
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                Click here to add a photo.
-            </p>
+                <p class="o_view_nocontent_smiling_face">
+                    No photos or attachments found
+                </p>
+                <p>
+                    This is your centralized hub for all job photos and attachments.
+                    Search by work order number, invoice, certificate, or customer.
+                </p>
+                <p>
+                    <strong>Tips:</strong>
+                    <ul>
+                        <li>Use <b>Group By</b> → File Type to separate photos from PDFs</li>
+                        <li>Filter by <b>Today</b> to see technician uploads from today's jobs</li>
+                        <li>Search by customer name to find all their related photos</li>
+                    </ul>
+                </p>
             </field>
         </record>
+
+        <!-- ACTION - Photos Only (for submenu) -->
+        <record id="action_photo_images_only" model="ir.actions.act_window">
+            <field name="name">Photos (Images)</field>
+            <field name="res_model">photo</field>
+            <field name="view_mode">kanban,list,calendar,form</field>
+            <field name="search_view_id" ref="photo_view_search"/>
+            <field name="domain">[('file_category', '=', 'photo')]</field>
+            <field name="context">{'search_default_group_date_day': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No photos found
+                </p>
+                <p>Upload photos from work orders, mobile devices, or directly here.</p>
+            </field>
+        </record>
+
+        <!-- ACTION - Documents Only (PDFs, etc.) -->
+        <record id="action_photo_documents_only" model="ir.actions.act_window">
+            <field name="name">Documents (PDFs)</field>
+            <field name="res_model">photo</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="search_view_id" ref="photo_view_search"/>
+            <field name="domain">[('file_category', '=', 'document')]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No documents found
+                </p>
+                <p>PDF documents and other file attachments will appear here.</p>
+            </field>
+        </record>
+
+        <!-- ACTION - Certificates -->
+        <record id="action_photo_certificates" model="ir.actions.act_window">
+            <field name="name">Certificates</field>
+            <field name="res_model">photo</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="search_view_id" ref="photo_view_search"/>
+            <field name="domain">[('file_category', '=', 'certificate')]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No certificates found
+                </p>
+                <p>Destruction certificates and compliance documents will appear here.</p>
+            </field>
+        </record>
+
+        <!-- ACTION - Today's Uploads -->
+        <record id="action_photo_today" model="ir.actions.act_window">
+            <field name="name">Today's Uploads</field>
+            <field name="res_model">photo</field>
+            <field name="view_mode">kanban,list,calendar,form</field>
+            <field name="search_view_id" ref="photo_view_search"/>
+            <field name="context">{'search_default_filter_today': 1, 'search_default_group_user': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No uploads today
+                </p>
+                <p>Photos uploaded by technicians today will appear here, grouped by user.</p>
+            </field>
+        </record>
+
     </data>
 </odoo>
