@@ -67,35 +67,35 @@
                   <tr>
                     <t t-foreach="range(nCols)" t-as="col">
                       <t t-set="idx" t-value="row * nCols + col"/>
-                      <td style="width:50%; height:34mm; vertical-align:middle; padding:2mm;">
+                      <td style="width:50%; height:34mm; vertical-align:middle; padding:1mm 2mm;">
                         <t t-if="idx &lt; len(page_docs)">
                           <t t-set="doc" t-value="page_docs[idx]"/>
-                          <div style="border:1px solid #ccc; padding:2mm; height:30mm; text-align:center; overflow:hidden;">
-                            <!-- Container Name -->
-                            <div style="font-weight:bold; font-size:9pt; margin-bottom:1mm; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                          <div style="border:1px solid #ccc; padding:1mm 2mm; height:32mm; text-align:center; overflow:hidden;">
+                            <!-- Container Name - LARGER -->
+                            <div style="font-weight:bold; font-size:12pt; margin-bottom:1mm; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                               <t t-esc="doc.display_name"/>
                             </div>
-                            <!-- Barcode -->
+                            <!-- Barcode - WIDER -->
                             <t t-if="doc.barcode">
-                              <img t-att-src="'/report/barcode/Code128/%s?width=200&amp;height=35' % doc.barcode" 
-                                   style="max-width:95mm; height:9mm;"/>
-                              <div style="font-size:8pt; font-weight:600; margin-top:1mm;">
+                              <img t-att-src="'/report/barcode/Code128/%s?width=350&amp;height=50' % doc.barcode" 
+                                   style="width:95%; height:12mm;"/>
+                              <div style="font-size:11pt; font-weight:bold; margin-top:1mm;">
                                 <t t-esc="doc.barcode"/>
                               </div>
                             </t>
                             <t t-elif="doc.temp_barcode">
-                              <img t-att-src="'/report/barcode/Code128/%s?width=200&amp;height=35' % doc.temp_barcode"
-                                   style="max-width:95mm; height:9mm;"/>
-                              <div style="font-size:8pt; font-weight:600; margin-top:1mm;">
-                                <t t-esc="doc.temp_barcode"/> <span style="font-size:6pt; color:#666;">(TEMP)</span>
+                              <img t-att-src="'/report/barcode/Code128/%s?width=350&amp;height=50' % doc.temp_barcode"
+                                   style="width:95%; height:12mm;"/>
+                              <div style="font-size:11pt; font-weight:bold; margin-top:1mm;">
+                                <t t-esc="doc.temp_barcode"/> <span style="font-size:9pt; color:#666;">(TEMP)</span>
                               </div>
                             </t>
                             <t t-else="">
-                              <div style="font-size:7pt; color:#999; margin-top:3mm;"><em>No barcode</em></div>
+                              <div style="font-size:10pt; color:#999; margin-top:5mm;"><em>No barcode</em></div>
                             </t>
-                            <!-- Container Type -->
+                            <!-- Container Type - LARGER -->
                             <t t-if="doc.container_type_id">
-                              <div style="font-size:6pt; color:#666; margin-top:1mm;">
+                              <div style="font-size:9pt; color:#333; margin-top:1mm; font-weight:500;">
                                 <t t-esc="doc.container_type_id.name"/>
                               </div>
                             </t>
