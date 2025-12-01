@@ -147,28 +147,45 @@
                 <form>
                     <header>
                         <button name="action_view_chain_of_custody" type="object" string="View Chain of Custody" class="btn-primary" />
-                        <button name="action_view_attachments" type="object" string="View Attachments" class="btn-secondary" invisible="attachment_enabled == False" />
-                        <button name="action_generate_document_barcode" type="object" string="Generate Barcode" class="btn-info" />
+                        <button name="action_bulk_upload_files" type="object" string="Bulk Upload Files" class="btn-secondary" />
+                        <button name="action_view_attachments" type="object" string="View Attachments" class="btn-info" />
+                        <button name="action_generate_document_barcode" type="object" string="Generate Barcode" class="btn-warning" />
                         <button name="action_generate_document_qr" type="object" string="Generate QR Code" class="btn-success" />
                         <button name="action_mark_permanent" type="object" string="Mark as Permanent" class="btn-success" invisible="is_permanent" groups="records_management.group_records_user" />
                         <button name="action_unmark_permanent" type="object" string="Remove Permanent Flag" class="btn-warning" invisible="not is_permanent" groups="base.group_system" />
-                        <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-warning" invisible="not destruction_eligible_date or is_permanent" />
+                        <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-danger" invisible="not destruction_eligible_date or is_permanent" />
                         <field name="state" widget="statusbar" statusbar_visible="active,pending_destruction,destroyed" />
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" type="object" name="action_view_chain_of_custody" icon="fas fa-link">
+                            <button class="oe_stat_button" type="object" name="action_view_chain_of_custody" icon="fa-link">
                                 <field name="chain_of_custody_count" string="Chain Events" widget="statinfo" />
                             </button>
-                            <button class="oe_stat_button" type="object" name="action_audit_trail" icon="fas fa-history">
+                            <button class="oe_stat_button" type="object" name="action_audit_trail" icon="fa-history">
                                 <field name="audit_log_count" string="Audit Events" widget="statinfo" />
                             </button>
-                            <button class="oe_stat_button" icon="fas fa-calendar-times" invisible="not destruction_eligible_date">
+                            <button class="oe_stat_button" icon="fa-calendar-times-o" invisible="not destruction_eligible_date">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="days_until_destruction" />
                                     </span>
                                     <span class="o_stat_text">Days to Destroy</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" icon="fa-barcode" invisible="not temp_barcode and not barcode">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Temporary Document Barcode</span>
+                                    <span class="o_stat_value" style="font-size: 12px;">
+                                        <field name="temp_barcode" />
+                                    </span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_view_attachments" icon="fa-file-pdf-o">
+                                <field name="attachment_count" string="Attachments" widget="statinfo" />
+                            </button>
+                            <button class="oe_stat_button" type="action" name="%(base.action_attachment)d" icon="fa-tags" context="{'search_default_res_model': 'records.document', 'search_default_res_id': id}">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Field Labels</span>
                                 </div>
                             </button>
                         </div>
@@ -180,28 +197,20 @@
                                        help="Unique name/identifier for this document"/>
                                 <field name="document_type_id" string="Document Type"/>
                                 <field name="partner_id" string="Customer"/>
-                                <field name="stock_owner_id" groups="records_management.group_records_manager" readonly="1" />
                                 <field name="department_id" string="Department"/>
                                 <field name="container_id" string="Container"/>
                                 <field name="file_id" string="File Folder"/>
                             </group>
-                            <group string="Barcode Tracking">
+                            <group string="Barcode">
                                 <field name="temp_barcode" 
                                        string="Temporary Barcode"
                                        readonly="1" 
-                                       help="System-generated temporary barcode (auto-assigned)"
-                                       invisible="barcode"/>
+                                       help="System-generated temporary barcode (auto-assigned)"/>
                                 <field name="barcode" 
                                        string="Physical Barcode"
                                        placeholder="Scan or type barcode from pre-printed sheet"
                                        help="Physical barcode - scan with camera or laser scanner"
                                        widget="barcode"/>
-                                <field name="reference" 
-                                       string="Reference"
-                                       placeholder="Additional reference or external barcode"/>
-                                <div colspan="2" class="text-muted small" invisible="not barcode or not temp_barcode">
-                                    <i class="fa fa-info-circle"/> Both temporary and physical barcodes are active
-                                </div>
                             </group>
                             <group string="Security &amp; Compliance">
                                 <field name="is_permanent" widget="boolean_toggle" />
@@ -236,6 +245,25 @@
                             </group>
                         </group>
                         <notebook>
+                            <page string="Scanned Pages &amp; Attachments" name="attachments">
+                                <div class="alert alert-info mb-3" role="alert">
+                                    <i class="fa fa-info-circle"/> This section displays all scanned pages and uploaded documents. Drag files here or use the binary field to upload.
+                                </div>
+                                <group>
+                                    <group string="Primary Document">
+                                        <field name="file_data" filename="file_name" widget="binary"/>
+                                        <field name="file_name"/>
+                                        <field name="page_count"/>
+                                    </group>
+                                    <group string="Tracking">
+                                        <field name="attachment_tracking_number" readonly="1"/>
+                                        <field name="attachment_date" readonly="1"/>
+                                        <field name="attachment_count" readonly="1"/>
+                                        <field name="total_attachment_size_kb" readonly="1" invisible="total_attachment_size_visible == False"/>
+                                    </group>
+                                </group>
+                                <field name="attachment_notes" placeholder="Notes about scanned pages or attachments..."/>
+                            </page>
                             <page string="Document Details" name="details">
                                 <group>
                                     <group string="Dates &amp; Timeline">
@@ -249,8 +277,6 @@
                                         <field name="media_type" />
                                         <field name="original_format" />
                                         <field name="digitized" />
-                                        <field name="attachment_count" readonly="1" />
-                                        <field name="total_attachment_size_kb" readonly="1" widget="integer" invisible="(attachment_count == 0) or (total_attachment_size_visible == False)" />
                                     </group>
                                 </group>
                                 <field name="description" placeholder="Document description, contents, and special handling notes..." />
@@ -293,25 +319,6 @@
                                     </group>
                                 </group>
                                 <field name="destruction_notes" placeholder="Destruction process notes and compliance verification..." />
-                            </page>
-                            <page string="Attachments" name="attachments" invisible="attachment_enabled == False">
-                                <group>
-                                    <group string="Document Attachment">
-                                        <field name="file_data" filename="file_name" widget="binary"/>
-                                        <field name="file_name"/>
-                                        <field name="page_count"/>
-                                        <field name="attachment_tracking_number"/>
-                                    </group>
-                                    <group string="Attachment Info">
-                                        <field name="attachment_date"/>
-                                        <field name="attachment_count"/>
-                                        <field name="total_attachment_size_kb" invisible="total_attachment_size_visible == False"/>
-                                    </group>
-                                </group>
-                                <field name="attachment_notes" placeholder="Notes about this attachment..."/>
-                                <div class="text-muted mt-2">
-                                    <p><i class="fa fa-info-circle"/> Additional attachments can be added via the Attachments button or by dragging files into the chatter.</p>
-                                </div>
                             </page>
                         </notebook>
                     </sheet>

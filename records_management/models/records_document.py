@@ -942,11 +942,27 @@ class RecordsDocument(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Attachments'),
             'res_model': 'ir.attachment',
-            'view_mode': 'kanban,tree,form',
+            'view_mode': 'kanban,list,form',
             'domain': [('res_model', '=', 'records.document'), ('res_id', '=', self.id)],
             'context': {
                 'default_res_model': 'records.document',
                 'default_res_id': self.id,
+            },
+        }
+
+    def action_bulk_upload_files(self):
+        """Open bulk upload wizard for multiple file attachments"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Bulk Upload Files to %s') % self.name,
+            'res_model': 'ir.attachment',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_res_model': 'records.document',
+                'default_res_id': self.id,
+                'form_view_initial_mode': 'edit',
             },
         }
 
