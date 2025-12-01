@@ -25,7 +25,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-if="doc.field_ids">
+                                <t t-if="False"><!-- Placeholder disabled -->
                                     <tr t-foreach="doc.field_ids" t-as="field">
                                         <td>
                                             <span t-esc="field.name"/>

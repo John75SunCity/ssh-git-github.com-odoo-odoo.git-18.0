@@ -16,21 +16,33 @@
                 <t t-foreach="docs" t-as="doc">
                     <t t-call="web.external_layout">
                         <div class="page">
-                            <h2>Contents for Container: <span t-field="doc.name"/></h2>
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Content Name</th>
-                                        <th>Description</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr t-foreach="doc.content_ids" t-as="content">
-                                        <td><span t-field="content.name"/></td>
-                                        <td><span t-field="content.description"/></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <h2>Contents for Container: <t t-esc="doc.display_name"/></h2>
+                            <p><strong>Customer:</strong> <t t-esc="doc.partner_id.name or 'N/A'"/></p>
+                            <p><strong>Barcode:</strong> <t t-esc="doc.barcode or doc.temp_barcode or 'N/A'"/></p>
+                            <p><strong>Location:</strong> <t t-esc="doc.location_id.display_name or 'N/A'"/></p>
+                            
+                            <t t-if="doc.file_ids">
+                                <h4>Files (<t t-esc="len(doc.file_ids)"/>)</h4>
+                                <table class="table table-sm table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>File Name</th>
+                                            <th>Barcode</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="doc.file_ids" t-as="file">
+                                            <td><t t-esc="file.name"/></td>
+                                            <td><t t-esc="file.barcode or file.temp_barcode or 'N/A'"/></td>
+                                            <td><t t-esc="file.description or ''"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-else="">
+                                <p class="text-muted"><em>No files in this container.</em></p>
+                            </t>
                         </div>
                     </t>
                 </t>
