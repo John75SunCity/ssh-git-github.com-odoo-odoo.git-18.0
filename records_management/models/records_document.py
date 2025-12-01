@@ -148,9 +148,11 @@ class RecordsDocument(models.Model):
     )
     
     owner_id = fields.Many2one(
+        comodel_name='res.partner',
         related='quant_id.owner_id',
         string="Owner (Customer)",
         store=True,
+        readonly=True,
         help="Customer who owns this document (from inventory tracking)"
     )
     
@@ -167,9 +169,11 @@ class RecordsDocument(models.Model):
     )
     
     parent_quant_id = fields.Many2one(
+        comodel_name='stock.quant',
         related='quant_id.parent_quant_id',
         string="Parent Item (File/Container)",
         store=True,
+        readonly=True,
         help="File or container this document came from (for return tracking)"
     )
     temp_inventory_id = fields.Many2one(comodel_name="temp.inventory", string="Temporary Inventory")
