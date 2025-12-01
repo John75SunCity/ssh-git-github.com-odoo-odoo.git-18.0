@@ -389,7 +389,7 @@ class RouteOptimizer(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Optimized Routes'),
             'res_model': 'pickup.route',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('optimization_id', '=', self.id)],
             'context': {
                 'default_optimization_id': self.id,

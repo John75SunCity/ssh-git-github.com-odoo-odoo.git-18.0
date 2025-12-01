@@ -110,7 +110,7 @@ class PosConfig(models.Model):
             'name': _('Records Management PoS Orders'),
             'type': 'ir.actions.act_window',
             'res_model': 'pos.order',
-            'view_mode': 'tree,form,graph',
+            'view_mode': 'list,form,graph',
             'domain': [
                 ('config_id', '=', self.id),
                 ('lines.product_id', 'in', service_product_ids)

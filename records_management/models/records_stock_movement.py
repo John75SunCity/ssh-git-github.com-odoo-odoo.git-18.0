@@ -394,7 +394,7 @@ class RecordsContainerMovementMixin(models.AbstractModel):
             'name': _('Movement History'),
             'type': 'ir.actions.act_window',
             'res_model': 'records.stock.movement',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('container_id', '=', self.id)],
             'context': {'default_container_id': self.id},
         }

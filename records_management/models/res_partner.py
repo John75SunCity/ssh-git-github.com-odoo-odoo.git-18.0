@@ -606,7 +606,7 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Bin Keys'),
             'res_model': 'bin.key',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('key_holder_id', '=', self.id)],
             'context': {
                 'default_key_holder_id': self.id,
@@ -621,7 +621,7 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Unlock Services'),
             'res_model': 'bin.unlock.service',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('partner_id', '=', self.id)],
             'context': {
                 'default_partner_id': self.id,
@@ -688,7 +688,7 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Active Bin Keys'),
             'res_model': 'bin.key',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('id', 'in', assigned_keys.ids)],
             'context': {
                 'search_default_assigned': 1,
@@ -729,7 +729,7 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Return Bin Key'),
             'res_model': 'bin.key',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('id', 'in', assigned_keys.ids)],
             'context': {
                 'search_default_assigned': 1,
@@ -757,7 +757,7 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Mark Key as Lost'),
             'res_model': 'bin.key',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('id', 'in', assigned_keys.ids)],
             'context': {
                 'search_default_assigned': 1,
@@ -1015,7 +1015,7 @@ class ResPartner(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Key Restriction History'),
             'res_model': 'res.partner.key.restriction',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('partner_id', '=', self.id)],
             'context': {
                 'default_partner_id': self.id,

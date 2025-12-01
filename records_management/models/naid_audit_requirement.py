@@ -398,7 +398,7 @@ class NAIDAuditRequirement(models.Model):
             'name': f'Audit Documents: {self.name}',
             'type': 'ir.actions.act_window',
             'res_model': 'documents.document',
-            'view_mode': 'kanban,tree,form',
+            'view_mode': 'kanban,list,form',
             'domain': [('id', 'in', self.document_ids.ids)],
             'context': {
                 'default_audit_requirement_ids': [(6, 0, [self.id])],
@@ -448,7 +448,7 @@ class NAIDAuditRequirement(models.Model):
             'name': f'Audit Reports: {self.name}',
             'type': 'ir.actions.act_window',
             'res_model': 'naid.audit.log',
-            'view_mode': 'tree,form,pivot,graph',
+            'view_mode': 'list,form,pivot,graph',
             'domain': [('audit_requirement_id', '=', self.id)],
             'context': {'default_audit_requirement_id': self.id},
         }

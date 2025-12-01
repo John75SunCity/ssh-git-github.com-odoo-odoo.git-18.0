@@ -129,7 +129,7 @@ class PartnerBinKey(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Key Management Records'),
             'res_model': 'partner.bin.key',  # could be replaced with dedicated history model later
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'target': 'current',
             'domain': [('id', '=', self.id)],
             'context': {'default_partner_id': self.partner_id.id},
@@ -148,7 +148,7 @@ class PartnerBinKey(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Key History'),
             'res_model': model,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'target': 'current',
             'domain': domain,
         }

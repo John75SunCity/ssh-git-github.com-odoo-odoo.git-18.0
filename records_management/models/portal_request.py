@@ -315,7 +315,7 @@ class PortalRequest(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Attachments'),
             'res_model': 'ir.attachment',
-            'view_mode': 'kanban,tree,form',
+            'view_mode': 'kanban,list,form',
             'domain': [('res_model', '=', self._name), ('res_id', '=', self.id)],
             'context': {'default_res_model': self._name, 'default_res_id': self.id},
         }

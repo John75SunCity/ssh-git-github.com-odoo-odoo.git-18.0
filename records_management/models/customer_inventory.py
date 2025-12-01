@@ -230,7 +230,7 @@ class CustomerInventory(models.Model):
             'name': _('Inventory Variances'),
             'type': 'ir.actions.act_window',
             'res_model': 'customer.inventory.line',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('id', 'in', variance_lines.ids)],
             'context': {'default_inventory_id': self.id}
         }

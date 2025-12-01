@@ -608,7 +608,7 @@ class RecordsRetentionPolicy(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Documents'),
             'res_model': 'records.document',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('retention_policy_id', '=', self.id)],
             'context': {'default_retention_policy_id': self.id}
         }
@@ -619,7 +619,7 @@ class RecordsRetentionPolicy(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Child Policies'),
             'res_model': 'records.retention.policy',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('parent_policy_id', '=', self.id)],
             'context': {'default_parent_policy_id': self.id}
         }
@@ -631,7 +631,7 @@ class RecordsRetentionPolicy(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Retention Rules'),
             'res_model': 'records.retention.rule',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('policy_id', '=', self.id)],
             'context': {'default_policy_id': self.id}
         }
@@ -643,7 +643,7 @@ class RecordsRetentionPolicy(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Policy Versions'),
             'res_model': 'records.retention.policy.version',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('policy_id', '=', self.id)],
             'context': {'default_policy_id': self.id}
         }

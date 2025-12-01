@@ -133,7 +133,7 @@ class StockLot(models.Model):
             "name": _("Documents in Box %s", self.name),
             "type": "ir.actions.act_window",
             "res_model": "records.document",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("id", "in", self.document_ids.ids)],
             "context": {"default_lot_id": self.id},
         }

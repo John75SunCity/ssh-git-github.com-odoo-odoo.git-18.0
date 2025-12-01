@@ -298,7 +298,7 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
             'name': _("Containers to Convert"),
             'type': 'ir.actions.act_window',
             'res_model': 'records.container',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('id', 'in', containers.ids)],
             'context': {
                 'default_container_type': self.target_container_type,

@@ -60,7 +60,7 @@ class SurveyFeedbackTheme(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Feedback for %s', self.name),
             'res_model': 'customer.feedback',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',
             'domain': [('theme_id', '=', self.id)],
             'context': {'default_theme_id': self.id},
         }

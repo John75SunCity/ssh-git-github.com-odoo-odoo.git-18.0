@@ -592,7 +592,7 @@ class RecordsFile(models.Model):
             'name': _('Add Documents to File: %s') % self.name,
             'type': 'ir.actions.act_window',
             'res_model': 'records.document',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'domain': [('file_id', '=', False), ('partner_id', '=', self.partner_id.id if self.partner_id else False)],
             'context': {
                 'default_file_id': self.id,
@@ -609,7 +609,7 @@ class RecordsFile(models.Model):
             'name': _('Remove Documents from File: %s') % self.name,
             'type': 'ir.actions.act_window',
             'res_model': 'records.document',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'domain': [('file_id', '=', self.id)],
             'context': {
                 'file_remove_mode': True,

@@ -622,7 +622,7 @@ class ShreddingServiceBin(models.Model):
             'name': _('Service History - %s') % self.barcode,
             'type': 'ir.actions.act_window',
             'res_model': 'shredding.service.event',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('bin_id', '=', self.id)],
             'context': {
                 'default_bin_id': self.id,
@@ -809,7 +809,7 @@ class ShreddingServiceBin(models.Model):
             'name': _('Movement History - %s') % self.barcode,
             'type': 'ir.actions.act_window',
             'res_model': 'shredding.bin.movement',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('bin_id', '=', self.id)],
             'context': {
                 'default_bin_id': self.id,
@@ -824,7 +824,7 @@ class ShreddingServiceBin(models.Model):
             'name': _('Maintenance History - %s') % self.barcode,
             'type': 'ir.actions.act_window',
             'res_model': 'maintenance.request',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('shredding_bin_id', '=', self.id)],
         }
 
@@ -1077,7 +1077,7 @@ class ShreddingServiceBin(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Related Work Orders'),
             'res_model': 'project.task',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',
             'domain': [('id', '=', self.current_work_order_id.id)] if self.current_work_order_id else [('id', '=', 0)],
         }
 

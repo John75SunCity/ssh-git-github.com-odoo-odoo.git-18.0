@@ -133,7 +133,7 @@ class RecordsDepartmentBillingContact(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Approval History'),
             'res_model': 'records.department.billing.approval',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('billing_contact_id', '=', self.id)],
             'context': {'default_billing_contact_id': self.id},
         }

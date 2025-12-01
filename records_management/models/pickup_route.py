@@ -320,7 +320,7 @@ class PickupRoute(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Pickup Requests'),
             'res_model': 'pickup.request',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('route_id', '=', self.id)],
             'context': {'default_route_id': self.id}
         }

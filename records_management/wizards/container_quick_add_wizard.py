@@ -277,7 +277,7 @@ class ContainerQuickAddWizard(models.TransientModel):
                 'name': _('Add Files to Container'),
                 'type': 'ir.actions.act_window',
                 'res_model': 'records.document',
-                'view_mode': 'tree,form',
+                'view_mode': 'list,form',
                 'context': {
                     'default_container_id': container.id,
                     'default_partner_id': self.partner_id.id,

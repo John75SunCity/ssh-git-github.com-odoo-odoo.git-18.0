@@ -550,7 +550,7 @@ class RecordsContainerBarcodeOperations(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Barcode Operations - %s') % self.barcode,
             'res_model': 'naid.audit.log',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [
                 ('container_id', '=', self.id),
                 ('action', 'like', 'barcode_%'),

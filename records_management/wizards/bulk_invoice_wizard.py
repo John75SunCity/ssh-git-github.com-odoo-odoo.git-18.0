@@ -240,7 +240,7 @@ class BulkInvoiceWizard(models.TransientModel):
                 'type': 'ir.actions.act_window',
                 'name': _('Generated Invoices'),
                 'res_model': 'account.move',
-                'view_mode': 'tree,form',
+                'view_mode': 'list,form',
                 'domain': [('id', 'in', invoices.ids)],
                 'target': 'current',
             }

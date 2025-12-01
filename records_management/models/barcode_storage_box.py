@@ -232,7 +232,7 @@ class BarcodeStorageBox(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Contents of %s', self.name),
             'res_model': 'barcode.product',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('id', 'in', self.barcode_product_ids.ids)],
             'context': {'default_container_id': self.id}
         }

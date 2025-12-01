@@ -315,7 +315,7 @@ class BaseRate(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Customers Using Base Rates"),
             "res_model": "res.partner",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("id", "in", base_rate_customers.ids)],
             "context": {
                 "search_default_is_company": 1,
@@ -329,7 +329,7 @@ class BaseRate(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Customer Negotiated Rates"),
             "res_model": "customer.negotiated.rate",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("company_id", "=", self.company_id.id)],
             "context": {
                 "search_default_active": 1,

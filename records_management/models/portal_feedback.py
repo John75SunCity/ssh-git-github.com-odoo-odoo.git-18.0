@@ -145,7 +145,7 @@ class PortalFeedback(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Related Records'),
             'res_model': 'portal.feedback',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('partner_id', '=', self.partner_id.id), ('id', '!=', self.id)],
             'context': {'default_partner_id': self.partner_id.id},
         }

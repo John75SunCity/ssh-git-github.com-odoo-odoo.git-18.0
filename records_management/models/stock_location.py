@@ -267,7 +267,7 @@ class StockLocation(models.Model):
             'name': _('Records Containers at %s') % self.display_name,
             'type': 'ir.actions.act_window',
             'res_model': 'records.container',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',
             'domain': [('location_id', '=', self.id)],
             'context': {
                 'default_location_id': self.id,
@@ -282,7 +282,7 @@ class StockLocation(models.Model):
             'name': _('File Folders at %s') % self.display_name,
             'type': 'ir.actions.act_window',
             'res_model': 'records.file',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',
             'domain': [('location_id', '=', self.id)],
             'context': {
                 'default_location_id': self.id,
@@ -297,7 +297,7 @@ class StockLocation(models.Model):
             'name': _('Inventory at %s') % self.display_name,
             'type': 'ir.actions.act_window',
             'res_model': 'stock.quant',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('location_id', '=', self.id)],
             'context': {'default_location_id': self.id},
         }

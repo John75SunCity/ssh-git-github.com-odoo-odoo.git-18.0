@@ -252,7 +252,7 @@ class RecordsStorageDepartmentUser(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Department Assignments'),
             'res_model': 'records.storage.department.user',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('department_id', '=', self.department_id.id)],
             'context': {'default_department_id': self.department_id.id},
             'target': 'current',

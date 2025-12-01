@@ -52,7 +52,7 @@ class FeedbackImprovementArea(models.Model):
             "name": _("Feedback for %s", self.name),
             "type": "ir.actions.act_window",
             "res_model": "customer.feedback",
-            "view_mode": "tree,form,kanban",
+            "view_mode": "list,form,kanban",
             "domain": [("id", "in", self.feedback_ids.ids)],
             "context": {"default_improvement_area_ids": [(6, 0, [self.id])]},
         }

@@ -185,7 +185,7 @@ class ShredBin(models.Model):
             'name': _('Service Orders'),
             'type': 'ir.actions.act_window',
             'res_model': 'project.task',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',
             'domain': [('id', 'in', self.service_ids.ids)],
             'context': {
                 'default_shred_bin_id': self.id,

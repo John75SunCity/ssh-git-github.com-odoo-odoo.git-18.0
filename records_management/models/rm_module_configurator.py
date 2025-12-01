@@ -471,7 +471,7 @@ class RmModuleConfigurator(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Related Configurations"),
             "res_model": self._name,
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("category", "=", self.category), ("id", "!=", self.id)],
             "context": {"default_category": self.category},
         }

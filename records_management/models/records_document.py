@@ -955,7 +955,7 @@ class RecordsDocument(models.Model):
         return {
             'name': _('Audit Logs'),
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'naid.audit.log',
             'domain': [('document_id', '=', self.id)],
             'context': {'default_document_id': self.id},
@@ -966,7 +966,7 @@ class RecordsDocument(models.Model):
         return {
             'name': _('Chain of Custody'),
             'type': 'ir.actions.act_window',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'naid.custody',
             'domain': [('document_id', '=', self.id)],
             'context': {'default_document_id': self.id},
@@ -1204,7 +1204,7 @@ class RecordsDocument(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Audit Trail"),
             "res_model": "naid.audit.log",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("document_id", "=", self.id)],
         }
 
@@ -1391,7 +1391,7 @@ class RecordsDocument(models.Model):
             return {
                 'name': _('Attachments'),
                 'type': 'ir.actions.act_window',
-                'view_mode': 'tree,form',
+                'view_mode': 'list,form',
                 'res_model': 'ir.attachment',
                 'domain': [('res_model', '=', 'records.document'), ('res_id', '=', self.id)],
                 'context': {

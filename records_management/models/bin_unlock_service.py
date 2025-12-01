@@ -375,7 +375,7 @@ class BinUnlockService(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Unlock Services'),
             'res_model': self._name,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('partner_id', '=', self.partner_id.id)],
             'context': {'default_partner_id': self.partner_id.id}
         }

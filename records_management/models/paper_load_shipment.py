@@ -175,7 +175,7 @@ class PaperLoadShipment(models.Model):
             # Translation normalization: interpolate after _()
             "name": _("Bales in Shipment %s") % self.name,
             "res_model": "paper.bale",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("id", "in", self.bale_ids.ids)],
             "context": {"create": False},
         }

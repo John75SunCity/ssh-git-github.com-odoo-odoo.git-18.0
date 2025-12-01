@@ -192,7 +192,7 @@ class CustomerInventoryReportLine(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Container Documents'),
             'res_model': 'records.document',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('container_id', 'in', self.container_id.ids)],
             'context': {'default_container_id': self.container_id.id},
         }

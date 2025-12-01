@@ -181,7 +181,7 @@ class AccountMove(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Destruction Certificates'),
             'res_model': 'destruction.certificate',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('id', 'in', self.destruction_certificate_ids.ids)],
             'context': {'default_invoice_id': self.id},
         }

@@ -206,7 +206,7 @@ class ProjectTask(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Related Containers"),
             "res_model": "records.container",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [('id', 'in', self.container_ids.ids)],
             "target": "current",
         }

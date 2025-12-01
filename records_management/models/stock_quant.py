@@ -357,7 +357,7 @@ class StockQuant(models.Model):
             'name': _('Documents in Container'),
             'type': 'ir.actions.act_window',
             'res_model': 'records.document',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('quant_id', '=', self.id)],
             'context': {'default_quant_id': self.id},
         }

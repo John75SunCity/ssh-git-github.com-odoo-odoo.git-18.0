@@ -737,7 +737,7 @@ class RecordsBillingConfig(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Configure Rates'),
             'res_model': 'records.billing.rate',
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'domain': [('id', '=', 0)],
             'target': 'current',
         }

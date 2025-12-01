@@ -215,7 +215,7 @@ class ServiceItem(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Maintenance Requests"),
             "res_model": "maintenance.request",
-            "view_mode": "tree,form,kanban",
+            "view_mode": "list,form,kanban",
             "domain": [("equipment_id", "=", self.id)],
             "context": {'default_equipment_id': self.id}
         }
@@ -226,7 +226,7 @@ class ServiceItem(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Service Requests"),
             "res_model": "project.task",
-            "view_mode": "tree,form,kanban",
+            "view_mode": "list,form,kanban",
             "domain": [("service_item_id", "=", self.id)],
             "context": {'default_service_item_id': self.id}
         }
@@ -275,7 +275,7 @@ class ServiceItem(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Related Requests"),
             "res_model": "project.task",
-            "view_mode": "tree,form,kanban",
+            "view_mode": "list,form,kanban",
             "domain": [("service_item_id", "=", self.id)],
             "context": {"default_service_item_id": self.id}
         }

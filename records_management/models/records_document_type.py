@@ -275,7 +275,7 @@ class RecordsDocumentType(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Documents for %s") % self.name,
             "res_model": "records.document",
-            "view_mode": "tree,form,kanban",
+            "view_mode": "list,form,kanban",
             "domain": [("document_type_id", "=", self.id)],
             "context": {"default_document_type_id": self.id},
         }

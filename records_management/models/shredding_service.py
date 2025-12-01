@@ -494,7 +494,7 @@ class ShreddingService(models.Model):
 
         return {
             'name': _('Destruction Items - %s') % self.name,
-            'view_mode': 'tree,form',
+            'view_mode': 'list,form',
             'res_model': 'destruction.item',
             'domain': [('id', 'in', destruction_items.ids)],
             'type': 'ir.actions.act_window',

@@ -86,7 +86,7 @@ class RecordsVehicleInheritance(models.Model):
             "type": "ir.actions.act_window",
             "name": _("Vehicle Pickup Routes"),
             "res_model": "pickup.route",
-            "view_mode": "tree,form,kanban",
+            "view_mode": "list,form,kanban",
             "domain": [("vehicle_id", "=", self.id)],
             "context": {'default_vehicle_id': self.id}
         }

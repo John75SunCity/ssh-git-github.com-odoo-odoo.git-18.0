@@ -179,7 +179,7 @@ class ShreddingTeam(models.Model):
             'type': 'ir.actions.act_window',
             'name': _('Team Services'),
             'res_model': 'project.task',
-            'view_mode': 'tree,form,kanban',
+            'view_mode': 'list,form,kanban',
             'domain': [('shredding_team_id', '=', self.id)],
             'context': {'default_shredding_team_id': self.id},
         }

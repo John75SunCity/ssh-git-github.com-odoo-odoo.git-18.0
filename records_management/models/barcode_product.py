@@ -692,7 +692,7 @@ class BarcodeProduct(models.Model):
             "type": "ir.actions.act_window",
             "name": "Storage Boxes",
             "res_model": "records.storage.box",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("product_id", "=", self.id)],
         }
 
@@ -703,7 +703,7 @@ class BarcodeProduct(models.Model):
             "type": "ir.actions.act_window",
             "name": "Shred Bins",
             "res_model": "shred.bin",
-            "view_mode": "tree,form",
+            "view_mode": "list,form",
             "domain": [("product_id", "=", self.id)],
         }
 
