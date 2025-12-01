@@ -17,27 +17,61 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Records Location Report</h2>
-                        <table class="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-if="doc.field_ids">
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
-                                </tr>
-                            </t>
-                            </tbody>
-                        </table>
+                        <h2>Stock Location Report</h2>
+                        <h3><t t-esc="doc.complete_name or doc.name"/></h3>
+                        
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th style="width: 40%;">Location Name</th>
+                                            <td><t t-esc="doc.name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Location Type</th>
+                                            <td><t t-esc="doc.usage"/></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Parent Location</th>
+                                            <td><t t-esc="doc.location_id.complete_name if doc.location_id else 'N/A'"/></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Company</th>
+                                            <td><t t-esc="doc.company_id.name if doc.company_id else 'N/A'"/></td>
+                                        </tr>
+                                        <tr t-if="hasattr(doc, 'is_records_location')">
+                                            <th>Records Location</th>
+                                            <td><t t-if="doc.is_records_location">Yes</t><t t-else="">No</t></td>
+                                        </tr>
+                                        <tr t-if="hasattr(doc, 'max_capacity')">
+                                            <th>Maximum Capacity</th>
+                                            <td><t t-esc="doc.max_capacity or 'N/A'"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <t t-if="doc.child_ids">
+                            <h4 class="mt-4">Child Locations</h4>
+                            <table class="table table-condensed table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Location Name</th>
+                                        <th>Type</th>
+                                        <th>Active</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.child_ids" t-as="child">
+                                        <td><t t-esc="child.name"/></td>
+                                        <td><t t-esc="child.usage"/></td>
+                                        <td><t t-if="child.active">Yes</t><t t-else="">No</t></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
                     </div>
                 </t>
             </t>
