@@ -2,12 +2,12 @@
 <odoo>
     <data>
 <record id="report_records_container" model="ir.actions.report">
-        <field name="name">Records Container</field>
+        <field name="name">Container Detail Report</field>
         <field name="model">records.container</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_records_container_view</field>
         <field name="report_file">records_management.report_records_container</field>
-        <field name="print_report_name">"(Records Container Report) %s" % (object.name or 'N/A')</field>
+        <field name="print_report_name">"(Container Report) %s" % (object.name or 'Container')</field>
         <field name="binding_model_id" ref="records_management.model_records_container"/>
         <field name="binding_type">report</field>
     </record>
@@ -17,27 +17,70 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Records Container Report</h2>
-                        <table class="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
+                        <h2>Container Detail Report</h2>
+                        <h3 t-esc="doc.display_name"/>
+                        
+                        <table class="table table-bordered">
                             <tbody>
-                                <t t-if="doc.field_ids">
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
+                                <tr>
+                                    <th style="width:30%;">Container Number</th>
+                                    <td><t t-esc="doc.name"/></td>
                                 </tr>
-                            </t>
+                                <tr>
+                                    <th>Physical Barcode</th>
+                                    <td><t t-esc="doc.barcode or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.temp_barcode">
+                                    <th>Temp Barcode</th>
+                                    <td><t t-esc="doc.temp_barcode"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Customer</th>
+                                    <td><t t-esc="doc.partner_id.name or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Container Type</th>
+                                    <td><t t-esc="doc.container_type_id.name or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td><t t-esc="doc.state or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Location</th>
+                                    <td><t t-esc="doc.location_id.display_name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.destruction_date">
+                                    <th>Destruction Date</th>
+                                    <td><t t-esc="doc.destruction_date"/></td>
+                                </tr>
+                                <tr t-if="doc.description">
+                                    <th>Description</th>
+                                    <td><t t-esc="doc.description"/></td>
+                                </tr>
                             </tbody>
                         </table>
+                        
+                        <!-- Files in Container -->
+                        <t t-if="doc.file_ids">
+                            <h4>Files in Container (<t t-esc="len(doc.file_ids)"/>)</h4>
+                            <table class="table table-condensed table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                        <th>Barcode</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.file_ids" t-as="file">
+                                        <td><t t-esc="file.name"/></td>
+                                        <td><t t-esc="file.barcode or file.temp_barcode or 'N/A'"/></td>
+                                        <td><t t-esc="file.description or ''"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
                     </div>
                 </t>
             </t>
