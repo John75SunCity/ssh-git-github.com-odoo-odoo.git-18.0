@@ -289,34 +289,6 @@ class ContainerAccessWorkOrder(models.Model):
         store=True,
         readonly=True
     )
-    worksheet_ids = fields.One2many(
-        related='fsm_task_id.rm_worksheet_ids',
-        string="Worksheets",
-        readonly=True
-    )
-    worksheet_count = fields.Integer(
-        string="Worksheet Count",
-        compute='_compute_worksheet_count'
-    )
-
-    @api.depends('fsm_task_id', 'fsm_task_id.rm_worksheet_ids')
-    def _compute_worksheet_count(self):
-        for record in self:
-            record.worksheet_count = len(record.fsm_task_id.rm_worksheet_ids) if record.fsm_task_id else 0
-
-    def action_view_worksheets(self):
-        """Open worksheets for this work order's FSM task"""
-        self.ensure_one()
-        if not self.fsm_task_id:
-            raise UserError(_("No FSM task linked. Create an FSM task first."))
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Worksheets'),
-            'res_model': 'fsm.worksheet.instance',
-            'view_mode': 'list,form',
-            'domain': [('task_id', '=', self.fsm_task_id.id)],
-            'context': {'default_task_id': self.fsm_task_id.id},
-        }
 
     # ============================================================================
     # ORM & COMPUTE METHODS
