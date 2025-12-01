@@ -13,6 +13,8 @@
                     <field name="state" />
                     <field name="retention_policy_id" />
                     <field name="destruction_eligible_date" />
+                    <field name="total_attachment_size_kb" />
+                    <field name="total_attachment_size_visible" />
                     <templates>
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
