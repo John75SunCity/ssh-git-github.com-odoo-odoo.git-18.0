@@ -93,7 +93,7 @@
         <field name="report_name">records_management.report_container_qrcode_template</field>
         <field name="report_file">records_management.report_container_qrcode</field>
         <field name="print_report_name">'container_qrcode_%s' % object.barcode or object.temp_barcode or object.id</field>
-        <field name="paperformat_id" ref="file_barcode_reports.paperformat_qr_code_label"/>
+        <field name="paperformat_id" ref="records_management.paperformat_qr_code_label"/>
     </record>
   </data>
 </odoo>
