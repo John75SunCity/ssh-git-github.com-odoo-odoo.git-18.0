@@ -18,7 +18,7 @@
     <record id="action_fleet_vehicle_records_work_local" model="ir.actions.act_window">
         <field name="name">Records Work Vehicles</field>
         <field name="res_model">fleet.vehicle</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="domain">[('records_vehicle_type','!=',False)]</field>
         <field name="context">{'search_default_available_work':1}</field>
         <field name="help" type="html">
@@ -62,7 +62,7 @@
         <field name="name">FSM Route Projects</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">project.project</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <!-- industry_fsm adds is_fsm flag on projects; use it to filter -->
         <field name="domain">[("is_fsm", "=", True)]</field>
         <field name="context">{

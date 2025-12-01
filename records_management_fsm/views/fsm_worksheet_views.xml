@@ -164,7 +164,7 @@
         <record id="action_fsm_worksheet_instance" model="ir.actions.act_window">
             <field name="name">FSM Worksheets</field>
             <field name="res_model">fsm.worksheet.instance</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">list,kanban,form</field>
             <field name="context">{'search_default_in_progress': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
@@ -179,7 +179,7 @@
         <record id="action_fsm_worksheet_instance_completed" model="ir.actions.act_window">
             <field name="name">Completed Worksheets</field>
             <field name="res_model">fsm.worksheet.instance</field>
-            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_mode">list,kanban,form</field>
             <field name="context">{'search_default_completed': 1}</field>
             <field name="domain">[('is_complete', '=', True)]</field>
             <field name="help" type="html">
@@ -267,7 +267,7 @@
         <record id="action_fsm_worksheet_template" model="ir.actions.act_window">
             <field name="name">Worksheet Templates</field>
             <field name="res_model">fsm.worksheet.template</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     <i class="fa fa-file-text-o"/> Create worksheet templates!
