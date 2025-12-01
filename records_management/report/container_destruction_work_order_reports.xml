@@ -7,7 +7,7 @@
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_container_destruction_work_order_view</field>
         <field name="report_file">records_management.report_container_destruction_work_order</field>
-        <field name="print_report_name">"(Container Destruction Work Order Report) %s" % (object.name or 'N/A')</field>
+        <field name="print_report_name">"Container Destruction Work Order - %s" % (object.name or 'N/A')</field>
         <field name="binding_model_id" ref="records_management.model_container_destruction_work_order"/>
         <field name="binding_type">report</field>
     </record>
@@ -17,27 +17,160 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Container Destruction Work Order Report</h2>
-                        <table class="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-if="doc.field_ids">
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
-                                </tr>
-                            </t>
-                            </tbody>
-                        </table>
+                        <!-- Header -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <h2>Container Destruction Work Order</h2>
+                                <h3 class="text-primary"><t t-esc="doc.name"/></h3>
+                            </div>
+                            <div class="col-6 text-end">
+                                <p class="mb-1"><strong>Status:</strong> <t t-esc="dict(doc._fields['state'].selection).get(doc.state, '')"/></p>
+                                <p class="mb-1"><strong>Date:</strong> <t t-esc="doc.create_date" t-options="{'widget': 'date'}"/></p>
+                                <t t-if="doc.naid_compliant">
+                                    <span class="badge bg-success">NAID Compliant</span>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Customer Information -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h4 class="border-bottom pb-2">Customer Information</h4>
+                            </div>
+                            <div class="col-6">
+                                <p><strong>Customer:</strong> <t t-esc="doc.partner_id.name or 'N/A'"/></p>
+                                <p><strong>Authorized By:</strong> <t t-esc="doc.authorized_by or 'Pending'"/></p>
+                            </div>
+                            <div class="col-6">
+                                <p><strong>Authorization Date:</strong> 
+                                    <t t-if="doc.customer_authorization_date">
+                                        <t t-esc="doc.customer_authorization_date" t-options="{'widget': 'datetime'}"/>
+                                    </t>
+                                    <t t-else="">Pending</t>
+                                </p>
+                                <p><strong>Reason:</strong> <t t-esc="doc.destruction_reason or 'Not specified'"/></p>
+                            </div>
+                        </div>
+
+                        <!-- Destruction Details -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h4 class="border-bottom pb-2">Destruction Details</h4>
+                            </div>
+                            <div class="col-6">
+                                <p><strong>Method:</strong> <t t-esc="dict(doc._fields['destruction_method'].selection).get(doc.destruction_method, '')"/></p>
+                                <p><strong>Scheduled Date:</strong> 
+                                    <t t-if="doc.scheduled_destruction_date">
+                                        <t t-esc="doc.scheduled_destruction_date" t-options="{'widget': 'datetime'}"/>
+                                    </t>
+                                    <t t-else="">Not scheduled</t>
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <p><strong>Facility:</strong> <t t-esc="doc.destruction_facility_id.name or 'Not assigned'"/></p>
+                                <p><strong>Equipment:</strong> <t t-esc="doc.shredding_equipment_id.name or 'Not assigned'"/></p>
+                            </div>
+                        </div>
+
+                        <!-- Container Summary -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h4 class="border-bottom pb-2">Container Summary</h4>
+                                <div class="row">
+                                    <div class="col-4 text-center">
+                                        <h3><t t-esc="doc.container_count"/></h3>
+                                        <p class="text-muted">Total Containers</p>
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <h3><t t-esc="'%.2f' % doc.total_cubic_feet"/> cu ft</h3>
+                                        <p class="text-muted">Total Volume</p>
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <h3><t t-esc="'%.1f' % doc.estimated_weight_lbs"/> lbs</h3>
+                                        <p class="text-muted">Estimated Weight</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Container List -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h4 class="border-bottom pb-2">Containers for Destruction</h4>
+                                <table class="table table-sm table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Container ID</th>
+                                            <th>Barcode</th>
+                                            <th>Type</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="counter" t-value="0"/>
+                                        <t t-foreach="doc.container_ids" t-as="container">
+                                            <t t-set="counter" t-value="counter + 1"/>
+                                            <tr>
+                                                <td><t t-esc="counter"/></td>
+                                                <td><t t-esc="container.name"/></td>
+                                                <td><t t-esc="container.barcode or '-'"/></td>
+                                                <td><t t-esc="container.container_type_id.name or '-'"/></td>
+                                                <td><t t-esc="container.location_id.name or '-'"/></td>
+                                                <td><t t-esc="dict(container._fields['state'].selection).get(container.state, '') if hasattr(container._fields.get('state', {}), 'selection') else container.state"/></td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="not doc.container_ids">
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted">No containers assigned</td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Witness Information -->
+                        <t t-if="doc.witness_required">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h4 class="border-bottom pb-2">Witness Information</h4>
+                                </div>
+                                <div class="col-6">
+                                    <p><strong>Customer Witness:</strong> <t t-esc="doc.customer_witness_name or 'Not specified'"/></p>
+                                </div>
+                                <div class="col-6">
+                                    <p><strong>Internal Witness:</strong> <t t-esc="doc.internal_witness_id.name or 'Not assigned'"/></p>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Signature Block -->
+                        <div class="row mt-5">
+                            <div class="col-6">
+                                <div class="border-top pt-2 mt-4" style="width: 80%;">
+                                    <p class="mb-0"><strong>Customer Signature</strong></p>
+                                    <p class="text-muted small">Date: _________________</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="border-top pt-2 mt-4" style="width: 80%;">
+                                    <p class="mb-0"><strong>Authorized Representative</strong></p>
+                                    <p class="text-muted small">Date: _________________</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Note -->
+                        <div class="row mt-4">
+                            <div class="col-12 text-center">
+                                <p class="text-muted small">
+                                    This document certifies the authorization and scheduling of container destruction services.
+                                    <t t-if="doc.naid_compliant">All destruction processes comply with NAID AAA standards.</t>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </t>
             </t>
