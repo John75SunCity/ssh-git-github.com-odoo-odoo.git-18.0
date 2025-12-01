@@ -1,42 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-    <template id="report_records_document_temp_barcode_labels">
-        <t t-call="web.html_container">
-            <style>
-              .label-page { page-break-after: always; page-break-inside: avoid; }
-              .label-page:last-child { page-break-after: auto; }
-            </style>
-            <t t-foreach="docs" t-as="doc">
-                <!-- Compact label layout for 4" x 1.33" container labels -->
-                <div class="page label-page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
-                    <div style="font-size:7pt; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                        <t t-esc="doc.display_name or doc.name"/>
-                    </div>
-                    <div t-if="doc.temp_barcode" style="margin:1mm 0;">
-                        <img t-att-src="'/report/barcode/Code128/%s?width=180&amp;height=30' % doc.temp_barcode" style="max-width:100%;"/>
-                        <div style="font-size:7pt; font-weight:600;">
-                            <t t-esc="doc.temp_barcode"/> <span style="font-size:5pt; color:#666;">(TEMP)</span>
-                        </div>
-                    </div>
-                    <div t-else="" style="font-size:7pt; color:red;">NO TEMP BARCODE</div>
-                </div>
-            </t>
-        </t>
-    </template>
-
-    <!-- Report action using proper ir.actions.report structure -->
+  <!-- Force update of report actions -->
+  <data noupdate="0">
+    <!-- Temp Barcode Report Action - Multiple per sheet -->
     <record id="action_report_records_document_temp_barcode_labels" model="ir.actions.report">
-        <field name="name">Temp File Barcodes</field>
-        <field name="model">records.document</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">records_management.report_records_document_temp_barcode_labels</field>
-        <field name="report_file">records_management.report_records_document_temp_barcode_labels</field>
-        <field name="print_report_name">'temp_file_barcodes'</field>
-        <field name="binding_model_id" ref="model_records_document"/>
-        <field name="binding_type">report</field>
-        <field name="paperformat_id" ref="records_management.paperformat_container_barcode_label"/>
-        <field name="attachment_use" eval="False"/>
+      <field name="name">Temp File Barcodes</field>
+      <field name="model">records.document</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">records_management.report_records_document_temp_barcode_labels</field>
+      <field name="report_file">records_management.report_records_document_temp_barcode_labels</field>
+      <field name="print_report_name">'Temp_Barcodes'</field>
+      <field name="binding_model_id" ref="model_records_document"/>
+      <field name="binding_type">report</field>
+      <field name="paperformat_id" ref="records_management.paperformat_label_sheet"/>
+      <field name="attachment_use" eval="False"/>
+      <field name="attachment" eval="False"/>
     </record>
-    </data>
+  </data>
+
+  <data>
+    <!-- Temp Barcode Labels - Grid Layout (2 cols x 7 rows = 14 per page) -->
+    <template id="report_records_document_temp_barcode_labels">
+      <t t-call="web.basic_layout">
+        <t t-call="web.html_container">
+          <!-- 2 columns x 7 rows = 14 labels per page (4" x 1.33" each) -->
+          <t t-set="nRows" t-value="7"/>
+          <t t-set="nCols" t-value="2"/>
+          <t t-set="labelsPerPage" t-value="nRows * nCols"/>
+          
+          <!-- Loop through pages -->
+          <t t-foreach="[docs[x:x + labelsPerPage] for x in range(0, len(docs), labelsPerPage)]" t-as="page_docs">
+            <div class="page" style="padding: 5mm; font-family: Arial, sans-serif;">
+              <table class="table table-borderless" style="width:100%; table-layout:fixed;">
+                <t t-foreach="range(nRows)" t-as="row">
+                  <tr>
+                    <t t-foreach="range(nCols)" t-as="col">
+                      <t t-set="idx" t-value="row * nCols + col"/>
+                      <td style="width:50%; height:34mm; vertical-align:middle; padding:2mm;">
+                        <t t-if="idx &lt; len(page_docs)">
+                          <t t-set="doc" t-value="page_docs[idx]"/>
+                          <div style="border:1px solid #ccc; padding:2mm; height:30mm; text-align:center; overflow:hidden;">
+                            <!-- Document Name -->
+                            <div style="font-weight:bold; font-size:8pt; margin-bottom:1mm; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                              <t t-esc="doc.display_name or doc.name"/>
+                            </div>
+                            <!-- Temp Barcode -->
+                            <t t-if="doc.temp_barcode">
+                              <img t-att-src="'/report/barcode/Code128/%s?width=200&amp;height=35' % doc.temp_barcode" 
+                                   style="max-width:95mm; height:9mm;"/>
+                              <div style="font-size:8pt; font-weight:600; margin-top:1mm;">
+                                <t t-esc="doc.temp_barcode"/>
+                                <span style="font-size:6pt; color:#f60; font-weight:bold;"> (TEMP)</span>
+                              </div>
+                            </t>
+                            <t t-else="">
+                              <div style="font-size:8pt; color:red; margin-top:5mm;">
+                                <strong>NO TEMP BARCODE</strong>
+                              </div>
+                            </t>
+                          </div>
+                        </t>
+                      </td>
+                    </t>
+                  </tr>
+                </t>
+              </table>
+            </div>
+          </t>
+        </t>
+      </t>
+    </template>
+  </data>
 </odoo>

@@ -1,100 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-    <!-- File Folder Label Paper Format - 2.5935" x 1" (30 per sheet) -->
-    <record id="paperformat_file_folder_label" model="report.paperformat">
-      <field name="name">File Folder Label (2.6x1 inch)</field>
-      <field name="default" eval="False"/>
-      <field name="format">custom</field>
-      <field name="page_width">66</field>  <!-- 2.5935 inches = 65.87mm, rounded -->
-      <field name="page_height">25</field>  <!-- 1 inch = 25.4mm, rounded -->
-      <field name="orientation">Landscape</field>
-      <field name="margin_top">1</field>
-      <field name="margin_bottom">1</field>
-      <field name="margin_left">1</field>
-      <field name="margin_right">1</field>
-      <field name="header_line" eval="False"/>
-      <field name="header_spacing">0</field>
-      <field name="dpi">96</field>
-      <field name="disable_shrinking" eval="True"/>
-    </record>
-
-    <!-- Note: paperformat_qr_code_label is defined in container_barcode_reports.xml (loaded first) -->
-
-    <template id="report_file_barcode_template">
-        <t t-call="web.html_container">
-            <style>
-              .label-page { page-break-after: always; page-break-inside: avoid; }
-              .label-page:last-child { page-break-after: auto; }
-            </style>
-            <t t-foreach="docs" t-as="doc">
-                <t t-set="barcode_value" t-value="doc.barcode or doc.temp_barcode"/>
-                <!-- Compact label layout for 2.5935" x 1" -->
-                <div class="page label-page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
-                    <div style="font-size:7pt; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                        <t t-esc="doc.name"/>
-                    </div>
-                    <div t-if="barcode_value" style="margin:1mm 0;">
-                        <img t-attf-src="/report/barcode/?barcode_type=Code128&amp;value={{barcode_value}}&amp;width=180&amp;height=30" style="max-width:100%;"/>
-                        <div style="font-size:7pt; font-weight:600;">
-                            <t t-esc="barcode_value"/>
-                        </div>
-                    </div>
-                    <div t-else="" style="font-size:7pt; color:#999;">No barcode</div>
-                </div>
-            </t>
-        </t>
-    </template>
-
-    <!-- Report action using proper ir.actions.report structure -->
+  <!-- Force update of report actions -->
+  <data noupdate="0">
+    <!-- File Barcode Report Action - Multiple per sheet -->
     <record id="report_file_barcode" model="ir.actions.report">
-        <field name="name">File Folder Barcode Labels</field>
-        <field name="model">records.file</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">records_management.report_file_barcode_template</field>
-        <field name="report_file">records_management.report_file_barcode</field>
-        <field name="print_report_name">'file_barcode_%s' % object.barcode or object.temp_barcode or object.id</field>
-        <field name="paperformat_id" ref="paperformat_file_folder_label"/>
-        <field name="attachment_use" eval="False"/>
+      <field name="name">File Folder Barcode Labels</field>
+      <field name="model">records.file</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">records_management.report_file_barcode_template</field>
+      <field name="report_file">records_management.report_file_barcode</field>
+      <field name="print_report_name">'File_Barcodes'</field>
+      <field name="binding_model_id" ref="records_management.model_records_file"/>
+      <field name="binding_type">report</field>
+      <field name="paperformat_id" ref="records_management.paperformat_label_sheet"/>
+      <field name="attachment_use" eval="False"/>
+      <field name="attachment" eval="False"/>
     </record>
 
-    <!-- QR Code Report Template (Secure Portal URL) -->
-    <template id="report_file_qrcode_template">
+    <!-- File QR Code Report Action - Multiple per sheet -->
+    <record id="report_file_qrcode" model="ir.actions.report">
+      <field name="name">File Folder QR Code Labels</field>
+      <field name="model">records.file</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">records_management.report_file_qrcode_template</field>
+      <field name="report_file">records_management.report_file_qrcode</field>
+      <field name="print_report_name">'File_QRCodes'</field>
+      <field name="binding_model_id" ref="records_management.model_records_file"/>
+      <field name="binding_type">report</field>
+      <field name="paperformat_id" ref="records_management.paperformat_label_sheet"/>
+      <field name="attachment_use" eval="False"/>
+    </record>
+  </data>
+
+  <data>
+    <!-- File Barcode Labels - Grid Layout (3 cols x 10 rows = 30 per page for 2.6" x 1" labels) -->
+    <template id="report_file_barcode_template">
+      <t t-call="web.basic_layout">
         <t t-call="web.html_container">
-            <style>
-              .label-page { page-break-after: always; page-break-inside: avoid; }
-              .label-page:last-child { page-break-after: auto; }
-            </style>
-            <t t-foreach="docs" t-as="doc">
-                <t t-set="barcode_value" t-value="doc.barcode or doc.temp_barcode"/>
-                <t t-set="portal_url" t-value="'%s/my/inventory/file/%s' % (doc.get_base_url(), doc.id)"/>
-                <!-- Compact QR label layout for 1" x 1.25" -->
-                <div class="page label-page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
-                    <div style="margin:0;">
-                        <img t-att-src="'/report/qr/?value=%s&amp;width=60&amp;height=60' % portal_url" style="width:18mm;height:18mm;"/>
-                    </div>
-                    <div style="font-size:5pt; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:0.5mm;">
-                        <t t-esc="doc.name[:20]"/>
-                    </div>
-                    <div style="font-size:4pt; color:#666;">
-                        <t t-if="barcode_value" t-esc="barcode_value"/>
-                        <t t-else="">ID:<t t-esc="doc.id"/></t>
-                    </div>
-                </div>
-            </t>
+          <!-- 3 columns x 10 rows = 30 labels per page (2.6" x 1" each) -->
+          <t t-set="nRows" t-value="10"/>
+          <t t-set="nCols" t-value="3"/>
+          <t t-set="labelsPerPage" t-value="nRows * nCols"/>
+          
+          <!-- Loop through pages -->
+          <t t-foreach="[docs[x:x + labelsPerPage] for x in range(0, len(docs), labelsPerPage)]" t-as="page_docs">
+            <div class="page" style="padding: 5mm; font-family: Arial, sans-serif;">
+              <table class="table table-borderless" style="width:100%; table-layout:fixed;">
+                <t t-foreach="range(nRows)" t-as="row">
+                  <tr>
+                    <t t-foreach="range(nCols)" t-as="col">
+                      <t t-set="idx" t-value="row * nCols + col"/>
+                      <td style="width:33.33%; height:25mm; vertical-align:middle; padding:1mm;">
+                        <t t-if="idx &lt; len(page_docs)">
+                          <t t-set="doc" t-value="page_docs[idx]"/>
+                          <t t-set="barcode_value" t-value="doc.barcode or doc.temp_barcode"/>
+                          <div style="border:1px solid #ccc; padding:1mm; height:22mm; text-align:center; overflow:hidden;">
+                            <!-- File Name -->
+                            <div style="font-weight:bold; font-size:7pt; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                              <t t-esc="doc.name or doc.display_name"/>
+                            </div>
+                            <!-- Barcode -->
+                            <t t-if="barcode_value">
+                              <img t-att-src="'/report/barcode/Code128/%s?width=160&amp;height=25' % barcode_value" 
+                                   style="max-width:60mm; height:7mm; margin-top:1mm;"/>
+                              <div style="font-size:6pt; font-weight:600;">
+                                <t t-esc="barcode_value"/>
+                                <t t-if="doc.temp_barcode and not doc.barcode">
+                                  <span style="font-size:5pt; color:#666;"> (TEMP)</span>
+                                </t>
+                              </div>
+                            </t>
+                            <t t-else="">
+                              <div style="font-size:6pt; color:#999; margin-top:2mm;"><em>No barcode</em></div>
+                            </t>
+                          </div>
+                        </t>
+                      </td>
+                    </t>
+                  </tr>
+                </t>
+              </table>
+            </div>
+          </t>
         </t>
+      </t>
     </template>
 
-    <!-- QR Code Report Action -->
-    <record id="report_file_qrcode" model="ir.actions.report">
-        <field name="name">File Folder QR Code Labels</field>
-        <field name="model">records.file</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">records_management.report_file_qrcode_template</field>
-        <field name="report_file">records_management.report_file_qrcode</field>
-        <field name="print_report_name">'file_qrcode_%s' % object.barcode or object.temp_barcode or object.id</field>
-        <field name="paperformat_id" ref="paperformat_qr_code_label"/>
-        <field name="attachment_use" eval="False"/>
-    </record>
-    </data>
+    <!-- File QR Code Labels - Grid Layout (7 cols x 7 rows = 49 per page) -->
+    <template id="report_file_qrcode_template">
+      <t t-call="web.basic_layout">
+        <t t-call="web.html_container">
+          <!-- 7 columns x 7 rows = 49 labels per page (1" x 1.25" each) -->
+          <t t-set="nRows" t-value="7"/>
+          <t t-set="nCols" t-value="7"/>
+          <t t-set="labelsPerPage" t-value="nRows * nCols"/>
+          
+          <!-- Loop through pages -->
+          <t t-foreach="[docs[x:x + labelsPerPage] for x in range(0, len(docs), labelsPerPage)]" t-as="page_docs">
+            <div class="page" style="padding: 3mm; font-family: Arial, sans-serif;">
+              <table class="table table-borderless" style="width:100%; table-layout:fixed;">
+                <t t-foreach="range(nRows)" t-as="row">
+                  <tr>
+                    <t t-foreach="range(nCols)" t-as="col">
+                      <t t-set="idx" t-value="row * nCols + col"/>
+                      <td style="width:14.28%; height:32mm; vertical-align:middle; padding:1mm; text-align:center;">
+                        <t t-if="idx &lt; len(page_docs)">
+                          <t t-set="doc" t-value="page_docs[idx]"/>
+                          <t t-set="portal_url" t-value="'%s/my/inventory/file/%s' % (doc.get_base_url(), doc.id)"/>
+                          <div style="border:1px solid #ddd; padding:1mm; height:28mm; overflow:hidden;">
+                            <img t-att-src="'/report/qr/?value=%s&amp;width=80&amp;height=80' % portal_url" 
+                                 style="width:20mm; height:20mm;"/>
+                            <div style="font-size:5pt; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                              <t t-esc="(doc.name or '')[:15]"/>
+                            </div>
+                            <div style="font-size:4pt; color:#666;">
+                              <t t-esc="doc.barcode or doc.temp_barcode or ''"/>
+                            </div>
+                          </div>
+                        </t>
+                      </td>
+                    </t>
+                  </tr>
+                </t>
+              </table>
+            </div>
+          </t>
+        </t>
+      </t>
+    </template>
+  </data>
 </odoo>
