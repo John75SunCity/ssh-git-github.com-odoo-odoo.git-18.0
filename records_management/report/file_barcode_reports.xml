@@ -1,30 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+    <!-- File Folder Label Paper Format - 2.5935" x 1" (30 per sheet) -->
+    <record id="paperformat_file_folder_label" model="report.paperformat">
+      <field name="name">File Folder Label (2.6x1 inch)</field>
+      <field name="default" eval="False"/>
+      <field name="format">custom</field>
+      <field name="page_width">65.87</field>  <!-- 2.5935 inches = 65.87mm -->
+      <field name="page_height">25.4</field>  <!-- 1 inch = 25.4mm -->
+      <field name="orientation">Landscape</field>
+      <field name="margin_top">1</field>
+      <field name="margin_bottom">1</field>
+      <field name="margin_left">1</field>
+      <field name="margin_right">1</field>
+      <field name="header_line" eval="False"/>
+      <field name="header_spacing">0</field>
+      <field name="dpi">96</field>
+      <field name="disable_shrinking" eval="True"/>
+    </record>
+
+    <!-- QR Code Label Paper Format - 1" x 1.25" (49 per sheet) -->
+    <record id="paperformat_qr_code_label" model="report.paperformat">
+      <field name="name">QR Code Label (1x1.25 inch)</field>
+      <field name="default" eval="False"/>
+      <field name="format">custom</field>
+      <field name="page_width">25.4</field>  <!-- 1 inch = 25.4mm -->
+      <field name="page_height">31.75</field>  <!-- 1.25 inches = 31.75mm -->
+      <field name="orientation">Portrait</field>
+      <field name="margin_top">1</field>
+      <field name="margin_bottom">1</field>
+      <field name="margin_left">1</field>
+      <field name="margin_right">1</field>
+      <field name="header_line" eval="False"/>
+      <field name="header_spacing">0</field>
+      <field name="dpi">96</field>
+      <field name="disable_shrinking" eval="True"/>
+    </record>
+
     <template id="report_file_barcode_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-set="barcode_value" t-value="doc.barcode or doc.temp_barcode"/>
-                <div style="display:inline-block;width:220px;height:150px;border:1px solid #000;margin:4px;padding:10px;font-size:11px;vertical-align:top;">
-                    <div style="font-weight:bold;text-align:center;margin-bottom:6px;">File Folder Barcode</div>
-                    <div t-if="barcode_value" style="font-size:14px;text-align:center;font-weight:bold;margin-bottom:4px;">
-                        <t t-esc="barcode_value"/>
-                    </div>
-                    <div t-if="not barcode_value" style="color:red;text-align:center;">NO BARCODE</div>
-                    <div t-if="barcode_value" style="margin:8px 0;text-align:center;">
-                        <img t-attf-src="/report/barcode/?barcode_type=Code128&amp;value={{barcode_value}}&amp;width=200&amp;height=50" style="max-width:100%;height:50px;"/>
-                    </div>
-                    <div style="margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;font-weight:bold;">
+                <!-- Compact label layout for 2.5935" x 1" -->
+                <div class="page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
+                    <div style="font-size:7pt; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                         <t t-esc="doc.name"/>
                     </div>
-                    <div style="font-size:9px;text-align:center;">
-                        Container: <t t-esc="doc.container_id.name or 'N/A'"/>
+                    <div t-if="barcode_value" style="margin:1mm 0;">
+                        <img t-attf-src="/report/barcode/?barcode_type=Code128&amp;value={{barcode_value}}&amp;width=180&amp;height=30" style="max-width:100%;"/>
+                        <div style="font-size:7pt; font-weight:600;">
+                            <t t-esc="barcode_value"/>
+                        </div>
                     </div>
-                    <div style="font-size:9px;text-align:center;">
-                        <t t-esc="doc.partner_id.name or ''"/>
-                    </div>
+                    <div t-else="" style="font-size:7pt; color:#999;">No barcode</div>
                 </div>
-                <t t-if="(doc_index + 1) % 12 == 0"><div style="page-break-after:always;"></div></t>
             </t>
         </t>
     </template>
@@ -37,6 +66,7 @@
         <field name="report_name">records_management.report_file_barcode_template</field>
         <field name="report_file">records_management.report_file_barcode</field>
         <field name="print_report_name">'file_barcode_%s' % object.barcode or object.temp_barcode or object.id</field>
+        <field name="paperformat_id" ref="paperformat_file_folder_label"/>
     </record>
 
     <!-- QR Code Report Template (Secure Portal URL) -->
@@ -45,21 +75,19 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-set="barcode_value" t-value="doc.barcode or doc.temp_barcode"/>
                 <t t-set="portal_url" t-value="'%s/my/inventory/file/%s' % (doc.get_base_url(), doc.id)"/>
-                <div style="display:inline-block;width:200px;height:220px;border:1px solid #000;margin:4px;padding:8px;text-align:center;vertical-align:top;">
-                    <div style="font-weight:bold;font-size:12px;margin-bottom:5px;">File Folder QR Code</div>
-                    <div style="font-size:10px;color:#666;margin-bottom:5px;">Scan to view details (login required)</div>
-                    <div style="margin:8px 0;">
-                        <img t-att-src="'/report/qr/?value=%s&amp;width=150&amp;height=150' % portal_url" style="width:150px;height:150px;"/>
+                <!-- Compact QR label layout for 1" x 1.25" -->
+                <div class="page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
+                    <div style="margin:0;">
+                        <img t-att-src="'/report/qr/?value=%s&amp;width=60&amp;height=60' % portal_url" style="width:18mm;height:18mm;"/>
                     </div>
-                    <div style="font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5px;">
-                        <t t-esc="doc.name"/>
+                    <div style="font-size:5pt; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:0.5mm;">
+                        <t t-esc="doc.name[:20]"/>
                     </div>
-                    <div style="font-size:8px;color:#999;">
+                    <div style="font-size:4pt; color:#666;">
                         <t t-if="barcode_value" t-esc="barcode_value"/>
-                        <t t-else="">ID: <t t-esc="doc.id"/></t>
+                        <t t-else="">ID:<t t-esc="doc.id"/></t>
                     </div>
                 </div>
-                <t t-if="(doc_index + 1) % 9 == 0"><div style="page-break-after:always;"></div></t>
             </t>
         </t>
     </template>
@@ -72,6 +100,7 @@
         <field name="report_name">records_management.report_file_qrcode_template</field>
         <field name="report_file">records_management.report_file_qrcode</field>
         <field name="print_report_name">'file_qrcode_%s' % object.barcode or object.temp_barcode or object.id</field>
+        <field name="paperformat_id" ref="paperformat_qr_code_label"/>
     </record>
     </data>
 </odoo>

@@ -4,17 +4,19 @@
     <template id="report_records_document_temp_barcode_labels">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
-                <div style="display:inline-block;width:200px;height:110px;border:1px solid #000;margin:4px;padding:4px;font-size:11px;vertical-align:top;">
-                    <div style="font-weight:bold;">Temp File Barcode</div>
-                    <div t-if="doc.temp_barcode" style="font-size:14px;">[[ doc.temp_barcode ]]</div>
-                    <div t-if="not doc.temp_barcode" style="color:red;">NO TEMP BARCODE</div>
-                    <div style="margin-top:4px;">
-                        <img t-if="doc.temp_barcode" t-att-src="'/report/barcode/Code128/%s?width=250&amp;height=50' % doc.temp_barcode" style="max-width:100%;height:50px;"/>
+                <!-- Compact label layout for 2.5935" x 1" file folder labels -->
+                <div class="page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
+                    <div style="font-size:7pt; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        <t t-esc="doc.display_name or doc.name"/>
                     </div>
-                    <div style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">[[ doc.display_name or doc.name ]]</div>
-                    <div style="font-size:9px;">[[ doc.partner_id.name or '' ]]</div>
+                    <div t-if="doc.temp_barcode" style="margin:1mm 0;">
+                        <img t-att-src="'/report/barcode/Code128/%s?width=180&amp;height=30' % doc.temp_barcode" style="max-width:100%;"/>
+                        <div style="font-size:7pt; font-weight:600;">
+                            <t t-esc="doc.temp_barcode"/> <span style="font-size:5pt; color:#666;">(TEMP)</span>
+                        </div>
+                    </div>
+                    <div t-else="" style="font-size:7pt; color:red;">NO TEMP BARCODE</div>
                 </div>
-                <t t-if="(doc_index + 1) % 15 == 0"><div style="page-break-after:always;"></div></t>
             </t>
         </t>
     </template>
@@ -23,12 +25,13 @@
     <record id="action_report_records_document_temp_barcode_labels" model="ir.actions.report">
         <field name="name">Temp File Barcodes</field>
         <field name="model">records.document</field>
-        <field name="report_type">qweb-html</field>
+        <field name="report_type">qweb-pdf</field>
         <field name="report_name">records_management.report_records_document_temp_barcode_labels</field>
         <field name="report_file">records_management.report_records_document_temp_barcode_labels</field>
         <field name="print_report_name">'temp_file_barcodes'</field>
         <field name="binding_model_id" ref="model_records_document"/>
         <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="file_barcode_reports.paperformat_file_folder_label"/>
     </record>
     </data>
 </odoo>

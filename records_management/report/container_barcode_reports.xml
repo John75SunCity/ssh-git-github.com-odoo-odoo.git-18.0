@@ -68,17 +68,19 @@
     <template id="report_container_qrcode_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
-                <div style="display:inline-block;width:200px;height:200px;border:1px solid #000;margin:4px;padding:8px;text-align:center;vertical-align:top;">
-                    <div style="font-weight:bold;font-size:12px;margin-bottom:5px;">Container QR Code</div>
-                    <div style="font-size:10px;color:#666;margin-bottom:5px;">Scan to view details (login required)</div>
-                    <div style="margin:8px 0;">
-                        <t t-set="portal_url" t-value="'%s/my/inventory/container/%s' % (doc.get_base_url(), doc.id)"/>
-                        <img t-att-src="'/report/qr/?value=%s&amp;width=150&amp;height=150' % portal_url" style="width:150px;height:150px;"/>
+                <t t-set="portal_url" t-value="'%s/my/inventory/container/%s' % (doc.get_base_url(), doc.id)"/>
+                <!-- Compact QR label layout for 1" x 1.25" -->
+                <div class="page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
+                    <div style="margin:0;">
+                        <img t-att-src="'/report/qr/?value=%s&amp;width=60&amp;height=60' % portal_url" style="width:18mm;height:18mm;"/>
                     </div>
-                    <div style="font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5px;">[[ doc.name ]]</div>
-                    <div style="font-size:8px;color:#999;">[[ doc.barcode or doc.temp_barcode or 'ID: %s' % doc.id ]]</div>
+                    <div style="font-size:5pt; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:0.5mm;">
+                        <t t-esc="doc.name[:20]"/>
+                    </div>
+                    <div style="font-size:4pt; color:#666;">
+                        <t t-esc="doc.barcode or doc.temp_barcode or 'ID:%s' % doc.id"/>
+                    </div>
                 </div>
-                <t t-if="(doc_index + 1) % 9 == 0"><div style="page-break-after:always;"></div></t>
             </t>
         </t>
     </template>
@@ -91,6 +93,7 @@
         <field name="report_name">records_management.report_container_qrcode_template</field>
         <field name="report_file">records_management.report_container_qrcode</field>
         <field name="print_report_name">'container_qrcode_%s' % object.barcode or object.temp_barcode or object.id</field>
+        <field name="paperformat_id" ref="file_barcode_reports.paperformat_qr_code_label"/>
     </record>
   </data>
 </odoo>
