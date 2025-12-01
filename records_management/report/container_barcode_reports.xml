@@ -6,8 +6,8 @@
       <field name="name">Container Barcode Label (4x1.33 inch)</field>
       <field name="default" eval="False"/>
       <field name="format">custom</field>
-      <field name="page_width">102</field>  <!-- 4 inches = 101.6mm, rounded -->
-      <field name="page_height">34</field>  <!-- 1.33 inches = 33.78mm, rounded -->
+      <field name="page_width">102</field>
+      <field name="page_height">34</field>
       <field name="orientation">Landscape</field>
       <field name="margin_top">1</field>
       <field name="margin_bottom">1</field>
@@ -20,13 +20,12 @@
     </record>
 
     <!-- QR Code Label Paper Format - 1" x 1.25" (49 per sheet) -->
-    <!-- Defined here (first loaded report file) so it's available for all reports -->
     <record id="paperformat_qr_code_label" model="report.paperformat">
       <field name="name">QR Code Label (1x1.25 inch)</field>
       <field name="default" eval="False"/>
       <field name="format">custom</field>
-      <field name="page_width">25</field>  <!-- 1 inch = 25.4mm, rounded -->
-      <field name="page_height">32</field>  <!-- 1.25 inches = 31.75mm, rounded -->
+      <field name="page_width">25</field>
+      <field name="page_height">32</field>
       <field name="orientation">Portrait</field>
       <field name="margin_top">1</field>
       <field name="margin_bottom">1</field>
@@ -55,11 +54,24 @@
       <field name="attachment_use" eval="False"/>
       <field name="attachment" eval="False"/>
     </record>
+
+    <!-- Container QR Code Report Action -->
+    <record id="report_container_qrcode" model="ir.actions.report">
+      <field name="name">Container QR Code Labels</field>
+      <field name="model">records.container</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">records_management.report_container_qrcode_template</field>
+      <field name="report_file">records_management.report_container_qrcode</field>
+      <field name="print_report_name">'container_qrcode_%s' % object.barcode or object.temp_barcode or object.id</field>
+      <field name="paperformat_id" ref="records_management.paperformat_qr_code_label"/>
+      <field name="attachment_use" eval="False"/>
+    </record>
   </data>
 
   <data>
+    <!-- Container Barcode Report Template -->
+    <template id="report_container_barcode_view">
       <t t-call="web.html_container">
-        <!-- CSS to force page breaks for label printing -->
         <style>
           .label-page {
             page-break-after: always;
@@ -73,7 +85,6 @@
           }
         </style>
         <t t-foreach="docs" t-as="doc">
-          <!-- Each label gets its own page -->
           <div class="page label-page" style="text-align:center; padding:1mm 2mm; font-family:Arial,sans-serif;">
             <div style="font-weight:bold; font-size:9pt; margin-bottom:1mm; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
               <t t-esc="doc.display_name"/>
@@ -99,41 +110,28 @@
       </t>
     </template>
 
-    <!-- Container QR Code Report Template (Secure Portal URL) -->
+    <!-- Container QR Code Report Template -->
     <template id="report_container_qrcode_template">
-        <t t-call="web.html_container">
-            <style>
-              .label-page { page-break-after: always; page-break-inside: avoid; }
-              .label-page:last-child { page-break-after: auto; }
-            </style>
-            <t t-foreach="docs" t-as="doc">
-                <t t-set="portal_url" t-value="'%s/my/inventory/container/%s' % (doc.get_base_url(), doc.id)"/>
-                <!-- Compact QR label layout for 1" x 1.25" -->
-                <div class="page label-page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
-                    <div style="margin:0;">
-                        <img t-att-src="'/report/qr/?value=%s&amp;width=60&amp;height=60' % portal_url" style="width:18mm;height:18mm;"/>
-                    </div>
-                    <div style="font-size:5pt; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:0.5mm;">
-                        <t t-esc="doc.name[:20]"/>
-                    </div>
-                    <div style="font-size:4pt; color:#666;">
-                        <t t-esc="doc.barcode or doc.temp_barcode or 'ID:%s' % doc.id"/>
-                    </div>
-                </div>
-            </t>
+      <t t-call="web.html_container">
+        <style>
+          .label-page { page-break-after: always; page-break-inside: avoid; }
+          .label-page:last-child { page-break-after: auto; }
+        </style>
+        <t t-foreach="docs" t-as="doc">
+          <t t-set="portal_url" t-value="'%s/my/inventory/container/%s' % (doc.get_base_url(), doc.id)"/>
+          <div class="page label-page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
+            <div style="margin:0;">
+              <img t-att-src="'/report/qr/?value=%s&amp;width=60&amp;height=60' % portal_url" style="width:18mm;height:18mm;"/>
+            </div>
+            <div style="font-size:5pt; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:0.5mm;">
+              <t t-esc="doc.name[:20]"/>
+            </div>
+            <div style="font-size:4pt; color:#666;">
+              <t t-esc="doc.barcode or doc.temp_barcode or 'ID:%s' % doc.id"/>
+            </div>
+          </div>
         </t>
+      </t>
     </template>
-
-    <!-- Container QR Code Report Action -->
-    <record id="report_container_qrcode" model="ir.actions.report">
-        <field name="name">Container QR Code Labels</field>
-        <field name="model">records.container</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">records_management.report_container_qrcode_template</field>
-        <field name="report_file">records_management.report_container_qrcode</field>
-        <field name="print_report_name">'container_qrcode_%s' % object.barcode or object.temp_barcode or object.id</field>
-        <field name="paperformat_id" ref="records_management.paperformat_qr_code_label"/>
-        <field name="attachment_use" eval="False"/>
-    </record>
   </data>
 </odoo>
