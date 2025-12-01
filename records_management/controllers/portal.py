@@ -1581,6 +1581,135 @@ class RecordsManagementController(http.Controller):
         return request.make_response(pdf, headers=pdfhttpheaders)
 
     # ============================================================================
+    # SERVICE PHOTOS PORTAL ROUTES
+    # Customer-visible photos from service jobs (NOT inventory documents)
+    # ============================================================================
+
+    @http.route(['/my/service-photos', '/my/service-photos/page/<int:page>'], type='http', auth="user", website=True)
+    def portal_service_photos(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
+        """Display service job photos visible to customer in portal.
+        
+        These are technician-uploaded photos from service jobs (before/after,
+        destruction proof, pickup documentation) - NOT customer inventory documents.
+        """
+        values = self._prepare_portal_layout_values()
+        partner = request.env.user.partner_id
+
+        Photo = request.env['photo'].sudo()
+
+        # Only show customer-visible photos for this customer
+        domain = [
+            ('partner_id', 'child_of', partner.commercial_partner_id.id),
+            ('is_customer_visible', '=', True),
+            ('state', 'in', ['draft', 'validated']),  # Not archived
+        ]
+
+        # Date filtering
+        if date_begin and date_end:
+            domain += [('date', '>=', date_begin), ('date', '<=', date_end)]
+
+        # Filter by photo purpose
+        searchbar_filters = {
+            'all': {'label': _('All Photos'), 'domain': []},
+            'before': {'label': _('Before Service'), 'domain': [('photo_purpose', '=', 'service_before')]},
+            'after': {'label': _('After Service'), 'domain': [('photo_purpose', '=', 'service_after')]},
+            'destruction': {'label': _('Destruction Proof'), 'domain': [('photo_purpose', '=', 'destruction_proof')]},
+            'pickup': {'label': _('Pickup Documentation'), 'domain': [('photo_purpose', '=', 'pickup_doc')]},
+            'compliance': {'label': _('Compliance'), 'domain': [('photo_purpose', '=', 'compliance')]},
+        }
+
+        if not filterby:
+            filterby = 'all'
+        domain += searchbar_filters[filterby]['domain']
+
+        # Sorting options
+        searchbar_sortings = {
+            'date': {'label': _('Most Recent'), 'order': 'date desc'},
+            'name': {'label': _('Name'), 'order': 'name'},
+            'purpose': {'label': _('Photo Type'), 'order': 'photo_purpose'},
+        }
+
+        if not sortby:
+            sortby = 'date'
+        order = searchbar_sortings[sortby]['order']
+
+        # Count total photos
+        photo_count = Photo.search_count(domain)
+
+        # Pager setup
+        pager = request.website.pager(
+            url="/my/service-photos",
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby, 'filterby': filterby},
+            total=photo_count,
+            page=page,
+            step=self._items_per_page,
+        )
+
+        # Get photos for current page
+        photos = Photo.search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+
+        values.update({
+            'photos': photos,
+            'page_name': 'service_photos',
+            'pager': pager,
+            'default_url': '/my/service-photos',
+            'searchbar_sortings': searchbar_sortings,
+            'searchbar_filters': searchbar_filters,
+            'sortby': sortby,
+            'filterby': filterby,
+        })
+
+        return request.render("records_management.portal_service_photos", values)
+
+    @http.route(['/my/service-photo/<int:photo_id>'], type='http', auth="user", website=True)
+    def portal_service_photo_detail(self, photo_id=None, **kw):
+        """Display individual service photo details"""
+        photo = request.env['photo'].sudo().browse(photo_id)
+
+        # Security check - must be customer's photo and customer-visible
+        partner = request.env.user.partner_id
+        if not photo.exists() or \
+           photo.partner_id.commercial_partner_id != partner.commercial_partner_id or \
+           not photo.is_customer_visible:
+            return request.redirect('/my/service-photos')
+
+        values = self._prepare_portal_layout_values()
+        values.update({
+            'photo': photo,
+            'page_name': 'service_photo_detail',
+        })
+
+        return request.render("records_management.portal_service_photo_detail", values)
+
+    @http.route(['/my/service-photo/<int:photo_id>/download'], type='http', auth="user")
+    def portal_service_photo_download(self, photo_id=None, **kw):
+        """Download service photo"""
+        photo = request.env['photo'].sudo().browse(photo_id)
+
+        # Security check
+        partner = request.env.user.partner_id
+        if not photo.exists() or \
+           photo.partner_id.commercial_partner_id != partner.commercial_partner_id or \
+           not photo.is_customer_visible:
+            return request.redirect('/my/service-photos')
+
+        if not photo.image:
+            return request.redirect('/my/service-photos')
+
+        # Decode and return image
+        import base64
+        image_data = base64.b64decode(photo.image)
+        filename = photo.image_filename or f"photo-{photo.id}.jpg"
+
+        headers = [
+            ('Content-Type', 'image/jpeg'),
+            ('Content-Length', len(image_data)),
+            ('Content-Disposition', f'attachment; filename="{filename}"'),
+        ]
+
+        return request.make_response(image_data, headers=headers)
+
+    # ============================================================================
     # DOCUMENTS PORTAL ROUTES
     # ============================================================================
 

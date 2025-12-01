@@ -727,6 +727,8 @@
         "templates/portal_barcode_row.xml",
         "templates/portal_centralized_docs.xml",
         "templates/portal_calendar_view.xml",  # NEW: Service calendar (shredding, pickups, retrievals)
+        # Service Photos Portal (technician job photos - NOT inventory documents)
+        "templates/portal_service_photos.xml",
         # Request & Workflow Templates
         "templates/portal_requests_template.xml",
         "templates/portal_request_create.xml",  # Generic request creation form (retrieval, scanning)

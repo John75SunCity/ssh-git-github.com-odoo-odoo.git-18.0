@@ -2,27 +2,27 @@
 <odoo>
     <data>
     <!-- ============================================================ -->
-    <!-- PHOTOS &amp; ATTACHMENTS HUB - Main Menu                        -->
-    <!-- Centralized access to all job photos and documents          -->
+    <!-- SERVICE JOB PHOTOS - Technician uploads, destruction proof  -->
+    <!-- NOT for customer inventory documents (handled elsewhere)     -->
     <!-- ============================================================ -->
     
-    <!-- Photos Root Menu (Under Operations) -->
+    <!-- Service Photos Root Menu (Under Operations) -->
     <menuitem id="menu_photos_root"
-              name="Photos &amp; Attachments"
+              name="Service Photos"
               parent="records_management.menu_records_operations"
               sequence="60"
               groups="records_management.group_records_user"/>
 
-    <!-- All Photos - Main Hub -->
+    <!-- All Service Photos - Main Hub -->
     <menuitem id="photo_menu_all" 
-              name="📷 All Photos &amp; Attachments" 
+              name="📷 All Service Photos" 
               parent="records_management.menu_photos_root" 
               action="action_photo" 
               sequence="1"/>
 
     <!-- Today's Uploads - Quick access for supervisors -->
     <menuitem id="photo_menu_today" 
-              name="📅 Today's Uploads" 
+              name="📅 Today's Job Photos" 
               parent="records_management.menu_photos_root" 
               action="action_photo_today" 
               sequence="5"/>
@@ -32,21 +32,21 @@
               parent="records_management.menu_photos_root"
               sequence="9"/>
 
-    <!-- By File Type Submenus -->
+    <!-- By Purpose Submenus -->
     <menuitem id="photo_menu_images" 
-              name="🖼️ Photos (Images)" 
+              name="🖼️ Job Photos (Images)" 
               parent="records_management.menu_photos_root" 
               action="action_photo_images_only" 
               sequence="10"/>
 
     <menuitem id="photo_menu_documents" 
-              name="📄 Documents (PDFs)" 
+              name="📄 Service Documents" 
               parent="records_management.menu_photos_root" 
               action="action_photo_documents_only" 
               sequence="20"/>
 
     <menuitem id="photo_menu_certificates" 
-              name="📜 Certificates" 
+              name="📜 Destruction Certificates" 
               parent="records_management.menu_photos_root" 
               action="action_photo_certificates" 
               sequence="30"/>

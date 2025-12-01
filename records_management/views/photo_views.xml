@@ -2,8 +2,9 @@
 <odoo>
     <data>
         <!-- ============================================================ -->
-        <!-- CENTRALIZED PHOTO &amp; ATTACHMENT HUB                         -->
-        <!-- Search by work orders, invoices, certificates, customers    -->
+        <!-- SERVICE JOB PHOTO &amp; DOCUMENTATION HUB                       -->
+        <!-- For technician job photos, destruction evidence, pickup docs -->
+        <!-- NOT for customer inventory documents (handled by records.document) -->
         <!-- ============================================================ -->
 
         <!-- KANBAN VIEW - Visual Photo Gallery -->
@@ -11,7 +12,7 @@
             <field name="name">photo.view.kanban</field>
             <field name="model">photo</field>
             <field name="arch" type="xml">
-                <kanban default_group_by="file_category" class="o_kanban_small_column">
+                <kanban default_group_by="photo_purpose" class="o_kanban_small_column">
                     <field name="id"/>
                     <field name="name"/>
                     <field name="image"/>
@@ -20,7 +21,8 @@
                     <field name="partner_id"/>
                     <field name="state"/>
                     <field name="file_category"/>
-                    <field name="category"/>
+                    <field name="photo_purpose"/>
+                    <field name="is_customer_visible"/>
                     <field name="source_document"/>
                     <templates>
                         <t t-name="card" class="o_kanban_card flex-row">
@@ -61,8 +63,9 @@
                     <field name="image" widget="image" options="{'size': [40, 40]}"/>
                     <field name="name"/>
                     <field name="date" string="Date"/>
-                    <field name="file_category" optional="show"/>
-                    <field name="category" optional="hide"/>
+                    <field name="photo_purpose" optional="show"/>
+                    <field name="file_category" optional="hide"/>
+                    <field name="is_customer_visible" optional="show" widget="boolean_toggle"/>
                     <field name="partner_id" optional="show"/>
                     <field name="source_document" optional="show"/>
                     <field name="task_id" optional="hide"/>
@@ -121,14 +124,15 @@
                         <group>
                             <group string="Photo Details">
                                 <field name="image_filename"/>
+                                <field name="photo_purpose"/>
                                 <field name="file_category"/>
-                                <field name="category"/>
                                 <field name="date"/>
                                 <field name="user_id"/>
                                 <field name="location"/>
                                 <field name="tags"/>
                             </group>
-                            <group string="File Information">
+                            <group string="Visibility &amp; Status">
+                                <field name="is_customer_visible" widget="boolean_toggle"/>
                                 <field name="file_size"/>
                                 <field name="file_type"/>
                                 <field name="resolution"/>
@@ -195,6 +199,19 @@
                     <field name="container_id" string="Container"/>
                     <field name="tags"/>
                     
+                    <!-- Photo Purpose Filters -->
+                    <separator/>
+                    <filter name="filter_before" string="Before Service" domain="[('photo_purpose', '=', 'service_before')]"/>
+                    <filter name="filter_after" string="After Service" domain="[('photo_purpose', '=', 'service_after')]"/>
+                    <filter name="filter_destruction" string="Destruction Proof" domain="[('photo_purpose', '=', 'destruction_proof')]"/>
+                    <filter name="filter_pickup" string="Pickup Docs" domain="[('photo_purpose', '=', 'pickup_doc')]"/>
+                    <filter name="filter_compliance" string="Compliance" domain="[('photo_purpose', '=', 'compliance')]"/>
+                    
+                    <!-- Visibility Filters -->
+                    <separator/>
+                    <filter name="filter_customer_visible" string="👁️ Customer Visible" domain="[('is_customer_visible', '=', True)]"/>
+                    <filter name="filter_internal_only" string="🔒 Internal Only" domain="[('is_customer_visible', '=', False)]"/>
+                    
                     <!-- State Filters -->
                     <separator/>
                     <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
@@ -223,9 +240,9 @@
                     
                     <!-- Group By -->
                     <group expand="0" string="Group By">
+                        <filter name="group_photo_purpose" string="Photo Purpose" context="{'group_by': 'photo_purpose'}"/>
                         <filter name="group_file_category" string="File Type" context="{'group_by': 'file_category'}"/>
                         <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
-                        <filter name="group_category" string="Category" context="{'group_by': 'category'}"/>
                         <filter name="group_user" string="Uploaded By" context="{'group_by': 'user_id'}"/>
                         <filter name="group_partner" string="Customer" context="{'group_by': 'partner_id'}"/>
                         <filter name="group_date_day" string="Date (Day)" context="{'group_by': 'date:day'}"/>
@@ -236,27 +253,31 @@
             </field>
         </record>
 
-        <!-- MAIN ACTION - Centralized Photo Hub -->
+        <!-- MAIN ACTION - Service Job Photo Hub -->
         <record id="action_photo" model="ir.actions.act_window">
-            <field name="name">Photo &amp; Attachment Hub</field>
+            <field name="name">Service Job Photos</field>
             <field name="res_model">photo</field>
             <field name="view_mode">kanban,list,calendar,form</field>
             <field name="search_view_id" ref="photo_view_search"/>
-            <field name="context">{'search_default_filter_photos': 0}</field>
+            <field name="context">{'search_default_group_photo_purpose': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    No photos or attachments found
+                    No service photos found
                 </p>
                 <p>
-                    This is your centralized hub for all job photos and attachments.
-                    Search by work order number, invoice, certificate, or customer.
+                    <strong>Service Job Photo Hub</strong> - Technician job photos, destruction evidence, 
+                    pickup documentation, and compliance photos.
+                </p>
+                <p>
+                    <em>Note: This is NOT for customer inventory documents. 
+                    Customer records are managed in Records Management → Inventory.</em>
                 </p>
                 <p>
                     <strong>Tips:</strong>
                     <ul>
-                        <li>Use <b>Group By</b> → File Type to separate photos from PDFs</li>
-                        <li>Filter by <b>Today</b> to see technician uploads from today's jobs</li>
-                        <li>Search by customer name to find all their related photos</li>
+                        <li>Use <b>Group By</b> → Photo Purpose to see Before/After service photos</li>
+                        <li>Filter by <b>Today</b> to review technician uploads</li>
+                        <li>Toggle <b>Customer Visible</b> to control what customers see in their portal</li>
                     </ul>
                 </p>
             </field>
@@ -264,7 +285,7 @@
 
         <!-- ACTION - Photos Only (for submenu) -->
         <record id="action_photo_images_only" model="ir.actions.act_window">
-            <field name="name">Photos (Images)</field>
+            <field name="name">Job Photos (Images)</field>
             <field name="res_model">photo</field>
             <field name="view_mode">kanban,list,calendar,form</field>
             <field name="search_view_id" ref="photo_view_search"/>
@@ -272,30 +293,30 @@
             <field name="context">{'search_default_group_date_day': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    No photos found
+                    No job photos found
                 </p>
-                <p>Upload photos from work orders, mobile devices, or directly here.</p>
+                <p>Technician service photos from work orders and mobile uploads.</p>
             </field>
         </record>
 
         <!-- ACTION - Documents Only (PDFs, etc.) -->
         <record id="action_photo_documents_only" model="ir.actions.act_window">
-            <field name="name">Documents (PDFs)</field>
+            <field name="name">Service Documents (PDFs)</field>
             <field name="res_model">photo</field>
             <field name="view_mode">list,kanban,form</field>
             <field name="search_view_id" ref="photo_view_search"/>
             <field name="domain">[('file_category', '=', 'document')]</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    No documents found
+                    No service documents found
                 </p>
-                <p>PDF documents and other file attachments will appear here.</p>
+                <p>PDF documents related to service jobs (not customer inventory).</p>
             </field>
         </record>
 
         <!-- ACTION - Certificates -->
         <record id="action_photo_certificates" model="ir.actions.act_window">
-            <field name="name">Certificates</field>
+            <field name="name">Destruction Certificates</field>
             <field name="res_model">photo</field>
             <field name="view_mode">list,kanban,form</field>
             <field name="search_view_id" ref="photo_view_search"/>
@@ -304,13 +325,13 @@
                 <p class="o_view_nocontent_smiling_face">
                     No certificates found
                 </p>
-                <p>Destruction certificates and compliance documents will appear here.</p>
+                <p>Destruction certificates and NAID compliance documents.</p>
             </field>
         </record>
 
         <!-- ACTION - Today's Uploads -->
         <record id="action_photo_today" model="ir.actions.act_window">
-            <field name="name">Today's Uploads</field>
+            <field name="name">Today's Job Photos</field>
             <field name="res_model">photo</field>
             <field name="view_mode">kanban,list,calendar,form</field>
             <field name="search_view_id" ref="photo_view_search"/>

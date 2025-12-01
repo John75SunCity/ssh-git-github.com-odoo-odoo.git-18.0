@@ -7,10 +7,13 @@ from PIL import Image
 
 class Photo(models.Model):
     _name = "photo"
-    _description = "Photo Attachment"
+    _description = "Service Job Photo & Documentation"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date desc, name"
     _rec_name = "name"
+    # NOTE: This model is for SERVICE-RELATED photos (technician job photos,
+    # destruction evidence, pickup documentation) - NOT customer inventory documents.
+    # Customer inventory documents are handled by records.document model.
 
     # ============================================================================
     # FIELDS
@@ -38,6 +41,24 @@ class Photo(models.Model):
         [("draft", "Draft"), ("validated", "Validated"), ("archived", "Archived")], default="draft", string="State"
     )
     active = fields.Boolean(default=True, string="Active")
+
+    # Portal & Customer Visibility
+    is_customer_visible = fields.Boolean(
+        string="Visible to Customer",
+        default=True,
+        help="If checked, customer can see this photo in their portal under Service Photos"
+    )
+    photo_purpose = fields.Selection([
+        ('service_before', 'Before Service'),
+        ('service_after', 'After Service'),
+        ('destruction_proof', 'Destruction Proof'),
+        ('pickup_doc', 'Pickup Documentation'),
+        ('equipment', 'Equipment/Vehicle'),
+        ('compliance', 'Compliance/Certificate'),
+        ('damage', 'Damage Report'),
+        ('other', 'Other'),
+    ], string="Photo Purpose", default='other',
+       help="Type of service documentation this photo represents")
 
     # Related records - Core relationships
     partner_id = fields.Many2one(comodel_name="res.partner", string="Customer")
