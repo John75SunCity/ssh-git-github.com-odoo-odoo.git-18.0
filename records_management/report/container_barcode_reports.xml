@@ -71,40 +71,34 @@
   <data>
     <!-- Container Barcode Report Template -->
     <template id="report_container_barcode_view">
-      <t t-call="web.html_container">
-        <style>
-          .label-page {
-            page-break-after: always;
-            page-break-inside: avoid;
-            width: 100%;
-            height: 100%;
-            box-sizing: border-box;
-          }
-          .label-page:last-child {
-            page-break-after: auto;
-          }
-        </style>
+      <t t-call="web.basic_layout">
         <t t-foreach="docs" t-as="doc">
-          <div class="page label-page" style="text-align:center; padding:1mm 2mm; font-family:Arial,sans-serif;">
+          <div class="page" style="text-align:center; padding:2mm; font-family:Arial,sans-serif; page-break-after:always;">
             <div style="font-weight:bold; font-size:9pt; margin-bottom:1mm; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
               <t t-esc="doc.display_name"/>
             </div>
-            <div t-if="doc.barcode" style="margin:1mm 0;">
-              <img t-att-src="'/report/barcode/Code128/%s?width=260&amp;height=40' % doc.barcode" alt="Barcode"/>
-              <div style="font-size:9pt; font-weight:600; margin-top:0.5mm;" t-esc="doc.barcode"/>
-            </div>
-            <div t-elif="doc.temp_barcode" style="margin:1mm 0;">
-              <img t-att-src="'/report/barcode/Code128/%s?width=260&amp;height=40' % doc.temp_barcode" alt="Temporary Barcode"/>
-              <div style="font-size:9pt; font-weight:600; margin-top:0.5mm;">
+            <t t-if="doc.barcode">
+              <div style="margin:1mm 0;">
+                <img t-att-src="'/report/barcode/Code128/%s?width=260&amp;height=40' % doc.barcode" alt="Barcode"/>
+              </div>
+              <div style="font-size:9pt; font-weight:600;" t-esc="doc.barcode"/>
+            </t>
+            <t t-elif="doc.temp_barcode">
+              <div style="margin:1mm 0;">
+                <img t-att-src="'/report/barcode/Code128/%s?width=260&amp;height=40' % doc.temp_barcode" alt="Temporary Barcode"/>
+              </div>
+              <div style="font-size:9pt; font-weight:600;">
                 <t t-esc="doc.temp_barcode"/> <span style="font-size:7pt; color:#666;">(TEMP)</span>
               </div>
-            </div>
-            <div t-else="" style="font-size:8pt; color:#999;">
-              <em>No barcode</em>
-            </div>
-            <div t-if="doc.container_type_id" style="font-size:7pt; color:#333;">
-              <t t-esc="doc.container_type_id.name"/>
-            </div>
+            </t>
+            <t t-else="">
+              <div style="font-size:8pt; color:#999;"><em>No barcode assigned</em></div>
+            </t>
+            <t t-if="doc.container_type_id">
+              <div style="font-size:7pt; color:#333; margin-top:1mm;">
+                <t t-esc="doc.container_type_id.name"/>
+              </div>
+            </t>
           </div>
         </t>
       </t>
@@ -112,22 +106,18 @@
 
     <!-- Container QR Code Report Template -->
     <template id="report_container_qrcode_template">
-      <t t-call="web.html_container">
-        <style>
-          .label-page { page-break-after: always; page-break-inside: avoid; }
-          .label-page:last-child { page-break-after: auto; }
-        </style>
+      <t t-call="web.basic_layout">
         <t t-foreach="docs" t-as="doc">
           <t t-set="portal_url" t-value="'%s/my/inventory/container/%s' % (doc.get_base_url(), doc.id)"/>
-          <div class="page label-page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
+          <div class="page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif; page-break-after:always;">
             <div style="margin:0;">
               <img t-att-src="'/report/qr/?value=%s&amp;width=60&amp;height=60' % portal_url" style="width:18mm;height:18mm;"/>
             </div>
             <div style="font-size:5pt; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:0.5mm;">
-              <t t-esc="doc.name[:20]"/>
+              <t t-esc="doc.name[:20] if doc.name else ''"/>
             </div>
             <div style="font-size:4pt; color:#666;">
-              <t t-esc="doc.barcode or doc.temp_barcode or 'ID:%s' % doc.id"/>
+              <t t-esc="doc.barcode or doc.temp_barcode or ('ID:%s' % doc.id)"/>
             </div>
           </div>
         </t>
