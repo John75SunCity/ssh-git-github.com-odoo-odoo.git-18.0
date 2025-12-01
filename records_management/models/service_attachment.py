@@ -65,7 +65,45 @@ class ServiceAttachment(models.Model):
     res_name = fields.Char(string="Source Document", related='attachment_id.res_name', readonly=True)
 
     def init(self):
-        """Create SQL view for service attachments"""
+        """Create SQL view for service attachments.
+        
+        This view aggregates attachments from various service-related models
+        for portal display. We check if required tables exist before creating
+        the view to handle fresh installations gracefully.
+        """
+        # Check if required tables exist - skip view creation on fresh install
+        # The view will be created properly on module upgrade after all tables exist
+        self.env.cr.execute("""
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_name = 'work_order_shredding'
+            )
+        """)
+        if not self.env.cr.fetchone()[0]:
+            # Tables don't exist yet (fresh install) - create a placeholder view
+            self.env.cr.execute("""
+                DROP VIEW IF EXISTS service_attachment;
+                CREATE OR REPLACE VIEW service_attachment AS (
+                    SELECT
+                        att.id as id,
+                        att.id as attachment_id,
+                        att.name as name,
+                        att.mimetype as mimetype,
+                        att.file_size as file_size,
+                        att.create_date as create_date,
+                        att.create_uid as create_uid,
+                        att.res_model as res_model,
+                        att.res_id as res_id,
+                        'document'::varchar as attachment_category,
+                        NULL::integer as partner_id,
+                        FALSE as is_portal_visible
+                    FROM ir_attachment att
+                    WHERE FALSE
+                )
+            """)
+            return
+
+        # All required tables exist - create the full view
         self.env.cr.execute("""
             DROP VIEW IF EXISTS service_attachment;
             CREATE OR REPLACE VIEW service_attachment AS (
