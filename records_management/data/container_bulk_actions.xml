@@ -79,7 +79,7 @@ if records:
         'partner_id': partner.id,
         'user_id': env.user.id,
         'state': 'draft',
-        'destruction_method': 'shred',
+        'destruction_method': 'shredding',
         'container_ids': [(6, 0, records.ids)],
     })
 

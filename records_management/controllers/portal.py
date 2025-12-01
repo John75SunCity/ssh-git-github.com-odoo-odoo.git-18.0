@@ -4141,7 +4141,7 @@ class RecordsManagementController(http.Controller):
                     'partner_id': partner.id,
                     'user_id': request.env.ref('base.user_admin').id,
                     'state': 'draft',
-                    'destruction_method': 'shred',
+                    'destruction_method': 'shredding',
                     'container_ids': [(6, 0, container_ids)],
                 })
                 
