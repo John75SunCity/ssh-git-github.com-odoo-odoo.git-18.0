@@ -3,9 +3,13 @@
     <data>
     <template id="report_records_document_temp_barcode_labels">
         <t t-call="web.html_container">
+            <style>
+              .label-page { page-break-after: always; page-break-inside: avoid; }
+              .label-page:last-child { page-break-after: auto; }
+            </style>
             <t t-foreach="docs" t-as="doc">
-                <!-- Compact label layout for 2.5935" x 1" file folder labels -->
-                <div class="page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
+                <!-- Compact label layout for 4" x 1.33" container labels -->
+                <div class="page label-page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
                     <div style="font-size:7pt; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                         <t t-esc="doc.display_name or doc.name"/>
                     </div>

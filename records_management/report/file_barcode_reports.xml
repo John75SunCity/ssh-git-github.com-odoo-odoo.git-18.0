@@ -23,10 +23,14 @@
 
     <template id="report_file_barcode_template">
         <t t-call="web.html_container">
+            <style>
+              .label-page { page-break-after: always; page-break-inside: avoid; }
+              .label-page:last-child { page-break-after: auto; }
+            </style>
             <t t-foreach="docs" t-as="doc">
                 <t t-set="barcode_value" t-value="doc.barcode or doc.temp_barcode"/>
                 <!-- Compact label layout for 2.5935" x 1" -->
-                <div class="page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
+                <div class="page label-page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
                     <div style="font-size:7pt; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
                         <t t-esc="doc.name"/>
                     </div>
@@ -56,11 +60,15 @@
     <!-- QR Code Report Template (Secure Portal URL) -->
     <template id="report_file_qrcode_template">
         <t t-call="web.html_container">
+            <style>
+              .label-page { page-break-after: always; page-break-inside: avoid; }
+              .label-page:last-child { page-break-after: auto; }
+            </style>
             <t t-foreach="docs" t-as="doc">
                 <t t-set="barcode_value" t-value="doc.barcode or doc.temp_barcode"/>
                 <t t-set="portal_url" t-value="'%s/my/inventory/file/%s' % (doc.get_base_url(), doc.id)"/>
                 <!-- Compact QR label layout for 1" x 1.25" -->
-                <div class="page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
+                <div class="page label-page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
                     <div style="margin:0;">
                         <img t-att-src="'/report/qr/?value=%s&amp;width=60&amp;height=60' % portal_url" style="width:18mm;height:18mm;"/>
                     </div>

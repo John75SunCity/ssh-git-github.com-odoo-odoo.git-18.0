@@ -56,9 +56,22 @@
 
     <template id="report_container_barcode_view">
       <t t-call="web.html_container">
+        <!-- CSS to force page breaks for label printing -->
+        <style>
+          .label-page {
+            page-break-after: always;
+            page-break-inside: avoid;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+          }
+          .label-page:last-child {
+            page-break-after: auto;
+          }
+        </style>
         <t t-foreach="docs" t-as="doc">
-          <!-- No external layout for labels - compact content only -->
-          <div class="page" style="text-align:center; padding:1mm 2mm; font-family:Arial,sans-serif;">
+          <!-- Each label gets its own page -->
+          <div class="page label-page" style="text-align:center; padding:1mm 2mm; font-family:Arial,sans-serif;">
             <div style="font-weight:bold; font-size:9pt; margin-bottom:1mm; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
               <t t-esc="doc.display_name"/>
             </div>
@@ -86,10 +99,14 @@
     <!-- Container QR Code Report Template (Secure Portal URL) -->
     <template id="report_container_qrcode_template">
         <t t-call="web.html_container">
+            <style>
+              .label-page { page-break-after: always; page-break-inside: avoid; }
+              .label-page:last-child { page-break-after: auto; }
+            </style>
             <t t-foreach="docs" t-as="doc">
                 <t t-set="portal_url" t-value="'%s/my/inventory/container/%s' % (doc.get_base_url(), doc.id)"/>
                 <!-- Compact QR label layout for 1" x 1.25" -->
-                <div class="page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
+                <div class="page label-page" style="text-align:center; padding:1mm; font-family:Arial,sans-serif;">
                     <div style="margin:0;">
                         <img t-att-src="'/report/qr/?value=%s&amp;width=60&amp;height=60' % portal_url" style="width:18mm;height:18mm;"/>
                     </div>
